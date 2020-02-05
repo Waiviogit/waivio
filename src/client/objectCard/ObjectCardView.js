@@ -15,7 +15,7 @@ import './ObjectCardView.less';
 const ObjectCardView = ({
   intl,
   wObject,
-  passedObject,
+  passedParent,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -48,8 +48,8 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (!isEmpty(passedObject) && avatar === DEFAULTS.AVATAR) {
-      url = passedObject.avatar;
+    if (!isEmpty(passedParent) && avatar === DEFAULTS.AVATAR) {
+      url = passedParent.avatar;
     }
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
@@ -65,9 +65,9 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = isEmpty(passedObject)
+  const parentName = isEmpty(passedParent)
     ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
-    : passedObject.name || passedObject.default_name;
+    : passedParent.name || passedParent.default_name;
 
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
@@ -85,7 +85,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${passedObject.author_permlink}`}
+                  to={`/object/${passedParent.author_permlink}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -154,11 +154,11 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  passedObject: PropTypes.shape(),
+  passedParent: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedObject: {},
+  passedParent: {},
 };
 export default injectIntl(ObjectCardView);
