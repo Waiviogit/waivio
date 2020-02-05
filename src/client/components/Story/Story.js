@@ -12,6 +12,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import {
   isPostDeleted,
+  isPostTaggedNSFW,
   dropCategory,
   isBannedPost,
   replaceBotWithGuestName,
@@ -21,6 +22,7 @@ import BTooltip from '../BTooltip';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
+import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
@@ -40,6 +42,7 @@ class Story extends React.Component {
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
+    showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -89,7 +92,9 @@ class Story extends React.Component {
       displayLoginModal: false,
     };
 
+    this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
+    this.handleShowStoryPreview = this.handleShowStoryPreview.bind(this);
     this.handlePostModalDisplay = this.handlePostModalDisplay.bind(this);
     this.handlePreviewClickPostModalDisplay = this.handlePreviewClickPostModalDisplay.bind(this);
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -129,6 +134,17 @@ class Story extends React.Component {
     );
   };
 
+  getDisplayStoryPreview() {
+    const { post, showNSFWPosts } = this.props;
+    const { showHiddenStoryPreview } = this.state;
+
+    if (showHiddenStoryPreview) return true;
+
+    if (isPostTaggedNSFW(post)) {
+      return showNSFWPosts;
+    }
+    return true;
+  }
   getObjectLayout = wobj => {
     const pathName = `/object/${wobj.author_permlink}`;
     let name = '';
@@ -247,6 +263,12 @@ class Story extends React.Component {
     this.props.onActionInitiated(this.clickMenuItem.bind(this, key));
   }
 
+  handleShowStoryPreview() {
+    this.setState({
+      showHiddenStoryPreview: true,
+    });
+  }
+
   handlePostModalDisplay(e) {
     e.preventDefault();
     const { post } = this.props;
@@ -292,12 +314,16 @@ class Story extends React.Component {
 
   renderStoryPreview() {
     const { post } = this.props;
+    const showStoryPreview = this.getDisplayStoryPreview();
+    const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) && (
+      <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
+    );
 
     if (isBannedPost(post)) {
       return <DMCARemovedMessage />;
     }
 
-    return (
+    return showStoryPreview ? (
       <a
         href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
         rel="noopener noreferrer"
@@ -307,6 +333,8 @@ class Story extends React.Component {
       >
         <StoryPreview post={post} />
       </a>
+    ) : (
+      hiddenStoryPreviewMessage
     );
   }
 
