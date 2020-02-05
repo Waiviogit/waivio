@@ -128,7 +128,17 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const { category, id, permlink: parentPermlink } = parentPost;
+
+  let parentAuthor;
+
+  if (isUpdating) {
+    parentAuthor = originalComment.parent_author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentPost.root_author;
+  } else {
+    parentAuthor = parentPost.author;
+  }
   const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
 
