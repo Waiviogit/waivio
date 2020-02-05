@@ -36,7 +36,7 @@ const ModalSignUp = ({ isButton }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'google' });
+        setUserData({ ...response, image: response.w3.Paa, socialNetwork: 'google' });
         setIsFormVisible(true);
       }
     }
@@ -55,7 +55,7 @@ const ModalSignUp = ({ isButton }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'facebook' });
+        setUserData({ ...response, image: response.picture.data.url, socialNetwork: 'facebook' });
         setIsFormVisible(true);
       }
     }
