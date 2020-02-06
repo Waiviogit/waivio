@@ -1032,5 +1032,6 @@
   "science": "science",
   "steem": "steem",
   "health": "health",
-  "travel": "travel"
+  "travel": "travel",
+  "need_confirm_agreement": "You need to confirm agreement"
 }
