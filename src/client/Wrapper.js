@@ -30,6 +30,7 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { GUEST_PREFIX } from '../common/constants/waivio';
+import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -44,6 +45,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
+    isNewUser: state.settings.newUser,
   }),
   {
     login,
@@ -79,6 +81,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
+    isNewUser: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -215,7 +218,15 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, isAuthenticated, usedLocale, translations, history, username } = this.props;
+    const {
+      user,
+      isAuthenticated,
+      usedLocale,
+      translations,
+      history,
+      username,
+      isNewUser,
+    } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -243,6 +254,7 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
+                {isNewUser && <WelcomeModal />}
               </div>
             </Layout>
           </AppSharedContext.Provider>
