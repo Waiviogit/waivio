@@ -71,7 +71,9 @@ class QuickCommentEditor extends React.Component {
     this.setState({ currentImage: [], imageUploading: false });
   };
 
-  handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
+  handleOpenModal = () => this.setState({ isModal: true });
+
+  handleCloseModal = () => this.setState({ isModal: false, currentImage: [] });
 
   handleOnOk = () => this.setState({ isModal: !this.state.isModal });
 
@@ -130,17 +132,19 @@ class QuickCommentEditor extends React.Component {
         )}
         <Modal
           wrapClassName="Settings__modal"
-          onCancel={this.handleOpenModal}
+          onCancel={this.handleCloseModal}
           okButtonProps={{ disabled: isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter
-            onImageLoaded={this.getImages}
-            onLoadingImage={this.onLoadingImage}
-            isRequired
-          />
+          {isModal && (
+            <ImageSetter
+              onImageLoaded={this.getImages}
+              onLoadingImage={this.onLoadingImage}
+              isRequired
+            />
+          )}
         </Modal>
       </React.Fragment>
     );
