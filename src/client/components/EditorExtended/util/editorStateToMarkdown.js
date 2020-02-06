@@ -18,9 +18,10 @@ const blockStyleDict = {
   blockquote: '> ',
 };
 
-const wrappingBlockStyleDict = {
-  'code-block': '```',
-};
+// Left this code if some issues will rise in future with code-blocks
+// const wrappingBlockStyleDict = {
+//   'code-block': '```',
+// };
 
 const getBlockStyle = (currentStyle, appliedBlockStyles) => {
   if (currentStyle === 'ordered-list-item') {
@@ -35,13 +36,14 @@ const getBlockStyle = (currentStyle, appliedBlockStyles) => {
   return blockStyleDict[currentStyle] || '';
 };
 
-const applyWrappingBlockStyle = (currentStyle, content) => {
-  if (currentStyle in wrappingBlockStyleDict) {
-    const wrappingSymbol = wrappingBlockStyleDict[currentStyle];
-    return `${wrappingSymbol}\n${content}\n${wrappingSymbol}`;
-  }
-  return content;
-};
+// Left this code if some issues will rise in future with code-blocks
+// const applyWrappingBlockStyle = (currentStyle, content) => {
+//   if (currentStyle in wrappingBlockStyleDict) {
+//     const wrappingSymbol = wrappingBlockStyleDict[currentStyle];
+//     return `${wrappingSymbol}\n${content}\n${wrappingSymbol}`;
+//   }
+//   return content;
+// };
 
 const applyAtomicStyle = (block, entityMap, content) => {
   if (block.type.indexOf('atomic') === -1) return content;
@@ -209,7 +211,8 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       return newText;
     }, '');
 
-    returnString = applyWrappingBlockStyle(block.type, returnString);
+    // Left this code if some issues will rise in future with code-blocks
+    // returnString = applyWrappingBlockStyle(block.type, returnString);
     returnString = applyAtomicStyle(block, raw.entityMap, returnString);
   });
   return returnString;
