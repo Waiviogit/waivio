@@ -10,7 +10,6 @@ import {
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
-import formatter from '../../helpers/steemitFormatter';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -24,7 +23,6 @@ import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
-import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
@@ -139,16 +137,12 @@ class Story extends React.Component {
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
     const { showHiddenStoryPreview } = this.state;
-    const postAuthorReputation = formatter.reputation(post.author_reputation);
 
     if (showHiddenStoryPreview) return true;
 
-    if (postAuthorReputation >= 0 && isPostTaggedNSFW(post)) {
+    if (isPostTaggedNSFW(post)) {
       return showNSFWPosts;
-    } else if (postAuthorReputation < 0) {
-      return false;
     }
-
     return true;
   }
   getObjectLayout = wobj => {
@@ -321,10 +315,8 @@ class Story extends React.Component {
   renderStoryPreview() {
     const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
-    const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) ? (
+    const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) && (
       <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
-    ) : (
-      <HiddenStoryPreviewMessage onClick={this.handleShowStoryPreview} />
     );
 
     if (isBannedPost(post)) {

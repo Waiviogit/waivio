@@ -21,7 +21,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
           })}
         </div>
         <div className="CampaignCardHeader__data">
-          <span>
+          <span className="CampaignCardHeader__name-earn">
             {intl.formatMessage({
               id: 'rewards_details_earn',
               defaultMessage: 'Earn',
