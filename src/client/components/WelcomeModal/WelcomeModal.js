@@ -11,9 +11,9 @@ import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 import { getRecommendTopics, getRecommendExperts } from '../../user/userActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
+import { setUsersStatus } from '../../settings/settingsActions';
 
 import './WelcomeModal.less';
-import { setUsersStatus } from '../../settings/settingsActions';
 
 const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, intl }) => {
   const dispatch = useDispatch();
@@ -107,6 +107,11 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
     }
   };
 
+  const handleCloseSecondModal = () => {
+    setIsOpenUsersModal(false);
+    dispatch(setUsersStatus());
+  };
+
   return (
     <React.Fragment>
       <Modal
@@ -166,11 +171,7 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
           defaultMessage: 'Select experts to follow',
         })}
         footer={[
-          <Link
-            to={'/'}
-            className="WelcomeModal__button"
-            onClick={() => setIsOpenUsersModal(false)}
-          >
+          <Link to={'/'} className="WelcomeModal__button" onClick={handleCloseSecondModal}>
             {intl.formatMessage({ id: 'open_my_feed', defaultMessage: 'Open my feed' })}
           </Link>,
         ]}

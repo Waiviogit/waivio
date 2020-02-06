@@ -10,7 +10,6 @@ const initialState = {
   user: {},
   userMetaData: {},
   isGuestUser: false,
-  isNewUser: false,
 };
 
 export default (state = initialState, action) => {

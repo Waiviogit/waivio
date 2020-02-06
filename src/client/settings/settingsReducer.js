@@ -23,7 +23,6 @@ const settings = (state = initialState, action) => {
     case authTypes.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
       if (action.payload.userMetaData && action.payload.userMetaData.settings) {
-        console.log(action.payload);
         return {
           ...state,
           ...action.payload.userMetaData.settings,
@@ -33,7 +32,7 @@ const settings = (state = initialState, action) => {
       return state;
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
-        return { ...action.payload.settings, newUser: action.payload.new_user, loading: false };
+        return { ...action.payload.settings, loading: false };
       }
       return { ...state, loading: false };
     case GET_USER_METADATA.START:

@@ -89,7 +89,6 @@ export default class Wrapper extends React.PureComponent {
     translations: {},
     username: '',
     login: () => {},
-    getUserStatus: () => {},
     logout: () => {},
     getFollowing: () => {},
     getFollowingObjects: () => {},
