@@ -948,7 +948,6 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
   }).then(res => res.json());
 };
 
-//no work
 export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
