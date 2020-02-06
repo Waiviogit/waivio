@@ -970,6 +970,13 @@ export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
   }).then(res => res.json());
 };
 
+export const setUserStatus = user => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

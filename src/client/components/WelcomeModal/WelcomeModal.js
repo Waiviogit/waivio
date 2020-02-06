@@ -13,6 +13,7 @@ import { getRecommendTopics, getRecommendExperts } from '../../user/userActions'
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 
 import './WelcomeModal.less';
+import { setUsersStatus } from '../../settings/settingsActions';
 
 const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, intl }) => {
   const dispatch = useDispatch();
@@ -30,108 +31,71 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
     }
   }, [isAuthorization, recommendedTopics, recommendedExperts]);
 
-  const NEWS = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.news.includes(topic.default_name),
-  );
-  const LIFESTYLE = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.lifestyle.includes(topic.default_name),
-  );
-  const ENTERTAINMENT = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.entertainment.includes(topic.default_name),
-  );
-  const CRYPTOS = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.cryptos.includes(topic.default_name),
-  );
-  const STOCKS = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.stocks.includes(topic.default_name),
-  );
-  const MORE = recommendedTopics.filter(topic =>
-    newUserRecommendTopics.more.includes(topic.default_name),
-  );
+  const getRecommendList = (fullList, listWithCategory) =>
+    fullList.filter(topic => {
+      const nameKey = topic.name ? 'name' : 'default_name';
 
-  const POLITICS = recommendedExperts.filter(user =>
-    newUserRecommendExperts.politics.includes(user.name),
-  );
-  const ECONOMY = recommendedExperts.filter(user =>
-    newUserRecommendExperts.economy.includes(user.name),
-  );
-  const SCIENCE = recommendedExperts.filter(user =>
-    newUserRecommendExperts.science.includes(user.name),
-  );
-  const STEEM = recommendedExperts.filter(user =>
-    newUserRecommendExperts.steem.includes(user.name),
-  );
-  const CRYPTOS_USERS = recommendedExperts.filter(user =>
-    newUserRecommendExperts.cryptos.includes(user.name),
-  );
-  const ENTERTAINMENT_USER = recommendedExperts.filter(user =>
-    newUserRecommendExperts.entertainment.includes(user.name),
-  );
-  const HEALTH = recommendedExperts.filter(user =>
-    newUserRecommendExperts.health.includes(user.name),
-  );
-  const TRAVEL = recommendedExperts.filter(user =>
-    newUserRecommendExperts.travel.includes(user.name),
-  );
+      return listWithCategory.includes(topic[nameKey]);
+    });
 
   const topic = [
     {
       name: 'news',
-      list: NEWS,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.news),
     },
     {
       name: 'lifestyle',
-      list: LIFESTYLE,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.lifestyle),
     },
     {
       name: 'entertainment',
-      list: ENTERTAINMENT,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.entertainment),
     },
     {
       name: 'cryptos',
-      list: CRYPTOS,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.cryptos),
     },
     {
       name: 'stocks',
-      list: STOCKS,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.stocks),
     },
     {
       name: 'more',
-      list: MORE,
+      list: getRecommendList(recommendedTopics, newUserRecommendTopics.more),
     },
   ];
   const userList = [
     {
       name: 'politics',
-      list: POLITICS,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.politics),
     },
     {
       name: 'economy',
-      list: ECONOMY,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.economy),
     },
     {
       name: 'science',
-      list: SCIENCE,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.science),
     },
     {
       name: 'steem',
-      list: STEEM,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.steem),
     },
     {
       name: 'cryptos',
-      list: CRYPTOS_USERS,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.cryptos),
     },
     {
       name: 'entertainment',
-      list: ENTERTAINMENT_USER,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.entertainment),
     },
     {
       name: 'health',
-      list: HEALTH,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.health),
     },
     {
       name: 'travel',
-      list: TRAVEL,
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.travel),
     },
   ];
 
@@ -139,6 +103,7 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
     if (e.currentTarget.className.indexOf('close') >= 0) {
       setIsOpenTopicsModal(false);
       setIsOpenUsersModal(false);
+      dispatch(setUsersStatus());
     }
   };
 

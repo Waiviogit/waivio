@@ -334,7 +334,7 @@ export default function userReducer(state = initialState, action) {
       return state;
 
     case authActions.LOGOUT:
-      return state;
+      return initialState;
 
     default: {
       return state;

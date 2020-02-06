@@ -67,6 +67,7 @@
   "typeExpertise": "/expertise",
   "user": "/user",
   "getUsers": "/user/getUsersData",
+  "setUserStatus": "/setState",
   "userMetadata": "/userMetadata",
   "users": "/users",
   "validateAuthToken": "validate_auth_token",
