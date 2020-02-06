@@ -88,9 +88,9 @@ const ImageSetter = ({
   }, []);
 
   const handleChangeImage = async e => {
-    if (e.currentTarget.files && e.currentTarget.files[0]) {
+    if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
-      const images = Object.values(e.currentTarget.files);
+      const images = Object.values(e.target.files);
       setFileImages(images);
       if (images.length > 25 || currentImages.length + images.length > 25) {
         message.error(
@@ -196,7 +196,7 @@ const ImageSetter = ({
             type="file"
             accept="image/*"
             multiple={isMultiple}
-            onInput={handleChangeImage}
+            onChange={handleChangeImage}
             onClick={e => {
               e.target.value = null;
             }}
