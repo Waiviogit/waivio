@@ -1017,5 +1017,6 @@
   "post_btn_photo": "Photo",
   "post_btn_video": "Video",
   "post_btn_object": "Object",
-  "post_btn_separator": "Line"
+  "post_btn_separator": "Line",
+  "need_confirm_agreement": "You need to confirm agreement"
 }
