@@ -38,8 +38,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   const state = getState();
 
   let promise = Promise.resolve(null);
-
   let isGuest = null;
+
   if (typeof localStorage !== 'undefined') {
     const token = localStorage.getItem('accessToken');
     isGuest = token === 'null' ? false : Boolean(token);
@@ -114,6 +114,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     Cookie.remove('access_token');
   }
   busyAPI.close();
+
   dispatch({
     type: LOGOUT,
   });

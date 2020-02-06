@@ -1,0 +1,45 @@
+@import (reference) '../../styles/custom.less';
+
+.nightmode {
+  .WelcomeModal {
+    &__button {
+      background-color: transparent;
+      border: 1px solid @orange-hot;
+      color: @orange-hot;
+
+      &:hover {
+        background-color: transparent;
+        color: @orange-light;
+        border: 1px solid @color-hover-border;
+      }
+    }
+
+    .ant-modal-header {
+      border: none;
+    }
+
+    .ant-modal-footer {
+      border: none;
+    }
+
+    &__block-title {
+      color: @white;
+    }
+
+    &__name {
+      color: @white;
+
+      &:hover {
+        color: @white;
+      }
+    }
+
+    &__item {
+      border-bottom: 1px solid @normal-grey;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
