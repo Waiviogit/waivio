@@ -88,6 +88,7 @@ const QuickForecastPage = props => {
       },
     },
   ];
+  const prevForecastFinished = index => index > 0 ? props.quickForecastDataList[index - 1].status !== 'pending' : true;
 
   useEffect(() => {
     setLoading(false);
@@ -256,7 +257,7 @@ const QuickForecastPage = props => {
                   ))}
                 </SortSelector>
               </div>
-              {currentForecastList.map(obj => (
+              {currentForecastList.map((obj, index) => (
                 <QuickForecastCard
                   forecast={obj}
                   key={obj.id}
@@ -275,6 +276,7 @@ const QuickForecastPage = props => {
                   counter={answeredForecastList.length}
                   handleAuthorization={props.onActionInitiated}
                   disabled={props.isDisabled}
+                  prevForecastFinish={prevForecastFinished(index)}
                 />
               ))}
             </React.Fragment>

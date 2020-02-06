@@ -174,8 +174,8 @@ export default (state = initialState, action) => {
         });
 
         return {
-          quickForecastData: [...state.quickForecastData],
           ...state,
+          quickForecastData: [...state.quickForecastData],
           disabled: false,
         };
       }

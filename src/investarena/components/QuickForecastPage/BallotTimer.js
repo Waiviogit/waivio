@@ -4,7 +4,7 @@ import className from 'classnames';
 
 import { timeForecastRemain } from '../../helpers/diffDateTime';
 
-const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
+const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd, setFinish }) => {
   let interval;
 
   const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
@@ -17,7 +17,9 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     } else {
       clearInterval(interval);
       willCallAfterTimerEnd();
-      setTime(timeForecastRemain(0, false));
+      if(setFinish) {
+        setTime(timeForecastRemain(0, false));
+      }
     }
   };
 
@@ -39,10 +41,12 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
 BallotTimer.propTypes = {
   endTimerTime: PropTypes.number,
   willCallAfterTimerEnd: PropTypes.func.isRequired,
+  setFinish: PropTypes.bool,
 };
 
 BallotTimer.defaultProps = {
   endTimerTime: 0,
+  setFinish: false,
 };
 
 export default BallotTimer;

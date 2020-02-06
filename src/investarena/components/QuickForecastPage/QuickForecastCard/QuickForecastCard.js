@@ -12,7 +12,6 @@ import {
   getForecastStatus,
   getForecastWinners,
   loadingForecast,
-  getDataForQuickForecast,
 } from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
@@ -32,6 +31,7 @@ const QuickForecastCard = ({
   handleAuthorization,
   disabled,
   link,
+  prevForecastFinish
 }) => {
   const [intervalId, setIntervalId] = useState();
   const dispatch = useDispatch();
@@ -41,13 +41,12 @@ const QuickForecastCard = ({
       !forecast.isLoaded &&
       forecast.status === 'pending' &&
       disabled &&
-      !intervalId) {
-      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 5000);
+      !intervalId && prevForecastFinish) {
+      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 3000);
       setIntervalId(interval);
     }
 
-    if (forecast.status !== 'pending' && !disabled && intervalId) {
-      setIntervalId(null);
+    if (forecast.status !== 'pending' && !disabled && intervalId && prevForecastFinish) {
 
       if (forecast.status === 'guessed') {
         dispatch(getForecastStatistic());
@@ -55,6 +54,7 @@ const QuickForecastCard = ({
       }
 
       clearInterval(intervalId);
+      setIntervalId(null);
     }
 
     return () => clearInterval(intervalId);
@@ -164,8 +164,9 @@ const QuickForecastCard = ({
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
                   willCallAfterTimerEnd={handleFinishTimer}
+                  setFinish
                 />
-              </div>{' '}
+              </div>
             </div>
             <DynamicPriceWrapper
               postPrice={forecast.postPrice}
@@ -249,6 +250,7 @@ QuickForecastCard.propTypes = {
   timerData: PropTypes.number.isRequired,
   counter: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
+  prevForecastFinish: PropTypes.bool.isRequired,
 };
 
 QuickForecastCard.defaultProps = {
