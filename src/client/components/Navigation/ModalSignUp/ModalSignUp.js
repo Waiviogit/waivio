@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form } from 'antd';
 import { batch, useDispatch } from 'react-redux';
@@ -55,6 +55,9 @@ const ModalSignUp = ({ isButton }) => {
     setIsFormVisible(false);
   };
 
+  const memoizedSetIsModalOpen = useCallback(() => setIsModalOpen(true), []);
+  const memoizedHandleCloseModal = useCallback(() => handleCloseModal(), []);
+
   const renderSignUp = () => (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
@@ -80,8 +83,14 @@ const ModalSignUp = ({ isButton }) => {
 
   return (
     <React.Fragment>
-      <SignUpButton isButton={isButton} setIsModalOpen={setIsModalOpen} />
-      <Modal width={416} title="" visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
+      <SignUpButton isButton={isButton} setIsModalOpen={memoizedSetIsModalOpen} />
+      <Modal
+        width={416}
+        title=""
+        visible={isModalOpen}
+        onCancel={memoizedHandleCloseModal}
+        footer={null}
+      >
         <div className="ModalSignUp">
           {isFormVisible ? (
             <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />

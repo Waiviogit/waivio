@@ -23,4 +23,4 @@ SignUpButton.defaultProps = {
   setIsModalOpen: () => {},
 };
 
-export default SignUpButton;
+export default React.memo(SignUpButton);

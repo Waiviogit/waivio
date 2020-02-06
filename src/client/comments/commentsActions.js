@@ -212,12 +212,15 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               value: 3,
             });
           }
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message, 'error'));
         }),
     },
     meta: {
       parentId: parentPost.id,
       rootPostId,
-      isEditing: false,
+      isEditing: isUpdating,
       isReplyToComment: parentPost.id !== id,
     },
   });
