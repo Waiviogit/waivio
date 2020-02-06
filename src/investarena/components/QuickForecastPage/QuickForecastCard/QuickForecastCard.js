@@ -37,14 +37,12 @@ const QuickForecastCard = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      !forecast.active &&
+    if (!forecast.active &&
       !forecast.isLoaded &&
       forecast.status === 'pending' &&
       disabled &&
-      !intervalId
-    ) {
-      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 3000);
+      !intervalId) {
+      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 5000);
       setIntervalId(interval);
     }
 
@@ -52,7 +50,6 @@ const QuickForecastCard = ({
       setIntervalId(null);
 
       if (forecast.status === 'guessed') {
-        dispatch(getDataForQuickForecast());
         dispatch(getForecastStatistic());
         dispatch(getForecastWinners(5, 0));
       }

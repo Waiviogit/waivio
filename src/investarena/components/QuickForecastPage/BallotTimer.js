@@ -17,6 +17,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     } else {
       clearInterval(interval);
       willCallAfterTimerEnd();
+      setTime(timeForecastRemain(0, false));
     }
   };
 

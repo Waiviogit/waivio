@@ -90,6 +90,7 @@ const QuickForecastPage = props => {
   ];
 
   useEffect(() => {
+    setLoading(false);
     props.getDataForQuickForecast();
     props.getForecastStatistic();
     props.getForecastWinners(winnersLimit, 0);
