@@ -118,7 +118,7 @@ export default function usersReducer(state = initialState, action) {
   }
 }
 
-export const getUser = (state, username) => get(state.users, getUserDetailsKey(username), {});
+export const getUser = (state, username) => get(state.users, getUserDetailsKey(username), '');
 export const getIsUserFetching = (state, username) => getUser(state, username).fetching || false;
 export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;

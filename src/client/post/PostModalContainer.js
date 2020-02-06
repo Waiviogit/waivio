@@ -28,13 +28,14 @@ PostModalContainer.propTypes = {
   author: PropTypes.string.isRequired,
   showPostModal: PropTypes.bool,
   currentShownPost: PropTypes.shape(),
-  shownPostContents: PropTypes.bool,
+  shownPostContents: PropTypes.shape(),
 };
 
 PostModalContainer.defaultProps = {
+  author: '',
   showPostModal: false,
   currentShownPost: {},
-  shownPostContents: false,
+  shownPostContents: {},
 };
 
 export default connect(
