@@ -61,7 +61,7 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
   const STEEM = recommendedExperts.filter(user =>
     newUserRecommendExperts.steem.includes(user.name),
   );
-  const CRYPTO = recommendedExperts.filter(user =>
+  const CRYPTOS_USERS = recommendedExperts.filter(user =>
     newUserRecommendExperts.cryptos.includes(user.name),
   );
   const ENTERTAINMENT_USER = recommendedExperts.filter(user =>
@@ -119,7 +119,7 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
     },
     {
       name: 'cryptos',
-      list: CRYPTO,
+      list: CRYPTOS_USERS,
     },
     {
       name: 'entertainment',
