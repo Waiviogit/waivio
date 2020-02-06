@@ -1020,5 +1020,6 @@
   "post_btn_video": "Видео",
   "post_btn_object": "Объект",
   "post_btn_separator": "Линия",
-  "need_confirm_agreement": "Вам нужно подтвердить согласие"
+  "need_confirm_agreement": "Вам нужно подтвердить согласие",
+  "please_input_nickname": "Введите никнейм"
 }
