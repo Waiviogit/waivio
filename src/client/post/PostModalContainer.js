@@ -25,14 +25,14 @@ const PostModalContainer = ({
 
 PostModalContainer.propTypes = {
   hidePostModal: PropTypes.func.isRequired,
-  author: PropTypes.string.isRequired,
+  author: PropTypes.shape().isRequired,
   showPostModal: PropTypes.bool,
   currentShownPost: PropTypes.shape(),
   shownPostContents: PropTypes.shape(),
 };
 
 PostModalContainer.defaultProps = {
-  author: '',
+  author: {},
   showPostModal: false,
   currentShownPost: {},
   shownPostContents: {},
