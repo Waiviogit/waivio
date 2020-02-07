@@ -160,7 +160,7 @@ const QuickForecastCard = ({
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
                   willCallAfterTimerEnd={handleFinishTimer}
-                  setFinish
+                  isFinish
                 />
               </div>
             </div>
