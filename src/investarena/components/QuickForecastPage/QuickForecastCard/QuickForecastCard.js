@@ -31,23 +31,19 @@ const QuickForecastCard = ({
   handleAuthorization,
   disabled,
   link,
-  prevForecastFinish
 }) => {
   const [intervalId, setIntervalId] = useState();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!forecast.active &&
-      !forecast.isLoaded &&
-      forecast.status === 'pending' &&
-      disabled &&
-      !intervalId && prevForecastFinish) {
-      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 3000);
+    if (!forecast.active && !forecast.isLoaded && forecast.status === 'pending' && disabled && !intervalId) {
+      const interval = setInterval(() => {
+        dispatch(getForecastStatus(forecast.permlink));
+      },2000);
       setIntervalId(interval);
     }
 
-    if (forecast.status !== 'pending' && !disabled && intervalId && prevForecastFinish) {
-
+    if (forecast.status !== 'pending' && !disabled && intervalId) {
       if (forecast.status === 'guessed') {
         dispatch(getForecastStatistic());
         dispatch(getForecastWinners(5, 0));
@@ -56,9 +52,9 @@ const QuickForecastCard = ({
       clearInterval(intervalId);
       setIntervalId(null);
     }
-
-    return () => clearInterval(intervalId);
   });
+
+  useEffect(() => clearInterval(intervalId), []);
 
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
@@ -250,7 +246,6 @@ QuickForecastCard.propTypes = {
   timerData: PropTypes.number.isRequired,
   counter: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
-  prevForecastFinish: PropTypes.bool.isRequired,
 };
 
 QuickForecastCard.defaultProps = {
