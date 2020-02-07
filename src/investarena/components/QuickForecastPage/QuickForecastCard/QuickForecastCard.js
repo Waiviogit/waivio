@@ -12,7 +12,6 @@ import {
   getForecastStatus,
   getForecastWinners,
   loadingForecast,
-  getDataForQuickForecast,
 } from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
@@ -37,31 +36,25 @@ const QuickForecastCard = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      !forecast.active &&
-      !forecast.isLoaded &&
-      forecast.status === 'pending' &&
-      disabled &&
-      !intervalId
-    ) {
-      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 3000);
+    if (!forecast.active && !forecast.isLoaded && forecast.status === 'pending' && disabled && !intervalId) {
+      const interval = setInterval(() => {
+        dispatch(getForecastStatus(forecast.permlink));
+      },2000);
       setIntervalId(interval);
     }
 
     if (forecast.status !== 'pending' && !disabled && intervalId) {
-      setIntervalId(null);
-
       if (forecast.status === 'guessed') {
-        dispatch(getDataForQuickForecast());
         dispatch(getForecastStatistic());
         dispatch(getForecastWinners(5, 0));
       }
 
       clearInterval(intervalId);
+      setIntervalId(null);
     }
-
-    return () => clearInterval(intervalId);
   });
+
+  useEffect(() => clearInterval(intervalId), []);
 
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
@@ -167,8 +160,9 @@ const QuickForecastCard = ({
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
                   willCallAfterTimerEnd={handleFinishTimer}
+                  isFinish
                 />
-              </div>{' '}
+              </div>
             </div>
             <DynamicPriceWrapper
               postPrice={forecast.postPrice}
