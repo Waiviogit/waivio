@@ -54,7 +54,7 @@ const investArena = {
   supportedFields: supportedObjectFields,
 };
 
-export const tradingObject = {
+export const discoverObjectsContentTypes = {
   'commodity': {
     intl: { id: 'wia.commodities', defaultMessage: 'Commodities' }
     },
@@ -69,6 +69,12 @@ export const tradingObject = {
   },
   'stocks': {
     intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' }
+  },
+  'brokers': {
+    intl: { id: 'brokers', defaultMessage: 'Brokers' }
+  },
+  'hashtag': {
+    intl: { id: 'hashtags', defaultMessage: 'Hashtags' }
   }
 };
 

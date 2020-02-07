@@ -21,7 +21,7 @@ import {
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import { BROKER } from '../../investarena/constants/platform';
-import {tradingObject} from '../../investarena/constants/objectsInvestarena';
+import { discoverObjectsContentTypes } from '../../investarena/constants/objectsInvestarena';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -214,8 +214,8 @@ class DiscoverObjectsContent extends Component {
                 {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
               </span>
               <span className="ttc">{intl.formatMessage({
-                id: tradingObject[typeName].intl.id,
-                defaultMessage: tradingObject[typeName].intl.defaultMessage,
+                id: discoverObjectsContentTypes[typeName].intl.id,
+                defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
               })}</span>&nbsp;
               <span className="discover-objects-header__selector">
                 (
