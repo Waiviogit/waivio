@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, size, map } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -27,16 +27,11 @@ import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
-import SortSelector from '../components/SortSelector/SortSelector';
 import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
 
 const modalName = {
   FILTERS: 'filters',
   OBJECTS: 'objects',
-};
-const SORT_OPTIONS = {
-  WEIGHT: 'weight',
-  PROXIMITY: 'proximity',
 };
 
 @connect(
@@ -169,15 +164,6 @@ class DiscoverObjectsContent extends Component {
       hasMoreObjects,
     } = this.props;
 
-
-    const sortSelector = (
-      <SortSelector sort="weight" onChange={() => {}}>
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-      </SortSelector>
-    );
-
     const tradingTypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
 
     let objectsRenderer;
@@ -224,7 +210,6 @@ class DiscoverObjectsContent extends Component {
                 )
               </span>
             </span>
-            {size(SORT_OPTIONS) > 1 ? sortSelector : null}
           </div>
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
