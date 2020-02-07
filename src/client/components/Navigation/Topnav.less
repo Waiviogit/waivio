@@ -11,8 +11,15 @@
   border-bottom: @base-border;
 
   &__brand {
+    display: flex;
+    align-items: center;
+    height: 56px;
+
     img {
-      width: 160px;
+      width: 150px;
+      @media @medium, @large {
+        width: 160px;
+      }
     }
 
     &-icon {
