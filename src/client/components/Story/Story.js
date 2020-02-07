@@ -68,7 +68,7 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
-    pendingFlag: PropTypes.func,
+    pendingFlag: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -182,9 +182,10 @@ class Story extends React.Component {
       };
       if (nameField) name = nameField.body;
     }
+
     return (
       <Link
-        key={wobj.author_permlink}
+        key={`${wobj.author}/${wobj.author_permlink}`}
         to={{ pathname: pathName }}
         title={`${this.props.intl.formatMessage({
           id: 'related_to_object',

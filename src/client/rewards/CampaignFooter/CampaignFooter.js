@@ -52,7 +52,6 @@ class CampaignFooter extends React.Component {
 
   static defaultProps = {
     pendingLike: false,
-    pendingFlag: false,
     ownPost: false,
     pendingFollow: false,
     pendingFollowObject: false,
@@ -61,8 +60,6 @@ class CampaignFooter extends React.Component {
     singlePostVew: false,
     sliderMode: false,
     onLikeClick: () => {},
-    onShareClick: () => {},
-    handlePostPopoverMenuClick: () => {},
     discardPr: () => {},
   };
 

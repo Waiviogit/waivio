@@ -20,6 +20,8 @@ import {
   setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
+import { BROKER } from '../../investarena/constants/platform';
+import { discoverObjectsContentTypes } from '../../investarena/constants/objectsInvestarena';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -27,7 +29,6 @@ import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
 import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
-import { BROKER } from '../../investarena/constants/platform';
 
 const modalName = {
   FILTERS: 'filters',
@@ -168,19 +169,19 @@ class DiscoverObjectsContent extends Component {
       hasMoreObjects,
     } = this.props;
 
+
     const sortSelector = (
-      <SortSelector sort="weight" onChange={e => console.log('onSortChange', e)}>
+      <SortSelector sort="weight" onChange={() => {}}>
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
           {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
         </SortSelector.Item>
       </SortSelector>
     );
 
-    const tradingtypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
+    const tradingTypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
 
     let objectsRenderer;
-
-    if (tradingtypes.includes(typeName)) {
+    if (tradingTypes.includes(typeName)) {
       const validFilteredObjects = !isEmpty(filteredObjects)
         ? filteredObjects.filter(obj => !isEmpty(obj.chartid))
         : [];
@@ -195,7 +196,7 @@ class DiscoverObjectsContent extends Component {
     } else if (typeName === 'brokers') {
       const brokerNames = Object.values(BROKER);
       objectsRenderer = filteredObjects
-        .filter(obj => brokerNames.includes(obj.name.toLowerCase()))
+        .filter(obj => obj.name && brokerNames.includes(obj.name.toLowerCase()))
         .map(wObj => <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />);
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
@@ -211,7 +212,10 @@ class DiscoverObjectsContent extends Component {
               <span className="discover-objects-header__topic ttc">
                 {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
               </span>
-              <span className="ttc">{typeName}</span>&nbsp;
+              <span className="ttc">{intl.formatMessage({
+                id: discoverObjectsContentTypes[typeName].intl.id,
+                defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
+              })}</span>&nbsp;
               <span className="discover-objects-header__selector">
                 (
                 <span className="underline" role="presentation" onClick={this.showTypesModal}>
