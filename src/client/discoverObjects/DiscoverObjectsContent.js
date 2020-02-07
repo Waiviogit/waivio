@@ -180,7 +180,6 @@ class DiscoverObjectsContent extends Component {
 
     const tradingTypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
 
-
     let objectsRenderer;
     if (tradingTypes.includes(typeName)) {
       const validFilteredObjects = !isEmpty(filteredObjects)
@@ -197,7 +196,7 @@ class DiscoverObjectsContent extends Component {
     } else if (typeName === 'brokers') {
       const brokerNames = Object.values(BROKER);
       objectsRenderer = filteredObjects
-        .filter(obj => brokerNames.includes(obj.name.toLowerCase()))
+        .filter(obj => obj.name && brokerNames.includes(obj.name.toLowerCase()))
         .map(wObj => <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />);
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
