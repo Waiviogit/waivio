@@ -128,7 +128,17 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const { category, id, permlink: parentPermlink } = parentPost;
+
+  let parentAuthor;
+
+  if (isUpdating) {
+    parentAuthor = originalComment.parent_author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentPost.root_author;
+  } else {
+    parentAuthor = parentPost.author;
+  }
   const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
 
@@ -202,12 +212,15 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               value: 3,
             });
           }
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message, 'error'));
         }),
     },
     meta: {
       parentId: parentPost.id,
       rootPostId,
-      isEditing: false,
+      isEditing: isUpdating,
       isReplyToComment: parentPost.id !== id,
     },
   });
