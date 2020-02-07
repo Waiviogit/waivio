@@ -255,6 +255,7 @@ export default class Wrapper extends React.PureComponent {
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
                 {isNewUser && <WelcomeModal />}
+                <WelcomeModal />
               </div>
             </Layout>
           </AppSharedContext.Provider>
