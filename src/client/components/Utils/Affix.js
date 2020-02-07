@@ -19,7 +19,7 @@ import ResizeObserver from 'resize-observer-polyfill';
  */
 class Affix extends React.Component {
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]).isRequired,
     className: PropTypes.string,
     wrapperClassName: PropTypes.string,
     stickPosition: PropTypes.number,
