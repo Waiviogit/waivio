@@ -1,5 +1,6 @@
 /**
  * This function is from busyorg source code
+ * that was extended to support dtube and 3speak links
  * https://github.com/busyorg/embedjs/blob/dev/lib/embedjs.js
  */
 
@@ -40,6 +41,7 @@ SteemEmbed.getAll = function(text, options) {
 SteemEmbed.get = function(url, options) {
   const youtubeId = this.isYoutube(url);
   const dTubeId = this.isDTube(url);
+  const threeSpeakId = this.is3Speak(url);
   const twitchChannel = this.isTwitch(url);
   const periscopeId = this.isPeriscope(url);
   const soundcloudId = this.isSoundcloud(url);
@@ -63,6 +65,16 @@ SteemEmbed.get = function(url, options) {
       thumbnail: 'https://steemitimages.com/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
       id: dTubeId,
       embed: this.dTube(url, dTubeId, options),
+    };
+  } else if (threeSpeakId) {
+    const [, permlink] = threeSpeakId.split('/');
+    return {
+      type: 'video',
+      url: url,
+      provider_name: '3Speak',
+      thumbnail: `https://img.3speakcontent.online/${permlink}/thumbnail.png`,
+      id: threeSpeakId,
+      embed: this.threeSpeak(url, threeSpeakId, options),
     };
   } else if (twitchChannel) {
     return {
@@ -148,6 +160,23 @@ SteemEmbed.dTube = function(url, id, options) {
     '" src="https://emb.d.tube/#!/' +
     id +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.is3Speak = function(url) {
+  const p = /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/;
+  return url.match(p) ? RegExp.$2 : false;
+};
+
+SteemEmbed.threeSpeak = function(url, authorPermlink, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="https://3speak.online/embed?v=' +
+    authorPermlink +
+    '" allowfullscreen></iframe>'
   );
 };
 

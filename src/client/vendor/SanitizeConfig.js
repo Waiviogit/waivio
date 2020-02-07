@@ -28,6 +28,10 @@ const iframeWhitelist = [
     fn: src => src.replace(/\?.+$/, ''), // strip query string
   },
   {
+    re: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)+/i,
+    fn: src => src.replace(/\?.+$/, ''), // strip query string
+  },
+  {
     re: /^(https?:)?\/\/w.soundcloud.com\/player\/.*/i,
     fn: src => {
       if (!src) return null;
