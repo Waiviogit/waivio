@@ -6,6 +6,8 @@ import * as appTypes from '../app/appActions';
 
 const initialState = {
   recommendedObjects: [],
+  recommendedTopics: [],
+  recommendedExperts: [],
   location: {},
   following: {
     list: {},
@@ -46,23 +48,25 @@ export default function userReducer(state = initialState, action) {
         ...state,
         following: {
           ...state.following,
-          list: [],
+          list: {},
           isFetching: true,
           fetched: false,
         },
         fetchFollowListError: false,
       };
+
     case userActions.GET_FOLLOWING_ERROR:
       return {
         ...state,
         following: {
           ...state.following,
-          list: [],
+          list: {},
           isFetching: false,
           fetched: true,
         },
         fetchFollowListError: true,
       };
+
     // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
       const followingObject = {};
@@ -79,6 +83,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: false,
       };
+
     case userActions.GET_FOLLOWING_OBJECTS_START:
       return {
         ...state,
@@ -90,6 +95,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: false,
       };
+
     case userActions.GET_FOLLOWING_OBJECTS_ERROR:
       return {
         ...state,
@@ -101,6 +107,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: true,
       };
+
     case userActions.GET_FOLLOWING_OBJECTS_SUCCESS:
       return {
         ...state,
@@ -112,6 +119,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: false,
       };
+
     case userActions.FOLLOW_USER_START:
     case userActions.UNFOLLOW_USER.START:
       return {
@@ -170,6 +178,7 @@ export default function userReducer(state = initialState, action) {
           fetched: false,
         },
       };
+
     case userActions.GET_FOLLOWING_UPDATES.SUCCESS: {
       const { users_updates: usersUpdates, wobjects_updates: objectsUpdates } = action.payload;
       return {
@@ -182,6 +191,7 @@ export default function userReducer(state = initialState, action) {
         },
       };
     }
+
     case userActions.GET_FOLLOWING_UPDATES.ERROR: {
       const { followingUpdates } = initialState;
       return {
@@ -304,8 +314,28 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
+
+    case userActions.GET_RECOMMENDS_HASHTAGS.SUCCESS:
+      return {
+        ...state,
+        recommendedTopics: action.payload.wobjects,
+      };
+
+    case userActions.GET_RECOMMENDS_HASHTAGS.ERROR:
+      return state;
+
+    case userActions.GET_RECOMMENDS_EXPERTS.SUCCESS:
+      return {
+        ...state,
+        recommendedExperts: action.payload,
+      };
+
+    case userActions.GET_RECOMMENDS_EXPERTS.ERROR:
+      return state;
+
     case authActions.LOGOUT:
       return initialState;
+
     default: {
       return state;
     }

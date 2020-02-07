@@ -241,7 +241,7 @@ class Buttons extends React.Component {
             </span>
           </React.Fragment>
         )}
-        {user.name && (
+        {!this.props.comment.isFakeComment && user.name && (
           <span>
             <span className="CommentFooter__bullet" />
             <a

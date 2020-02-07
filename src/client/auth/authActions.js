@@ -7,6 +7,7 @@ import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
+import { notify } from '../app/Notification/notificationActions';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -37,8 +38,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   const state = getState();
 
   let promise = Promise.resolve(null);
-
   let isGuest = null;
+
   if (typeof localStorage !== 'undefined') {
     const token = localStorage.getItem('accessToken');
     isGuest = token === 'null' ? false : Boolean(token);
@@ -53,6 +54,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
       } catch (e) {
+        dispatch(notify(e.error.details[0].message));
         reject(e);
       }
     });
@@ -112,6 +114,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     Cookie.remove('access_token');
   }
   busyAPI.close();
+
   dispatch({
     type: LOGOUT,
   });
@@ -144,7 +147,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   });
 };
 
-export const updateProfile = (username, values) => (dispatch, getState) => {
+export const updateProfile = (username, values, profileAvatar = '') => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
   const json_metadata = JSON.parse(state.auth.user.json_metadata);
@@ -156,7 +159,7 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
-        return { isProfileUpdated: true };
+        return { isProfileUpdated: true, profileImage: profileAvatar };
       }),
     },
     meta: JSON.stringify(json_metadata),

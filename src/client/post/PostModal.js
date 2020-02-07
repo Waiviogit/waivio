@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import { dropCategory, isBannedPost } from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
@@ -62,7 +62,10 @@ class PostModal extends React.Component {
 
     const { currentShownPost } = this.props;
     const { title, url } = currentShownPost;
-    PostModal.pushURLState(title, dropCategory(url));
+    PostModal.pushURLState(
+      title,
+      replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
+    );
   }
 
   componentWillUnmount() {
@@ -95,10 +98,15 @@ class PostModal extends React.Component {
     } = this.props;
     // eslint-disable-next-line camelcase
     const { root_author, permlink, title, url } = currentShownPost;
-    const baseURL = window ? window.location.origin : 'https://waivio.com';
-    const postURL = `${baseURL}${dropCategory(url)}`;
     // eslint-disable-next-line camelcase
-    const twitterText = `"${encodeURIComponent(title)}" by @${root_author}`;
+    const author = currentShownPost.guestInfo ? currentShownPost.guestInfo.userId : root_author;
+    const baseURL = window ? window.location.origin : 'https://waivio.com';
+    const postURL = `${baseURL}${replaceBotWithGuestName(
+      dropCategory(url),
+      currentShownPost.guestInfo,
+    )}`;
+    // eslint-disable-next-line camelcase
+    const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'json_metadata.profile.signature', null);
@@ -128,8 +136,7 @@ class PostModal extends React.Component {
           <a role="presentation" onClick={this.handleHidePostModal} className="PostModal__action">
             <i className="iconfont icon-close PostModal__icon" />
           </a>
-          {/* eslint-disable-next-line camelcase */}
-          <Link replace to={`/@${root_author}/${permlink}`} className="PostModal__action">
+          <Link replace to={`/@${author}/${permlink}`} className="PostModal__action">
             <i className="iconfont icon-send PostModal__icon" />
           </Link>
           <a

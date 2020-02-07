@@ -172,12 +172,13 @@ export const createAsyncActionType = type => ({
 });
 
 export const getUserDetailsKey = username => `user-${username}`;
+
 export const getPostKey = post => {
-  if (post.permlink) {
-    if (post.author === post.permlink.split('-')[0]) {
-      return `${post.author}/${post.permlink}`;
-    }
-    return `${post.permlink.split('-')[0]}/${post.permlink}`;
+  if (post.authorGuest) {
+    return `${post.authorGuest}/${post.permlink}`;
+  }
+  if (post.guestInfo) {
+    return `${post.guestInfo.userId}/${post.permlink}`;
   }
   return `${post.author}/${post.permlink}`;
 };

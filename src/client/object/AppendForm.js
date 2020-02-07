@@ -42,7 +42,7 @@ import { appendObject } from '../object/appendActions';
 import withEditor from '../components/Editor/withEditor';
 import { getVoteValue } from '../helpers/user';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
-import { followObject, rateObject } from '../object/wobjActions';
+import { rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
@@ -64,7 +64,7 @@ import './AppendForm.less';
     followingList: getFollowingObjectsList(state),
     usedLocale: getSuitableLanguage(state),
   }),
-  { appendObject, followObject, rateObject },
+  { appendObject, rateObject },
 )
 @Form.create()
 @withEditor
@@ -80,7 +80,6 @@ export default class AppendForm extends Component {
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     appendObject: PropTypes.func,
-    followObject: PropTypes.func,
     rateObject: PropTypes.func,
     usedLocale: PropTypes.string,
     /* passed props */
@@ -101,7 +100,6 @@ export default class AppendForm extends Component {
     wObject: {},
     form: {},
     appendObject: () => {},
-    followObject: () => {},
     intl: {},
     user: {},
     rewardFund: {},
@@ -147,8 +145,33 @@ export default class AppendForm extends Component {
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
       try {
+        // we do not vote append when append just created page/list
+        if (data.votePower === null) {
+          this.props.hideModal();
+          this.props
+            .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+            .then(() => {
+              message.success(
+                this.props.intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: getFieldValue('currentField'),
+                    wobject: wObject.name,
+                  },
+                ),
+              );
+            });
+          return;
+        }
+
         /* eslint-disable no-await-in-loop */
-        const response = await this.props.appendObject(data);
+        const response = await this.props.appendObject(data, {
+          votePower: data.votePower,
+          follow: formValues.follow,
+        });
 
         if (objectFields.rating === formValues.currentField && formValues.rate) {
           const { author, permlink } = response.value;
@@ -159,7 +182,6 @@ export default class AppendForm extends Component {
             ratePercent[formValues.rate - 1],
           );
         }
-
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         message.error(
@@ -171,10 +193,6 @@ export default class AppendForm extends Component {
         console.log(e);
         this.setState({ loading: false });
       }
-    }
-
-    if (getFieldValue('follow')) {
-      await this.props.followObject(wObject.author_permlink);
     }
 
     this.setState({ loading: false });
@@ -358,7 +376,7 @@ export default class AppendForm extends Component {
 
       data.wobjectName = getField(wObject, 'name');
 
-      data.votePower = this.state.votePercent * 100;
+      data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
       postData.push(data);
     });
@@ -441,8 +459,8 @@ export default class AppendForm extends Component {
     this.setState({ votePercent: value, voteWorth });
   };
 
-  handleSubmit = e => {
-    if (e) e.preventDefault();
+  handleSubmit = event => {
+    if (event) event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
       const currentField = form.getFieldValue('currentField');
@@ -582,6 +600,16 @@ export default class AppendForm extends Component {
     return callback();
   };
 
+  handleCreateObject = (createdObject, options) => {
+    const currentField = this.props.form.getFieldValue('currentField');
+    this.props.form.setFieldsValue({
+      [currentField]: createdObject.id,
+      menuItemName: createdObject.name,
+      locale: options.locale,
+    });
+    this.setState({ selectedObject: createdObject, votePercent: null }, this.handleSubmit);
+  };
+
   handleSelectObject = obj => {
     const currentField = this.props.form.getFieldValue('currentField');
     if (obj && obj.id) {
@@ -659,11 +687,12 @@ export default class AppendForm extends Component {
               isSingleType
               withOpenModalBtn={!selectedObject}
               defaultObjectType={objectType}
-              onCreateObject={this.handleSelectObject}
+              onCreateObject={this.handleCreateObject}
               openModalBtnText={intl.formatMessage({
                 id: `create_new_${objectType}`,
                 defaultMessage: 'Create new',
               })}
+              parentObject={wObject}
             />
           </React.Fragment>
         );
@@ -700,7 +729,11 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
+                <ImageSetter
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                />,
               )}
             </Form.Item>
           </div>

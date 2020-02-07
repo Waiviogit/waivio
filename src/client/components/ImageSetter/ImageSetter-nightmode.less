@@ -1,0 +1,26 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .ImageSetter {
+    .button-upload {
+      @media @small {
+        border-color: @normal-grey;
+        background-color: @grey-nero;
+      }
+
+      &:hover {
+        border-color: @orange-hot;
+      }
+    }
+
+    .input-upload__item {
+      border-color: @normal-grey;
+      background-color: @grey-nero;
+    }
+
+    .image-box__preview {
+      border-color: @normal-grey;
+    }
+  }
+}

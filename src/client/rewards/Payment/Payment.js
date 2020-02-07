@@ -2,23 +2,29 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import './Payment.less';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 
 // eslint-disable-next-line no-shadow
-const Payment = ({ match, intl, userName, openTransfer }) => {
+const Payment = ({ match, intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
+
+  const dispatch = useDispatch();
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
     user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
   };
+
+  const isReceiverGuest = match.params.userName.startsWith(GUEST_PREFIX);
+  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
 
   useEffect(() => {
     getLenders(requestParams)
@@ -61,7 +67,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => openTransfer(name, payable, 'STEEM')}
+              onClick={() => dispatch(openTransfer(name, payable, 'STEEM', memo))}
             >
               {intl.formatMessage({
                 id: 'pay',
@@ -94,7 +100,6 @@ Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
-  openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(connect(null, { openTransfer })(Payment));
+export default injectIntl(Payment);

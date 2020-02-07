@@ -752,8 +752,7 @@ export const getAccessToken = (token, social, regData) => {
   body.access_token = token;
 
   if (!_.isEmpty(regData)) {
-    body.userName = regData.userName;
-    body.pickSocialFields = regData.pickSocialFields;
+    Object.keys(regData).forEach(key => (body[key] = regData[key]));
   }
 
   return fetch(`${config.baseUrl}${config.auth}/${social}`, {
@@ -769,7 +768,8 @@ export const getAccessToken = (token, social, regData) => {
     .then(data => {
       response.userData = data.user;
       return response;
-    });
+    })
+    .catch(err => err);
 };
 
 export const getNewToken = token => {
@@ -891,19 +891,89 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount }) => {
+export const sendGuestTransfer = async ({ to, amount, memo }) => {
   const userData = await getValidTokenData();
+  const body = {
+    id: 'waivio_guest_transfer',
+    data: { to, amount: +amount.split(' ')[0] },
+  };
+  if (memo) body.data.memo = memo;
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
-    body: JSON.stringify({
-      id: 'waivio_guest_transfer',
-      data: { to, amount: +amount.split(' ')[0] },
-    }),
+    body: JSON.stringify(body),
   })
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
+};
+
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_permlink) => {
+  let res;
+  if (start_permlink) {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${start_permlink}`,
+    );
+  } else {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}`,
+    );
+  }
+  return res
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
+export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+  return fetch(
+    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
+export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+      object_types: ['hashtag'],
+    }),
+  }).then(res => res.json());
+};
+
+export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+    }),
+  }).then(res => res.json());
+};
+
+export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(listUsers),
+  }).then(res => res.json());
+};
+
+export const setUserStatus = user => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

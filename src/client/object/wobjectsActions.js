@@ -60,7 +60,6 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   }
 
   const { votePower, follow, ...wobj } = postData;
-
   return dispatch({
     type: CREATE_WOBJECT,
     payload: {
@@ -72,7 +71,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             body: `Waivio object "${wobj.name}" has been created`,
             permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
             objectName: wobj.name,
-            locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
+            locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
             type: wobj.type,
             isExtendingOpen: Boolean(wobj.isExtendingOpen),
             isPostingOpen: Boolean(wobj.isPostingOpen),
