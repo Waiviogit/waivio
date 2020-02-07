@@ -71,11 +71,9 @@ class QuickCommentEditor extends React.Component {
     this.setState({ currentImage: [], imageUploading: false });
   };
 
-  handleOpenModal = () => this.setState({ isModal: true });
-
   handleCloseModal = () => this.setState({ isModal: false, currentImage: [] });
 
-  handleOnOk = () => this.setState({ isModal: !this.state.isModal });
+  handleToggleModal = () => this.setState({ isModal: !this.state.isModal });
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
@@ -95,7 +93,7 @@ class QuickCommentEditor extends React.Component {
           <i
             className="iconfont icon-picture QuickComment__add-img-icon"
             role="presentation"
-            onClick={this.handleOpenModal}
+            onClick={this.handleToggleModal}
           />
         )}
       </label>
@@ -136,7 +134,7 @@ class QuickCommentEditor extends React.Component {
           okButtonProps={{ disabled: isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
-          onOk={this.handleOnOk}
+          onOk={this.handleToggleModal}
         >
           {isModal && (
             <ImageSetter
