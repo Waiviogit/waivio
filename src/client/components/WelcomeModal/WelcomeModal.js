@@ -12,21 +12,37 @@ import FollowButton from '../../widgets/FollowButton';
 import { getRecommendTopics, getRecommendExperts } from '../../user/userActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
+import { getUserFeedContent } from '../../feed/feedActions';
 
 import './WelcomeModal.less';
 
-const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, intl }) => {
+const WelcomeModal = ({
+  isAuthorization,
+  recommendedTopics,
+  recommendedExperts,
+  intl,
+  userName,
+  followingList,
+  followingObjectsList,
+  location,
+}) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
-
+  const followingKeysList = Object.keys(followingList);
+  const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
   useEffect(() => {
     dispatch(getRecommendTopics());
     dispatch(getRecommendExperts());
   }, []);
 
   useEffect(() => {
-    if (isAuthorization && recommendedTopics.length && recommendedExperts.length) {
+    if (
+      isAuthorization &&
+      recommendedTopics.length &&
+      recommendedExperts.length &&
+      !haveFollowing
+    ) {
       setIsOpenTopicsModal(true);
     }
   }, [isAuthorization, recommendedTopics, recommendedExperts]);
@@ -104,12 +120,17 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
       setIsOpenTopicsModal(false);
       setIsOpenUsersModal(false);
       dispatch(setUsersStatus());
+
+      if (haveFollowing && location === '/') {
+        dispatch(getUserFeedContent({ userName }));
+      }
     }
   };
 
   const handleCloseSecondModal = () => {
     setIsOpenUsersModal(false);
     dispatch(setUsersStatus());
+    dispatch(getUserFeedContent({ userName }));
   };
 
   return (
@@ -208,22 +229,34 @@ const WelcomeModal = ({ isAuthorization, recommendedTopics, recommendedExperts, 
 
 WelcomeModal.propTypes = {
   isAuthorization: PropTypes.bool.isRequired,
+  followingObjectsList: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.shape({})),
+    PropTypes.string,
+  ]),
+  followingList: PropTypes.shape({}).isRequired,
   recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  userName: PropTypes.string,
+  location: PropTypes.string,
 };
 
 WelcomeModal.defaultProps = {
   followingObjectsList: [{}],
   followingList: {},
+  userName: '',
+  location: '',
 };
 
 const mapStateToProps = state => ({
   isAuthorization: state.auth.isAuthenticated,
+  followingList: state.user.following.list,
+  followingObjectsList: state.user.followingObjects.list,
   recommendedTopics: state.user.recommendedTopics,
   recommendedExperts: state.user.recommendedExperts,
+  userName: state.auth.user.name,
 });
 
 export default injectIntl(connect(mapStateToProps)(WelcomeModal));
