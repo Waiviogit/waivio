@@ -24,13 +24,13 @@ const WelcomeModal = ({
   userName,
   followingList,
   followingObjectsList,
+  location,
 }) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
   const followingKeysList = Object.keys(followingList);
   const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
-
   useEffect(() => {
     dispatch(getRecommendTopics());
     dispatch(getRecommendExperts());
@@ -120,6 +120,10 @@ const WelcomeModal = ({
       setIsOpenTopicsModal(false);
       setIsOpenUsersModal(false);
       dispatch(setUsersStatus());
+
+      if (haveFollowing && location === '/') {
+        dispatch(getUserFeedContent({ userName }));
+      }
     }
   };
 
@@ -236,12 +240,14 @@ WelcomeModal.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   userName: PropTypes.string,
+  location: PropTypes.string,
 };
 
 WelcomeModal.defaultProps = {
   followingObjectsList: [{}],
   followingList: {},
   userName: '',
+  location: '',
 };
 
 const mapStateToProps = state => ({

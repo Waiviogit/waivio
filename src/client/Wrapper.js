@@ -254,8 +254,7 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                {isNewUser && <WelcomeModal />}
-                <WelcomeModal />
+                {isNewUser && <WelcomeModal location={history.location.pathname} />}
               </div>
             </Layout>
           </AppSharedContext.Provider>
