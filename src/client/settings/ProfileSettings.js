@@ -47,7 +47,7 @@ function mapPropsToFields(props) {
     user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
-    newProfileImage: getProfileImage(state),
+    tempProfileImage: getProfileImage(state),
   }),
   {
     updateProfile,
@@ -67,7 +67,7 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.string,
-    newProfileImage: PropTypes.string,
+    tempProfileImage: PropTypes.string,
   };
 
   static defaultProps = {
@@ -77,7 +77,7 @@ export default class ProfileSettings extends React.Component {
     user: '',
     isGuest: false,
     updateProfile: () => {},
-    newProfileImage: '',
+    tempProfileImage: '',
   };
 
   constructor(props) {
@@ -101,11 +101,11 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { user, newProfileImage } = this.props;
+    const { user, tempProfileImage } = this.props;
     const profileData = _.attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      profilePicture: !newProfileImage ? profileData.profile.profile_image : newProfileImage,
+      profilePicture: !tempProfileImage ? profileData.profile.profile_image : tempProfileImage,
       coverPicture: profileData.profile.cover_image,
     });
   }
