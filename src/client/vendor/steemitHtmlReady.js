@@ -4,7 +4,7 @@
  * https://github.com/steemit/steemit.com/blob/2c2b89a6745aebec1fa45453f31362d700f1bfb7/shared/HtmlReady.js
  */
 
-import embedjs from 'embedjs';
+import steemEmbed from './embedMedia';
 import slice from 'lodash/slice';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
@@ -133,7 +133,7 @@ function link(state, child) {
 function iframe(state, child) {
   const url = child.getAttribute('src');
   let domString;
-  const embed = embedjs.get(url || '', { width: '100%', height: 400 });
+  const embed = steemEmbed.get(url || '', { width: '100%', height: 400 });
   if (embed && embed.id) {
     const { images, links } = state;
     links.add(embed.url);
@@ -268,7 +268,7 @@ function isEmbedable(child, links, images, resolveIframe) {
     const data = child.data;
     const foundLinks = data.match(linksRe.any);
     if (!foundLinks) return false;
-    const embed = embedjs.get(foundLinks[0] || '', { width: '100%', height: 400 });
+    const embed = steemEmbed.get(foundLinks[0] || '', { width: '100%', height: 400 });
     if (embed && embed.id) {
       const domString = resolveIframe
         ? embed.embed

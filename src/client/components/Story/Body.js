@@ -5,7 +5,7 @@ import { isUndefined, filter } from 'lodash';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import embedjs from 'embedjs';
+import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
 import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHelpers';
@@ -23,7 +23,7 @@ export const remarkable = new Remarkable({
 });
 
 const getEmbed = link => {
-  const embed = embedjs.get(link, { width: '100%', height: 400, autoplay: false });
+  const embed = steemEmbed.get(link, { width: '100%', height: 400, autoplay: false });
 
   if (isUndefined(embed)) {
     return {
@@ -78,7 +78,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
 
-    const match = section.match(/^([A-Za-z0-9_-]+) ([A-Za-z]+) (\S+) ~~~/);
+    const match = section.match(/^([A-Za-z0-9/_-]+) ([A-Za-z]+) (\S+) ~~~/);
     if (match && match.length >= 4) {
       const id = match[1];
       const type = match[2];

@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import embedjs from 'embedjs';
 import { get, has } from 'lodash';
+import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
 import { jsonParse } from '../../helpers/formatter';
 import { getContentImages } from '../../helpers/postHelpers';
 import {
   getPositions,
-  postWithPicture,
-  postWithAnEmbed,
-  isPostStartsWithAPicture,
   isPostStartsWithAnEmbed,
-  isPostWithPictureBeforeFirstHalf,
+  isPostStartsWithAPicture,
   isPostWithEmbedBeforeFirstHalf,
+  isPostWithPictureBeforeFirstHalf,
+  postWithAnEmbed,
+  postWithPicture,
 } from './StoryHelper';
 import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
@@ -43,7 +43,7 @@ const StoryPreview = ({ post }) => {
     }
   }
 
-  const embeds = embedjs.getAll(post.body, { height: '100%' });
+  const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
   let hasVideo = false;
   if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
