@@ -201,7 +201,7 @@ const ImageSetter = ({
               e.target.value = null;
             }}
           />
-          <label htmlFor="inputfile">
+          <label className="label" htmlFor="inputfile">
             <div className="button-upload">
               <div className="button-upload__container">
                 <Icon className="button-upload__container-img" type="plus" />

@@ -7,7 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal } from 'antd';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
+import { getIsReloading, getAuthenticatedUser, isGuestUser, getProfileImage } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -47,6 +47,7 @@ function mapPropsToFields(props) {
     user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
+    newProfileImage: getProfileImage(state),
   }),
   {
     updateProfile,
@@ -66,6 +67,7 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.string,
+    newProfileImage: PropTypes.string,
   };
 
   static defaultProps = {
@@ -75,6 +77,7 @@ export default class ProfileSettings extends React.Component {
     user: '',
     isGuest: false,
     updateProfile: () => {},
+    newProfileImage: '',
   };
 
   constructor(props) {
@@ -98,11 +101,11 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { user } = this.props;
+    const { user, newProfileImage } = this.props;
     const profileData = _.attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      profilePicture: profileData.profile.profile_image,
+      profilePicture: !newProfileImage ? profileData.profile.profile_image : newProfileImage,
       coverPicture: profileData.profile.cover_image,
     });
   }
@@ -136,8 +139,9 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
+        const profileAvatar = avatarImage.length ? avatarImage[0].src : '';
         if (isGuest) {
-          updateProfile(userName, cleanValues);
+          updateProfile(userName, cleanValues, profileAvatar);
         } else {
           const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
           win.focus();
