@@ -350,7 +350,7 @@ class DiscoverObjectsContent extends Component {
                   />
                 );
               }
-              if (wObj.propositions) {
+              if (wObj.propositions && wObj.propositions.length) {
                 return wObj.propositions.map(proposition => (
                   <Proposition
                     guide={proposition.guide}
@@ -362,7 +362,7 @@ class DiscoverObjectsContent extends Component {
                     authorizedUserName={userName}
                     loading={loadingAssign}
                     key={`${wObj.author_permlink}`}
-                    assigned={false}
+                    assigned={proposition.assigned}
                   />
                 ));
               }
