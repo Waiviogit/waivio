@@ -1030,8 +1030,9 @@
   "politics": "politics",
   "economy": "economy",
   "science": "science",
-  "steem": "steem",
+  "EOS": "EOS",
   "health": "health",
   "travel": "travel",
-  "need_confirm_agreement": "You need to confirm agreement"
+  "need_confirm_agreement": "You need to confirm agreement",
+  "post_btn_video_placeholder": "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'"
 }
