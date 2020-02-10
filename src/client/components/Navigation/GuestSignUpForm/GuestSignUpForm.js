@@ -53,10 +53,6 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
         />,
       );
     }
-    // if (value.trim().length === 0)
-    //   callback(
-    //     <FormattedMessage id="please_input_username" defaultMessage="Please input your username" />,
-    //   );
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
     if (user.id) {
       callback(
