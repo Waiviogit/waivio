@@ -142,4 +142,3 @@ Disallow: /editor/
 User-agent: *
 Disallow: /
 
-Sitemap: https://www.waivio.com/sitemap.xml
