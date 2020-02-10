@@ -352,7 +352,7 @@ export default class ProfileSettings extends React.Component {
                           <Avatar
                             size="large"
                             icon="user"
-                            src={`${this.state.profilePicture}?v=${Date.now()}`}
+                            src={`${this.state.profilePicture}?${Date.now()}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
