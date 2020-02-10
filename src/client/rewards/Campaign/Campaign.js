@@ -11,17 +11,25 @@ import './Campaign.less';
 
 const Campaign = ({ proposition, filterKey, history, intl }) => {
   const { usedLocale } = useContext(AppSharedContext);
-  const requiredObject = getClientWObj(proposition.required_object, usedLocale);
+  const requiredObject = proposition.campaigns
+    ? getClientWObj(proposition, usedLocale)
+    : getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
+  const minReward = proposition.campaigns
+    ? proposition.campaigns.min_reward
+    : proposition.min_reward;
+  const maxReward = proposition.campaigns
+    ? proposition.campaigns.max_reward
+    : proposition.max_reward;
   const rewardPrise = currentUSDPrice
-    ? `${(currentUSDPrice * proposition.min_reward).toFixed(2)} USD`
-    : `${proposition.max_reward} STEEM`;
+    ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
+    : `${maxReward} STEEM`;
   const rewardMax =
     // eslint-disable-next-line no-nested-ternary
-    proposition.max_reward !== proposition.min_reward
+    maxReward !== minReward
       ? currentUSDPrice
-        ? `${(currentUSDPrice * proposition.max_reward).toFixed(2)} USD`
-        : `${proposition.max_reward} STEEM`
+        ? `${(currentUSDPrice * maxReward).toFixed(2)} USD`
+        : `${maxReward} STEEM`
       : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
