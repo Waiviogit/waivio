@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal } from 'antd';
+import moment from 'moment';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
@@ -90,6 +91,7 @@ export default class ProfileSettings extends React.Component {
       coverImage: [],
       isCover: false,
       isAvatar: false,
+      lastAccountUpdate: '',
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -104,6 +106,7 @@ export default class ProfileSettings extends React.Component {
     this.setState({
       profilePicture: profileData.profile.profile_image,
       coverPicture: profileData.profile.cover_image,
+      lastAccountUpdate: moment(user.updatedAt).unix(),
     });
   }
 
@@ -151,9 +154,6 @@ export default class ProfileSettings extends React.Component {
     // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { profilePicture, avatarImage } = this.state;
-
-    // caches.open('v1').then(cache => cache.delete('/images/waivio_konstantin-zakh').then(() => console.log('DONE')));
-    // https://waivio.nyc3.digitaloceanspaces.com/avatar/waivio_konstantin-zakh
 
     if (isGuest && !_.isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, profilePicture, intl)
@@ -216,7 +216,16 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML, isModal, isLoadingImage, avatarImage, coverImage, isAvatar } = this.state;
+    const {
+      bodyHTML,
+      isModal,
+      isLoadingImage,
+      avatarImage,
+      coverImage,
+      isAvatar,
+      lastAccountUpdate,
+      profilePicture,
+    } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -352,7 +361,7 @@ export default class ProfileSettings extends React.Component {
                           <Avatar
                             size="large"
                             icon="user"
-                            src={`${this.state.profilePicture}?${Date.now()}`}
+                            src={`${profilePicture}?${lastAccountUpdate}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
