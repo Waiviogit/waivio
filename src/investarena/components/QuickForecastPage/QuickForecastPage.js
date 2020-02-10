@@ -22,7 +22,7 @@ import {
   getForecastRoundRewards,
   getForecastStatistic,
   getForecastWinners,
-  finishQuickForecastTimer
+  finishQuickForecastTimer,
 } from '../../redux/actions/forecastActions';
 
 import './QuickForecastPage.less';
@@ -142,7 +142,8 @@ const QuickForecastPage = props => {
   const currentForecastList =
     answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
-  const finishRoundTime = props.roundTime >= 0
+  const finishRoundTime =
+    props.roundTime >= 0
       ? currentTime + secondsInMilliseconds(props.roundTime)
       : currentTime + secondsInMilliseconds(9000);
 
@@ -165,9 +166,11 @@ const QuickForecastPage = props => {
               })}
             &nbsp;
             <span className="switcher-link">
-              (<span className="underline" role="presentation" onClick={() => setOpenModal(true)}>
-                 {props.intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
-              </span>)
+              (
+              <span className="underline" role="presentation" onClick={() => setOpenModal(true)}>
+                {props.intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+              </span>
+              )
             </span>
           </span>
         </div>
@@ -429,7 +432,7 @@ const mapDispatchToProps = {
   getForecastStatistic,
   getForecastRoundRewards,
   forecastWinnersShowMore,
-  finishQuickForecastTimer
+  finishQuickForecastTimer,
 };
 
 export default injectIntl(

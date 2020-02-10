@@ -1072,5 +1072,6 @@
   "terms_and_policy_agreement": "Я прочитал и согласен с {Terms}, {Privacy} и {Cookies}.",
   "nickname": "Никнейм",
   "preferred_languages": "Предпочитаемые языки",
-  "public_profile": "Публичный профиль"
+  "public_profile": "Публичный профиль",
+  "link_placeholder": "Добавьте url"
 }

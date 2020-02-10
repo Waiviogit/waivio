@@ -86,7 +86,7 @@ export const getForecastStatus = permlink => (dispatch, getState) => {
   dispatch({
     type: GET_QUICK_FORECAST_STATUS.ACTION,
     payload: {
-      promise: api.quickForecast.getStatusForecast(user, permlink)
+      promise: api.quickForecast.getStatusForecast(user, permlink),
     },
   });
 };

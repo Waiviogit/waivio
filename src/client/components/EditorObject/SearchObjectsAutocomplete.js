@@ -130,28 +130,28 @@ class SearchObjectsAutocomplete extends Component {
           ))
       : [];
     return (
-        <AutoComplete
-          style={style}
-          className={this.props.className}
-          onChange={this.handleChange}
-          onSelect={this.handleSelect}
-          onSearch={this.handleSearch}
-          optionLabelProp={'label'}
-          placeholder={
-            !this.props.placeholder
-              ? intl.formatMessage({
+      <AutoComplete
+        style={style}
+        className={this.props.className}
+        onChange={this.handleChange}
+        onSelect={this.handleSelect}
+        onSearch={this.handleSearch}
+        optionLabelProp={'label'}
+        placeholder={
+          !this.props.placeholder
+            ? intl.formatMessage({
                 id: 'objects_auto_complete_placeholder',
                 defaultMessage: 'Find topics',
               })
-              : this.props.placeholder
-          }
-          value={searchString}
-          allowClear={allowClear}
-          autoFocus={autoFocus}
-          disabled={disabled}
-        >
-          {searchObjectsOptions}
-        </AutoComplete>
+            : this.props.placeholder
+        }
+        value={searchString}
+        allowClear={allowClear}
+        autoFocus={autoFocus}
+        disabled={disabled}
+      >
+        {searchObjectsOptions}
+      </AutoComplete>
     );
   }
 }

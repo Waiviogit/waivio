@@ -9,8 +9,8 @@ import { isValidImage, MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import './EditorInput.less';
-import FormattedLink from "../EditorObject/FormattedLink";
-import SearchObjectsAutocomplete from "../EditorObject/SearchObjectsAutocomplete";
+import FormattedLink from '../EditorObject/FormattedLink';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -186,21 +186,27 @@ class EditorInput extends React.Component {
       case 'link': {
         this.setState(prevState => ({ isLink: !prevState.isLink }));
 
-        if(params) {
+        if (params) {
           this.insertAtCursor(`[${params.title || ''}](${params.url || ''})`, ' ', 1, 1);
         }
         break;
       }
       case 'object': {
-        this.setState(prevState => ({ showModal: !prevState.showModal, isObject: !prevState.isObject }));
+        this.setState(prevState => ({
+          showModal: !prevState.showModal,
+          isObject: !prevState.isObject,
+        }));
 
-        if(params) {
+        if (params) {
           this.insertAtCursor(`[${params.title || ''}](${params.url || ''})`, ' ', 1, 1);
         }
         break;
       }
       case 'image':
-        this.setState(prevState => ({ showModal: !prevState.showModal, isImage: !prevState.isImage }));
+        this.setState(prevState => ({
+          showModal: !prevState.showModal,
+          isImage: !prevState.isImage,
+        }));
         break;
       default:
         break;
@@ -333,7 +339,7 @@ class EditorInput extends React.Component {
   handleOnOkModal = () => {
     this.handleToggleModal();
 
-    if(this.state.isImage) {
+    if (this.state.isImage) {
       this.beforeInsertImage();
     }
   };
@@ -354,10 +360,14 @@ class EditorInput extends React.Component {
       ...restProps
     } = this.props;
     const { dropzoneActive, showModal, isLoadingImage, isObject, isLink, isImage } = this.state;
-    const titleModal = `${(isObject && 'Add object' || isImage && intl.formatMessage({
-    id: 'imageSetter_add_image',
-    defaultMessage: 'Add image',
-    })) || ''}`;
+    const titleModal = `${(isObject &&
+      intl.formatMessage({ id: 'add_object', defaultMessage: 'Add topic' })) ||
+      (isImage &&
+        intl.formatMessage({
+          id: 'imageSetter_add_image',
+          defaultMessage: 'Add image',
+        })) ||
+      ''}`;
 
     return (
       <React.Fragment>
@@ -375,6 +385,11 @@ class EditorInput extends React.Component {
           visible={showModal}
           title={titleModal}
           onOk={this.handleOnOkModal}
+          cancelText={this.props.intl.formatMessage({
+            id: 'modal.button.cancel',
+            defaultMessage: 'Cancel',
+          })}
+          okText={this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
         >
           {isObject && (
             <SearchObjectsAutocomplete
@@ -391,13 +406,13 @@ class EditorInput extends React.Component {
             />
           )}
         </Modal>
-          <FormattedLink
-            handleSelect={this.handleSelectObject}
-            canCreateNewObject={false}
-            addLink={this.insertCode}
-            handleCloseModal={this.handleCloseLinkModal}
-            isOpenModal={isLink}
-          />
+        <FormattedLink
+          handleSelect={this.handleSelectObject}
+          canCreateNewObject={false}
+          addLink={this.insertCode}
+          handleCloseModal={this.handleCloseLinkModal}
+          isOpenModal={isLink}
+        />
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick

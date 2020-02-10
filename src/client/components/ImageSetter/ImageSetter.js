@@ -21,7 +21,7 @@ const ImageSetter = ({
   onImageLoaded,
   defaultImage,
   isRequired,
-  title
+  title,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -162,8 +162,11 @@ const ImageSetter = ({
   return (
     <div className="ImageSetter">
       <div
-        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired },
-          { 'ImageSetter__label--no-visible': !title })}
+        className={classNames(
+          'ImageSetter__label',
+          { 'ImageSetter__label--required': isRequired },
+          { 'ImageSetter__label--no-visible': !title },
+        )}
       >
         {renderTitle()}
       </div>
@@ -217,7 +220,9 @@ const ImageSetter = ({
               </div>
             </div>
           </label>
-          <span className="ImageSetter__center-text">{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
+          <span className="ImageSetter__center-text">
+            {intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}
+          </span>
           <div className="input-upload">
             <input
               className="input-upload__item"

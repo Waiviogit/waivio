@@ -198,10 +198,13 @@ class DiscoverObjectsContent extends Component {
               <span className="discover-objects-header__topic ttc">
                 {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
               </span>
-              <span className="ttc">{intl.formatMessage({
-                id: discoverObjectsContentTypes[typeName].intl.id,
-                defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
-              })}</span>&nbsp;
+              <span className="ttc">
+                {intl.formatMessage({
+                  id: discoverObjectsContentTypes[typeName].intl.id,
+                  defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
+                })}
+              </span>
+              &nbsp;
               <span className="discover-objects-header__selector">
                 (
                 <span className="underline" role="presentation" onClick={this.showTypesModal}>

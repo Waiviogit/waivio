@@ -36,82 +36,87 @@ class FormattedLink extends React.Component {
     const { intl, form, isOpenModal, handleCloseModal } = this.props;
 
     return (
-        <Modal
-          className="Editor__modal"
-          onCancel={handleCloseModal}
-          visible={isOpenModal}
-          title="Add link"
-          onOk={this.handleSubmit}
-        >
-          <Form className="Link" layout="vertical">
-            <Form.Item>
-              {form.getFieldDecorator('linkTitle', {
-                initialValue: '',
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage({
-                      id: 'title_error_empty',
-                      defaultMessage: 'Please enter a title',
-                    }),
-                  },
-                  {
-                    max: 255,
-                    message: intl.formatMessage({
-                      id: 'title_error_too_long',
-                      defaultMessage: "Title can't be longer than 255 characters.",
-                    }),
-                  },
-                ],
-              })(
-                <Input
-                  ref={title => {
-                    this.title = title;
-                  }}
-                  onChange={this.onUpdate}
-                  className="Editor__title"
-                  placeholder={intl.formatMessage({
-                    id: 'title_placeholder',
-                    defaultMessage: 'Add title',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {form.getFieldDecorator('url', {
-                initialValue: '',
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage({
-                      id: 'link_error_empty',
-                      defaultMessage: 'Please enter the URL',
-                    }),
-                  },
-                  {
-                    max: 255,
-                    message: intl.formatMessage({
-                      id: 'title_error_too_long',
-                      defaultMessage: "Title can't be longer than 255 characters.",
-                    }),
-                  },
-                ],
-              })(
-                <Input
-                  ref={link => {
-                    this.link = link;
-                  }}
-                  onChange={this.onUpdate}
-                  className="Editor__title"
-                  placeholder={intl.formatMessage({
-                    id: 'link_placeholder',
-                    defaultMessage: 'Add url',
-                  })}
-                />,
-              )}
-            </Form.Item>
-          </Form>
-        </Modal>
+      <Modal
+        className="Editor__modal"
+        onCancel={handleCloseModal}
+        visible={isOpenModal}
+        title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}
+        onOk={this.handleSubmit}
+        cancelText={this.props.intl.formatMessage({
+          id: 'modal.button.cancel',
+          defaultMessage: 'Cancel',
+        })}
+        okText={this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+      >
+        <Form className="Link" layout="vertical">
+          <Form.Item>
+            {form.getFieldDecorator('linkTitle', {
+              initialValue: '',
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'title_error_empty',
+                    defaultMessage: 'Please enter a title',
+                  }),
+                },
+                {
+                  max: 255,
+                  message: intl.formatMessage({
+                    id: 'title_error_too_long',
+                    defaultMessage: "Title can't be longer than 255 characters.",
+                  }),
+                },
+              ],
+            })(
+              <Input
+                ref={title => {
+                  this.title = title;
+                }}
+                onChange={this.onUpdate}
+                className="Editor__title"
+                placeholder={intl.formatMessage({
+                  id: 'title_placeholder',
+                  defaultMessage: 'Add title',
+                })}
+              />,
+            )}
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator('url', {
+              initialValue: '',
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'link_error_empty',
+                    defaultMessage: 'Please enter the URL',
+                  }),
+                },
+                {
+                  max: 255,
+                  message: intl.formatMessage({
+                    id: 'title_error_too_long',
+                    defaultMessage: "Title can't be longer than 255 characters.",
+                  }),
+                },
+              ],
+            })(
+              <Input
+                ref={link => {
+                  this.link = link;
+                }}
+                onChange={this.onUpdate}
+                className="Editor__title"
+                placeholder={intl.formatMessage({
+                  id: 'link_placeholder',
+                  defaultMessage: 'Add url',
+                })}
+              />,
+            )}
+          </Form.Item>
+        </Form>
+      </Modal>
     );
   }
 }

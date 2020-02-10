@@ -87,8 +87,7 @@ const EditorToolbar = ({ intl, onSelect }) => {
             <i className="iconfont icon-q1" />
           </Button>
         </BTooltip>
-        <BTooltip
-          title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}>
+        <BTooltip title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}>
           <Button className="EditorToolbar__button" onClick={() => onSelect('link')}>
             <i className="iconfont icon-link" />
           </Button>
