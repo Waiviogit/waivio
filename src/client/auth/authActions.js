@@ -147,7 +147,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   });
 };
 
-export const updateProfile = (username, values, profileAvatar = '') => (dispatch, getState) => {
+export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
   const json_metadata = JSON.parse(state.auth.user.json_metadata);
@@ -159,7 +159,7 @@ export const updateProfile = (username, values, profileAvatar = '') => (dispatch
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
-        return { isProfileUpdated: true, profileImage: profileAvatar };
+        return { isProfileUpdated: true };
       }),
     },
     meta: JSON.stringify(json_metadata),
