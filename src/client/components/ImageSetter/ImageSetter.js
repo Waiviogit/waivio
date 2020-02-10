@@ -9,6 +9,7 @@ import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
+
 import './ImageSetter.less';
 
 const ImageSetter = ({
@@ -20,6 +21,7 @@ const ImageSetter = ({
   onImageLoaded,
   defaultImage,
   isRequired,
+  title
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -160,7 +162,8 @@ const ImageSetter = ({
   return (
     <div className="ImageSetter">
       <div
-        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired })}
+        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired },
+          { 'ImageSetter__label--no-visible': !title })}
       >
         {renderTitle()}
       </div>
@@ -201,7 +204,7 @@ const ImageSetter = ({
               e.target.value = null;
             }}
           />
-          <label htmlFor="inputfile">
+          <label className="button-upload__label" htmlFor="inputfile">
             <div className="button-upload">
               <div className="button-upload__container">
                 <Icon className="button-upload__container-img" type="plus" />
@@ -214,7 +217,7 @@ const ImageSetter = ({
               </div>
             </div>
           </label>
-          <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
+          <span className="ImageSetter__center-text">{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
           <div className="input-upload">
             <input
               className="input-upload__item"
@@ -247,12 +250,14 @@ ImageSetter.propTypes = {
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
+  title: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
   defaultImage: '',
   isRequired: false,
+  title: true,
 };
 
 export default withEditor(injectIntl(ImageSetter));

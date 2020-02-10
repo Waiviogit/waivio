@@ -284,7 +284,7 @@ const QuickForecastPage = props => {
             <div className="no-posts">
               <FormattedMessage
                 id="no_quick_forecasts"
-                defaultMessage="There are currently no forecasts in this category"
+                defaultMessage="Currently there are no forecasts in this category"
               />
             </div>
           )}

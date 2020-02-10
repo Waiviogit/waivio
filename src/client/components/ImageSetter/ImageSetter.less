@@ -4,6 +4,11 @@
 .ImageSetter {
   display: flex;
   flex-direction: column;
+  align-items: center;
+
+  @media @small {
+    align-items: baseline;
+  }
 
   &__label {
     padding: 1rem 0;
@@ -18,6 +23,15 @@
       font-family: SimSun, sans-serif;
       content: '*';
     }
+
+    &--no-visible {
+      display: none;
+    }
+  }
+
+  &__center-text {
+    display: inline-block;
+    padding: 0 10px;
   }
 
   .image-box {
@@ -62,14 +76,22 @@
   }
 
   .button-upload {
-    border: 1px dashed @white-gainsboro;
-    background-color: @white-darker;
+    width: 100%;
+    height: 32px;
     border-radius: 4px;
-    width: 104px;
-    height: 104px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: @blue-dodgerBlue;
+    color: @white;
+
+    @media @small {
+      border: 1px dashed @white-gainsboro;
+      background-color: @white-darker;
+      border-radius: 4px;
+      width: 104px;
+      height: 104px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     &:hover {
       border: 1px dashed @blue-dodgerBlue;
@@ -79,15 +101,39 @@
     &__container {
       display: flex;
       flex-direction: column;
-      color: @blue-botticelli !important;
 
       &-img {
         font-size: 2em;
+        display: none;
+
+        @media @small {
+          display: inline-block;
+          color: @blue-botticelli;
+        }
       }
 
       &-label {
         font-size: 1em;
         font-weight: 500;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        color: @white;
+
+        @media @small {
+          text-align: inherit;
+          color: @blue-botticelli;
+          line-height: normal;
+          height: auto;
+        }
+      }
+    }
+
+    &__label {
+      width: 75%;
+
+      @media @small {
+        width: auto;
       }
     }
   }
