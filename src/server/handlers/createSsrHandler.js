@@ -5,7 +5,7 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 
-import sc2 from 'sc2-sdk';
+import sc2 from 'steemconnect';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import routes from '../../common/routes';
@@ -28,10 +28,11 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      const sc2Api = sc2.Initialize({
+      const sc2Api = new sc2.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
-        baseURL: process.env.STEEMCONNECT_HOST,
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
+        baseURL: process.env.STEEMCONNECT_HOST,
+        scope: ['vote', 'comment'],
       });
       if (req.cookies.access_token) {
         sc2Api.setAccessToken(req.cookies.access_token);

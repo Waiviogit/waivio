@@ -1,11 +1,11 @@
+import { Form, Input, Avatar, Button, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal } from 'antd';
-import SteemConnect from '../steemConnectAPI';
+import { sign } from 'steemconnect';
 import { updateProfile } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
@@ -139,7 +139,7 @@ export default class ProfileSettings extends React.Component {
         if (isGuest) {
           updateProfile(userName, cleanValues);
         } else {
-          const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
+          const win = window.open(sign('profile-update', cleanValues), '_blank');
           win.focus();
         }
       }

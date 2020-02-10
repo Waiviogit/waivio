@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import sc2 from 'sc2-sdk';
+import sc2 from 'steemconnect';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
@@ -37,14 +37,13 @@ function sc2Extended() {
     !!localStorage.getItem('accessToken') &&
     !!localStorage.getItem('guestName');
 
-  const sc2api = sc2.Initialize({
+  const sc2api = new sc2.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    baseURL: process.env.STEEMCONNECT_HOST,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
+    baseURL: process.env.STEEMCONNECT_HOST,
+    scope: ['vote', 'comment'],
   });
-
   const sc2Proto = Object.create(Object.getPrototypeOf(sc2api));
-
   sc2Proto.broadcastOp = sc2Proto.broadcast;
   sc2Proto.meOp = sc2Proto.me;
 

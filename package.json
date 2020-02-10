@@ -113,7 +113,7 @@
     "remarkable": "1.7.1",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
-    "sc2-sdk": "1.0.2",
+    "steemconnect": "3.0.4",
     "secure-random": "^1.1.1",
     "speakingurl": "^11.0.0",
     "steemscript": "^1.0.1",
