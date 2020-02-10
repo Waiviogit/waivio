@@ -15,3 +15,5 @@ export const PRIMARY_COLOR = '#f87007';
 export const GUEST_PREFIX = 'waivio_';
 
 export const BANK_ACCOUNT = 'waiviobank';
+
+export const POST_AUTHOR_FOR_REWARDS_COMMENTS = 'monterey';

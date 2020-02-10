@@ -186,4 +186,7 @@ export const getComments = state => state;
 export const getCommentsList = state => state.comments;
 export const getCommentsPendingVotes = state => state.pendingVotes;
 export const getCommentContent = (state, author, permlink) =>
-  Object.values(state.comments).find(post => post.author === author && post.permlink === permlink);
+  Object.values(state.comments).find(post => {
+    const postAuthor = post.guestInfo && post.guestInfo.userId;
+    return postAuthor === author && post.permlink === permlink;
+  });
