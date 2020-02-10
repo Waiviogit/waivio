@@ -80,11 +80,8 @@ export default class UserProfile extends React.Component {
     const isFetching = getFeedLoadingFromState('blog', username, feed);
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
-    const loadMoreContentAction = () => {
-      let skip = 10;
-      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false, skip });
-      skip += limit;
-    };
+    const loadMoreContentAction = () =>
+      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
 
     return (
       <div>
