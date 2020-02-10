@@ -10,12 +10,12 @@ import {
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
-import formatter from '../../helpers/steemitFormatter';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
   dropCategory,
   isBannedPost,
+  replaceBotWithGuestName,
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
@@ -23,7 +23,6 @@ import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
-import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
@@ -61,10 +60,12 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    pendingFlag: PropTypes.func,
   };
 
   static defaultProps = {
     pendingLike: false,
+    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
@@ -136,16 +137,12 @@ class Story extends React.Component {
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
     const { showHiddenStoryPreview } = this.state;
-    const postAuthorReputation = formatter.reputation(post.author_reputation);
 
     if (showHiddenStoryPreview) return true;
 
-    if (postAuthorReputation >= 0 && isPostTaggedNSFW(post)) {
+    if (isPostTaggedNSFW(post)) {
       return showNSFWPosts;
-    } else if (postAuthorReputation < 0) {
-      return false;
     }
-
     return true;
   }
   getObjectLayout = wobj => {
@@ -204,7 +201,7 @@ class Story extends React.Component {
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.author_original || post.root_author || post.author;
+    const author = post.guestInfo && !post.depth ? post.root_author : post.author;
 
     if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);
@@ -277,7 +274,7 @@ class Story extends React.Component {
     const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = dropCategory(post.url);
+    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -301,7 +298,7 @@ class Story extends React.Component {
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = dropCategory(post.url);
+    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -318,10 +315,8 @@ class Story extends React.Component {
   renderStoryPreview() {
     const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
-    const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) ? (
+    const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) && (
       <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
-    ) : (
-      <HiddenStoryPreviewMessage onClick={this.handleShowStoryPreview} />
     );
 
     if (isBannedPost(post)) {
@@ -330,7 +325,7 @@ class Story extends React.Component {
 
     return showStoryPreview ? (
       <a
-        href={dropCategory(post.url)}
+        href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
@@ -350,6 +345,7 @@ class Story extends React.Component {
       post,
       postState,
       pendingLike,
+      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -390,19 +386,21 @@ class Story extends React.Component {
       );
     }
 
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
+
     return (
-      <div className="Story" id={`${post.author}-${post.permlink}`}>
+      <div className="Story" id={`${author}-${post.permlink}`}>
         {rebloggedUI}
         <div className="Story__content">
           <div className="Story__header">
-            <Link to={`/@${post.author}`}>
-              <Avatar username={post.author} size={40} />
+            <Link to={`/@${author}`}>
+              <Avatar username={author} size={40} />
             </Link>
             <div className="Story__header__text">
               <span className="Story__header__flex">
                 <h4>
-                  <Link to={`/@${post.author}`}>
-                    <span className="username">{post.author}</span>
+                  <Link to={`/@${author}`}>
+                    <span className="username">{author}</span>
                   </Link>
                 </h4>
                 <WeightTag weight={post.author_wobjects_weight} />
@@ -433,7 +431,7 @@ class Story extends React.Component {
           </div>
           <div className="Story__content">
             <a
-              href={dropCategory(post.url)}
+              href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
               rel="noopener noreferrer"
               target="_blank"
               onClick={this.handlePostModalDisplay}
@@ -464,7 +462,7 @@ class Story extends React.Component {
               post={post}
               postState={postState}
               pendingLike={pendingLike}
-              pendingFlag={pendingLike}
+              pendingFlag={pendingFlag}
               rewardFund={rewardFund}
               ownPost={ownPost}
               singlePostVew={singlePostVew}

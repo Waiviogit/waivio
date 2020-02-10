@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { Icon } from 'antd';
 import { EditorState, AtomicBlockUtils } from 'draft-js';
 import { ATOMIC_TYPES } from '../../util/constants';
 
@@ -38,7 +39,10 @@ class SeparatorSideButton extends Component {
           defaultMessage: 'Add a separator',
         })}
       >
-        <i className="iconfont icon-minus" />
+        <Icon type="minus" className="btn-icon" />
+        <span className="action-btn__caption">
+          {this.props.intl.formatMessage({ id: 'post_btn_separator', defaultMessage: 'Line' })}
+        </span>
       </button>
     );
   }

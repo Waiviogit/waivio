@@ -58,7 +58,7 @@ const mapStateToProps = (state, { id }) => {
     pendingFollow: getPendingFollows(state).includes(post.author),
     pendingBookmark: getPendingBookmarks(state).includes(post.id),
     saving: getIsEditorSaving(state),
-    ownPost: user.name === post.author,
+    ownPost: post.guestInfo ? post.guestInfo.userId === user.name : user.name === post.author,
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),

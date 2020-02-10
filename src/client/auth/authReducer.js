@@ -8,6 +8,7 @@ const initialState = {
   isReloading: false,
   loaded: false,
   user: {},
+  tempProfileImage: '',
   userMetaData: {},
   isGuestUser: false,
 };
@@ -23,6 +24,7 @@ export default (state = initialState, action) => {
         loaded: false,
         user: {},
       };
+
     case types.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
       return {
@@ -34,6 +36,7 @@ export default (state = initialState, action) => {
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
       };
+
     case types.LOGIN_ERROR:
       return {
         ...state,
@@ -41,22 +44,26 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loaded: false,
       };
+
     case types.RELOAD_START:
       return {
         ...state,
         isReloading: true,
       };
+
     case types.RELOAD_SUCCESS:
       return {
         ...state,
         isReloading: false,
         user: action.payload.account || state.user,
       };
+
     case types.RELOAD_ERROR:
       return {
         ...state,
         isReloading: false,
       };
+
     case types.LOGOUT:
       return {
         ...state,
@@ -65,16 +72,19 @@ export default (state = initialState, action) => {
         isGuestUser: false,
         user: {},
       };
+
     case GET_USER_METADATA.SUCCESS:
       return {
         ...state,
         userMetaData: action.payload,
       };
+
     case types.UPDATE_PROFILE_START:
       return {
         ...state,
         isFetching: true,
       };
+
     case types.UPDATE_PROFILE_SUCCESS: {
       if (action.payload.isProfileUpdated) {
         return {
@@ -84,12 +94,16 @@ export default (state = initialState, action) => {
             ...state.user,
             json_metadata: action.meta,
           },
+          tempProfileImage: action.payload.profileImage,
         };
       }
+
       return state;
     }
+
     case types.UPDATE_PROFILE_ERROR:
       return state;
+
     default:
       return state;
   }
@@ -111,3 +125,4 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
+export const getProfileImage = state => state.tempProfileImage;

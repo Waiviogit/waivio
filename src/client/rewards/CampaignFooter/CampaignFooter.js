@@ -30,7 +30,6 @@ class CampaignFooter extends React.Component {
     proposition: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
-    requiredObjectName: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     likeComment: PropTypes.func.isRequired,
@@ -48,6 +47,7 @@ class CampaignFooter extends React.Component {
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
     discardPr: PropTypes.func,
+    toggleModalDetails: PropTypes.func,
   };
 
   static defaultProps = {
@@ -64,6 +64,7 @@ class CampaignFooter extends React.Component {
     onShareClick: () => {},
     handlePostPopoverMenuClick: () => {},
     discardPr: () => {},
+    toggleModalDetails: () => {},
     isComment: false,
   };
 
@@ -100,11 +101,13 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { user, proposition } = this.props;
-    const reservedUser = find(proposition.reserved_users, resUser => resUser.name === user.name);
+    const { proposition } = this.props;
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      daysLeft: getDaysLeft(reservedUser.createdAt, proposition.count_reservation_days),
+      daysLeft: getDaysLeft(
+        proposition.objects[0].reservationCreated,
+        proposition.count_reservation_days,
+      ),
     });
   }
 
@@ -217,13 +220,10 @@ class CampaignFooter extends React.Component {
       saving,
       singlePostVew,
       pendingFollowObject,
-      proposedWobj,
       requiredObjectPermlink,
-      requiredObjectName,
       intl,
-      proposition,
+      toggleModalDetails,
     } = this.props;
-
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -233,6 +233,7 @@ class CampaignFooter extends React.Component {
           {!this.state.sliderVisible && (
             <CampaignButtons
               daysLeft={daysLeft}
+              toggleModalDetails={toggleModalDetails}
               post={post}
               postState={postState}
               pendingLike={pendingLike}
@@ -246,10 +247,6 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectPermlink={requiredObjectPermlink}
-              requiredObjectName={requiredObjectName}
-              proposedObjectName={proposedWobj.name}
-              proposedObjectPermlink={proposedWobj.author_permlink}
-              propositionId={proposition._id} // eslint-disable-line
             />
           )}
         </div>

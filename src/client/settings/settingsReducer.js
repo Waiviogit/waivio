@@ -5,7 +5,6 @@ import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',
-  readLanguages: [],
   votingPower: false,
   votePercent: 10000,
   showNSFWPosts: false,
@@ -15,6 +14,8 @@ const initialState = {
   upvoteSetting: false,
   exitPageSetting: true,
   rewardSetting: rewardsValues.half,
+  postLocales: [],
+  newUser: false,
 };
 
 const settings = (state = initialState, action) => {
@@ -22,7 +23,11 @@ const settings = (state = initialState, action) => {
     case authTypes.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
       if (action.payload.userMetaData && action.payload.userMetaData.settings) {
-        return { ...state, ...action.payload.userMetaData.settings };
+        return {
+          ...state,
+          ...action.payload.userMetaData.settings,
+          newUser: action.payload.userMetaData.new_user,
+        };
       }
       return state;
     case GET_USER_METADATA.SUCCESS:
@@ -36,6 +41,7 @@ const settings = (state = initialState, action) => {
         ...state,
         loading: true,
       };
+
     case settingsTypes.SAVE_SETTINGS_SUCCESS:
       return {
         ...state,
@@ -53,6 +59,19 @@ const settings = (state = initialState, action) => {
         ...state,
         locale: action.payload,
       };
+
+    case settingsTypes.SET_USER_STATUS.SUCCESS:
+      return {
+        ...state,
+        newUser: false,
+      };
+
+    case settingsTypes.SET_USER_STATUS.ERROR:
+      return state;
+
+    case authTypes.LOGOUT:
+      return initialState;
+
     default:
       return state;
   }

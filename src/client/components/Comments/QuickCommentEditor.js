@@ -47,9 +47,10 @@ class QuickCommentEditor extends React.Component {
     } else {
       const { currentImage, commentMsg } = this.state;
       this.setState({ isDisabledSubmit: true });
+
       if (commentMsg) {
         let imageData = commentMsg.trim();
-        if (currentImage) {
+        if (currentImage.length) {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
         this.props.onSubmit(this.props.parentPost, imageData).then(response => {
@@ -70,9 +71,9 @@ class QuickCommentEditor extends React.Component {
     this.setState({ currentImage: [], imageUploading: false });
   };
 
-  handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
+  handleCloseModal = () => this.setState({ isModal: false, currentImage: [] });
 
-  handleOnOk = () => this.setState({ isModal: !this.state.isModal });
+  handleToggleModal = () => this.setState({ isModal: !this.state.isModal });
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
@@ -92,7 +93,7 @@ class QuickCommentEditor extends React.Component {
           <i
             className="iconfont icon-picture QuickComment__add-img-icon"
             role="presentation"
-            onClick={this.handleOpenModal}
+            onClick={this.handleToggleModal}
           />
         )}
       </label>
@@ -129,13 +130,19 @@ class QuickCommentEditor extends React.Component {
         )}
         <Modal
           wrapClassName="Settings__modal"
-          onCancel={this.handleOpenModal}
+          onCancel={this.handleCloseModal}
           okButtonProps={{ disabled: isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
-          onOk={this.handleOnOk}
+          onOk={this.handleToggleModal}
         >
-          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          {isModal && (
+            <ImageSetter
+              onImageLoaded={this.getImages}
+              onLoadingImage={this.onLoadingImage}
+              isRequired
+            />
+          )}
         </Modal>
       </React.Fragment>
     );

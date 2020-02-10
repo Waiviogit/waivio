@@ -34,7 +34,7 @@ const FilteredRewardsList = props => {
         tabText={getTextByFilterKey(intl, filterKey)}
         filterKey={filterKey}
         reqObject={
-          !IsRequiredObjectWrap && propositions && propositions[0]
+          !IsRequiredObjectWrap && propositions.length && propositions[0]
             ? propositions[0].required_object
             : null
         }
@@ -44,7 +44,7 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap && propositions && propositions[0] ? (
+      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}

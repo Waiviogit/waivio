@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import _, { isEmpty, map } from 'lodash';
+import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -87,8 +87,16 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    if (!_.size(this.props.userLocation)) {
+    const { username, match, userLocation, history } = this.props;
+    const { radius, coordinates, sort, activeFilters } = this.state;
+    if (!size(userLocation)) {
       this.props.getCoordinates();
+    }
+    if (!username) {
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      if (!match.params.campaignParent || match.params.filterKey !== 'all') {
+        history.push(`/rewards/all`);
+      }
     }
   }
 
@@ -98,13 +106,11 @@ class Rewards extends React.Component {
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
-    if (match.params.filterKey !== 'create' && nextProps.username) {
-      const { username } = this.props;
+    if (match.params.filterKey !== 'create') {
       const { radius, coordinates, sort, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
-        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent ||
-        nextProps.username !== username
+        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
       ) {
         this.setState({ loadingCampaigns: true }, () => {
           this.getPropositions({
@@ -123,8 +129,13 @@ class Rewards extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username)
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    }
+    if (prevProps.username !== username && !username) {
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.props.history.push(`/rewards/all`);
+    }
   }
 
   getRequiredObjects = () =>
@@ -140,8 +151,8 @@ class Rewards extends React.Component {
     const { username, match } = this.props;
     const { radius, coordinates, sort } = this.state;
     const activeFilters = this.state.activeFilters;
-    if (_.includes(activeFilters[key], filter)) {
-      _.remove(activeFilters[key], f => f === filter);
+    if (includes(activeFilters[key], filter)) {
+      remove(activeFilters[key], f => f === filter);
     } else {
       activeFilters[key].push(filter);
     }
@@ -151,7 +162,7 @@ class Rewards extends React.Component {
 
   setPayablesFilterValue = filter => {
     const activeFilters = [...this.state.activePayableFilters];
-    if (_.find(activeFilters, ['filterName', filter.filterName])) {
+    if (find(activeFilters, ['filterName', filter.filterName])) {
       this.setState({
         activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
       });
@@ -320,7 +331,7 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
-    if (_.size(propositions) !== 0) {
+    if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
           propositions,
@@ -359,13 +370,10 @@ class Rewards extends React.Component {
         ),
       );
     }
-    return `${intl.formatMessage(
-      {
-        id: 'noProposition',
-        defaultMessage: `No reward matches the criteria for user @{userName}`,
-      },
-      { userName },
-    )}`;
+    return `${intl.formatMessage({
+      id: 'noProposition',
+      defaultMessage: `No reward matches the criteria`,
+    })}`;
   };
 
   goToCampaign = WobjPermlink => {
@@ -455,8 +463,7 @@ class Rewards extends React.Component {
               content={`${intl.formatMessage({
                 id: 'rewards',
                 defaultMessage: 'Rewards',
-              })}
-        - Waivio`}
+              })} - Waivio`}
             />
             <meta property="og:type" content="article" />
             <meta
@@ -481,7 +488,7 @@ class Rewards extends React.Component {
               {renderedRoutes}
             </div>
             {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
@@ -496,7 +503,7 @@ class Rewards extends React.Component {
               </Affix>
             )}
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   {!isEmpty(this.props.userLocation) && !isCreate && (
                     <MapWrap

@@ -20,12 +20,12 @@ const SIDE_BUTTONS = [
     component: VideoSideButton,
   },
   {
-    title: 'Separator',
-    component: SeparatorButton,
-  },
-  {
     title: 'Object',
     component: ObjectSideButton,
+  },
+  {
+    title: 'Separator',
+    component: SeparatorButton,
   },
 ];
 

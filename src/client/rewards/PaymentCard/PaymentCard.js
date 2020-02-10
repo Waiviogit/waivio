@@ -3,24 +3,29 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Tooltip } from 'antd';
 import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
 import { openTransfer } from '../../wallet/walletActions';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
-const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, match }) => {
+const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
+  const dispatch = useDispatch();
+  const isReceiverGuest = name.startsWith(GUEST_PREFIX);
   const handleSetUser = () => {
     history.push(path);
   };
+
+  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
 
   let renderTransferButton = (
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => openTransfer(name, payable, 'STEEM', 'Campaign transfer payment')}
+      onClick={() => dispatch(openTransfer(name, payable, 'STEEM', memo))}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
@@ -82,7 +87,6 @@ PaymentCard.propTypes = {
   alias: PropTypes.string,
   history: PropTypes.shape().isRequired,
   path: PropTypes.string.isRequired,
-  openTransfer: PropTypes.func.isRequired,
   match: PropTypes.shape().isRequired,
 };
 
@@ -90,4 +94,4 @@ PaymentCard.defaultProps = {
   alias: '',
 };
 
-export default withRouter(injectIntl(connect(null, { openTransfer })(PaymentCard)));
+export default withRouter(injectIntl(PaymentCard));

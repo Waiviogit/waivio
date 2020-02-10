@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -22,8 +22,8 @@ const CreateFormRenderer = props => {
     reward,
     reservationPeriod,
     targetDays,
+    receiptPhoto,
     minPhotos,
-    minSteemReputation,
     minExpertise,
     minFollowers,
     minPosts,
@@ -47,7 +47,6 @@ const CreateFormRenderer = props => {
     campaignId,
     isCampaignActive,
     iAgree,
-    isModal,
   } = props;
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
@@ -78,18 +77,18 @@ const CreateFormRenderer = props => {
       {handlers.messageFactory('active_campaign_warn', 'Only pending campaigns could be edited')}
     </div>
   ) : null;
-
-  const renderCompensationAccount = !isEmpty(compensationAccount) ? (
-    <div className="CreateReward__objects-wrap">
-      <ReviewItem
-        key={compensationAccount}
-        object={compensationAccount}
-        loading={loading}
-        removeReviewObject={handlers.removeCompensationAccount}
-        isUser
-      />
-    </div>
-  ) : null;
+  const renderCompensationAccount =
+    !isEmpty(compensationAccount) && compensationAccount.account ? (
+      <div className="CreateReward__objects-wrap">
+        <ReviewItem
+          key={compensationAccount}
+          object={compensationAccount}
+          loading={loading}
+          removeReviewObject={handlers.removeCompensationAccount}
+          isUser
+        />
+      </div>
+    ) : null;
 
   const sponsorsIdsToOmit = !isEmpty(sponsorsList) ? map(sponsorsList, obj => obj.account) : [];
 
@@ -265,6 +264,20 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
+        <Form.Item className="CreateReward__photo-receipt">
+          {getFieldDecorator(fields.checkboxReceiptPhoto.name, {
+            valuePropName: fields.checkboxReceiptPhoto.valuePropName,
+            initialValue: receiptPhoto,
+          })(
+            <Checkbox defaultChecked={receiptPhoto} disabled={disabled}>
+              <span className="CreateReward__item-title huge-text">
+                {fields.checkboxReceiptPhoto.title}
+              </span>
+            </Checkbox>,
+          )}
+          <div className="CreateReward__field-caption">{fields.checkboxReceiptPhoto.caption}</div>
+        </Form.Item>
+
         <Form.Item
           label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
         >
@@ -326,14 +339,6 @@ const CreateFormRenderer = props => {
         </p>
         <br />
 
-        <Form.Item label={fields.minSteemReputation.label}>
-          {getFieldDecorator(fields.minSteemReputation.name, {
-            rules: fields.minSteemReputation.rules,
-            initialValue: minSteemReputation,
-          })(<Input type="number" disabled={disabled} />)}
-          <div className="CreateReward__field-caption">{fields.minSteemReputation.caption}</div>
-        </Form.Item>
-
         <Form.Item label={fields.minExpertise.label}>
           {getFieldDecorator(fields.minExpertise.name, {
             rules: fields.minExpertise.rules,
@@ -362,7 +367,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.eligibleDays.name, {
             rules: fields.eligibleDays.rules,
             initialValue: eligibleDays,
-          })(<Input type="number" disabled={disabled} />)}
+          })(<Input type="number" disabled={disabled} defaultValue={eligibleDays} />)}
           <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
         </Form.Item>
 
@@ -392,7 +397,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.usersLegalNotice.name, {
             rules: fields.usersLegalNotice.rules,
             initialValue: usersLegalNotice,
-          })(<Input.TextArea disabled={disabled} />)}
+          })(<Input.TextArea disabled={disabled} defaultValue={usersLegalNotice} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
 
@@ -436,20 +441,8 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.commissionAgreement.caption}</div>
         </Form.Item>
-
         {button}
       </Form>
-      <Modal
-        closable
-        title={campaignId ? fields.modal.editTitle : fields.modal.createTitle}
-        maskClosable={false}
-        visible={isModal}
-        onOk={handlers.handleCreateCampaign}
-        okButtonProps={{ disabled: props.loading, loading: props.loading }}
-        onCancel={() => handlers.setModal(false)}
-      >
-        {campaignId ? fields.modal.editContent : fields.modal.createTitle}
-      </Modal>
     </div>
   );
 };
@@ -478,8 +471,8 @@ CreateFormRenderer.defaultProps = {
     saturday: true,
     sunday: true,
   },
+  receiptPhoto: false,
   minPhotos: 0,
-  minSteemReputation: 25,
   minExpertise: 0,
   minFollowers: 0,
   minPosts: 0,
@@ -491,7 +484,6 @@ CreateFormRenderer.defaultProps = {
   commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
-  isModal: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -501,8 +493,8 @@ CreateFormRenderer.propTypes = {
   reward: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
+  receiptPhoto: PropTypes.bool,
   minPhotos: PropTypes.number,
-  minSteemReputation: PropTypes.number,
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
   minPosts: PropTypes.number,
@@ -516,7 +508,6 @@ CreateFormRenderer.propTypes = {
     handleAddSponsorToList: PropTypes.func.isRequired,
     removeSponsorObject: PropTypes.func.isRequired,
     setPrimaryObject: PropTypes.func.isRequired,
-    setModal: PropTypes.func.isRequired,
     removePrimaryObject: PropTypes.func.isRequired,
     handleAddSecondaryObjectToList: PropTypes.func.isRequired,
     removeSecondaryObject: PropTypes.func.isRequired,
@@ -529,7 +520,6 @@ CreateFormRenderer.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleSelectChange: PropTypes.func.isRequired,
     messageFactory: PropTypes.func.isRequired,
-    handleCreateCampaign: PropTypes.func.isRequired,
   }).isRequired,
   currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
@@ -545,7 +535,6 @@ CreateFormRenderer.propTypes = {
   campaignId: PropTypes.string,
   isCampaignActive: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
-  isModal: PropTypes.bool.isRequired,
 };
 
 export default CreateFormRenderer;

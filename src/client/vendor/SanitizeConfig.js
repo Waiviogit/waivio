@@ -24,6 +24,14 @@ const iframeWhitelist = [
     fn: src => src.replace(/\?.+$/, ''), // strip query string (yt: autoplay=1,controls=0,showinfo=0, etc)
   },
   {
+    re: /^https:\/\/emb.d.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)/i,
+    fn: src => src.replace(/\?.+$/, ''), // strip query string
+  },
+  {
+    re: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)+/i,
+    fn: src => src.replace(/\?.+$/, ''), // strip query string
+  },
+  {
     re: /^(https?:)?\/\/w.soundcloud.com\/player\/.*/i,
     fn: src => {
       if (!src) return null;

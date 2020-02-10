@@ -12,10 +12,6 @@ export default (localizer, objectData) => ({
     'rewards_details_eligibility_criteria_can_participate',
     'Only users who meet all eligibility criteria can participate in this rewards campaign.',
   ),
-  minimumSteemReputation: localizer(
-    'rewards_details_minimum_steem_reputation',
-    'Minimum Steem reputation',
-  ),
   minimumWaivioExpertise: localizer(
     'rewards_details_minimum_waivio_expertise',
     'Minimum Waivio expertise',

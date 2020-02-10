@@ -195,7 +195,7 @@ const UserWalletSummary = ({
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
-  balance: PropTypes.number.isRequired,
+  balance: PropTypes.number,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
@@ -211,6 +211,7 @@ UserWalletSummary.defaultProps = {
   loading: false,
   steemRateLoading: false,
   isGuest: false,
+  balance: 0,
 };
 
 export default UserWalletSummary;

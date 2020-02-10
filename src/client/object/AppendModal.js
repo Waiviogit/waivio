@@ -16,7 +16,6 @@ const AppendModal = ({ showModal, hideModal, chosenLocale, field, objName, intl 
     onCancel={hideModal}
     maskClosable={false}
     width={767}
-    destroyOnClose
   >
     <AppendForm
       chosenLocale={chosenLocale}

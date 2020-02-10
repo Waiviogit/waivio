@@ -58,8 +58,8 @@ class CreateRewardForm extends React.Component {
       saturday: true,
       sunday: true,
     },
+    receiptPhoto: false,
     minPhotos: 0,
-    minSteemReputation: 25,
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
@@ -72,8 +72,6 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: '',
     isCampaignActive: false,
-    isModal: false,
-    isValidationAccepted: false,
   };
 
   componentDidMount = async () => {
@@ -127,6 +125,7 @@ class CreateRewardForm extends React.Component {
             ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
             : [],
           reservationPeriod: campaign.count_reservation_days,
+          receiptPhoto: campaign.requirements.receiptPhoto,
           minFollowers: campaign.userRequirements.minFollowers,
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservation_timetable,
@@ -135,9 +134,21 @@ class CreateRewardForm extends React.Component {
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
           // eslint-disable-next-line no-underscore-dangle
           campaignId: campaign._id,
+          compensationAccount: {
+            account: campaign.compensationAccount,
+          },
+          eligibleDays: campaign.frequency_assign,
+          usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isCampaignActive,
         });
+        if (campaign.match_bots.length) {
+          this.setState({
+            sponsorsList: campaign.match_bots.map(matchBotAccount => ({
+              account: matchBotAccount,
+            })),
+          });
+        }
       });
     }
   };
@@ -146,8 +157,6 @@ class CreateRewardForm extends React.Component {
     const { setFieldsValue, getFieldValue } = this.props.form;
 
     if (getFieldValue('minPhotos') === '') setFieldsValue({ minPhotos: 0 });
-
-    if (getFieldValue('minSteemReputation') === '') setFieldsValue({ minSteemReputation: -100 });
 
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
@@ -170,7 +179,10 @@ class CreateRewardForm extends React.Component {
       type: data.type,
       budget: data.budget,
       reward: data.reward,
-      requirements: { minPhotos: data.minPhotos },
+      requirements: {
+        minPhotos: data.minPhotos,
+        receiptPhoto: data.receiptPhoto,
+      },
       blacklist_users: [],
       whitelist_users: [],
       count_reservation_days: data.reservationPeriod,
@@ -178,19 +190,21 @@ class CreateRewardForm extends React.Component {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
-        minSteemReputation: data.minSteemReputation,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
-      compensationAccount: data.compensationAccount && data.compensationAccount.account,
+      compensationAccount:
+        data.compensationAccount && data.compensationAccount.account
+          ? data.compensationAccount.account
+          : '',
+      usersLegalNotice: data.usersLegalNotice ? data.usersLegalNotice : '',
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
     };
-    if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
     if (data.description) preparedObject.description = data.description;
     if (campaignId) preparedObject.id = campaignId;
     return preparedObject;
@@ -292,10 +306,6 @@ class CreateRewardForm extends React.Component {
       );
     },
 
-    setModal: value => {
-      this.setState({ isModal: value });
-    },
-
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
@@ -310,35 +320,19 @@ class CreateRewardForm extends React.Component {
     handleSubmit: e => {
       e.preventDefault();
       this.checkOptionFields();
-      this.props.form.validateFieldsAndScroll((err, values) => {
-        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          this.setState({ isValidationAccepted: true, isModal: true });
-        }
-        if (err) {
-          this.setState({ isModal: false });
-        }
-      });
-    },
-
-    handleCreateCampaign: () => {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
-        if (
-          !err &&
-          !isEmpty(values.primaryObject) &&
-          !isEmpty(values.secondaryObject) &&
-          this.state.isValidationAccepted
-        ) {
+        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(`Rewards campaign ${values.campaignName} has been created.`);
-              this.setState({ loading: false, isModal: false });
+              this.setState({ loading: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
               message.error(`Campaign ${values.campaignName} has been rejected`);
-              this.setState({ loading: false, isModal: false });
+              this.setState({ loading: false });
             });
         }
         if (err) {
@@ -377,8 +371,8 @@ class CreateRewardForm extends React.Component {
       loading,
       parentPermlink,
       targetDays,
+      receiptPhoto,
       minPhotos,
-      minSteemReputation,
       minExpertise,
       minFollowers,
       minPosts,
@@ -388,9 +382,8 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
-      isModal,
+      eligibleDays,
     } = this.state;
-
     return (
       <CreateFormRenderer
         handlers={this.handlers}
@@ -400,8 +393,8 @@ class CreateRewardForm extends React.Component {
         reward={reward}
         reservationPeriod={reservationPeriod}
         targetDays={targetDays}
+        receiptPhoto={receiptPhoto}
         minPhotos={minPhotos}
-        minSteemReputation={minSteemReputation}
         minExpertise={minExpertise}
         minFollowers={minFollowers}
         minPosts={minPosts}
@@ -424,7 +417,7 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
-        isModal={isModal}
+        eligibleDays={eligibleDays}
       />
     );
   }
