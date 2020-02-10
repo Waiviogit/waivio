@@ -94,7 +94,9 @@ class Rewards extends React.Component {
     }
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
-      history.push(`/rewards/all`);
+      if (!match.params.campaignParent || match.params.filterKey !== 'all') {
+        history.push(`/rewards/all`);
+      }
     }
   }
 

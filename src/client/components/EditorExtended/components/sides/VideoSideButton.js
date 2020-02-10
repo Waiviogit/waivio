@@ -19,13 +19,17 @@ const videoLinkInput = props => {
     <Input.Search
       className="video-link-input"
       enterButton="Enter"
-      placeholder="Paste a YouTube or Vimeo video link, and press Enter" // todo: add locale
+      placeholder={props.intl.formatMessage({
+        id: 'post_btn_video_placeholder',
+        defaultMessage: "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'",
+      })}
       onSearch={handleAddVideoLink}
     />
   );
 };
 
 videoLinkInput.propTypes = {
+  intl: PropTypes.shape().isRequired,
   setEditorState: PropTypes.func.isRequired,
   getEditorState: PropTypes.func.isRequired,
   close: PropTypes.func.isRequired,
