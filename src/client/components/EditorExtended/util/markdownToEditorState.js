@@ -1,7 +1,7 @@
 import mdToAst from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
-import { isYoutube, isVimeo, getSrc } from './videoHelper';
+import { isYoutube, isVimeo, isDTube, isThreeSpeak, getSrc } from './videoHelper';
 
 const defaultInlineStyles = {
   Strong: {
@@ -27,7 +27,7 @@ const defaultBlockStyles = {
   HorizontalRule: 'atomic',
 };
 
-const isVideoLink = url => isYoutube(url) || isVimeo(url);
+const isVideoLink = url => isYoutube(url) || isVimeo(url) || isDTube(url) || isThreeSpeak(url);
 
 const normalizeMd = content => {
   const regExp = new RegExp('<center>|</center>', 'g');
@@ -75,7 +75,7 @@ const joinCodeBlocks = splitMd => {
 };
 
 const splitMdBlocks = md => {
-  const splitMd = md.split('\n');
+  const splitMd = md.split('\n').map(str => str.trimStart());
 
   // Process the split markdown include the
   // one syntax where there's an block level opening

@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy } from 'lodash';
+import { filter, includes, orderBy, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
-import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
+  passedParent,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -47,6 +48,9 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
+    if (!isEmpty(passedParent) && avatar === DEFAULTS.AVATAR) {
+      url = passedParent.avatar;
+    }
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
@@ -61,7 +65,10 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
+  const parentName = isEmpty(passedParent)
+    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
+    : passedParent.name || passedParent.default_name;
+
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -75,10 +82,14 @@ const ObjectCardView = ({
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
               {avatarLayout(wObject.avatar)}
             </Link>
-            <div className={'ObjectCardView__info'}>
+            <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${wObject.parent.author_permlink}`}
+                  to={`/object/${
+                    isEmpty(passedParent)
+                      ? wObject.parent.author_permlink
+                      : passedParent.author_permlink
+                  }`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -112,12 +123,17 @@ const ObjectCardView = ({
                     {wObject.price}
                   </span>
                 )}
-                {tags.map(tag => (
-                  <span key={tag}>&nbsp;&middot;{` ${tag}`}</span>
+                {tags.map((tag, index) => (
+                  <span key={tag}>
+                    {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                  </span>
                 ))}
               </span>
               {wObject.address && (
-                <div className="ObjectCardView__tag-text">{`${wObject.address.street}, ${wObject.address.city}`}</div>
+                <div className="ObjectCardView__tag-text">
+                  {wObject.address.street && `${wObject.address.street}, `}
+                  {wObject.address.city}
+                </div>
               )}
               {/* eslint-disable-next-line no-nested-ternary */}
               {wObject.title ? (
@@ -145,9 +161,11 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
+  passedParent: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
+  passedParent: {},
 };
 export default injectIntl(ObjectCardView);

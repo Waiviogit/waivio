@@ -79,7 +79,7 @@ class CatalogWrap extends React.Component {
         this.getObjectFromApi(nextListPermlink, nextProps.location.hash);
       }
     }
-    if (!isEqual(this.props.wobject, nextProps.wobject)) {
+    if (!isEqual(this.props.wobject.author_permlink, nextProps.wobject.author_permlink)) {
       this.setState(this.getNextStateFromProps(nextProps));
     }
   }
@@ -181,7 +181,7 @@ class CatalogWrap extends React.Component {
         sort === 'custom' ? wobject[objectFields.sorting] : null,
       ),
     });
-    if (breadcrumb.length === 1) {
+    if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
       this.props.addItemToWobjStore(getServerWObj(listItem));
     }
   };
@@ -277,7 +277,7 @@ class CatalogWrap extends React.Component {
           ) : null}
         </div>
 
-        {wobject.object_type === OBJ_TYPE.LIST && isEditMode && (
+        {isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
               wobject={currWobject}

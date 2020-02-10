@@ -768,7 +768,8 @@ export const getAccessToken = (token, social, regData) => {
     .then(data => {
       response.userData = data.user;
       return response;
-    });
+    })
+    .catch(err => err);
 };
 
 export const getNewToken = token => {
@@ -931,6 +932,48 @@ export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
+};
+
+export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+      object_types: ['hashtag'],
+    }),
+  }).then(res => res.json());
+};
+
+export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+    }),
+  }).then(res => res.json());
+};
+
+export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(listUsers),
+  }).then(res => res.json());
+};
+
+export const setUserStatus = user => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

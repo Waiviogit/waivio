@@ -196,12 +196,12 @@ const ImageSetter = ({
             type="file"
             accept="image/*"
             multiple={isMultiple}
-            onInput={handleChangeImage}
+            onChange={handleChangeImage}
             onClick={e => {
               e.target.value = null;
             }}
           />
-          <label htmlFor="inputfile">
+          <label className="label" htmlFor="inputfile">
             <div className="button-upload">
               <div className="button-upload__container">
                 <Icon className="button-upload__container-img" type="plus" />

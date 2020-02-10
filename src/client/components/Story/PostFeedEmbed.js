@@ -49,7 +49,9 @@ export default class PostFeedEmbed extends React.Component {
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
     if (
-      (embed.provider_name === 'YouTube' || embed.provider_name === 'DTube') &&
+      (embed.provider_name === 'YouTube' ||
+        embed.provider_name === 'DTube' ||
+        embed.provider_name === '3Speak') &&
       shouldRenderThumb
     ) {
       return this.renderThumbFirst(embed.thumbnail);
