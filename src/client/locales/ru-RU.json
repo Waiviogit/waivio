@@ -1034,5 +1034,6 @@
   "science": "наука",
   "health": "здоровье",
   "travel": "путешествия",
-  "need_confirm_agreement": "Вам нужно подтвердить согласие"
+  "need_confirm_agreement": "Вам нужно подтвердить согласие",
+  "post_btn_video_placeholder": "Вставте ссылку (YouTube | DTube | Vimeo | 3Speak) и нажмите 'Enter'"
 }
