@@ -97,9 +97,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           alias: values.alias || '',
           locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
         };
-        dispatch(
-          login(userData.accessToken, userData.socialNetwork, regData),
-        ).then(() => {
+        dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
         });
       } else {
