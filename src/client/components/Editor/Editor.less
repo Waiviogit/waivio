@@ -4,9 +4,12 @@
 .Editor {
   padding-bottom: 24px;
 
-  .ant-form-item {
-    margin-bottom: 0px;
-    padding-bottom: 24px;
+  &__modal {
+    .ant-row.ant-form-item {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__hidden {

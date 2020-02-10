@@ -1035,5 +1035,9 @@
   "health": "здоровье",
   "travel": "путешествия",
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
-  "post_btn_video_placeholder": "Вставте ссылку (YouTube | DTube | Vimeo | 3Speak) и нажмите 'Enter'"
+  "post_btn_video_placeholder": "Вставте ссылку (YouTube | DTube | Vimeo | 3Speak) и нажмите 'Enter'",
+  "link_placeholder": "Добавьте url",
+  "modal.button.cancel": "Отменить",
+  "modal.button.yes": "OK",
+  "link_error_empty": "Пожалуйста введите URL"
 }

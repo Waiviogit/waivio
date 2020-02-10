@@ -2,11 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Menu, Dropdown, Icon, Popover } from 'antd';
+import { Button, Menu, Dropdown, Icon } from 'antd';
 import BTooltip from '../BTooltip';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './EditorToolbar.less';
-import FormattedLink from '../EditorObject/FormattedLink';
 
 const tooltip = (description, shortcut) => (
   <span>
@@ -16,7 +14,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
+const EditorToolbar = ({ intl, onSelect }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -88,23 +86,14 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
             <i className="iconfont icon-q1" />
           </Button>
         </BTooltip>
-        <Popover
-          content={
-            <FormattedLink
-              handleSelect={onSelectLinkedObject}
-              canCreateNewObject={false}
-              addLink={onSelect}
-            />
-          }
+        <BTooltip
           title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}
-          overlayClassName="EditorToolbar__popover"
-          trigger="hover"
-          placement="bottom"
+          onClick={() => onSelect('link')}
         >
           <Button className="EditorToolbar__button">
             <i className="iconfont icon-link" />
           </Button>
-        </Popover>
+        </BTooltip>
         <BTooltip
           title={tooltip(intl.formatMessage({ id: 'image', defaultMessage: 'Add image' }), '')}
         >
@@ -112,23 +101,14 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
             <i className="iconfont icon-picture" />
           </Button>
         </BTooltip>
-
-        <Popover
-          content={
-            <SearchObjectsAutocomplete
-              handleSelect={onSelectLinkedObject}
-              canCreateNewObject={false}
-            />
-          }
+        <BTooltip
           title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
-          overlayClassName="EditorToolbar__popover"
-          trigger="hover"
-          placement="bottom"
+          onClick={() => onSelect('object')}
         >
           <Button className="EditorToolbar__button">
             <Icon type="codepen" className="iconfont" />
           </Button>
-        </Popover>
+        </BTooltip>
       </div>
     </Scrollbars>
   );

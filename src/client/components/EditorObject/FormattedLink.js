@@ -1,37 +1,53 @@
 import React from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
-// import './EditorObject.less';
-import Action from '../Button/Action';
+import { Form, Input, Modal } from 'antd';
+
+import '../Editor/Editor.less';
 
 @injectIntl
 @Form.create()
 class FormattedLink extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape().isRequired,
-    form: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
+    form: PropTypes.shape(),
     addLink: PropTypes.func.isRequired,
+    handleCloseModal: PropTypes.func.isRequired,
+    isOpenModal: PropTypes.bool,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isModalOpen: false,
-    };
-  }
+  static defaultProps = {
+    intl: {},
+    form: {},
+    isOpenModal: false,
+    handleCloseModal: () => {},
+  };
+
   handleSubmit = e => {
     e.preventDefault();
-    const { form } = this.props;
+    const { form, handleCloseModal } = this.props;
     const values = form.getFieldsValue();
-    this.props.addLink('link', { title: values.linkTitle, url: values.url });
+    this.props.addLink('object', { title: values.linkTitle, url: values.url });
     form.resetFields();
+    handleCloseModal();
   };
 
   render() {
-    const { intl, form } = this.props;
+    const { intl, form, isOpenModal, handleCloseModal } = this.props;
+
     return (
-      <React.Fragment>
+      <Modal
+        className="Editor__modal"
+        onCancel={handleCloseModal}
+        visible={isOpenModal}
+        title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}
+        onOk={this.handleSubmit}
+        cancelText={this.props.intl.formatMessage({
+          id: 'modal.button.cancel',
+          defaultMessage: 'Cancel',
+        })}
+        okText={this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+      >
         <Form className="Link" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('linkTitle', {
@@ -99,13 +115,8 @@ class FormattedLink extends React.Component {
               />,
             )}
           </Form.Item>
-          <Form.Item className="Editor__bottom__submit">
-            <Action primary big loading={false} onClick={this.handleSubmit}>
-              <FormattedMessage id={'append_send'} defaultMessage={'Submit'} />
-            </Action>
-          </Form.Item>
         </Form>
-      </React.Fragment>
+      </Modal>
     );
   }
 }
