@@ -7,7 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal } from 'antd';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser, getProfileImage } from '../reducers';
+import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -47,7 +47,6 @@ function mapPropsToFields(props) {
     user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
-    tempProfileImage: getProfileImage(state),
   }),
   {
     updateProfile,
@@ -67,7 +66,6 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.string,
-    tempProfileImage: PropTypes.string,
   };
 
   static defaultProps = {
@@ -77,7 +75,6 @@ export default class ProfileSettings extends React.Component {
     user: '',
     isGuest: false,
     updateProfile: () => {},
-    tempProfileImage: '',
   };
 
   constructor(props) {
@@ -101,11 +98,11 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { user, tempProfileImage } = this.props;
+    const { user } = this.props;
     const profileData = _.attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      profilePicture: !tempProfileImage ? profileData.profile.profile_image : tempProfileImage,
+      profilePicture: profileData.profile.profile_image,
       coverPicture: profileData.profile.cover_image,
     });
   }
@@ -139,9 +136,8 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
-        const profileAvatar = avatarImage.length ? avatarImage[0].src : '';
         if (isGuest) {
-          updateProfile(userName, cleanValues, profileAvatar);
+          updateProfile(userName, cleanValues);
         } else {
           const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
           win.focus();
@@ -155,6 +151,9 @@ export default class ProfileSettings extends React.Component {
     // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { profilePicture, avatarImage } = this.state;
+
+    // caches.open('v1').then(cache => cache.delete('/images/waivio_konstantin-zakh').then(() => console.log('DONE')));
+    // https://waivio.nyc3.digitaloceanspaces.com/avatar/waivio_konstantin-zakh
 
     if (isGuest && !_.isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, profilePicture, intl)
@@ -350,7 +349,11 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('profile_image')(
                         <div className="Settings__profile-image">
-                          <Avatar size="large" icon="user" src={`${this.state.profilePicture}`} />
+                          <Avatar
+                            size="large"
+                            icon="user"
+                            src={`${this.state.profilePicture}?v=${Date.now()}`}
+                          />
                           <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
                               id: 'profile_change_avatar',
