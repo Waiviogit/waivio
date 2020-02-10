@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables';
 
 .ObjectCard {
   display: flex;
@@ -15,7 +16,6 @@
   //&:last-child {
   //  border-bottom: 0;
   //}
-
   &__top {
     display: flex;
     align-items: center;
@@ -24,9 +24,20 @@
     & > a:nth-child(2) {
       margin-left: 8px;
     }
+
     .username {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       margin-left: 8px;
+      display: inline-block;
+      max-width: 160px;
+
+      @media @small {
+        max-width: 235px;
+      }
     }
+
     .ant-tag {
       margin-right: 0;
     }
