@@ -196,7 +196,7 @@ const ImageSetter = ({
             type="file"
             accept="image/*"
             multiple={isMultiple}
-            onInput={handleChangeImage}
+            onChange={handleChangeImage}
             onClick={e => {
               e.target.value = null;
             }}
