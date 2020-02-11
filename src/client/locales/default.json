@@ -87,6 +87,7 @@
   "dislike": "Dislike",
   "unlike": "Unlike",
   "and_more_amount": "and {amount} more",
+  "and_more_reblogged": "and {amount} more",
   "post_reply_title": "This is a reply to: {title}",
   "post_reply_show_original_post": "Show original post",
   "post_reply_show_parent_discussion": "Show parent discussion",

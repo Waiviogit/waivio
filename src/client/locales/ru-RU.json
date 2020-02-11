@@ -87,6 +87,7 @@
   "dislike": "Не нравится",
   "unlike": "Не нравится",
   "and_more_amount": "и ещё {amount}",
+  "and_more_reblogged": "и ещё {amount}",
   "post_reply_title": "Это ответ на: {title}",
   "post_reply_show_original_post": "Показать оригинальный пост",
   "post_reply_show_parent_discussion": "Показать предыдущее обсуждение",
