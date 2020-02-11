@@ -40,7 +40,8 @@ export default (state = initialState, action) => {
         quickForecastData: [...mapperList],
         timer: action.payload.timer,
         roundTime: action.payload.round_time,
-      }}
+      };
+    }
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
       return state;
@@ -58,20 +59,6 @@ export default (state = initialState, action) => {
       return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS: {
-      if (action.payload.hasMore) {
-        return {
-          ...state,
-          winners: [
-            ...state.winners,
-            ...action.payload.users.map(user => ({
-              name: user.user,
-              reward: user.reward,
-            })),
-          ],
-          hasMoreStatistic: action.payload.hasMore,
-        };
-      }
-
       return {
         ...state,
         winners: [
@@ -84,18 +71,32 @@ export default (state = initialState, action) => {
       };
     }
 
-    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.SUCCESS: {
       return {
         ...state,
-        hasMoreStatistic: false,
+        winners: [
+          ...state.winners,
+          ...action.payload.users.map(user => ({
+            name: user.user,
+            reward: user.reward,
+          })),
+        ],
+        hasMoreStatistic: action.payload.hasMore,
       };
+    }
+
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.ERROR:
+      return state;
+
+    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
+      return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.SUCCESS:
       return {
         ...state,
         roundInfo: {
           rewards: action.payload.all_time_rewards,
-          voitingPowers: action.payload.voting_power,
+          votingPowers: action.payload.voting_power,
         },
       };
 
@@ -103,30 +104,35 @@ export default (state = initialState, action) => {
       return state;
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {
-      const answeredForecast = state.quickForecastData[action.payload.id];
-      state.quickForecastData.splice(action.payload.id, 1);
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload.id,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      const answeredArray = state.quickForecastData.filter(forecast => !forecast.active);
+      state.quickForecastData.splice(forecastIndex, 1);
+      state.quickForecastData.splice(answeredArray.length, 0, {
+        ...answeredForecast,
+        active: false,
+        side: action.payload.answer,
+        postPrice: action.payload.postPrice,
+        quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
+        status: 'pending',
+        isLoaded: true,
+      });
 
       return {
         ...state,
-        quickForecastData: [
-          {
-            ...answeredForecast,
-            active: false,
-            side: action.payload.answer,
-            postPrice: action.payload.postPrice,
-            quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
-            status: 'pending',
-            isLoaded: true,
-          },
-          ...state.quickForecastData,
-        ],
+        quickForecastData: [...state.quickForecastData],
         disabled: false,
       };
     }
 
     case activeForecastTypes.ANSWER_QUICK_ERROR: {
-      const answeredForecast = state.quickForecastData[action.payload.id];
-      state.quickForecastData.splice(action.payload.id, 1, {
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload.id,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      state.quickForecastData.splice(forecastIndex, 1, {
         ...answeredForecast,
         isLoaded: true,
       });
@@ -139,8 +145,11 @@ export default (state = initialState, action) => {
     }
 
     case activeForecastTypes.ANSWER_QUICK_LOADING: {
-      const answeredForecast = state.quickForecastData[action.payload];
-      state.quickForecastData.splice(action.payload, 1, {
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      state.quickForecastData.splice(forecastIndex, 1, {
         ...answeredForecast,
         isLoaded: false,
       });
@@ -150,6 +159,38 @@ export default (state = initialState, action) => {
         quickForecastData: [...state.quickForecastData],
         disabled: true,
       };
+    }
+
+    case activeForecastTypes.GET_QUICK_FORECAST_STATUS.SUCCESS: {
+      if (action.payload.status !== 'pending') {
+        const answeredForecast = state.quickForecastData.find(
+          forecast => forecast.id === action.payload.id,
+        );
+        const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+
+        state.quickForecastData.splice(forecastIndex, 1, {
+          ...action.payload,
+          isLoaded: true,
+        });
+
+        return {
+          ...state,
+          quickForecastData: [...state.quickForecastData],
+          disabled: false,
+        };
+      }
+
+      return state;
+    }
+
+    case activeForecastTypes.FINISH_QUICK_FORECAST_TIMER: {
+      const activeForecastList = state.quickForecastData.filter(forecast => !forecast.status);
+
+      return {
+        ...state,
+        winners: [],
+        quickForecastData: [...activeForecastList],
+      }
     }
 
     default:

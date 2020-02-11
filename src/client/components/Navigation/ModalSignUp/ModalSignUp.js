@@ -1,137 +1,200 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { Modal } from 'antd';
+import { Form, Icon, Modal } from 'antd';
+import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
+import { busyLogin, login } from '../../../auth/authActions';
+import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
+import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRebloggedList } from './../../../app/Reblog/reblogActions';
+import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import './ModalSignUp.less';
 
-@injectIntl
-class ModalSignUp extends React.Component {
-  static propTypes = {
-    intl: PropTypes.shape().isRequired,
-    isButton: PropTypes.bool.isRequired,
+const ModalSignUp = ({ isButton }) => {
+  const dispatch = useDispatch();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState({});
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const responseGoogle = async response => {
+    if (response) {
+      const res = await isUserRegistered(response.googleId, 'google');
+      if (res) {
+        dispatch(login(response.accessToken, 'google')).then(() => {
+          batch(() => {
+            dispatch(getFollowing());
+            dispatch(getFollowingObjects());
+            dispatch(getNotifications());
+            dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
+          });
+        });
+      } else {
+        setUserData({ ...response, image: response.w3.Paa, socialNetwork: 'google' });
+        setIsFormVisible(true);
+      }
+    }
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-    };
-    this.openNinjaModal = this.openNinjaModal.bind(this);
-  }
+  const responseFacebook = async response => {
+    if (response) {
+      const res = await isUserRegistered(response.id, 'facebook');
+      if (res) {
+        dispatch(login(response.accessToken, 'facebook')).then(() => {
+          batch(() => {
+            dispatch(getFollowing());
+            dispatch(getFollowingObjects());
+            dispatch(getNotifications());
+            dispatch(busyLogin());
+          });
+        });
+      } else {
+        setUserData({ ...response, image: response.picture.data.url, socialNetwork: 'facebook' });
+        setIsFormVisible(true);
+      }
+    }
+  };
 
-  getSignUpInfo = (imageLink, imageRoute, price, aim, result, features, isNinja) => (
+  const getSignUpInfo = (
     <div className="SignUpCard">
       <div className="SignUpCard__line">
-        <a href={imageRoute}>
-          <img alt="linkLogo" src={`${imageLink}`} />
+        <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
+          <img
+            alt="linkLogo"
+            src="https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png"
+          />
         </a>
       </div>
-      <div className="SignUpCard__line SignUpCard__text-price">{price}</div>
-      <div className="SignUpCard__line">{aim}</div>
-      <div className="SignUpCard__line">{result}</div>
-      <div className="SignUpCard__line">{features}</div>
-      {isNinja ? (
-        <a role="presentation" onClick={this.openNinjaModal}>
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
-        </a>
-      ) : (
-        <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
-        </a>
-      )}
+      <div className="ModalSignUp__link mb3">
+        <FormattedMessage id="freeSteemAcc" defaultMessage="- get a free Steem account" />
+        <FormattedMessage id="emailAndPhoneReq" defaultMessage="- email & phone required" />
+        <FormattedMessage id="longerWaiting" defaultMessage="- wait up to 2 weeks" />
+      </div>
+      <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
+        <FormattedMessage id="signup" defaultMessage="Sign up" />
+      </a>
     </div>
   );
 
-  openNinjaModal = () => {
-    this.authorizeViaNinja.click();
-    this.toggleModal();
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
-  toggleModal = () => {
-    this.setState({ isOpen: !this.state.isOpen });
-  };
+  const renderSignUp = () => (
+    <React.Fragment>
+      <h2 className="ModalSignUp__title">
+        <FormattedMessage id="signupForRewards" defaultMessage="Sign up for rewards!" />
+      </h2>
+      {/* <h2 className="ModalSignUp__title ModalSignUp__title--lined ModalSignUp__title ModalSignUp__title--lined--lined"> */}
+      {/*  <span> */}
+      {/*    <FormattedMessage id="steemAccounts" defaultMessage="STEEM ACCOUNTS" /> */}
+      {/*  </span> */}
+      {/* </h2> */}
+      {getSignUpInfo}
+      <div className="ModalSignUp__subtitle">
+        <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)" />
+        <FormattedMessage
+          id="getSteemAccountNow"
+          defaultMessage="to get a Steem account now using:"
+        />
+      </div>
+      <div className="mb3">
+        <a
+          href="https://steemwallet.app/widget/widget.html"
+          className="ModalSignUp__link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <FormattedMessage id="creditCards" defaultMessage="- credit cards" />
+        </a>
+        <a
+          href="https://blocktrades.us/create-steem-account"
+          className="ModalSignUp__link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH" />
+        </a>
+        <a
+          href="https://v2.steemconnect.com/accounts/create"
+          className="ModalSignUp__link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
+        </a>
+      </div>
+      <h2 className="ModalSignUp__title ModalSignUp__title--lined">
+        <span>
+          <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
+        </span>
+      </h2>
 
-  render() {
-    return (
-      <React.Fragment>
-        <div>
-          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-          <a
-            ref={a => {
-              this.authorizeViaNinja = a;
-            }}
-            title="Register a InvestArena Account"
-            data-name="InvestArena"
-            data-image="https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png"
-            data-referrer="waivio"
-            href="https://widget.steem.ninja/widget.html?referrer=waivio"
-            className="ninja-widget"
-          />
+      <div className="ModalSignUp__subtitle">
+        <FormattedMessage
+          id="lookAroundgetRewardsMakeConnections"
+          defaultMessage="Look around, get rewards, make connections,"
+        />
+        <FormattedMessage
+          id="createSteemAccountLater"
+          defaultMessage="create a Steem account later"
+        />
+      </div>
+      <div className="ModalSignUp__social mt3">
+        <GoogleLogin
+          buttonText="Google"
+          clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
+          onSuccess={responseGoogle}
+          cookiePolicy={'single_host_origin'}
+          onFailure={() => {}}
+          className="ModalSignUp__social-btn"
+        />
+        <FacebookLogin
+          appId="754038848413420"
+          autoLoad={false}
+          fields="name,email,picture"
+          callback={responseFacebook}
+          onFailure={() => {}}
+          textButton="Facebook"
+          cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
+          icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
+        />
+      </div>
+    </React.Fragment>
+  );
+
+  return (
+    <React.Fragment>
+      {isButton ? (
+        <button onClick={() => setIsModalOpen(true)} className="ModalSignUp__button">
+          <FormattedMessage id="signup" defaultMessage="Sign up" />
+        </button>
+      ) : (
+        <a role="presentation" onClick={() => setIsModalOpen(true)}>
+          <FormattedMessage id="signup" defaultMessage="Sign up" />
+        </a>
+      )}
+      <Modal width={416} title="" visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
+        <div className="ModalSignUp">
+          {isFormVisible ? (
+            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+          ) : (
+            renderSignUp()
+          )}
         </div>
-        {this.props.isButton ? (
-          <button onClick={this.toggleModal} className="ModalSignUp__button">
-            <FormattedMessage id="signup" defaultMessage="Sign up" />
-          </button>
-        ) : (
-          <a role="presentation" onClick={this.toggleModal}>
-            {this.props.intl.formatMessage({
-              id: 'signUp',
-              defaultMessage: 'Sign up',
-            })}
-          </a>
-        )}
-        {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-        {this.state.isOpen && (
-          <Modal
-            width={600}
-            title=""
-            visible={this.state.isOpen}
-            onCancel={this.toggleModal}
-            footer={null}
-          >
-            <div className="ModalSignUp">
-              {this.getSignUpInfo(
-                'https://cdn.steemitimages.com/DQmdbfH5akvanZk8Ntw92iEgcREkV8kv4uqxioTxDJLrHwD/steem-ninja.png',
-                'https://account.steem.ninja/?ref=waivio',
-                '$2.50',
-                this.props.intl.formatMessage({
-                  id: 'newSteemAcc',
-                  defaultMessage: 'New Steem Account',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'instAccountCreation',
-                  defaultMessage: 'Instant Account Creation',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'bonusDelegation',
-                  defaultMessage: 'BONUS: 15 SP delegation (for 90 days)',
-                }),
-                true,
-              )}
-              {this.getSignUpInfo(
-                'https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png',
-                process.env.SIGNUP_URL,
-                'Free',
-                this.props.intl.formatMessage({
-                  id: 'newSteemAcc',
-                  defaultMessage: 'New Steem Account',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'longerWaiting',
-                  defaultMessage: 'Longer waiting time (up to 2 weeks)"',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'emailAndPhoneReq',
-                  defaultMessage: 'Email and Phone Required',
-                }),
-                false,
-              )}
-            </div>
-          </Modal>
-        )}
-      </React.Fragment>
-    );
-  }
-}
+      </Modal>
+    </React.Fragment>
+  );
+};
 
-export default ModalSignUp;
+ModalSignUp.propTypes = {
+  isButton: PropTypes.bool.isRequired,
+};
+
+export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));

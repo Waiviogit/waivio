@@ -5,6 +5,7 @@ import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -37,7 +38,15 @@ class UserMenuWrapper extends React.Component {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    const isGuest = match.params.name.startsWith(GUEST_PREFIX);
+    return (
+      <UserMenu
+        defaultKey={currentKey}
+        onChange={this.onChange}
+        isGuest={isGuest}
+        {...otherProps}
+      />
+    );
   }
 }
 
@@ -63,7 +72,9 @@ const UserHero = ({
   setPostMessageAction,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
-  const followingCount = user.following_count + objectsFollowingCount;
+  const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
+  const followingCount = usersFollowingCount + objectsFollowingCount;
+  const followersCount = user.followers_count ? user.followers_count : 0;
 
   return (
     <div>
@@ -92,7 +103,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
+              <UserMenuWrapper followers={followersCount} following={followingCount} />
             </div>
           )}
         />

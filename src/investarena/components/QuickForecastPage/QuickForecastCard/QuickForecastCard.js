@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
-import { Icon } from 'antd';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Icon, message } from 'antd';
 import { Link } from 'react-router-dom';
 
+import {
+  answerForQuickForecast,
+  getForecastStatistic,
+  getForecastStatus,
+  getForecastWinners,
+  loadingForecast,
+} from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
 import ChartIcon from '../ChartIcon';
@@ -15,41 +23,54 @@ import './QuickForecastCard.less';
 
 const QuickForecastCard = ({
   forecast,
-  answerForecast,
   predictionObjectName,
   timerData,
-  id,
   avatar,
-  timerCallback,
   counter,
   intl,
   handleAuthorization,
   disabled,
+  link,
 }) => {
-  // flags
+  const [intervalId, setIntervalId] = useState();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!forecast.active && !forecast.isLoaded && forecast.status === 'pending' && disabled && !intervalId) {
+      const interval = setInterval(() => {
+        dispatch(getForecastStatus(forecast.permlink));
+      },2000);
+      setIntervalId(interval);
+    }
+
+    if (forecast.status !== 'pending' && !disabled && intervalId) {
+      if (forecast.status === 'guessed') {
+        dispatch(getForecastStatistic());
+        dispatch(getForecastWinners(5, 0));
+      }
+
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  });
+
+  useEffect(() => clearInterval(intervalId), []);
+
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-  const side = forecast.side === 'up'
-      ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
-      : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
+  const side =
+    forecast.side === 'up' ? (
+      <FormattedMessage id="forecast_answer_rise" defaultMessage="Yes" />
+    ) : (
+      <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
+    );
 
-  // messages
-  const forecastFinishMessage = winner
-    ? intl.formatMessage({
-        id: 'forecast_winner_message',
-        defaultMessage: 'You Win!!!',
-      })
-    : intl.formatMessage({
-        id: 'forecast_lose_message',
-        defaultMessage: 'Try again!!!',
-      });
-
-  // classLists
-  const forecastCardClassList = classNames('ForecastCard', {
-    'ForecastCard--toLose': lose,
-    'ForecastCard--win': winner,
-  });
+  const forecastFinishMessage = winner ? (
+    <FormattedMessage id="forecast_winner_message" defaultMessage="You Win!!!" />
+  ) : (
+    <FormattedMessage id="forecast_lose_message" defaultMessage="Try again!!!" />
+  );
   const sideClassList = classNames({
     green: forecast.side === 'up',
     red: forecast.side === 'down',
@@ -58,17 +79,49 @@ const QuickForecastCard = ({
     green: winner,
     red: lose,
   });
+  const messageActiveForecast = pendingStatus ? (
+    <p className="green">
+      <FormattedMessage id="rise" defaultMessage="Rise: " />
+      <span className={sideClassList}>{side}</span>
+    </p>
+  ) : (
+    <span className={forecastsMessage}>{forecastFinishMessage}</span>
+  );
+
+  // classLists
+  const forecastCardClassList = classNames('ForecastCard', {
+    'ForecastCard--toLose': lose,
+    'ForecastCard--win': winner,
+  });
+  const handleFinishTimer = () => {
+    dispatch(loadingForecast(forecast.id));
+  };
+
   const handleClick = answer => {
-    answerForecast(
-      forecast.author,
-      forecast.permlink,
-      forecast.expiredAt,
-      answer,
-      id,
-      forecast.security,
-      timerData,
-      counter,
-    );
+    dispatch(
+      answerForQuickForecast(
+        forecast.author,
+        forecast.permlink,
+        forecast.expiredAt,
+        answer,
+        forecast.security,
+        forecast.id,
+        timerData,
+      ),
+    )
+      .then(() => {
+        message.success(
+          `${intl.formatMessage({
+            id: 'forecast_info_message',
+            defaultMessage: 'Forecasts remaining in current round:',
+          })} ${4 - counter}`,
+        );
+      })
+      .catch(() =>
+        message.error(
+          'Not enough RC: you need to replenish the SP or wait until the RC (recovers 20% per day)',
+        ),
+      );
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
@@ -80,42 +133,34 @@ const QuickForecastCard = ({
           <div className="ForecastCard__to-vote-card-container">
             <div className="ForecastCard__val">
               <div>
-                {intl.formatMessage({
-                  id: 'was',
-                  defaultMessage: 'Was',
-                })}
+                <FormattedMessage id="was" defaultMessage="Was" />
               </div>
-              <USDDisplay value={+forecast.postPrice} />
+              <span title={forecast.postPrice}>
+                <USDDisplay value={+forecast.postPrice} />
+              </span>
             </div>
             <div className="ForecastCard__flex-container-vertical">
-              <Link to={`/object/${predictionObjectName}`} className="ForecastCard__title">
+              <h2 className="ForecastCard__title">
                 <p className="ForecastCard__title-row">
-                  <img
-                    className="ForecastCard__img ForecastCard__img--little"
-                    src={avatar}
-                    alt={predictionObjectName}
-                  />
-                  &#160;
-                  {predictionObjectName}
+                  <Link className="ForecastCard__link" to={`/object/${link}`}>
+                    <img
+                      className="ForecastCard__img ForecastCard__img--little"
+                      src={avatar}
+                      alt={predictionObjectName}
+                    />
+                    &nbsp;
+                    {predictionObjectName}
+                  </Link>
                 </p>
-                {pendingStatus ? (
-                  <p className="green">
-                    {intl.formatMessage({
-                      id: 'rise',
-                      defaultMessage: 'Rise',
-                    })}
-                    : <span className={sideClassList}>{side}</span>
-                  </p>
-                ) : (
-                  <span className={forecastsMessage}>{forecastFinishMessage}</span>
-                )}
-              </Link>
+                {!forecast.isLoaded ? <Loading /> : messageActiveForecast}
+              </h2>
               <div className="ForecastCard__forecast-timer">
                 <Icon type="clock-circle" />
-                &#160;
+                &nbsp;
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
-                  willCallAfterTimerEnd={timerCallback}
+                  willCallAfterTimerEnd={handleFinishTimer}
+                  isFinish
                 />
               </div>
             </div>
@@ -129,21 +174,22 @@ const QuickForecastCard = ({
           <React.Fragment>
             <div className="ForecastCard__top-block">
               <p className="ForecastCard__title ForecastCard__title-row">
-                <img
-                  className="ForecastCard__img ForecastCard__img--little"
-                  src={avatar}
-                  alt={predictionObjectName}
-                />
-                &#160;
+                <Link className="ForecastCard__link" to={`/object/${link}`}>
+                  <img
+                    className="ForecastCard__img ForecastCard__img--little"
+                    src={avatar}
+                    alt={predictionObjectName}
+                  />
+                  &nbsp;
+                  {predictionObjectName}
+                </Link>
+                &nbsp;
                 {intl.formatMessage(
                   {
                     id: 'forecast_question',
-                    defaultMessage: '{predictionObjectName} will rise in {time} min?',
+                    defaultMessage: 'will rise in {time} min?',
                   },
-                  {
-                    predictionObjectName,
-                    time,
-                  },
+                  { time },
                 )}
               </p>
             </div>
@@ -155,20 +201,14 @@ const QuickForecastCard = ({
                   onClick={() => handleAnswerClick('up')}
                   className="ballotButton ballotButton__positive"
                 >
-                  {intl.formatMessage({
-                    id: 'forecast_answer_rise',
-                    defaultMessage: 'Yes',
-                  })}
+                  <FormattedMessage id="forecast_answer_rise" defaultMessage="Yes" />
                 </button>
                 <button
                   disabled={disabled}
                   onClick={() => handleAnswerClick('down')}
                   className="ballotButton ballotButton__negative"
                 >
-                  {intl.formatMessage({
-                    id: 'forecast_answer_fall',
-                    defaultMessage: 'No',
-                  })}
+                  <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
                 </button>
               </div>
             </div>
@@ -194,16 +234,15 @@ QuickForecastCard.propTypes = {
     side: PropTypes.string,
     expiredAt: PropTypes.string,
     isLoaded: PropTypes.bool,
+    id: PropTypes.string,
   }).isRequired,
-  id: PropTypes.number.isRequired,
-  answerForecast: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
-  timerCallback: PropTypes.func.isRequired,
   handleAuthorization: PropTypes.func.isRequired,
   predictionObjectName: PropTypes.string,
   avatar: PropTypes.string,
+  link: PropTypes.string,
   timerData: PropTypes.number.isRequired,
   counter: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
@@ -213,6 +252,7 @@ QuickForecastCard.defaultProps = {
   disabled: false,
   avatar: '',
   predictionObjectName: '',
+  link: '',
 };
 
 export default injectIntl(QuickForecastCard);

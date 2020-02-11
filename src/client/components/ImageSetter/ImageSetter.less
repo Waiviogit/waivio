@@ -20,7 +20,7 @@
     }
   }
 
-  .Image-box {
+  .image-box {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -61,7 +61,7 @@
     }
   }
 
-  .Button-upload {
+  .button-upload {
     border: 1px dashed @white-gainsboro;
     background-color: @white-darker;
     border-radius: 4px;
@@ -73,6 +73,7 @@
 
     &:hover {
       border: 1px dashed @blue-dodgerBlue;
+      cursor: pointer;
     }
 
     &__container {
@@ -91,7 +92,7 @@
     }
   }
 
-  .Image-upload {
+  .image-upload {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -106,7 +107,7 @@
     }
   }
 
-  .Input-upload {
+  .input-upload {
     display: flex;
     width: 75%;
 
@@ -141,12 +142,10 @@
 
       &:hover {
         background-color: @baby-blue;
+        cursor: pointer;
       }
     }
   }
 }
 
-.ant-tooltip.ImageSetter__tooltip-input {
-  z-index: 1300 !important;
-  max-width: 300px;
-}
+@import './ImageSetter-nightmode';

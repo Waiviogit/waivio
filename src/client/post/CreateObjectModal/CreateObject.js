@@ -233,7 +233,7 @@ class CreateObject extends React.Component {
                   className="Editor__title"
                   placeholder={intl.formatMessage({
                     id: 'value_placeholder',
-                    defaultMessage: 'Add value',
+                    defaultMessage: 'Topic name',
                   })}
                 />,
               )}

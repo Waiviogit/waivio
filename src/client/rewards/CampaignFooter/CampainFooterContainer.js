@@ -4,14 +4,14 @@ import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import {
   getAuthenticatedUser,
-  getPendingLikes,
   getFollowingList,
-  getPendingFollows,
-  getVotingPower,
-  getRewardFund,
-  getVotePercent,
   getFollowingObjectsList,
   getPendingFollowingObjects,
+  getPendingFollows,
+  getPendingLikes,
+  getRewardFund,
+  getVotePercent,
+  getVotingPower,
 } from '../../reducers';
 import { voteCommentFromRewards as votePost } from '../../post/postActions';
 import { followUser, unfollowUser } from '../../user/userActions';
@@ -50,18 +50,16 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  dispatch =>
-    bindActionCreators(
-      {
-        votePost,
-        followUser,
-        unfollowUser,
-        followObject,
-        unfollowObject,
-        push,
-      },
-      dispatch,
-    ),
+export default connect(mapStateToProps, dispatch =>
+  bindActionCreators(
+    {
+      votePost,
+      followUser,
+      unfollowUser,
+      followObject,
+      unfollowObject,
+      push,
+    },
+    dispatch,
+  ),
 )(CampaignFooter);
