@@ -11,19 +11,31 @@ import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 const ObjectExpertise = ({ username, wobject }) => {
   const [experts, setExperts] = useState({ user: {}, users: [] });
-  const { users, user } = experts;
+  const { users, user, loading } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
+
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5).then(data => setExperts(data));
+    getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
+      .then(data => {
+        setExperts({ ...data, loading: false });
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch(err => setExperts({ user: {}, users: [], loading: false }));
   }, [wobject.author_permlink]);
-  return !_.isEmpty(users) ? (
-    <div className="SidebarContentBlock">
-      <h4 className="SidebarContentBlock__title">
-        <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-        <FormattedMessage id="object_expertise" defaultMessage="Experts" />
-      </h4>
-      <div className="SidebarContentBlock__content">
-        {users &&
+
+  let renderExperts = null;
+
+  if (loading) {
+    renderExperts = <RightSidebarLoading />;
+  } else if (!loading && !_.isEmpty(users)) {
+    renderExperts = (
+      <div className="SidebarContentBlock">
+        <h4 className="SidebarContentBlock__title">
+          <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
+          <FormattedMessage id="object_expertise" defaultMessage="Experts" />
+        </h4>
+        <div className="SidebarContentBlock__content">
+          {users &&
           _.map(_.slice(users, 0, 5), u => (
             <UserCard
               key={u.name}
@@ -45,20 +57,20 @@ const ObjectExpertise = ({ username, wobject }) => {
           </React.Fragment>
         )}
 
-        {_.size(users) > 5 && (
-          <React.Fragment>
-            <h4 className="ObjectExpertise__more">
-              <Link to={`/object/${wobject.author_permlink}/expertise`}>
-                <FormattedMessage id="show_more_authors" defaultMessage="Show more authors" />
-              </Link>
-            </h4>
-          </React.Fragment>
-        )}
-      </div>
+          {_.size(users) > 5 && (
+            <React.Fragment>
+              <h4 className="ObjectExpertise__more">
+                <Link to={`/object/${wobject.author_permlink}/expertise`}>
+                  <FormattedMessage id="show_more_authors" defaultMessage="Show more authors" />
+                </Link>
+              </h4>
+            </React.Fragment>
+          )}
+        </div>
     </div>
-  ) : (
-    <RightSidebarLoading />
-  );
+    );
+  }
+  return renderExperts;
 };
 
 ObjectExpertise.propTypes = {
@@ -66,4 +78,4 @@ ObjectExpertise.propTypes = {
   wobject: PropTypes.shape().isRequired,
 };
 
-export default ObjectExpertise;
+export default React.memo(ObjectExpertise);
