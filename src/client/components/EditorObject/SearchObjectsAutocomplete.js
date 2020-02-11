@@ -21,25 +21,6 @@ import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
   },
 )
 class SearchObjectsAutocomplete extends Component {
-  static defaultProps = {
-    intl: {},
-    style: { width: '100%' },
-    className: '',
-    searchObjectsResults: [],
-    itemsIdsToOmit: [],
-    objectType: '',
-    searchObjects: () => {},
-    clearSearchResults: () => {},
-    handleSelect: () => {},
-    allowClear: true,
-    rowIndex: 0,
-    ruleIndex: 0,
-    disabled: false,
-    placeholder: '',
-    parentPermlink: '',
-    autoFocus: true,
-  };
-
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     objectType: PropTypes.string,
@@ -57,6 +38,25 @@ class SearchObjectsAutocomplete extends Component {
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
     autoFocus: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    intl: {},
+    style: { width: '100%' },
+    className: '',
+    searchObjectsResults: [],
+    itemsIdsToOmit: [],
+    objectType: '',
+    searchObjects: () => {},
+    clearSearchResults: () => {},
+    handleSelect: () => {},
+    allowClear: true,
+    rowIndex: 0,
+    ruleIndex: 0,
+    disabled: false,
+    placeholder: '',
+    parentPermlink: '',
+    autoFocus: true,
   };
 
   constructor(props) {

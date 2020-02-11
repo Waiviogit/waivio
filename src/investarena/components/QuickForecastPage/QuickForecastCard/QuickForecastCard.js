@@ -36,10 +36,16 @@ const QuickForecastCard = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!forecast.active && !forecast.isLoaded && forecast.status === 'pending' && disabled && !intervalId) {
+    if (
+      !forecast.active &&
+      !forecast.isLoaded &&
+      forecast.status === 'pending' &&
+      disabled &&
+      !intervalId
+    ) {
       const interval = setInterval(() => {
         dispatch(getForecastStatus(forecast.permlink));
-      },2000);
+      }, 2000);
       setIntervalId(interval);
     }
 

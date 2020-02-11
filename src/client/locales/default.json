@@ -796,7 +796,7 @@
   "forecast.currentForecast": "Current forecasts",
   "forecast.create": "Created:",
   "forecast.expire": "Expire:",
-  "no_quick_forecasts": "There are currently no forecasts in this category",
+  "no_quick_forecasts": "Currently there are no forecasts in this category",
   "forecasts_rewards": "Rewards:",
   "forecast_round": "Current round:",
   "how_it_work": "How it works?",
@@ -1109,5 +1109,8 @@
   "terms_and_policy_agreement": "I have read and agree to the {Terms}, the {Privacy}, the {Cookies}.",
   "nickname": "Nickname",
   "preferred_languages": "Preferred languages",
-  "public_profile": "Public profile"
+  "public_profile": "Public profile",
+  "link_placeholder": "Add url",
+  "modal_button_cancel": "Cancel",
+  "modal_button_yes": "OK"
 }
