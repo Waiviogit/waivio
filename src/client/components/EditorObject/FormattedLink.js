@@ -9,16 +9,14 @@ import '../Editor/Editor.less';
 @Form.create()
 class FormattedLink extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape(),
-    form: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
+    form: PropTypes.shape().isRequired,
     addLink: PropTypes.func.isRequired,
     handleCloseModal: PropTypes.func.isRequired,
     isOpenModal: PropTypes.bool,
   };
 
   static defaultProps = {
-    intl: {},
-    form: {},
     isOpenModal: false,
     handleCloseModal: () => {},
   };
