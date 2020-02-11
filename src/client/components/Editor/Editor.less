@@ -22,7 +22,7 @@
   }
 
   & .ant-form-item-required {
-    &:before {
+    &::before {
       content: '' !important;
     }
   }
@@ -65,15 +65,19 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+
     &__cancel {
       margin: 0;
       padding: 0;
+
       button {
         margin-right: 10px;
       }
     }
+
     @media @small, @medium, @large {
       justify-content: space-between;
+
       &__info {
         display: unset !important;
       }
@@ -82,6 +86,7 @@
     &__info {
       font-weight: bold;
       display: none;
+
       .iconfont {
         font-size: 20px;
         vertical-align: -3px;
@@ -103,21 +108,10 @@
 
       .ant-form-item-control {
         text-align: right !important;
+
         button {
           width: 145px;
         }
-      }
-    }
-
-    &__cancel {
-      margin-bottom: 0 !important;
-
-      .ant-form-item-control {
-        text-align: right !important;
-      }
-
-      .Action {
-        background-color: @red !important;
       }
     }
   }
