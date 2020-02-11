@@ -190,7 +190,7 @@ export default (state = initialState, action) => {
         ...state,
         winners: [],
         quickForecastData: [...activeForecastList],
-      }
+      };
     }
 
     default:

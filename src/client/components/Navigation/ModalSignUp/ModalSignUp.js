@@ -180,7 +180,7 @@ const ModalSignUp = ({ isButton }) => {
           <FormattedMessage id="signup" defaultMessage="Sign up" />
         </a>
       )}
-      <Modal width={416} title="" visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
+      <Modal width={416} visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
         <div className="ModalSignUp">
           {isFormVisible ? (
             <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
