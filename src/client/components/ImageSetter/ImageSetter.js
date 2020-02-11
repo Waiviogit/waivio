@@ -9,6 +9,7 @@ import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
+
 import './ImageSetter.less';
 
 const ImageSetter = ({
@@ -20,6 +21,7 @@ const ImageSetter = ({
   onImageLoaded,
   defaultImage,
   isRequired,
+  isTitle,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -160,7 +162,10 @@ const ImageSetter = ({
   return (
     <div className="ImageSetter">
       <div
-        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired })}
+        className={classNames('ImageSetter__label', {
+          'ImageSetter__label--required': isRequired,
+          'ImageSetter__label--no-visible': !isTitle,
+        })}
       >
         {renderTitle()}
       </div>
@@ -214,7 +219,9 @@ const ImageSetter = ({
               </div>
             </div>
           </label>
-          <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
+          <span className="ImageSetter__center-text">
+            {intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}
+          </span>
           <div className="input-upload">
             <input
               className="input-upload__item"
@@ -247,12 +254,14 @@ ImageSetter.propTypes = {
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
+  isTitle: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
   defaultImage: '',
   isRequired: false,
+  isTitle: true,
 };
 
 export default withEditor(injectIntl(ImageSetter));
