@@ -399,7 +399,7 @@ class EditorInput extends React.Component {
               onImageLoaded={this.getImages}
               onLoadingImage={this.onLoadingImage}
               isRequired
-              title={false}
+              isTitle={false}
             />
           )}
         </Modal>
