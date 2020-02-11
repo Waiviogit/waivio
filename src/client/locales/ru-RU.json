@@ -1039,6 +1039,6 @@
   "link_placeholder": "Добавьте url",
   "modal_button_cancel": "Отменить",
   "modal_button_yes": "OK",
-  "link_error_empty": "Пожалуйста введите URL"
+  "link_error_empty": "Пожалуйста введите URL",
   "please_input_nickname": "Введите никнейм"
 }
