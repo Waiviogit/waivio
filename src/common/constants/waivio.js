@@ -20,7 +20,7 @@ export const newUserRecommendTopics = {
   news: ['politics', 'science'],
   lifestyle: ['food', 'health', 'travel'],
   entertainment: ['movies', 'music', 'art', 'photography'],
-  cryptos: ['bitcoin', 'ethereum', 'EOS', 'steem', 'crypto', 'currency', 'blockchain'],
+  cryptos: ['bitcoin', 'ethereum', 'eos', 'steem', 'crypto', 'currency', 'blockchain'],
   stocks: ['trading', 'gold', 'stocks'],
   more: ['funny', 'cats', 'beer', 'poll'],
 };
@@ -34,3 +34,5 @@ export const newUserRecommendExperts = {
   health: ['anaestrada12', 'riccc96', 'naturalmedicine'],
   travel: ['koenau', 'travelgirl', 'jarvie'],
 };
+
+export const POST_AUTHOR_FOR_REWARDS_COMMENTS = 'monterey';

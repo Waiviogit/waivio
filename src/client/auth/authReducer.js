@@ -8,7 +8,6 @@ const initialState = {
   isReloading: false,
   loaded: false,
   user: {},
-  tempProfileImage: '',
   userMetaData: {},
   isGuestUser: false,
 };
@@ -94,7 +93,6 @@ export default (state = initialState, action) => {
             ...state.user,
             json_metadata: action.meta,
           },
-          tempProfileImage: action.payload.profileImage,
         };
       }
 
@@ -125,4 +123,3 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
-export const getProfileImage = state => state.tempProfileImage;

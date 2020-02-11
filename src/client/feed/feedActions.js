@@ -100,6 +100,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   getState,
 ) => {
   let startAuthor = '';
+  let userBlogPosts = [];
   let startPermlink = '';
   let userBlogPosts = [];
   if (!initialLoad) {

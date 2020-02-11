@@ -87,6 +87,7 @@ const MatchBot = ({ intl, userName }) => {
       message.success(messageData.successMinVotedChanged);
     });
   };
+
   return (
     <div className="MatchBot">
       {userName ? (

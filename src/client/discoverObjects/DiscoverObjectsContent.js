@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _, { isEmpty, omit } from 'lodash';
 import { connect } from 'react-redux';
-import { Button, Modal, Tag } from 'antd';
+import { Button, message, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
@@ -13,6 +13,7 @@ import {
   getHasMoreRelatedObjects,
   getAvailableFilters,
   getHasMap,
+  getAuthenticatedUserName,
 } from '../reducers';
 import {
   getObjectType,
@@ -28,6 +29,11 @@ import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import Campaign from '../rewards/Campaign/Campaign';
+import Proposition from '../rewards/Proposition/Proposition';
+import { assignProposition, declineProposition } from '../user/userActions';
+// eslint-disable-next-line import/extensions
+import * as apiConfig from '../../waivioApi/config';
 
 const modalName = {
   FILTERS: 'filters',
@@ -49,6 +55,7 @@ const SORT_OPTIONS = {
     isFetching: getObjectTypeLoading(state),
     hasMoreObjects: getHasMoreRelatedObjects(state),
     searchString: new URLSearchParams(props.history.location.search).get('search'),
+    userName: getAuthenticatedUserName(state),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -56,6 +63,8 @@ const SORT_OPTIONS = {
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
+    assignProposition,
+    declineProposition,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -79,6 +88,9 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
+    userName: PropTypes.string.isRequired,
+    assignProposition: PropTypes.func.isRequired,
+    declineProposition: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -93,6 +105,7 @@ class DiscoverObjectsContent extends Component {
       isTypeHasFilters: isNeedFilters(props.typeName),
       isModalOpen: false,
       modalTitle: '',
+      loadingAssign: false,
     };
   }
 
@@ -170,8 +183,72 @@ class DiscoverObjectsContent extends Component {
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
+  assignPropositionHandler = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    this.setState({ loadingAssign: true });
+    this.props
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      })
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      });
+  };
+
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
+    this.setState({ loadingAssign: true });
+    this.props
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      })
+      .catch(e => {
+        console.log(e.toString());
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      });
+  };
+
   render() {
-    const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;
+    const { isTypeHasFilters, isModalOpen, modalTitle, loadingAssign } = this.state;
     const {
       intl,
       isFetching,
@@ -181,6 +258,7 @@ class DiscoverObjectsContent extends Component {
       sort,
       filteredObjects,
       hasMoreObjects,
+      userName,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -261,9 +339,35 @@ class DiscoverObjectsContent extends Component {
             elementIsScrollable={false}
             threshold={1500}
           >
-            {filteredObjects.map(wObj => (
-              <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />
-            ))}
+            {filteredObjects.map(wObj => {
+              if (wObj.campaigns) {
+                return (
+                  <Campaign
+                    proposition={wObj}
+                    filterKey={'active'}
+                    key={wObj.id}
+                    userName={userName}
+                  />
+                );
+              }
+              if (wObj.propositions && wObj.propositions.length) {
+                return wObj.propositions.map(proposition => (
+                  <Proposition
+                    guide={proposition.guide}
+                    proposition={proposition}
+                    wobj={wObj}
+                    assignCommentPermlink={wObj.permlink}
+                    assignProposition={this.assignPropositionHandler}
+                    discardProposition={this.discardProposition}
+                    authorizedUserName={userName}
+                    loading={loadingAssign}
+                    key={`${wObj.author_permlink}`}
+                    assigned={proposition.assigned}
+                  />
+                ));
+              }
+              return <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />;
+            })}
           </ReduxInfiniteScroll>
         ) : (
           (isFetching && <Loading />) || (

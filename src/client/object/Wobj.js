@@ -15,6 +15,7 @@ import {
   getObjectAlbums,
   getScreenSize,
   getObjectFetchingState,
+  getLocale,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
@@ -38,6 +39,7 @@ import NotFound from '../statics/NotFound';
     authenticatedUserName: getAuthenticatedUserName(state),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
+    locale: getLocale(state),
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
@@ -58,20 +60,21 @@ export default class Wobj extends React.Component {
     history: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
-    getObjectInfo: PropTypes.func,
+    getObjectInfo: PropTypes.func.isRequired,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
+    locale: PropTypes.string,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
     authenticatedUserName: '',
+    locale: '',
     loaded: false,
     failed: false,
     isFetching: false,
-    getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
     clearObjectFromStore: () => {},
@@ -120,8 +123,8 @@ export default class Wobj extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { authenticatedUserName, match } = this.props;
-    if (prevProps.match.params.name !== match.params.name) {
+    const { authenticatedUserName, match, locale } = this.props;
+    if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }

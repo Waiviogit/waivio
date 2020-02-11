@@ -5,9 +5,10 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal } from 'antd';
+import moment from 'moment';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser, getProfileImage } from '../reducers';
+import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -47,7 +48,6 @@ function mapPropsToFields(props) {
     user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
-    tempProfileImage: getProfileImage(state),
   }),
   {
     updateProfile,
@@ -67,7 +67,6 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.string,
-    tempProfileImage: PropTypes.string,
   };
 
   static defaultProps = {
@@ -77,7 +76,6 @@ export default class ProfileSettings extends React.Component {
     user: '',
     isGuest: false,
     updateProfile: () => {},
-    tempProfileImage: '',
   };
 
   constructor(props) {
@@ -93,6 +91,7 @@ export default class ProfileSettings extends React.Component {
       coverImage: [],
       isCover: false,
       isAvatar: false,
+      lastAccountUpdate: '',
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -101,12 +100,13 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { user, tempProfileImage } = this.props;
+    const { user } = this.props;
     const profileData = _.attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      profilePicture: !tempProfileImage ? profileData.profile.profile_image : tempProfileImage,
+      profilePicture: profileData.profile.profile_image,
       coverPicture: profileData.profile.cover_image,
+      lastAccountUpdate: moment(user.updatedAt).unix(),
     });
   }
 
@@ -139,9 +139,8 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
-        const profileAvatar = avatarImage.length ? avatarImage[0].src : '';
         if (isGuest) {
-          updateProfile(userName, cleanValues, profileAvatar);
+          updateProfile(userName, cleanValues);
         } else {
           const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
           win.focus();
@@ -217,7 +216,16 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML, isModal, isLoadingImage, avatarImage, coverImage, isAvatar } = this.state;
+    const {
+      bodyHTML,
+      isModal,
+      isLoadingImage,
+      avatarImage,
+      coverImage,
+      isAvatar,
+      lastAccountUpdate,
+      profilePicture,
+    } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -350,7 +358,11 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('profile_image')(
                         <div className="Settings__profile-image">
-                          <Avatar size="large" icon="user" src={`${this.state.profilePicture}`} />
+                          <Avatar
+                            size="large"
+                            icon="user"
+                            src={`${profilePicture}?${lastAccountUpdate}`}
+                          />
                           <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
                               id: 'profile_change_avatar',
