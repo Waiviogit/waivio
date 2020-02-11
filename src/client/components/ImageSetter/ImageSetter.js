@@ -21,7 +21,7 @@ const ImageSetter = ({
   onImageLoaded,
   defaultImage,
   isRequired,
-  title,
+  isTitle,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -164,7 +164,7 @@ const ImageSetter = ({
       <div
         className={classNames('ImageSetter__label', {
           'ImageSetter__label--required': isRequired,
-          'ImageSetter__label--no-visible': !title,
+          'ImageSetter__label--no-visible': !isTitle,
         })}
       >
         {renderTitle()}
@@ -254,14 +254,14 @@ ImageSetter.propTypes = {
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
-  title: PropTypes.bool,
+  isTitle: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
   defaultImage: '',
   isRequired: false,
-  title: true,
+  isTitle: true,
 };
 
 export default withEditor(injectIntl(ImageSetter));

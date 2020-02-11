@@ -313,10 +313,10 @@ class EditorInput extends React.Component {
   handleSelectObject(wObj) {
     this.props.onAddLinkedObject(wObj);
     this.insertObject(wObj.id, wObj.name);
-    this.handleToggleModal();
+    this.handleCloseModal();
   }
 
-  handleToggleModal = () => {
+  handleCloseModal = () => {
     this.setState({
       showModal: false,
       isObject: false,
@@ -364,7 +364,7 @@ class EditorInput extends React.Component {
   };
 
   handleOnOkModal = () => {
-    this.handleToggleModal();
+    this.handleCloseModal();
 
     if (this.state.isImage) {
       this.beforeInsertImage();
@@ -406,17 +406,17 @@ class EditorInput extends React.Component {
         />
         <Modal
           wrapClassName="Editor__modal"
-          onCancel={this.handleToggleModal}
+          onCancel={this.handleCloseModal}
           okButtonProps={{ disabled: isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={showModal}
           title={titleModal}
           onOk={this.handleOnOkModal}
           cancelText={this.props.intl.formatMessage({
-            id: 'modal.button.cancel',
+            id: 'modal_button_cancel',
             defaultMessage: 'Cancel',
           })}
-          okText={this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+          okText={this.props.intl.formatMessage({ id: 'modal_button_yes', defaultMessage: 'OK' })}
         >
           {isObject && (
             <SearchObjectsAutocomplete

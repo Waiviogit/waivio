@@ -116,12 +116,7 @@ const EditorToolbar = ({ intl, onSelect }) => {
 
 EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
-  onSelect: PropTypes.func,
-  onSelectLinkedObject: PropTypes.func.isRequired,
-};
-
-EditorToolbar.defaultProps = {
-  onSelect: () => {},
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default injectIntl(EditorToolbar);

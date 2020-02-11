@@ -9,18 +9,15 @@ import '../Editor/Editor.less';
 @Form.create()
 class FormattedLink extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape(),
-    form: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
+    form: PropTypes.shape().isRequired,
     addLink: PropTypes.func.isRequired,
     handleCloseModal: PropTypes.func.isRequired,
     isOpenModal: PropTypes.bool,
   };
 
   static defaultProps = {
-    intl: {},
-    form: {},
     isOpenModal: false,
-    handleCloseModal: () => {},
   };
 
   handleSubmit = e => {
@@ -43,10 +40,10 @@ class FormattedLink extends React.Component {
         title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}
         onOk={this.handleSubmit}
         cancelText={this.props.intl.formatMessage({
-          id: 'modal.button.cancel',
+          id: 'modal_button_cancel',
           defaultMessage: 'Cancel',
         })}
-        okText={this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
+        okText={this.props.intl.formatMessage({ id: 'modal_button_yes', defaultMessage: 'OK' })}
       >
         <Form className="Link" layout="vertical">
           <Form.Item>
