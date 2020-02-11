@@ -50,7 +50,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   return dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI.vote(voter, author, post.permlink, weight).then(res => {
+      promise: steemConnectAPI.vote(voter, post.author_original || author, post.permlink, weight).then(res => {
         if (res.status === 200 && isGuest) {
           return { isFakeLikeOk: true };
         }

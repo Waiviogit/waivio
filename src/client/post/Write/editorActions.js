@@ -278,6 +278,9 @@ export function createPost(postData) {
               });
             }
             return result;
+          })
+            .catch(err => {
+            dispatch(notify(err.error.message, 'error'));
           }),
         },
       });

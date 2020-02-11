@@ -258,6 +258,7 @@ export const mapObjectAppends = (comments, wObj, albums) => {
     const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
     return {
       ...matchComment,
+      active_votes: field.active_votes,
       author: field.creator,
       author_original: field.author,
       author_rank: (rankedUser && rankedUser.rank) || 0,
