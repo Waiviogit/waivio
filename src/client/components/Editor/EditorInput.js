@@ -24,8 +24,8 @@ class EditorInput extends React.Component {
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
     onAddLinkedObject: PropTypes.func,
-    form: PropTypes.shape(),
-    intl: PropTypes.shape(),
+    form: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -38,8 +38,6 @@ class EditorInput extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onAddLinkedObject: () => {},
-    form: {},
-    intl: {},
   };
 
   static hotkeys = {
@@ -65,7 +63,6 @@ class EditorInput extends React.Component {
       isImage: false,
       isLink: false,
       isObject: false,
-      form: null,
       isLoadingImage: false,
       currentImage: [],
     };
