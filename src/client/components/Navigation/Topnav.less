@@ -17,6 +17,7 @@
 
     img {
       width: 150px;
+
       @media @medium, @large {
         width: 160px;
       }
@@ -62,12 +63,13 @@
   &__search-content {
     margin-left: 10px;
     max-width: calc(100vw - 210px);
-    @media @small, @medium, @large {
-      max-width: 350px;
-    }
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
   }
 
   &__search-content-small {
@@ -193,6 +195,7 @@
 
   &__menu-logged-out {
     margin-left: 15px;
+
     @media @medium {
       margin-left: 0;
     }
@@ -289,7 +292,7 @@ div[data-dir='rtl'] .Topnav {
 
   &__user {
     &__username {
-      margin-left: 0px;
+      margin-left: 0;
       margin-right: 8px;
     }
   }
@@ -312,6 +315,7 @@ div[data-dir='rtl'] .Topnav {
   box-shadow: none;
   padding-top: 5px;
   max-width: 250px;
+
   @media @small {
     max-width: 270px;
   }
@@ -418,8 +422,9 @@ div[data-dir='rtl'] .Topnav {
   color: @blue-baliHai !important;
 }
 
-.Topnav__notifications-tooltip {
-  top: 61px !important;
+.Topnav__notifications-tooltip.ant-tooltip.ant-tooltip-placement-bottom {
+  top: 45px !important;
+  z-index: 1100 !important;
 }
 
 .Topnav__menu--icon {
