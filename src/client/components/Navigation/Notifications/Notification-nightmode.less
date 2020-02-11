@@ -12,6 +12,20 @@
     &__text {
       &__message {
         color: @grey-darkGrey;
+
+        & > a {
+          font-weight: 700;
+        }
+
+        & > span {
+          &:hover {
+            color: @blue-vivid;
+
+            & > span {
+              color: @blue-vivid;
+            }
+          }
+        }
       }
     }
 
