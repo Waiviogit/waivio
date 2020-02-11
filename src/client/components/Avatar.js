@@ -5,7 +5,7 @@ import moment from 'moment';
 import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
-export function getAvatarURL(username, size = 100, lastAccountUpdate) {
+export function getAvatarURL(username, size = 100, lastAccountUpdate = '') {
   if (username && username.includes('waivio_')) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }

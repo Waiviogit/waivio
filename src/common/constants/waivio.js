@@ -34,3 +34,5 @@ export const newUserRecommendExperts = {
   health: ['anaestrada12', 'riccc96', 'naturalmedicine'],
   travel: ['koenau', 'travelgirl', 'jarvie'],
 };
+
+export const POST_AUTHOR_FOR_REWARDS_COMMENTS = 'monterey';

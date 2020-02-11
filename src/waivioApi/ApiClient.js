@@ -922,9 +922,9 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+export const getPostCommentsFromApi = ({ category, author, permlink }) => {
   return fetch(
-    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+    `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
   )
     .then(res => res.json())
     .then(data => data)

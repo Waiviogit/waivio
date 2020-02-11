@@ -1033,9 +1033,7 @@
   "EOS": "EOS",
   "health": "health",
   "travel": "travel",
-  "need_confirm_agreement": "You need to confirm agreement",
   "post_btn_video_placeholder": "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'",
-  "link_placeholder": "Add url",
-  "modal.button.cancel": "Cancel",
-  "modal.button.yes": "OK"
+  "need_confirm_agreement": "You need to confirm agreement",
+  "please_input_nickname": "Nickname cannot be empty"
 }
