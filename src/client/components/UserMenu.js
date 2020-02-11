@@ -11,6 +11,7 @@ class UserMenu extends React.Component {
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
     following: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -18,6 +19,7 @@ class UserMenu extends React.Component {
     defaultKey: 'discussions',
     followers: 0,
     following: 0,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -125,14 +127,16 @@ class UserMenu extends React.Component {
               >
                 <FormattedMessage id="statistics" defaultMessage="Statistics" />
               </li>
-              <li
-                className={this.getItemClasses('activity')}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key="activity"
-              >
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </li>
+              {!this.props.isGuest && (
+                <li
+                  className={this.getItemClasses('activity')}
+                  onClick={this.handleClick}
+                  role="presentation"
+                  data-key="activity"
+                >
+                  <FormattedMessage id="activity" defaultMessage="Activity" />
+                </li>
+              )}
             </ul>
           </Scrollbars>
         </div>

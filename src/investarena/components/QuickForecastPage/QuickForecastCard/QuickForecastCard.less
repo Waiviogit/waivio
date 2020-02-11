@@ -1,4 +1,5 @@
 @import (reference) '../../../../client/styles/custom.less';
+@import (reference) '../../../../client/styles/modules/variables';
 
 .ForecastCard {
   display: flex;
@@ -23,7 +24,7 @@
     text-align: center;
     background-color: transparent;
     border: 1px solid @blue-hawkesBlue;
-    font-size: 17px;
+    font-size: 16px;
     width: 90px;
     height: 90px;
     display: flex;
@@ -31,10 +32,12 @@
     align-items: center;
     justify-content: center;
     padding: 5px;
+    cursor: auto;
 
-    @media screen and (max-width: 380px) {
+    @media screen and (max-width: 420px) {
       width: 75px;
       height: 75px;
+      font-size: 12px;
     }
   }
 
@@ -82,8 +85,12 @@
     color: @black;
     flex-direction: column;
 
-    @media screen and (max-width: 380px) {
-      font-size: 16px;
+    &:hover {
+      color: @black;
+    }
+
+    @media screen and (max-width: 420px) {
+      font-size: 15px;
     }
   }
 
@@ -91,6 +98,16 @@
     display: flex;
     align-items: center;
     flex-direction: row;
+  }
+
+  &__link {
+    color: @black;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: @black;
+    }
   }
 
   &__img {
@@ -121,7 +138,6 @@
   &__top-block {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 25px;
   }
 
   &__forecast-timer {
@@ -134,7 +150,9 @@
     padding: 0 10px;
     margin: 0 auto;
     text-align: center;
-    width: 140px;
+    width: 120px;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -146,8 +164,9 @@
   width: 25px;
   height: 25px;
   cursor: pointer;
-  transition: .5s;
+  transition: 0.5s;
   outline: none;
+  padding: 0 4px;
 
   &:hover {
     background-color: @blue-hawkesBlue;
@@ -167,17 +186,18 @@
 }
 
 .ballotButton {
-  padding: 0 10px;
+  padding: 2px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-family: @font-family-sans-serif;
   background-color: @white;
-  transition: .5s;
+  transition: 0.5s;
   width: 35%;
   border: none;
 
   &:disabled {
-    cursor: auto;
+    background-color: @white;
+    cursor: not-allowed;
   }
 
   &__container {
@@ -210,8 +230,8 @@
 
     &:disabled {
       &:hover {
-        background-color: transparent;
         color: @green-darker;
+        background-color: @white;
       }
     }
   }
@@ -228,8 +248,8 @@
 
     &:disabled {
       &:hover {
-        background-color: transparent;
         color: @red;
+        background-color: @white;
       }
     }
   }
@@ -249,6 +269,10 @@
   &::first-letter {
     text-transform: uppercase;
   }
+
+  @media screen and (max-width: 800px) {
+    font-size: 15px;
+  }
 }
 
 .green {
@@ -256,6 +280,10 @@
 
   &::first-letter {
     text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 800px) {
+    font-size: 15px;
   }
 }
 

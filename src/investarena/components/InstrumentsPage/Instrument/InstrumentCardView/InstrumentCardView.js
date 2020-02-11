@@ -113,13 +113,15 @@ InstrumentCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
-  quote: PropTypes.shape().isRequired,
-  quoteSettings: PropTypes.shape().isRequired,
+  quote: PropTypes.shape(),
+  quoteSettings: PropTypes.shape(),
 };
 
 InstrumentCardView.defaultProps = {
   showSmallVersion: false,
   pathNameAvatar: '',
+  quote: {},
+  quoteSettings: {},
 };
 
 export default injectIntl(withTrade(InstrumentCardView));

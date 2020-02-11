@@ -11,6 +11,7 @@ const initialState = {
   roundInfo: {},
   timer: 0,
   roundTime: 0,
+  disabled: false,
 };
 
 export default (state = initialState, action) => {
@@ -29,23 +30,21 @@ export default (state = initialState, action) => {
         forecastData: [],
       };
 
-    case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS:
+    case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS: {
+      const mapperList = action.payload.feed.map(forecast => ({
+        ...forecast,
+        isLoaded: true,
+      }));
       return {
         ...state,
-        quickForecastData: [...action.payload.feed],
+        quickForecastData: [...mapperList],
         timer: action.payload.timer,
         roundTime: action.payload.round_time,
       };
+    }
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
-<<<<<<< HEAD
-      return {
-        ...state,
-        quickForecastData: [...state.quickForecastData],
-      };
-=======
       return state;
->>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
       return {
@@ -57,15 +56,22 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.ERROR:
-<<<<<<< HEAD
+      return state;
+
+    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS: {
       return {
         ...state,
+        winners: [
+          ...action.payload.users.map(user => ({
+            name: user.user,
+            reward: user.reward,
+          })),
+        ],
+        hasMoreStatistic: action.payload.hasMore,
       };
-=======
-      return state;
->>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
+    }
 
-    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS:
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.SUCCESS: {
       return {
         ...state,
         winners: [
@@ -77,47 +83,113 @@ export default (state = initialState, action) => {
         ],
         hasMoreStatistic: action.payload.hasMore,
       };
+    }
+
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.ERROR:
+      return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
-      return {
-        ...state,
-        hasMoreStatistic: false,
-      };
+      return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.SUCCESS:
       return {
         ...state,
         roundInfo: {
           rewards: action.payload.all_time_rewards,
-          voitingPowers: action.payload.voting_power,
+          votingPowers: action.payload.voting_power,
         },
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.ERROR:
-<<<<<<< HEAD
-      return {
-        ...state,
-      };
-=======
       return state;
->>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {
-      const answeredForecast = state.quickForecastData[action.payload.id];
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload.id,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      const answeredArray = state.quickForecastData.filter(forecast => !forecast.active);
+      state.quickForecastData.splice(forecastIndex, 1);
+      state.quickForecastData.splice(answeredArray.length, 0, {
+        ...answeredForecast,
+        active: false,
+        side: action.payload.answer,
+        postPrice: action.payload.postPrice,
+        quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
+        status: 'pending',
+        isLoaded: true,
+      });
 
       return {
         ...state,
-        quickForecastData: [
-          {
-            ...answeredForecast,
-            active: false,
-            side: action.payload.answer,
-            postPrice: action.payload.postPrice,
-            quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
-            status: 'pending',
-          },
-          ...state.quickForecastData,
-        ],
+        quickForecastData: [...state.quickForecastData],
+        disabled: false,
+      };
+    }
+
+    case activeForecastTypes.ANSWER_QUICK_ERROR: {
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload.id,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      state.quickForecastData.splice(forecastIndex, 1, {
+        ...answeredForecast,
+        isLoaded: true,
+      });
+
+      return {
+        ...state,
+        quickForecastData: [...state.quickForecastData],
+        disabled: false,
+      };
+    }
+
+    case activeForecastTypes.ANSWER_QUICK_LOADING: {
+      const answeredForecast = state.quickForecastData.find(
+        forecast => forecast.id === action.payload,
+      );
+      const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      state.quickForecastData.splice(forecastIndex, 1, {
+        ...answeredForecast,
+        isLoaded: false,
+      });
+
+      return {
+        ...state,
+        quickForecastData: [...state.quickForecastData],
+        disabled: true,
+      };
+    }
+
+    case activeForecastTypes.GET_QUICK_FORECAST_STATUS.SUCCESS: {
+      if (action.payload.status !== 'pending') {
+        const answeredForecast = state.quickForecastData.find(
+          forecast => forecast.id === action.payload.id,
+        );
+        const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+
+        state.quickForecastData.splice(forecastIndex, 1, {
+          ...action.payload,
+          isLoaded: true,
+        });
+
+        return {
+          ...state,
+          quickForecastData: [...state.quickForecastData],
+          disabled: false,
+        };
+      }
+
+      return state;
+    }
+
+    case activeForecastTypes.FINISH_QUICK_FORECAST_TIMER: {
+      const activeForecastList = state.quickForecastData.filter(forecast => !forecast.status);
+
+      return {
+        ...state,
+        winners: [],
+        quickForecastData: [...activeForecastList],
       };
     }
 

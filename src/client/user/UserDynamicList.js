@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import { unionBy } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
@@ -31,7 +31,7 @@ export default class UserDynamicList extends React.Component {
   }
 
   handleLoadMore() {
-    const { fetcher, limit } = this.props;
+    const { fetcher } = this.props;
     const { users } = this.state;
 
     this.setState(
@@ -39,13 +39,17 @@ export default class UserDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(users).then(newUsers =>
-          this.setState(state => ({
-            loading: false,
-            hasMore: newUsers.length === limit,
-            users: _.unionBy(state.users, newUsers, 'name'),
-          })),
-        );
+        fetcher(users)
+          .then(newUsers =>
+            this.setState(state => ({
+              loading: false,
+              hasMore: newUsers.hasMore,
+              users: unionBy(state.users, newUsers.users, 'name'),
+            })),
+          )
+          .catch(err => {
+            console.error(err.message);
+          });
       },
     );
   }

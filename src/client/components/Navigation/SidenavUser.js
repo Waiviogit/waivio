@@ -1,16 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './Sidenav.less';
 
-const SidenavUser = () => (
+const SidenavUser = isGuest => (
   <ul className="Sidenav">
-    <li>
-      <NavLink to="/activity" activeClassName="Sidenav__item--active">
-        <i className="iconfont icon-dynamic" />
-        <FormattedMessage id="activity" defaultMessage="Activity" />
-      </NavLink>
-    </li>
+    {!isGuest && (
+      <li>
+        <NavLink to="/activity" activeClassName="Sidenav__item--active">
+          <i className="iconfont icon-dynamic" />
+          <FormattedMessage id="activity" defaultMessage="Activity" />
+        </NavLink>
+      </li>
+    )}
     <li>
       <NavLink to="/bookmarks" activeClassName="Sidenav__item--active">
         <i className="iconfont icon-collection" />
@@ -43,5 +46,13 @@ const SidenavUser = () => (
     </li>
   </ul>
 );
+
+SidenavUser.porpTypes = {
+  isGuest: PropTypes.bool,
+};
+
+SidenavUser.defaultProps = {
+  isGuest: false,
+};
 
 export default SidenavUser;

@@ -80,8 +80,10 @@ class Chart {
       isExpired,
       expiredByTime,
       brokenStopPrices,
+      isNightMode,
     } = chartData;
     this.assignChartInfo(chartInfo);
+    this.setColorTheme(isNightMode);
     if (notEnoughData) {
       this.pxPerGrid = 55;
       this.drawErrors(locale);
@@ -122,6 +124,12 @@ class Chart {
       Object.keys(chartInfo).forEach(key => {
         this[key] = chartInfo[key];
       });
+    }
+  };
+  setColorTheme = isNightMode => {
+    if (this.isNightMode !== isNightMode) {
+      this.isNightMode = isNightMode;
+      this.colors = isNightMode ? darkMode : lightMode;
     }
   };
   getStartFinishX = (shortBars, times) => {

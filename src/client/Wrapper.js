@@ -1,28 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { connect } from 'react-redux';
+import { batch, connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { ConfigProvider, Button, Layout } from 'antd';
+import { ConfigProvider, Layout } from 'antd';
 import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
-import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
+import { findLanguage, getBrowserLocale, getRequestLocale, loadLanguage } from './translations';
 import {
-  getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getLocale,
-  getUsedLocale,
-  getTranslations,
-  getNightmode,
-  getIsAuthenticated,
   getChatCondition,
+  getIsAuthenticated,
+  getIsLoaded,
+  getLocale,
+  getNightmode,
   getScreenSize,
+  getTranslations,
+  getUsedLocale,
 } from './reducers';
-import { login, logout, busyLogin } from './auth/authActions';
+import { busyLogin, login, logout } from './auth/authActions';
 import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -30,7 +30,7 @@ import {
   getFollowingObjects,
   getNotifications,
 } from './user/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import { getRate, getRewardFund, setAppUrl, setUsedLocale } from './app/appActions';
 import { getPerformersStatistic } from '../investarena/redux/actions/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -160,20 +160,24 @@ export default class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.props.login().then(() => {
-      this.props.getFollowing();
-      this.props.getFollowingObjects();
-      this.props.getPerformersStatistic();
-      this.props.getNotifications();
-      this.props.busyLogin();
+      batch(() => {
+        this.props.getFollowing();
+        this.props.getFollowingObjects();
+        this.props.getPerformersStatistic();
+        this.props.getNotifications();
+        this.props.busyLogin();
+      });
       getMessagesQuantity(this.props.username).then(data =>
         this.setState({ messagesCount: data.count }),
       );
     });
+    batch(() => {
+      this.props.getRewardFund();
+      this.props.getRebloggedList();
+      this.props.getRate();
+      this.props.getChartsData();
+    });
 
-    this.props.getRewardFund();
-    this.props.getRebloggedList();
-    this.props.getRate();
-    this.props.getChartsData();
     if (this.props.screenSize !== 'large') {
       window.$crisp.push(['do', 'chat:hide']);
     }
@@ -236,6 +240,9 @@ export default class Wrapper extends React.PureComponent {
         break;
       case 'myFeed':
         this.props.history.push('/my_feed');
+        break;
+      case 'quick_forecast':
+        this.props.history.push('/quickforecast');
         break;
       case 'news':
         this.props.history.push('/trending');

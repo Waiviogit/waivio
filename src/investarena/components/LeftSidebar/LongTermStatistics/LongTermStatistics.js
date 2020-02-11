@@ -14,7 +14,7 @@ class LongTermStatistics extends React.Component {
     intl: PropTypes.shape().isRequired,
     isMobile: PropTypes.bool,
     /* passed props */
-    children: PropTypes.oneOfType(),
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     itemId: PropTypes.string.isRequired, // username or object permlink
     withCompareButton: PropTypes.bool,
     fetcher: PropTypes.func.isRequired,

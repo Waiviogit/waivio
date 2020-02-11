@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { isEmpty, get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -7,13 +7,13 @@ import {
 } from '../helpers/stateHelpers';
 import {
   getAuthenticatedUserName,
-  getFeed,
-  getPosts,
   getBookmarks as getBookmarksSelector,
-  getObject,
+  getFeed,
   getLocale,
-  getReadLanguages,
+  getObject,
   getObjectAlbums,
+  getPosts,
+  getReadLanguages,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -115,7 +115,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true, skip }) => (
   dispatch,
   getState,
 ) => {
@@ -140,6 +140,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
       startAuthor,
       startPermlink,
       limit,
+      skip,
     }),
     meta: {
       sortBy: 'blog',
@@ -215,12 +216,10 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
   });
 };
 
-export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState, { steemAPI }) =>
+export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink }) => dispatch =>
   dispatch({
     type: GET_USER_COMMENTS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_discussions_by_comments', [{ start_author: username, limit }])
-      .then(postsData => postsData),
+    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink),
     meta: { sortBy: 'comments', category: username, limit },
   });
 
@@ -241,8 +240,7 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
-  const readLanguages = getUserLocalesArray(getState);
+export const getObjectPosts = ({ username, object, readLanguages, limit = 10 }) => dispatch => {
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
     payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
@@ -292,10 +290,9 @@ export const getObjectPostsWithForecasts = (
     meta: { sortBy: 'objectPosts', category: wobjectPermlink, limit },
   });
 
-export const getMoreUserComments = ({ username, limit = 20 }) => (
+export const getMoreUserComments = ({ username, skip = 20, limit = 20 }) => (
   dispatch,
   getState,
-  { steemAPI },
 ) => {
   const state = getState();
   const feed = getFeed(state);
@@ -310,20 +307,11 @@ export const getMoreUserComments = ({ username, limit = 20 }) => (
 
   const lastPost = posts[feedContent[feedContent.length - 1]];
 
-  const startAuthor = lastPost.author;
   const startPermlink = lastPost.permlink;
 
   return dispatch({
     type: GET_MORE_USER_COMMENTS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_discussions_by_comments', [
-        {
-          start_author: startAuthor,
-          start_permlink: startPermlink,
-          limit: limit + 1,
-        },
-      ])
-      .then(postsData => postsData.slice(1)),
+    payload: ApiClient.getUserCommentsFromApi(username, skip, limit, startPermlink),
     meta: { sortBy: 'comments', category: username, limit },
   });
 };

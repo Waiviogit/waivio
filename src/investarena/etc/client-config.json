@@ -153,7 +153,7 @@
 
   "quickForecasts": {
     "quickForecast": "/quick-forecasts",
-    "quickForecastStatistics": "/quick-forecasts",
+    "quickForecastFind": "/quick-forecasts/find",
     "quickForecastWinners": "/quick-forecasts/winners",
     "quickForecastRewards": "/quick-forecasts/rewards"
   },

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import _ from 'lodash';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
+import { get } from 'lodash';
 import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate, getScreenSize } from '../../reducers';
+import { getRate, getRewardFund, getScreenSize, getUser } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
@@ -13,6 +13,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
 import api from '../../../investarena/configApi/apiResources';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -58,10 +59,10 @@ class UserInfo extends React.Component {
       } else {
         try {
           metadata = JSON.parse(user.json_metadata);
-          location = metadata && _.get(metadata, 'profile.location');
-          profile = (metadata && _.get(metadata, 'profile')) || {};
-          website = metadata && _.get(metadata, 'profile.website');
-          about = metadata && _.get(metadata, 'profile.about');
+          location = metadata && get(metadata, 'profile.location');
+          profile = (metadata && get(metadata, 'profile')) || {};
+          website = metadata && get(metadata, 'profile.website');
+          about = metadata && get(metadata, 'profile.about');
         } catch (e) {
           // do nothing
         }
@@ -78,13 +79,11 @@ class UserInfo extends React.Component {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
 
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      10000,
-    );
+    const voteWorth =
+      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
+        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
+        : 0;
+
     const isMobile = this.props.screenSize === 'xsmall';
     return (
       <div>
@@ -112,7 +111,7 @@ class UserInfo extends React.Component {
                   id="joined_date"
                   defaultMessage="Joined {date}"
                   values={{
-                    date: intl.formatDate(user.created, {
+                    date: intl.formatDate(user.created || user.createdAt, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -120,24 +119,28 @@ class UserInfo extends React.Component {
                   }}
                 />
               </div>
-              <div>
-                <i className="iconfont icon-flashlight text-icon" />
-                <FormattedMessage id="voting_power" defaultMessage="Voting Power" />:{' '}
-                <FormattedNumber
-                  style="percent" // eslint-disable-line react/style-prop-object
-                  value={calculateVotingPower(user)}
-                  maximumFractionDigits={0}
-                />
-              </div>
-              <div>
-                <i className="iconfont icon-dollar text-icon" />
-                <FormattedMessage id="vote_value" defaultMessage="Vote Value" />:{' '}
-                {isNaN(voteWorth) ? (
-                  <Icon type="loading" className="text-icon-right" />
-                ) : (
-                  <USDDisplay value={voteWorth} />
-                )}
-              </div>
+              {!user.name.startsWith(GUEST_PREFIX) && (
+                <React.Fragment>
+                  <div>
+                    <i className="iconfont icon-flashlight text-icon" />
+                    <FormattedMessage id="voting_power" defaultMessage="Voting Power" />:{' '}
+                    <FormattedNumber
+                      style="percent" // eslint-disable-line react/style-prop-object
+                      value={calculateVotingPower(user)}
+                      maximumFractionDigits={0}
+                    />
+                  </div>
+                  <div>
+                    <i className="iconfont icon-dollar text-icon" />
+                    <FormattedMessage id="vote_value" defaultMessage="Vote Value" />:{' '}
+                    {isNaN(voteWorth) ? (
+                      <Icon type="loading" className="text-icon-right" />
+                    ) : (
+                      <USDDisplay value={voteWorth} />
+                    )}
+                  </div>
+                </React.Fragment>
+              )}
               <SocialLinks profile={profile} />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { attempt, has, isEmpty, reduce, size } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -7,13 +7,14 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import {
   getAuthenticatedUser,
+  getFetchFollowListError,
+  getFollowingFetched,
   getFollowingList,
+  getIsAuthenticated,
   getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsAuthenticated,
   getIsLoaded,
-  getFollowingFetched,
-  getFetchFollowListError,
+  isGuestUser,
 } from '../reducers';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
@@ -28,6 +29,7 @@ import './LetsGetStarted.less';
   authenticated: getIsAuthenticated(state),
   followingFetched: getFollowingFetched(state),
   fetchFollowListError: getFetchFollowListError(state),
+  isGuest: isGuestUser(state),
 }))
 class LetsGetStarted extends React.Component {
   static propTypes = {
@@ -39,17 +41,22 @@ class LetsGetStarted extends React.Component {
     loaded: PropTypes.bool.isRequired,
     followingFetched: PropTypes.bool.isRequired,
     fetchFollowListError: PropTypes.bool.isRequired,
+    isGuest: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isGuest: false,
   };
 
   static getCurrentUserState(authenticatedUser, followingList) {
     const hasPost = authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
     const hasVoted = authenticatedUser.last_vote_time !== authenticatedUser.created;
-    const jsonMetadata = _.attempt(JSON.parse, authenticatedUser.json_metadata);
+    const jsonMetadata = attempt(JSON.parse, authenticatedUser.json_metadata);
     const hasProfile =
-      _.has(jsonMetadata, 'profile.name') &&
-      _.has(jsonMetadata, 'profile.about') &&
-      _.has(jsonMetadata, 'profile.profile_image');
-    const hasFollowed = _.size(followingList) >= 5;
+      has(jsonMetadata, 'profile.name') &&
+      has(jsonMetadata, 'profile.about') &&
+      has(jsonMetadata, 'profile.profile_image');
+    const hasFollowed = size(followingList) >= 5;
 
     return {
       hasProfile,
@@ -62,7 +69,11 @@ class LetsGetStarted extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = LetsGetStarted.getCurrentUserState(props.authenticatedUser, props.followingList);
+    this.state = LetsGetStarted.getCurrentUserState(
+      props.authenticatedUser,
+      props.followingList,
+      props.isGuest,
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,6 +81,7 @@ class LetsGetStarted extends React.Component {
     const newUserState = LetsGetStarted.getCurrentUserState(
       nextProps.authenticatedUser,
       nextProps.followingList,
+      nextProps.isGuest,
     );
     const diffHasProfile = this.state.hasProfile !== newUserState.hasProfile;
     const diffHasPost = this.state.hasPost !== newUserState.hasPost;
@@ -81,7 +93,7 @@ class LetsGetStarted extends React.Component {
     if (diffHasVoted) newState.hasVoted = newUserState.hasVoted;
     if (diffHasFollowed) newState.hasFollowed = newUserState.hasFollowed;
 
-    if (!_.isEmpty(newState)) {
+    if (!isEmpty(newState)) {
       this.setState(newState);
     }
   }
@@ -94,11 +106,17 @@ class LetsGetStarted extends React.Component {
       loaded,
       followingFetched,
       fetchFollowListError,
+      isGuest,
     } = this.props;
     const { hasProfile, hasPost, hasVoted, hasFollowed } = this.state;
-    const totalOptions = 4;
-    const currentSelected = _.reduce(
-      [hasProfile, hasPost, hasVoted, hasFollowed],
+    const totalOptions = isGuest ? 3 : 4;
+
+    const actionsArray = isGuest
+      ? [hasProfile, hasPost, hasFollowed]
+      : [hasProfile, hasPost, hasVoted, hasFollowed];
+
+    const currentSelected = reduce(
+      actionsArray,
       (total, current) => {
         let newTotal = total;
         if (current) {
@@ -145,26 +163,28 @@ class LetsGetStarted extends React.Component {
               </span>
             </Link>
           </div>
-          <div className="LetsGetStarted__action">
-            <LetsGetStartedIcon
-              renderCheck={hasFollowed}
-              isLoading={isFetchingFollowingList}
-              iconClassName="icon-addpeople"
-            />
-            <Link to="/discover">
-              <span
-                className={classNames('LetsGetStarted__action__text', {
-                  LetsGetStarted__action__completed: hasFollowed,
-                })}
-              >
-                <FormattedMessage
-                  id="follow_steemians"
-                  defaultMessage="Follow {amount} steemians"
-                  values={{ amount: 5 }}
-                />
-              </span>
-            </Link>
-          </div>
+          {!this.props.isGuest && (
+            <div className="LetsGetStarted__action">
+              <LetsGetStartedIcon
+                renderCheck={hasFollowed}
+                isLoading={isFetchingFollowingList}
+                iconClassName="icon-addpeople"
+              />
+              <Link to="/discover">
+                <span
+                  className={classNames('LetsGetStarted__action__text', {
+                    LetsGetStarted__action__completed: hasFollowed,
+                  })}
+                >
+                  <FormattedMessage
+                    id="follow_steemians"
+                    defaultMessage="Follow {amount} steemians"
+                    values={{ amount: 5 }}
+                  />
+                </span>
+              </Link>
+            </div>
+          )}
           <div className="LetsGetStarted__action">
             <LetsGetStartedIcon
               renderCheck={hasVoted}
