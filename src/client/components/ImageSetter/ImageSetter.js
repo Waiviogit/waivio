@@ -21,7 +21,7 @@ const ImageSetter = ({
   onImageLoaded,
   defaultImage,
   isRequired,
-  title,
+  isTitle,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -165,7 +165,7 @@ const ImageSetter = ({
         className={classNames(
           'ImageSetter__label',
           { 'ImageSetter__label--required': isRequired },
-          { 'ImageSetter__label--no-visible': !title },
+          { 'ImageSetter__label--no-visible': !isTitle },
         )}
       >
         {renderTitle()}
@@ -207,7 +207,7 @@ const ImageSetter = ({
               e.target.value = null;
             }}
           />
-          <label className="button-upload__label" htmlFor="inputfile">
+          <label className="button-upload-label" htmlFor="inputfile">
             <div className="button-upload">
               <div className="button-upload__container">
                 <Icon className="button-upload__container-img" type="plus" />
@@ -255,14 +255,14 @@ ImageSetter.propTypes = {
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
-  title: PropTypes.bool,
+  isTitle: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
   defaultImage: '',
   isRequired: false,
-  title: true,
+  isTitle: true,
 };
 
 export default withEditor(injectIntl(ImageSetter));

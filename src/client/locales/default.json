@@ -1110,5 +1110,7 @@
   "nickname": "Nickname",
   "preferred_languages": "Preferred languages",
   "public_profile": "Public profile",
-  "link_placeholder": "Add url"
+  "link_placeholder": "Add url",
+  "modal_button_cancel": "Cancel",
+  "modal_button_yes": "OK"
 }

@@ -1073,5 +1073,7 @@
   "nickname": "Никнейм",
   "preferred_languages": "Предпочитаемые языки",
   "public_profile": "Публичный профиль",
-  "link_placeholder": "Добавьте url"
+  "link_placeholder": "Добавьте url",
+  "modal_button_cancel": "Отмена",
+  "modal_button_yes": "OK"
 }

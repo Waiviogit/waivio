@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -199,10 +199,12 @@ class DiscoverObjectsContent extends Component {
                 {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
               </span>
               <span className="ttc">
-                {intl.formatMessage({
-                  id: discoverObjectsContentTypes[typeName].intl.id,
-                  defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
-                })}
+                {get(discoverObjectsContentTypes, [typeName, 'intl', 'id'], null) &&
+                  get(discoverObjectsContentTypes, [typeName, 'intl', 'defaultMessage'], null) &&
+                  intl.formatMessage({
+                    id: discoverObjectsContentTypes[typeName].intl.id,
+                    defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
+                  })}
               </span>
               &nbsp;
               <span className="discover-objects-header__selector">
