@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Icon } from 'antd';
+import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { GoogleLogin } from 'react-google-login';
-import FacebookLogin from 'react-facebook-login';
 import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
-import '../ModalSignUp/ModalSignUp.less';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+import Spinner from '../../Icon/Loading';
+import SocialButtons from '../SocialButtons/SocialButtons';
+import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const responseGoogle = async response => {
+  const responseSocial = async (response, socialNetwork) => {
     if (response) {
-      const res = await isUserRegistered(response.googleId, 'google');
+      const id = socialNetwork === 'google' ? response.googleId : response.id;
+      const res = await isUserRegistered(id, socialNetwork);
       if (res) {
-        dispatch(login(response.accessToken, 'google')).then(() => {
+        setIsLoading(true);
+        dispatch(login(response.accessToken, socialNetwork)).then(() => {
+          setIsLoading(false);
           batch(() => {
             dispatch(getFollowing());
             dispatch(getFollowingObjects());
@@ -36,26 +40,8 @@ const ModalSignIn = ({ next }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'google' });
-        setIsFormVisible(true);
-      }
-    }
-  };
-
-  const responseFacebook = async response => {
-    if (response) {
-      const res = await isUserRegistered(response.id, 'facebook');
-      if (res) {
-        dispatch(login(response.accessToken, 'facebook')).then(() => {
-          batch(() => {
-            dispatch(getFollowing());
-            dispatch(getFollowingObjects());
-            dispatch(getNotifications());
-            dispatch(busyLogin());
-          });
-        });
-      } else {
-        setUserData({ ...response, socialNetwork: 'facebook' });
+        const image = socialNetwork === 'google' ? response.w3.Paa : response.picture.data.url;
+        setUserData({ ...response, image, socialNetwork });
         setIsFormVisible(true);
       }
     }
@@ -66,31 +52,32 @@ const ModalSignIn = ({ next }) => {
       <h2 className="ModalSignUp__title">
         <FormattedMessage id="login" defaultMessage="Log in" />
       </h2>
-      <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
-        <img src="/images/icons/steemit.svg" alt="steemit" className="ModalSignUp__icon-steemit" />
-        <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
-      </a>
-      <div className="ModalSignUp__social">
-        <GoogleLogin
-          buttonText="Google"
-          clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
-          onSuccess={responseGoogle}
-          cookiePolicy={'single_host_origin'}
-          className="ModalSignUp__social-btn"
-        />
-        <FacebookLogin
-          appId="754038848413420"
-          autoLoad={false}
-          fields="name,email,picture"
-          callback={responseFacebook}
-          onFailure={() => {}}
-          textButton="Facebook"
-          cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
-          icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
-        />
-      </div>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <React.Fragment>
+          <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
+            <img
+              src="/images/icons/steemit.svg"
+              alt="steemit"
+              className="ModalSignUp__icon-steemit"
+            />
+            <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+          </a>
+          <SocialButtons responseSocial={responseSocial} />
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
+
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    setIsFormVisible(false);
+  };
+
+  const memoizedOnModalClose = useCallback(() => {
+    onModalClose();
+  }, []);
 
   return (
     <React.Fragment>
@@ -101,7 +88,7 @@ const ModalSignIn = ({ next }) => {
         width={416}
         title=""
         visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={memoizedOnModalClose}
         footer={null}
       >
         <div className="ModalSignUp">

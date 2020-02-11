@@ -9,7 +9,9 @@ const postItem = (state = {}, action) => {
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
-        children: parseInt(state.children, 10) + 1,
+        children: action.meta.isEditing
+          ? parseInt(state.children, 10)
+          : parseInt(state.children, 10) + 1,
       };
     default:
       return state;

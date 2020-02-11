@@ -11,9 +11,16 @@
   border-bottom: @base-border;
 
   &__brand {
-    font-size: 30px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    height: 56px;
+
+    img {
+      width: 150px;
+      @media @medium, @large {
+        width: 160px;
+      }
+    }
 
     &-icon {
       margin-right: 4px;
@@ -318,55 +325,56 @@ div[data-dir='rtl'] .Topnav {
   }
 }
 
-.Topnav__search-dropdown-container .ant-select-dropdown-menu > li:first-child > ul {
-  @media @xsmall {
-    max-width: 240px;
-  }
+.Topnav__search-dropdown-container .ant-select-dropdown-menu {
+  .ant-select-dropdown-menu-item-group:first-child {
+    ul {
+      @media @xsmall {
+        max-width: 240px;
+      }
 
-  @media @small {
-    max-width: 265px;
-  }
+      @media @small {
+        max-width: 265px;
+      }
 
-  @media @medium {
-    max-width: 420px;
-  }
+      @media @medium {
+        max-width: 420px;
+      }
 
-  @media @large {
-    max-width: 495px;
-  }
+      @media @large {
+        max-width: 495px;
+      }
 
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: 5px;
-  text-transform: capitalize;
-}
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: 5px;
+      text-transform: capitalize;
+    }
 
-.Topnav__search-dropdown-container .ant-select-dropdown-menu > li:first-child > ul > li {
-  margin-top: 5px;
-  margin-left: 5px;
-  padding: 5px 10px;
-  border-radius: 4px !important;
-  border: 1px solid @white-gainsboro;
-  background: @white-smoke;
-  overflow: visible;
-}
-
-.Topnav__search-dropdown-container
-  .ant-select-dropdown-menu
-  > li:first-child
-  > ul
-  > .ant-select-dropdown-menu-item-active {
-  &:hover {
-    border-color: @white-smoke;
-    background-color: @white;
+    li {
+      margin-top: 5px;
+      margin-left: 5px;
+      padding: 5px 10px;
+      border-radius: 4px !important;
+      border: 1px solid @white-gainsboro;
+      background: @white-smoke;
+      overflow: visible;
+    }
   }
 }
 
-.Topnav__search-dropdown-container
-  .ant-select-dropdown-menu
-  > li:first-child
-  > .ant-select-dropdown-menu-item-group-title {
-  height: 0px;
+.Topnav__search-dropdown-container {
+  .ant-select-dropdown-menu-item-active {
+    &:hover {
+      border-color: @white-smoke;
+      background-color: @white;
+    }
+  }
+}
+
+.Topnav__search-dropdown-container {
+  .ant-select-dropdown-menu-item-group-title {
+    height: 0px;
+  }
 }
 
 .Topnav__search-autocomplete.ant-select-dropdown-menu-item-active {

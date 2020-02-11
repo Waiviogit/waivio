@@ -3,6 +3,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
+import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
 
 require('isomorphic-fetch');
 
@@ -319,6 +320,35 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
+  });
+};
+
+export const GET_RECOMMENDS_HASHTAGS = createAsyncActionType('@user/GET_RECOMMENDS_HASHTAGS');
+export const GET_RECOMMENDS_EXPERTS = createAsyncActionType('@user/GET_RECOMMENDS_EXPERTS');
+
+export const getRecommendTopics = () => dispatch => {
+  const topicList = Object.values(newUserRecommendTopics).reduce(
+    (arr, acc) => [...acc, ...arr],
+    [],
+  );
+  dispatch({
+    type: GET_RECOMMENDS_HASHTAGS.ACTION,
+    payload: {
+      promise: ApiClient.getRecommendTopic(topicList.length, 'en-US', 0, topicList),
+    },
+  });
+};
+
+export const getRecommendExperts = () => dispatch => {
+  const userList = Object.values(newUserRecommendExperts).reduce(
+    (arr, acc) => [...acc, ...arr],
+    [],
+  );
+  dispatch({
+    type: GET_RECOMMENDS_EXPERTS.ACTION,
+    payload: {
+      promise: ApiClient.getUsers(userList.length, 'en-US', 0, userList),
+    },
   });
 };
 // endregion

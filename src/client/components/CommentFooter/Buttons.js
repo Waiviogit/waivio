@@ -167,17 +167,15 @@ class Buttons extends React.Component {
     return (
       <div>
         <BTooltip title={likeTooltip}>
-          {!this.props.comment.isFakeComment && (
-            <a
-              role="presentation"
-              className={classNames('CommentFooter__link', {
-                'CommentFooter__link--active': userUpVoted,
-              })}
-              onClick={this.handleLikeClick}
-            >
-              {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
-            </a>
-          )}
+          <a
+            role="presentation"
+            className={classNames('CommentFooter__link', {
+              'CommentFooter__link--active': userUpVoted,
+            })}
+            onClick={this.handleLikeClick}
+          >
+            {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
+          </a>
         </BTooltip>
         {upVotes.length > 0 && (
           <span
@@ -199,21 +197,19 @@ class Buttons extends React.Component {
           </span>
         )}
         <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
-          {!this.props.comment.isFakeComment && (
-            <a
-              role="presentation"
-              className={classNames('CommentFooter__link', {
-                'CommentFooter__link--active': userDownVoted,
-              })}
-              onClick={this.handleDislikeClick}
-            >
-              {pendingDisLike ? (
-                <Icon type="loading" />
-              ) : (
-                <i className="iconfont icon-praise_fill Comment__icon_dislike" />
-              )}
-            </a>
-          )}
+          <a
+            role="presentation"
+            className={classNames('CommentFooter__link', {
+              'CommentFooter__link--active': userDownVoted,
+            })}
+            onClick={this.handleDislikeClick}
+          >
+            {pendingDisLike ? (
+              <Icon type="loading" />
+            ) : (
+              <i className="iconfont icon-praise_fill Comment__icon_dislike" />
+            )}
+          </a>
         </BTooltip>
         {downVotes.length > 0 && (
           <span

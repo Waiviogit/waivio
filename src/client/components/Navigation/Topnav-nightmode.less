@@ -67,15 +67,16 @@
     background-color: @grey-nero;
   }
 
-  .ant-select-dropdown-menu :first-child > ul > li {
-    border: 1px solid @normal-grey;
-    background: @grey-nero;
-  }
-
-  .ant-select-dropdown-menu :first-child > ul > .ant-select-dropdown-menu-item-active {
-    &:hover {
-      border-color: @normal-grey;
-      background-color: @blue-darkGrayish;
+  .ant-select-dropdown-menu {
+    .ant-select-dropdown-menu-item-group:first-child {
+      .ant-select-dropdown-menu-item-active:hover {
+        border-color: @normal-grey;
+        background-color: @blue-darkGrayish;
+      }
+      li {
+        border: 1px solid @normal-grey;
+        background: @grey-nero;
+      }
     }
   }
 }

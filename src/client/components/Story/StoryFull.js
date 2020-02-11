@@ -1,23 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, isError, has, get, forEach, map, attempt } from 'lodash';
+import { forEach, isEmpty, map } from 'lodash';
 import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
-  injectIntl,
-  FormattedMessage,
-  FormattedRelative,
   FormattedDate,
-  FormattedTime,
+  FormattedMessage,
   FormattedNumber,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
 } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { getFromMetadata, extractImageTags } from '../../helpers/parser';
-import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
+import { extractImageTags } from '../../helpers/parser';
+import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
-import { getProxyImageURL } from '../../helpers/image';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
@@ -26,7 +25,6 @@ import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
@@ -106,7 +104,9 @@ class StoryFull extends React.Component {
 
   componentWillUnmount() {
     const { post } = this.props;
-    const hideWhiteBG = document && document.location.pathname !== dropCategory(post.url);
+    const hideWhiteBG =
+      document &&
+      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -151,35 +151,6 @@ class StoryFull extends React.Component {
         }
       }
     }
-  }
-
-  renderDtubeEmbedPlayer() {
-    const { post } = this.props;
-    const parsedJsonMetaData = attempt(JSON.parse, post.json_metadata);
-
-    if (isError(parsedJsonMetaData)) {
-      return null;
-    }
-
-    const video = getFromMetadata(post.json_metadata, 'video');
-    const isDtubeVideo = has(video, 'content.videohash') && has(video, 'info.snaphash');
-
-    if (isDtubeVideo) {
-      const videoTitle = get(video, 'info.title', '');
-      const author = get(video, 'info.author', '');
-      const permlink = get(video, 'info.permlink', '');
-      const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
-      const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" title="${videoTitle}" allowFullScreen></iframe>`;
-      const embed = {
-        type: 'video',
-        provider_name: 'DTube',
-        embed: dTubeIFrame,
-        thumbnail: getProxyImageURL(`https://ipfs.io/ipfs/${video.info.snaphash}`, 'preview'),
-      };
-      return <PostFeedEmbed embed={embed} />;
-    }
-
-    return null;
   }
 
   render() {
@@ -262,7 +233,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={dropCategory(post.url)}>
+            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.userInfo)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"
@@ -345,7 +316,6 @@ class StoryFull extends React.Component {
           }}
           onClick={this.handleContentClick}
         >
-          {this.renderDtubeEmbedPlayer()}
           <BodyContainer full body={signedBody} json_metadata={post.json_metadata} />
         </div>
       );

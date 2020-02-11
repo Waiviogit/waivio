@@ -417,15 +417,12 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = (
-  typeName,
-  { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
-) =>
+export const getObjectType = (typeName, requestData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
+      body: JSON.stringify(requestData),
     })
       .then(res => res.json())
       .then(data => resolve(data))
@@ -768,7 +765,8 @@ export const getAccessToken = (token, social, regData) => {
     .then(data => {
       response.userData = data.user;
       return response;
-    });
+    })
+    .catch(err => err);
 };
 
 export const getNewToken = token => {
@@ -924,13 +922,55 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+export const getPostCommentsFromApi = ({ category, author, permlink }) => {
   return fetch(
-    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+    `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
   )
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
+};
+
+export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+      object_types: ['hashtag'],
+    }),
+  }).then(res => res.json());
+};
+
+export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+    }),
+  }).then(res => res.json());
+};
+
+export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(listUsers),
+  }).then(res => res.json());
+};
+
+export const setUserStatus = user => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

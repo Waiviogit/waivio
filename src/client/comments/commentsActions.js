@@ -5,18 +5,19 @@ import { createPostMetadata } from '../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
-export const GET_COMMENTS = 'GET_COMMENTS';
-export const GET_COMMENTS_START = 'GET_COMMENTS_START';
-export const GET_COMMENTS_SUCCESS = 'GET_COMMENTS_SUCCESS';
-export const GET_COMMENTS_ERROR = 'GET_COMMENTS_ERROR';
+export const GET_COMMENTS = '@comments/GET_COMMENTS';
+export const GET_COMMENTS_START = '@comments/GET_COMMENTS_START';
+export const GET_COMMENTS_SUCCESS = '@comments/GET_COMMENTS_SUCCESS';
+export const GET_COMMENTS_ERROR = '@comments/GET_COMMENTS_ERROR';
 
-export const SEND_COMMENT = 'SEND_COMMENT';
-export const SEND_COMMENT_START = 'SEND_COMMENT_START';
-export const SEND_COMMENT_SUCCESS = 'SEND_COMMENT_SUCCESS';
-export const SEND_COMMENT_ERROR = 'SEND_COMMENT_ERROR';
+export const SEND_COMMENT = '@comments/SEND_COMMENT';
+export const SEND_COMMENT_START = '@comments/SEND_COMMENT_START';
+export const SEND_COMMENT_SUCCESS = '@comments/SEND_COMMENT_SUCCESS';
+export const SEND_COMMENT_ERROR = '@comments/SEND_COMMENT_ERROR';
 
 export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
 
@@ -42,10 +43,12 @@ export const getFakeSingleComment = (
   const date = new Date().toISOString().split('.')[0];
   const id = `${parentAuthor}/${parentPermlink}`;
   const depth = state.comments.comments[id] ? state.comments.comments[id].depth + 1 : 0;
+  const authorGuest = state.auth.isGuestUser ? state.auth.user.name : author;
   const payload = new Promise(resolve => {
     resolve({
       category: 'waivio',
       author,
+      authorGuest,
       permlink,
       parent_author: parentAuthor,
       parent_permlink: parentPermlink,
@@ -61,6 +64,9 @@ export const getFakeSingleComment = (
       created: date,
       id,
       url: `/@${author}`,
+      guestInfo: {
+        userId: parentAuthor,
+      },
     });
   });
   dispatch({
@@ -99,18 +105,22 @@ export const getComments = postId => (dispatch, getState) => {
   const content = posts.list[postId] || comments.comments[postId];
 
   // eslint-disable-next-line camelcase
-  const { category, root_author, permlink } = content;
+  const { category, permlink } = content;
+  let author;
+  if (content.guestInfo && content.root_author !== POST_AUTHOR_FOR_REWARDS_COMMENTS) {
+    author = content.root_author;
+  } else {
+    author = content.author;
+  }
 
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, root_author, permlink }).then(
-        apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        }),
-      ),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
     },
     meta: {
       id: postId,
@@ -123,7 +133,17 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const { category, id, permlink: parentPermlink } = parentPost;
+
+  let parentAuthor;
+
+  if (isUpdating) {
+    parentAuthor = originalComment.parent_author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentPost.root_author;
+  } else {
+    parentAuthor = parentPost.author;
+  }
   const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
 
@@ -185,7 +205,10 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               !isUpdating,
             ),
           );
-          setTimeout(() => dispatch(getSingleComment(author, permlink, !isUpdating)), 2000);
+          setTimeout(
+            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
+            auth.isGuestUser ? 6000 : 2000,
+          );
 
           if (window.analytics) {
             window.analytics.track('Comment', {
@@ -194,12 +217,15 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               value: 3,
             });
           }
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message, 'error'));
         }),
     },
     meta: {
       parentId: parentPost.id,
       rootPostId,
-      isEditing: false,
+      isEditing: isUpdating,
       isReplyToComment: parentPost.id !== id,
     },
   });

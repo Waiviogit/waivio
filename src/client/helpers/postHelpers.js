@@ -2,11 +2,15 @@ import uuidv4 from 'uuid/v4';
 import { fromPairs, get, attempt, isError, includes, unescape, split } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
-import { categoryRegex } from './regexHelpers';
+import { categoryRegex, botNameRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  WAIVIO_PARENT_PERMLINK,
+  POST_AUTHOR_FOR_REWARDS_COMMENTS,
+} from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
 
@@ -27,6 +31,16 @@ export const isPostTaggedNSFW = post => {
 export function dropCategory(url) {
   return url ? url.replace(categoryRegex, '') : null;
 }
+
+export const replaceBotWithGuestName = (url, guestInfo) => {
+  if (url) {
+    if (url.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
+      return url;
+    }
+    return guestInfo && guestInfo.userId ? url.replace(botNameRegex, `@${guestInfo.userId}`) : url;
+  }
+  return null;
+};
 
 /**
  * Gets app data from a post.
