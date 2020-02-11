@@ -84,13 +84,7 @@ const ModalSignUp = ({ isButton }) => {
   return (
     <React.Fragment>
       <SignUpButton isButton={isButton} setIsModalOpen={memoizedSetIsModalOpen} />
-      <Modal
-        width={416}
-        title=""
-        visible={isModalOpen}
-        onCancel={memoizedHandleCloseModal}
-        footer={null}
-      >
+      <Modal width={416} visible={isModalOpen} onCancel={memoizedHandleCloseModal} footer={null}>
         <div className="ModalSignUp">
           {isFormVisible ? (
             <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
