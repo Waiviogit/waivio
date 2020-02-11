@@ -1036,5 +1036,9 @@
   "travel": "путешествия",
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
   "post_btn_video_placeholder": "Вставте ссылку (YouTube | DTube | Vimeo | 3Speak) и нажмите 'Enter'",
+  "link_placeholder": "Добавьте url",
+  "modal_button_cancel": "Отменить",
+  "modal_button_yes": "OK",
+  "link_error_empty": "Пожалуйста введите URL",
   "please_input_nickname": "Введите никнейм"
 }
