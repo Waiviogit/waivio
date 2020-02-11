@@ -88,7 +88,7 @@ export const getObject = (authorPermlink, requiredField) => {
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-export const getFeedContentByObject = (name, limit = 10, user_languages) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages = ['en-US', 'ru-RU']) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,

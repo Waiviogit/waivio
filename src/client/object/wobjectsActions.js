@@ -39,11 +39,13 @@ export const getUsersByObject = object => dispatch =>
 export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
   '@objects/GET_FEED_CONTENT_BY_OBJECT',
 );
-export const getFeedContentByObject = object => dispatch =>
+export const getFeedContentByObject = object => (dispatch, getState) => {
+  const usedLocale = getUsedLocale(getState());
   dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,
-    payload: ApiClient.getFeedContentByObject(object),
+    payload: ApiClient.getFeedContentByObject(object, 10, usedLocale),
   }).catch(() => {});
+};
 
 export const getObjectInfo = (authorPermlink, username) => dispatch => {
   dispatch(clearObjectFromStore());
