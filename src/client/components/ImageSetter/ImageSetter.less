@@ -20,6 +20,10 @@
         content: '*';
       }
     }
+
+    &--no-visible {
+      display: none;
+    }
   }
 
   .image-box {
@@ -28,6 +32,7 @@
     flex-wrap: wrap;
     padding-bottom: 1rem;
     justify-content: center;
+
     @media @small {
       justify-content: flex-start;
     }
@@ -67,8 +72,14 @@
     }
   }
 
+  &__center-text {
+    display: inline-block;
+    padding: 0 10px;
+  }
+
   .label {
     width: 75%;
+
     @media @small {
       width: 104px;
     }

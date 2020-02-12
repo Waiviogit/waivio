@@ -27,14 +27,6 @@ const SignUpInfo = () => (
       >
         <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH" />
       </a>
-      <a
-        href="https://v2.steemconnect.com/accounts/create"
-        className="ModalSignUp__link"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
-      </a>
     </div>
     <h2 className="ModalSignUp__title ModalSignUp__title--lined">
       <span>
