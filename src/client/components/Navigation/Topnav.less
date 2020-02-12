@@ -14,8 +14,9 @@
   padding: 0 10px;
   box-shadow: 0 2px 8px @normal-grey;
   transition: top 0.4s;
+
   @media @small {
-    background-color: #000;
+    background-color: @black;
     height: 96px;
   }
 
@@ -26,6 +27,7 @@
       height: 36px;
       vertical-align: super;
       margin-top: 10px;
+
       @media @small, @medium, @large {
         max-width: 90%;
         width: unset;
@@ -68,12 +70,12 @@
   &__search-content {
     margin-left: 10px;
     max-width: calc(100vw - 210px);
-    @media @small, @medium, @large {
-      max-width: 350px;
-    }
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
   }
 
   &__search-content-small {
@@ -147,6 +149,7 @@
     color: @blue-vivid !important;
     border-bottom: 0 !important;
     text-decoration: none;
+
     @media @small {
       width: 200px;
       color: @blue-botticelli !important;
@@ -154,6 +157,7 @@
 
     .Avatar {
       border-width: 2px;
+
       @media @small {
         border-width: 1px;
       }
@@ -171,6 +175,7 @@
     box-sizing: border-box;
     font-size: 26px !important;
     border-bottom: none !important;
+
     @media @small {
       width: 26px;
       height: 26px;
@@ -192,6 +197,7 @@
       border: 2px solid @blue-vivid;
       border-radius: 50%;
       font-weight: 600;
+
       @media @small {
         border: none;
       }
@@ -208,6 +214,7 @@
       color: inherit;
       width: 36px;
       height: 36px;
+
       @media @small {
         width: 26px;
         height: 26px;
@@ -220,6 +227,7 @@
       & > i {
         font-size: 36px;
         margin-right: 0;
+
         @media @small {
           font-size: 26px;
         }
@@ -644,6 +652,10 @@ div[data-dir='rtl'] .Topnav {
 
 .Topnav__search-dropdown-container .ant-select-dropdown-menu {
   .ant-select-dropdown-menu-item-group:first-child {
+    .ant-select-dropdown-menu-item-group-title {
+      display: none;
+    }
+
     ul {
       @media @xsmall {
         max-width: 240px;
@@ -688,12 +700,6 @@ div[data-dir='rtl'] .Topnav {
   }
 }
 
-.Topnav__search-dropdown-container {
-  .ant-select-dropdown-menu-item-group-title {
-    height: 0px;
-  }
-}
-
 .Topnav__search-autocomplete.ant-select-dropdown-menu-item-active {
   background-color: @white;
 
@@ -719,7 +725,7 @@ div[data-dir='rtl'] .Topnav {
   cursor: default !important;
 
   .search-btn {
-    .view-as-link();
+    .view-as-link(@blue-vivid, @secondary-color);
   }
 }
 

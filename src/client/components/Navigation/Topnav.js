@@ -562,7 +562,6 @@ class Topnav extends React.Component {
               )}
             </React.Fragment>
           </Menu.Item>
-
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
           </Menu.Item>
