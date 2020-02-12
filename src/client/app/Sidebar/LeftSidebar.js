@@ -14,7 +14,7 @@ import DealsList from './DealsList';
 import { isGuestUser } from '../../reducers';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => {
-  const isGuest = useSelector(isGuestUser, shallowEqual());
+  const isGuest = useSelector(isGuestUser);
   return (
     <Switch>
       <Route path="/@:name/wallet" component={TopInstruments} />
