@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import * as types from './authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
-import { LOGOUT } from "./authActions";
+import { LOGOUT } from './authActions';
 
 const initialState = {
   isAuthenticated: false,

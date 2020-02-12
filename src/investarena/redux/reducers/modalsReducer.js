@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { TOGGLE_MODAL } from '../actions/modalsActions';
-import { LOGOUT } from "../../../client/auth/authActions";
+import { LOGOUT } from '../../../client/auth/authActions';
 
 const initialState = { modals: [], modalsInfo: {} };
 

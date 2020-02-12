@@ -9,4 +9,7 @@ export const getConnectionState = createSelector(
   user => user.connectionEstablished,
 );
 
-export const isGuestUserSelector = createSelector(state => state.auth, auth => auth.isGuestUser);
+export const isGuestUserSelector = createSelector(
+  state => state.auth,
+  auth => auth.isGuestUser,
+);

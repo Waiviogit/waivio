@@ -8,19 +8,19 @@ import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 
 const GuestSignUpFormContent = ({
-                                  getFieldDecorator,
-                                  getFieldsError,
-                                  getFieldError,
-                                  isLoading,
-                                  validateUserName,
-                                  checkboxValidator,
-                                  hasErrors,
-                                  handleSubmit,
-                                  getAvatar,
-                                  setIsLoading,
-                                  image,
-                                  initialLanguages,
-                                }) => {
+  getFieldDecorator,
+  getFieldsError,
+  getFieldError,
+  isLoading,
+  validateUserName,
+  checkboxValidator,
+  hasErrors,
+  handleSubmit,
+  getAvatar,
+  setIsLoading,
+  image,
+  initialLanguages,
+}) => {
   const usernameError = getFieldError('username');
   const aliasError = getFieldError('alias');
   const agreementError = getFieldError('agreement');

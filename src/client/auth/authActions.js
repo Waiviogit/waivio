@@ -120,7 +120,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   dispatch({
     type: LOGOUT,
   });
-  dispatch(push('/'))
+  dispatch(push('/'));
 };
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {

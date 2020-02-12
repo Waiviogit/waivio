@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as actions from './usersActions';
-import { LOGOUT } from "../auth/authActions";
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   users: {},

@@ -1,5 +1,5 @@
 import * as appendActions from './appendActions';
-import { LOGOUT } from "../auth/authActions";
+import { LOGOUT } from '../auth/authActions';
 
 const defaultState = {
   loading: false,

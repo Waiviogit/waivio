@@ -2,7 +2,7 @@ import _ from 'lodash';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
-import { LOGOUT } from "../auth/authActions";
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   recommendedObjects: [],

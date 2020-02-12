@@ -2,7 +2,7 @@ import { concat, filter, get, last, slice, uniqBy } from 'lodash';
 import * as walletActions from './walletActions';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
-import { LOGOUT } from "../auth/authActions";
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   transferVisible: false,

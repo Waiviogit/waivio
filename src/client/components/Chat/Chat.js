@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
-import {GUEST_PREFIX} from "../../../common/constants/waivio";
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 import './Chat.less';
 
 const Chat = ({
@@ -37,7 +37,7 @@ const Chat = ({
         requestData.args.isGuest = isGuest;
         requestData.args.sessionData = {};
 
-        if(isGuest) {
+        if (isGuest) {
           requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         } else {
           requestData.args.sessionData.username = userName;

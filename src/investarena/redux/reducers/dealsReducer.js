@@ -11,7 +11,7 @@ import {
   CHANGE_OPEN_DEAL_SUCCESS,
   CLOSE_OPEN_DEAL_SUCCESS,
 } from '../../redux/actions/dealsActions';
-import { LOGOUT } from "../../../client/auth/authActions";
+import { LOGOUT } from '../../../client/auth/authActions';
 
 const initialState = { open: {}, closed: {}, postDeals: {} };
 

@@ -111,13 +111,11 @@ export const getComments = postId => (dispatch, getState) => {
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(
-        apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        }),
-      ),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
     },
     meta: {
       id: postId,

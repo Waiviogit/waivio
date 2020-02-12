@@ -1,5 +1,5 @@
 import * as chatActions from './chatActions';
-import { LOGOUT } from "../../auth/authActions";
+import { LOGOUT } from '../../auth/authActions';
 
 const initialState = {
   postMessageType: '',
