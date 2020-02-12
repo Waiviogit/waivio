@@ -562,7 +562,6 @@ class Topnav extends React.Component {
               )}
             </React.Fragment>
           </Menu.Item>
-
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
           </Menu.Item>
@@ -912,14 +911,17 @@ class Topnav extends React.Component {
       'Topnav__search-selected-active': this.state.currentItem === key,
     });
 
-  handleOnBlur = () =>
+  handleOnBlur = () => {
+    this.setState({
+      dropdownOpen: false,
+    });
+  };
+
+  handleClearSearchData = () =>
     this.setState(
       {
-        dropdownOpen: false,
         searchData: '',
         searchBarValue: '',
-        currentItem: 'All',
-        searchBarActive: false,
       },
       this.props.resetSearchAutoCompete,
     );
@@ -983,7 +985,10 @@ class Topnav extends React.Component {
             </Link>
           </div>
           <div className={classNames('center', 'center-menu', { mobileVisible: searchBarActive })}>
-            <div className="Topnav__input-container">
+            <div className="Topnav__input-container"
+                 onBlur={this.handleOnBlur}
+            >
+              <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
                 dataSource={formattedAutoCompleteDropdown}
@@ -996,7 +1001,6 @@ class Topnav extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
-                onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
               >
                 <Input
@@ -1012,7 +1016,14 @@ class Topnav extends React.Component {
                   autoCorrect="off"
                 />
               </AutoComplete>
-              <i className="iconfont icon-search" />
+              {!!this.state.searchBarValue.length && (
+                <Icon
+                  type="close-circle"
+                  style={{ fontSize: '12px' }}
+                  theme="filled"
+                  onClick={this.handleClearSearchData}
+                />
+              )}
             </div>
             <div className="Topnav__horizontal-menu">
               {!isMobile && (

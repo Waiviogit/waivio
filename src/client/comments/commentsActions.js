@@ -104,18 +104,18 @@ export const getComments = postId => (dispatch, getState) => {
   const content = posts.list[postId] || comments.comments[postId];
 
   // eslint-disable-next-line camelcase
-  const { category, root_author, permlink } = content;
+  const { category, permlink } = content;
+
+  const author = content.guestInfo ? content.root_author : content.author;
 
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, root_author, permlink }).then(
-        apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        }),
-      ),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
     },
     meta: {
       id: postId,
@@ -128,7 +128,18 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const { category, id, permlink: parentPermlink } = parentPost;
+
+  let parentAuthor;
+
+  if (isUpdating) {
+    parentAuthor = originalComment.parent_author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentPost.root_author;
+  } else {
+    parentAuthor = parentPost.author;
+  }
+
   const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
 
@@ -203,12 +214,15 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               value: 3,
             });
           }
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
         }),
     },
     meta: {
       parentId: parentPost.id,
       rootPostId,
-      isEditing: false,
+      isEditing: isUpdating,
       isReplyToComment: parentPost.id !== id,
     },
   });

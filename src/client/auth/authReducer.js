@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import * as types from './authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
+import { LOGOUT } from './authActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -84,6 +85,8 @@ export default (state = initialState, action) => {
     }
     case types.UPDATE_PROFILE_ERROR:
       return state;
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

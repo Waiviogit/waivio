@@ -701,7 +701,7 @@
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
   "related_to_object": "Related to topic",
   "emptyList": "This list is empty",
-  "list": "list",
+  "list": "List",
   "list_update": "Update list",
   "add_InvestArena_beneficiary": "Share {share}% of this post rewards with InvestArena",
   "objects_related_by_tags": "Topics related by #tags",
@@ -986,7 +986,7 @@
   "comment_options": "comment_options",
   "for_days": "for",
   "legal_notice_users_user": "Legal notice to users (optional)",
-  "custom": "custom",
+  "custom": "Custom",
   "payables": "Payables",
   "manage": "Manage",
   "sidenav_rewards_payables": "Payables",
@@ -1097,7 +1097,7 @@
   "transfer_through_bank": "Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees.",
   "not_to_worry": "Please don't worry. You can head back to {link}",
   "there_are_not_object_with_name": "Sorry! There are no user with name {item} on Waivio",
-  "signupForRewards": "Sign up for rewards!",
+  "signUp": "Sign up!",
   "payOneTimeFee": "or pay a one-time fee (about $3)",
   "getSteemAccountNow": "to get a Steem account now using:",
   "creditCards": "- credit cards",
@@ -1112,5 +1112,7 @@
   "public_profile": "Public profile",
   "link_placeholder": "Add url",
   "modal_button_cancel": "Cancel",
-  "modal_button_yes": "OK"
+  "modal_button_yes": "OK",
+  "need_confirm_agreement": "You need to confirm agreement",
+  "please_input_nickname": "Nickname cannot be empty"
 }

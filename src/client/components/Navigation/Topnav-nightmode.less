@@ -11,9 +11,23 @@
       border: 1px solid #4f545c;
     }
   }
+
   .Topnav {
     background-color: @grey-nero;
     border-bottom: @border-width-base @border-style-base @normal-grey;
+
+    &__hot-news-item {
+      border-bottom: @border-width-base @border-style-base @normal-grey;
+      color: @grey-darkGrey;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        color: @blue-vivid;
+      }
+    }
 
     &__input-container {
       .ant-select-selection {

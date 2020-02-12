@@ -88,7 +88,7 @@ export const getObject = (authorPermlink, requiredField) => {
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-export const getFeedContentByObject = (name, limit = 10, user_languages) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages = ['en-US', 'ru-RU']) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
@@ -796,9 +796,9 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+export const getPostCommentsFromApi = ({ category, author, permlink }) => {
   return fetch(
-    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+    `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
   )
     .then(res => res.json())
     .then(data => data)

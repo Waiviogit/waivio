@@ -253,32 +253,36 @@ export function createPost(postData) {
             permlink,
             referral,
             authUser.name,
-          ).then(result => {
-            if (draftId) {
-              batch(() => {
-                dispatch(deleteDraft(draftId));
-                dispatch(addEditedPost(permlink));
-              });
-            }
-            if (isGuest) {
-              if (upvote) {
-                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+          )
+            .then(result => {
+              if (draftId) {
+                batch(() => {
+                  dispatch(deleteDraft(draftId));
+                  dispatch(addEditedPost(permlink));
+                });
               }
-              dispatch(push('/'));
-              dispatch(notify('Your post will be posted soon', 'success'));
-            } else {
-              dispatch(push(`/@${author}/${permlink}`));
-            }
+              if (isGuest) {
+                if (upvote) {
+                  steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+                }
+                dispatch(push('/'));
+                dispatch(notify('Your post will be posted soon', 'success'));
+              } else {
+                dispatch(push(`/@${author}/${permlink}`));
+              }
 
-            if (window.analytics) {
-              window.analytics.track('Post', {
-                category: 'post',
-                label: 'submit',
-                value: 10,
-              });
-            }
-            return result;
-          }),
+              if (window.analytics) {
+                window.analytics.track('Post', {
+                  category: 'post',
+                  label: 'submit',
+                  value: 10,
+                });
+              }
+              return result;
+            })
+            .catch(err => {
+              dispatch(notify(err.error.message, 'error'));
+            }),
         },
       });
     });
