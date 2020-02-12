@@ -1,4 +1,5 @@
 import * as chatActions from './chatActions';
+import {LOGOUT} from "../../auth/authActions";
 
 const initialState = {
   postMessageType: '',
@@ -19,6 +20,8 @@ export default function chatReducer(state = initialState, action) {
         postMessageType: '',
         data: '',
       };
+    case LOGOUT:
+      return initialState;
     default: {
       return state;
     }

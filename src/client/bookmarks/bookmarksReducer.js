@@ -2,6 +2,7 @@ import { get } from 'lodash';
 import * as authActions from '../auth/authActions';
 import * as bookmarksActions from './bookmarksActions';
 import { GET_USER_METADATA } from '../user/usersActions';
+import {LOGOUT} from "../auth/authActions";
 
 const initialState = {
   list: [],
@@ -40,6 +41,8 @@ const bookmarks = (state = initialState, action) => {
         ...state,
         pendingBookmarks: state.pendingBookmarks.filter(bookmark => bookmark !== action.meta.id),
       };
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

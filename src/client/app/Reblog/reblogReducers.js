@@ -1,4 +1,5 @@
 import * as reblogActions from './reblogActions';
+import {LOGOUT} from "../../auth/authActions";
 
 const initialState = {
   rebloggedList: [],
@@ -23,6 +24,8 @@ const reblogReducer = (state = initialState, action) => {
         ...state,
         pendingReblogs: state.pendingReblogs.filter(id => id !== action.meta.postId),
       };
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

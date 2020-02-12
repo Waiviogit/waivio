@@ -1,6 +1,7 @@
 import { get, isEmpty, omit, reduce } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { getClientWObj } from '../adapters';
+import {LOGOUT} from "../auth/authActions";
 
 const initialState = {
   data: {},
@@ -69,6 +70,8 @@ const objectType = (state = initialState, action) => {
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

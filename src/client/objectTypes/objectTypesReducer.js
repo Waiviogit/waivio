@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { GET_OBJECT_TYPES } from './objectTypesActions';
+import {LOGOUT} from "../auth/authActions";
 
 const initialState = {
   fetching: false,
@@ -16,6 +17,8 @@ const feed = (state = initialState, action) => {
         fetching: false,
         list: { ...state.list, ..._.keyBy(action.payload, 'name') },
       };
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

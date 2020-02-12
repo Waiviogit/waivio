@@ -1,6 +1,7 @@
 import { mapValues, omit, uniq } from 'lodash';
 import * as commentsTypes from './commentsActions';
 import { getParentKey, getPostKey } from '../helpers/stateHelpers';
+import {LOGOUT} from "../auth/authActions";
 
 const initialState = {
   childrenById: {},
@@ -177,6 +178,8 @@ export default (state = initialState, action) => {
         ...state,
         pendingVotes: pendingVotes(state.pendingVotes, action),
       };
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

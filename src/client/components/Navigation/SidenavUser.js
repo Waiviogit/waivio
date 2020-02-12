@@ -1,10 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './Sidenav.less';
+import {isGuestUserSelector} from "../../../investarena/redux/selectors/userSelectors";
 
-const SidenavUser = isGuest => (
+const SidenavUser = () => {
+  const isGuest = useSelector(isGuestUserSelector);
+  return(
   <ul className="Sidenav">
     {!isGuest && (
       <li>
@@ -45,14 +48,6 @@ const SidenavUser = isGuest => (
       </NavLink>
     </li>
   </ul>
-);
-
-SidenavUser.porpTypes = {
-  isGuest: PropTypes.bool,
-};
-
-SidenavUser.defaultProps = {
-  isGuest: false,
-};
+)};
 
 export default SidenavUser;

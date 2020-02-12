@@ -2,6 +2,7 @@ import _ from 'lodash';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
+import {LOGOUT} from "../auth/authActions";
 
 const initialState = {
   recommendedObjects: [],
@@ -235,6 +236,8 @@ export default function userReducer(state = initialState, action) {
         isChatOpen: !state.isChatOpen,
         isConnectionStart: true,
       };
+    case LOGOUT:
+      return initialState;
     default: {
       return state;
     }

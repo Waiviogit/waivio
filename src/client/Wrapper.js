@@ -20,7 +20,7 @@ import {
   getNightmode,
   getScreenSize,
   getTranslations,
-  getUsedLocale,
+  getUsedLocale, isGuestUser,
 } from './reducers';
 import { busyLogin, login, logout } from './auth/authActions';
 import { getMessagesQuantity } from '../waivioApi/ApiClient';
@@ -59,6 +59,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     platformName: getPlatformNameState(state),
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
+    isGuest: isGuestUser(state),
   }),
   {
     login,
@@ -103,6 +104,7 @@ export default class Wrapper extends React.PureComponent {
     isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     screenSize: PropTypes.string.isRequired,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -125,6 +127,7 @@ export default class Wrapper extends React.PureComponent {
     getChartsData: () => {},
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
+    isGuest: false,
   };
 
   static async fetchData({ store, req }) {
@@ -276,6 +279,7 @@ export default class Wrapper extends React.PureComponent {
       username,
       isChat,
       isAuthenticated,
+      isGuest,
     } = this.props;
     const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
@@ -299,12 +303,12 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                <ChatButton
+                {!isGuest && <ChatButton
                   openChat={this.props.changeChatCondition}
                   isChat={isChat}
                   messagesCount={messagesCount}
                   authentication={isAuthenticated}
-                />
+                />}
                 {isAuthenticated ? (
                   <Chat
                     visibility={isChat}

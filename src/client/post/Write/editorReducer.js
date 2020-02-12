@@ -3,6 +3,7 @@ import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
 import * as authActions from '../../auth/authActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
+import {LOGOUT} from "../../auth/authActions";
 
 const defaultState = {
   loading: false,
@@ -121,6 +122,8 @@ const editor = (state = defaultState, action) => {
         ...state,
         loadingImg: false,
       };
+    case LOGOUT:
+      return defaultState;
     default:
       return state;
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import UserInfo from './UserInfo';
@@ -11,10 +10,8 @@ import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
 import DealsList from './DealsList';
-import { isGuestUser } from '../../reducers';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => {
-  const isGuest = useSelector(isGuestUser);
   return (
     <Switch>
       <Route path="/@:name/wallet" component={TopInstruments} />
@@ -42,7 +39,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => {
       <Route path="/bookmarks" component={SidenavUser} />
       <Route path="/drafts" component={SidenavUser} />
       <Route path="/edit-profile" component={SidenavUser} />
-      <Route path="/settings" render={() => <SidenavUser isGuest={isGuest} />} />
+      <Route path="/settings" component={SidenavUser} />
       <Route path="/invite" component={SidenavUser} />
       <Route path="/" component={TopPerformers} />
     </Switch>
@@ -57,4 +54,4 @@ LeftSidebar.defaultProps = {
   quoteSettingsSorted: null,
 };
 
-export default LeftSidebar;
+export default React.memo(LeftSidebar);

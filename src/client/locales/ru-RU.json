@@ -1076,5 +1076,6 @@
   "modal_button_cancel": "Отмена",
   "modal_button_yes": "OK",
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
-  "please_input_nickname": "Введите никнейм"
+  "please_input_nickname": "Введите никнейм",
+  "signin": "Вход"
 }

@@ -1,4 +1,5 @@
 import * as appendActions from './appendActions';
+import {LOGOUT} from "../auth/authActions";
 
 const defaultState = {
   loading: false,
@@ -25,6 +26,8 @@ export default (state = defaultState, action) => {
         error: null,
         loading: false,
       };
+    case LOGOUT:
+      return defaultState;
     default:
       return state;
   }
