@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import _ from 'lodash';
+import { attempt, get, isEmpty, isError, throttle } from 'lodash';
 import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Avatar, Button, Form, Input, Modal } from 'antd';
 import moment from 'moment';
-import { sign } from 'steemconnect';
+import sc from 'steemconnect';
 import { updateProfile } from '../auth/authActions';
-import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
+import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -21,13 +21,14 @@ import requiresLogin from '../auth/requiresLogin';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
+import { getAvatarURL } from '../components/Avatar';
 import './Settings.less';
 
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
-  let metadata = _.attempt(JSON.parse, props.user.json_metadata);
-  if (_.isError(metadata)) metadata = {};
+  let metadata = attempt(JSON.parse, props.user.json_metadata);
+  if (isError(metadata)) metadata = {};
   const profile = metadata.profile || {};
 
   return Object.keys(profile).reduce(
@@ -81,17 +82,20 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
+    let metadata = attempt(JSON.parse, props.user.json_metadata);
+    if (isError(metadata)) metadata = {};
     this.state = {
       bodyHTML: '',
-      profilePicture: {},
-      coverPicture: {},
+      profileData: get(metadata, ['profile'], {}),
+      profilePicture: getAvatarURL(props.userName),
+      coverPicture: get(metadata, ['profile', 'cover_image'], ''),
       isModal: false,
       isLoadingImage: false,
       avatarImage: [],
       coverImage: [],
       isCover: false,
       isAvatar: false,
-      lastAccountUpdate: '',
+      lastAccountUpdate: moment(props.user.updatedAt).unix(),
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -99,25 +103,14 @@ export default class ProfileSettings extends React.Component {
     this.renderBody = this.renderBody.bind(this);
   }
 
-  componentDidMount() {
-    const { user } = this.props;
-    const profileData = _.attempt(JSON.parse, user.json_metadata);
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      profilePicture: profileData.profile.profile_image,
-      coverPicture: profileData.profile.cover_image,
-      lastAccountUpdate: moment(user.updatedAt).unix(),
-    });
-  }
-
   handleSignatureChange(body) {
-    _.throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
+    throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
   }
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, updateProfile } = this.props;
-    const { avatarImage, coverImage } = this.state;
+    const { form, isGuest, user, userName, updateProfile } = this.props;
+    const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
 
@@ -142,7 +135,20 @@ export default class ProfileSettings extends React.Component {
         if (isGuest) {
           updateProfile(userName, cleanValues);
         } else {
-          const win = window.open(sign('profile-update', cleanValues), '_blank');
+          const win = window.open(
+            sc.sendOperation(
+              [
+                'account_update',
+                {
+                  account: userName,
+                  memo_key: user.memo_key,
+                  json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
+                },
+              ],
+              { callback: window.location.href },
+            ),
+            '_blank',
+          );
           win.focus();
         }
       }
@@ -153,10 +159,10 @@ export default class ProfileSettings extends React.Component {
     e.preventDefault();
     // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
-    const { profilePicture, avatarImage } = this.state;
+    const { avatarImage } = this.state;
 
-    if (isGuest && !_.isEmpty(avatarImage)) {
-      getGuestAvatarUrl(userName, profilePicture, intl)
+    if (isGuest && !isEmpty(avatarImage)) {
+      getGuestAvatarUrl(userName, avatarImage[0].src, intl)
         .then(data => {
           this.props.form.setFieldsValue({
             profile_image: data.image,
@@ -385,7 +391,7 @@ export default class ProfileSettings extends React.Component {
                           <Avatar
                             size="large"
                             shape="square"
-                            icon="file-image"
+                            icon="picture"
                             src={`${this.state.coverPicture}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>

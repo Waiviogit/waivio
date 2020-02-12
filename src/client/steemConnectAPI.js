@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import sc2 from 'steemconnect';
+import steemConnect from 'steemconnect';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
@@ -31,35 +31,35 @@ async function getUserAccount() {
   return { account, name: account.name };
 }
 
-function sc2Extended() {
+function scExtended() {
   const isGuest = () =>
     typeof localStorage !== 'undefined' &&
     !!localStorage.getItem('accessToken') &&
     !!localStorage.getItem('guestName');
 
-  const sc2api = new sc2.Client({
+  const steemConnectAPI = new steemConnect.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
     baseURL: process.env.STEEMCONNECT_HOST,
     scope: ['vote', 'comment'],
   });
-  const sc2Proto = Object.create(Object.getPrototypeOf(sc2api));
-  sc2Proto.broadcastOp = sc2Proto.broadcast;
-  sc2Proto.meOp = sc2Proto.me;
+  const steemConnectProto = Object.create(Object.getPrototypeOf(steemConnectAPI));
+  steemConnectProto.broadcastOp = steemConnectProto.broadcast;
+  steemConnectProto.meOp = steemConnectProto.me;
 
-  sc2Proto.broadcast = (operations, cb) => {
+  steemConnectProto.broadcast = (operations, cb) => {
     if (isGuest()) return broadcast(operations, cb);
-    return sc2Proto.broadcastOp(operations);
+    return steemConnectProto.broadcastOp(operations);
   };
 
-  sc2Proto.me = () => {
+  steemConnectProto.me = () => {
     if (isGuest()) return getUserAccount();
-    return sc2Proto.meOp();
+    return steemConnectProto.meOp();
   };
 
   return Object.assign(
-    sc2Proto,
-    sc2api,
+    steemConnectProto,
+    steemConnectAPI,
     {
       followObject(follower, followingObject, cb) {
         const params = {
@@ -135,6 +135,6 @@ function sc2Extended() {
   );
 }
 
-const api = sc2Extended();
+const api = scExtended();
 
 export default api;
