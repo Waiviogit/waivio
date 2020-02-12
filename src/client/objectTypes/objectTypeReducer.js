@@ -1,7 +1,7 @@
 import { get, isEmpty, omit, reduce } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { getClientWObj } from '../adapters';
-import {LOGOUT} from "../auth/authActions";
+import { LOGOUT } from "../auth/authActions";
 
 const initialState = {
   data: {},

@@ -1,7 +1,7 @@
 import { mapValues, omit, uniq } from 'lodash';
 import * as commentsTypes from './commentsActions';
 import { getParentKey, getPostKey } from '../helpers/stateHelpers';
-import {LOGOUT} from "../auth/authActions";
+import { LOGOUT } from "../auth/authActions";
 
 const initialState = {
   childrenById: {},

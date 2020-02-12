@@ -20,7 +20,8 @@ import {
   getNightmode,
   getScreenSize,
   getTranslations,
-  getUsedLocale, isGuestUser,
+  getUsedLocale,
+  isGuestUser,
 } from './reducers';
 import { busyLogin, login, logout } from './auth/authActions';
 import { getMessagesQuantity } from '../waivioApi/ApiClient';

@@ -1,5 +1,5 @@
 import * as favoriteActions from './favoritesActions';
-import {LOGOUT} from "../auth/authActions";
+import { LOGOUT } from "../auth/authActions";
 
 const initialState = {
   categories: [],

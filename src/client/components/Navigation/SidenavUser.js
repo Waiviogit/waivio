@@ -2,8 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import { isGuestUserSelector } from "../../../investarena/redux/selectors/userSelectors";
 import './Sidenav.less';
-import {isGuestUserSelector} from "../../../investarena/redux/selectors/userSelectors";
+
 
 const SidenavUser = () => {
   const isGuest = useSelector(isGuestUserSelector);

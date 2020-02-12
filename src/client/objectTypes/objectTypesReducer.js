@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { GET_OBJECT_TYPES } from './objectTypesActions';
-import {LOGOUT} from "../auth/authActions";
+import { LOGOUT } from "../auth/authActions";
 
 const initialState = {
   fetching: false,

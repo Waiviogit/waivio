@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import * as authActions from '../auth/authActions';
 import * as bookmarksActions from './bookmarksActions';
 import { GET_USER_METADATA } from '../user/usersActions';
-import {LOGOUT} from "../auth/authActions";
+import { LOGOUT } from "../auth/authActions";
 
 const initialState = {
   list: [],

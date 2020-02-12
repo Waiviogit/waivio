@@ -1,5 +1,5 @@
 import * as reblogActions from './reblogActions';
-import {LOGOUT} from "../../auth/authActions";
+import { LOGOUT } from "../../auth/authActions";
 
 const initialState = {
   rebloggedList: [],
