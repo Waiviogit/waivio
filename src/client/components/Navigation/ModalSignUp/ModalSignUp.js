@@ -61,7 +61,7 @@ const ModalSignUp = ({ isButton }) => {
   const renderSignUp = () => (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
-        <FormattedMessage id="signupForRewards" defaultMessage="Sign up for rewards!" />
+        <FormattedMessage id="signUp" defaultMessage="Sign up!" />
       </h2>
       {isLoading ? (
         <Spinner />

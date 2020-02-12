@@ -36,7 +36,7 @@ const SignUpInfo = () => (
         <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
       </a>
     </div>
-    <h2 className="ModalSignUp__title ModalSignUp__title--lined">
+    <h2 className="ModalSignUp__title ModalSignUp__title--lined mt3">
       <span>
         <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
       </span>
