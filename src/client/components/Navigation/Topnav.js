@@ -265,6 +265,7 @@ class Topnav extends React.Component {
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
+              overlayClassName="Topnav__notifications-tooltip"
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
