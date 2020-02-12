@@ -102,6 +102,31 @@
     display: flex;
     margin-left: 15px;
 
+    &:hover .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    &:focus .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    .anticon.anticon-close-circle {
+      position: absolute;
+      color: @blue-linkWater;
+      font-size: 20px;
+      z-index: 1000;
+      right: 16px;
+      left: unset;
+      cursor: pointer;
+      top: 20px;
+      transition: 0.5s;
+      opacity: 0;
+
+      &:hover {
+        color: @blue-baliHai;
+      }
+    }
+
     > .ant-select-show-search {
       width: 100%;
 
@@ -491,12 +516,14 @@
     margin-right: 0;
     display: flex;
     justify-content: center;
+
     @media @small {
       display: block;
       width: 270px;
       margin-right: 16px;
       top: 48px;
     }
+
     @media @large {
       margin-right: 0;
     }
@@ -639,12 +666,15 @@ div[data-dir='rtl'] .Topnav {
   box-shadow: none;
   padding-top: 5px;
   max-width: 250px;
+
   @media @small {
     max-width: 270px;
   }
+
   @media @medium {
     max-width: 480px;
   }
+
   @media @large {
     max-width: 450px;
   }
@@ -808,7 +838,11 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .topnav-layout div.center.center-menu {
-  width: auto;
+  width: calc(100% - 100px);
+
+  @media @small {
+    width: auto;
+  }
 
   @media @small and (max-width: @small-bp) {
     width: 46%;
