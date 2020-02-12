@@ -108,8 +108,7 @@ export default class ProfileSettings extends React.Component {
   }
 
   setSettingsFields = () => {
-    // eslint-disable-next-line no-shadow
-    const { form, isGuest, user, userName, updateProfile } = this.props;
+    const { form, isGuest, user, userName } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -133,7 +132,7 @@ export default class ProfileSettings extends React.Component {
             {},
           );
         if (isGuest) {
-          updateProfile(userName, cleanValues);
+          this.props.updateProfile(userName, cleanValues);
         } else {
           const win = window.open(
             sc.sendOperation(
@@ -157,7 +156,6 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
 
