@@ -220,14 +220,10 @@ export default class WobjHistory extends React.Component {
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
               <SortSelector.Item key="rank">
-                <FormattedMessage id="rank" defaultMessage="Rank">
-                  {msg => msg.toUpperCase()}
-                </FormattedMessage>
+                <FormattedMessage id="rank" defaultMessage="Rank" />
               </SortSelector.Item>
               <SortSelector.Item key="recency">
-                <FormattedMessage id="recency" defaultMessage="Recency">
-                  {msg => msg.toUpperCase()}
-                </FormattedMessage>
+                <FormattedMessage id="recency" defaultMessage="Recency" />
               </SortSelector.Item>
             </SortSelector>
           </div>

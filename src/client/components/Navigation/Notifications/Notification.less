@@ -24,6 +24,22 @@
       & > a {
         font-weight: 700;
       }
+
+      & > span {
+        transition: 0.2s;
+
+        & > span {
+          transition: 0.2s;
+        }
+
+        &:hover {
+          color: @blue-vivid;
+
+          & > span {
+            color: @blue-vivid;
+          }
+        }
+      }
     }
 
     &__date {

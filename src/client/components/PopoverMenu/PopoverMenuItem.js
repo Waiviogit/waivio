@@ -7,7 +7,6 @@ const PopoverMenuItem = ({
   itemKey,
   children,
   onClick,
-  bold,
   disabled,
   fullScreenHidden,
   mobileScreenHidden,
@@ -15,7 +14,6 @@ const PopoverMenuItem = ({
 }) => (
   <li
     className={classNames('PopoverMenuItem', {
-      'PopoverMenuItem--bold': bold,
       'PopOverMenuItem__full-screen-hidden': fullScreenHidden,
       'PopOverMenuItem__mobile-screen-hidden': mobileScreenHidden,
       'screen-hidden': hideItem,
@@ -38,7 +36,6 @@ PopoverMenuItem.propTypes = {
   children: PropTypes.node,
   itemKey: PropTypes.string,
   onClick: PropTypes.func,
-  bold: PropTypes.bool,
   disabled: PropTypes.bool,
   fullScreenHidden: PropTypes.bool,
   mobileScreenHidden: PropTypes.bool,
@@ -49,7 +46,6 @@ PopoverMenuItem.defaultProps = {
   children: null,
   itemKey: '',
   onClick: () => {},
-  bold: true,
   disabled: false,
   fullScreenHidden: false,
   mobileScreenHidden: false,

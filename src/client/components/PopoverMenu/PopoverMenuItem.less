@@ -8,13 +8,11 @@
   & > a {
     height: 30px !important;
     line-height: 30px !important;
+    color: @black-text;
+    font-weight: 500;
 
     &:hover {
-      color: @primary-color !important;
-    }
-
-    &[disabled] {
-      color: #c2ccd3 !important;
+      color: @blue-vivid;
     }
 
     & > span {
@@ -22,12 +20,21 @@
       font-size: 16px !important;
       font-weight: 500;
       color: @black-text;
-    }
-  }
+      transition: 0.3s;
 
-  &--bold {
-    & > a {
-      font-weight: bold !important;
+      &:hover {
+        color: @blue-vivid;
+      }
+    }
+
+    &[disabled] {
+      & > span {
+        color: #c2ccd3;
+
+        &:hover {
+          color: #c2ccd3;
+        }
+      }
     }
   }
 }
