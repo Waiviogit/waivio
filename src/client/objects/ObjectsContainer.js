@@ -5,8 +5,9 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import ObjectList from './ObjectList';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
-import './Objects.less';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+
+import './Objects.less';
 
 const TabPane = Tabs.TabPane;
 
