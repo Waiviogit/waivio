@@ -1,4 +1,4 @@
-import {toPairs} from 'lodash';
+import { toPairs } from 'lodash';
 import { createSelector } from 'reselect';
 // selector
 export const getQuotesSettingsState = state => state.quotesSettings;
@@ -18,9 +18,12 @@ export const makeGetQuotesSettingsState = () =>
       toPairs(
         Object.keys(quotesSettings)
           .filter(key => quoteSecurities.includes(key))
-          .reduce((obj, key) => ({
+          .reduce(
+            (obj, key) => ({
               ...obj,
               [key]: quotesSettings[key],
-            }), {}),
+            }),
+            {},
+          ),
       ),
   );

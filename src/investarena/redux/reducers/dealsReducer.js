@@ -11,7 +11,7 @@ import {
   CHANGE_OPEN_DEAL_SUCCESS,
   CLOSE_OPEN_DEAL_SUCCESS,
 } from '../../redux/actions/dealsActions';
-// import { SIGN_OUT_SUCCESS } from '../../redux/actions/authenticate/authenticate';
+import { LOGOUT } from '../../../client/auth/authActions';
 
 const initialState = { open: {}, closed: {}, postDeals: {} };
 
@@ -58,8 +58,8 @@ export default function(state = initialState, action) {
     case AUTHORIZE_BROKER_SUCCESS:
     case DISCONNECT_BROKER_SUCCESS:
       return { ...state, open: {}, closed: {} };
-    // case SIGN_OUT_SUCCESS:
-    //     return initialState;
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

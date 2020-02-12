@@ -1,4 +1,4 @@
-import {size, map} from 'lodash';
+import { size, map } from 'lodash';
 import { createSelector } from 'reselect';
 import { getQuotesSettingsState } from './quotesSettingsSelectors';
 import { blackListQuotes } from '../../constants/blackListQuotes';

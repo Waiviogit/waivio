@@ -36,26 +36,26 @@ const ObjectExpertise = ({ username, wobject }) => {
         </h4>
         <div className="SidebarContentBlock__content">
           {users &&
-          _.map(_.slice(users, 0, 5), u => (
-            <UserCard
-              key={u.name}
-              user={u}
-              showFollow={false}
-              alt={<WeightTag weight={u.weight} />}
-            />
-          ))}
+            _.map(_.slice(users, 0, 5), u => (
+              <UserCard
+                key={u.name}
+                user={u}
+                showFollow={false}
+                alt={<WeightTag weight={u.weight} />}
+              />
+            ))}
 
-        {!isUserInTopFive && user && (
-          <React.Fragment>
-            <div className="ObjectExpertise__dots">...</div>
-            <UserCard
-              key={user.name}
-              user={user}
-              showFollow={false}
-              alt={<WeightTag weight={user.weight} />}
-            />
-          </React.Fragment>
-        )}
+          {!isUserInTopFive && user && (
+            <React.Fragment>
+              <div className="ObjectExpertise__dots">...</div>
+              <UserCard
+                key={user.name}
+                user={user}
+                showFollow={false}
+                alt={<WeightTag weight={user.weight} />}
+              />
+            </React.Fragment>
+          )}
 
           {_.size(users) > 5 && (
             <React.Fragment>
@@ -67,7 +67,7 @@ const ObjectExpertise = ({ username, wobject }) => {
             </React.Fragment>
           )}
         </div>
-    </div>
+      </div>
     );
   }
   return renderExperts;

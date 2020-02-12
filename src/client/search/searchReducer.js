@@ -2,6 +2,7 @@ import { compact, concat, get, isEmpty, map, sortBy } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   loading: true,
@@ -89,6 +90,8 @@ export default (state = initialState, action) => {
         searchObjectsResults: [],
       };
     }
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

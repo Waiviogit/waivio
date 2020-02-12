@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 import './Chat.less';
 
 const Chat = ({
@@ -20,23 +21,33 @@ const Chat = ({
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
   const ifr = useRef();
+  const isGuest = userName.startsWith(GUEST_PREFIX);
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
-      args: {
-        username: userName,
-      },
+      args: {},
     };
     switch (messageType) {
       case 'connected':
+        requestData.args.username = userName;
         ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
         break;
-      case 'init_response':
+      case 'init_response': {
         requestData.cmd = 'auth_connection';
-        requestData.args.transactionId = data.value.result.id;
-        requestData.args.blockNumber = data.value.result.block_num;
+        requestData.args.isGuest = isGuest;
+        requestData.args.sessionData = {};
+
+        if (isGuest) {
+          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+        } else {
+          requestData.args.sessionData.username = userName;
+          requestData.args.sessionData.transactionId = data.value.result.id;
+          requestData.args.sessionData.blockNumber = data.value.result.block_num;
+        }
+
         ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
         break;
+      }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
@@ -45,6 +56,7 @@ const Chat = ({
       default:
     }
   };
+
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {

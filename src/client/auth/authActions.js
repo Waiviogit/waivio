@@ -1,5 +1,6 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
+import { push } from 'connected-react-router';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
@@ -119,6 +120,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   dispatch({
     type: LOGOUT,
   });
+  dispatch(push('/'));
 };
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
