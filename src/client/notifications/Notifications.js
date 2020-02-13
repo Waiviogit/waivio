@@ -23,6 +23,8 @@ import NotificationReblog from '../components/Navigation/Notifications/Notificat
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
 import Loading from '../components/Icon/Loading';
+import RightSidebar from "../app/Sidebar/RightSidebar";
+
 import './Notifications.less';
 
 class Notifications extends React.Component {
@@ -65,79 +67,86 @@ class Notifications extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="NotificationsPage">
-            <div className="NotificationsPage__title">
-              <h1>
-                <FormattedMessage id="notifications" defaultMessage="Notifications" />
-              </h1>
-            </div>
-            <div className="NotificationsPage__content">
-              {loadingNotifications && (
-                <div className="NotificationsPage__loading">
-                  <Loading />
-                </div>
-              )}
-              {_.map(notifications, (notification, index) => {
-                const key = `${index}${notification.timestamp}`;
-                const read = lastSeenTimestamp >= notification.timestamp;
-                switch (notification.type) {
-                  case notificationConstants.REPLY:
-                    return (
-                      <NotificationReply
-                        key={key}
-                        notification={notification}
-                        currentAuthUsername={currentAuthUsername}
-                        read={read}
-                      />
-                    );
-                  case notificationConstants.FOLLOW:
-                    return (
-                      <NotificationFollowing key={key} notification={notification} read={read} />
-                    );
-                  case notificationConstants.MENTION:
-                    return (
-                      <NotificationMention key={key} notification={notification} read={read} />
-                    );
-                  case notificationConstants.VOTE:
-                    return (
-                      <NotificationVote
-                        key={key}
-                        notification={notification}
-                        read={read}
-                        currentAuthUsername={currentAuthUsername}
-                      />
-                    );
-                  case notificationConstants.REBLOG:
-                    return (
-                      <NotificationReblog
-                        key={key}
-                        notification={notification}
-                        read={read}
-                        currentAuthUsername={currentAuthUsername}
-                      />
-                    );
-                  case notificationConstants.TRANSFER:
-                    return (
-                      <NotificationTransfer key={key} notification={notification} read={read} />
-                    );
-                  case notificationConstants.WITNESS_VOTE:
-                    return (
-                      <NotificationVoteWitness key={key} notification={notification} read={read} />
-                    );
-                  default:
-                    return null;
-                }
-              })}
-              {_.isEmpty(notifications) && !loadingNotifications && (
-                <div className="Notification Notification__empty">
-                  <FormattedMessage
-                    id="notifications_empty_message"
-                    defaultMessage="You currently have no notifications."
-                  />
-                </div>
-              )}
+          <div className="center">
+            <div className="NotificationsPage">
+              <div className="NotificationsPage__title">
+                <h1>
+                  <FormattedMessage id="notifications" defaultMessage="Notifications" />
+                </h1>
+              </div>
+              <div className="NotificationsPage__content">
+                {loadingNotifications && (
+                  <div className="NotificationsPage__loading">
+                    <Loading />
+                  </div>
+                )}
+                {_.map(notifications, (notification, index) => {
+                  const key = `${index}${notification.timestamp}`;
+                  const read = lastSeenTimestamp >= notification.timestamp;
+                  switch (notification.type) {
+                    case notificationConstants.REPLY:
+                      return (
+                        <NotificationReply
+                          key={key}
+                          notification={notification}
+                          currentAuthUsername={currentAuthUsername}
+                          read={read}
+                        />
+                      );
+                    case notificationConstants.FOLLOW:
+                      return (
+                        <NotificationFollowing key={key} notification={notification} read={read} />
+                      );
+                    case notificationConstants.MENTION:
+                      return (
+                        <NotificationMention key={key} notification={notification} read={read} />
+                      );
+                    case notificationConstants.VOTE:
+                      return (
+                        <NotificationVote
+                          key={key}
+                          notification={notification}
+                          read={read}
+                          currentAuthUsername={currentAuthUsername}
+                        />
+                      );
+                    case notificationConstants.REBLOG:
+                      return (
+                        <NotificationReblog
+                          key={key}
+                          notification={notification}
+                          read={read}
+                          currentAuthUsername={currentAuthUsername}
+                        />
+                      );
+                    case notificationConstants.TRANSFER:
+                      return (
+                        <NotificationTransfer key={key} notification={notification} read={read} />
+                      );
+                    case notificationConstants.WITNESS_VOTE:
+                      return (
+                        <NotificationVoteWitness key={key} notification={notification} read={read} />
+                      );
+                    default:
+                      return null;
+                  }
+                })}
+                {_.isEmpty(notifications) && !loadingNotifications && (
+                  <div className="Notification Notification__empty">
+                    <FormattedMessage
+                      id="notifications_empty_message"
+                      defaultMessage="You currently have no notifications."
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+          <Affix className="rightContainer" stickPosition={116}>
+            <div className="right">
+              <RightSidebar />
+            </div>
+          </Affix>
         </div>
       </div>
     );
