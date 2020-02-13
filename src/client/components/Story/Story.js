@@ -60,7 +60,7 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
-    pendingFlag: PropTypes.func,
+    pendingFlag: PropTypes.bool,
   };
 
   static defaultProps = {

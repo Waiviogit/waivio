@@ -36,10 +36,12 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
               hasMore={userNames.length > users.length}
               useWindow={false}
             >
-              {users.map(user => (
-                // eslint-disable-next-line no-underscore-dangle
-                <DiscoverUser key={user._id} user={user} isSecondaryButton />
-              ))}
+              <div className="UserReblogModal__content">
+                {users.map(user => (
+                  // eslint-disable-next-line no-underscore-dangle
+                  <DiscoverUser key={user._id} user={user} isSecondaryButton />
+                ))}
+              </div>
             </InfiniteScroll>
           </Scrollbars>
         </Tabs.TabPane>
@@ -52,6 +54,6 @@ export default UserReblogModal;
 
 UserReblogModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  userNames: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  userNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onCancel: PropTypes.func.isRequired,
 };

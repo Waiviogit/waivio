@@ -255,7 +255,9 @@ export default class Buttons extends React.Component {
     const maxUserCount = 3;
     return (
       <span>
-        {reblogged_users.map((user, index) => index >= 0 && index < maxUserCount && <p>{user}</p>)}
+        {reblogged_users.map(
+          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>,
+        )}
         {reblogged_users.length > 3 && (
           <p>
             {this.props.intl.formatMessage(
