@@ -958,12 +958,12 @@ export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, list
   }).then(res => res.json());
 };
 
-export const getUsers = (limit = 30, skip = 0, listUsers) => {
+export const getUsers = (limit = 30, skip = 0, users) => {
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
-      users: listUsers,
+      users,
       skip,
       limit,
     }),
