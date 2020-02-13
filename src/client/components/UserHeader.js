@@ -25,6 +25,7 @@ const UserHeader = ({
   changeChatCondition,
   isChat,
   setPostMessageAction,
+  isGuest,
 }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
@@ -59,7 +60,7 @@ const UserHeader = ({
                   <FollowButton following={handle} followingType="user" />
                 )}
               </div>
-              {authenticated && !isChat && !isSameUser ? (
+              {authenticated && !isChat && !isSameUser && !isGuest ? (
                 <div className="UserHeader__user__button">
                   <Button onClick={sendData} type="primary" shape="circle" icon="message" />
                 </div>
@@ -112,6 +113,7 @@ UserHeader.propTypes = {
   changeChatCondition: PropTypes.func.isRequired,
   isChat: PropTypes.bool.isRequired,
   setPostMessageAction: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -124,6 +126,7 @@ UserHeader.defaultProps = {
   hasCover: false,
   isFollowing: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
 export default UserHeader;
