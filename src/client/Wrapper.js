@@ -270,7 +270,6 @@ export default class Wrapper extends React.PureComponent {
                 {isNewUser && haveFollowing && (
                   <WelcomeModal location={history.location.pathname} />
                 )}
-                <WelcomeModal location={history.location.pathname} />
               </div>
             </Layout>
           </AppSharedContext.Provider>
