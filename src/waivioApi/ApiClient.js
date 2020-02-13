@@ -964,7 +964,7 @@ export const getUsers = (limit = 30, skip = 0, listUsers) => {
     method: 'POST',
     body: JSON.stringify({
       users: listUsers,
-      skip: 0,
+      skip,
       limit,
     }),
   }).then(res => res.json());
