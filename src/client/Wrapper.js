@@ -46,6 +46,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     locale: getLocale(state),
     nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
+    followingList: state.user.following.list,
+    followingObjectsList: state.user.followingObjects.list,
   }),
   {
     login,
