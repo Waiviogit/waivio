@@ -265,6 +265,7 @@ class Topnav extends React.Component {
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
+              overlayClassName="Topnav__notifications-tooltip"
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
@@ -656,7 +657,12 @@ class Topnav extends React.Component {
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-        <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
+        <div
+          className="search-btn"
+          onClick={this.handleSearchAllResultsClick}
+          role="presentation"
+          title={this.state.searchBarValue.length > 60 ? this.state.searchBarValue : ''}
+        >
           {intl.formatMessage(
             {
               id: 'search_all_results_for',
