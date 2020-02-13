@@ -380,9 +380,9 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="discover-objects" fullScreenHidden>
               <FormattedMessage id="discover" defaultMessage="Discover" />
             </PopoverMenuItem>
-            {/*<PopoverMenuItem key="quick_forecast" fullScreenHidden>*/}
-            {/*  <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />*/}
-            {/*</PopoverMenuItem>*/}
+            {/* <PopoverMenuItem key="quick_forecast" fullScreenHidden> */}
+            {/*  <FormattedMessage id="quick_forecast" defaultMessage="Forecast" /> */}
+            {/* </PopoverMenuItem> */}
             {!isGuest && (
               <PopoverMenuItem key="activity" mobileScreenHidden>
                 <FormattedMessage id="activity" defaultMessage="Activity" />
