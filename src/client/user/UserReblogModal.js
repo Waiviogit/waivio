@@ -22,7 +22,7 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
   };
 
   return (
-    <Modal visible={visible} footer={null} onCancel={onCancel}>
+    <Modal wrapClassName="UserReblogModal" visible={visible} footer={null} onCancel={onCancel}>
       <Tabs>
         <Tabs.TabPane
           tab={

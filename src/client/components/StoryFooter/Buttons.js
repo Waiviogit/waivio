@@ -13,9 +13,9 @@ import BTooltip from '../BTooltip';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
-import './Buttons.less';
 import AppendObjButtons from './AppendObjButtons';
 import UserRebloggedModal from '../../user/UserReblogModal';
+import './Buttons.less';
 
 @injectIntl
 @withAuthActions
@@ -454,7 +454,7 @@ export default class Buttons extends React.Component {
           </React.Fragment>
         )}
         {this.renderPostPopoverMenu()}
-        {!postState.isReblogged && (
+        {!postState.isReblogged && this.state.shareModalVisible && (
           <Modal
             title={intl.formatMessage({
               id: 'reblog_modal_title',
