@@ -54,13 +54,16 @@ class UserProfile extends React.Component {
 
   state = {
     withForecastOnly: false,
+    skip: 0,
   };
 
   componentDidMount() {
     const { match, limit } = this.props;
     const { name } = match.params;
 
-    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true, skip: this.state.skip });
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ skip: this.state.skip + limit });
   }
 
   onSwitchChange = isAppFilterOn => {
@@ -86,12 +89,15 @@ class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () => {
-      let skip = 10;
       if (this.state.withForecastOnly) {
         this.props.getUserProfileBlogPostsWithForecasts(username, { limit, initialLoad: false });
       } else {
-        this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false, skip });
-        skip += limit;
+        this.props.getUserProfileBlogPosts(username, {
+          limit,
+          initialLoad: false,
+          skip: this.state.skip,
+        });
+        this.setState({ skip: this.state.skip + limit });
       }
     };
 

@@ -14,13 +14,15 @@
     font-size: 1.2em;
     font-weight: 500;
 
-    &::before {
-      display: inline-block;
-      margin-right: 4px;
-      color: @red-danger;
-      font-size: 1em;
-      font-family: SimSun, sans-serif;
-      content: '*';
+    &--required {
+      &::before {
+        display: inline-block;
+        margin-right: 4px;
+        color: @red-danger;
+        font-size: 1em;
+        font-family: SimSun, sans-serif;
+        content: '*';
+      }
     }
 
     &--no-visible {
