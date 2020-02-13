@@ -365,7 +365,7 @@ class Story extends React.Component {
           <i className="iconfont icon-share1" />
           <FormattedMessage
             id="reblogged_username"
-            defaultMessage="reblogged by {username}"
+            defaultMessage="Re-blogged by {username}"
             values={{
               username: (
                 <Link to={`/@${post.reblogged_by}`}>

@@ -10,11 +10,13 @@ import './UserReblogModal.less';
 
 const UserReblogModal = ({ visible, userNames, onCancel }) => {
   const [users, setUsers] = useState([]);
+  const [hasMoreUsers, setHasMoreUsers] = useState(true);
 
   const loadMoreUsers = () => {
-    const firstIndex = users.length;
-    const lastIndex = users.length + 20;
-    getUsers(userNames.slice(firstIndex, lastIndex)).then(data => setUsers([...users, ...data]));
+    getUsers(userNames, users.length, 20).then(data => {
+      setUsers([...users, ...data.users]);
+      setHasMoreUsers(data.hasMore);
+    });
   };
 
   return (
@@ -33,7 +35,7 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
             <InfiniteScroll
               pageStart={0}
               loadMore={loadMoreUsers}
-              hasMore={userNames.length > users.length}
+              hasMore={hasMoreUsers}
               useWindow={false}
             >
               <div className="UserReblogModal__content">
