@@ -143,6 +143,7 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    width: 100%;
 
     @media @small {
       flex-direction: row;
@@ -156,6 +157,10 @@
   .input-upload {
     display: flex;
     width: 75%;
+
+    @media @small {
+      width: 100%;
+    }
 
     input:focus {
       border-color: @blue-dodgerBlue;

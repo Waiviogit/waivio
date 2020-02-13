@@ -426,6 +426,7 @@ class Topnav extends React.Component {
       <BTooltip
         placement="bottom"
         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        overlayClassName="Topnav__notifications-tooltip"
         mouseEnterDelay={1}
       >
         <PopoverContainer
@@ -569,6 +570,7 @@ class Topnav extends React.Component {
             <BTooltip
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
+              overlayClassName="Topnav__notifications-tooltip"
               mouseEnterDelay={1}
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
