@@ -14,7 +14,7 @@ const RightObjectSidebar = ({ username, wobject, quoteSecurity }) => (
         quoteSecurity={quoteSecurity}
       />
     )}
-    <MostProfitableUsers chartid={wobject.chartid} />
+    {wobject.chartid && <MostProfitableUsers chartid={wobject.chartid} />}
   </React.Fragment>
 );
 RightObjectSidebar.propTypes = {
