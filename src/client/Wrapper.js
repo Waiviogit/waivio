@@ -267,7 +267,7 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                {isNewUser && haveFollowing && (
+                {isNewUser && !haveFollowing && (
                   <WelcomeModal location={history.location.pathname} />
                 )}
               </div>
