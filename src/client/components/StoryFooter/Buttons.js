@@ -15,6 +15,7 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import './Buttons.less';
 import AppendObjButtons from './AppendObjButtons';
+import UserRebloggedModal from '../../user/UserReblogModal';
 
 @injectIntl
 @withAuthActions
@@ -63,6 +64,7 @@ export default class Buttons extends React.Component {
       loadingEdit: false,
       upVotes: getUpvotes(this.props.post.active_votes),
       downVotes: getDownvotes(this.props.post.active_votes),
+      isUsersReblogModal: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -271,6 +273,10 @@ export default class Buttons extends React.Component {
     );
   };
 
+  toggleModalReblog = () => {
+    this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
+  };
+
   render() {
     const {
       intl,
@@ -432,7 +438,11 @@ export default class Buttons extends React.Component {
             </BTooltip>
             {hasRebloggedUsers && (
               <BTooltip title={this.rebloggedUsersTitle()}>
-                <span className="Buttons__number amount-users">
+                <span
+                  className="Buttons__number amount-users"
+                  role="presentation"
+                  onClick={this.toggleModalReblog}
+                >
                   {post.reblogged_users.length > 0 && (
                     <FormattedNumber value={post.reblogged_users.length} />
                   )}
@@ -460,6 +470,13 @@ export default class Buttons extends React.Component {
               defaultMessage="This post will appear on your personal feed. This action cannot be reversed."
             />
           </Modal>
+        )}
+        {this.state.isUsersReblogModal && (
+          <UserRebloggedModal
+            userNames={post.reblogged_users}
+            visible={this.state.isUsersReblogModal}
+            onCancel={this.toggleModalReblog}
+          />
         )}
       </div>
     );

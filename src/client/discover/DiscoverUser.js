@@ -6,7 +6,7 @@ import Avatar from '../components/Avatar';
 import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
-const DiscoverUser = ({ user }) => {
+const DiscoverUser = ({ user, isSecondaryButton }) => {
   const parsedJSON = _.attempt(JSON.parse, user.json_metadata);
   const userJSON = _.isError(parsedJSON) ? {} : parsedJSON;
   const userProfile = _.has(userJSON, 'profile') ? userJSON.profile : {};
@@ -30,7 +30,11 @@ const DiscoverUser = ({ user }) => {
                 <WeightTag weight={user.wobjects_weight} />
               )}
               <div className="Discover__user__follow">
-                <FollowButton following={user.name} followingType="user" />
+                <FollowButton
+                  following={user.name}
+                  followingType="user"
+                  secondary={isSecondaryButton}
+                />
               </div>
             </div>
           </div>
@@ -43,6 +47,11 @@ const DiscoverUser = ({ user }) => {
 
 DiscoverUser.propTypes = {
   user: PropTypes.shape().isRequired,
+  isSecondaryButton: PropTypes.bool,
+};
+
+DiscoverUser.defaultProps = {
+  isSecondaryButton: false,
 };
 
 export default DiscoverUser;

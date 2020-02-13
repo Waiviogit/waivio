@@ -44,13 +44,11 @@ export default class ReduxInfiniteScroll extends React.Component {
 
   _elScrollListener() {
     let el = ReactDOM.findDOMNode(this);
-
     if (this.props.horizontal) {
       let leftScrollPos = el.scrollLeft;
       let totalContainerWidth = el.scrollWidth;
       let containerFixedWidth = el.offsetWidth;
       let rightScrollPos = leftScrollPos + containerFixedWidth;
-
       return totalContainerWidth - rightScrollPos;
     }
 
@@ -58,7 +56,12 @@ export default class ReduxInfiniteScroll extends React.Component {
     let totalContainerHeight = el.scrollHeight;
     let containerFixedHeight = el.offsetHeight;
     let bottomScrollPos = topScrollPos + containerFixedHeight;
-
+    console.log(
+      'bottomPosition_elScrollListener',
+      totalContainerHeight - bottomScrollPos,
+      totalContainerHeight,
+      bottomScrollPos,
+    );
     return totalContainerHeight - bottomScrollPos;
   }
 
@@ -96,6 +99,7 @@ export default class ReduxInfiniteScroll extends React.Component {
       : this._windowScrollListener();
 
     if (bottomPosition < Number(this.props.threshold)) {
+      console.log('bottomPosition', bottomPosition, Number(this.props.threshold));
       this.detachScrollListener();
       this.props.loadMore();
     }
