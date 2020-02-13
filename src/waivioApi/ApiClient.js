@@ -945,12 +945,13 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
   }).then(res => res.json());
 };
 
-export const getUsers = (listUsers, skip = 0, limit = 20) => {
+export const getUsers = (listUsers, skip = 0, limit = 20, userName) => {
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       users: listUsers,
+      name: userName,
       skip,
       limit,
     }),

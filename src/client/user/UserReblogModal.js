@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { FormattedNumber } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteScroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
 import { Modal, Tabs } from 'antd';
 import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../reducers';
 import './UserReblogModal.less';
 
 const UserReblogModal = ({ visible, userNames, onCancel }) => {
   const [users, setUsers] = useState([]);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
-
+  const authenticatedUserName = useSelector(getAuthenticatedUserName);
   const loadMoreUsers = () => {
-    getUsers(userNames, users.length, 20).then(data => {
+    getUsers(userNames, authenticatedUserName, users.length, 20).then(data => {
       setUsers([...users, ...data.users]);
       setHasMoreUsers(data.hasMore);
     });
