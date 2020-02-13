@@ -22,27 +22,19 @@ const WelcomeModal = ({
   recommendedExperts,
   intl,
   userName,
-  followingList,
-  followingObjectsList,
   location,
 }) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
-  const followingKeysList = Object.keys(followingList);
-  const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
+
   useEffect(() => {
     dispatch(getRecommendTopics());
     dispatch(getRecommendExperts());
   }, []);
 
   useEffect(() => {
-    if (
-      isAuthorization &&
-      recommendedTopics.length &&
-      recommendedExperts.length &&
-      !haveFollowing
-    ) {
+    if (isAuthorization && recommendedTopics.length && recommendedExperts.length) {
       setIsOpenTopicsModal(true);
     }
   }, [isAuthorization, recommendedTopics, recommendedExperts]);
@@ -121,7 +113,7 @@ const WelcomeModal = ({
       setIsOpenUsersModal(false);
       dispatch(setUsersStatus());
 
-      if (haveFollowing && location === '/') {
+      if (location === '/') {
         dispatch(getUserFeedContent({ userName }));
       }
     }
@@ -229,11 +221,6 @@ const WelcomeModal = ({
 
 WelcomeModal.propTypes = {
   isAuthorization: PropTypes.bool.isRequired,
-  followingObjectsList: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.shape({})),
-    PropTypes.string,
-  ]),
-  followingList: PropTypes.shape({}).isRequired,
   recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
@@ -244,16 +231,12 @@ WelcomeModal.propTypes = {
 };
 
 WelcomeModal.defaultProps = {
-  followingObjectsList: [{}],
-  followingList: {},
   userName: '',
   location: '',
 };
 
 const mapStateToProps = state => ({
   isAuthorization: state.auth.isAuthenticated,
-  followingList: state.user.following.list,
-  followingObjectsList: state.user.followingObjects.list,
   recommendedTopics: state.user.recommendedTopics,
   recommendedExperts: state.user.recommendedExperts,
   userName: state.auth.user.name,

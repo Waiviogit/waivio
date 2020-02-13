@@ -46,6 +46,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     locale: getLocale(state),
     nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
+    followingList: state.user.following.list,
+    followingObjectsList: state.user.followingObjects.list,
   }),
   {
     login,
@@ -82,6 +84,11 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
+    followingObjectsList: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.shape({})),
+      PropTypes.string,
+    ]),
+    followingList: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -100,6 +107,8 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
+    followingObjectsList: [{}],
+    followingList: {},
   };
 
   static async fetchData({ store, req }) {
@@ -226,9 +235,13 @@ export default class Wrapper extends React.PureComponent {
       history,
       username,
       isNewUser,
+      followingList,
+      followingObjectsList,
     } = this.props;
 
     const language = findLanguage(usedLocale);
+    const followingKeysList = Object.keys(followingList);
+    const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -254,7 +267,10 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                {isNewUser && haveFollowing && (
+                  <WelcomeModal location={history.location.pathname} />
+                )}
+                <WelcomeModal location={history.location.pathname} />
               </div>
             </Layout>
           </AppSharedContext.Provider>
