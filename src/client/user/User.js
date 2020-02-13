@@ -179,6 +179,8 @@ export default class User extends React.Component {
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';
 
+    const isGuestPage = !!user.auth;
+
     return (
       <div className="main-panel">
         <Helmet>
@@ -206,6 +208,7 @@ export default class User extends React.Component {
         <ScrollToTopOnMount />
         {user && (
           <UserHero
+            isGuestPage={isGuestPage}
             isGuest={isGuest}
             authenticated={authenticated}
             user={user}
