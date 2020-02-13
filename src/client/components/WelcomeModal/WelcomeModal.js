@@ -22,20 +22,32 @@ const WelcomeModal = ({
   recommendedExperts,
   intl,
   userName,
+  followingList,
+  followingObjectsList,
   location,
 }) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
-
+  const followingKeysList = Object.keys(followingList);
+  const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
   useEffect(() => {
     dispatch(getRecommendTopics());
     dispatch(getRecommendExperts());
   }, []);
 
   useEffect(() => {
-    if (isAuthorization && recommendedTopics.length && recommendedExperts.length) {
+    if (
+      isAuthorization &&
+      recommendedTopics.length &&
+      recommendedExperts.length &&
+      !haveFollowing
+    ) {
       setIsOpenTopicsModal(true);
+    }
+
+    if (haveFollowing) {
+      dispatch(setUsersStatus());
     }
   }, [isAuthorization, recommendedTopics, recommendedExperts]);
 
@@ -126,101 +138,112 @@ const WelcomeModal = ({
   };
 
   return (
-    <React.Fragment>
-      <Modal
-        className="WelcomeModal"
-        visible={isOpenTopicsModal}
-        title={intl.formatMessage({
-          id: 'select_topic_to_follow',
-          defaultMessage: 'Select Topics to follow',
-        })}
-        footer={[
-          <button
-            className="WelcomeModal__button"
-            onClick={() => {
-              setIsOpenUsersModal(true);
-              setIsOpenTopicsModal(false);
-            }}
-          >
-            {intl.formatMessage({ id: 'next', defaultMessage: 'Next' })}
-          </button>,
-        ]}
-        onCancel={e => handleCancel(e)}
-      >
-        {topic.map(obj => (
-          <div key={obj.name} className="WelcomeModal__block">
-            <div className="WelcomeModal__block-title">
-              {intl.formatMessage({
-                id: obj.name,
-                defaultMessage: obj.name,
-              })}
-            </div>
-            {obj.list.map(theme => (
-              <div key={theme.default_name} className="WelcomeModal__item">
-                <div className="WelcomeModal__mini-block">
-                  <ObjectAvatar item={theme} size={30} />
-                  <Link
-                    className="WelcomeModal__name"
-                    target="_blank"
-                    to={`/object/${theme.default_name}`}
-                  >
-                    {theme.default_name}
-                  </Link>
-                </div>
-                <div className="WelcomeModal__mini-block">
-                  <WeightTag weight={theme.weight} />
-                  <FollowButton following={theme.default_name} followingType="wobject" secondary />
-                </div>
+    !haveFollowing && (
+      <React.Fragment>
+        <Modal
+          className="WelcomeModal"
+          visible={isOpenTopicsModal}
+          title={intl.formatMessage({
+            id: 'select_topic_to_follow',
+            defaultMessage: 'Select Topics to follow',
+          })}
+          footer={[
+            <button
+              className="WelcomeModal__button"
+              onClick={() => {
+                setIsOpenUsersModal(true);
+                setIsOpenTopicsModal(false);
+              }}
+            >
+              {intl.formatMessage({ id: 'next', defaultMessage: 'Next' })}
+            </button>,
+          ]}
+          onCancel={e => handleCancel(e)}
+        >
+          {topic.map(obj => (
+            <div key={obj.name} className="WelcomeModal__block">
+              <div className="WelcomeModal__block-title">
+                {intl.formatMessage({
+                  id: obj.name,
+                  defaultMessage: obj.name,
+                })}
               </div>
-            ))}
-          </div>
-        ))}
-      </Modal>
-      <Modal
-        className="WelcomeModal"
-        visible={isOpenUsersModal}
-        title={intl.formatMessage({
-          id: 'select_experts_to_follow',
-          defaultMessage: 'Select experts to follow',
-        })}
-        footer={[
-          <Link to={'/'} className="WelcomeModal__button" onClick={handleCloseSecondModal}>
-            {intl.formatMessage({ id: 'open_my_feed', defaultMessage: 'Open my feed' })}
-          </Link>,
-        ]}
-        onCancel={e => handleCancel(e)}
-      >
-        {userList.map(obj => (
-          <div key={obj.name} className="WelcomeModal__block">
-            <div className="WelcomeModal__block-title">
-              {intl.formatMessage({
-                id: obj.name,
-                defaultMessage: obj.name,
-              })}
+              {obj.list.map(theme => (
+                <div key={theme.default_name} className="WelcomeModal__item">
+                  <div className="WelcomeModal__mini-block">
+                    <ObjectAvatar item={theme} size={30} />
+                    <Link
+                      className="WelcomeModal__name"
+                      target="_blank"
+                      to={`/object/${theme.default_name}`}
+                    >
+                      {theme.default_name}
+                    </Link>
+                  </div>
+                  <div className="WelcomeModal__mini-block">
+                    <WeightTag weight={theme.weight} />
+                    <FollowButton
+                      following={theme.default_name}
+                      followingType="wobject"
+                      secondary
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-            {obj.list.map(theme => (
-              <div key={theme.name} className="WelcomeModal__item">
-                <div className="WelcomeModal__mini-block">
-                  <Avatar size={30} username={theme.name} />
-                  <Link className="WelcomeModal__name" target="_blank" to={`/${theme.name}`}>
-                    {theme.name}
-                  </Link>
-                </div>
-                <div className="WelcomeModal__mini-block">
-                  <WeightTag weight={theme.wobjects_weight} />
-                  <FollowButton following={theme.name} followingType="user" secondary />
-                </div>
+          ))}
+        </Modal>
+        <Modal
+          className="WelcomeModal"
+          visible={isOpenUsersModal}
+          title={intl.formatMessage({
+            id: 'select_experts_to_follow',
+            defaultMessage: 'Select experts to follow',
+          })}
+          footer={[
+            <Link to={'/'} className="WelcomeModal__button" onClick={handleCloseSecondModal}>
+              {intl.formatMessage({ id: 'open_my_feed', defaultMessage: 'Open my feed' })}
+            </Link>,
+          ]}
+          onCancel={e => handleCancel(e)}
+        >
+          {userList.map(obj => (
+            <div key={obj.name} className="WelcomeModal__block">
+              <div className="WelcomeModal__block-title">
+                {intl.formatMessage({
+                  id: obj.name,
+                  defaultMessage: obj.name,
+                })}
               </div>
-            ))}
-          </div>
-        ))}
-      </Modal>
-    </React.Fragment>
+              {obj.list.map(theme => (
+                <div key={theme.name} className="WelcomeModal__item">
+                  <div className="WelcomeModal__mini-block">
+                    <Avatar size={30} username={theme.name} />
+                    <Link className="WelcomeModal__name" target="_blank" to={`/${theme.name}`}>
+                      {theme.name}
+                    </Link>
+                  </div>
+                  <div className="WelcomeModal__mini-block">
+                    <WeightTag weight={theme.wobjects_weight} />
+                    <FollowButton following={theme.name} followingType="user" secondary />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </Modal>
+      </React.Fragment>
+    )
   );
 };
 
 WelcomeModal.propTypes = {
   isAuthorization: PropTypes.bool.isRequired,
+  followingObjectsList: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.shape({})),
+    PropTypes.string,
+  ]),
+  followingList: PropTypes.shape({}).isRequired,
   recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
@@ -231,12 +254,16 @@ WelcomeModal.propTypes = {
 };
 
 WelcomeModal.defaultProps = {
+  followingObjectsList: [{}],
+  followingList: {},
   userName: '',
   location: '',
 };
 
 const mapStateToProps = state => ({
   isAuthorization: state.auth.isAuthenticated,
+  followingList: state.user.following.list,
+  followingObjectsList: state.user.followingObjects.list,
   recommendedTopics: state.user.recommendedTopics,
   recommendedExperts: state.user.recommendedExperts,
   userName: state.auth.user.name,
