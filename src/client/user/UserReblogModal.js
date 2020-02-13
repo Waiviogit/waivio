@@ -43,7 +43,7 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
               <div className="UserReblogModal__content">
                 {users.map(user => (
                   // eslint-disable-next-line no-underscore-dangle
-                  <DiscoverUser key={user._id} user={user} isSecondaryButton />
+                  <DiscoverUser key={user._id} user={user} isReblogged />
                 ))}
               </div>
             </InfiniteScroll>

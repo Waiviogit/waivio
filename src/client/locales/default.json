@@ -107,6 +107,7 @@
   "reblog_reblogged": "You already reblogged this post",
   "reblog_modal_title": "Reblog this post?",
   "reblog_modal_content": "This post will appear on your personal feed. This action cannot be reversed.",
+  "reblog_follows_you": "follows you",
   "write_post": "Write post",
   "write_quick_post": "Write quick post",
   "transfer": "Transfer",
