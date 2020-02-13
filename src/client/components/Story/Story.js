@@ -1,22 +1,23 @@
-import _ from 'lodash';
+import { filter, get, isEmpty, isEqual, isNil, map, maxBy, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  injectIntl,
+  FormattedDate,
   FormattedMessage,
   FormattedRelative,
-  FormattedDate,
   FormattedTime,
+  injectIntl,
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
+import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../../helpers/steemitFormatter';
-import { isValidForecast } from '../../helpers/forecastHelper';
+import { getForecastData } from '../../helpers/forecastHelper';
 import {
-  isPostDeleted,
-  isPostTaggedNSFW,
   dropCategory,
   isBannedPost,
+  isPostDeleted,
+  isPostTaggedNSFW,
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
@@ -29,7 +30,6 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
-import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
@@ -67,10 +67,12 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    pendingFlag: PropTypes.bool,
   };
 
   static defaultProps = {
     pendingLike: false,
+    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
@@ -101,7 +103,7 @@ class Story extends React.Component {
     this.state = {
       showHiddenStoryPreview: false,
       displayLoginModal: false,
-      isQuoteValid: true,
+      isVisible: false,
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
@@ -117,10 +119,12 @@ class Story extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    return (
+      nextState.isVisible && (!isEqual(nextProps, this.props) || !isEqual(nextState, this.state))
+    );
   }
 
-  getApprovalTagLayoyt = () => {
+  getApprovalTagLayout = () => {
     const percent = calculateApprovePercent(this.props.post.active_votes);
     const { formatMessage } = this.props.intl;
     return (
@@ -171,15 +175,16 @@ class Story extends React.Component {
     if (wobj.objectName) {
       name = wobj.objectName;
     } else {
-      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-      const nameField = _.maxBy(nameFields, 'weight') || {
+      const nameFields = filter(wobj.fields, o => o.name === 'name');
+      const nameField = maxBy(nameFields, 'weight') || {
         body: wobj.default_name,
       };
       if (nameField) name = nameField.body;
     }
+
     return (
       <Link
-        key={wobj.author_permlink}
+        key={`${wobj.author}/${wobj.author_permlink}`}
         to={{ pathname: pathName }}
         title={`${this.props.intl.formatMessage({
           id: 'related_to_object',
@@ -193,7 +198,7 @@ class Story extends React.Component {
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;
-    const returnData = _.map(wobjects, wobj => {
+    const returnData = map(wobjects, wobj => {
       if (wobj.author_permlink === this.props.match.params.name) {
         objectFromCurrentPage = this.getObjectLayout(wobj);
         return null;
@@ -219,9 +224,11 @@ class Story extends React.Component {
     return weight;
   };
 
+  handleChangeVisibility = isVisible => this.setState({ isVisible });
+
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.author_original || post.author;
+    const author = post.guestInfo && !post.depth ? post.root_author : post.author;
 
     if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);
@@ -267,7 +274,7 @@ class Story extends React.Component {
         this.handleFollowClick(post);
         break;
       case 'save':
-        this.props.toggleBookmark(post.id, post.author_original || post.author, post.permlink);
+        this.props.toggleBookmark(`${post.author}/${post.root_permlink}`);
         break;
       case 'report':
         this.handleReportClick(post, postState);
@@ -292,8 +299,8 @@ class Story extends React.Component {
   handlePostModalDisplay(e) {
     e.preventDefault();
     const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
@@ -312,12 +319,12 @@ class Story extends React.Component {
     e.preventDefault();
 
     const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const elementNodeName = _.toLower(_.get(e, 'target.nodeName', ''));
-    const elementClassName = _.get(e, 'target.className', '');
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const elementNodeName = toLower(get(e, 'target.nodeName', ''));
+    const elementClassName = get(e, 'target.className', '');
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
@@ -367,6 +374,7 @@ class Story extends React.Component {
       post,
       postState,
       pendingLike,
+      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -376,19 +384,25 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
-    const isEnoughtData = !_.isEmpty(post) && !_.isEmpty(postState);
+    const isEnoughData = !isEmpty(post) && !isEmpty(postState);
+    const {
+      predictedEndDate,
+      quoteSecurity,
+      postPrice,
+      createdAt,
+      buyOrSell,
+      tpPrice,
+      slPrice,
+      isForecastExpired,
+      // expiredBars,
+      finalQuote,
+      expiredAt,
+      profitability,
+      isForecastValid,
+    } = getForecastData(post);
     let rebloggedUI = null;
-    let isForecastValid = false;
-    let isForecastExpired = false;
-    let forecast = null;
 
-    if (isEnoughtData) {
-      const jsonMetadata = jsonParse(post.json_metadata);
-      forecast = _.get(jsonMetadata, 'wia', null);
-      if (forecast && !_.isEmpty(post.forecast)) {
-        isForecastValid = isValidForecast(forecast);
-        isForecastExpired = !_.isEmpty(post.exp_forecast);
-      }
+    if (isEnoughData) {
       if (!post || isPostDeleted(post)) return <div />;
 
       if (post.reblogged_by && post.reblogged_by.length > 0) {
@@ -400,8 +414,8 @@ class Story extends React.Component {
               defaultMessage="{username} reblogged"
               values={{
                 username: (
-                  <Link to={`/@${post.reblogged_by[0]}`}>
-                    <span className="username">{post.reblogged_by[0]}</span>
+                  <Link to={`/@${post.reblogged_by}`}>
+                    <span className="username">{post.reblogged_by}</span>
                   </Link>
                 ),
               }}
@@ -417,134 +431,139 @@ class Story extends React.Component {
         );
       }
     }
-    return isEnoughtData ? (
-      <div className="Story" id={`${post.author}-${post.permlink}`}>
-        {rebloggedUI}
-        <div className="Story__content">
-          <div className="Story__header">
-            <Link to={`/@${post.author}`}>
-              <Avatar username={post.author} size={40} />
-            </Link>
-            <div className="Story__header__text">
-              <span className="Story__header__flex">
-                <h4>
-                  <Link to={`/@${post.author}`}>
-                    <span className="username">{post.author}</span>
-                  </Link>
-                </h4>
-                <WeightTag weight={post.author_wobjects_weight} />
-              </span>
-              <span>
-                <BTooltip
-                  title={
-                    <span>
-                      <FormattedDate value={`${post.created}Z`} />{' '}
-                      <FormattedTime value={`${post.created}Z`} />
+
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
+
+    return isEnoughData ? (
+      <VisibilitySensor onChange={this.handleChangeVisibility} partialVisibility>
+        <div className="Story" id={`${author}-${post.permlink}`}>
+          {rebloggedUI}
+          <div className="Story__content">
+            <div className="Story__header">
+              <Link to={`/@${author}`}>
+                <Avatar username={author} size={40} />
+              </Link>
+              <div className="Story__header__text">
+                <span className="Story__header__flex">
+                  <h4>
+                    <Link to={`/@${author}`}>
+                      <span className="username">{author}</span>
+                    </Link>
+                  </h4>
+                  <WeightTag weight={post.author_wobjects_weight} />
+                </span>
+                <span>
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedDate value={`${post.created}Z`} />{' '}
+                        <FormattedTime value={`${post.created}Z`} />
+                      </span>
+                    }
+                  >
+                    <span className="Story__date">
+                      <FormattedRelative value={`${post.created}Z`} />
                     </span>
-                  }
-                >
-                  <span className="Story__date">
-                    <FormattedRelative value={`${post.created}Z`} />
-                  </span>
-                </BTooltip>
-                <PostedFrom post={post} />
-              </span>
-            </div>
-            {isForecastValid ? (
-              <div className="Story__forecast">
-                <PostForecast
-                  quoteSecurity={forecast.quoteSecurity}
-                  postForecast={forecast.expiredAt}
-                  isExpired={isForecastExpired}
-                  expiredAt={forecast.expiredAt}
-                />
+                  </BTooltip>
+                  <PostedFrom post={post} />
+                </span>
               </div>
-            ) : (
-              <div className="Story__topics">
-                <div className="Story__published">
-                  <div className="PostWobject__wrap">
-                    {post.wobjects && this.getWobjects(post.wobjects)}
+              {isForecastValid ? (
+                <div className="Story__forecast">
+                  <PostForecast
+                    quoteSecurity={quoteSecurity}
+                    postForecast={predictedEndDate}
+                    isExpired={isForecastExpired}
+                    expiredAt={expiredAt}
+                  />
+                </div>
+              ) : (
+                <div className="Story__topics">
+                  <div className="Story__published">
+                    <div className="PostWobject__wrap">
+                      {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-          {isForecastValid && (
-            <PostSellBuy
-              isExpired={isForecastExpired}
-              quoteSecurity={forecast.quoteSecurity}
-              postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
-              forecast={forecast.expiredAt}
-              recommend={forecast.recommend}
-              profitability={isForecastExpired ? post.exp_forecast.profitability : 0}
-            />
-          )}
-          <div className="Story__content">
-            <a
-              href={dropCategory(post.url)}
-              rel="noopener noreferrer"
-              target="_blank"
-              onClick={this.handlePostModalDisplay}
-              className="Story__content__title"
-            >
-              <h2>
-                {post.append_field_name ? (
-                  <React.Fragment>
-                    <FormattedMessage
-                      id={`object_field_${post.append_field_name}`}
-                      defaultMessage={post.append_field_name}
-                    />
-                    {!_.isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                    {post.title || post.root_title}
-                  </React.Fragment>
-                )}
-              </h2>
-            </a>
-            {this.renderStoryPreview()}
-          </div>
-          <div className="Story__footer">
+              )}
+            </div>
             {isForecastValid && (
-              <PostChart
-                quoteSecurity={forecast.quoteSecurity}
-                createdAt={forecast.createdAt}
-                forecast={forecast.expiredAt}
-                recommend={forecast.recommend}
-                toggleModalPost={() => {}}
-                tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
-                slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
-                expForecast={post.exp_forecast}
+              <PostSellBuy
+                isExpired={isForecastExpired}
+                finalQuote={finalQuote}
+                quoteSecurity={quoteSecurity}
+                postPrice={postPrice ? postPrice.toString() : 0}
+                forecast={predictedEndDate}
+                recommend={buyOrSell}
+                profitability={profitability}
               />
             )}
-            {forecast && isForecastValid && (
-              <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} caller='od-pm'/>
-            )}
-            <StoryFooter
-              user={user}
-              post={post}
-              postState={postState}
-              pendingLike={pendingLike}
-              pendingFlag={pendingLike}
-              rewardFund={rewardFund}
-              ownPost={ownPost}
-              singlePostVew={singlePostVew}
-              sliderMode={sliderMode}
-              defaultVotePercent={defaultVotePercent}
-              onLikeClick={this.handleLikeClick}
-              onReportClick={this.handleReportClick}
-              onShareClick={this.handleShareClick}
-              onEditClick={this.handleEditClick}
-              pendingFollow={pendingFollow}
-              pendingBookmark={pendingBookmark}
-              saving={saving}
-              handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
-            />
+            <div className="Story__content">
+              <a
+                href={dropCategory(post.url)}
+                rel="noopener noreferrer"
+                target="_blank"
+                onClick={this.handlePostModalDisplay}
+                className="Story__content__title"
+              >
+                <h2>
+                  {post.append_field_name ? (
+                    <React.Fragment>
+                      <FormattedMessage
+                        id={`object_field_${post.append_field_name}`}
+                        defaultMessage={post.append_field_name}
+                      />
+                      {!isNil(post.append_field_weight) && this.getApprovalTagLayout()}
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                      {post.title || post.root_title}
+                    </React.Fragment>
+                  )}
+                </h2>
+              </a>
+              {this.renderStoryPreview()}
+            </div>
+            <div className="Story__footer">
+              {isForecastValid && (
+                <PostChart
+                  quoteSecurity={quoteSecurity}
+                  createdAt={createdAt}
+                  forecast={predictedEndDate}
+                  recommend={buyOrSell}
+                  toggleModalPost={() => {}}
+                  tpPrice={tpPrice}
+                  slPrice={slPrice}
+                  expForecast={post.exp_forecast}
+                  expiredAt={expiredAt}
+                />
+              )}
+              {isForecastValid && <PostQuotation quoteSecurity={quoteSecurity} caller="od-pm" />}
+              <StoryFooter
+                user={user}
+                post={post}
+                postState={postState}
+                pendingLike={pendingLike}
+                pendingFlag={pendingFlag}
+                rewardFund={rewardFund}
+                ownPost={ownPost}
+                singlePostVew={singlePostVew}
+                sliderMode={sliderMode}
+                defaultVotePercent={defaultVotePercent}
+                onLikeClick={this.handleLikeClick}
+                onReportClick={this.handleReportClick}
+                onShareClick={this.handleShareClick}
+                onEditClick={this.handleEditClick}
+                pendingFollow={pendingFollow}
+                pendingBookmark={pendingBookmark}
+                saving={saving}
+                handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </VisibilitySensor>
     ) : null;
   }
 }

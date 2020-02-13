@@ -1,12 +1,13 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import { dropCategory, isBannedPost } from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
@@ -28,6 +29,7 @@ class PostModal extends React.Component {
     author: {},
   };
 
+  // eslint-disable-next-line react/sort-comp
   static pushURLState(title, url) {
     if (window) window.history.pushState({}, title, url);
   }
@@ -52,7 +54,7 @@ class PostModal extends React.Component {
   componentDidMount() {
     if (typeof document !== 'undefined') {
       const modalContents = document.getElementsByClassName('ant-modal-wrap');
-      const modalContentElement = _.get(modalContents, 0);
+      const modalContentElement = get(modalContents, 0);
       if (modalContentElement) {
         modalContentElement.scrollTop = 0;
       }
@@ -62,7 +64,10 @@ class PostModal extends React.Component {
 
     const { currentShownPost } = this.props;
     const { title, url } = currentShownPost;
-    PostModal.pushURLState(title, dropCategory(url));
+    PostModal.pushURLState(
+      title,
+      replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
+    );
   }
 
   componentWillUnmount() {
@@ -93,13 +98,17 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { author, permlink, title, url } = currentShownPost;
-    const baseURL = window ? window.location.origin : 'https://waiviodev.com';
-    const postURL = `${baseURL}${dropCategory(url)}`;
+    const { root_author, permlink, title, url } = currentShownPost;
+    const author = currentShownPost.guestInfo ? currentShownPost.guestInfo.userId : root_author;
+    const baseURL = window ? window.location.origin : 'https://investarena.com';
+    const postURL = `${baseURL}${replaceBotWithGuestName(
+      dropCategory(url),
+      currentShownPost.guestInfo,
+    )}`;
     const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
-    const signature = _.get(authorDetails, 'json_metadata.profile.signature', null);
+    const signature = get(authorDetails, 'json_metadata.profile.signature', null);
 
     return (
       <Modal
@@ -126,6 +135,7 @@ class PostModal extends React.Component {
           <a role="presentation" onClick={this.handleHidePostModal} className="PostModal__action">
             <i className="iconfont icon-close PostModal__icon" />
           </a>
+          {/* eslint-disable-next-line camelcase */}
           <Link replace to={`/@${author}/${permlink}`} className="PostModal__action">
             <i className="iconfont icon-send PostModal__icon" />
           </Link>

@@ -1,4 +1,5 @@
 import * as favoriteActions from './favoritesActions';
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   categories: [],
@@ -32,6 +33,8 @@ const favorites = (state = initialState, action) => {
         ...state,
         users: favoriteItem(state.users, action),
       };
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }

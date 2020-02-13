@@ -278,7 +278,7 @@ export default (messageFactory, validators) => ({
     valuePropName: 'checked',
     textBeforeLink: messageFactory('agree_to_the', 'I agree to the '),
     link: {
-      to: 'https://waiviodev.com/object/xrj-terms-and-conditions',
+      to: 'https://investarena.com/object/xrj-terms-and-conditions',
       text: messageFactory('terms_and_conditions', 'Terms and Conditions '),
     },
     textAfterLink: messageFactory(

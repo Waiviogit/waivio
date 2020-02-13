@@ -57,10 +57,13 @@ export default class Buttons extends React.Component {
 
     this.state = {
       shareModalVisible: false,
+      actionButtonsVisible: false,
       shareModalLoading: false,
       sliderVisible: false,
       reactionsModalVisible: false,
       loadingEdit: false,
+      upVotes: getUpvotes(this.props.post.active_votes),
+      downVotes: getDownvotes(this.props.post.active_votes),
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -72,6 +75,7 @@ export default class Buttons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+    this.handlePopoverVisibleChange = this.handlePopoverVisibleChange.bind(this);
     this.renderPostPopoverMenu = this.renderPostPopoverMenu.bind(this);
   }
 
@@ -84,6 +88,10 @@ export default class Buttons extends React.Component {
           this.state.shareModalVisible,
       });
     }
+    this.setState({
+      upVotes: getUpvotes(nextProps.post.active_votes),
+      downVotes: getDownvotes(nextProps.post.active_votes),
+    });
   }
 
   onFlagClick() {
@@ -139,6 +147,12 @@ export default class Buttons extends React.Component {
     });
   }
 
+  handlePopoverVisibleChange(isVisible) {
+    this.setState({ actionButtonsVisible: isVisible });
+  }
+
+  showPopoverMenu = () => this.handlePopoverVisibleChange(true);
+
   renderPostPopoverMenu() {
     const {
       pendingFlag,
@@ -157,22 +171,22 @@ export default class Buttons extends React.Component {
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     }
 
@@ -230,13 +244,19 @@ export default class Buttons extends React.Component {
       <Popover
         placement="bottomRight"
         trigger="click"
+        visible={this.state.actionButtonsVisible}
+        onVisibleChange={this.handlePopoverVisibleChange}
         content={
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {popoverMenu}
           </PopoverMenu>
         }
       >
-        <i className="Buttons__post-menu iconfont icon-more" />
+        <i
+          className="Buttons__post-menu iconfont icon-more"
+          role="presentation"
+          onClick={this.showPopoverMenu}
+        />
       </Popover>
     );
   }
@@ -254,10 +274,8 @@ export default class Buttons extends React.Component {
 
     const isAppend = !!this.props.post.append_field_name;
 
-    const upVotes = getUpvotes(post.active_votes).sort(sortVotes);
-    const downVotes = getDownvotes(post.active_votes)
-      .sort(sortVotes)
-      .reverse();
+    const upVotes = this.state.upVotes.sort(sortVotes);
+    const downVotes = this.state.downVotes.sort(sortVotes).reverse();
 
     const totalPayout =
       parseFloat(post.pending_payout_value) +
@@ -385,8 +403,8 @@ export default class Buttons extends React.Component {
               </a>
             </BTooltip>
             <span className="Buttons__number">
-          {post.children > 0 && <FormattedNumber value={post.children} />}
-        </span>
+              {post.children > 0 && <FormattedNumber value={post.children} />}
+            </span>
           </React.Fragment>
         )}
         {showReblogLink && (

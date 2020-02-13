@@ -143,7 +143,7 @@ export default class CommentFooter extends React.Component {
 
     return (
       <div className="CommentFooter">
-        {actionPanel}
+        {!comment.isFakeComment && actionPanel}
         {sliderVisible && (
           <Slider
             value={this.state.sliderValue}

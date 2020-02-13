@@ -14,9 +14,14 @@
   padding: 0 10px;
   box-shadow: 0 2px 8px @normal-grey;
   transition: top 0.4s;
+
   @media @small {
-    background-color: #000;
+    background-color: @black;
     height: 96px;
+  }
+
+  &__notifications-tooltip.ant-tooltip.ant-tooltip-placement-bottom {
+    position: fixed;
   }
 
   &__brand {
@@ -26,6 +31,7 @@
       height: 36px;
       vertical-align: super;
       margin-top: 10px;
+
       @media @small, @medium, @large {
         max-width: 90%;
         width: unset;
@@ -57,7 +63,7 @@
   }
 
   &__search-selected-active {
-    color: @orange-light !important;
+    color: @blue-vivid !important;
   }
 
   &__search-content-wrap {
@@ -68,12 +74,12 @@
   &__search-content {
     margin-left: 10px;
     max-width: calc(100vw - 210px);
-    @media @small, @medium, @large {
-      max-width: 350px;
-    }
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
   }
 
   &__search-content-small {
@@ -99,6 +105,31 @@
     height: 50px;
     display: flex;
     margin-left: 15px;
+
+    &:hover .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    &:focus .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    .anticon.anticon-close-circle {
+      position: absolute;
+      color: @blue-linkWater;
+      font-size: 20px;
+      z-index: 1000;
+      right: 16px;
+      left: unset;
+      cursor: pointer;
+      top: 20px;
+      transition: 0.5s;
+      opacity: 0;
+
+      &:hover {
+        color: @blue-baliHai;
+      }
+    }
 
     > .ant-select-show-search {
       width: 100%;
@@ -147,6 +178,7 @@
     color: @blue-vivid !important;
     border-bottom: 0 !important;
     text-decoration: none;
+
     @media @small {
       width: 200px;
       color: @blue-botticelli !important;
@@ -154,6 +186,7 @@
 
     .Avatar {
       border-width: 2px;
+
       @media @small {
         border-width: 1px;
       }
@@ -171,6 +204,7 @@
     box-sizing: border-box;
     font-size: 26px !important;
     border-bottom: none !important;
+
     @media @small {
       width: 26px;
       height: 26px;
@@ -192,6 +226,7 @@
       border: 2px solid @blue-vivid;
       border-radius: 50%;
       font-weight: 600;
+
       @media @small {
         border: none;
       }
@@ -208,6 +243,7 @@
       color: inherit;
       width: 36px;
       height: 36px;
+
       @media @small {
         width: 26px;
         height: 26px;
@@ -220,6 +256,7 @@
       & > i {
         font-size: 36px;
         margin-right: 0;
+
         @media @small {
           font-size: 26px;
         }
@@ -250,6 +287,7 @@
     & > ul {
       justify-content: flex-end;
     }
+
     @media @medium {
       margin-left: 0;
     }
@@ -334,6 +372,16 @@
 
   &__chat {
     font-size: 36px;
+
+    &-button {
+      font-size: x-large;
+      width: 40px;
+      height: 40px;
+      border: 2px solid @blue-vivid;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 38px;
+    }
   }
 
   &__mobile-hidden {
@@ -362,7 +410,9 @@
 
   .icon-remind,
   .icon-write {
-    font-size: 22px !important;
+    @media @medium {
+      font-size: 26px !important;
+    }
   }
 
   .icon-language {
@@ -382,6 +432,7 @@
     color: @blue-vivid;
     font-size: 18px;
     font-family: inherit;
+
     @media @small {
       top: 48px;
       right: 0;
@@ -389,7 +440,7 @@
       justify-content: flex-end;
       width: 270px;
       font-size: 16px;
-      color: #fff;
+      color: @white;
       height: 36px;
     }
   }
@@ -398,6 +449,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+
     @media @small {
       justify-content: flex-end;
     }
@@ -411,6 +463,7 @@
 
     &--left {
       justify-content: flex-start;
+
       @media @small {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
@@ -425,8 +478,9 @@
 
     &--right {
       align-items: flex-end;
+
       @media @small {
-        border-left: 1px solid #fff;
+        border-left: 1px solid @white;
         display: flex;
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
@@ -470,12 +524,14 @@
     margin-right: 0;
     display: flex;
     justify-content: center;
+
     @media @small {
       display: block;
       width: 270px;
       margin-right: 16px;
       top: 48px;
     }
+
     @media @large {
       margin-right: 0;
     }
@@ -527,11 +583,22 @@
 
   &__hot-news-item {
     display: block;
-    padding: 12px 0;
+    padding: 12px 0 0 0;
+    color: @grey-mortar;
+
+    &:hover {
+      color: @blue-vivid;
+    }
   }
 
   &__hot-news-item:not(:last-child) {
-    border-bottom: 1px solid #e9e7e7;
+    border-bottom: 1px solid @white-gainsboro;
+    padding: 12px 0;
+  }
+
+  &__hot-news-item:first-child {
+    border-bottom: 1px solid @white-gainsboro;
+    padding: 0 0 12px 0;
   }
 
   &__right-top {
@@ -544,6 +611,7 @@
     justify-content: space-between;
     align-items: center;
     color: @blue-vivid;
+
     @media @small {
       display: none;
     }
@@ -557,6 +625,7 @@
     position: absolute;
     top: 48px;
     width: 100%;
+
     @media @small {
       top: 0;
       right: 0;
@@ -606,67 +675,71 @@ div[data-dir='rtl'] .Topnav {
   border-bottom: @base-border;
   box-shadow: none;
   padding-top: 5px;
-  max-width: 250px;
+  width: calc(100% - 135px);
+
   @media @small {
     max-width: 270px;
   }
+
   @media @medium {
     max-width: 480px;
   }
-  @media @large {
-    max-width: 520px;
-  }
-}
-
-.Topnav__search-dropdown-container .ant-select-dropdown-menu > li:first-child > ul {
-  @media @small {
-    max-width: 240px;
-  }
-
-  @media @small {
-    max-width: 265px;
-  }
-
-  @media @medium {
-    max-width: 420px;
-  }
 
   @media @large {
-    max-width: 495px;
-  }
-
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: 5px;
-  text-transform: capitalize;
-}
-
-.Topnav__search-dropdown-container .ant-select-dropdown-menu > li:first-child > ul > li {
-  margin-top: 5px;
-  margin-left: 5px;
-  padding: 5px 10px;
-  border-radius: 4px !important;
-  border: 1px solid @white-gainsboro;
-  background: @white-smoke;
-  overflow: visible;
-}
-
-.Topnav__search-dropdown-container
-  .ant-select-dropdown-menu
-  > li:first-child
-  > ul
-  > .ant-select-dropdown-menu-item-active {
-  &:hover {
-    border-color: @white-smoke;
-    background-color: @white;
+    max-width: 450px;
   }
 }
 
-.Topnav__search-dropdown-container
-  .ant-select-dropdown-menu
-  > li:first-child
-  > .ant-select-dropdown-menu-item-group-title {
-  height: 0;
+.Topnav__search-dropdown-container .ant-select-dropdown-menu {
+  .ant-select-dropdown-menu-item-group:first-child {
+    padding-bottom: 10px;
+
+    .ant-select-dropdown-menu-item-group-title {
+      display: none;
+    }
+
+    ul {
+      @media @xsmall {
+        max-width: 240px;
+      }
+
+      @media @small {
+        max-width: 265px;
+      }
+
+      @media @medium {
+        max-width: 420px;
+      }
+
+      @media @large {
+        max-width: 495px;
+      }
+
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: 5px;
+      text-transform: capitalize;
+    }
+
+    li {
+      margin-top: 5px;
+      margin-left: 5px;
+      padding: 5px 10px;
+      border-radius: 4px !important;
+      border: 1px solid @white-gainsboro;
+      background: @white-smoke;
+      overflow: visible;
+    }
+  }
+}
+
+.Topnav__search-dropdown-container {
+  .ant-select-dropdown-menu-item-active {
+    &:hover {
+      border-color: @white-smoke;
+      background-color: @white;
+    }
+  }
 }
 
 .Topnav__search-autocomplete.ant-select-dropdown-menu-item-active {
@@ -694,7 +767,8 @@ div[data-dir='rtl'] .Topnav {
   cursor: default !important;
 
   .search-btn {
-    .view-as-link();
+    .view-as-link(@blue-vivid, @secondary-color);
+    white-space: pre-wrap;
   }
 }
 
@@ -708,10 +782,6 @@ div[data-dir='rtl'] .Topnav {
   display: flex;
   align-items: center;
   color: @blue-baliHai !important;
-}
-
-.Topnav__notifications-tooltip {
-  top: 61px !important;
 }
 
 .Topnav__menu--icon {
@@ -748,6 +818,7 @@ div[data-dir='rtl'] .Topnav {
 
 .no-navbroker {
   height: 102px;
+
   @media @small {
     height: 96px;
   }
@@ -777,6 +848,18 @@ div[data-dir='rtl'] .Topnav {
 
 .Avatar {
   border-color: @blue-vivid;
+}
+
+.topnav-layout div.center.center-menu {
+  width: calc(100% - 100px);
+
+  @media @small {
+    width: auto;
+  }
+
+  @media @small and (max-width: @small-bp) {
+    width: 46%;
+  }
 }
 
 @import 'Topnav-nightmode';

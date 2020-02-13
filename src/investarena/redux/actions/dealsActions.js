@@ -20,7 +20,7 @@ export function createOpenDealPlatform(
   margin,
   postId = '',
   platform,
-  caller
+  caller,
 ) {
   return () => {
     const validAmount = parseFloat(amount.replace(/,/g, '')) * 1000000;

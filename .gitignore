@@ -30,7 +30,7 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
-#vscode specific 
+#vscode specific
 .vscode/*
 
 # Dependency directory
@@ -40,3 +40,5 @@ node_modules
 .envrc
 
 build/
+
+yarn.lock

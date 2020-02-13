@@ -26,11 +26,11 @@ import {
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
+  isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import SteemConnect from '../../steemConnectAPI';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
@@ -47,9 +47,10 @@ import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-// import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
+import ModalSignUp from './ModalSignUp/ModalSignUp';
+import ModalSignIn from './ModalSignIn/ModalSignIn';
 import './Topnav.less';
 
 @injectIntl
@@ -68,6 +69,7 @@ import './Topnav.less';
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
+    isGuest: isGuestUser(state),
   }),
   {
     disconnectBroker,
@@ -119,6 +121,9 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    openChat: PropTypes.func.isRequired,
+    messagesCount: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -132,6 +137,8 @@ class Topnav extends React.Component {
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
+    messagesCount: 0,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -335,10 +342,7 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            {/* <ModalSignUp isButton={false} intl={intl} /> */}
-            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-              <FormattedMessage id="signup" defaultMessage="Sign up" />
-            </a>
+            <ModalSignUp isButton={false} />
           </Menu.Item>
           <Menu.Item
             className="Topnav__menu-item Topnav__menu-item--logedout"
@@ -348,9 +352,7 @@ class Topnav extends React.Component {
             |
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <a href={SteemConnect.getLoginURL(next)}>
-              <FormattedMessage id="login" defaultMessage="Log in" />
-            </a>
+            <ModalSignIn next={next} />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
             <LanguageSettings />
@@ -362,6 +364,7 @@ class Topnav extends React.Component {
 
   burgerMenu = logStatus => {
     const isLoggedOut = logStatus === 'loggedOut';
+    const { isGuest } = this.props;
     return (
       <PopoverContainer
         placement="bottom"
@@ -377,28 +380,15 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="discover-objects" fullScreenHidden>
               <FormattedMessage id="discover" defaultMessage="Discover" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="activity" mobileScreenHidden>
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
+            {/*<PopoverMenuItem key="quick_forecast" fullScreenHidden>*/}
+            {/*  <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />*/}
+            {/*</PopoverMenuItem>*/}
+            {!isGuest && (
+              <PopoverMenuItem key="activity" mobileScreenHidden>
+                <FormattedMessage id="activity" defaultMessage="Activity" />
+              </PopoverMenuItem>
+            )}
             <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts" mobileScreenHidden>
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings" mobileScreenHidden>
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="replies" fullScreenHidden>
-              <FormattedMessage id="replies" defaultMessage="Replies" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="wallet">
-              <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="activity">
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="bookmarks">
               <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
             </PopoverMenuItem>
             <PopoverMenuItem key="drafts">
@@ -406,6 +396,12 @@ class Topnav extends React.Component {
             </PopoverMenuItem>
             <PopoverMenuItem key="settings">
               <FormattedMessage id="settings" defaultMessage="Settings" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="replies" fullScreenHidden>
+              <FormattedMessage id="replies" defaultMessage="Replies" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="wallet">
+              <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </PopoverMenuItem>
             <PopoverMenuItem key="about" fullScreenHidden>
               <FormattedMessage id="about" defaultMessage="About" />
@@ -430,6 +426,7 @@ class Topnav extends React.Component {
       <BTooltip
         placement="bottom"
         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        overlayClassName="Topnav__notifications-tooltip"
         mouseEnterDelay={1}
       >
         <PopoverContainer
@@ -566,7 +563,6 @@ class Topnav extends React.Component {
               )}
             </React.Fragment>
           </Menu.Item>
-
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
           </Menu.Item>
@@ -574,6 +570,7 @@ class Topnav extends React.Component {
             <BTooltip
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
+              overlayClassName="Topnav__notifications-tooltip"
               mouseEnterDelay={1}
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
@@ -916,14 +913,17 @@ class Topnav extends React.Component {
       'Topnav__search-selected-active': this.state.currentItem === key,
     });
 
-  handleOnBlur = () =>
+  handleOnBlur = () => {
+    this.setState({
+      dropdownOpen: false,
+    });
+  };
+
+  handleClearSearchData = () =>
     this.setState(
       {
-        dropdownOpen: false,
         searchData: '',
         searchBarValue: '',
-        currentItem: 'All',
-        searchBarActive: false,
       },
       this.props.resetSearchAutoCompete,
     );
@@ -945,6 +945,8 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
       isNightMode,
+      openChat,
+      messagesCount,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -984,8 +986,11 @@ class Topnav extends React.Component {
               )}
             </Link>
           </div>
-          <div className={classNames('center', { mobileVisible: searchBarActive })}>
-            <div className="Topnav__input-container">
+          <div className={classNames('center', 'center-menu', { mobileVisible: searchBarActive })}>
+            <div className="Topnav__input-container"
+                 onBlur={this.handleOnBlur}
+            >
+              <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
                 dataSource={formattedAutoCompleteDropdown}
@@ -998,7 +1003,6 @@ class Topnav extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
-                onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
               >
                 <Input
@@ -1014,7 +1018,14 @@ class Topnav extends React.Component {
                   autoCorrect="off"
                 />
               </AutoComplete>
-              <i className="iconfont icon-search" />
+              {!!this.state.searchBarValue.length && (
+                <Icon
+                  type="close-circle"
+                  style={{ fontSize: '12px' }}
+                  theme="filled"
+                  onClick={this.handleClearSearchData}
+                />
+              )}
             </div>
             <div className="Topnav__horizontal-menu">
               {!isMobile && (
@@ -1046,7 +1057,13 @@ class Topnav extends React.Component {
             </button>
             {this.props.username && (
               <div className="Topnav__chat" key="more">
-                <Icon type="message" className="icon-chat" />
+                {!messagesCount ? (
+                  <Icon type="message" className="icon-chat" onClick={openChat} />
+                ) : (
+                  <div className="Topnav__chat-button" onClick={openChat} role="presentation">
+                    {messagesCount > 99 ? '99+' : messagesCount}
+                  </div>
+                )}
               </div>
             )}
           </div>

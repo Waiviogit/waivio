@@ -102,10 +102,5 @@ const mapStateToProps = state => ({
 });
 
 export default requiresLogin(
-  injectIntl(
-    connect(
-      mapStateToProps,
-      { getReplies, getMoreReplies, showPostModal },
-    )(Replies),
-  ),
+  injectIntl(connect(mapStateToProps, { getReplies, getMoreReplies, showPostModal })(Replies)),
 );

@@ -30,7 +30,7 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
-import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
+import chatReducer, * as fromChat from '../client/components/Chat/chatReducer';
 
 export default history =>
   combineReducers({
@@ -63,7 +63,7 @@ export default history =>
     gallery: galleryReducer,
     topPerformers: topPerformersReducer,
     forecasts: forecastReducer,
-    map: mapReducer,
+    chat: chatReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -74,6 +74,8 @@ export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
 export const getAuthenticateduserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
+export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
+export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
@@ -135,6 +137,11 @@ export const getFetchFollowListError = state => fromUser.getFetchFollowListError
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
 export const getUserLocation = state => fromUser.getUserLocation(state.user);
 export const getAccuracyChartLoaded = state => fromUser.getAccuracyChartLoaded(state.user);
+export const getChatCondition = state => fromUser.getChatCondition(state.user);
+export const getChatConnectionCondition = state => fromUser.getChatConnectionCondition(state.user);
+
+export const getPostMessageType = state => fromChat.getPostMessageType(state.chat);
+export const getPostMessageData = state => fromChat.getPostMessageData(state.chat);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>
@@ -154,6 +161,9 @@ export const getFavoriteCategories = state => fromFavorites.getFavoriteCategorie
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
+export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
+export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
+export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
@@ -191,6 +201,7 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
+export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
@@ -201,6 +212,7 @@ export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(s
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
+export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
@@ -225,8 +237,6 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
-
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 
 // common selectors
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { get, last, isEmpty } from 'lodash';
+import { get, last, isEmpty, throttle } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -52,12 +52,17 @@ const defaultProps = {
 class PostChart extends Component {
   constructor(props) {
     super(props);
+    const timeScale = get(
+      props.expForecast,
+      ['rate', 'quote', 'timeScale'],
+      CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
+    );
     this.state = {
       isLoading: true,
-      timeScale: CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
+      timeScale: timeScale ? timeScale.toUpperCase() : 'MINUTE',
       chartType: 'Line',
-      priceType: this.props.recommend,
-      expired: !!this.props.expForecast || this.isExpiredByTime(),
+      priceType: props.recommend,
+      expired: !!props.expForecast || this.isExpiredByTime(props),
       disabledSelect: false,
       isSession:
         this.props.platformName === 'widgets'
@@ -78,7 +83,11 @@ class PostChart extends Component {
       if (this.state.expired) {
         this.setState(
           {
-            timeScale: get(expForecast, 'rate.quote.timeScale', this.state.timeScale).toUpperCase(),
+            timeScale: get(
+              expForecast,
+              ['rate', 'quote', 'timeScale'],
+              this.state.timeScale,
+            ).toUpperCase(),
           },
           () => this.updateChartData(this.props),
         );
@@ -98,7 +107,11 @@ class PostChart extends Component {
         this.setState(
           {
             expired: true,
-            timeScale: nextProps.expiredTimeScale || this.state.timeScale,
+            timeScale: get(
+              nextProps.expForecast,
+              ['rate', 'quote', 'timeScale'],
+              this.state.timeScale,
+            ).toUpperCase(),
           },
           () => this.updateChartData(nextProps),
         );
@@ -111,11 +124,14 @@ class PostChart extends Component {
             this.state.isSession &&
             this.shouldGetChartData(nextProps.bars)
           ) {
-            this.props.getChartData(this.state.timeScale);
-          } else if (this.isExpiredByTime()) {
+            this.getChartData(this.state.timeScale);
+          } else if (
+            !this.props.isObjectProfile &&
+            (this.isExpiredByTime(nextProps) || this.isExpiredByLimits(nextProps))
+          ) {
             const expiredProps = {
               ...nextProps,
-              expiredByTime: true,
+              expiredByTime: this.isExpiredByTime(nextProps),
               expiredBars: (nextProps.expForecast && nextProps.expForecast.bars) || nextProps.bars,
             };
             this.setState(
@@ -132,6 +148,8 @@ class PostChart extends Component {
     }
   }
 
+  getChartData = throttle(timeScale => this.props.getChartData(timeScale), 15000);
+
   toggleModalTC = () => {
     if (this.props.withModalChart) {
       const { quote, quoteSettings, platformName, toggleModal } = this.props;
@@ -139,7 +157,14 @@ class PostChart extends Component {
     }
   };
 
-  isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();
+  isExpiredByLimits = ({ quote }) => {
+    if (!quote || !quote.askPrice || !quote.bidPrice) return false;
+    const { recommend, slPrice, tpPrice } = this.props;
+    return recommend === 'Buy'
+      ? (tpPrice && quote.askPrice > tpPrice) || (slPrice && quote.askPrice < slPrice)
+      : (tpPrice && quote.bidPrice < tpPrice) || (slPrice && quote.bidPrice > slPrice);
+  };
+  isExpiredByTime = props => moment().valueOf() > moment(props.forecast).valueOf();
   createChartData = () =>
     new ChartData({
       createdAt: this.props.createdAt,
@@ -153,18 +178,24 @@ class PostChart extends Component {
     });
   updateChartData = props => {
     const notEnoughData = this.chartData.updateData({
-      isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
-      timeScale: this.state.timeScale,
+      platform: props.platformName,
       data: this.state.expired
         ? (props.expForecast && props.expForecast.bars) || props.bars
         : props.bars,
       quote: props.quote,
-      expiredAt: props.expiredAt,
       quoteSettings: props.quoteSettings,
-      expiredByTime: props.expiredByTime,
       chartType: this.state.chartType,
       priceType: this.state.priceType,
       isExpired: this.state.expired,
+      timeScale: this.state.timeScale,
+      expiredByTime: get(
+        props.expForecast,
+        ['rate', 'quote', 'expiredByTime'],
+        this.isExpiredByTime(props),
+      ),
+      expiredAt: props.expiredAt,
+      isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
+      isNightMode: props.isNightMode,
     });
     this.setState({ disabledSelect: notEnoughData, isLoading: false });
   };
@@ -178,7 +209,7 @@ class PostChart extends Component {
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
     const lastTimeScale = last(bars[this.state.timeScale]);
-    let lastTime = !lastTimeScale || !lastTimeScale.length ? null : lastTimeScale.time;
+    let lastTime = get(lastTimeScale, ['time'], null);
     const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
     if (timeNow - lastTime - coefficient > coefficient && timeNow - lastTime > coefficient) {
       lastTime += coefficient * Math.floor((timeNow - lastTime) / coefficient);
@@ -211,7 +242,7 @@ class PostChart extends Component {
     return (
       <div
         className={`w-100 ${
-          !quote || !quoteSettings || (!bars && !expForecast) || !quoteSettings.tickSize
+          !expForecast && (!quote || !quoteSettings || !bars || !quoteSettings.tickSize)
             ? 'st-hidden'
             : ''
         }`}

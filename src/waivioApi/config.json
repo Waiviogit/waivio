@@ -64,5 +64,18 @@
   "payments": "/payments",
   "app": "/app",
   "withForecastByUser": "with-forecast-by-user",
-  "withForecastByWobject": "with-forecast-by-wobject"
+  "withForecastByWobject": "with-forecast-by-wobject",
+  "auth": "/auth",
+  "validateAuthToken": "validate_auth_token",
+  "hasSocialAccount": "/has_social_account",
+  "followingUsers": "/following_users",
+  "comments": "/comments",
+  "postComments": "/post_comments",
+  "guestOperations": "/guest_operations",
+  "demoPayables": "/demo_payables",
+  "statistics": "/statistics",
+  "matchBots": "/match_bots",
+  "followingUpdates": "/following_updates",
+  "followingObjectsUpdates": "/following_wobjects_updates",
+  "followingUsersUpdates": "/following_users_updates"
 }

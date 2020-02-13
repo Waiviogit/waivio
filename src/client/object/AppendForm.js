@@ -1,49 +1,43 @@
 import _, { compact, flatten, keyBy, union } from 'lodash';
-import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Button, Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
+import ImageSetter from '../components/ImageSetter/ImageSetter';
 import apiConfig from '../../waivioApi/config.json';
 import {
+  addressFields,
+  buttonFields,
+  getAllowedFieldsByObjType,
   linkFields,
   objectFields,
-  mapFields,
-  addressFields,
-  socialObjectFields,
-  websiteFields,
-  objectImageFields,
   phoneFields,
-  ratingFields,
   ratePercent,
-  getAllowedFieldsByObjType,
-  buttonFields,
-  TYPES_OF_MENU_ITEM,
+  ratingFields,
+  socialObjectFields,
   statusFields,
+  TYPES_OF_MENU_ITEM,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
-  getObject,
-  getRewardFund,
-  getRate,
-  getVotingPower,
-  getVotePercent,
   getFollowingObjectsList,
+  getObject,
+  getRate,
+  getRewardFund,
   getSuitableLanguage,
+  getVotePercent,
+  getVotingPower,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
-import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
-import MapAppendObject from '../components/Maps/MapAppendObject';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
-import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
@@ -79,8 +73,6 @@ export default class AppendForm extends Component {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     /* from connect */
     wObject: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
@@ -393,15 +385,6 @@ export default class AppendForm extends Component {
     }
   };
 
-  setCoordinates = ({ latLng }) => {
-    this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng[0].toFixed(6),
-      [mapFields.longitude]: latLng[1].toFixed(6),
-    });
-  };
-
-  // region News Filter Block
-
   // eslint-disable-next-line react/sort-comp
   addNewNewsFilterLine = () => {
     const allowList = [...this.state.allowList];
@@ -449,7 +432,6 @@ export default class AppendForm extends Component {
 
   handleSubmit = e => {
     if (e) e.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
       const currentField = form.getFieldValue('currentField');
@@ -480,9 +462,6 @@ export default class AppendForm extends Component {
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
-        break;
-      case objectFields.map:
-        formFields = form.getFieldsValue(Object.values(mapFields));
         break;
       case objectFields.link:
         formFields = form.getFieldsValue(Object.values(linkFields));
@@ -524,65 +503,6 @@ export default class AppendForm extends Component {
 
   handleChangeSorting = sortedList => {
     this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
-  };
-
-  handleRemoveImage = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ [currentField]: '' });
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ [currentField]: image });
-  };
-
-  handleImageChange = e => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[currentField],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-        currentImage: [],
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  };
-
-  handleOnChange = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (objectImageFields.includes(currentField)) {
-      this.setState({
-        imageUploading: false,
-        currentImage: [],
-      });
-    }
   };
 
   handleLikeClick = () => {
@@ -694,10 +614,22 @@ export default class AppendForm extends Component {
       });
   };
 
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getImages = image => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+    if (image.length) {
+      this.props.form.setFieldsValue({ [currentField]: image[0].src });
+    } else {
+      this.props.form.setFieldsValue({ [currentField]: '' });
+    }
+  };
+
   renderContentValue = currentField => {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -762,7 +694,7 @@ export default class AppendForm extends Component {
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
-                  defaultMessage: 'Add value',
+                  defaultMessage: 'Topic name',
                 })}
               />,
             )}
@@ -799,48 +731,17 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
-        const imageLink = getFieldValue(currentField);
         return (
           <div className="image-wrapper">
-            <QuickPostEditorFooter
-              imageUploading={this.state.imageUploading}
-              handleImageChange={this.handleImageChange}
-              currentImages={this.state.currentImage}
-              onRemoveImage={this.handleRemoveImage}
-              showAddButton={false}
-            />
-            <span>
-              {intl.formatMessage({
-                id: 'or',
-                defaultMessage: 'or',
-              })}
-            </span>
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <Input
-                  className="AppendForm__input"
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'photo_url_placeholder',
-                    defaultMessage: 'Photo URL',
-                  })}
+                <ImageSetter
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
                 />,
               )}
             </Form.Item>
-            {imageLink && (
-              <div className="AppendForm__previewWrap">
-                {currentField === objectFields.avatar ? (
-                  <Avatar shape="square" size={100} src={imageLink} className="avatar" />
-                ) : (
-                  <div
-                    style={{
-                      backgroundImage: `url(${imageLink})`,
-                    }}
-                    className="background"
-                  />
-                )}
-              </div>
-            )}
           </div>
         );
       }
@@ -1033,23 +934,7 @@ export default class AppendForm extends Component {
       case objectFields.map: {
         return (
           <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator(mapFields.latitude, {
-                rules: this.getFieldRules(mapFields.latitude),
-              })(
-                <Input
-                  onBlur={this.onUpdateCoordinate(mapFields.latitude)}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'location_latitude',
-                    defaultMessage: 'Latitude',
-                  })}
-                />,
-              )}
-            </Form.Item>
+            <Form.Item></Form.Item>
             <Form.Item>
               {getFieldDecorator(mapFields.longitude, {
                 rules: this.getFieldRules(mapFields.longitude),
@@ -1067,14 +952,6 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            <MapAppendObject
-              setCoordinates={this.setCoordinates}
-              heigth={400}
-              center={[
-                Number(getFieldValue(mapFields.latitude)),
-                Number(getFieldValue(mapFields.longitude)),
-              ]}
-            />
           </React.Fragment>
         );
       }

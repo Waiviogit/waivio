@@ -54,4 +54,28 @@ const investArena = {
   supportedFields: supportedObjectFields,
 };
 
+export const discoverObjectsContentTypes = {
+  commodity: {
+    intl: { id: 'wia.commodities', defaultMessage: 'Commodities' },
+  },
+  crypto: {
+    intl: { id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' },
+  },
+  currencies: {
+    intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
+  },
+  indices: {
+    intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
+  },
+  stocks: {
+    intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' },
+  },
+  brokers: {
+    intl: { id: 'brokers', defaultMessage: 'Brokers' },
+  },
+  hashtag: {
+    intl: { id: 'hashtags', defaultMessage: 'Hashtags' },
+  },
+};
+
 export default investArena;

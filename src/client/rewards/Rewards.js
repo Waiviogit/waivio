@@ -20,19 +20,13 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import {
-  activateCampaign,
-  assignProposition,
-  declineProposition,
-  getCoordinates,
-} from '../user/userActions';
+import { activateCampaign, assignProposition, declineProposition } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
-import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import './Rewards.less';
 
 @withRouter
@@ -45,15 +39,13 @@ import './Rewards.less';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign },
+  { assignProposition, declineProposition, activateCampaign },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
-    // activateCampaign: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
-    getCoordinates: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     user: PropTypes.shape().isRequired,
@@ -85,12 +77,6 @@ class Rewards extends React.Component {
     activePayableFilters: [],
     isSearchAreaFilter: false,
   };
-
-  componentDidMount() {
-    if (!_.size(this.props.userLocation)) {
-      this.props.getCoordinates();
-    }
-  }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
@@ -461,14 +447,6 @@ class Rewards extends React.Component {
           {match.path === '/rewards/:filterKey/:campaignParent?' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!isEmpty(this.props.userLocation) && !isCreate && (
-                  <MapWrap
-                    wobjects={this.getRequiredObjects()}
-                    userLocation={this.props.userLocation}
-                    onMarkerClick={this.goToCampaign}
-                    getAreaSearchData={this.getAreaSearchData}
-                  />
-                )}
                 {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}

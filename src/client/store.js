@@ -33,9 +33,10 @@ export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
   ];
 
   let enhancer;
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-underscore-dangle
-    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    const composeEnhancers =
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true }) || compose;
     enhancer = composeEnhancers(applyMiddleware(...middleware));
   } else {
     enhancer = compose(applyMiddleware(...middleware));

@@ -1,8 +1,6 @@
-import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
-import { getAllFollowing } from '../helpers/apiHelpers';
+import { getAuthenticatedUserName, getIsAuthenticated, isGuestUser } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
 
 require('isomorphic-fetch');
@@ -43,10 +41,13 @@ export const getRecommendedObj = () => dispatch =>
     },
   });
 
-export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
-export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
-export const UNFOLLOW_USER_SUCCESS = '@user/UNFOLLOW_USER_SUCCESS';
-export const UNFOLLOW_USER_ERROR = '@user/UNFOLLOW_USER_ERROR';
+export const CHANGE_CHAT_CONDITION = '@user/CHANGE_CHAT_CONDITION';
+export const changeChatCondition = () => dispatch =>
+  dispatch({
+    type: CHANGE_CHAT_CONDITION,
+  });
+
+export const UNFOLLOW_USER = createAsyncActionType('@user/UNFOLLOW_USER');
 
 export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -56,7 +57,7 @@ export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }
   }
 
   return dispatch({
-    type: UNFOLLOW_USER,
+    type: UNFOLLOW_USER.ACTION,
     payload: {
       promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
     },
@@ -71,7 +72,7 @@ export const GET_FOLLOWING_START = '@user/GET_FOLLOWING_START';
 export const GET_FOLLOWING_SUCCESS = '@user/GET_FOLLOWING_SUCCESS';
 export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
-export const getFollowing = username => (dispatch, getState) => {
+export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
 
   if (!username && !getIsAuthenticated(state)) {
@@ -84,7 +85,7 @@ export const getFollowing = username => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: getAllFollowing(targetUsername),
+      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit).then(data => data.users),
     },
   });
 };
@@ -96,6 +97,8 @@ export const GET_FOLLOWING_OBJECTS_ERROR = '@user/GET_FOLLOWING_OBJECTS_ERROR';
 
 export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
+  const skip = 0;
+  const limit = state.auth.user.objects_following_count;
 
   if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -105,7 +108,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit),
     },
   });
 };
@@ -119,6 +122,10 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
+  if ((!username && !getIsAuthenticated(state)) || isGuestUser(state)) {
+    return dispatch({ type: GET_NOTIFICATIONS.ERROR });
+  }
+
   const targetUsername = username || getAuthenticatedUserName(state);
 
   return dispatch({
@@ -129,14 +136,6 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     },
   });
 };
-
-export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION');
-
-export const getCoordinates = () => dispatch =>
-  dispatch({
-    type: GET_USER_LOCATION.ACTION,
-    payload: getUserCoordinatesByIpAdress(),
-  });
 
 export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
   dispatch,

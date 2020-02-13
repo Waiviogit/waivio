@@ -12,12 +12,26 @@
     &__text {
       &__message {
         color: @grey-darkGrey;
+
+        & > a {
+          font-weight: 700;
+        }
+
+        & > span {
+          &:hover {
+            color: @blue-vivid;
+
+            & > span {
+              color: @blue-vivid;
+            }
+          }
+        }
       }
     }
 
     &__empty {
       border-bottom: @base-border;
-      color: @black;
+      color: @grey-darkGrey;
       justify-content: center;
     }
   }

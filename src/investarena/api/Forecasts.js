@@ -12,7 +12,10 @@ export default class Forecasts extends Base {
   getActiveForecasts(name = '', quote = '') {
     return this.apiClient
       .get(`${config.forecasts.activeForecasts}?name=${name}&quote=${quote}`)
-      .then(response => response.data);
+      .then(({ error, data }) => {
+        if (error) return { forecasts: [] };
+        return data;
+      });
   }
 
   getPostsWithForecastByUser(name = '') {
@@ -24,6 +27,12 @@ export default class Forecasts extends Base {
   getPostsWithForecastByWobject(wobjectName = '') {
     return this.apiClient
       .get(`${config.posts.withForecastBywobject}/${wobjectName}`)
+      .then(response => response.data);
+  }
+
+  getStatusForecast(user, permlink) {
+    return this.apiClient
+      .get(`${config.quickForecasts.quickForecast}/${user}/${permlink}`)
       .then(response => response.data);
   }
 }

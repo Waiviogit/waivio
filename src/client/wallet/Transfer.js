@@ -1,21 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import _ from 'lodash';
-import { Form, Input, Radio, Modal } from 'antd';
-import { STEEM, SBD } from '../../common/constants/cryptos';
-import steemAPI from '../steemAPI';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { get, isEmpty, isNull } from 'lodash';
+import { Form, Input, Modal, Radio } from 'antd';
+import { SBD, STEEM } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { closeTransfer } from './walletActions';
+import { notify } from '../app/Notification/notificationActions';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
-  getIsTransferVisible,
-  getTransferTo,
   getCryptosPriceHistory,
+  getIsAuthenticated,
+  getIsTransferVisible,
+  getScreenSize,
+  getTransferAmount,
+  getTransferCurrency,
+  getTransferMemo,
+  getTransferTo,
+  isGuestUser,
 } from '../reducers';
+import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
+import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -25,13 +32,19 @@ const InputGroup = Input.Group;
   state => ({
     visible: getIsTransferVisible(state),
     to: getTransferTo(state),
+    amount: getTransferAmount(state),
+    currency: getTransferCurrency(state),
+    memo: getTransferMemo(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    screenSize: getScreenSize(state),
+    isGuest: isGuestUser(state),
   }),
   {
     closeTransfer,
     getCryptoPriceHistory,
+    notify,
   },
 )
 @Form.create()
@@ -46,14 +59,27 @@ export default class Transfer extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
     closeTransfer: PropTypes.func,
+    amount: PropTypes.number,
+    currency: PropTypes.string,
+    memo: PropTypes.string,
+    screenSize: PropTypes.string,
+    isGuest: PropTypes.bool,
+    notify: PropTypes.func,
   };
 
   static defaultProps = {
     to: '',
     visible: false,
+    amount: 0,
+    memo: '',
+    currency: 'STEEM',
     closeTransfer: () => {},
+    screenSize: 'large',
+    isGuest: false,
+    notify: () => {},
   };
 
+  // eslint-disable-next-line react/sort-comp
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
   static minAccountLength = 3;
@@ -71,26 +97,25 @@ export default class Transfer extends React.Component {
 
   componentDidMount() {
     const { cryptosPriceHistory } = this.props;
-    const currentSteemRate = _.get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = _.get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
 
-    if (_.isNull(currentSteemRate)) {
+    if (isNull(currentSteemRate)) {
       this.props.getCryptoPriceHistory(STEEM.symbol);
     }
 
-    if (_.isNull(currentSBDRate)) {
+    if (isNull(currentSBDRate)) {
       this.props.getCryptoPriceHistory(SBD.symbol);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to } = nextProps;
-    if (this.props.to !== to) {
+    const { form, to, amount, currency } = this.props;
+    if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
-        to,
-        amount: undefined,
-        currency: STEEM.symbol,
-        memo: undefined,
+        to: nextProps.to,
+        amount: nextProps.amount,
+        currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
       });
       this.setState({
         currency: STEEM.symbol,
@@ -101,11 +126,11 @@ export default class Transfer extends React.Component {
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
     const { currency, oldAmount } = this.state;
-    const currentSteemRate = _.get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = _.get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
-    const steemRateLoading = _.isNull(currentSteemRate) || _.isNull(currentSBDRate);
+    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
     const parsedAmount = parseFloat(oldAmount);
-    const invalidAmount = parsedAmount <= 0 || _.isNaN(parsedAmount);
+    const invalidAmount = parsedAmount <= 0 || isNaN(parsedAmount);
     let amount = 0;
 
     if (steemRateLoading || invalidAmount) return '';
@@ -116,7 +141,7 @@ export default class Transfer extends React.Component {
       amount = parsedAmount * parseFloat(currentSBDRate);
     }
 
-    return `~ $${intl.formatNumber(amount, {
+    return `$${intl.formatNumber(amount, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
@@ -141,17 +166,42 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form } = this.props;
+    const { form, isGuest, memo } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          to: values.to,
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
-        if (values.memo) transferQuery.memo = values.memo;
 
-        const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
-        win.focus();
+        if (values.to.startsWith(GUEST_PREFIX)) {
+          transferQuery.to = BANK_ACCOUNT;
+          transferQuery.memo = memo
+            ? { id: memo, to: values.to }
+            : { id: 'user_to_guest_transfer', to: values.to };
+          if (values.memo) transferQuery.memo.message = values.memo;
+          transferQuery.memo = JSON.stringify(transferQuery.memo);
+        } else {
+          transferQuery.to = values.to;
+          if (memo) {
+            transferQuery.memo = { id: memo };
+            if (values.memo) transferQuery.memo.message = values.memo;
+            transferQuery.memo = JSON.stringify(transferQuery.memo);
+          }
+          if (values.memo) transferQuery.memo = values.memo;
+        }
+
+        if (isGuest) {
+          sendGuestTransfer(transferQuery).then(res => {
+            if (res.status === 200) {
+              this.props.notify('Successful transaction', 'success');
+            } else {
+              this.props.notify('Transaction failed', 'error');
+            }
+          });
+        } else {
+          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          win.focus();
+        }
         this.props.closeTransfer();
       }
     });
@@ -201,6 +251,7 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
+    const guestName = value.startsWith(GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -224,7 +275,10 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (value.length > Transfer.maxAccountLength) {
+    if (
+      (guestName && value.length > Transfer.maxGuestAccountLength) ||
+      (!guestName && value.length > Transfer.maxAccountLength)
+    ) {
       callback([
         new Error(
           intl.formatMessage(
@@ -240,8 +294,8 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    steemAPI.sendAsync('get_accounts', [[value]]).then(result => {
-      if (result[0]) {
+    getUserAccount(value, false).then(result => {
+      if (!isEmpty(result)) {
         callback();
       } else {
         callback([
@@ -293,23 +347,38 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
+    const to = getFieldValue('to');
+    const guestName = to && to.startsWith(GUEST_PREFIX);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
+    const isChangesDisabled = !!memo;
 
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
-      <Radio.Group onChange={this.handleCurrencyChange} className="Transfer__amount__type">
-        <Radio.Button value={Transfer.CURRENCIES.STEEM}>{Transfer.CURRENCIES.STEEM}</Radio.Button>
-        <Radio.Button value={Transfer.CURRENCIES.SBD}>{Transfer.CURRENCIES.SBD}</Radio.Button>
+      <Radio.Group
+        disabled={isChangesDisabled}
+        onChange={this.handleCurrencyChange}
+        className="Transfer__amount__type"
+      >
+        <Radio.Button value={Transfer.CURRENCIES.STEEM} className="Transfer__amount__type-steem">
+          {Transfer.CURRENCIES.STEEM}
+        </Radio.Button>
+        <Radio.Button
+          value={Transfer.CURRENCIES.SBD}
+          className="Transfer__amount__type-sbd"
+          disabled={isGuest}
+        >
+          {Transfer.CURRENCIES.SBD}
+        </Radio.Button>
       </Radio.Group>,
     );
 
     const usdValue = this.getUSDValue();
-
     return (
       <Modal
         visible={visible}
@@ -334,6 +403,7 @@ export default class Transfer extends React.Component {
               ],
             })(
               <Input
+                disabled={isChangesDisabled}
                 type="text"
                 placeholder={intl.formatMessage({
                   id: 'to_placeholder',
@@ -342,6 +412,12 @@ export default class Transfer extends React.Component {
               />,
             )}
           </Form.Item>
+          {(guestName || isGuest) && (
+            <FormattedMessage
+              id="transferThroughBank"
+              defaultMessage="Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees."
+            />
+          )}
           <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
@@ -366,6 +442,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
+                  disabled={isChangesDisabled}
                   className="Transfer__amount__input"
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
@@ -374,20 +451,29 @@ export default class Transfer extends React.Component {
                   })}
                 />,
               )}
-              <Input
-                disabled
-                className="Transfer__usd-value"
-                addonAfter={currencyPrefix}
-                placeholder={usdValue}
-              />
+              {isMobile ? (
+                <Input disabled className="Transfer__usd-value" placeholder={usdValue} />
+              ) : (
+                <Input
+                  disabled
+                  className="Transfer__usd-value"
+                  addonAfter={currencyPrefix}
+                  placeholder={usdValue}
+                />
+              )}
             </InputGroup>
+            <Form.Item>{isMobile && currencyPrefix}</Form.Item>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"
                 defaultMessage="Your balance: {amount}"
                 values={{
                   amount: (
-                    <span role="presentation" onClick={this.handleBalanceClick} className="balance">
+                    <span
+                      role="presentation"
+                      onClick={isChangesDisabled ? () => {} : this.handleBalanceClick}
+                      className="balance"
+                    >
                       {balance}
                     </span>
                   ),
@@ -400,6 +486,7 @@ export default class Transfer extends React.Component {
               rules: [{ validator: this.validateMemo }],
             })(
               <Input.TextArea
+                disabled={isChangesDisabled}
                 autoSize={{ minRows: 2, maxRows: 6 }}
                 placeholder={intl.formatMessage({
                   id: 'memo_placeholder',

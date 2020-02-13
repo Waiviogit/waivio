@@ -1,5 +1,7 @@
+import { get } from 'lodash';
 import * as types from './authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
+import { LOGOUT } from './authActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -8,6 +10,7 @@ const initialState = {
   loaded: false,
   user: {},
   userMetaData: {},
+  isGuestUser: false,
 };
 
 export default (state = initialState, action) => {
@@ -30,13 +33,14 @@ export default (state = initialState, action) => {
         loaded: true,
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
+        isGuestUser: action.payload.isGuestUser,
       };
     case types.LOGIN_ERROR:
       return {
         ...state,
         isFetching: false,
         isAuthenticated: false,
-        loaded: true,
+        loaded: false,
       };
     case types.RELOAD_START:
       return {
@@ -55,16 +59,34 @@ export default (state = initialState, action) => {
         isReloading: false,
       };
     case types.LOGOUT:
-      return {
-        ...state,
-        isAuthenticated: false,
-        user: {},
-      };
+      return initialState;
     case GET_USER_METADATA.SUCCESS:
       return {
         ...state,
         userMetaData: action.payload,
       };
+    case types.UPDATE_PROFILE_START:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case types.UPDATE_PROFILE_SUCCESS: {
+      if (action.payload.isProfileUpdated) {
+        return {
+          ...state,
+          isFetching: false,
+          user: {
+            ...state.user,
+            json_metadata: action.meta,
+          },
+        };
+      }
+      return state;
+    }
+    case types.UPDATE_PROFILE_ERROR:
+      return state;
+    case LOGOUT:
+      return initialState;
     default:
       return state;
   }
@@ -77,3 +99,12 @@ export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
+export const getAuthenticatedUserAvatar = state => {
+  let jsonMetadata = get(state, 'user.json_metadata');
+  if (jsonMetadata) {
+    jsonMetadata = JSON.parse(state.user.json_metadata);
+    return get(jsonMetadata, 'profile.profile_image');
+  }
+  return undefined;
+};
+export const isGuestUser = state => state.isGuestUser;

@@ -162,7 +162,17 @@ export const createAsyncActionType = type => ({
 });
 
 export const getUserDetailsKey = username => `user-${username}`;
-export const getPostKey = post => `${post.author}/${post.permlink}`;
+
+export const getPostKey = post => {
+  if (post.authorGuest) {
+    return `${post.authorGuest}/${post.permlink}`;
+  }
+  if (post.guestInfo) {
+    return `${post.guestInfo.userId}/${post.permlink}`;
+  }
+  return `${post.author}/${post.permlink}`;
+};
+
 export const getParentKey = post => `${post.parent_author}/${post.parent_permlink}`;
 
 export const makeCancelable = promise => {

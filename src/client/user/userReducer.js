@@ -2,6 +2,7 @@ import _ from 'lodash';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
+import { LOGOUT } from '../auth/authActions';
 
 const initialState = {
   recommendedObjects: [],
@@ -25,6 +26,9 @@ const initialState = {
   statistics: {
     isAccuracyChartLoaded: false,
   },
+  isChatOpen: false,
+  isConnectionStart: false,
+  isPrivateChat: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -101,18 +105,13 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: false,
       };
     case userActions.FOLLOW_USER_START:
-    case userActions.UNFOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER.START:
       return {
         ...state,
         following: {
           ...state.following,
           pendingFollows: [...state.following.pendingFollows, action.meta.username],
         },
-      };
-    case userActions.GET_USER_LOCATION.SUCCESS:
-      return {
-        ...state,
-        location: action.payload,
       };
     case userActions.FOLLOW_USER_SUCCESS:
       return {
@@ -125,7 +124,7 @@ export default function userReducer(state = initialState, action) {
           ),
         },
       };
-    case userActions.UNFOLLOW_USER_SUCCESS:
+    case userActions.UNFOLLOW_USER.SUCCESS:
       return {
         ...state,
         following: {
@@ -138,7 +137,7 @@ export default function userReducer(state = initialState, action) {
       };
 
     case userActions.FOLLOW_USER_ERROR:
-    case userActions.UNFOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER.ERROR:
       return {
         ...state,
         following: {
@@ -231,6 +230,14 @@ export default function userReducer(state = initialState, action) {
           isAccuracyChartLoaded: action.payload,
         },
       };
+    case userActions.CHANGE_CHAT_CONDITION:
+      return {
+        ...state,
+        isChatOpen: !state.isChatOpen,
+        isConnectionStart: true,
+      };
+    case LOGOUT:
+      return initialState;
     default: {
       return state;
     }
@@ -250,3 +257,5 @@ export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
 export const getAccuracyChartLoaded = state => state.statistics.isAccuracyChartLoaded;
+export const getChatCondition = state => state.isChatOpen;
+export const getChatConnectionCondition = state => state.isConnectionStart;

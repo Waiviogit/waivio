@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { take, find } from 'lodash';
-import { injectIntl, FormattedNumber, FormattedMessage } from 'react-intl';
+import { find, take } from 'lodash';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { getUpvotes, getDownvotes } from '../../helpers/voteHelpers';
+import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
 import { sortVotes } from '../../helpers/sortHelpers';
 import { calculatePayout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
   getIsAuthenticated,
@@ -12,9 +13,13 @@ import {
   getIsUserFailed,
   getIsUserLoaded,
   getAuthenticatedUserName,
+  getUsersAccountHistory,
+  getChatCondition,
 } from '../reducers';
-import { openTransfer } from '../wallet/walletActions';
+import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
+import { changeChatCondition } from './userActions';
+import { setPostMessageAction } from '../components/Chat/chatActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -22,6 +27,8 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
+import { isGuestUserSelector } from '../../investarena/redux/selectors/userSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -31,13 +38,23 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     user: getUser(state, ownProps.match.params.name),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
+    usersAccountHistory: getUsersAccountHistory(state),
+    isChat: getChatCondition(state),
+    isGuest: isGuestUserSelector(state),
   }),
   {
     getUserAccount,
     openTransfer,
+    getUserAccountHistory,
+    changeChatCondition,
+    setPostMessageAction,
   },
 )
 export default class User extends React.Component {
+  static fetchData({ store, match }) {
+    return store.dispatch(getUserAccount(match.params.name));
+  }
+
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
@@ -49,6 +66,12 @@ export default class User extends React.Component {
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
     openTransfer: PropTypes.func,
+    getUserAccountHistory: PropTypes.func.isRequired,
+    usersAccountHistory: PropTypes.shape().isRequired,
+    changeChatCondition: PropTypes.func.isRequired,
+    isChat: PropTypes.bool.isRequired,
+    setPostMessageAction: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -57,18 +80,23 @@ export default class User extends React.Component {
     failed: false,
     getUserAccount: () => {},
     openTransfer: () => {},
+    isGuest: false,
   };
-
-  static fetchData({ store, match }) {
-    return store.dispatch(getUserAccount(match.params.name));
-  }
 
   state = {
     isFollowing: false,
   };
 
   componentDidMount() {
-    const { user, authenticated, authenticatedUserName } = this.props;
+    const {
+      user,
+      authenticated,
+      authenticatedUserName,
+      usersAccountHistory,
+      // eslint-disable-next-line no-shadow
+      getUserAccountHistory,
+      match,
+    } = this.props;
     if (!user.id && !user.failed) {
       this.props.getUserAccount(this.props.match.params.name);
     }
@@ -82,6 +110,9 @@ export default class User extends React.Component {
           isFollowing,
         });
       });
+    }
+    if (_.isEmpty(usersAccountHistory[getUserDetailsKey(match.params.name)])) {
+      getUserAccountHistory(match.params.name);
     }
   }
 
@@ -113,7 +144,7 @@ export default class User extends React.Component {
   };
 
   render() {
-    const { authenticated, authenticatedUser, loaded, failed } = this.props;
+    const { authenticated, authenticatedUser, loaded, failed, match, isGuest } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -139,13 +170,16 @@ export default class User extends React.Component {
       coverImage = profile.cover_image;
     }
     const hasCover = !!coverImage;
-    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const waivioHost = global.postOrigin || 'https://investarena.com';
     const image = getAvatarURL(username) || '/images/logo.png';
     const canonicalUrl = `${waivioHost}/@${username}`;
     const url = `${waivioHost}/@${username}`;
-    const title = `${displayedUsername} - InvestArena`;
+    const title = `${displayedUsername} - Waivio`;
 
     const isSameUser = authenticated && authenticatedUser.name === username;
+    const isAboutPage = match.params['0'] === 'about';
+
+    const isGuestPage = !!user.auth;
 
     return (
       <div className="main-panel">
@@ -174,8 +208,13 @@ export default class User extends React.Component {
         <ScrollToTopOnMount />
         {user && (
           <UserHero
+            isGuestPage={isGuestPage}
+            isGuest={isGuest}
             authenticated={authenticated}
             user={user}
+            changeChatCondition={this.props.changeChatCondition}
+            setPostMessageAction={this.props.setPostMessageAction}
+            isChat={this.props.isChat}
             username={displayedUsername}
             isSameUser={isSameUser}
             coverImage={coverImage}
@@ -188,14 +227,18 @@ export default class User extends React.Component {
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={110}>
-              <div className="left">
+              <div className={classNames('left', { 'display-none': isAboutPage })}>
                 <LeftSidebar />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={110}>
               <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
             </Affix>
-            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
+            {loaded && (
+              <div className={classNames('center', { pa3: isAboutPage })}>
+                {renderRoutes(this.props.route.routes)}
+              </div>
+            )}
           </div>
         </div>
       </div>

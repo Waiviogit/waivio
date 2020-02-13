@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { connect } from 'react-redux';
+import { batch, connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -9,19 +9,29 @@ import { ConfigProvider, Layout } from 'antd';
 import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
-import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
+import { findLanguage, getBrowserLocale, getRequestLocale, loadLanguage } from './translations';
 import {
-  getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getChatCondition,
+  getIsAuthenticated,
+  getIsLoaded,
   getLocale,
-  getUsedLocale,
-  getTranslations,
   getNightmode,
+  getScreenSize,
+  getTranslations,
+  getUsedLocale,
+  isGuestUser,
 } from './reducers';
-import { login, logout, busyLogin } from './auth/authActions';
-import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import { busyLogin, login, logout } from './auth/authActions';
+import { getMessagesQuantity } from '../waivioApi/ApiClient';
+import {
+  changeChatCondition,
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from './user/userActions';
+import { getRate, getRewardFund, setAppUrl, setUsedLocale } from './app/appActions';
 import { getPerformersStatistic } from '../investarena/redux/actions/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -31,6 +41,8 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
 import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
+import Chat from './components/Chat/Chat';
+import ChatButton from './components/ChatButton/ChatButton';
 
 export const UsedLocaleContext = React.createContext('en-US');
 
@@ -40,11 +52,15 @@ export const UsedLocaleContext = React.createContext('en-US');
     loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
+    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
     platformName: getPlatformNameState(state),
+    isChat: getChatCondition(state),
+    screenSize: getScreenSize(state),
+    isGuest: isGuestUser(state),
   }),
   {
     login,
@@ -59,6 +75,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
     getChartsData,
+    changeChatCondition,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -84,6 +101,11 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
+    isAuthenticated: PropTypes.bool.isRequired,
+    isChat: PropTypes.bool.isRequired,
+    changeChatCondition: PropTypes.func,
+    screenSize: PropTypes.string.isRequired,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -104,6 +126,9 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: () => {},
     nightmode: false,
     getChartsData: () => {},
+    changeChatCondition: () => {},
+    getMessagesQuantity: () => {},
+    isGuest: false,
   };
 
   static async fetchData({ store, req }) {
@@ -132,28 +157,46 @@ export default class Wrapper extends React.PureComponent {
     super(props);
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
+    this.state = {
+      messagesCount: 0,
+    };
   }
 
   componentDidMount() {
     this.props.login().then(() => {
-      this.props.getFollowing();
-      this.props.getFollowingObjects();
-      this.props.getPerformersStatistic();
-      this.props.getNotifications();
-      this.props.busyLogin();
+      batch(() => {
+        this.props.getFollowing();
+        this.props.getFollowingObjects();
+        this.props.getPerformersStatistic();
+        this.props.getNotifications();
+        this.props.busyLogin();
+      });
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
+    });
+    batch(() => {
+      this.props.getRewardFund();
+      this.props.getRebloggedList();
+      this.props.getRate();
+      this.props.getChartsData();
     });
 
-    this.props.getRewardFund();
-    this.props.getRebloggedList();
-    this.props.getRate();
-    this.props.getChartsData();
+    if (this.props.screenSize !== 'large') {
+      window.$crisp.push(['do', 'chat:hide']);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
+    const { locale, isChat } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
+    }
+    if (nextProps.isChat !== isChat) {
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
     }
   }
 
@@ -202,6 +245,9 @@ export default class Wrapper extends React.PureComponent {
       case 'myFeed':
         this.props.history.push('/my_feed');
         break;
+      case 'quick_forecast':
+        this.props.history.push('/quickforecast');
+        break;
       case 'news':
         this.props.history.push('/trending');
         break;
@@ -226,8 +272,17 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, usedLocale, translations, platformName } = this.props;
-
+    const {
+      user,
+      usedLocale,
+      translations,
+      platformName,
+      username,
+      isChat,
+      isAuthenticated,
+      isGuest,
+    } = this.props;
+    const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -236,7 +291,12 @@ export default class Wrapper extends React.PureComponent {
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                <Topnav
+                  username={user.name}
+                  openChat={this.props.changeChatCondition}
+                  messagesCount={messagesCount}
+                  onMenuItemClick={this.handleMenuItemClick}
+                />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes)}
@@ -244,6 +304,21 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
+                {!isGuest && (
+                  <ChatButton
+                    openChat={this.props.changeChatCondition}
+                    isChat={isChat}
+                    messagesCount={messagesCount}
+                    authentication={isAuthenticated}
+                  />
+                )}
+                {isAuthenticated ? (
+                  <Chat
+                    visibility={isChat}
+                    openChat={this.props.changeChatCondition}
+                    userName={username}
+                  />
+                ) : null}
               </div>
             </Layout>
           </UsedLocaleContext.Provider>

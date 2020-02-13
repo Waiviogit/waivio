@@ -26,7 +26,6 @@ import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import { CHART_ID } from '../../../investarena/constants/objectsInvestarena';
 import Proposition from '../../components/Proposition/Proposition';
-import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
 import {
@@ -38,9 +37,9 @@ import {
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
-import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
+import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
+import api from '../../../investarena/configApi/apiResources';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
@@ -120,8 +119,6 @@ class ObjectInfo extends React.Component {
     const { withGallery, withMenu, withSettingsBlock } = getObjectSettings(wobject.type);
 
     let names = [];
-    let address = '';
-    let map = '';
     let description = '';
     let price = '';
     let workTime = '';
@@ -140,10 +137,6 @@ class ObjectInfo extends React.Component {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(nameFld => nameFld.body !== wobject.name)
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
-
-      address = _.compact(Object.values(_.get(wobject, [objectFields.address], {}))).join(', ');
-
-      map = _.get(wobject, [objectFields.map], '');
 
       description = _.get(wobject, [objectFields.description], '');
 
@@ -193,9 +186,6 @@ class ObjectInfo extends React.Component {
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
-
-    const isRenderMap =
-      map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
 
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
@@ -312,10 +302,13 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
-                button,
-                news: Boolean(newsFilter),
-              }),
+              combineObjectMenu(
+                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                {
+                  button,
+                  news: Boolean(newsFilter),
+                },
+              ),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
@@ -400,12 +393,20 @@ class ObjectInfo extends React.Component {
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {wobject[CHART_ID] && (
               <React.Fragment>
-                <InstrumentLongTermStatistics
-                  wobject={this.props.wobject}
+                <LongTermStatistics
+                  itemId={this.props.wobject.author_permlink}
+                  fetcher={api.performers.getInstrumentStatistics}
                   withCompareButton
                   toggleModalPerformance={this.toggleModalPerformance}
                   isMobile={isMobile}
-                />
+                >
+                  <div>
+                    <FormattedMessage
+                      id="unavailableStatisticsObject"
+                      defaultMessage="Long term statistics is unavailable for current instrument"
+                    />
+                  </div>
+                </LongTermStatistics>
                 {isModalComparePerformanceOpen && wobject && !isMobile && (
                   <ModalComparePerformance
                     toggleModal={this.toggleModalPerformance}
@@ -509,34 +510,6 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
-            {listItem(
-              objectFields.address,
-              address && (
-                <React.Fragment>
-                  <i className="iconfont icon-coordinates text-icon" />
-                  {address}
-                  {isRenderMap && (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="address-link"
-                    >
-                      <i className="iconfont icon-send PostModal__icon" />
-                    </a>
-                  )}
-                </React.Fragment>
-              ),
-            )}
-            {listItem(
-              objectFields.map,
-              isRenderMap && (
-                <MapObjectInfo
-                  mapHeigth={200}
-                  center={[Number(map.latitude), Number(map.longitude)]}
-                />
-              ),
-            )}
             {listItem(
               objectFields.website,
               website && website.title && website.link && (

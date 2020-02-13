@@ -149,6 +149,15 @@
     "activeForecasts": "/active_forecasts"
   },
 
+  "investArenaApi": "https://investarena.waiviodev.com",
+
+  "quickForecasts": {
+    "quickForecast": "/quick-forecasts",
+    "quickForecastFind": "/quick-forecasts/find",
+    "quickForecastWinners": "/quick-forecasts/winners",
+    "quickForecastRewards": "/quick-forecasts/rewards"
+  },
+
   "favorites": {
     "favorites": "/favorites/"
   },

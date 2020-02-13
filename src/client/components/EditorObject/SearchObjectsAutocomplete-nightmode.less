@@ -2,13 +2,17 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .nightmode {
-  .ant-select-dropdown-menu-item {
+  .ant-select-dropdown {
     background-color: @grey-nero;
-    color: @white-smoke;
-    border-bottom: @border-width-base @border-style-base @normal-grey;
 
-    &:hover {
-      background-color: @blue-darkGrayish;
+    &-menu-item {
+      background-color: @grey-nero;
+      color: @white-smoke;
+      border-bottom: @border-width-base @border-style-base @normal-grey;
+
+      &:hover {
+        background-color: @blue-darkGrayish;
+      }
     }
   }
 

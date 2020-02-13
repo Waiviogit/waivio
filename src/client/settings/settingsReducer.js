@@ -53,6 +53,8 @@ const settings = (state = initialState, action) => {
         ...state,
         locale: action.payload,
       };
+    case authTypes.LOGOUT:
+      return initialState;
     default:
       return state;
   }

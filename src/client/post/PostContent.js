@@ -3,24 +3,24 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import _ from 'lodash';
+import { find, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { dropCategory, isBannedPost } from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import {
+  getAppUrl,
   getAuthenticatedUser,
   getBookmarks,
-  getPendingBookmarks,
-  getPendingLikes,
-  getRebloggedList,
-  getPendingReblogs,
   getFollowingList,
-  getPendingFollows,
   getIsEditorSaving,
-  getVotingPower,
+  getPendingBookmarks,
+  getPendingFollows,
+  getPendingLikes,
+  getPendingReblogs,
+  getRebloggedList,
   getRewardFund,
   getVotePercent,
-  getAppUrl,
+  getVotingPower,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
 import { votePost } from './postActions';
@@ -177,19 +177,17 @@ class PostContent extends React.Component {
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
     const postMetaData = jsonParse(content.json_metadata);
-    const waivioHost = appUrl || 'https://waiviodev.com';
-    let canonicalHost = waivioHost;
+    const waivioHost = appUrl || 'https://investarena.com';
+    const canonicalHost = waivioHost;
 
-    if (postMetaData && _.indexOf(postMetaData.app, 'steemit') === 0) {
-      canonicalHost = 'https://steemit.com';
-    }
-
-    const userVote = _.find(content.active_votes, { voter: user.name }) || {};
+    const userVote = find(content.active_votes, { voter: user.name }) || {};
 
     const postState = {
       isReblogged: reblogList.includes(content.id),
       isReblogging: pendingReblogs.includes(content.id),
-      isSaved: bookmarks.includes(content.id),
+      isSaved: content.guestInfo
+        ? bookmarks.includes(`${content.guestInfo.userId}/${content.root_permlink}`)
+        : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(content.author),
@@ -209,12 +207,18 @@ class PostContent extends React.Component {
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${_.truncate(bodyText, { length: 143 })} by ${author}`;
+    const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
-    const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
-    const url = `${waivioHost}${dropCategory(content.url)}`;
+    const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
+      dropCategory(content.url),
+      content.guestInfo,
+    )}`;
+    const url = `${waivioHost}${replaceBotWithGuestName(
+      dropCategory(content.url),
+      content.guestInfo,
+    )}`;
     const ampUrl = `${url}/amp`;
-    const metaTitle = `${title} - InvertArena`;
+    const metaTitle = `${title} - InvestArena`;
 
     return (
       <div>

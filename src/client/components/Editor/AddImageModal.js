@@ -115,10 +115,6 @@ class AddImageModal extends React.Component {
 
     return (
       <Modal
-        title={intl.formatMessage({
-          id: 'image',
-          defaultMessage: 'Add image',
-        })}
         visible={visible}
         onCancel={this.handleCancelModal}
         onOk={this.handleOk}

@@ -5,6 +5,7 @@ export default class ApiClient {
   constructor({ prefix = 'localhost:8095' } = {}) {
     this.prefix = prefix;
   }
+
   get(requestUrl, payload = {}, params) {
     return request({
       url: `${this.prefix}${requestUrl}`,
@@ -13,6 +14,7 @@ export default class ApiClient {
       params,
     });
   }
+
   put(requestUrl, payload = {}) {
     return request({
       url: `${this.prefix}${requestUrl}`,
@@ -20,6 +22,7 @@ export default class ApiClient {
       data: payload,
     });
   }
+
   post(requestUrl, payload = {}) {
     return request({
       url: `${this.prefix}${requestUrl}`,
@@ -27,12 +30,14 @@ export default class ApiClient {
       data: payload,
     });
   }
+
   delete(requestUrl) {
     return request({
       url: `${this.prefix}${requestUrl}`,
       method: 'delete',
     });
   }
+
   validateToken(requestUrl, headers) {
     return axios({ method: 'GET', url: `${this.prefix}${requestUrl}`, headers }).then(
       response => {
@@ -44,14 +49,13 @@ export default class ApiClient {
         // }
         return response;
       },
-      () => {
-        return {};
-      },
+      () => ({}),
     );
   }
 }
-const request = ({ url, method, data, params = {} }) => {
-  return axios({
+
+const request = ({ url, method, data, params = {} }) =>
+  axios({
     method,
     url,
     params,
@@ -92,4 +96,3 @@ const request = ({ url, method, data, params = {} }) => {
       return response;
     },
   );
-};

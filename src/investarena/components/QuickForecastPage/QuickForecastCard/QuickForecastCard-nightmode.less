@@ -1,0 +1,82 @@
+@import (reference) '../../../../client/styles/custom.less';
+
+.nightmode {
+  .ForecastCard {
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+    color: @white-smoke;
+
+    &--toLose {
+      border: 1px solid @red;
+    }
+
+    &--win {
+      border: 1px solid @green-darker;
+    }
+
+    &__val {
+      border: 1px solid @normal-grey;
+    }
+
+    &__title {
+      color: @white;
+
+      &:hover {
+        color: @white;
+      }
+    }
+
+    &__link {
+      color: @white;
+
+      &:hover {
+        color: @white;
+      }
+    }
+  }
+
+  .graphic {
+    background-color: transparent;
+    border: 1px solid @blue-botticelli;
+  }
+
+  .ballotButton {
+    font-family: @font-family-sans-serif;
+    background-color: @grey-nero;
+    border: none;
+
+    &__positive {
+      border: 1px solid @green-darker;
+      color: @green-darker;
+
+      &:hover {
+        background-color: @green-darker;
+        color: @white;
+      }
+
+      &:disabled {
+        &:hover {
+          color: @green-darker;
+          background-color: @grey-nero;
+        }
+      }
+    }
+
+    &__negative {
+      border: 1px solid @red;
+      color: @red;
+
+      &:hover {
+        background-color: @red;
+        color: @white;
+      }
+
+      &:disabled {
+        &:hover {
+          color: @red;
+          background-color: @grey-nero;
+        }
+      }
+    }
+  }
+}

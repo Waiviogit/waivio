@@ -11,6 +11,7 @@ class UserMenu extends React.Component {
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
     following: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -18,6 +19,7 @@ class UserMenu extends React.Component {
     defaultKey: 'discussions',
     followers: 0,
     following: 0,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -61,7 +63,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="discussions"
               >
-                <FormattedMessage id="discussions" defaultMessage="Discussions" />
+                <FormattedMessage id="posts" defaultMessage="Posts" />
               </li>
               <li
                 className={this.getItemClasses('comments')}
@@ -70,6 +72,14 @@ class UserMenu extends React.Component {
                 data-key="comments"
               >
                 <FormattedMessage id="comments" defaultMessage="Comments" />
+              </li>
+              <li
+                className={this.getItemClasses('about')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="about"
+              >
+                <FormattedMessage id="about" defaultMessage="About" />
               </li>
               <li
                 className={this.getItemClasses('followers')}
@@ -110,14 +120,6 @@ class UserMenu extends React.Component {
                 <FormattedMessage id="wallet" defaultMessage="Wallet" />
               </li>
               <li
-                className={this.getItemClasses('activity')}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key="activity"
-              >
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </li>
-              <li
                 className={this.getItemClasses('statistics')}
                 onClick={this.handleClick}
                 role="presentation"
@@ -125,6 +127,16 @@ class UserMenu extends React.Component {
               >
                 <FormattedMessage id="statistics" defaultMessage="Statistics" />
               </li>
+              {!this.props.isGuest && (
+                <li
+                  className={this.getItemClasses('activity')}
+                  onClick={this.handleClick}
+                  role="presentation"
+                  data-key="activity"
+                >
+                  <FormattedMessage id="activity" defaultMessage="Activity" />
+                </li>
+              )}
             </ul>
           </Scrollbars>
         </div>

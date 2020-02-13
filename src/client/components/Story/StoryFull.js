@@ -4,18 +4,18 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
-  injectIntl,
-  FormattedMessage,
-  FormattedRelative,
   FormattedDate,
-  FormattedTime,
+  FormattedMessage,
   FormattedNumber,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
 } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { getFromMetadata, extractImageTags } from '../../helpers/parser';
-import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
+import { extractImageTags, getFromMetadata } from '../../helpers/parser';
+import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import { getProxyImageURL } from '../../helpers/image';
 import BTooltip from '../BTooltip';
@@ -30,9 +30,8 @@ import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 import PostForecast from './Story';
-import { jsonParse } from '../../helpers/formatter';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
-import { isValidForecast } from '../../helpers/forecastHelper';
+import { getForecastData } from '../../helpers/forecastHelper';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostChart from '../../../investarena/components/PostChart';
 import WeightTag from '../WeightTag';
@@ -113,7 +112,9 @@ class StoryFull extends React.Component {
 
   componentWillUnmount() {
     const { post } = this.props;
-    const hideWhiteBG = document && document.location.pathname !== dropCategory(post.url);
+    const hideWhiteBG =
+      document &&
+      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -361,14 +362,22 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-    const jsonMetadata = post ? jsonParse(post.json_metadata) : {};
-    const forecast = _.get(jsonMetadata, 'wia', null);
-    let isForecastValid = false;
-    let isForecastExpired = false;
-    if (forecast) {
-      isForecastValid = isValidForecast(forecast);
-      isForecastExpired = !_.isEmpty(post.exp_forecast);
-    }
+    const {
+      predictedEndDate,
+      quoteSecurity,
+      postPrice,
+      createdAt,
+      buyOrSell,
+      tpPrice,
+      slPrice,
+      isForecastExpired,
+      // expiredBars,
+      finalQuote,
+      expiredAt,
+      profitability,
+      isForecastValid,
+    } = getForecastData(post);
+
     return (
       <div className="StoryFull">
         {replyUI}
@@ -456,21 +465,22 @@ class StoryFull extends React.Component {
         {isForecastValid && (
           <div className="Story__forecast">
             <PostForecast
-              quoteSecurity={forecast.quoteSecurity}
-              postForecast={forecast.expiredAt}
+              quoteSecurity={quoteSecurity}
+              postForecast={predictedEndDate}
               isExpired={isForecastExpired}
-              expiredAt={forecast.expiredAt}
+              expiredAt={expiredAt}
             />
           </div>
         )}
         {isForecastValid && (
           <PostSellBuy
             isExpired={isForecastExpired}
-            quoteSecurity={forecast.quoteSecurity}
-            postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
-            forecast={forecast.expiredAt}
-            recommend={forecast.recommend}
-            profitability={isForecastExpired ? post.exp_forecast.profitability : 0}
+            finalQuote={finalQuote}
+            quoteSecurity={quoteSecurity}
+            postPrice={postPrice ? postPrice.toString() : 0}
+            forecast={predictedEndDate}
+            recommend={buyOrSell}
+            profitability={profitability}
           />
         )}
         <div className="StoryFull__content">{content}</div>
@@ -508,19 +518,18 @@ class StoryFull extends React.Component {
         )}
         {isForecastValid && (
           <PostChart
-            quoteSecurity={forecast.quoteSecurity}
-            createdAt={forecast.createdAt}
-            forecast={forecast.expiredAt}
-            recommend={forecast.recommend}
+            quoteSecurity={quoteSecurity}
+            createdAt={createdAt}
+            forecast={predictedEndDate}
+            recommend={buyOrSell}
             toggleModalPost={() => {}}
-            tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
-            slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
+            tpPrice={tpPrice}
+            slPrice={slPrice}
             expForecast={post.exp_forecast}
+            expiredAt={expiredAt}
           />
         )}
-        {isForecastValid && (
-          <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} caller='od-pp'/>
-        )}
+        {isForecastValid && <PostQuotation quoteSecurity={quoteSecurity} caller="od-pp" />}
 
         <Collapse defaultActiveKey={['1']} accordion>
           {!_.isEmpty(linkedObjects) && (

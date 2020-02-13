@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
@@ -10,6 +11,7 @@ export default class SortSelector extends React.Component {
 
   static propTypes = {
     sort: PropTypes.string,
+    disabled: PropTypes.bool,
     caption: PropTypes.string,
     children: PropTypes.node,
     onChange: PropTypes.func,
@@ -19,6 +21,7 @@ export default class SortSelector extends React.Component {
     sort: null,
     caption: null,
     children: null,
+    disabled: false,
     onChange: () => {},
   };
 
@@ -34,7 +37,9 @@ export default class SortSelector extends React.Component {
   }
 
   handleVisibleChange() {
-    this.setState(prevState => ({ visible: !prevState.visible }));
+    if (!this.props.disabled) {
+      this.setState(prevState => ({ visible: !prevState.visible }));
+    }
   }
 
   handleSelect(current) {
@@ -55,6 +60,16 @@ export default class SortSelector extends React.Component {
     const currentSort = React.Children.map(this.props.children, c => c).find(
       c => c.key === `.$${sort}`,
     );
+    const filterCurrentValue = () => {
+      if (currentSort && currentSort.props && currentSort.props.children !== 'Reset') {
+        return currentSort.props.children;
+      }
+
+      return '';
+    };
+    const currentClassList = classNames('SortSelector__current', {
+      'SortSelector__current--disabled': this.props.disabled,
+    });
 
     return (
       <div className="SortSelector">
@@ -72,8 +87,8 @@ export default class SortSelector extends React.Component {
             </PopoverMenu>
           }
         >
-          <span className="SortSelector__current">
-            {currentSort && currentSort.props && currentSort.props.children}
+          <span className={currentClassList}>
+            {filterCurrentValue()}
             <i className="iconfont icon-unfold" />
           </span>
         </Popover>

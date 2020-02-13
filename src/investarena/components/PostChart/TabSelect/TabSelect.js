@@ -10,7 +10,7 @@ class TabSelect extends React.Component {
     super(props);
     const { data, defaultValue } = props;
     this.state = {
-      selectedItem: defaultValue ? _.find(data, item => item.value === defaultValue) : data[0],
+      selectedItem: (defaultValue && _.find(data, item => item.value === defaultValue)) || data[0],
     };
   }
   selectValue = item => {

@@ -5,6 +5,7 @@ import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -22,9 +23,13 @@ class UserMenuWrapper extends React.Component {
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     objectsSharesCount: PropTypes.number,
+    isGuest: PropTypes.bool,
+    isGuestPage: PropTypes.bool,
   };
   static defaultProps = {
     objectsSharesCount: 0,
+    isGuest: false,
+    isGuestPage: false,
   };
 
   onChange = key => {
@@ -34,10 +39,17 @@ class UserMenuWrapper extends React.Component {
   };
 
   render() {
-    const { match, location, history, ...otherProps } = this.props;
+    const { match, location, history, isGuest, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    return (
+      <UserMenu
+        defaultKey={currentKey}
+        onChange={this.onChange}
+        isGuest={isGuest}
+        {...otherProps}
+      />
+    );
   }
 }
 
@@ -58,9 +70,16 @@ const UserHero = ({
   hasCover,
   isFollowing,
   onTransferClick,
+  changeChatCondition,
+  isChat,
+  setPostMessageAction,
+  isGuest,
+  isGuestPage,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
-  const followingCount = user.following_count + objectsFollowingCount;
+  const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
+  const followingCount = usersFollowingCount + objectsFollowingCount;
+  const followersCount = user.followers_count ? user.followers_count : 0;
 
   return (
     <div>
@@ -73,7 +92,13 @@ const UserHero = ({
                 <UserHeaderLoading />
               ) : (
                 <UserHeader
+                  isGuest={isGuest}
+                  isGuestPage={isGuestPage}
                   username={username}
+                  authenticated={authenticated}
+                  isChat={isChat}
+                  changeChatCondition={changeChatCondition}
+                  setPostMessageAction={setPostMessageAction}
                   handle={user.name}
                   wobjWeight={user.wobjects_weight}
                   vestingShares={parseFloat(user.vesting_shares)}
@@ -85,7 +110,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
+              <UserMenuWrapper followers={followersCount} following={followingCount} />
             </div>
           )}
         />
@@ -104,6 +129,11 @@ UserHero.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
+  changeChatCondition: PropTypes.func.isRequired,
+  isChat: PropTypes.bool.isRequired,
+  setPostMessageAction: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
+  isGuestPage: PropTypes.bool,
 };
 
 UserHero.defaultProps = {
@@ -113,6 +143,8 @@ UserHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  isGuest: false,
+  isGuestPage: false,
 };
 
 export default UserHero;
