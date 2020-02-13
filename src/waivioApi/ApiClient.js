@@ -146,7 +146,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const getUserProfileBlog = (
   userName,
-  { startAuthor = '', startPermlink = '', limit = 10 },
+  { startAuthor = '', startPermlink = '', limit = 10, skip },
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -156,6 +156,7 @@ export const getUserProfileBlog = (
         limit,
         start_author: startAuthor,
         start_permlink: startPermlink,
+        skip,
       }),
     })
       .then(res => res.json())
