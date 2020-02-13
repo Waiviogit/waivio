@@ -25,22 +25,22 @@ const Chat = ({
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
-      args: {},
+      args: {
+        username: userName,
+        sessionData: {},
+      },
     };
     switch (messageType) {
       case 'connected':
-        requestData.args.username = userName;
         ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
         requestData.args.isGuest = isGuest;
-        requestData.args.sessionData = {};
 
         if (isGuest) {
           requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         } else {
-          requestData.args.sessionData.username = userName;
           requestData.args.sessionData.transactionId = data.value.result.id;
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
         }
@@ -66,9 +66,11 @@ const Chat = ({
             sendChatRequestData('connected');
             break;
           case 'init_response':
-            props
-              .setSessionId(event.data.args.session_id)
-              .then(data => sendChatRequestData('init_response', data));
+            if (!isGuest) {
+              props
+                .setSessionId(event.data.args.session_id)
+                .then(data => sendChatRequestData('init_response', data));
+            }
             break;
           case 'auth_connection_response':
             setCloseButton(false);

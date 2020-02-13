@@ -18,7 +18,6 @@ import {
   isBannedPost,
   isPostDeleted,
   isPostTaggedNSFW,
-  replaceBotWithGuestName,
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
@@ -302,11 +301,7 @@ class Story extends React.Component {
     const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    let postURL;
-    if (post.guestInfo) {
-      postURL = replaceBotWithGuestName(post.url, post.guestInfo);
-    }
-    postURL = dropCategory(post.url);
+    const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -330,10 +325,7 @@ class Story extends React.Component {
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    let postURL = dropCategory(post.url);
-    if (post.guestInfo) {
-      postURL = replaceBotWithGuestName(postURL, post.guestInfo);
-    }
+    const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -362,7 +354,7 @@ class Story extends React.Component {
 
     return showStoryPreview ? (
       <a
-        href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+        href={dropCategory(post.url)}
         rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
@@ -508,7 +500,7 @@ class Story extends React.Component {
             )}
             <div className="Story__content">
               <a
-                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+                href={dropCategory(post.url)}
                 rel="noopener noreferrer"
                 target="_blank"
                 onClick={this.handlePostModalDisplay}

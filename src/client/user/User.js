@@ -28,6 +28,7 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
+import { isGuestUserSelector } from '../../investarena/redux/selectors/userSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -39,6 +40,7 @@ import { getUserDetailsKey } from '../helpers/stateHelpers';
     failed: getIsUserFailed(state, ownProps.match.params.name),
     usersAccountHistory: getUsersAccountHistory(state),
     isChat: getChatCondition(state),
+    isGuest: isGuestUserSelector(state),
   }),
   {
     getUserAccount,
@@ -69,6 +71,7 @@ export default class User extends React.Component {
     changeChatCondition: PropTypes.func.isRequired,
     isChat: PropTypes.bool.isRequired,
     setPostMessageAction: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -77,6 +80,7 @@ export default class User extends React.Component {
     failed: false,
     getUserAccount: () => {},
     openTransfer: () => {},
+    isGuest: false,
   };
 
   state = {
@@ -140,7 +144,7 @@ export default class User extends React.Component {
   };
 
   render() {
-    const { authenticated, authenticatedUser, loaded, failed, match } = this.props;
+    const { authenticated, authenticatedUser, loaded, failed, match, isGuest } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -202,6 +206,7 @@ export default class User extends React.Component {
         <ScrollToTopOnMount />
         {user && (
           <UserHero
+            isGuest={isGuest}
             authenticated={authenticated}
             user={user}
             changeChatCondition={this.props.changeChatCondition}

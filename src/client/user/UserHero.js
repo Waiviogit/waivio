@@ -70,6 +70,7 @@ const UserHero = ({
   changeChatCondition,
   isChat,
   setPostMessageAction,
+  isGuest,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
@@ -87,6 +88,7 @@ const UserHero = ({
                 <UserHeaderLoading />
               ) : (
                 <UserHeader
+                  isGuest={isGuest}
                   username={username}
                   authenticated={authenticated}
                   isChat={isChat}
@@ -125,6 +127,7 @@ UserHero.propTypes = {
   changeChatCondition: PropTypes.func.isRequired,
   isChat: PropTypes.bool.isRequired,
   setPostMessageAction: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHero.defaultProps = {
@@ -134,6 +137,7 @@ UserHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
 export default UserHero;
