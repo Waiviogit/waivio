@@ -2,7 +2,11 @@
   .ImageSetter {
     .button-upload {
       border-color: @normal-grey;
-      background-color: @grey-nero;
+      background-color: @blue-dodgerBlue;
+
+      @media @small {
+        background-color: @grey-nero;
+      }
 
       &:hover {
         border-color: @blue-dodgerBlue;
