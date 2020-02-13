@@ -146,13 +146,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
   );
 
   return (
-    <Modal
-      width={416}
-      title=""
-      visible={visible}
-      onCancel={() => handleLoginModalCancel()}
-      footer={null}
-    >
+    <Modal width={416} visible={visible} onCancel={() => handleLoginModalCancel()} footer={null}>
       <div className="ModalSignUp">
         <h2 className="ModalSignUp__title">
           <FormattedMessage id="login" defaultMessage="Log in" />

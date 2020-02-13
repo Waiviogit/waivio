@@ -29,6 +29,12 @@ const Details = ({
     loading ||
     objectDetails.isReservedSiblingObj;
 
+  const isEligible =
+    objectDetails.requirement_filters.expertise &&
+    objectDetails.requirement_filters.followers &&
+    objectDetails.requirement_filters.posts &&
+    objectDetails.requirement_filters.not_blacklisted;
+
   let indexItem = 1;
 
   return (
@@ -181,7 +187,7 @@ const Details = ({
             <Button
               type="primary"
               loading={loading}
-              disabled={isCamaignReserved}
+              disabled={isCamaignReserved && !isEligible}
               onClick={reserveOnClickHandler}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}

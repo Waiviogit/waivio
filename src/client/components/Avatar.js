@@ -5,10 +5,8 @@ import moment from 'moment';
 import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
-export function getAvatarURL(username, size = 100) {
+export function getAvatarURL(username, size = 100, lastAccountUpdate = '') {
   if (username && username.includes('waivio_')) {
-    const authenticatedUser = useSelector(getAuthenticatedUser);
-    const lastAccountUpdate = moment(authenticatedUser.updatedAt).unix();
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
   return size > 64
@@ -22,8 +20,9 @@ const Avatar = ({ username, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-
-  const url = getAvatarURL(username, size);
+  const authenticatedUser = useSelector(getAuthenticatedUser);
+  const lastAccountUpdate = moment(authenticatedUser.updatedAt).unix();
+  const url = getAvatarURL(username, size, lastAccountUpdate);
 
   if (username) {
     style = {

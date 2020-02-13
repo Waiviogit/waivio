@@ -340,7 +340,6 @@ class Story extends React.Component {
 
   render() {
     const {
-      // intl,
       user,
       post,
       postState,

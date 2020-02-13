@@ -417,15 +417,12 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = (
-  typeName,
-  { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
-) =>
+export const getObjectType = (typeName, requestData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
+      body: JSON.stringify(requestData),
     })
       .then(res => res.json())
       .then(data => resolve(data))
@@ -925,9 +922,9 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+export const getPostCommentsFromApi = ({ category, author, permlink }) => {
   return fetch(
-    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+    `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
   )
     .then(res => res.json())
     .then(data => data)

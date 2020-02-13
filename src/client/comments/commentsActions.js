@@ -5,6 +5,7 @@ import { createPostMetadata } from '../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -104,18 +105,22 @@ export const getComments = postId => (dispatch, getState) => {
   const content = posts.list[postId] || comments.comments[postId];
 
   // eslint-disable-next-line camelcase
-  const { category, root_author, permlink } = content;
+  const { category, permlink } = content;
+  let author;
+  if (content.guestInfo && content.root_author !== POST_AUTHOR_FOR_REWARDS_COMMENTS) {
+    author = content.root_author;
+  } else {
+    author = content.author;
+  }
 
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, root_author, permlink }).then(
-        apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        }),
-      ),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
     },
     meta: {
       id: postId,
