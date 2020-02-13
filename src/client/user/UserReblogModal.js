@@ -3,7 +3,7 @@ import { FormattedNumber } from 'react-intl';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteScroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, Tabs } from 'antd';
 import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
 import './UserReblogModal.less';
@@ -19,26 +19,31 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
 
   return (
     <Modal visible={visible} footer={null} onCancel={onCancel}>
-      <div className="UserReblogModal">
-        <div className="UserReblogModal__header">
-          <div className="icon">
-            <i className="iconfont icon-share1 share" />
-            <FormattedNumber value={userNames.length} />
-          </div>
-        </div>
-        <Scrollbars autoHide style={{ height: '250px' }}>
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={loadMoreUsers}
-            hasMore={userNames.length > users.length}
-            useWindow={false}
-          >
-            {users.map(user => (
-              <DiscoverUser user={user} isSecondaryButton />
-            ))}
-          </InfiniteScroll>
-        </Scrollbars>
-      </div>
+      <Tabs>
+        <Tabs.TabPane
+          tab={
+            <div className="UserReblogModal__header">
+              <i className="iconfont icon-share1 share" />
+              <FormattedNumber value={userNames.length} />
+            </div>
+          }
+          key="1"
+        >
+          <Scrollbars autoHide style={{ height: '400px' }}>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={loadMoreUsers}
+              hasMore={userNames.length > users.length}
+              useWindow={false}
+            >
+              {users.map(user => (
+                // eslint-disable-next-line no-underscore-dangle
+                <DiscoverUser key={user._id} user={user} isSecondaryButton />
+              ))}
+            </InfiniteScroll>
+          </Scrollbars>
+        </Tabs.TabPane>
+      </Tabs>
     </Modal>
   );
 };
