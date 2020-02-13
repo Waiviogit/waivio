@@ -64,7 +64,6 @@ const GuestSignUpFormContent = ({
             <Input
               placeholder="Enter nickname"
               addonBefore={`@${GUEST_PREFIX}`}
-              minLength={3}
               maxLength={16}
             />,
           )}
