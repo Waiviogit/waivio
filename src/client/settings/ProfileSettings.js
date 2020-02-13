@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { attempt, isEmpty, isError, throttle } from 'lodash';
+import { attempt, get, isEmpty, isError, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Avatar, Button, Form, Input, Modal } from 'antd';
+import { encodeOp } from 'steem-uri';
+import moment from 'moment';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
 import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
@@ -19,6 +21,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
+import { getAvatarURL } from '../components/Avatar';
 import './Settings.less';
 
 const FormItem = Form.Item;
@@ -80,10 +83,14 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
+    let metadata = attempt(JSON.parse, props.user.json_metadata);
+    if (isError(metadata)) metadata = {};
+
     this.state = {
       bodyHTML: '',
-      coverPicture: {},
-      profilePicture: {},
+      profileData: get(metadata, ['profile'], {}),
+      profilePicture: getAvatarURL(props.userName),
+      coverPicture: get(metadata, ['profile', 'cover_image'], ''),
       isAvatar: false,
       isCover: false,
       isGuest: false,
@@ -91,17 +98,8 @@ export default class ProfileSettings extends React.Component {
       avatarImage: [],
       coverImage: [],
       isLoadingImage: false,
+      lastAccountUpdate: moment(props.user.updatedAt).unix(),
     };
-  }
-
-  componentDidMount() {
-    const { user } = this.props;
-    const profileData = attempt(JSON.parse, user.json_metadata);
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      profilePicture: profileData.profile.profile_image,
-      coverPicture: profileData.profile.cover_image,
-    });
   }
 
   onOpenChangeAvatarModal = () =>
@@ -142,8 +140,8 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, updateProfile } = this.props;
-    const { avatarImage, coverImage } = this.state;
+    const { form, isGuest, user, userName, updateProfile } = this.props;
+    const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
 
@@ -168,7 +166,18 @@ export default class ProfileSettings extends React.Component {
         if (isGuest) {
           updateProfile(userName, cleanValues);
         } else {
-          const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
+          const profileDateEncoded = encodeOp(
+            [
+              'account_update',
+              {
+                account: userName,
+                memo_key: user.memo_key,
+                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
+              },
+            ],
+            { callback: window.location.href },
+          );
+          const win = window.open(profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'), '_blank');
           win.focus();
         }
       }
@@ -179,10 +188,10 @@ export default class ProfileSettings extends React.Component {
     e.preventDefault();
     // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
-    const { profilePicture, avatarImage } = this.state;
+    const { avatarImage } = this.state;
 
     if (isGuest && !isEmpty(avatarImage)) {
-      getGuestAvatarUrl(userName, profilePicture, intl)
+      getGuestAvatarUrl(userName, avatarImage[0].src, intl)
         .then(data => {
           this.props.form.setFieldsValue({
             profile_image: data.image,
@@ -359,7 +368,7 @@ export default class ProfileSettings extends React.Component {
                           <Avatar
                             size="large"
                             shape="square"
-                            icon="file-image"
+                            icon="picture"
                             src={`${this.state.coverPicture}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
