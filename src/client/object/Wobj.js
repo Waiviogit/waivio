@@ -47,7 +47,6 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
   },
 )
 export default class Wobj extends React.Component {
-
   static fetchData({ store, match }) {
     return store.dispatch(getObject(match.params.name));
   }
