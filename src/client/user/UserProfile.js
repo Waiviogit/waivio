@@ -115,6 +115,7 @@ class UserProfile extends React.Component {
               defaultChecked
               onChange={this.onSwitchChange}
               checked={this.state.withForecastOnly}
+              disabled={isFetching}
               size="small"
             />
           </div>

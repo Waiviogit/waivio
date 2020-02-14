@@ -305,7 +305,8 @@ const QuickForecastPage = props => {
               </span>
               <span className="reward__row">
                 <FormattedMessage id="forecast_round" defaultMessage="Current round:" />
-                <span><USDDisplay value={props.roundInformation.votingPowers} />/
+                <span>
+                  <USDDisplay value={props.roundInformation.votingPowers} />/
                   <i className="iconfont icon-steem reward__icon" />
                   {props.roundInformation.votingPowersInSteem}
                 </span>
