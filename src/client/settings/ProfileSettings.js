@@ -177,7 +177,10 @@ export default class ProfileSettings extends React.Component {
             ],
             { callback: window.location.href },
           );
-          const win = window.open(profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'), '_blank');
+          const win = window.open(
+            profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
+            '_blank',
+          );
           win.focus();
         }
       }

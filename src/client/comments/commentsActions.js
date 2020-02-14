@@ -98,7 +98,7 @@ const getCommentsChildrenLists = apiRes => {
  * @param originalAuthor is bot name of append object comment
  * preventing loading icon to be dispalyed
  */
-export const getComments = postId => (dispatch, getState) => {
+export const getComments = (postId, author) => (dispatch, getState) => {
   const { posts, comments } = getState();
 
   const content = posts.list[postId] || comments.comments[postId];
@@ -106,7 +106,10 @@ export const getComments = postId => (dispatch, getState) => {
   // eslint-disable-next-line camelcase
   const { category, permlink } = content;
 
-  const author = content.guestInfo ? content.root_author : content.author;
+  if (!author) {
+    // eslint-disable-next-line no-param-reassign
+    author = content.guestInfo ? content.root_author : content.author;
+  }
 
   dispatch({
     type: GET_COMMENTS,

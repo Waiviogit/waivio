@@ -27,31 +27,33 @@ const Chat = ({
       cmd: 'init',
       args: {
         username: userName,
-        sessionData: {},
+        // sessionData: {},
       },
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
+        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
         requestData.args.isGuest = isGuest;
+        requestData.args.transactionId = data.value.result.id;
+        requestData.args.blockNumber = data.value.result.block_num;
 
-        if (isGuest) {
-          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
-        } else {
-          requestData.args.sessionData.transactionId = data.value.result.id;
-          requestData.args.sessionData.blockNumber = data.value.result.block_num;
-        }
+        // if (isGuest) {
+        //   requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+        // } else {
+        //   requestData.args.sessionData.transactionId = data.value.result.id;
+        //   requestData.args.sessionData.blockNumber = data.value.result.block_num;
+        // }
 
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
+        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf,');
+        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
         break;
       default:
     }
@@ -60,17 +62,17 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === 'https://staging.stchat.cf,') {
+      if (event && event.data && event.origin === 'https://staging.stchat.cf') {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
             break;
           case 'init_response':
-            if (!isGuest) {
-              props
-                .setSessionId(event.data.args.session_id)
-                .then(data => sendChatRequestData('init_response', data));
-            }
+            // if (!isGuest) {
+            props
+              .setSessionId(event.data.args.session_id)
+              .then(data => sendChatRequestData('init_response', data));
+            // }
             break;
           case 'auth_connection_response':
             setCloseButton(false);
@@ -80,7 +82,6 @@ const Chat = ({
             openChat();
             break;
           case 'start_chat_response':
-            // console.log(event.data.args.status);
             break;
           case 'new_event':
             console.log('new_event');
