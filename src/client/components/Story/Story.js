@@ -195,6 +195,7 @@ class Story extends React.Component {
       </Link>
     );
   };
+
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;

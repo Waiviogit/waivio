@@ -14,7 +14,7 @@ const mostProfitableUsers = ({ chartid }) => {
   useEffect(() => {
     if (chartid) {
       api.performers
-        .getMostProfitableUsers(chartid)
+        .getMostProfitableUsers(chartid, 30)
         .then(data => setState({ performers: data, loading: false }));
     }
   }, [chartid]);
@@ -23,7 +23,6 @@ const mostProfitableUsers = ({ chartid }) => {
 
   let spinner = null;
   if (loading) spinner = <RightSidebarLoading />;
-
   return !_.isEmpty(performers) ? (
     <div className="SidebarContentBlock">
       <h4 className="SidebarContentBlock__title">
