@@ -213,13 +213,15 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={116}>
               <div className="right">
-                  <RightObjectSidebar
-                    username={userName}
-                    wobject={wobject}
-                    quoteSecurity={wobject.chartid || ''}
-                  />
+                <RightObjectSidebar
+                  username={userName}
+                  wobject={wobject}
+                  quoteSecurity={wobject.chartid || ''}
+                />
               </div>
-              <div><ObjectsRelated wobject={wobject} /></div>
+              <div>
+                <ObjectsRelated wobject={wobject} />
+              </div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {

@@ -987,9 +987,7 @@ class Topnav extends React.Component {
             </Link>
           </div>
           <div className={classNames('center', 'center-menu', { mobileVisible: searchBarActive })}>
-            <div className="Topnav__input-container"
-                 onBlur={this.handleOnBlur}
-            >
+            <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
