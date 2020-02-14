@@ -175,7 +175,13 @@ class MapOS extends React.Component {
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
-              <Map onBoundsChanged={this.onBoundsChanged} center={center} zoom={zoom} animate>
+              <Map
+                onBoundsChanged={this.onBoundsChanged}
+                provider={mapProvider}
+                center={center}
+                zoom={zoom}
+                animate
+              >
                 {markersLayout}
                 {infoboxData && this.getOverlayLayout()}
               </Map>
