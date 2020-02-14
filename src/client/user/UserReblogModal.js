@@ -15,7 +15,12 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
   const authenticatedUserName = useSelector(getAuthenticatedUserName);
   const loadMoreUsers = () => {
-    getUsers(userNames, authenticatedUserName, users.length, 20).then(data => {
+    getUsers({
+      listUsers: userNames,
+      userName: authenticatedUserName,
+      skip: users.length,
+      limit: 20,
+    }).then(data => {
       setUsers([...users, ...data.users]);
       setHasMoreUsers(data.hasMore);
     });
