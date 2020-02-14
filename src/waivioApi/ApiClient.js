@@ -487,7 +487,7 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getMessagesQuantity = username => {
   return new Promise((resolve, reject) => {
-    fetch(`https://stchat.cf/api/user/${username}/unread_count`, {
+    fetch(`https://staging.stchat.cf/api/user/${username}/unread_count`, {
       method: 'GET',
     })
       .then(res => res.json())
