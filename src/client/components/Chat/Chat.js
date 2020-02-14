@@ -20,6 +20,7 @@ const Chat = ({
 }) => {
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
+  const chatURL = 'https://stchat.cf';
   const ifr = useRef();
   const isGuest = userName.startsWith(GUEST_PREFIX);
   const sendChatRequestData = (messageType, data) => {
@@ -32,7 +33,7 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatURL);
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
@@ -40,13 +41,13 @@ const Chat = ({
         requestData.args.transactionId = data.value.result.id;
         requestData.args.blockNumber = data.value.result.block_num;
 
-        ifr.current.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatURL);
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatURL);
         break;
       default:
     }
@@ -55,7 +56,7 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === 'https://stchat.cf') {
+      if (event && event.data && event.origin === chatURL) {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
@@ -114,7 +115,7 @@ const Chat = ({
       <div className="Chat__wrap">
         {isConnectionStart && (
           <iframe
-            src="https://stchat.cf/app.html"
+            src={`${chatURL}/app.html`}
             /* eslint no-return-assign: "error" */
             ref={ifr}
             title="frame"

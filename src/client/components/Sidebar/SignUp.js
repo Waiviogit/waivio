@@ -8,7 +8,7 @@ const SignUp = () => (
     <h3 className="SidebarBlock__title">
       <FormattedMessage id="new_to_busy" defaultMessage="New to InvestArena?" />
     </h3>
-     <ModalSignUp isButton />
+    <ModalSignUp isButton />
   </div>
 );
 
