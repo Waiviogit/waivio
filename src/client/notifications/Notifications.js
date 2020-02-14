@@ -23,7 +23,7 @@ import NotificationReblog from '../components/Navigation/Notifications/Notificat
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
 import Loading from '../components/Icon/Loading';
-import RightSidebar from "../app/Sidebar/RightSidebar";
+import RightSidebar from '../app/Sidebar/RightSidebar';
 
 import './Notifications.less';
 
@@ -125,7 +125,11 @@ class Notifications extends React.Component {
                       );
                     case notificationConstants.WITNESS_VOTE:
                       return (
-                        <NotificationVoteWitness key={key} notification={notification} read={read} />
+                        <NotificationVoteWitness
+                          key={key}
+                          notification={notification}
+                          read={read}
+                        />
                       );
                     default:
                       return null;
