@@ -13,8 +13,9 @@ import BTooltip from '../BTooltip';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
-import './Buttons.less';
 import AppendObjButtons from './AppendObjButtons';
+import UserRebloggedModal from '../../user/UserReblogModal';
+import './Buttons.less';
 
 @injectIntl
 @withAuthActions
@@ -63,6 +64,7 @@ export default class Buttons extends React.Component {
       loadingEdit: false,
       upVotes: getUpvotes(this.props.post.active_votes),
       downVotes: getDownvotes(this.props.post.active_votes),
+      isUsersReblogModal: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -247,6 +249,36 @@ export default class Buttons extends React.Component {
     );
   }
 
+  rebloggedUsersTitle = () => {
+    // eslint-disable-next-line camelcase
+    const { reblogged_users } = this.props.post;
+    const maxUserCount = 3;
+    return (
+      <span>
+        {reblogged_users.map(
+          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>,
+        )}
+        {reblogged_users.length > 3 && (
+          <p>
+            {this.props.intl.formatMessage(
+              {
+                id: 'and_more_reblogged',
+                defaultMessage: `and {amount} more`,
+              },
+              {
+                amount: reblogged_users.length - maxUserCount,
+              },
+            )}
+          </p>
+        )}
+      </span>
+    );
+  };
+
+  toggleModalReblog = () => {
+    this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
+  };
+
   render() {
     const {
       intl,
@@ -257,11 +289,11 @@ export default class Buttons extends React.Component {
       defaultVotePercent,
       // pendingFlag,
     } = this.props;
-
     const isAppend = !!this.props.post.append_field_name;
 
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
+    const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
 
     const totalPayout =
       parseFloat(post.pending_payout_value) +
@@ -395,19 +427,34 @@ export default class Buttons extends React.Component {
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
         {showReblogLink && (
-          <BTooltip
-            title={intl.formatMessage({
-              id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
-              defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog',
-            })}
-          >
-            <a role="presentation" className={rebloggedClass} onClick={this.handleShareClick}>
-              <i className="iconfont icon-share1 Buttons__share" />
-            </a>
-          </BTooltip>
+          <React.Fragment>
+            <BTooltip
+              title={intl.formatMessage({
+                id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
+                defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog',
+              })}
+            >
+              <a role="presentation" className={rebloggedClass} onClick={this.handleShareClick}>
+                <i className="iconfont icon-share1 Buttons__share" />
+              </a>
+            </BTooltip>
+            {hasRebloggedUsers && (
+              <BTooltip title={this.rebloggedUsersTitle()}>
+                <span
+                  className="Buttons__number amount-users"
+                  role="presentation"
+                  onClick={this.toggleModalReblog}
+                >
+                  {post.reblogged_users.length > 0 && (
+                    <FormattedNumber value={post.reblogged_users.length} />
+                  )}
+                </span>
+              </BTooltip>
+            )}
+          </React.Fragment>
         )}
         {this.renderPostPopoverMenu()}
-        {!postState.isReblogged && (
+        {!postState.isReblogged && this.state.shareModalVisible && (
           <Modal
             title={intl.formatMessage({
               id: 'reblog_modal_title',
@@ -425,6 +472,13 @@ export default class Buttons extends React.Component {
               defaultMessage="This post will appear on your personal feed. This action cannot be reversed."
             />
           </Modal>
+        )}
+        {this.state.isUsersReblogModal && (
+          <UserRebloggedModal
+            userNames={post.reblogged_users}
+            visible={this.state.isUsersReblogModal}
+            onCancel={this.toggleModalReblog}
+          />
         )}
       </div>
     );
