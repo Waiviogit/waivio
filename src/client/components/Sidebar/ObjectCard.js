@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import './ObjectCard.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+
+import './ObjectCard.less';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
   const name = getFieldWithMaxWeight(wobject, 'name');
