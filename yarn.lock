@@ -12693,6 +12693,11 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
+steem-uri@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/steem-uri/-/steem-uri-0.1.1.tgz#20da6f713809398b5f77d251def0eeed92cf966b"
+  integrity sha512-pHe33AlDLlf2jC8hfrEthVj8Zq/DcFg490ID16KK0o7tr02mToeXTpEFGV5dnM2ASeAr3MAOxCJvEFDrCFuZbQ==
+
 steemscript@^1.0.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/steemscript/-/steemscript-1.1.1.tgz#c7fee04f8e9b50774c84f66529262d29b038a6b7"
