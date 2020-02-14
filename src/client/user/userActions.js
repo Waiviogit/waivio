@@ -347,7 +347,7 @@ export const getRecommendExperts = () => dispatch => {
   dispatch({
     type: GET_RECOMMENDS_EXPERTS.ACTION,
     payload: {
-      promise: ApiClient.getUsers(userList),
+      promise: ApiClient.getUsers(userList.length, 0, userList),
     },
   });
 };

@@ -327,7 +327,7 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_RECOMMENDS_EXPERTS.SUCCESS:
       return {
         ...state,
-        recommendedExperts: action.payload,
+        recommendedExperts: action.payload.users,
       };
 
     case userActions.GET_RECOMMENDS_EXPERTS.ERROR:
