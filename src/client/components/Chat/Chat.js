@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+// TODO: add when API will be ready
+// import { GUEST_PREFIX } from '../../../common/constants/waivio';
 import './Chat.less';
 
 const Chat = ({
@@ -21,12 +22,14 @@ const Chat = ({
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
   const ifr = useRef();
-  const isGuest = userName.startsWith(GUEST_PREFIX);
+  // TODO: add when API will be ready
+  // const isGuest = userName.startsWith(GUEST_PREFIX);
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
       args: {
         username: userName,
+        // TODO: add when API will be ready
         // sessionData: {},
       },
     };
@@ -36,10 +39,15 @@ const Chat = ({
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
-        requestData.args.isGuest = isGuest;
+
+        // TODO: add when API will be ready
+        // requestData.args.isGuest = isGuest;
+
+        // TODO: remove when API will be ready
         requestData.args.transactionId = data.value.result.id;
         requestData.args.blockNumber = data.value.result.block_num;
 
+        // TODO: add when API will be ready
         // if (isGuest) {
         //   requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         // } else {

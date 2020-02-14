@@ -97,6 +97,7 @@ export default (state = initialState, action) => {
         roundInfo: {
           rewards: action.payload.all_time_rewards,
           votingPowers: action.payload.voting_power,
+          votingPowersInSteem: action.payload.in_steem,
         },
       };
 

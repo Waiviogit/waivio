@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import WeightTag from '../../WeightTag';
-import './ObjectsRelated.less';
 import { getAuthorsChildWobjects } from '../../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import ObjectCard from '../ObjectCard';
+
+import './ObjectsRelated.less';
 
 const ObjectsRelated = ({ wobject }) => {
   const [objectsState, setObjectsState] = useState({
