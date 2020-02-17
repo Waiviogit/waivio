@@ -195,6 +195,7 @@ class Story extends React.Component {
       </Link>
     );
   };
+
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;
@@ -228,23 +229,28 @@ class Story extends React.Component {
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.guestInfo && !post.depth ? post.root_author : post.author;
+    const author = post.depth === 0 ? post.root_author : post.author;
 
     if (sliderMode) {
-      this.props.votePost(post.id, author, post.permlink, weight);
+      this.props.votePost(post.id, post.author_original || author, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, author, post.permlink, 0);
+      this.props.votePost(post.id, post.author_original || author, post.permlink, 0);
     } else {
-      this.props.votePost(post.id, author, post.permlink, defaultVotePercent);
+      this.props.votePost(
+        post.id,
+        post.author_original || author,
+        post.permlink,
+        defaultVotePercent,
+      );
     }
   }
 
   handleReportClick(post, postState, isRejectField) {
+    const author = post.depth === 0 ? post.root_author : post.author;
     let weight = postState.isReported ? 0 : -10000;
     if (isRejectField) {
       weight = postState.isReported ? 0 : 9999;
     }
-    const author = post.author_original || post.author;
     this.props.votePost(post.id, author, post.permlink, weight);
   }
 

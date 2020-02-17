@@ -54,16 +54,13 @@ class UserProfile extends React.Component {
 
   state = {
     withForecastOnly: false,
-    skip: 0,
   };
 
   componentDidMount() {
     const { match, limit } = this.props;
     const { name } = match.params;
 
-    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true, skip: this.state.skip });
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ skip: this.state.skip + limit });
+    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }
 
   onSwitchChange = isAppFilterOn => {
@@ -95,9 +92,7 @@ class UserProfile extends React.Component {
         this.props.getUserProfileBlogPosts(username, {
           limit,
           initialLoad: false,
-          skip: this.state.skip,
         });
-        this.setState({ skip: this.state.skip + limit });
       }
     };
 
@@ -115,6 +110,7 @@ class UserProfile extends React.Component {
               defaultChecked
               onChange={this.onSwitchChange}
               checked={this.state.withForecastOnly}
+              disabled={isFetching}
               size="small"
             />
           </div>

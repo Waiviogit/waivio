@@ -115,17 +115,18 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true, skip }) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
   dispatch,
   getState,
 ) => {
   let startAuthor = '';
   let startPermlink = '';
+  let feedContent = [];
   if (!initialLoad) {
     const state = getState();
     const feed = getFeed(state);
     const posts = getPosts(state);
-    const feedContent = getFeedFromState('blog', userName, feed);
+    feedContent = getFeedFromState('blog', userName, feed);
 
     if (!feedContent.length) return Promise.resolve(null);
 
@@ -140,7 +141,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
       startAuthor,
       startPermlink,
       limit,
-      skip,
+      skip: feedContent.length,
     }),
     meta: {
       sortBy: 'blog',

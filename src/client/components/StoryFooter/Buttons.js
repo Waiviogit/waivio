@@ -104,6 +104,10 @@ export default class Buttons extends React.Component {
     this.props.onActionInitiated(this.props.onLikeClick);
   }
 
+  handleRejectClick() {
+    this.props.onActionInitiated(this.onFlagClick);
+  }
+
   handleCommentsClick(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -149,6 +153,11 @@ export default class Buttons extends React.Component {
 
   handlePopoverVisibleChange(isVisible) {
     this.setState({ actionButtonsVisible: isVisible });
+  }
+
+  handleSelectOptions(item) {
+    this.props.handlePostPopoverMenuClick(item);
+    this.handlePopoverVisibleChange(false)
   }
 
   showPopoverMenu = () => this.handlePopoverVisibleChange(true);
@@ -247,7 +256,7 @@ export default class Buttons extends React.Component {
         visible={this.state.actionButtonsVisible}
         onVisibleChange={this.handlePopoverVisibleChange}
         content={
-          <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
+          <PopoverMenu onSelect={(item) => this.handleSelectOptions(item)} bold={false}>
             {popoverMenu}
           </PopoverMenu>
         }
@@ -345,7 +354,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={this.onFlagClick}
+            onFlagClick={() => this.handleRejectClick()}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}

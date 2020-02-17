@@ -142,6 +142,7 @@ class StoryFull extends React.Component {
 
   handleClick(key) {
     this.props.onActionInitiated(this.clickMenuItem.bind(this, key));
+    this.setState({ isModalOpen: false })
   }
 
   handleContentClick(e) {
