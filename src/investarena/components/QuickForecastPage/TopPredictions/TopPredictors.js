@@ -23,7 +23,9 @@ const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, 
             <Link className="TopPredictors__link" to={`/@${user.name}`}>
               <div className="TopPredictors__flex-wrapper">
                 <Avatar username={user.name} size={34} />
-                <span className="TopPredictors__user-name">{user.name}</span>
+                <span className="TopPredictors__user-name" title={user.name}>
+                  {user.name}
+                </span>
               </div>
             </Link>
             {user.successful_suppose >= 0 && (

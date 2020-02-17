@@ -33,23 +33,18 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, chatUrl);
+        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
         requestData.args.isGuest = isGuest;
 
-        // TODO: remove when API will ready
-        requestData.args.transactionId = data.value.result.id;
-        requestData.args.blockNumber = data.value.result.block_num;
-
-        // TODO: add when API will ready
-        // if (isGuest) {
-        //   requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
-        // } else {
-        //   requestData.args.sessionData.transactionId = data.value.result.id;
-        //   requestData.args.sessionData.blockNumber = data.value.result.block_num;
-        // }
+        if (isGuest) {
+          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+        } else {
+          requestData.args.sessionData.transactionId = data.value.result.id;
+          requestData.args.sessionData.blockNumber = data.value.result.block_num;
+        }
 
         ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
@@ -86,11 +81,9 @@ const Chat = ({
             openChat();
             break;
           case 'start_chat_response':
-            // console.log(event.data.args.status);
             break;
           case 'new_event':
-            console.log('new_event');
-            break; /**/
+            break;
           default:
         }
       }
@@ -125,7 +118,7 @@ const Chat = ({
       <div className="Chat__wrap">
         {isConnectionStart && (
           <iframe
-            src={`${chatUrl}/app.html`}
+            src="https://staging.stchat.cf/app.html"
             /* eslint no-return-assign: "error" */
             ref={ifr}
             title="frame"
