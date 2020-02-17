@@ -40,6 +40,7 @@ const InputGroup = Input.Group;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
+    guestsBalance: state.wallet.balance,
   }),
   {
     closeTransfer,
@@ -65,6 +66,7 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
+    guestsBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -77,6 +79,7 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
+    guestsBalance: 0,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -347,7 +350,7 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest, guestsBalance } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
@@ -356,7 +359,7 @@ export default class Transfer extends React.Component {
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-
+    const currentBalance = isGuest ? `${guestsBalance} STEEM` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
@@ -474,7 +477,7 @@ export default class Transfer extends React.Component {
                       onClick={isChangesDisabled ? () => {} : this.handleBalanceClick}
                       className="balance"
                     >
-                      {balance}
+                      {currentBalance}
                     </span>
                   ),
                 }}
