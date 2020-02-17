@@ -254,35 +254,39 @@ export function createPost(postData) {
             referral,
             authUser.name,
           )
+            // eslint-disable-next-line consistent-return
             .then(result => {
-              if (draftId) {
-                batch(() => {
-                  dispatch(deleteDraft(draftId));
-                  dispatch(addEditedPost(permlink));
-                });
-              }
-              if (isGuest) {
-                if (upvote) {
-                  steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              if (result.ok) {
+                if (draftId) {
+                  batch(() => {
+                    dispatch(deleteDraft(draftId));
+                    dispatch(addEditedPost(permlink));
+                  });
                 }
-                dispatch(push('/'));
-                dispatch(notify('Your post will be posted soon', 'success'));
-              } else {
-                dispatch(push(`/@${author}/${permlink}`));
-              }
+                if (isGuest) {
+                  if (upvote) {
+                    steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+                  }
+                  dispatch(push('/'));
+                  dispatch(notify('Your post will be posted soon', 'success'));
+                } else {
+                  dispatch(push(`/@${author}/${permlink}`));
+                }
 
-              if (window.analytics) {
-                window.analytics.track('Post', {
-                  category: 'post',
-                  label: 'submit',
-                  value: 10,
-                });
+                if (window.analytics) {
+                  window.analytics.track('Post', {
+                    category: 'post',
+                    label: 'submit',
+                    value: 10,
+                  });
+                }
+                return result;
               }
-              return result;
+              result.json().then(err => {
+                dispatch(notify(err.error.message || err.error_description, 'error'));
+              });
             })
-            .catch(err => {
-              dispatch(notify(err.error.message, 'error'));
-            }),
+            .catch(() => {}),
         },
       });
     });

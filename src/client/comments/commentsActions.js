@@ -192,7 +192,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           jsonMetadata,
           parentPost.root_author,
         )
-        .then(() => {
+        .then(res => {
           dispatch(
             getFakeSingleComment(
               guestParentAuthor || parentAuthor,
@@ -217,9 +217,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               value: 3,
             });
           }
-        })
-        .catch(err => {
-          dispatch(notify(err.error.message || err.error_description, 'error'));
+          return res;
         }),
     },
     meta: {
@@ -249,12 +247,12 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
   dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(data => {
-        if (data.status === 200) {
+      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
+        if (res.ok) {
           return { voter, rshares: '0', percent: weight, reputation: 0 };
         }
         dispatch(getSingleComment(author, permlink));
-        return data;
+        return res;
       }),
     },
     meta: { commentId, voter, weight, vote, isRetry: retryCount > 0, percent: weight },
