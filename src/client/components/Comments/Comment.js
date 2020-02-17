@@ -186,10 +186,8 @@ class Comment extends React.Component {
           });
           return true;
         }
-        console.log(res);
         res.value.json().then(err => {
           message.error(err.error.message || err.error_description);
-          console.log(err.error.message || err.error_description);
         });
         return false;
       })
