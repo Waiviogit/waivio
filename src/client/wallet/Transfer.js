@@ -337,8 +337,8 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
-
-    if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
+    const currentSelectedBalance = this.props.isGuest ? this.props.guestsBalance : selectedBalance
+    if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
         new Error(
           intl.formatMessage({ id: 'amount_error_funds', defaultMessage: 'Insufficient funds.' }),
