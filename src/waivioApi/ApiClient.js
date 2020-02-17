@@ -945,24 +945,16 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
   }).then(res => res.json());
 };
 
-export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
-      limit,
+      users: listUsers,
+      name: userName,
       skip,
-      locale,
-      author_permlinks: listHashtag,
+      limit,
     }),
-  }).then(res => res.json());
-};
-
-export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
-  return fetch(`${config.apiPrefix}${config.getUsers}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(listUsers),
   }).then(res => res.json());
 };
 

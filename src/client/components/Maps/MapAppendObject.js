@@ -8,6 +8,7 @@ import './Map.less';
 import Loading from '../Icon/Loading';
 import { getUserLocation } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
+import mapProvider from '../../helpers/mapProvider';
 
 export const defaultCoords = [37.0902, 95.0235];
 
@@ -107,6 +108,7 @@ class MapAppendObject extends React.Component {
     return userCoordinates ? (
       <div className="MapOS">
         <Map
+          provider={mapProvider}
           onBoundsChanged={this.onBoundsChanged}
           center={userCoordinates}
           zoom={zoom}

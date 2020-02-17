@@ -14,6 +14,7 @@ import Loading from '../Icon/Loading';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
 import './Map.less';
+import mapProvider from '../../helpers/mapProvider';
 
 const defaultCoords = {
   centerLat: 37.0902,
@@ -145,6 +146,7 @@ class MapOS extends React.Component {
     return center ? (
       <div className="MapOS">
         <Map
+          provider={mapProvider}
           onBoundsChanged={this.onBoundsChanged}
           center={center}
           zoom={zoom}
@@ -173,7 +175,13 @@ class MapOS extends React.Component {
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
-              <Map onBoundsChanged={this.onBoundsChanged} center={center} zoom={zoom} animate>
+              <Map
+                onBoundsChanged={this.onBoundsChanged}
+                provider={mapProvider}
+                center={center}
+                zoom={zoom}
+                animate
+              >
                 {markersLayout}
                 {infoboxData && this.getOverlayLayout()}
               </Map>
