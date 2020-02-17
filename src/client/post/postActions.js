@@ -46,34 +46,27 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   const post = posts.list[postId];
   const voter = auth.user.name;
   const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
-  const votedPostAuthor = post.guestInfo ? post.author : author;
   return dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI
-        .vote(voter, post.author_original || author, post.permlink, weight)
-        .then(res => {
-          if (res.status === 200 && isGuest) {
-            return { isFakeLikeOk: true };
-          }
-          if (window.analytics) {
-            window.analytics.track('Vote', {
-              category: 'vote',
-              label: 'submit',
-              value: 1,
-            });
-          }
+      promise: steemConnectAPI.vote(voter, author, post.permlink, weight).then(res => {
+        if (res.status === 200 && isGuest) {
+          return { isFakeLikeOk: true };
+        }
+        if (window.analytics) {
+          window.analytics.track('Vote', {
+            category: 'vote',
+            label: 'submit',
+            value: 1,
+          });
+        }
 
-          // Delay to make sure you get the latest data (unknown issue with API)
-          if (!isGuest) {
-            setTimeout(
-              () =>
-                dispatch(getContent(post.author_original || votedPostAuthor, post.permlink, true)),
-              1000,
-            );
-          }
-          return res;
-        }),
+        // Delay to make sure you get the latest data (unknown issue with API)
+        if (!isGuest) {
+          setTimeout(() => dispatch(getContent(author, post.permlink, true)), 1000);
+        }
+        return res;
+      }),
     },
     meta: isGuest
       ? {

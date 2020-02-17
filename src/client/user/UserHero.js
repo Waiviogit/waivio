@@ -5,7 +5,6 @@ import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -23,13 +22,9 @@ class UserMenuWrapper extends React.Component {
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     objectsSharesCount: PropTypes.number,
-    isGuest: PropTypes.bool,
-    isGuestPage: PropTypes.bool,
   };
   static defaultProps = {
     objectsSharesCount: 0,
-    isGuest: false,
-    isGuestPage: false,
   };
 
   onChange = key => {
@@ -39,17 +34,10 @@ class UserMenuWrapper extends React.Component {
   };
 
   render() {
-    const { match, location, history, isGuest, ...otherProps } = this.props;
+    const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    return (
-      <UserMenu
-        defaultKey={currentKey}
-        onChange={this.onChange}
-        isGuest={isGuest}
-        {...otherProps}
-      />
-    );
+    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
 }
 
@@ -110,7 +98,11 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper followers={followersCount} following={followingCount} />
+              <UserMenuWrapper
+                followers={followersCount}
+                following={followingCount}
+                isGuest={isGuest}
+              />
             </div>
           )}
         />

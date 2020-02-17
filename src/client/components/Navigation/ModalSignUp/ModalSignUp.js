@@ -43,7 +43,18 @@ const ModalSignUp = ({ isButton }) => {
           });
         });
       } else {
-        const image = socialNetwork === 'google' ? response.w3.Paa : response.picture.data.url;
+        let image = '';
+
+        if (socialNetwork === 'google') {
+          if (response.w3) {
+            image = response.w3.Paa;
+          } else if (response.profileObj) {
+            image = response.profileObj.imageUrl;
+          }
+        } else if (response.picture) {
+          image = response.picture.data.url;
+        }
+
         setUserData({ ...response, image, socialNetwork });
         setIsFormVisible(true);
       }
