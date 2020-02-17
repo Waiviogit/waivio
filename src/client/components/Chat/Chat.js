@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
-// TODO: add when API will be ready
-// import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 import './Chat.less';
 
 const Chat = ({
@@ -22,15 +21,14 @@ const Chat = ({
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
   const ifr = useRef();
-  // TODO: add when API will be ready
-  // const isGuest = userName.startsWith(GUEST_PREFIX);
+  const isGuest = userName.startsWith(GUEST_PREFIX);
+  const chatUrl = 'https://staging.stchat.cf';
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
       args: {
         username: userName,
-        // TODO: add when API will be ready
-        // sessionData: {},
+        sessionData: {},
       },
     };
     switch (messageType) {
@@ -39,29 +37,26 @@ const Chat = ({
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
+        requestData.args.isGuest = isGuest;
 
-        // TODO: add when API will be ready
-        // requestData.args.isGuest = isGuest;
+        if (isGuest) {
+          if (window) {
+            requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+          } else {
+            requestData.args.sessionData.authToken = null;
+          }
+        } else {
+          requestData.args.sessionData.transactionId = data.value.result.id;
+          requestData.args.sessionData.blockNumber = data.value.result.block_num;
+        }
 
-        // TODO: remove when API will be ready
-        requestData.args.transactionId = data.value.result.id;
-        requestData.args.blockNumber = data.value.result.block_num;
-
-        // TODO: add when API will be ready
-        // if (isGuest) {
-        //   requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
-        // } else {
-        //   requestData.args.sessionData.transactionId = data.value.result.id;
-        //   requestData.args.sessionData.blockNumber = data.value.result.block_num;
-        // }
-
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       default:
     }
@@ -70,17 +65,17 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === 'https://staging.stchat.cf') {
+      if (event && event.data && event.origin === chatUrl) {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
             break;
           case 'init_response':
-            // if (!isGuest) {
-            props
-              .setSessionId(event.data.args.session_id)
-              .then(data => sendChatRequestData('init_response', data));
-            // }
+            if (!isGuest) {
+              props
+                .setSessionId(event.data.args.session_id)
+                .then(data => sendChatRequestData('init_response', data));
+            }
             break;
           case 'auth_connection_response':
             setCloseButton(false);
@@ -92,8 +87,7 @@ const Chat = ({
           case 'start_chat_response':
             break;
           case 'new_event':
-            console.log('new_event');
-            break; /**/
+            break;
           default:
         }
       }
