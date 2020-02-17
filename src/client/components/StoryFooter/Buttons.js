@@ -157,7 +157,7 @@ export default class Buttons extends React.Component {
 
   handleSelectOptions(item) {
     this.props.handlePostPopoverMenuClick(item);
-    this.handlePopoverVisibleChange(false)
+    this.handlePopoverVisibleChange(false);
   }
 
   showPopoverMenu = () => this.handlePopoverVisibleChange(true);
@@ -256,7 +256,7 @@ export default class Buttons extends React.Component {
         visible={this.state.actionButtonsVisible}
         onVisibleChange={this.handlePopoverVisibleChange}
         content={
-          <PopoverMenu onSelect={(item) => this.handleSelectOptions(item)} bold={false}>
+          <PopoverMenu onSelect={item => this.handleSelectOptions(item)} bold={false}>
             {popoverMenu}
           </PopoverMenu>
         }

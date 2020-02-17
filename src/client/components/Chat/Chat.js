@@ -40,7 +40,11 @@ const Chat = ({
         requestData.args.isGuest = isGuest;
 
         if (isGuest) {
-          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+          if (window) {
+            requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+          } else {
+            requestData.args.sessionData.authToken = null;
+          }
         } else {
           requestData.args.sessionData.transactionId = data.value.result.id;
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
