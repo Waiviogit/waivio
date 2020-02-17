@@ -192,7 +192,7 @@ export default class Transfer extends React.Component {
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
-            if (res.status === 200) {
+            if (res.ok) {
               this.props.notify('Successful transaction', 'success');
             } else {
               this.props.notify('Transaction failed', 'error');

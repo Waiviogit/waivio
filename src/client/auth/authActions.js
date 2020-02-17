@@ -159,7 +159,7 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
     type: UPDATE_PROFILE,
     payload: {
       promise: updateGuestProfile(username, json_metadata).then(data => {
-        if (data.statuscode === 200) {
+        if (data.ok) {
           return { isProfileUpdated: false };
         }
         return { isProfileUpdated: true };

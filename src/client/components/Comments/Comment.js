@@ -160,30 +160,38 @@ class Comment extends React.Component {
 
     return this.props
       .onSendComment(parentPost, commentValue, isUpdating, originalComment)
-      .then(() => {
-        if (isUpdating) {
-          message.success(
-            intl.formatMessage({
-              id: 'notify_comment_updated',
-              defaultMessage: 'Comment updated',
-            }),
-          );
-        } else {
-          message.success(
-            intl.formatMessage({
-              id: 'notify_comment_sent',
-              defaultMessage: 'Comment submitted',
-            }),
-          );
-        }
+      .then(res => {
+        if (res.value.ok) {
+          if (isUpdating) {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_updated',
+                defaultMessage: 'Comment updated',
+              }),
+            );
+          } else {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+          }
 
-        this.setState({
-          showCommentFormLoading: false,
-          replyOpen: false,
-          editOpen: false,
-          commentFormText: '',
+          this.setState({
+            showCommentFormLoading: false,
+            replyOpen: false,
+            editOpen: false,
+            commentFormText: '',
+          });
+          return true;
+        }
+        console.log(res);
+        res.value.json().then(err => {
+          message.error(err.error.message || err.error_description);
+          console.log(err.error.message || err.error_description);
         });
-        return true;
+        return false;
       })
       .catch(() => {
         this.setState({
