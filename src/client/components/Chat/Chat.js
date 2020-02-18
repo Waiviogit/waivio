@@ -86,7 +86,6 @@ const Chat = ({
           case 'start_chat_response':
             break;
           case 'new_event':
-            console.log('new_event');
             break;
           default:
         }
