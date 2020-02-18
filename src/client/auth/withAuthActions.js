@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthenticated } from '../reducers';
+import { getIsAuthenticated, getIsLoaded } from '../reducers';
 import LoginModal from '../components/LoginModal';
 
 function getDisplayName(WrappedComponent) {
@@ -11,10 +11,12 @@ function getDisplayName(WrappedComponent) {
 export default function withAuthActions(WrappedComponent) {
   @connect(state => ({
     authenticated: getIsAuthenticated(state),
+    loaded: getIsLoaded(state),
   }))
   class Wrapper extends React.Component {
     static propTypes = {
       authenticated: PropTypes.bool,
+      loaded: PropTypes.bool.isRequired,
     };
 
     static defaultProps = {
@@ -58,6 +60,8 @@ export default function withAuthActions(WrappedComponent) {
           key="login-modal"
           visible={this.state.displayLoginModal}
           handleLoginModalCancel={this.hideLoginModal}
+          isAuth={this.props.authenticated}
+          isLoaded={this.props.loaded}
         />,
         <WrappedComponent
           key="wrapped-component"
