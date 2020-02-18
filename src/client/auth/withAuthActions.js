@@ -16,6 +16,7 @@ export default function withAuthActions(WrappedComponent) {
   class Wrapper extends React.Component {
     static propTypes = {
       authenticated: PropTypes.bool,
+      loaded: PropTypes.bool.isRequired,
     };
 
     static defaultProps = {
@@ -24,7 +25,6 @@ export default function withAuthActions(WrappedComponent) {
 
     constructor(props) {
       super(props);
-      this.isHaveAccessToken = !this.props.authenticated && Boolean(localStorage.getItem('accessToken'));
       this.state = {
         displayLoginModal: false,
       };

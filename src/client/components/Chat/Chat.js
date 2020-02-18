@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
-// TODO: add when API will be ready
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
+
 import './Chat.less';
 
 const Chat = ({
@@ -34,7 +34,7 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
@@ -49,13 +49,13 @@ const Chat = ({
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
         }
 
-        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       default:
     }
@@ -64,7 +64,7 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === 'chatUrl') {
+      if (event && event.data && event.origin === chatUrl) {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
