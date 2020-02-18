@@ -20,6 +20,7 @@ import {
   getTransferMemo,
   getTransferTo,
   isGuestUser,
+  getGuestUserBalance
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -40,7 +41,7 @@ const InputGroup = Input.Group;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    guestsBalance: state.wallet.balance,
+    guestsBalance: getGuestUserBalance(state),
   }),
   {
     closeTransfer,
