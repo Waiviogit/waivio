@@ -23,14 +23,12 @@ const Chat = ({
   const [isCloseButton, setCloseButton] = useState(false);
   const chatUrl = 'https://staging.stchat.cf';
   const ifr = useRef();
-  // TODO: add when API will be ready
   const isGuest = userName.startsWith(GUEST_PREFIX);
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
       args: {
         username: userName,
-        // TODO: add when API will be ready
         sessionData: {},
       },
     };
@@ -40,15 +38,10 @@ const Chat = ({
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
-
-        // TODO: add when API will be ready
         requestData.args.isGuest = isGuest;
-
-        // TODO: remove when API will be ready
         requestData.args.transactionId = data.value.result.id;
         requestData.args.blockNumber = data.value.result.block_num;
 
-        // TODO: add when API will be ready
         if (isGuest) {
           requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         } else {
@@ -94,7 +87,7 @@ const Chat = ({
             break;
           case 'new_event':
             console.log('new_event');
-            break; /**/
+            break;
           default:
         }
       }
