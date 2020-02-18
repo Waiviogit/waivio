@@ -21,6 +21,7 @@ const Chat = ({
 }) => {
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
+  const chatUrl = 'https://staging.stchat.cf';
   const ifr = useRef();
   // TODO: add when API will be ready
   const isGuest = userName.startsWith(GUEST_PREFIX);
@@ -35,7 +36,7 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
@@ -55,13 +56,13 @@ const Chat = ({
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
         }
 
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, 'chatUrl');
         break;
       default:
     }
@@ -70,7 +71,7 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === 'https://staging.stchat.cf') {
+      if (event && event.data && event.origin === 'chatUrl') {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
@@ -128,18 +129,18 @@ const Chat = ({
       <div className="Chat__wrap">
         {isConnectionStart && (
           <iframe
-            src="https://staging.stchat.cf/app.html"
+            src={`${chatUrl}/app.html`}
             /* eslint no-return-assign: "error" */
             ref={ifr}
             title="frame"
           />
         )}
       </div>
-      {/*{isCloseButton && (*/}
+      {isCloseButton && (
         <div className="Chat__close-button">
           <Icon style={{ fontSize: '25px' }} type="close" onClick={openChat} />
         </div>
-      {/*)}*/}
+      )}
     </Resizable>
   );
 };
