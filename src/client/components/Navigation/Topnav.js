@@ -952,22 +952,23 @@ class Topnav extends React.Component {
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-        <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
-          {intl.formatMessage(
-            {
-              id: 'search_all_results_for',
-              defaultMessage: 'Search all results for {search}',
-            },
-            { search: this.state.searchBarValue },
-          )}
-        </div>
-      </AutoComplete.Option>
-    );
-    const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
-      ? dropdownOptions
-      : dropdownOptions.concat([downBar]);
+    // const downBar = (
+    //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
+    //     <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
+    //       {intl.formatMessage(
+    //         {
+    //           id: 'search_all_results_for',
+    //           defaultMessage: 'Search all results for {search}',
+    //         },
+    //         { search: this.state.searchBarValue },
+    //       )}
+    //     </div>
+    //   </AutoComplete.Option>
+    // );
+    // const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
+    //   ? dropdownOptions
+    //   : dropdownOptions.concat([downBar]);
+
     return (
       <div
         className={classNames('Topnav', {
@@ -986,12 +987,19 @@ class Topnav extends React.Component {
               )}
             </Link>
           </div>
-          <div className={classNames('center', 'center-menu', { mobileVisible: searchBarActive })}>
+          <div
+            className={classNames(
+              'center',
+              'center-menu',
+              { mobileVisible: searchBarActive },
+              { 'center-menu--logedout': !isAuthenticated },
+            )}
+          >
             <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={formattedAutoCompleteDropdown}
+                dataSource={dropdownOptions}
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}

@@ -10,6 +10,7 @@ import {
 import BTooltip from '../components/BTooltip';
 import Loading from '../components/Icon/Loading';
 import USDDisplay from '../components/Utils/USDDisplay';
+
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -199,7 +200,7 @@ const UserWalletSummary = ({
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
-  balance: PropTypes.number,
+  balance: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
