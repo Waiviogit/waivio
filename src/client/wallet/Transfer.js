@@ -20,6 +20,7 @@ import {
   getTransferMemo,
   getTransferTo,
   isGuestUser,
+  getGuestUserBalance
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -40,6 +41,7 @@ const InputGroup = Input.Group;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
+    guestsBalance: getGuestUserBalance(state),
   }),
   {
     closeTransfer,
@@ -65,6 +67,7 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
+    guestsBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -77,6 +80,7 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
+    guestsBalance: 0,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -334,8 +338,8 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
-
-    if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
+    const currentSelectedBalance = this.props.isGuest ? this.props.guestsBalance : selectedBalance;
+    if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
         new Error(
           intl.formatMessage({ id: 'amount_error_funds', defaultMessage: 'Insufficient funds.' }),
@@ -347,7 +351,7 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest, guestsBalance } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
@@ -356,7 +360,7 @@ export default class Transfer extends React.Component {
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-
+    const currentBalance = isGuest ? `${guestsBalance} STEEM` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
@@ -474,7 +478,7 @@ export default class Transfer extends React.Component {
                       onClick={isChangesDisabled ? () => {} : this.handleBalanceClick}
                       className="balance"
                     >
-                      {balance}
+                      {currentBalance}
                     </span>
                   ),
                 }}

@@ -8,6 +8,10 @@
 
   &:hover {
     cursor: pointer;
+
+    .Notification__text .Notification__text__message span {
+      color: @blue-vivid;
+    }
   }
 
   &--unread {
@@ -23,22 +27,6 @@
 
       & > a {
         font-weight: 700;
-      }
-
-      & > span {
-        transition: 0.2s;
-
-        & > span {
-          transition: 0.2s;
-        }
-
-        &:hover {
-          color: @blue-vivid;
-
-          & > span {
-            color: @blue-vivid;
-          }
-        }
       }
     }
 
