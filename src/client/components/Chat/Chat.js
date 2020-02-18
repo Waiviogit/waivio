@@ -7,6 +7,7 @@ import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
+
 import './Chat.less';
 
 const Chat = ({
@@ -20,9 +21,9 @@ const Chat = ({
 }) => {
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
+  const chatUrl = 'https://staging.stchat.cf';
   const ifr = useRef();
   const isGuest = userName.startsWith(GUEST_PREFIX);
-  const chatUrl = 'https://staging.stchat.cf';
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
@@ -33,18 +34,16 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, 'https://staging.stchat.cf');
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
         requestData.args.isGuest = isGuest;
+        requestData.args.transactionId = data.value.result.id;
+        requestData.args.blockNumber = data.value.result.block_num;
 
         if (isGuest) {
-          if (window) {
-            requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
-          } else {
-            requestData.args.sessionData.authToken = null;
-          }
+          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         } else {
           requestData.args.sessionData.transactionId = data.value.result.id;
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
@@ -72,9 +71,9 @@ const Chat = ({
             break;
           case 'init_response':
             if (!isGuest) {
-              props
-                .setSessionId(event.data.args.session_id)
-                .then(data => sendChatRequestData('init_response', data));
+            props
+              .setSessionId(event.data.args.session_id)
+              .then(data => sendChatRequestData('init_response', data));
             }
             break;
           case 'auth_connection_response':
@@ -122,7 +121,7 @@ const Chat = ({
       <div className="Chat__wrap">
         {isConnectionStart && (
           <iframe
-            src="https://staging.stchat.cf/app.html"
+            src={`${chatUrl}/app.html`}
             /* eslint no-return-assign: "error" */
             ref={ifr}
             title="frame"

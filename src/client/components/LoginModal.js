@@ -17,7 +17,7 @@ import { getRate, getRewardFund } from './../app/appActions';
 import { getRebloggedList } from './../app/Reblog/reblogActions';
 import './Navigation/ModalSignUp/ModalSignUp.less';
 
-const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
+const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoaded }) => {
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({});
 
@@ -96,6 +96,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
   };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');
+  const showModal = visible || !!localStorage.getItem('accessToken') && !isAuth && isLoaded;
 
   const validateUserName = async (rule, value, callback) => {
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
@@ -149,7 +150,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
     <Modal
       width={416}
       title=""
-      visible={visible}
+      visible={showModal}
       onCancel={() => handleLoginModalCancel()}
       footer={null}
     >
@@ -192,6 +193,8 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
 
 LoginModal.propTypes = {
   visible: PropTypes.bool,
+  isLoaded: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
   next: PropTypes.string,
   handleLoginModalCancel: PropTypes.func,

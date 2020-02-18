@@ -308,7 +308,7 @@ const QuickForecastPage = props => {
                 <span>
                   <USDDisplay value={props.roundInformation.votingPowers} />/
                   <i className="iconfont icon-steem reward__icon" />
-                  {props.roundInformation.votingPowersInSteem}
+                  {props.roundInformation.votingPowersInSteem || 0.00}
                 </span>
               </span>
             </div>

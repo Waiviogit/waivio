@@ -280,7 +280,6 @@ export default class Wrapper extends React.PureComponent {
       username,
       isChat,
       isAuthenticated,
-      isGuest,
     } = this.props;
     const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
@@ -304,14 +303,12 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                {!isGuest && (
                   <ChatButton
                     openChat={this.props.changeChatCondition}
                     isChat={isChat}
                     messagesCount={messagesCount}
                     authentication={isAuthenticated}
                   />
-                )}
                 {isAuthenticated ? (
                   <Chat
                     visibility={isChat}
