@@ -417,6 +417,7 @@ class EditorInput extends React.Component {
         >
           {isObject && (
             <SearchObjectsAutocomplete
+              dropdownClassName="EditorInput__search"
               handleSelect={this.handleSelectObject}
               canCreateNewObject={false}
             />
