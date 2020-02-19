@@ -6,8 +6,9 @@ import { AutoComplete } from 'antd';
 import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
 import { getSearchUsersResults } from '../../reducers';
-import './SearchUsersAutocomplete.less';
 import Avatar from '../Avatar';
+
+import './SearchUsersAutocomplete.less';
 
 @injectIntl
 @connect(
@@ -29,6 +30,7 @@ class SearchUsersAutocomplete extends React.Component {
     placeholder: '',
     disabled: false,
     autoFocus: true,
+    style: {},
   };
   static propTypes = {
     intl: PropTypes.shape(),
@@ -39,6 +41,7 @@ class SearchUsersAutocomplete extends React.Component {
     placeholder: PropTypes.string,
     disabled: PropTypes.bool,
     autoFocus: PropTypes.bool,
+    style: PropTypes.shape({}),
   };
 
   state = {
@@ -64,7 +67,7 @@ class SearchUsersAutocomplete extends React.Component {
 
   render() {
     const { searchString } = this.state;
-    const { intl, searchUsersResults, itemsIdsToOmit, disabled, autoFocus } = this.props;
+    const { intl, searchUsersResults, itemsIdsToOmit, disabled, autoFocus, style } = this.props;
     const searchUsersOptions = searchString
       ? searchUsersResults
           .filter(obj => !itemsIdsToOmit.includes(obj.account))
@@ -94,6 +97,7 @@ class SearchUsersAutocomplete extends React.Component {
         value={searchString}
         autoFocus={autoFocus}
         disabled={disabled}
+        style={style}
       >
         {searchUsersOptions}
       </AutoComplete>

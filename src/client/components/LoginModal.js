@@ -169,7 +169,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
           />
           <FacebookLogin
             appId="754038848413420"
-            autoLoad={false}
+            autoLoad
             fields="name,email,picture"
             callback={responseFacebook}
             onFailure={() => {}}
