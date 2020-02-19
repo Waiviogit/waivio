@@ -392,7 +392,7 @@ export default class Buttons extends React.Component {
                 )}
               </a>
             </BTooltip>
-            {post.active_votes.length > 0 && (
+            {post.active_votes.length > 0 && !isAppend && (
               <span
                 className="Buttons__number Buttons__reactions-count"
                 role="presentation"
@@ -417,12 +417,13 @@ export default class Buttons extends React.Component {
             )}
           </React.Fragment>
         )}
-
-        <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
-            <i className="iconfont icon-message_fill" />
-          </a>
-        </BTooltip>
+        {!isAppend && (
+          <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
+            <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
+              <i className="iconfont icon-message_fill" />
+            </a>
+          </BTooltip>
+        )}
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
@@ -453,7 +454,7 @@ export default class Buttons extends React.Component {
             )}
           </React.Fragment>
         )}
-        {this.renderPostPopoverMenu()}
+        {!isAppend && this.renderPostPopoverMenu()}
         {!postState.isReblogged && this.state.shareModalVisible && (
           <Modal
             title={intl.formatMessage({
