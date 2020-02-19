@@ -100,6 +100,10 @@ export default class Buttons extends React.Component {
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
+  handleReject() {
+    this.props.onActionInitiated(this.onFlagClick);
+  }
+
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
   }
@@ -363,7 +367,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={this.onFlagClick}
+            onFlagClick={() => this.handleReject()}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}
