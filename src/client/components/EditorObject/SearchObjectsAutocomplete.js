@@ -7,8 +7,9 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
-import './SearchObjectsAutocomplete.less';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
+
+import './SearchObjectsAutocomplete.less';
 
 @injectIntl
 @connect(
@@ -25,6 +26,7 @@ class SearchObjectsAutocomplete extends Component {
     intl: {},
     style: { width: '100%' },
     className: '',
+    dropdownClassName: '',
     searchObjectsResults: [],
     itemsIdsToOmit: [],
     objectType: '',
@@ -46,7 +48,6 @@ class SearchObjectsAutocomplete extends Component {
     className: PropTypes.string,
     allowClear: PropTypes.bool,
     intl: PropTypes.shape(),
-    style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
     searchObjects: PropTypes.func,
     clearSearchResults: PropTypes.func,
@@ -56,6 +57,7 @@ class SearchObjectsAutocomplete extends Component {
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
+    dropdownClassName: PropTypes.string,
     autoFocus: PropTypes.bool,
   };
 
@@ -113,7 +115,6 @@ class SearchObjectsAutocomplete extends Component {
     const { searchString } = this.state;
     const {
       intl,
-      style,
       searchObjectsResults,
       itemsIdsToOmit,
       allowClear,
@@ -129,14 +130,16 @@ class SearchObjectsAutocomplete extends Component {
             </AutoComplete.Option>
           ))
       : [];
+
     return (
       <AutoComplete
-        style={style}
         className={this.props.className}
+        dropdownClassName={this.props.dropdownClassName}
         onChange={this.handleChange}
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
+        dataSource={searchObjectsOptions}
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({
@@ -149,9 +152,7 @@ class SearchObjectsAutocomplete extends Component {
         allowClear={allowClear}
         autoFocus={autoFocus}
         disabled={disabled}
-      >
-        {searchObjectsOptions}
-      </AutoComplete>
+      />
     );
   }
 }

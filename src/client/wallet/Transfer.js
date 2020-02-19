@@ -364,7 +364,16 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest, guestsBalance } = this.props;
+    const {
+      intl,
+      visible,
+      authenticated,
+      user,
+      memo,
+      screenSize,
+      isGuest,
+      guestsBalance,
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
