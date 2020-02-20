@@ -7,6 +7,7 @@ import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
+
 import './Chat.less';
 
 const Chat = ({
@@ -20,7 +21,7 @@ const Chat = ({
 }) => {
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
-  const chatURL = 'https://stchat.cf';
+  const chatUrl = 'https://stchat.cf';
   const ifr = useRef();
   const isGuest = userName.startsWith(GUEST_PREFIX);
   const sendChatRequestData = (messageType, data) => {
@@ -33,7 +34,7 @@ const Chat = ({
     };
     switch (messageType) {
       case 'connected':
-        ifr.current.contentWindow.postMessage(requestData, chatURL);
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
@@ -41,13 +42,20 @@ const Chat = ({
         requestData.args.transactionId = data.value.result.id;
         requestData.args.blockNumber = data.value.result.block_num;
 
-        ifr.current.contentWindow.postMessage(requestData, chatURL);
+        if (isGuest) {
+          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+        } else {
+          requestData.args.sessionData.transactionId = data.value.result.id;
+          requestData.args.sessionData.blockNumber = data.value.result.block_num;
+        }
+
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       }
       case 'start_chat':
         requestData.cmd = 'start_chat';
         requestData.args.partner = postMessageData;
-        ifr.current.contentWindow.postMessage(requestData, chatURL);
+        ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       default:
     }
@@ -56,16 +64,16 @@ const Chat = ({
   useEffect(() => {
     setCloseButton(true);
     window.addEventListener('message', event => {
-      if (event && event.data && event.origin === chatURL) {
+      if (event && event.data && event.origin === chatUrl) {
         switch (event.data.cmd) {
           case 'connected':
             sendChatRequestData('connected');
             break;
           case 'init_response':
             if (!isGuest) {
-              props
-                .setSessionId(event.data.args.session_id)
-                .then(data => sendChatRequestData('init_response', data));
+            props
+              .setSessionId(event.data.args.session_id)
+              .then(data => sendChatRequestData('init_response', data));
             }
             break;
           case 'auth_connection_response':
@@ -76,11 +84,9 @@ const Chat = ({
             openChat();
             break;
           case 'start_chat_response':
-            // console.log(event.data.args.status);
             break;
           case 'new_event':
-            console.log('new_event');
-            break; /**/
+            break;
           default:
         }
       }
@@ -115,7 +121,7 @@ const Chat = ({
       <div className="Chat__wrap">
         {isConnectionStart && (
           <iframe
-            src={`${chatURL}/app.html`}
+            src={`${chatUrl}/app.html`}
             /* eslint no-return-assign: "error" */
             ref={ifr}
             title="frame"

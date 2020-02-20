@@ -305,7 +305,11 @@ const QuickForecastPage = props => {
               </span>
               <span className="reward__row">
                 <FormattedMessage id="forecast_round" defaultMessage="Current round:" />
-                <USDDisplay value={props.roundInformation.votingPowers} />
+                <span>
+                  <USDDisplay value={props.roundInformation.votingPowers} />/
+                  <i className="iconfont icon-steem reward__icon" />
+                  {props.roundInformation.votingPowersInSteem || 0.00}
+                </span>
               </span>
             </div>
             {isLoading ? (
@@ -399,6 +403,7 @@ QuickForecastPage.propTypes = {
   roundInformation: PropTypes.shape({
     rewards: PropTypes.number,
     votingPowers: PropTypes.number,
+    votingPowersInSteem: PropTypes.number,
   }).isRequired,
 };
 

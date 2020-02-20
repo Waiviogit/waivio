@@ -861,7 +861,7 @@ export const isUserNameVacant = userName => {
 
 export const isUserRegistered = (id, socialNetwork) => {
   return fetch(
-    `${config.baseUrl}${config.auth}/${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
+    `${config.baseUrl}${config.auth}${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
   )
     .then(data => data.json())
     .then(data => data.result);
@@ -878,7 +878,9 @@ export const broadcastGuestOperation = async (operationId, data) => {
         data: { operations: data },
         userName: userData.userData.name,
       }),
-    }).then(data => data);
+    })
+      .then(data => data)
+      .catch(err => err);
   }
 };
 

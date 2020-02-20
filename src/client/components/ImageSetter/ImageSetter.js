@@ -7,7 +7,11 @@ import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
-import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import {
+  ALLOWED_IMG_FORMATS,
+  MAX_IMG_SIZE,
+  objectURLValidationRegExp,
+} from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
 
 import './ImageSetter.less';
@@ -45,7 +49,10 @@ const ImageSetter = ({
       );
       return;
     }
-    if (isValidLink) {
+
+    const urlValidation = image.src.match(objectURLValidationRegExp);
+
+    if (isValidLink && urlValidation) {
       if (!isMultiple) {
         setCurrentImages([image]);
       } else setCurrentImages([...currentImages, image]);

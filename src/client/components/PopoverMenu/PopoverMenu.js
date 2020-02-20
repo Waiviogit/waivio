@@ -15,7 +15,9 @@ const PopoverMenu = ({ children, onSelect, bold }) => (
             {...otherProps}
             itemKey={child.key}
             bold={bold}
-            onClick={() => onSelect(child.key)}
+            onClick={() => {
+              onSelect(child.key);
+            }}
           >
             {child.props.children}
           </PopoverMenuItem>

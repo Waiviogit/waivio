@@ -56,10 +56,10 @@ export default class Performers extends Base {
     });
   }
 
-  getMostProfitableUsers(chartId) {
+  getMostProfitableUsers(chartId, limit = 5) {
     return new Promise((resolve, reject) => {
       this.apiClient
-        .get(`${config.performers.instrumentPerformers}/${chartId}`)
+        .get(`${config.performers.instrumentPerformers}/${chartId}?limit=${limit}`)
         .then(response => resolve(response.data))
         .catch(error => reject(error));
     });

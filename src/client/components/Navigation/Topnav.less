@@ -356,10 +356,6 @@
       color: @blue-vivid;
     }
 
-    &-close {
-      margin-right: -16px;
-    }
-
     &:hover {
       cursor: pointer;
       color: @quaternary-color;
@@ -603,7 +599,7 @@
 
   &__right-top {
     height: 48px;
-    width: 90px;
+    width: 65px;
     position: absolute;
     right: 0;
     top: 0;
@@ -618,6 +614,7 @@
 
     &--logedout {
       justify-content: flex-end;
+      width: 35px;
     }
   }
 
@@ -768,6 +765,7 @@ div[data-dir='rtl'] .Topnav {
 
   .search-btn {
     .view-as-link(@blue-vivid, @secondary-color);
+
     white-space: pre-wrap;
   }
 }
@@ -851,7 +849,7 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .topnav-layout div.center.center-menu {
-  width: calc(100% - 100px);
+  width: calc(100% - 70px);
 
   @media @small {
     width: auto;
@@ -859,6 +857,18 @@ div[data-dir='rtl'] .Topnav {
 
   @media @small and (max-width: @small-bp) {
     width: 46%;
+  }
+
+  &--logedout {
+    width: calc(100% - 40px);
+
+    @media @small {
+      width: auto;
+    }
+
+    @media @small and (max-width: @small-bp) {
+      width: 46%;
+    }
   }
 }
 
