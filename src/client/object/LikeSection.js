@@ -129,7 +129,7 @@ class LikeSection extends React.Component {
                 id="vote_worth"
                 defaultMessage="Vote worth {value}"
                 values={{
-                  value: voteWorth.toFixed(3),
+                  value: Number(voteWorth.toFixed(3)) || '0.001',
                 }}
               />
             </div>
