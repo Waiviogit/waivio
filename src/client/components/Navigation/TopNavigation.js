@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import { getAuthenticatedUser } from '../../reducers';
 import './TopNavigation.less';
 
 const LINKS = {
@@ -34,6 +37,7 @@ const TOOLS_URLS = [
 ];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
+  const authenticatedUser = useSelector(getAuthenticatedUser);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
@@ -70,16 +74,18 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
-      <li className="TopNavigation__item">
-        <Link
-          to={`${LINKS.TOOLS_DRAFTS}`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
-          })}
-        >
-          <FormattedMessage id="tools" defaultMessage="Tools" />
-        </Link>
-      </li>
+      {!isEmpty(authenticatedUser) && (
+        <li className="TopNavigation__item">
+          <Link
+            to={`${LINKS.TOOLS_DRAFTS}`}
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
+            })}
+          >
+            <FormattedMessage id="tools" defaultMessage="Tools" />
+          </Link>
+        </li>
+      )}
       <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
