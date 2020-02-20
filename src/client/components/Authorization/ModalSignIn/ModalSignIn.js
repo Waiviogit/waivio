@@ -67,6 +67,14 @@ const ModalSignIn = ({ next }) => {
         <Spinner />
       ) : (
         <React.Fragment>
+          <div className="ModalSignUp__signin">
+            <img
+              src="https://static.xcritical.com/images/svg/logo-beaxy.svg" // todo: add icon to project
+              alt="Beaxy 2.0"
+              className="ModalSignUp__icon-beaxy"
+            />
+            <FormattedMessage id="signin_with_beaxy" defaultMessage="Beaxy" />
+          </div>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
             <img
               src="/images/icons/steemit.svg"
