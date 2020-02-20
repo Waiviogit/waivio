@@ -89,6 +89,7 @@ class LikeSection extends React.Component {
   render() {
     const { voteWorth, votePercent, sliderVisible } = this.state;
     const { form, intl, disabled } = this.props;
+    const likePrice = Number(voteWorth.toFixed(3)) || '0.001';
 
     return (
       <div className="LikeSection">
@@ -129,7 +130,7 @@ class LikeSection extends React.Component {
                 id="vote_worth"
                 defaultMessage="Vote worth {value}"
                 values={{
-                  value: voteWorth.toFixed(3),
+                  value: likePrice,
                 }}
               />
             </div>
