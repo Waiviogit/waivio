@@ -7,13 +7,16 @@ import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
-  const lastAccountUpdate = moment(authenticatedUser.updatedAt).unix();
+  const lastAccountUpdate = !isEmpty(authenticatedUser)
+    ? moment(authenticatedUser.updatedAt).unix()
+    : '';
+
   if (username && username.includes('waivio_')) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
-    return `https://steemitimages.com/u/${username}/avatar`;
+    return `https://steemitimages.com/u/${username}/avatar/large`;
   }
 
   return size > 64
