@@ -176,6 +176,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
             textButton="Facebook"
             cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
             icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
+            disableMobileRedirect
           />
         </div>
         {!isEmpty(userData) && nameForm}

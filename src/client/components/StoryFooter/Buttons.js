@@ -100,6 +100,10 @@ export default class Buttons extends React.Component {
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
+  handleReject() {
+    this.props.onActionInitiated(this.onFlagClick);
+  }
+
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
   }
@@ -363,7 +367,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={this.onFlagClick}
+            onFlagClick={() => this.handleReject()}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}
@@ -392,7 +396,7 @@ export default class Buttons extends React.Component {
                 )}
               </a>
             </BTooltip>
-            {post.active_votes.length > 0 && (
+            {post.active_votes.length > 0 && !isAppend && (
               <span
                 className="Buttons__number Buttons__reactions-count"
                 role="presentation"
@@ -417,12 +421,13 @@ export default class Buttons extends React.Component {
             )}
           </React.Fragment>
         )}
-
-        <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
-            <i className="iconfont icon-message_fill" />
-          </a>
-        </BTooltip>
+        {!isAppend && (
+          <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
+            <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
+              <i className="iconfont icon-message_fill" />
+            </a>
+          </BTooltip>
+        )}
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
@@ -453,7 +458,7 @@ export default class Buttons extends React.Component {
             )}
           </React.Fragment>
         )}
-        {this.renderPostPopoverMenu()}
+        {!isAppend && this.renderPostPopoverMenu()}
         {!postState.isReblogged && this.state.shareModalVisible && (
           <Modal
             title={intl.formatMessage({
