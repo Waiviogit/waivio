@@ -47,8 +47,8 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
-import ModalSignUp from './ModalSignUp/ModalSignUp';
-import ModalSignIn from './ModalSignIn/ModalSignIn';
+import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
+import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import './Topnav.less';
 
 @injectIntl
