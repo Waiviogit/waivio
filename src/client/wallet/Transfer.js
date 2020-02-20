@@ -20,7 +20,7 @@ import {
   getTransferMemo,
   getTransferTo,
   isGuestUser,
-  getGuestUserBalance
+  getGuestUserBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -351,7 +351,16 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest, guestsBalance } = this.props;
+    const {
+      intl,
+      visible,
+      authenticated,
+      user,
+      memo,
+      screenSize,
+      isGuest,
+      guestsBalance,
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
