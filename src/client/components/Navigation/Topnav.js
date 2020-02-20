@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
+import { AutoComplete, Icon, Input, Menu } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -38,12 +38,10 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
-import Balance from '../../../investarena/components/Header/Balance';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
 } from '../../../investarena/redux/selectors/platformSelectors';
-import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
@@ -106,11 +104,7 @@ class Topnav extends React.Component {
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
-    platformName: PropTypes.string.isRequired,
-    isLoadingPlatform: PropTypes.bool.isRequired,
-    isNightMode: PropTypes.bool.isRequired,
     screenSize: PropTypes.string,
-    toggleModal: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
@@ -479,10 +473,8 @@ class Topnav extends React.Component {
       notifications,
       userMetaData,
       loadingNotifications,
-      platformName,
-      isLoadingPlatform,
     } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverBrokerVisible } = this.state;
+    const { searchBarActive, notificationsPopoverVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -504,65 +496,6 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--broker" key="broker">
-            <React.Fragment>
-              {platformName !== 'widgets' && !isLoadingPlatform ? (
-                <PopoverContainer
-                  placement="bottom"
-                  trigger="click"
-                  visible={popoverBrokerVisible}
-                  onVisibleChange={this.handleOnClickBrokerIcon}
-                  overlayStyle={{ position: 'fixed' }}
-                  content={
-                    <div>
-                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                        <PopoverMenuItem key="deposit">
-                          <FormattedMessage
-                            id="headerAuthorized.deposit"
-                            defaultMessage="Deposit"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="openDeals">
-                          <FormattedMessage
-                            id="headerAuthorized.openDeals"
-                            defaultMessage="Open deals"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="closedDeals">
-                          <FormattedMessage
-                            id="headerAuthorized.closedDeals"
-                            defaultMessage="Closed deals"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="broker-disconnect">
-                          <FormattedMessage
-                            id="disconnect_broker"
-                            defaultMessage="Disconnect Broker"
-                          />
-                        </PopoverMenuItem>
-                      </PopoverMenu>
-                    </div>
-                  }
-                >
-                  <img
-                    className="Topnav__icon-broker"
-                    role="presentation"
-                    title={platformName}
-                    src={`/images/investarena/${platformName}.png`}
-                    alt="broker"
-                  />
-                </PopoverContainer>
-              ) : (
-                <div
-                  className="Topnav__item-broker"
-                  onClick={this.handleOnClickBrokerIcon}
-                  role="presentation"
-                >
-                  <img src="/images/icons/broker.svg" alt="broker" />
-                </div>
-              )}
-            </React.Fragment>
-          </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
           </Menu.Item>
@@ -749,14 +682,6 @@ class Topnav extends React.Component {
     }
   }
 
-  handleOnClickBrokerIcon = value => {
-    if (this.props.platformName !== 'widgets') {
-      this.handleBrokerMenuVisibleChange(value);
-    } else {
-      this.toggleModalBroker();
-    }
-  };
-
   usersSearchLayout(accounts) {
     return (
       <AutoComplete.OptGroup
@@ -900,10 +825,6 @@ class Topnav extends React.Component {
     );
   };
 
-  toggleModalBroker = () => {
-    this.props.toggleModal('broker');
-  };
-
   toggleModalDeposit = () => {
     this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
@@ -942,13 +863,10 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      platformName,
-      isLoadingPlatform,
-      isNightMode,
       openChat,
       messagesCount,
     } = this.props;
-    const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
+    const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
@@ -972,7 +890,6 @@ class Topnav extends React.Component {
     return (
       <div
         className={classNames('Topnav', {
-          'no-navbroker': platformName === 'widgets',
           'top-hidden': this.state.visible && isMobile,
         })}
       >
@@ -1074,125 +991,6 @@ class Topnav extends React.Component {
             )}
           </div>
           <div className="Topnav__right-bottom">{this.content()}</div>
-
-          {platformName !== 'widgets' && !isLoadingPlatform ? (
-            <div className="Topnav__broker">
-              <div className="Topnav__broker-wrap">
-                <div className="Topnav__balance-wrap Topnav__balance-wrap--left">
-                  <div className="Topnav__balance-text">
-                    {intl.formatMessage({
-                      id: 'headerAuthorized.p&l',
-                      defaultMessage: 'P&L deals',
-                    })}
-                    :
-                  </div>
-                  <div className="Topnav__balance-amount">
-                    <Balance balanceType="unrealizedPnl" />
-                  </div>
-                </div>
-                <div className="Topnav__balance-wrap Topnav__balance-wrap--right">
-                  <div className="Topnav__balance-text">
-                    {intl.formatMessage({
-                      id: 'headerAuthorized.balance',
-                      defaultMessage: 'Balance',
-                    })}
-                    :
-                  </div>
-                  <div className="Topnav__balance-amount">
-                    <Balance balanceType="balance" />
-                  </div>
-                </div>
-                <Modal
-                  title={intl.formatMessage({
-                    id: 'headerAuthorized.deposit',
-                    defaultMessage: 'Deposit',
-                  })}
-                  footer={null}
-                  visible={isModalDeposit}
-                  onCancel={this.toggleModalDeposit}
-                  wrapClassName="fullscreen-mode"
-                  destroyOnClose
-                >
-                  <div className="fs-content-wrapper">
-                    <iframe
-                      title="depositFrame"
-                      className="fs-embedded-content"
-                      src={`${
-                        config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
-                      }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
-                    />
-                  </div>
-                </Modal>
-                {!isMobile && (
-                  <React.Fragment>
-                    <img
-                      role="presentation"
-                      title={platformName}
-                      onClick={this.toggleModalBroker}
-                      className="st-header__image"
-                      src={`/images/investarena/${platformName}.png`}
-                      alt="broker"
-                    />
-                    <PopoverContainer
-                      placement="bottom"
-                      trigger="click"
-                      visible={popoverBrokerVisible}
-                      onVisibleChange={this.handleBrokerMenuVisibleChange}
-                      overlayStyle={{ position: 'fixed' }}
-                      content={
-                        <div>
-                          <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                            <PopoverMenuItem key="deposit">
-                              <FormattedMessage
-                                id="headerAuthorized.deposit"
-                                defaultMessage="Deposit"
-                              />
-                            </PopoverMenuItem>
-                            <PopoverMenuItem key="openDeals">
-                              <FormattedMessage
-                                id="headerAuthorized.openDeals"
-                                defaultMessage="Open deals"
-                              />
-                            </PopoverMenuItem>
-                            <PopoverMenuItem key="closedDeals">
-                              <FormattedMessage
-                                id="headerAuthorized.closedDeals"
-                                defaultMessage="Closed deals"
-                              />
-                            </PopoverMenuItem>
-                            <PopoverMenuItem key="broker-disconnect">
-                              <FormattedMessage
-                                id="disconnect_broker"
-                                defaultMessage="Disconnect Broker"
-                              />
-                            </PopoverMenuItem>
-                          </PopoverMenu>
-                        </div>
-                      }
-                    >
-                      <a className="Topnav__link dropdown-icon">
-                        <Icon type="iconfont caret-down" />
-                      </a>
-                    </PopoverContainer>
-                  </React.Fragment>
-                )}
-              </div>
-            </div>
-          ) : (
-            this.props.username &&
-            !isMobile && (
-              <div className="Topnav__broker">
-                <div className="st-header-broker-balance-pl-wrap">
-                  <Button type="primary" onClick={this.toggleModalBroker}>
-                    {intl.formatMessage({
-                      id: 'headerAuthorized.connectToBroker',
-                      defaultMessage: 'Connect to broker',
-                    })}
-                  </Button>
-                </div>
-              </div>
-            )
-          )}
         </div>
       </div>
     );

@@ -8,7 +8,7 @@
   position: relative;
   top: 0;
   background-color: @white-ghostWhite;
-  height: 144px;
+  height: 102px;
   line-height: 52px;
   border-bottom: none;
   padding: 0 10px;
@@ -263,14 +263,6 @@
       }
     }
 
-    &.Topnav__menu-item--broker.ant-menu-item {
-      display: flex !important;
-
-      @media @small {
-        display: none !important;
-      }
-    }
-
     &.Topnav__menu-item--logedout {
       width: auto;
       margin-left: 10px;
@@ -311,35 +303,6 @@
 
   &__item-user {
     margin: 0 !important;
-  }
-
-  &__item-broker {
-    height: 36px;
-    min-width: 36px;
-    border-radius: 50%;
-    background-color: @blue-vivid;
-    color: @white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: x-large;
-    font-weight: bold;
-
-    & > img {
-      width: 29px;
-      height: 29px;
-    }
-  }
-
-  &__icon-broker {
-    height: 36px;
-    min-width: 36px;
-    border-radius: 50%;
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    font-size: x-large;
-    font-weight: bold;
   }
 
   &__mobile-search {
@@ -416,104 +379,6 @@
     margin-left: 5px;
   }
 
-  &__broker {
-    position: absolute;
-    top: 96px;
-    left: 0;
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-    width: 100%;
-    height: 48px;
-    color: @blue-vivid;
-    font-size: 18px;
-    font-family: inherit;
-
-    @media @small {
-      top: 48px;
-      right: 0;
-      left: unset;
-      justify-content: flex-end;
-      width: 270px;
-      font-size: 16px;
-      color: @white;
-      height: 36px;
-    }
-  }
-
-  &__broker-wrap {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-
-    @media @small {
-      justify-content: flex-end;
-    }
-  }
-
-  &__balance-wrap {
-    width: 50%;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-
-    &--left {
-      justify-content: flex-start;
-
-      @media @small {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        flex-direction: column;
-        line-height: 14px;
-        -webkit-box-align: end;
-        align-items: flex-end;
-        padding-right: 6px;
-        justify-content: center;
-      }
-    }
-
-    &--right {
-      align-items: flex-end;
-
-      @media @small {
-        border-left: 1px solid @white;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        flex-direction: column;
-        line-height: 14px;
-        padding: 0 6px;
-        justify-content: center;
-        align-items: flex-start;
-      }
-    }
-
-    &--end {
-      justify-content: flex-end;
-    }
-  }
-
-  &__balance-text {
-    width: auto;
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-    font-weight: 500;
-
-    @media @small {
-      font-weight: 600;
-      color: #fafafa4d;
-      font-size: 16px;
-    }
-  }
-
-  &__balance-amount {
-    width: auto;
-    height: 24px;
-    line-height: 24px;
-    font-size: 14px;
-  }
-
   .Topnav__right-top.bottom-row {
     top: 48px;
     width: 100%;
@@ -530,50 +395,6 @@
 
     @media @large {
       margin-right: 0;
-    }
-
-    .st-header-broker-balance-pl-wrap {
-      height: 46px;
-      line-height: normal;
-      width: 170px;
-      position: unset;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-
-      .st-header__image {
-        margin: 0 3px;
-        width: 33px;
-        min-width: 33px;
-        height: 33px;
-        cursor: pointer;
-      }
-
-      a.Topnav__link .dropdown-icon {
-        color: @tertiary-color !important;
-        font-size: 12px !important;
-        font-weight: 600 !important;
-        padding: 0 3px;
-
-        &:hover {
-          color: @quaternary-color !important;
-        }
-      }
-    }
-
-    .st-header-broker-balance-pl-wrap {
-      color: @white;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-
-      .st-balance-border {
-        padding: 0 5px;
-        border-left: 1px solid @white;
-        display: flex;
-        flex-direction: column;
-        line-height: 14px;
-      }
     }
   }
 
@@ -812,14 +633,6 @@ div[data-dir='rtl'] .Topnav {
 .Topnav__search-content-list.ant-select-dropdown-menu-item-group-list {
   display: flex;
   flex-direction: row;
-}
-
-.no-navbroker {
-  height: 102px;
-
-  @media @small {
-    height: 96px;
-  }
 }
 
 .top-hidden {
