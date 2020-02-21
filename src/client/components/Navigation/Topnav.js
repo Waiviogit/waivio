@@ -467,13 +467,7 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const {
-      intl,
-      username,
-      notifications,
-      userMetaData,
-      loadingNotifications,
-    } = this.props;
+    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
     const { searchBarActive, notificationsPopoverVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)

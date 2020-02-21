@@ -303,12 +303,12 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                  <ChatButton
-                    openChat={this.props.changeChatCondition}
-                    isChat={isChat}
-                    messagesCount={messagesCount}
-                    authentication={isAuthenticated}
-                  />
+                <ChatButton
+                  openChat={this.props.changeChatCondition}
+                  isChat={isChat}
+                  messagesCount={messagesCount}
+                  authentication={isAuthenticated}
+                />
                 {isAuthenticated ? (
                   <Chat
                     visibility={isChat}

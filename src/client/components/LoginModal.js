@@ -96,7 +96,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
   };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');
-  const showModal = visible || !!localStorage.getItem('accessToken') && !isAuth && isLoaded;
+  const showModal = visible || (!!localStorage.getItem('accessToken') && !isAuth && isLoaded);
 
   const validateUserName = async (rule, value, callback) => {
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
