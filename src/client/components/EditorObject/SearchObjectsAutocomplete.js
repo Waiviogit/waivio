@@ -59,6 +59,7 @@ class SearchObjectsAutocomplete extends Component {
     parentPermlink: PropTypes.string,
     dropdownClassName: PropTypes.string,
     autoFocus: PropTypes.bool,
+    style: PropTypes.shape({}),
   };
 
   constructor(props) {
@@ -115,6 +116,7 @@ class SearchObjectsAutocomplete extends Component {
     const { searchString } = this.state;
     const {
       intl,
+      style,
       searchObjectsResults,
       itemsIdsToOmit,
       allowClear,
@@ -133,6 +135,7 @@ class SearchObjectsAutocomplete extends Component {
 
     return (
       <AutoComplete
+        style={style}
         className={this.props.className}
         dropdownClassName={this.props.dropdownClassName}
         onChange={this.handleChange}
