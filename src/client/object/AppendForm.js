@@ -1354,7 +1354,11 @@ export default class AppendForm extends Component {
           {getFieldDecorator('currentField', {
             initialValue: currentField,
           })(
-            <Select disabled={loading} style={{ width: '100%' }}>
+            <Select
+              disabled={loading}
+              style={{ width: '100%' }}
+              dropdownClassName="AppendForm__drop-down"
+            >
               {fieldOptions}
             </Select>,
           )}
@@ -1375,6 +1379,7 @@ export default class AppendForm extends Component {
               className={classNames({ AppendForm__hidden: isCustomSortingList })}
               disabled={loading}
               style={{ width: '100%' }}
+              dropdownClassName="AppendForm__drop-down"
             >
               {languageOptions}
             </Select>,

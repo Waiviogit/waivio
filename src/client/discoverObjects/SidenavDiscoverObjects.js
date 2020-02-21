@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
@@ -14,11 +14,21 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
   const isLoading = useSelector(getObjectTypesLoading);
   const objectTypes = useSelector(getObjectTypesList, shallowEqual);
   // state
-  const [displayedTypesCount, setTypesCount] = useState(typesLimit);
+  const [displayedTypesCount, setTypesCount] = useState();
   const [menuCondition, setMenuCondition] = useState({
     objects: true,
     users: true,
   });
+
+  useEffect(() => {
+    const index = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name));
+
+    if (index > typesLimit) {
+      setTypesCount(index + 1);
+    } else {
+      setTypesCount(typesLimit);
+    }
+  }, [pathname]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({

@@ -35,6 +35,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 
 import './Topnav.less';
 
@@ -149,13 +150,24 @@ class Topnav extends React.Component {
 
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
+
     const wobjectAllCount = wobjectsCounts
       ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
       : null;
     const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
     const countArr = [{ name: 'All', count: countAllSearch }];
     if (!_.isEmpty(wobjectsCounts)) {
-      _.forEach(wobjectsCounts, current => {
+      const wobjList = listOfObjectTypes.reduce((acc, i) => {
+        const index = wobjectsCounts.findIndex(obj => obj.object_type === i);
+
+        if (index >= 0) {
+          acc.push(wobjectsCounts[index]);
+        }
+
+        return acc;
+      }, []);
+
+      _.forEach(wobjList, current => {
         const obj = {};
         obj.name = current.object_type;
         obj.count = current.count;
