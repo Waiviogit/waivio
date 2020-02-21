@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal } from 'antd';
+import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
@@ -116,7 +116,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, updateProfile } = this.props;
+    const { form, isGuest, userName, updateProfile, intl } = this.props;
     const { avatarImage, coverImage } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -140,7 +140,16 @@ export default class ProfileSettings extends React.Component {
             {},
           );
         if (isGuest) {
-          updateProfile(userName, cleanValues);
+          updateProfile(userName, cleanValues).then(data => {
+            if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
+              message.success(
+                intl.formatMessage({
+                  id: 'changes_take_effect_later',
+                  defaultMessage: 'Changes will take effect later',
+                }),
+              );
+            }
+          });
         } else {
           const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
           win.focus();
