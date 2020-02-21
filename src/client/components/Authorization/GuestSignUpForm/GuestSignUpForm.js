@@ -11,6 +11,7 @@ import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { getLocale } from '../../../reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
+import BeaxySignInFormContent from './BeaxySignInFormContent';
 import './GuestSignUpForm.less';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
@@ -26,7 +27,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
       setFieldsValue({
         username: getSlug(userData.name).slice(0, 16),
       });
-    } else {
+    } else if (userData.socialNetwork === 'google') {
       setFieldsValue({
         username: getSlug(
           `${userData.profileObj.givenName} ${userData.profileObj.familyName}`,
@@ -105,7 +106,9 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     setFieldsValue({ avatar: image });
   };
 
-  return (
+  return userData.socialNetwork === 'beaxy' ? (
+    <BeaxySignInFormContent form={form} />
+  ) : (
     <GuestSignUpFormContent
       getFieldDecorator={getFieldDecorator}
       getFieldsError={getFieldsError}

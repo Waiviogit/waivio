@@ -1077,5 +1077,7 @@
   "modal_button_yes": "OK",
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
   "please_input_nickname": "Введите никнейм",
-  "signin": "Вход"
+  "signin": "Вход",
+  "authForm_validation_email_required": "Введите E-mail",
+  "authForm_validation_password_required": "Введите пароль"
 }

@@ -12,6 +12,7 @@ import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
+import BeaxySignInButton from '../SocialButtons/BeaxySignInButton';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
@@ -58,6 +59,11 @@ const ModalSignIn = ({ next }) => {
     }
   };
 
+  const handleBeaxySignIn = () => {
+    setUserData({ socialNetwork: 'beaxy' });
+    setIsFormVisible(true);
+  };
+
   const renderSignIn = () => (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
@@ -67,14 +73,7 @@ const ModalSignIn = ({ next }) => {
         <Spinner />
       ) : (
         <React.Fragment>
-          <div className="ModalSignUp__signin">
-            <img
-              src="https://static.xcritical.com/images/svg/logo-beaxy.svg" // todo: add icon to project
-              alt="Beaxy 2.0"
-              className="ModalSignUp__icon-beaxy"
-            />
-            <FormattedMessage id="signin_with_beaxy" defaultMessage="Beaxy" />
-          </div>
+          <BeaxySignInButton onClick={handleBeaxySignIn} />
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
             <img
               src="/images/icons/steemit.svg"

@@ -1114,5 +1114,7 @@
   "modal_button_cancel": "Cancel",
   "modal_button_yes": "OK",
   "need_confirm_agreement": "You need to confirm agreement",
-  "please_input_nickname": "Nickname cannot be empty"
+  "please_input_nickname": "Nickname cannot be empty",
+  "authForm_validation_email_required": "Please input your E-mail",
+  "authForm_validation_password_required": "Please input your password"
 }
