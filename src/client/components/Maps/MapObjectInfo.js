@@ -5,10 +5,11 @@ import Map from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Marker from 'pigeon-marker/react';
-import './Map.less';
 import Loading from '../Icon/Loading';
 import { getUserLocation } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
+import mapProvider from '../../helpers/mapProvider';
+import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];
 
@@ -82,6 +83,7 @@ class MapObjectInfo extends React.Component {
     return center ? (
       <div className="MapOS">
         <Map
+          provider={mapProvider}
           onBoundsChanged={this.onBoundsChanged}
           center={center}
           zoom={zoom}
