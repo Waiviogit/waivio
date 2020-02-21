@@ -22,7 +22,10 @@ const ObjectsContainer = ({ history }) => {
     <div className="Objects">
       <MobileNavigation />
       <div className="Objects__title">
-        <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
+        <SearchObjectsAutocomplete
+          dropdownClassName="Objects__drop-down"
+          handleSelect={handleSelectObject}
+        />
       </div>
       <Tabs defaultActiveKey="1">
         <TabPane
