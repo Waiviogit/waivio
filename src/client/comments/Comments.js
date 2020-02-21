@@ -123,7 +123,7 @@ export default class Comments extends React.Component {
     const { commentsList, sliderMode, user, defaultVotePercent } = this.props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
-    if (sliderMode) {
+    if (sliderMode && userVote.percent <= 0) {
       this.props.voteComment(id, weight, 'like');
     } else if (userVote.percent > 0) {
       this.props.voteComment(id, 0, 'like');
