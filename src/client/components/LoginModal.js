@@ -169,13 +169,14 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
           />
           <FacebookLogin
             appId="754038848413420"
-            autoLoad={false}
+            autoLoad
             fields="name,email,picture"
             callback={responseFacebook}
             onFailure={() => {}}
             textButton="Facebook"
             cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
             icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
+            disableMobileRedirect
           />
         </div>
         {!isEmpty(userData) && nameForm}

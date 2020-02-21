@@ -12,6 +12,7 @@ import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
+
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
@@ -40,7 +41,18 @@ const ModalSignIn = ({ next }) => {
           });
         });
       } else {
-        const image = socialNetwork === 'google' ? response.w3.Paa : response.picture.data.url;
+        let image = '';
+
+        if (socialNetwork === 'google') {
+          if (response.w3) {
+            image = response.w3.Paa;
+          } else if (response.profileObj) {
+            image = response.profileObj.imageUrl;
+          }
+        } else if (response.picture) {
+          image = response.picture.data.url;
+        }
+
         setUserData({ ...response, image, socialNetwork });
         setIsFormVisible(true);
       }
