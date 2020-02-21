@@ -23,7 +23,7 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
   useEffect(() => {
     const index = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name));
 
-    if (index > 5) {
+    if (index > typesLimit) {
       setTypesCount(index + 1);
     } else {
       setTypesCount(typesLimit);
