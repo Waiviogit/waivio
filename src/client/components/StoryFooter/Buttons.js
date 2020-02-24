@@ -302,7 +302,7 @@ export default class Buttons extends React.Component {
       take(votes, 10).map(vote => (
         <p key={vote.voter}>
           <Link to={`/@${vote.voter}`}>{vote.voter}</Link>
-          {vote.percent * ratio > 0.01 && (
+          {vote.rshares * ratio > 0.01 && (
             <span style={{ opacity: '0.5' }}>
               <USDDisplay value={vote.rshares * ratio} />
             </span>
