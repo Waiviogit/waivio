@@ -30,6 +30,7 @@ const Chat = ({
       args: {
         username: userName,
         sessionData: {},
+        isGuest,
       },
     };
     switch (messageType) {
@@ -38,17 +39,12 @@ const Chat = ({
         break;
       case 'init_response': {
         requestData.cmd = 'auth_connection';
-        requestData.args.isGuest = isGuest;
-        requestData.args.transactionId = data.value.result.id;
-        requestData.args.blockNumber = data.value.result.block_num;
-
         if (isGuest) {
           requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
         } else {
           requestData.args.sessionData.transactionId = data.value.result.id;
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
         }
-
         ifr.current.contentWindow.postMessage(requestData, chatUrl);
         break;
       }
@@ -71,9 +67,9 @@ const Chat = ({
             break;
           case 'init_response':
             if (!isGuest) {
-            props
-              .setSessionId(event.data.args.session_id)
-              .then(data => sendChatRequestData('init_response', data));
+              props
+                .setSessionId(event.data.args.session_id)
+                .then(data => sendChatRequestData('init_response', data));
             }
             break;
           case 'auth_connection_response':
