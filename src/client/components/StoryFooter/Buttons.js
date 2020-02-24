@@ -291,7 +291,6 @@ export default class Buttons extends React.Component {
       pendingLike,
       ownPost,
       defaultVotePercent,
-      // pendingFlag,
     } = this.props;
     const isAppend = !!this.props.post.append_field_name;
 
@@ -303,20 +302,19 @@ export default class Buttons extends React.Component {
       parseFloat(post.pending_payout_value) +
       parseFloat(post.total_payout_value) +
       parseFloat(post.curator_payout_value);
-    const voteRshares = post.active_votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
+    const voteRshares = post.active_votes.reduce((a, b) => a + parseFloat(b.percent), 0);
     const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
 
     const upVotesPreview = votes =>
-      take(votes, 10).map(vote => (
+      (take(votes, 10).map(vote => (
         <p key={vote.voter}>
           <Link to={`/@${vote.voter}`}>{vote.voter}</Link>
-
-          {vote.rshares * ratio > 0.01 && (
+          {vote.percent * ratio > 0.01 && (
             <span style={{ opacity: '0.5' }}>
-              <USDDisplay value={vote.rshares * ratio} />
+              <USDDisplay value={vote.percent * ratio} />
             </span>
           )}
-        </p>
+        </p>)
       ));
 
     const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
