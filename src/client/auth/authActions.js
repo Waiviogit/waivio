@@ -1,4 +1,5 @@
 import Cookie from 'js-cookie';
+import store from 'store';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
@@ -10,6 +11,7 @@ import { disconnectBroker } from '../../investarena/redux/actions/brokersActions
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
+import { saveGuestData } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -32,7 +34,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
+export const login = (oAuthToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
   { steemConnectAPI, waivioAPI },
@@ -52,7 +54,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await setToken(accessToken, socialNetwork, regData);
+        const tokenData = await setToken(oAuthToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
       } catch (e) {
@@ -88,6 +90,40 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   });
 };
 
+export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
+  const state = getState();
+
+  return dispatch({
+    type: LOGIN,
+    payload: new Promise(async (resolve, reject) => {
+      try {
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
+        store.set('socialName', 'beaxy');
+        saveGuestData({
+          token: userData.token,
+          expiration: userData.expiration,
+          guestName: userData.user.name,
+        });
+        resolve({
+          account: userData.user,
+          userMetaData,
+          socialNetwork: 'beaxy',
+          isGuestUser: true,
+        });
+      } catch (e) {
+        dispatch(notify(e.error.details[0].message));
+        reject(e);
+      }
+    }),
+    meta: {
+      refresh: getIsLoaded(state),
+    },
+  }).catch(e => {
+    console.warn(e);
+    dispatch(loginError());
+    return e;
+  });
+};
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
 
 export const reload = () => (dispatch, getState, { steemConnectAPI }) =>

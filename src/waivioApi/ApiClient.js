@@ -952,6 +952,53 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .then(data => data)
     .catch(err => err);
 };
+
+// beaxy login
+export const beaxyLogin = body => {
+  const response = {};
+  return fetch(`${config.baseUrl}${config.auth}/beaxy`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+    .then(handleErrors)
+    .then(data => {
+      response.token = data.headers.get('access-token');
+      response.expiration = data.headers.get('expires-in');
+      response.umSession = data.headers.get('um_session');
+      console.log('\theaders > ', JSON.stringify(response));
+      return data.json();
+    })
+    .then(data => {
+      response.userData = data.user;
+      response.bxySessionData = data.payload;
+      return response;
+    })
+    .catch(err => err.message);
+};
+
+export const beaxyLoginByCredentials = (user, password) => {
+  const body = {
+    authBy: 'credentials',
+    authData: {
+      user,
+      password,
+    },
+  };
+  return beaxyLogin(body);
+};
+
+export const beaxy2FALogin = (user, token2fa, code) => {
+  const body = {
+    authBy: '2fa',
+    authData: {
+      user,
+      token2fa,
+      code,
+    },
+  };
+  return beaxyLogin(body);
+};
 //endregion
 
 // injected as extra argument in Redux Thunk

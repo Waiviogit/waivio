@@ -1079,5 +1079,8 @@
   "please_input_nickname": "Введите никнейм",
   "signin": "Вход",
   "authForm_validation_email_required": "Введите E-mail",
-  "authForm_validation_password_required": "Введите пароль"
+  "authForm_validation_password_required": "Введите пароль",
+  "authForm_two_auth_code": "Код аутентификации",
+  "authorizationForm.emailPlaceholder": "Email",
+  "authorizationForm.passwordPlaceholder": "Пароль"
 }
