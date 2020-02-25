@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import 'beautiful-react-redux/patch';
 import { message } from 'antd';
 import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
