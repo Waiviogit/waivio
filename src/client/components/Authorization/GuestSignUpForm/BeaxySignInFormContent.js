@@ -27,23 +27,23 @@ const BeaxySignInFormContent = ({ form }) => {
             res => {
               const {
                 code,
-                response,
+                status,
                 bxySessionData,
                 userData,
                 token,
                 expiration,
                 umSession,
               } = res;
-              if (code === 321 && response === 'TWO_FA_VERIFICATION_NEEDED') {
+              if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
                 setToken2FA(bxySessionData.token2fa);
+              } else {
+                dispatch(
+                  beaxyLogin({ user: userData, token, expiration, umSession }, bxySessionData),
+                );
               }
-              dispatch(
-                beaxyLogin({ user: userData, token, expiration, umSession }, bxySessionData),
-              );
             }
           )
             .catch(error => {
-
               console.log('\tlogin error: ', error && error.message);
             })
             .finally(() => setIsLoading(false));

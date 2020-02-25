@@ -963,14 +963,21 @@ export const beaxyLogin = body => {
   })
     .then(handleErrors)
     .then(data => {
-      response.token = data.headers.get('access-token');
-      response.expiration = data.headers.get('expires-in');
-      response.umSession = data.headers.get('um_session');
+      if (data.headers.has('access-token')) {
+        response.token = data.headers.get('access-token');
+        response.expiration = data.headers.get('expires-in');
+        response.umSession = data.headers.get('um_session')
+      }
       console.log('\theaders > ', JSON.stringify(response));
       return data.json();
     })
     .then(data => {
-      response.userData = data.user;
+      if (data.code === 321 && data.response === 'TWO_FA_VERIFICATION_NEEDED') {
+        response.code = data.code;
+        response.status = data.response;
+      } else {
+        response.userData = data.user;
+      }
       response.bxySessionData = data.payload;
       return response;
     })

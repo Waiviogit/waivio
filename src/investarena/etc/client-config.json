@@ -13,6 +13,7 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com",
 
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
@@ -40,6 +41,7 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -66,6 +68,7 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -112,7 +115,7 @@
     "keepAlive": "auth/keep_alive"
   },
 
-  "brokers":{
+  "brokers": {
     "brokerRegistration": "/broker/registration",
     "brokerAuthorization": "/broker/authorization",
     "userBrokers": "/user_brokers/",
