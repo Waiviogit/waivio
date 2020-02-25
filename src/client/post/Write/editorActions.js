@@ -263,7 +263,9 @@ export function createPost(postData) {
                   steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                 }
                 dispatch(push('/'));
-                dispatch(notify('Your post will be posted soon', 'success'));
+                if (result.status === 200) {
+                  dispatch(notify('Your post will be posted soon', 'success'));
+                }
               } else {
                 dispatch(push(`/@${author}/${permlink}`));
               }
@@ -275,10 +277,15 @@ export function createPost(postData) {
                   value: 10,
                 });
               }
+
+              if (result.status === 429) {
+                dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+              }
+
               return result;
             })
             .catch(err => {
-              dispatch(notify(err.error.message, 'error'));
+              dispatch(notify(err.error.message || err.error_description, 'error'));
             }),
         ),
       },

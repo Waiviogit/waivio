@@ -122,7 +122,7 @@ class PostContent extends React.Component {
 
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
-    if (sliderMode) {
+    if (sliderMode && !postState.isLiked) {
       this.props.votePost(post.id, post.author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, post.author, post.permlink, 0);
