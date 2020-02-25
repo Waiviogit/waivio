@@ -27,7 +27,7 @@ export default class UserList extends React.Component {
     const { votes, ratio } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
-
+    console.log(votes);
     return (
       <Scrollbars autoHide style={{ height: '400px' }}>
         <InfiniteSroll
@@ -43,7 +43,7 @@ export default class UserList extends React.Component {
                 user={{ name: vote.voter }}
                 alt={
                   <span>
-                    <USDDisplay value={vote.rshares * ratio} />
+                    <USDDisplay value={vote.rshares_weight * ratio} />
                     <span className="ReactionsList__bullet" />
                     <FormattedNumber
                       style="percent" // eslint-disable-line react/style-prop-object
