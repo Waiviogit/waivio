@@ -51,6 +51,17 @@ class ForecastItem extends React.Component {
       intl,
     } = this.props;
     const { visability } = this.state;
+    const parseDate = time => {
+      const date = moment(time).format(localeDate('YYYY/MM/DD', intl.locale));
+      const times = moment(time).format(localeDate('HH:mm', intl.locale));
+
+      return (
+        <div className="st-front-wrap__flex-wrapper">
+          <span>{date}</span>
+          <span>{times}</span>
+        </div>
+      );
+    };
 
     return quoteSettings && !isEmpty(quoteSettings.wobjData) ? (
       <div className="st-forecast-wrap">
@@ -111,19 +122,13 @@ class ForecastItem extends React.Component {
                 <span>
                   {intl.formatMessage({ id: 'forecast.create', defaultMessage: 'Created:' })}
                 </span>
-                <div className="st-back-wrap__start-date">
-                  <div>
-                    {moment(dateTimeCreate).format(localeDate('YYYY/MM/DD HH:mm', intl.locale))}
-                  </div>
-                </div>
+                <div className="st-back-wrap__start-date">{parseDate(dateTimeCreate)}</div>
               </div>
               <div className="st-back-wrap__finish">
                 <span>
                   {intl.formatMessage({ id: 'forecast.expire', defaultMessage: 'Expires:' })}
                 </span>
-                <div className="st-back-wrap__finish-date">
-                  <div>{moment(forecast).format(localeDate('YYYY/MM/DD HH:mm', intl.locale))}</div>
-                </div>
+                <div className="st-back-wrap__finish-date">{parseDate(forecast)}</div>
               </div>
             </div>
           </div>

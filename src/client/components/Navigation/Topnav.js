@@ -891,11 +891,8 @@ class Topnav extends React.Component {
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link to="/" className="Topnav__brand">
-              {isMobile ? (
-                'investarena'
-              ) : (
-                <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
-              )}
+              <span className="Topnav__brand-icon-mobile">investarena</span>
+              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
           </div>
           <div
