@@ -27,7 +27,7 @@ export default class UserList extends React.Component {
     const { votes, ratio } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
-    console.log(votes);
+
     return (
       <Scrollbars autoHide style={{ height: '400px' }}>
         <InfiniteSroll
