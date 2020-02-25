@@ -40,7 +40,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
                 <span>STEEM</span>
               </span>
               {currentUSDPrice && (
-                <span>
+                <span className="CampaignCardHeader__rewardPrise">
                   {' '}
                   (<span className="fw6">{rewardPrise}</span>)
                 </span>
