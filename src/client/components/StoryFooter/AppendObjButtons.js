@@ -34,8 +34,6 @@ const AppendObjButtons = ({
     .sort(sortVotes)
     .reverse();
 
-  // const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
-
   return (
     <div className="Buttons">
       <React.Fragment>

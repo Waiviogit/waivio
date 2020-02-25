@@ -100,7 +100,7 @@ const Details = ({
         <div className="Details__text fw6 mv3">{messageData.postRequirements}:</div>
         <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
         <div className="Details__criteria-wrap">
-          <div className="Details__criteria-row">
+          <div className="Details__criteria-row Details__criteria-row--mobile">
             {/* eslint-disable-next-line no-plusplus */}
             {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
             <Link className="ml1" to={`/object/${proposedWobj.name}`}>
@@ -120,11 +120,14 @@ const Details = ({
             <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
               {proposedWobj.name}
             </Link>
-            :
-            <Link
-              className="Details__criteria-link ml1"
-              to={`/object/${proposedWobj.author_permlink}`}
-            >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
+            <span className="no-visible">
+              :
+              <Link
+                className="Details__criteria-link ml1"
+                to={`/object/${proposedWobj.author_permlink}`}
+              >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
+            </span>
+            ;
           </div>
           <div className="Details__criteria-row nowrap">
             {/* eslint-disable-next-line no-plusplus */}
@@ -132,11 +135,14 @@ const Details = ({
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
               {objectDetails.name}
             </Link>
-            :
-            <Link
-              className="Details__criteria-link ml1"
-              to={`/object/${objectDetails.requiredObject}`}
-            >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
+            <span className="no-visible">
+              :
+              <Link
+                className="Details__criteria-link ml1"
+                to={`/object/${objectDetails.requiredObject}`}
+              >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
+            </span>
+            ;
           </div>
           <div className="Details__criteria-row">
             {objectDetails.description &&
