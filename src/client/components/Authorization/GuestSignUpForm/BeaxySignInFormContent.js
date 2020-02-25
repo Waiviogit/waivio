@@ -13,14 +13,16 @@ const BeaxySignInFormContent = ({ form }) => {
 
   // state
   const [token2FA, setToken2FA] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
-  const handleOnClick = () => {
-    let result = '';
+  const handleSubmit = e => {
+    e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
         if (!token2FA) {
+          setIsLoading(true);
           beaxyLoginByCredentials(values.email, values.password).then(
             res => {
               const {
@@ -35,31 +37,40 @@ const BeaxySignInFormContent = ({ form }) => {
               if (code === 321 && response === 'TWO_FA_VERIFICATION_NEEDED') {
                 setToken2FA(bxySessionData.token2fa);
               }
-              result = res;
               dispatch(
                 beaxyLogin({ user: userData, token, expiration, umSession }, bxySessionData),
               );
-            },
-            error => {
-              result = error.message;
-            },
-          );
+            }
+          )
+            .catch(error => {
+
+              console.log('\tlogin error: ', error && error.message);
+            })
+            .finally(() => setIsLoading(false));
         } else {
+          setIsLoading(true);
           beaxy2FALogin(values.email, token2FA, values.authCode)
             .then(res => {
               const { bxySessionData, userData, token, expiration, umSession } = res;
               dispatch(
                 beaxyLogin({ user: userData, token, expiration, umSession }, bxySessionData),
               );
-            })
-            .catch(error => console.log('\t2FA error', error));
+            },
+              error => console.log('\t2FA error', error && error.message)
+            )
+            .finally(() => setIsLoading(false));
         }
       }
     });
   };
 
   return (
-    <Form className="bxy-sing-in-form" layout="vertical" style={{ width: '100%' }}>
+    <Form
+      className="bxy-sing-in-form"
+      layout="vertical"
+      style={{ width: '100%' }}
+      onSubmit={handleSubmit}
+    >
       <Form.Item
         className="bxy-sing-in-form__mail"
         label={<FormattedMessage id="authorizationForm.emailPlaceholder" defaultMessage="Email" />}
@@ -114,11 +125,18 @@ const BeaxySignInFormContent = ({ form }) => {
           <FormattedMessage id="authForm_two_auth_code" defaultMessage="Authentication code" />
         }
       >
-        {getFieldDecorator('authCode')(<Input maxLength={6} />)}
+        {getFieldDecorator('authCode', {
+          rules: [
+            {
+              pattern: /^-?[0-9]*(\.[0-9]*)?$/,
+              message: 'only numbers',
+            },
+          ],
+        })(<Input maxLength={6} />)}
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" onClick={handleOnClick} disabled={hasErrors(getFieldsError())}>
+        <Button type="primary" htmlType="submit" loading={isLoading} disabled={hasErrors(getFieldsError())}>
           <FormattedMessage id="login" defaultMessage="Log in" />
         </Button>
       </Form.Item>

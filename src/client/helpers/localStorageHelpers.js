@@ -56,3 +56,10 @@ export const saveGuestData = ({ token, expiration, guestName }) => {
   store.set('accessTokenExpiration', expiration);
   store.set('guestName', guestName);
 };
+
+export const setBxySessionData = ({ crmToken, sessionId, stompUser, stompPassword }) => {
+  store.set('crmToken', crmToken);
+  store.set('sessionId', sessionId);
+  store.set('stompUser', stompUser);
+  store.set('stompPassword', stompPassword);
+};

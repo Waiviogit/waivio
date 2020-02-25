@@ -11,7 +11,7 @@ import { disconnectBroker } from '../../investarena/redux/actions/brokersActions
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
-import { saveGuestData } from '../helpers/localStorageHelpers';
+import { saveGuestData, setBxySessionData } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -51,7 +51,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
-  } else if (accessToken && socialNetwork) {
+  } else if (oAuthToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const tokenData = await setToken(oAuthToken, socialNetwork, regData);
@@ -104,6 +104,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           expiration: userData.expiration,
           guestName: userData.user.name,
         });
+        setBxySessionData(bxySessionData);
         resolve({
           account: userData.user,
           userMetaData,

@@ -61,6 +61,7 @@ const GuestSignUpFormContent = ({
               },
             ],
           })(
+            // todo: get prefix by app
             <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
           )}
         </Form.Item>

@@ -974,7 +974,9 @@ export const beaxyLogin = body => {
       response.bxySessionData = data.payload;
       return response;
     })
-    .catch(err => err.message);
+    .catch(error => {
+      throw error
+    });
 };
 
 export const beaxyLoginByCredentials = (user, password) => {
