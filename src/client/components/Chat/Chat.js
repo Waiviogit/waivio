@@ -71,9 +71,9 @@ const Chat = ({
             break;
           case 'init_response':
             if (!isGuest) {
-            props
-              .setSessionId(event.data.args.session_id)
-              .then(data => sendChatRequestData('init_response', data));
+              props
+                .setSessionId(event.data.args.session_id)
+                .then(data => sendChatRequestData('init_response', data));
             }
             break;
           case 'auth_connection_response':
