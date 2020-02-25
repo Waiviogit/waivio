@@ -966,7 +966,7 @@ export const beaxyLogin = body => {
       if (data.headers.has('access-token')) {
         response.token = data.headers.get('access-token');
         response.expiration = data.headers.get('expires-in');
-        response.umSession = data.headers.get('um_session')
+        response.umSession = data.headers.get('um_session');
       }
       console.log('\theaders > ', JSON.stringify(response));
       return data.json();
@@ -982,7 +982,7 @@ export const beaxyLogin = body => {
       return response;
     })
     .catch(error => {
-      throw error
+      throw error;
     });
 };
 

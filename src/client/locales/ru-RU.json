@@ -1082,5 +1082,8 @@
   "authForm_validation_password_required": "Введите пароль",
   "authForm_two_auth_code": "Код аутентификации",
   "authorizationForm.emailPlaceholder": "Email",
-  "authorizationForm.passwordPlaceholder": "Пароль"
+  "authorizationForm.passwordPlaceholder": "Пароль",
+  "authForm_invalid_credentials": "Неверный логин или пароль",
+  "authForm_two_FA_error": "Неверный код",
+  "authForm_server_error": "Ошибка сервера. Попробуйте позже"
 }

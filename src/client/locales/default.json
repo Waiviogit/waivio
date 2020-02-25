@@ -1117,5 +1117,8 @@
   "please_input_nickname": "Nickname cannot be empty",
   "authForm_validation_email_required": "Please input your E-mail",
   "authForm_validation_password_required": "Please input your password",
-  "authForm_two_auth_code": "Authentication code"
+  "authForm_two_FA_code": "Authentication code",
+  "authForm_invalid_credentials": "Incorrect login or password",
+  "authForm_two_FA_error": "Code is not match",
+  "authForm_server_error": "Server error. Try later"
 }
