@@ -31,6 +31,7 @@
       height: 36px;
       vertical-align: super;
       margin-top: 10px;
+      display: none;
 
       @media @small, @medium, @large {
         max-width: 90%;
@@ -39,6 +40,18 @@
         vertical-align: text-top;
         margin: 0;
       }
+
+      @media @small {
+        display: inline-block;
+      }
+    }
+  }
+
+  &__brand-icon-mobile {
+    display: inline-block;
+
+    @media @small {
+      display: none;
     }
   }
 
@@ -438,6 +451,14 @@
       font-size: 16px;
       color: @white;
       height: 36px;
+    }
+
+    .ant-btn {
+      display: none;
+
+      @media @small {
+        display: inline-block;
+      }
     }
   }
 
