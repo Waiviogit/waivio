@@ -5,8 +5,7 @@ import UserInstrumentsTableHeader from './UserInstrumentsTableHeader';
 import UserInstrumentsTableRow from './UserInstrumentsTableRow';
 import './UserInstrumentsTable.less';
 
-const UserInstrumentsTable = ({ setSortOptions, forecasts }) =>
-  console.log(forecasts) || (
+const UserInstrumentsTable = ({ setSortOptions, forecasts }) => (
     <div className="UserInstrumentsTable">
       <UserInstrumentsTableHeader setSortOptions={setSortOptions} />
       {map(forecasts, forecast => (
