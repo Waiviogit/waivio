@@ -688,6 +688,7 @@ class Topnav extends React.Component {
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
+
     return (
       <div className="Topnav">
         <div className="topnav-layout">

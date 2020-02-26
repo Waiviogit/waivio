@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
+import { message } from 'antd';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUser } from '../reducers';
 import { getUserAccountHistory } from './walletActions';
 import { reload } from '../auth/authActions';
 import Action from '../components/Button/Action';
+
 import './ClaimRewardsBlock.less';
 import '../components/Sidebar/SidebarContentBlock.less';
 
@@ -46,22 +48,27 @@ class ClaimRewardsBlock extends Component {
       reward_sbd_balance: sbdBalance,
       reward_vesting_balance: vestingBalance,
     } = user;
+
     this.setState({
       loading: true,
     });
-    SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance, err => {
-      if (!err) {
+
+    SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
+      .then(() =>
+          this.setState({
+            loading: false,
+            rewardClaimed: true,
+          }),
+
+        this.props.getUserAccountHistory(name).then(() => this.props.reload()),
+      )
+      .catch(e => {
         this.setState({
           loading: false,
-          rewardClaimed: true,
         });
-      } else {
-        this.setState({
-          loading: false,
-        });
-      }
-      this.props.getUserAccountHistory(name).then(() => this.props.reload());
-    });
+
+        message.error(e.error_description);
+      });
   };
 
   renderReward = (value, currency, rewardField) => (
