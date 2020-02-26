@@ -218,7 +218,15 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML, isAvatar, isModal, avatarImage, coverImage, isLoadingImage, disabled } = this.state;
+    const {
+      bodyHTML,
+      isAvatar,
+      isModal,
+      avatarImage,
+      coverImage,
+      isLoadingImage,
+      disabled,
+    } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -424,7 +432,10 @@ export default class ProfileSettings extends React.Component {
                   primary
                   big
                   type="submit"
-                  disabled={disabled || !form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  disabled={
+                    disabled ||
+                    (!form.isFieldsTouched() && !avatarImage.length && !coverImage.length)
+                  }
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
