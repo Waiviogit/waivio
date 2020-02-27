@@ -102,7 +102,11 @@ export default class SidenavRewards extends React.Component {
           {menuCondition.rewards && (
             <React.Fragment>
               <li>
-                <NavLink to={'/rewards/all'} activeClassName="Sidenav__item--active">
+                <NavLink
+                  to={'/rewards/all'}
+                  className="sidenav-discover-objects__item"
+                  activeClassName="Sidenav__item--active"
+                >
                   {intl.formatMessage({
                     id: 'all',
                     defaultMessage: `All`,
@@ -116,7 +120,11 @@ export default class SidenavRewards extends React.Component {
               {menuCondition.rewards && (
                 <React.Fragment>
                   <li>
-                    <NavLink to={`/rewards/active`} activeClassName="Sidenav__item--active">
+                    <NavLink
+                      to={`/rewards/active`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
                       {intl.formatMessage({
                         id: 'eligible',
                         defaultMessage: `Eligible`,
@@ -124,7 +132,11 @@ export default class SidenavRewards extends React.Component {
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={`/rewards/reserved`} activeClassName="Sidenav__item--active">
+                    <NavLink
+                      to={`/rewards/reserved`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
                       {intl.formatMessage({
                         id: 'reserved',
                         defaultMessage: `Reserves`,
@@ -133,7 +145,11 @@ export default class SidenavRewards extends React.Component {
                   </li>
                   {hasReceivables ? (
                     <li>
-                      <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
+                      <NavLink
+                        to={`/rewards/receivables`}
+                        className="sidenav-discover-objects__item"
+                        activeClassName="Sidenav__item--active"
+                      >
                         {intl.formatMessage({
                           id: 'sidenav_rewards_receivables',
                           defaultMessage: `Receivables`,
@@ -143,7 +159,11 @@ export default class SidenavRewards extends React.Component {
                   ) : null}
                   {!!historyCount && (
                     <li>
-                      <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
+                      <NavLink
+                        to={`/rewards/history`}
+                        className="sidenav-discover-objects__item"
+                        activeClassName="Sidenav__item--active"
+                      >
                         {intl.formatMessage({
                           id: 'history',
                           defaultMessage: `History`,
@@ -176,7 +196,11 @@ export default class SidenavRewards extends React.Component {
               {menuCondition.campaigns && (
                 <React.Fragment>
                   <li>
-                    <NavLink to={`/rewards/create`} activeClassName="Sidenav__item--active">
+                    <NavLink
+                      to={`/rewards/create`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
                       {intl.formatMessage({
                         id: 'create',
                         defaultMessage: `Create`,
@@ -186,7 +210,11 @@ export default class SidenavRewards extends React.Component {
                   {!!createdCampaignsCount && (
                     <React.Fragment>
                       <li>
-                        <NavLink to={`/rewards/manage`} activeClassName="Sidenav__item--active">
+                        <NavLink
+                          to={`/rewards/manage`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
                           {intl.formatMessage({
                             id: 'manage',
                             defaultMessage: `Manage`,
@@ -194,7 +222,11 @@ export default class SidenavRewards extends React.Component {
                         </NavLink>
                       </li>
                       <li>
-                        <NavLink to={`/rewards/payables`} activeClassName="Sidenav__item--active">
+                        <NavLink
+                          to={`/rewards/payables`}
+                          className="sidenav-discover-objects__item"
+                          activeClassName="Sidenav__item--active"
+                        >
                           {intl.formatMessage({
                             id: 'sidenav_rewards_payables',
                             defaultMessage: `Payables`,
@@ -204,7 +236,11 @@ export default class SidenavRewards extends React.Component {
                     </React.Fragment>
                   )}
                   <li>
-                    <NavLink to={`/rewards/match-bot`} activeClassName="Sidenav__item--active">
+                    <NavLink
+                      to={`/rewards/match-bot`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
                       {intl.formatMessage({
                         id: 'matchBot',
                         defaultMessage: `Match bot`,
