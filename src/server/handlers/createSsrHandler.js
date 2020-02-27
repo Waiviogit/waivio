@@ -5,7 +5,7 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 
-import sc2 from 'sc2-sdk';
+import steemConnectAPI from '../../client/steemConnectAPI';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import routes from '../../common/routes';
@@ -28,16 +28,18 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      const sc2Api = sc2.Initialize({
-        app: process.env.STEEMCONNECT_CLIENT_ID,
-        baseURL: process.env.STEEMCONNECT_HOST,
-        callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
-      });
-      if (req.cookies.access_token) {
-        sc2Api.setAccessToken(req.cookies.access_token);
+      const waivioToken = req.cookies.waivio_token;
+      if (waivioToken) {
+        waivioAPI.authToken = waivioToken;
+      } else {
+        waivioAPI.authToken = null;
       }
 
-      const store = getStore(sc2Api, waivioAPI, req.url);
+      if (req.cookies.access_token) {
+        steemConnectAPI.setAccessToken(req.cookies.access_token);
+      }
+
+      const store = getStore(steemConnectAPI, waivioAPI, req.url);
 
       const branch = matchRoutes(routes, req.url.split('?')[0]);
       const promises = branch.map(({ route, match }) => {
@@ -62,6 +64,10 @@ export default function createSsrHandler(template) {
       );
       if (context.status) {
         res.status(context.status);
+      }
+
+      if (waivioToken && waivioAPI.authToken) {
+        res.cookie('waivio_token', waivioAPI.authToken, { maxAge: 86400 * 7 * 1000 });
       }
 
       return res.send(

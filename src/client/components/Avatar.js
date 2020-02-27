@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './Avatar.less';
 
 export function getAvatarURL(username, size = 100) {
-  if (username && username.includes('waivio_')) {
+  if (username && username.match(/(waivio_|bxy_)([\w-.]+)/)) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`;
   }
   return size > 64

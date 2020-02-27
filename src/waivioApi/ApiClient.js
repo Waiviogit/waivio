@@ -2,6 +2,8 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
+import store from "store";
+import { GUEST_COOKIES } from '../common/constants/waivio';
 import config from './routes';
 import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
@@ -1010,11 +1012,68 @@ export const beaxy2FALogin = (user, token2fa, code) => {
 };
 //endregion
 
+const singleton = Symbol();
+const singletonEnforcer = Symbol();
+class WaivioApiClient {
+  constructor(enforcer) {
+    if (enforcer !== singletonEnforcer) {
+      throw new Error('Cannot construct singleton');
+    }
+    this._authToken = null;
+  }
+
+  static get instance() {
+    if (!this[singleton]) {
+      this[singleton] = new WaivioApiClient(singletonEnforcer);
+    }
+    return this[singleton];
+  }
+
+  broadcastGuestOperation() {
+    return broadcastGuestOperation(...arguments);
+  }
+  getAuthenticatedUserMetadata() {
+    return getAuthenticatedUserMetadata(...arguments);
+  }
+  getUserAccount() {
+    return getUserAccount(...arguments);
+  }
+
+  saveGuestData(accessToken, expiration, userName, social, bxySession = null) {
+    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, { expires: new Date((expiration + 86400 * 7) * 1000 ) }); // there are 86400 sec in one day
+    Cookie.set(GUEST_COOKIES.USERNAME, userName );
+    Cookie.set(GUEST_COOKIES.SOCIAL, social);
+    store.set('waivioTokenExpiration', String(expiration * 1000 ));
+    this.authToken = accessToken;
+    if (bxySession) {
+      Cookie.set(GUEST_COOKIES.CRM_TOKEN, bxySession.crmToken);
+      Cookie.set(GUEST_COOKIES.SID, bxySession.sessionId);
+      Cookie.set(GUEST_COOKIES.STOMP_USER, bxySession.stompUser);
+      Cookie.set(GUEST_COOKIES.STOMP_PASSWORD, bxySession.stompPassword);
+      Cookie.set(GUEST_COOKIES.UM_SESSION, bxySession.umSession);
+    }
+  }
+  clearGuestData() {
+    Object.values(GUEST_COOKIES).forEach(cookieName => {
+      Cookie.remove(cookieName);
+    });
+    store.remove('waivioTokenExpiration');
+    this.authToken = null;
+  }
+
+  get authToken() {
+    return this._authToken;
+  }
+  set authToken(token) {
+    this._authToken = token;
+  }
+
+  get isGuest() {
+    return Boolean(this._authToken);
+  }
+}
+
 // injected as extra argument in Redux Thunk
-export const waivioAPI = {
-  getAuthenticatedUserMetadata,
-  broadcastGuestOperation,
-  getUserAccount,
-};
+export const waivioAPI = WaivioApiClient.instance;
 
 export default null;

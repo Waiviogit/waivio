@@ -1,5 +1,4 @@
 import Cookie from 'js-cookie';
-import store from 'store';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
@@ -11,7 +10,6 @@ import { disconnectBroker } from '../../investarena/redux/actions/brokersActions
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
-import { saveGuestData, setBxySessionData } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -39,15 +37,12 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   getState,
   { steemConnectAPI, waivioAPI },
 ) => {
-  const state = getState();
 
+  // todo: call beaxy login
+  const state = getState();
   let promise = Promise.resolve(null);
 
-  let isGuest = null;
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
+  const isGuest = waivioAPI.isGuest;
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
@@ -98,13 +93,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
     payload: new Promise(async (resolve, reject) => {
       try {
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
-        store.set('socialName', 'beaxy');
-        saveGuestData({
-          token: userData.token,
-          expiration: userData.expiration,
-          guestName: userData.user.name,
-        });
-        setBxySessionData(bxySessionData);
+        waivioAPI.saveGuestData(userData.token, userData.expiration, userData.user.name, 'beaxy', bxySessionData);
         resolve({
           account: userData.user,
           userMetaData,
@@ -135,13 +124,9 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
     },
   });
 
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
-  const state = getState();
-  if (state.auth.isGuestUser) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('accessTokenExpiration');
-    localStorage.removeItem('socialName');
-    localStorage.removeItem('guestName');
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+  if (waivioAPI.isGuest) {
+    waivioAPI.clearGuestData();
     if (window) {
       // eslint-disable-next-line no-unused-expressions
       window.FB && window.FB.logout();

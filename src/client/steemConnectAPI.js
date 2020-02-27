@@ -1,6 +1,7 @@
 import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
+import Cookie from "js-cookie";
 
 function broadcast(operations, actionAuthor) {
   let operation;
@@ -34,10 +35,7 @@ async function getUserAccount() {
 }
 
 function sc2Extended() {
-  const isGuest = () =>
-    typeof localStorage !== 'undefined' &&
-    !!localStorage.getItem('accessToken') &&
-    !!localStorage.getItem('guestName');
+  const isGuest = () => waivioAPI.isGuest;
 
   const sc2api = sc2.Initialize({
     app: process.env.STEEMCONNECT_CLIENT_ID,

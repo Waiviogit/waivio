@@ -21,8 +21,12 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 }
 
 const accessToken = Cookie.get('access_token');
+const waivioToken = Cookie.get('waivio_token');
 if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
+}
+if (waivioToken) {
+  waivioAPI.authToken = waivioToken;
 }
 
 const store = getStore(steemConnectAPI, waivioAPI, '/', history);

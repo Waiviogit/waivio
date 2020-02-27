@@ -31,7 +31,7 @@ const BeaxySignInFormContent = ({ form }) => {
                 setToken2FA(bxySessionData.token2fa);
               } else {
                 dispatch(
-                  beaxyLogin({ user: userData, token, expiration, umSession }, bxySessionData),
+                  beaxyLogin({ user: userData, token, expiration }, { ...bxySessionData, umSession }),
                 );
               }
               setAuthError(null);
