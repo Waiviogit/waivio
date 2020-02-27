@@ -8,7 +8,7 @@ import './Avatar.less';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
   const lastAccountUpdate = !isEmpty(authenticatedUser)
-    ? moment(authenticatedUser.updatedAt).unix()
+    ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
 
   if (username && username.includes('waivio_')) {
@@ -16,7 +16,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
-    return `https://steemitimages.com/u/${username}/avatar/large`;
+    return `https://steemitimages.com/u/${username}/avatar/large?${lastAccountUpdate}`;
   }
 
   return size > 64
