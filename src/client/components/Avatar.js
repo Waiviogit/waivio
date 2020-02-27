@@ -1,11 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
+import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
-export function getAvatarURL(username, size = 100) {
+export function getAvatarURL(username, size = 100, authenticatedUser) {
+  const lastAccountUpdate = !isEmpty(authenticatedUser)
+    ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
+    : '';
   if (username && username.includes('waivio_')) {
-    return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`;
+    return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
+
+  if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
+    return `https://steemitimages.com/u/${username}/avatar/large?${lastAccountUpdate}`;
+  }
+
   return size > 64
     ? `https://steemitimages.com/u/${username}/avatar`
     : `https://steemitimages.com/u/${username}/avatar/small`;
@@ -18,7 +30,8 @@ const Avatar = ({ username, size }) => {
     height: `${size}px`,
   };
 
-  const url = getAvatarURL(username, size);
+  const authenticatedUser = useSelector(getAuthenticatedUser);
+  const url = getAvatarURL(username, size, authenticatedUser);
 
   if (username) {
     style = {
