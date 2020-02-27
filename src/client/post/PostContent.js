@@ -177,8 +177,8 @@ class PostContent extends React.Component {
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
     const postMetaData = jsonParse(content.json_metadata);
-    const waivioHost = appUrl || 'https://waivio.com';
-    const canonicalHost = waivioHost;
+    const waivioHost = appUrl || 'https://www.waivio.com';
+    const canonicalHost = 'https://www.waivio.com';
 
     const userVote = find(content.active_votes, { voter: user.name }) || {};
 
