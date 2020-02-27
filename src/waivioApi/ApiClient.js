@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
-import store from "store";
+import store from 'store';
 import { GUEST_COOKIES } from '../common/constants/waivio';
 import config from './routes';
 import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
@@ -19,7 +19,7 @@ let headers = {
 };
 
 const getFilterKey = () => {
-  if (localStorage) {
+  if (typeof localStorage !== 'undefined') {
     const isAppMyFeedFilterOn = !localStorage.getItem('isAppMyFeedFilterOn');
     return isAppMyFeedFilterOn ? '' : filterKey;
   }
@@ -719,13 +719,7 @@ export const getAuthenticatedUserMetadata = userName => {
 };
 
 export const updateUserMetadata = async (userName, data) => {
-  let isGuest = null;
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
-
-  if (isGuest) {
+  if (waivioAPI.isGuest) {
     const token = await getValidTokenData();
     headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
   } else {
@@ -1040,10 +1034,12 @@ class WaivioApiClient {
   }
 
   saveGuestData(accessToken, expiration, userName, social, bxySession = null) {
-    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, { expires: new Date((expiration + 86400 * 7) * 1000 ) }); // there are 86400 sec in one day
-    Cookie.set(GUEST_COOKIES.USERNAME, userName );
+    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, {
+      expires: new Date((expiration + 86400 * 7) * 1000),
+    }); // there are 86400 sec in one day
+    Cookie.set(GUEST_COOKIES.USERNAME, userName);
     Cookie.set(GUEST_COOKIES.SOCIAL, social);
-    store.set('waivioTokenExpiration', String(expiration * 1000 ));
+    store.set('waivioTokenExpiration', String(expiration * 1000));
     this.authToken = accessToken;
     if (bxySession) {
       Cookie.set(GUEST_COOKIES.CRM_TOKEN, bxySession.crmToken);

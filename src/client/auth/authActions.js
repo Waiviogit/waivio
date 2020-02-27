@@ -135,6 +135,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, wai
     }
   } else {
     steemConnectAPI.revokeToken();
+    steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
   }
   busyAPI.close();

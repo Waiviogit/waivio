@@ -9,7 +9,7 @@ import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import SteemConnect from '../steemConnectAPI';
 import { busyLogin, login } from '../auth/authActions';
-import { getUserAccount, isUserRegistered } from '../../waivioApi/ApiClient';
+import { getUserAccount, isUserRegistered, waivioAPI } from '../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../user/userActions';
 import { notify } from '../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
@@ -96,7 +96,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
   };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');
-  const showModal = visible || (!!localStorage.getItem('accessToken') && !isAuth && isLoaded);
+  const showModal = visible || (!!waivioAPI.authToken && !isAuth && isLoaded);
 
   const validateUserName = async (rule, value, callback) => {
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);

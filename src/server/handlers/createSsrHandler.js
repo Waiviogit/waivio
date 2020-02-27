@@ -37,6 +37,8 @@ export default function createSsrHandler(template) {
 
       if (req.cookies.access_token) {
         steemConnectAPI.setAccessToken(req.cookies.access_token);
+      } else {
+        steemConnectAPI.removeAccessToken();
       }
 
       const store = getStore(steemConnectAPI, waivioAPI, req.url);
