@@ -7,9 +7,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Avatar, Button, Form, Input, Modal } from 'antd';
 import { encodeOp } from 'steem-uri';
 import moment from 'moment';
-import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
-import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
+import { getAuthenticatedUser, getIsReloading, isGuestUser, getIsAuthFetching } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -22,6 +21,7 @@ import requiresLogin from '../auth/requiresLogin';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
+
 import './Settings.less';
 
 const FormItem = Form.Item;
@@ -99,6 +99,7 @@ export default class ProfileSettings extends React.Component {
       coverImage: [],
       isLoadingImage: false,
       lastAccountUpdate: moment(props.user.updatedAt).unix(),
+      disabled: false,
     };
   }
 
@@ -193,6 +194,8 @@ export default class ProfileSettings extends React.Component {
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
 
+    this.setState({ disabled: true });
+
     if (isGuest && !isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, avatarImage[0].src, intl)
         .then(data => {
@@ -215,7 +218,7 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML, isAvatar, isModal, avatarImage, coverImage, isLoadingImage } = this.state;
+    const { bodyHTML, isAvatar, isModal, avatarImage, coverImage, isLoadingImage, disabled } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -421,7 +424,7 @@ export default class ProfileSettings extends React.Component {
                   primary
                   big
                   type="submit"
-                  disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  disabled={disabled || !form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
