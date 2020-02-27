@@ -11,12 +11,12 @@ import './ReactionsList.less';
 export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),
-    ratio: PropTypes.number,
+    ratio: PropTypes.number
   };
 
   static defaultProps = {
     votes: [],
-    ratio: 0,
+    ratio: 0
   };
 
   state = { page: 1 };

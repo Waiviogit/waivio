@@ -10,7 +10,7 @@ import { getRate } from '../../reducers';
 import './CommentFooter.less';
 
 @connect(state => ({
-  rate: getRate(state),
+  rate: getRate(state)
 }))
 export default class CommentFooter extends React.Component {
   static propTypes = {
@@ -26,13 +26,13 @@ export default class CommentFooter extends React.Component {
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        percent: PropTypes.number,
-      }),
+        percent: PropTypes.number
+      })
     ),
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onReplyClick: PropTypes.func,
-    onEditClick: PropTypes.func,
+    onEditClick: PropTypes.func
   };
 
   static defaultProps = {
@@ -46,7 +46,7 @@ export default class CommentFooter extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onReplyClick: () => {},
-    onEditClick: () => {},
+    onEditClick: () => {}
   };
 
   state = {
@@ -54,7 +54,7 @@ export default class CommentFooter extends React.Component {
     sliderValue: 100,
     voteWorth: 0,
     replyFormVisible: false,
-    isLiked: false,
+    isLiked: false
   };
 
   componentWillMount() {
@@ -64,11 +64,11 @@ export default class CommentFooter extends React.Component {
       if (userVote.percent && userVote.percent > 0) {
         this.setState({
           sliderValue: userVote.percent / 100,
-          isLiked: true,
+          isLiked: true
         });
       } else {
         this.setState({
-          sliderValue: defaultVotePercent / 100,
+          sliderValue: defaultVotePercent / 100
         });
       }
     }
@@ -104,7 +104,7 @@ export default class CommentFooter extends React.Component {
       rewardFund.recent_claims,
       rewardFund.reward_balance,
       rate,
-      value * 100,
+      value * 100
     );
     this.setState({ sliderValue: value, voteWorth });
   };
@@ -117,7 +117,7 @@ export default class CommentFooter extends React.Component {
       editable,
       editing,
       replying,
-      pendingVotes,
+      pendingVotes
     } = this.props;
     const { sliderVisible, isLiked } = this.state;
 

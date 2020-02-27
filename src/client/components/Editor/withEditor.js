@@ -21,12 +21,12 @@ export default function withEditor(WrappedComponent) {
   @connect(
     state => ({
       user: getAuthenticatedUser(state),
-      locale: getSuitableLanguage(state),
+      locale: getSuitableLanguage(state)
     }),
     {
       voteObject,
-      followObject,
-    },
+      followObject
+    }
   )
   @injectIntl
   class EditorBase extends React.Component {
@@ -37,13 +37,13 @@ export default function withEditor(WrappedComponent) {
       user: PropTypes.shape().isRequired,
       locale: PropTypes.string,
       voteObject: PropTypes.func.isRequired,
-      followObject: PropTypes.func.isRequired,
+      followObject: PropTypes.func.isRequired
     };
 
     static defaultProps = {
       locale: 'en-US',
       voteObject: () => {},
-      followObject: () => {},
+      followObject: () => {}
     };
 
     getObjectsByAuthorPermlinks = objectIds => {
@@ -55,17 +55,17 @@ export default function withEditor(WrappedComponent) {
 
     handleImageUpload = (blob, callback, errorCallback) => {
       const {
-        intl: { formatMessage },
+        intl: { formatMessage }
       } = this.props;
       message.info(
-        formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
+        formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' })
       );
       const formData = new FormData();
       formData.append('file', blob);
 
       return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
-        body: formData,
+        body: formData
       })
         .then(res => res.json())
         .then(res => callback(res.image, blob.name))
@@ -74,8 +74,8 @@ export default function withEditor(WrappedComponent) {
           message.error(
             formatMessage({
               id: 'notify_uploading_iamge_error',
-              defaultMessage: "Couldn't upload image",
-            }),
+              defaultMessage: "Couldn't upload image"
+            })
           );
         });
     };
@@ -87,11 +87,11 @@ export default function withEditor(WrappedComponent) {
           {
             id: 'notify_uploading_image_invalid',
             defaultMessage:
-              'This file is invalid. Only image files {formats}with maximum size of {size} are supported',
+              'This file is invalid. Only image files {formats}with maximum size of {size} are supported'
           },
-          { size: filesize(maxSize), formats: allowedFormats },
+          { size: filesize(maxSize), formats: allowedFormats }
         ),
-        3,
+        3
       );
     };
 
@@ -102,7 +102,7 @@ export default function withEditor(WrappedComponent) {
         obj.id,
         this.props.user.name,
         '',
-        WAIVIO_PARENT_PERMLINK,
+        WAIVIO_PARENT_PERMLINK
       );
 
       const requestBody = {
@@ -116,7 +116,7 @@ export default function withEditor(WrappedComponent) {
         isExtendingOpen: obj.isExtendingOpen,
         isPostingOpen: obj.isPostingOpen,
         parentAuthor: obj.parentAuthor,
-        parentPermlink: obj.parentPermlink,
+        parentPermlink: obj.parentPermlink
       };
 
       try {
@@ -130,8 +130,8 @@ export default function withEditor(WrappedComponent) {
         await message.success(
           formatMessage({
             id: 'create_object_success',
-            defaultMessage: 'Object has been created',
-          }),
+            defaultMessage: 'Object has been created'
+          })
         );
 
         callback(response);
@@ -139,8 +139,8 @@ export default function withEditor(WrappedComponent) {
         await message.error(
           formatMessage({
             id: 'create_object_error',
-            defaultMessage: 'Something went wrong. Object is not created',
-          }),
+            defaultMessage: 'Something went wrong. Object is not created'
+          })
         );
 
         errorCallback();

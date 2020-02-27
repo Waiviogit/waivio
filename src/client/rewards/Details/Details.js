@@ -19,7 +19,7 @@ const Details = ({
   isReserved,
   proposedWobj,
   isReviewDetails,
-  requiredObjectName,
+  requiredObjectName
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
@@ -206,7 +206,7 @@ const Details = ({
               <Button type="primary">
                 {intl.formatMessage({
                   id: 'campaign_buttons_write_review',
-                  defaultMessage: `Write review`,
+                  defaultMessage: `Write review`
                 })}
               </Button>
             </Link>
@@ -230,6 +230,6 @@ Details.propTypes = {
   isReserved: PropTypes.bool.isRequired,
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
-  proposedWobj: PropTypes.shape().isRequired,
+  proposedWobj: PropTypes.shape().isRequired
 };
 export default injectIntl(Details);

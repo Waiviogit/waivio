@@ -17,7 +17,7 @@ export const wordsWithSpaceRegExp = /^([\w-_.,:!?]+ )*([\w-_.,:?!]+)?$/;
 export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif'];
 export const MAX_IMG_SIZE = {
   [objectFields.avatar]: 2097152,
-  [objectFields.background]: 15728640,
+  [objectFields.background]: 15728640
 };
 
 export default null;

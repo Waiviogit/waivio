@@ -33,7 +33,7 @@ SteemEmbed.getAll = function(text, options) {
       if (embed) {
         embeds.push(this.get(url, options));
       }
-    }.bind(this),
+    }.bind(this)
   );
   return embeds;
 };

@@ -6,7 +6,7 @@ import {
   FormattedMessage,
   FormattedRelative,
   FormattedDate,
-  FormattedTime,
+  FormattedTime
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
@@ -15,7 +15,7 @@ import {
   isPostTaggedNSFW,
   dropCategory,
   isBannedPost,
-  replaceBotWithGuestName,
+  replaceBotWithGuestName
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
@@ -60,7 +60,7 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
-    pendingFlag: PropTypes.bool,
+    pendingFlag: PropTypes.bool
   };
 
   static defaultProps = {
@@ -81,7 +81,7 @@ class Story extends React.Component {
     editPost: () => {},
     followUser: () => {},
     unfollowUser: () => {},
-    push: () => {},
+    push: () => {}
   };
 
   constructor(props) {
@@ -89,7 +89,7 @@ class Story extends React.Component {
 
     this.state = {
       showHiddenStoryPreview: false,
-      displayLoginModal: false,
+      displayLoginModal: false
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
@@ -153,7 +153,7 @@ class Story extends React.Component {
     } else {
       const nameFields = filter(wobj.fields, o => o.name === 'name');
       const nameField = maxBy(nameFields, 'weight') || {
-        body: wobj.default_name,
+        body: wobj.default_name
       };
       if (nameField) name = nameField.body;
     }
@@ -163,7 +163,7 @@ class Story extends React.Component {
         to={{ pathname: pathName }}
         title={`${this.props.intl.formatMessage({
           id: 'related_to_object',
-          defaultMessage: 'Related to object',
+          defaultMessage: 'Related to object'
         })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
       >
         <ObjectAvatar item={wobj} size={40} />
@@ -265,7 +265,7 @@ class Story extends React.Component {
 
   handleShowStoryPreview() {
     this.setState({
-      showHiddenStoryPreview: true,
+      showHiddenStoryPreview: true
     });
   }
 
@@ -352,7 +352,7 @@ class Story extends React.Component {
       ownPost,
       singlePostVew,
       sliderMode,
-      defaultVotePercent,
+      defaultVotePercent
     } = this.props;
 
     if (isPostDeleted(post)) return <div />;
@@ -371,7 +371,7 @@ class Story extends React.Component {
                 <Link to={`/@${post.reblogged_by}`}>
                   <span className="username">{post.reblogged_by}</span>
                 </Link>
-              ),
+              )
             }}
           />
         </div>

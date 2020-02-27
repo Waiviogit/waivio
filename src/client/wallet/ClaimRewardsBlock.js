@@ -16,28 +16,28 @@ import '../components/Sidebar/SidebarContentBlock.less';
 @injectIntl
 @connect(
   state => ({
-    user: getAuthenticatedUser(state),
+    user: getAuthenticatedUser(state)
   }),
   {
     getUserAccountHistory,
-    reload,
-  },
+    reload
+  }
 )
 class ClaimRewardsBlock extends Component {
   static propTypes = {
     user: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     getUserAccountHistory: PropTypes.func.isRequired,
-    reload: PropTypes.func.isRequired,
+    reload: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    user: {},
+    user: {}
   };
 
   state = {
     loading: false,
-    rewardClaimed: false,
+    rewardClaimed: false
   };
 
   handleClaimRewards = () => {
@@ -46,11 +46,11 @@ class ClaimRewardsBlock extends Component {
       name,
       reward_steem_balance: steemBalance,
       reward_sbd_balance: sbdBalance,
-      reward_vesting_balance: vestingBalance,
+      reward_vesting_balance: vestingBalance
     } = user;
 
     this.setState({
-      loading: true,
+      loading: true
     });
 
     SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
@@ -58,14 +58,14 @@ class ClaimRewardsBlock extends Component {
         () =>
           this.setState({
             loading: false,
-            rewardClaimed: true,
+            rewardClaimed: true
           }),
 
-        this.props.getUserAccountHistory(name).then(() => this.props.reload()),
+        this.props.getUserAccountHistory(name).then(() => this.props.reload())
       )
       .catch(e => {
         this.setState({
-          loading: false,
+          loading: false
         });
 
         message.error(e.error_description);
@@ -98,11 +98,11 @@ class ClaimRewardsBlock extends Component {
     const buttonText = rewardClaimed
       ? intl.formatMessage({
           id: 'reward_claimed',
-          defaultMessage: 'Reward Claimed',
+          defaultMessage: 'Reward Claimed'
         })
       : intl.formatMessage({
           id: 'claim_rewards',
-          defaultMessage: 'Claim Rewards',
+          defaultMessage: 'Claim Rewards'
         });
 
     if (!userHasRewards || rewardClaimed) return null;

@@ -20,7 +20,7 @@ import {
   getVotingPower,
   getRewardFund,
   getVotePercent,
-  getAppUrl,
+  getAppUrl
 } from '../reducers';
 import { editPost } from './Write/editorActions';
 import { votePost } from './postActions';
@@ -48,7 +48,7 @@ import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
-    appUrl: getAppUrl(state),
+    appUrl: getAppUrl(state)
   }),
   {
     editPost,
@@ -57,8 +57,8 @@ import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
     toggleBookmark,
     followUser,
     unfollowUser,
-    push,
-  },
+    push
+  }
 )
 class PostContent extends React.Component {
   static propTypes = {
@@ -84,7 +84,7 @@ class PostContent extends React.Component {
     reblog: PropTypes.func,
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
-    push: PropTypes.func,
+    push: PropTypes.func
   };
 
   static defaultProps = {
@@ -102,7 +102,7 @@ class PostContent extends React.Component {
     reblog: () => {},
     followUser: () => {},
     unfollowUser: () => {},
-    push: () => {},
+    push: () => {}
   };
 
   constructor(props) {
@@ -171,7 +171,7 @@ class PostContent extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      appUrl,
+      appUrl
     } = this.props;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -190,7 +190,7 @@ class PostContent extends React.Component {
         : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(content.author),
+      userFollowed: followingList.includes(content.author)
     };
 
     const pendingLike =
@@ -211,11 +211,11 @@ class PostContent extends React.Component {
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
     const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
       dropCategory(content.url),
-      content.guestInfo,
+      content.guestInfo
     )}`;
     const url = `${waivioHost}${replaceBotWithGuestName(
       dropCategory(content.url),
-      content.guestInfo,
+      content.guestInfo
     )}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;

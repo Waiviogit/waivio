@@ -12,7 +12,7 @@ import {
   getAuthenticatedUserName,
   getVotingPower,
   getRewardFund,
-  getVotePercent,
+  getVotePercent
 } from '../reducers';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
@@ -29,7 +29,7 @@ import './Comments.less';
     username: getAuthenticatedUserName(state),
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
-    defaultVotePercent: getVotePercent(state),
+    defaultVotePercent: getVotePercent(state)
   }),
   dispatch =>
     bindActionCreators(
@@ -38,10 +38,10 @@ import './Comments.less';
         voteComment: (id, percent, vote) => commentsActions.likeComment(id, percent, vote),
         sendComment: (parentPost, body, isUpdating, originalPost) =>
           commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
-        notify,
+        notify
       },
-      dispatch,
-    ),
+      dispatch
+    )
 )
 export default class Comments extends React.Component {
   static propTypes = {
@@ -57,15 +57,15 @@ export default class Comments extends React.Component {
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        percent: PropTypes.number,
-      }),
+        percent: PropTypes.number
+      })
     ),
     show: PropTypes.bool,
     isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
-    sendComment: PropTypes.func,
+    sendComment: PropTypes.func
   };
 
   static defaultProps = {
@@ -80,18 +80,18 @@ export default class Comments extends React.Component {
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
-    sendComment: () => {},
+    sendComment: () => {}
   };
 
   state = {
-    sortOrder: 'trending',
+    sortOrder: 'trending'
   };
 
   componentDidMount() {
     if (this.props.show && this.props.post.children !== 0) {
       this.props.getComments(
         this.props.post.id,
-        this.props.post.append_field_name ? this.props.post.author_original : null,
+        this.props.post.append_field_name ? this.props.post.author_original : null
       );
     }
   }
@@ -102,7 +102,7 @@ export default class Comments extends React.Component {
     if (nextProps.show && (nextProps.post.id !== post.id || !show)) {
       this.props.getComments(
         nextProps.post.id,
-        this.props.post.append_field_name ? this.props.post.author_original : null,
+        this.props.post.append_field_name ? this.props.post.author_original : null
       );
     }
   }
@@ -155,7 +155,7 @@ export default class Comments extends React.Component {
       isQuickComments,
       sliderMode,
       rewardFund,
-      defaultVotePercent,
+      defaultVotePercent
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
