@@ -16,7 +16,7 @@ export const setToken = async (socialToken, social, regData) => {
 export const getValidTokenData = async () => {
   const token = waivioAPI.authToken;
   const expiration = store.get('waivioTokenExpiration');
-  if (token && (!expiration || Date.now() < Number(expiration))) {
+  if (token && (!expiration || Date.now() + 2000 > Number(expiration))) {
     const userData = await getNewToken(token);
     if (userData.status === 200) {
       waivioAPI.saveGuestData(

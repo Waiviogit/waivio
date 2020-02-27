@@ -721,7 +721,7 @@ export const getAuthenticatedUserMetadata = userName => {
 export const updateUserMetadata = async (userName, data) => {
   if (waivioAPI.isGuest) {
     const token = await getValidTokenData();
-    headers = { ...headers, 'access-token': waivioAPI.authToken, 'waivio-auth': true };
+    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
