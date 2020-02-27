@@ -16,6 +16,12 @@ export const PRIMARY_COLOR = '#f87007';
 
 export const GUEST_PREFIX = 'waivio_';
 
+export const GUEST_COOKIES = {
+  TOKEN: 'waivio_token',
+  USERNAME: 'guestName',
+  SOCIAL: 'socialName',
+};
+
 export const BANK_ACCOUNT = 'waiviobank';
 
 export const DEFAULT_OBJECT_AVATAR_URL =

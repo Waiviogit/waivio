@@ -34,10 +34,7 @@ async function getUserAccount() {
 }
 
 function sc2Extended() {
-  const isGuest = () =>
-    typeof localStorage !== 'undefined' &&
-    !!localStorage.getItem('accessToken') &&
-    !!localStorage.getItem('guestName');
+  const isGuest = () => waivioAPI.isGuest;
 
   const sc2api = sc2.Initialize({
     app: process.env.STEEMCONNECT_CLIENT_ID,

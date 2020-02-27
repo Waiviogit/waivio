@@ -41,11 +41,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
   let promise = Promise.resolve(null);
 
-  let isGuest = null;
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
+  const isGuest = waivioAPI.isGuest;
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
@@ -98,13 +94,9 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
     },
   });
 
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
-  const state = getState();
-  if (state.auth.isGuestUser) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('accessTokenExpiration');
-    localStorage.removeItem('socialName');
-    localStorage.removeItem('guestName');
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+  if (waivioAPI.isGuest) {
+    waivioAPI.clearGuestData();
     if (window) {
       // eslint-disable-next-line no-unused-expressions
       window.FB && window.FB.logout();
@@ -113,6 +105,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     }
   } else {
     steemConnectAPI.revokeToken();
+    steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
   }
   busyAPI.close();
