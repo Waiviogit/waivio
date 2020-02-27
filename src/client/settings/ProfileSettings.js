@@ -4,11 +4,11 @@ import Helmet from 'react-helmet';
 import { attempt, get, isEmpty, isError, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Avatar, Button, Form, Input, Modal } from 'antd';
+import { Avatar, Button, Form, Input, Modal, message } from 'antd';
 import { encodeOp } from 'steem-uri';
 import moment from 'moment';
 import { updateProfile } from '../auth/authActions';
-import { getAuthenticatedUser, getIsReloading, isGuestUser, getIsAuthFetching } from '../reducers';
+import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -89,7 +89,9 @@ export default class ProfileSettings extends React.Component {
     this.state = {
       bodyHTML: '',
       profileData: get(metadata, ['profile'], {}),
-      profilePicture: getAvatarURL(props.userName),
+      profilePicture: `${getAvatarURL(props.userName)}?${moment(
+        this.props.user.updatedAt || this.props.user.last_account_update,
+      ).unix()}`,
       coverPicture: get(metadata, ['profile', 'cover_image'], ''),
       isAvatar: false,
       isCover: false,
@@ -141,7 +143,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, user, userName, updateProfile } = this.props;
+    const { form, isGuest, user, userName, updateProfile, intl } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -165,7 +167,16 @@ export default class ProfileSettings extends React.Component {
             {},
           );
         if (isGuest) {
-          updateProfile(userName, cleanValues);
+          updateProfile(userName, cleanValues).then(data => {
+            if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
+              message.success(
+                intl.formatMessage({
+                  id: 'changes_take_effect_later',
+                  defaultMessage: 'Changes will take effect later',
+                }),
+              );
+            }
+          });
         } else {
           const profileDateEncoded = encodeOp(
             [
@@ -218,7 +229,15 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML, isAvatar, isModal, avatarImage, coverImage, isLoadingImage, disabled } = this.state;
+    const {
+      bodyHTML,
+      isAvatar,
+      isModal,
+      avatarImage,
+      coverImage,
+      isLoadingImage,
+      disabled,
+    } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -424,7 +443,10 @@ export default class ProfileSettings extends React.Component {
                   primary
                   big
                   type="submit"
-                  disabled={disabled || !form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  disabled={
+                    disabled ||
+                    (!form.isFieldsTouched() && !avatarImage.length && !coverImage.length)
+                  }
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
