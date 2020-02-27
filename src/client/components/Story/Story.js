@@ -203,7 +203,7 @@ class Story extends React.Component {
     const { sliderMode, defaultVotePercent } = this.props;
     const author = post.guestInfo && !post.depth ? post.root_author : post.author;
 
-    if (sliderMode) {
+    if (sliderMode && !postState.isLiked) {
       this.props.votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, author, post.permlink, 0);

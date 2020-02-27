@@ -54,16 +54,17 @@ export default class CommentFooter extends React.Component {
     sliderValue: 100,
     voteWorth: 0,
     replyFormVisible: false,
+    isLiked: false,
   };
 
   componentWillMount() {
     const { user, comment, defaultVotePercent } = this.props;
     if (user) {
       const userVote = find(comment.active_votes, { voter: user.name }) || {};
-
       if (userVote.percent && userVote.percent > 0) {
         this.setState({
           sliderValue: userVote.percent / 100,
+          isLiked: true,
         });
       } else {
         this.setState({
@@ -75,17 +76,19 @@ export default class CommentFooter extends React.Component {
 
   handleLikeClick = () => {
     const { sliderMode, comment } = this.props;
-    if (sliderMode) {
+    const { isLiked } = this.state;
+    if (sliderMode && !isLiked) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     } else {
       this.props.onLikeClick(comment.id);
+      this.setState({ isLiked: !this.state.isLiked });
     }
   };
 
   handleLikeConfirm = () => {
-    this.setState({ sliderVisible: false }, () => {
+    this.setState({ sliderVisible: false, isLiked: true }, () => {
       this.props.onLikeClick(this.props.comment.id, this.state.sliderValue * 100);
     });
   };
@@ -116,35 +119,33 @@ export default class CommentFooter extends React.Component {
       replying,
       pendingVotes,
     } = this.props;
-    const { sliderVisible } = this.state;
-
-    let actionPanel = null;
-    if (sliderVisible) {
-      actionPanel = (
-        <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
-      );
-    } else {
-      actionPanel = (
-        <Buttons
-          editable={editable}
-          editing={editing}
-          replying={replying}
-          user={user}
-          comment={comment}
-          pendingVotes={pendingVotes}
-          defaultVotePercent={defaultVotePercent}
-          onLikeClick={this.handleLikeClick}
-          onDislikeClick={this.handleDislikeClick}
-          onReplyClick={this.props.onReplyClick}
-          onEditClick={this.props.onEditClick}
-        />
-      );
-    }
+    const { sliderVisible, isLiked } = this.state;
 
     return (
       <div className="CommentFooter">
-        {!comment.isFakeComment && actionPanel}
-        {sliderVisible && (
+        {!comment.isFakeComment && (
+          <React.Fragment>
+            {sliderVisible && !isLiked && (
+              <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
+            )}
+            {(!sliderVisible || isLiked) && (
+              <Buttons
+                editable={editable}
+                editing={editing}
+                replying={replying}
+                user={user}
+                comment={comment}
+                pendingVotes={pendingVotes}
+                defaultVotePercent={defaultVotePercent}
+                onLikeClick={this.handleLikeClick}
+                onDislikeClick={this.handleDislikeClick}
+                onReplyClick={this.props.onReplyClick}
+                onEditClick={this.props.onEditClick}
+              />
+            )}
+          </React.Fragment>
+        )}
+        {sliderVisible && !isLiked && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}

@@ -553,7 +553,7 @@ class Topnav extends React.Component {
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
                     <div className="Topnav__search-content-small">
-                      ({getFieldWithMaxWeight(parent, objectFields.name)})
+                      {getFieldWithMaxWeight(parent, objectFields.name)}
                     </div>
                   )}
                 </div>
@@ -688,6 +688,7 @@ class Topnav extends React.Component {
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
+
     return (
       <div className="Topnav">
         <div className="topnav-layout">

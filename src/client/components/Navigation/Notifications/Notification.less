@@ -6,8 +6,20 @@
   background-color: @notification-read-background-color;
   border-bottom: @base-border;
 
+  .Notification__text__message {
+    span {
+      transition: 0.3s;
+    }
+  }
+
   &:hover {
     cursor: pointer;
+
+    .Notification__text__message {
+      span {
+        color: @orange-hot;
+      }
+    }
   }
 
   &--unread {

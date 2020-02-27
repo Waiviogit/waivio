@@ -85,7 +85,7 @@ class StoryFooter extends React.Component {
   }
 
   handleLikeClick = () => {
-    if (this.props.sliderMode) {
+    if (this.props.sliderMode && !this.props.postState.isLiked) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -141,10 +141,10 @@ class StoryFooter extends React.Component {
       <div className="StoryFooter">
         <div className="StoryFooter__actions">
           <Payout post={post} />
-          {this.state.sliderVisible && (
+          {this.state.sliderVisible && !postState.isLiked && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
-          {!this.state.sliderVisible && (
+          {(!this.state.sliderVisible || postState.isLiked) && (
             <Buttons
               post={post}
               postState={postState}
@@ -164,7 +164,7 @@ class StoryFooter extends React.Component {
             />
           )}
         </div>
-        {this.state.sliderVisible && (
+        {this.state.sliderVisible && !postState.isLiked && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
