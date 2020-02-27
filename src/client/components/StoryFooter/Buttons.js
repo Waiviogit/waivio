@@ -36,7 +36,7 @@ export default class Buttons extends React.Component {
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onCommentClick: PropTypes.func,
-    handlePostPopoverMenuClick: PropTypes.func
+    handlePostPopoverMenuClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -50,7 +50,7 @@ export default class Buttons extends React.Component {
     onShareClick: () => {},
     onCommentClick: () => {},
     onReportClick: () => {},
-    handlePostPopoverMenuClick: () => {}
+    handlePostPopoverMenuClick: () => {},
   };
 
   constructor(props) {
@@ -64,7 +64,7 @@ export default class Buttons extends React.Component {
       loadingEdit: false,
       upVotes: getUpvotes(this.props.post.active_votes),
       downVotes: getDownvotes(this.props.post.active_votes),
-      isUsersReblogModal: false
+      isUsersReblogModal: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -85,12 +85,12 @@ export default class Buttons extends React.Component {
         shareModalLoading: nextProps.postState.isReblogging,
         shareModalVisible:
           !(!nextProps.postState.isReblogging && this.props.postState.isReblogging) &&
-          this.state.shareModalVisible
+          this.state.shareModalVisible,
       });
     }
     this.setState({
       upVotes: getUpvotes(nextProps.post.active_votes),
-      downVotes: getDownvotes(nextProps.post.active_votes)
+      downVotes: getDownvotes(nextProps.post.active_votes),
     });
   }
 
@@ -120,7 +120,7 @@ export default class Buttons extends React.Component {
     }
 
     this.setState({
-      shareModalVisible: true
+      shareModalVisible: true,
     });
   }
 
@@ -135,19 +135,19 @@ export default class Buttons extends React.Component {
 
   handleShareCancel() {
     this.setState({
-      shareModalVisible: false
+      shareModalVisible: false,
     });
   }
 
   handleShowReactions() {
     this.setState({
-      reactionsModalVisible: true
+      reactionsModalVisible: true,
     });
   }
 
   handleCloseReactions() {
     this.setState({
-      reactionsModalVisible: false
+      reactionsModalVisible: false,
     });
   }
 
@@ -161,7 +161,7 @@ export default class Buttons extends React.Component {
       intl,
       post,
       handlePostPopoverMenuClick,
-      ownPost
+      ownPost,
     } = this.props;
     const { isReported } = postState;
     let followText = '';
@@ -169,22 +169,22 @@ export default class Buttons extends React.Component {
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author }
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author }
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author }
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author }
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     }
 
@@ -196,7 +196,7 @@ export default class Buttons extends React.Component {
         <PopoverMenuItem key="edit">
           {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
           <FormattedMessage id="edit_post" defaultMessage="Edit post" />
-        </PopoverMenuItem>
+        </PopoverMenuItem>,
       ];
     }
 
@@ -206,7 +206,7 @@ export default class Buttons extends React.Component {
         <PopoverMenuItem key="follow" disabled={pendingFollow}>
           {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
           {followText}
-        </PopoverMenuItem>
+        </PopoverMenuItem>,
       ];
     }
 
@@ -226,7 +226,7 @@ export default class Buttons extends React.Component {
           <i
             className={classNames('iconfont', {
               'icon-flag': !postState.isReported,
-              'icon-flag_fill': postState.isReported
+              'icon-flag_fill': postState.isReported,
             })}
           />
         )}
@@ -235,7 +235,7 @@ export default class Buttons extends React.Component {
         ) : (
           <FormattedMessage id="flag_post" defaultMessage="Flag post" />
         )}
-      </PopoverMenuItem>
+      </PopoverMenuItem>,
     ];
 
     return (
@@ -260,18 +260,18 @@ export default class Buttons extends React.Component {
     return (
       <span>
         {reblogged_users.map(
-          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>
+          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>,
         )}
         {reblogged_users.length > 3 && (
           <p>
             {this.props.intl.formatMessage(
               {
                 id: 'and_more_reblogged',
-                defaultMessage: `and {amount} more`
+                defaultMessage: `and {amount} more`,
               },
               {
-                amount: reblogged_users.length - maxUserCount
-              }
+                amount: reblogged_users.length - maxUserCount,
+              },
             )}
           </p>
         )}
@@ -427,7 +427,7 @@ export default class Buttons extends React.Component {
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
-                defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog'
+                defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog',
               })}
             >
               <a role="presentation" className={rebloggedClass} onClick={this.handleShareClick}>
@@ -454,7 +454,7 @@ export default class Buttons extends React.Component {
           <Modal
             title={intl.formatMessage({
               id: 'reblog_modal_title',
-              defaultMessage: 'Reblog this post?'
+              defaultMessage: 'Reblog this post?',
             })}
             visible={this.state.shareModalVisible}
             confirmLoading={this.state.shareModalLoading}

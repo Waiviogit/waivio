@@ -17,14 +17,14 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
         <div className="CampaignCardHeader__name">
           {intl.formatMessage({
             id: 'rewards_details_reward_for_reviews',
-            defaultMessage: 'Reward for reviews'
+            defaultMessage: 'Reward for reviews',
           })}
         </div>
         <div className="CampaignCardHeader__data">
           <span className="CampaignCardHeader__name-earn">
             {intl.formatMessage({
               id: 'rewards_details_earn',
-              defaultMessage: 'Earn'
+              defaultMessage: 'Earn',
             })}
           </span>
           {!isDetails ? (
@@ -77,10 +77,10 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
-  isDetails: PropTypes.bool
+  isDetails: PropTypes.bool,
 };
 CampaignCardHeader.defaultProps = {
-  isDetails: false
+  isDetails: false,
 };
 
 export default injectIntl(CampaignCardHeader);

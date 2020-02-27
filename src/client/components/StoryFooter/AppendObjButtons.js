@@ -27,7 +27,7 @@ const AppendObjButtons = ({
   userName,
   reactionsModalVisible,
   ratio,
-  handleCloseReactions
+  handleCloseReactions,
 }) => {
   const upVotes = getAppendUpvotes(post.active_votes).sort(sortVotes);
   const downVotes = getAppendDownvotes(post.active_votes)
@@ -46,7 +46,7 @@ const AppendObjButtons = ({
                 role="presentation"
                 className={classNames({
                   active: postState.isLiked && _.some(upVotes, { voter: userName }),
-                  Buttons__link: true
+                  Buttons__link: true,
                 })}
                 onClick={handleLikeClick}
               >
@@ -83,7 +83,7 @@ const AppendObjButtons = ({
                     {intl.formatMessage(
                       postState.isReported
                         ? { id: 'unvote', defaultMessage: 'Unvote' }
-                        : { id: 'vote', defaultMessage: 'Vote' }
+                        : { id: 'vote', defaultMessage: 'Vote' },
                     )}
                   </span>
                 }
@@ -92,7 +92,7 @@ const AppendObjButtons = ({
                   role="presentation"
                   className={classNames({
                     active: postState.isReported && _.some(downVotes, { voter: userName }),
-                    Buttons__link: true
+                    Buttons__link: true,
                   })}
                   onClick={onFlagClick}
                 >
@@ -160,11 +160,11 @@ AppendObjButtons.propTypes = {
   handleCommentsClick: PropTypes.func.isRequired,
   handleCloseReactions: PropTypes.func.isRequired,
   onFlagClick: PropTypes.func.isRequired,
-  handleShowReactions: PropTypes.func.isRequired
+  handleShowReactions: PropTypes.func.isRequired,
 };
 
 AppendObjButtons.defaultProps = { userName: '' };
 
 export default connect(state => ({
-  userName: getAuthenticatedUserName(state)
+  userName: getAuthenticatedUserName(state),
 }))(injectIntl(AppendObjButtons));

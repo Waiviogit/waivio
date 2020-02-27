@@ -13,7 +13,7 @@ import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
-  isGuest: isGuestUser(state)
+  isGuest: isGuestUser(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
@@ -36,7 +36,7 @@ class StoryFooter extends React.Component {
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
-    isGuest: PropTypes.bool
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -53,7 +53,7 @@ class StoryFooter extends React.Component {
     onEditClick: () => {},
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
-    isGuest: false
+    isGuest: false,
   };
 
   constructor(props) {
@@ -63,7 +63,7 @@ class StoryFooter extends React.Component {
       sliderVisible: false,
       commentsVisible: !props.post.children,
       sliderValue: 100,
-      voteWorth: 0
+      voteWorth: 0,
     };
   }
 
@@ -74,11 +74,11 @@ class StoryFooter extends React.Component {
 
       if (userVote.percent && userVote.percent > 0) {
         this.setState({
-          sliderValue: userVote.percent / 100
+          sliderValue: userVote.percent / 100,
         });
       } else {
         this.setState({
-          sliderValue: defaultVotePercent / 100
+          sliderValue: defaultVotePercent / 100,
         });
       }
     }
@@ -134,7 +134,7 @@ class StoryFooter extends React.Component {
       saving,
       singlePostVew,
       handlePostPopoverMenuClick,
-      onReportClick
+      onReportClick,
     } = this.props;
 
     return (

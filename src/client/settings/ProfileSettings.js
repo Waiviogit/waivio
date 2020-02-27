@@ -35,10 +35,10 @@ function mapPropsToFields(props) {
     (a, b) => ({
       ...a,
       [b]: Form.createFormField({
-        value: profile[b]
-      })
+        value: profile[b],
+      }),
     }),
-    {}
+    {},
   );
 }
 
@@ -48,14 +48,14 @@ function mapPropsToFields(props) {
   state => ({
     user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
-    isGuest: isGuestUser(state)
+    isGuest: isGuestUser(state),
   }),
   {
-    updateProfile
-  }
+    updateProfile,
+  },
 )
 @Form.create({
-  mapPropsToFields
+  mapPropsToFields,
 })
 @withEditor
 export default class ProfileSettings extends React.Component {
@@ -67,7 +67,7 @@ export default class ProfileSettings extends React.Component {
     onImageInvalid: PropTypes.func,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
-    user: PropTypes.string
+    user: PropTypes.string,
   };
 
   static defaultProps = {
@@ -76,7 +76,7 @@ export default class ProfileSettings extends React.Component {
     userName: '',
     user: '',
     isGuest: false,
-    updateProfile: () => {}
+    updateProfile: () => {},
   };
 
   constructor(props) {
@@ -96,7 +96,7 @@ export default class ProfileSettings extends React.Component {
       coverImage: [],
       isCover: false,
       isAvatar: false,
-      lastAccountUpdate: moment(props.user.updatedAt).unix()
+      lastAccountUpdate: moment(props.user.updatedAt).unix(),
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -124,14 +124,14 @@ export default class ProfileSettings extends React.Component {
             field =>
               form.isFieldTouched(field) ||
               (field === 'profile_image' && isChangedAvatar) ||
-              (field === 'cover_image' && isChangedCover)
+              (field === 'cover_image' && isChangedCover),
           )
           .reduce(
             (a, b) => ({
               ...a,
-              [b]: values[b] || ''
+              [b]: values[b] || '',
             }),
-            {}
+            {},
           );
         if (isGuest) {
           updateProfile(userName, cleanValues).then(data => {
@@ -139,8 +139,8 @@ export default class ProfileSettings extends React.Component {
               message.success(
                 intl.formatMessage({
                   id: 'changes_take_effect_later',
-                  defaultMessage: 'Changes will take effect later'
-                })
+                  defaultMessage: 'Changes will take effect later',
+                }),
               );
             }
           });
@@ -151,14 +151,14 @@ export default class ProfileSettings extends React.Component {
               {
                 account: userName,
                 memo_key: user.memo_key,
-                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } })
-              }
+                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
+              },
             ],
-            { callback: window.location.href }
+            { callback: window.location.href },
           );
           const win = window.open(
             profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
-            '_blank'
+            '_blank',
           );
           win.focus();
         }
@@ -176,7 +176,7 @@ export default class ProfileSettings extends React.Component {
       getGuestAvatarUrl(userName, avatarImage[0].src, intl)
         .then(data => {
           this.props.form.setFieldsValue({
-            profile_image: data.image
+            profile_image: data.image,
           });
         })
         .then(() => this.setSettingsFields());
@@ -196,10 +196,10 @@ export default class ProfileSettings extends React.Component {
     this.setState({
       isModal: !this.state.isModal,
       isAvatar: !this.state.isAvatar,
-      profilePicture: avatarImage[0].src
+      profilePicture: avatarImage[0].src,
     });
     this.props.form.setFieldsValue({
-      profile_image: avatarImage[0].src
+      profile_image: avatarImage[0].src,
     });
   };
 
@@ -208,16 +208,16 @@ export default class ProfileSettings extends React.Component {
     this.setState({
       isModal: !this.state.isModal,
       isCover: !this.state.isCover,
-      coverPicture: coverImage[0].src
+      coverPicture: coverImage[0].src,
     });
     this.props.form.setFieldsValue({
-      cover_image: coverImage[0].src
+      cover_image: coverImage[0].src,
     });
   };
 
   renderBody(body) {
     this.setState({
-      bodyHTML: remarkable.render(body)
+      bodyHTML: remarkable.render(body),
     });
   }
 
@@ -241,7 +241,7 @@ export default class ProfileSettings extends React.Component {
       coverImage,
       isAvatar,
       lastAccountUpdate,
-      profilePicture
+      profilePicture,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -253,11 +253,11 @@ export default class ProfileSettings extends React.Component {
               message: intl.formatMessage({
                 id: 'profile_social_profile_incorrect',
                 defaultMessage:
-                  "This doesn't seem to be valid username. Only alphanumeric characters, hyphens, underscores and dots are allowed."
+                  "This doesn't seem to be valid username. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
               }),
-              pattern: /^[0-9A-Za-z-_.]+$/
-            }
-          ]
+              pattern: /^[0-9A-Za-z-_.]+$/,
+            },
+          ],
         })(
           <Input
             size="large"
@@ -265,12 +265,12 @@ export default class ProfileSettings extends React.Component {
               <i
                 className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
                 style={{
-                  color: profile.color
+                  color: profile.color,
                 }}
               />
             }
             placeholder={profile.name}
-          />
+          />,
         )}
       </FormItem>
     ));
@@ -306,9 +306,9 @@ export default class ProfileSettings extends React.Component {
                           size="large"
                           placeholder={intl.formatMessage({
                             id: 'profile_name_placeholder',
-                            defaultMessage: 'Name to display on your profile'
+                            defaultMessage: 'Name to display on your profile',
                           })}
-                        />
+                        />,
                       )}
                     </FormItem>
                   </div>
@@ -324,9 +324,9 @@ export default class ProfileSettings extends React.Component {
                           autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
                             id: 'profile_about_placeholder',
-                            defaultMessage: 'Few words about you'
+                            defaultMessage: 'Few words about you',
                           })}
-                        />
+                        />,
                       )}
                     </FormItem>
                   </div>
@@ -342,9 +342,9 @@ export default class ProfileSettings extends React.Component {
                           size="large"
                           placeholder={intl.formatMessage({
                             id: 'profile_location_placeholder',
-                            defaultMessage: 'Your location'
+                            defaultMessage: 'Your location',
                           })}
-                        />
+                        />,
                       )}
                     </FormItem>
                   </div>
@@ -360,9 +360,9 @@ export default class ProfileSettings extends React.Component {
                           size="large"
                           placeholder={intl.formatMessage({
                             id: 'profile_website_placeholder',
-                            defaultMessage: 'Your website URL'
+                            defaultMessage: 'Your website URL',
                           })}
-                        />
+                        />,
                       )}
                     </FormItem>
                   </div>
@@ -383,10 +383,10 @@ export default class ProfileSettings extends React.Component {
                           <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
                               id: 'profile_change_avatar',
-                              defaultMessage: 'Change avatar'
+                              defaultMessage: 'Change avatar',
                             })}
                           </Button>
-                        </div>
+                        </div>,
                       )}
                     </FormItem>
                   </div>
@@ -408,10 +408,10 @@ export default class ProfileSettings extends React.Component {
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({
                               id: 'profile_change_cover',
-                              defaultMessage: 'Change cover'
+                              defaultMessage: 'Change cover',
                             })}
                           </Button>
-                        </div>
+                        </div>,
                       )}
                     </FormItem>
                   </div>
@@ -431,7 +431,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     {getFieldDecorator('signature', {
-                      initialValue: ''
+                      initialValue: '',
                     })(
                       <EditorInput
                         rows={6}
@@ -439,7 +439,7 @@ export default class ProfileSettings extends React.Component {
                         onImageUpload={this.props.onImageUpload}
                         onImageInvalid={this.props.onImageInvalid}
                         inputId={'profile-inputfile'}
-                      />
+                      />,
                     )}
                     {bodyHTML && (
                       <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
@@ -466,11 +466,11 @@ export default class ProfileSettings extends React.Component {
             isAvatar
               ? intl.formatMessage({
                   id: 'profile_change_avatar',
-                  defaultMessage: 'Change avatar'
+                  defaultMessage: 'Change avatar',
                 })
               : intl.formatMessage({
                   id: 'profile_change_cover',
-                  defaultMessage: 'Change cover'
+                  defaultMessage: 'Change cover',
                 })
           }
           closable

@@ -27,7 +27,7 @@ const store = getStore(steemConnectAPI, waivioAPI, '/', history);
 
 message.config({
   top: 62,
-  duration: 3
+  duration: 3,
 });
 
 const render = async Component => {
@@ -50,14 +50,14 @@ const render = async Component => {
   store.dispatch(setUsedLocale(lang));
   store.dispatch(setScreenSize(screenSize(window.screen.width)));
   window.addEventListener('resize', () =>
-    store.dispatch(setScreenSize(screenSize(window.screen.width)))
+    store.dispatch(setScreenSize(screenSize(window.screen.width))),
   );
 
   ReactDOM.hydrate(
     <Provider store={store}>
       <Component history={history} />
     </Provider>,
-    document.getElementById('app')
+    document.getElementById('app'),
   );
 };
 

@@ -6,7 +6,7 @@ import { createAction } from 'redux-actions';
 import {
   BENEFICIARY_ACCOUNT,
   BENEFICIARY_PERCENT,
-  REFERRAL_PERCENT
+  REFERRAL_PERCENT,
 } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
@@ -59,15 +59,15 @@ export const saveDraft = (draft, redirect, intl) => dispatch =>
           id: isLoggedOut ? 'draft_save_auth_error' : 'draft_save_error',
           defaultMessage: isLoggedOut
             ? "Couldn't save this draft, because you are logged out. Please backup your post and log in again."
-            : "Couldn't save this draft. Make sure you are connected to the internet and don't have too much drafts already"
+            : "Couldn't save this draft. Make sure you are connected to the internet and don't have too much drafts already",
         });
 
         dispatch(notify(errorMessage, 'error'));
 
         throw new Error();
-      })
+      }),
     },
-    meta: { postId: draft.draftId }
+    meta: { postId: draft.draftId },
   }).then(() => {
     if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
@@ -80,15 +80,15 @@ export const deleteDraft = draftIds => (dispatch, getState) => {
   return dispatch({
     type: DELETE_DRAFT,
     payload: {
-      promise: deleteDraftMetadata(draftIds, userName)
+      promise: deleteDraftMetadata(draftIds, userName),
     },
-    meta: { ids: draftIds }
+    meta: { ids: draftIds },
   });
 };
 
 export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
-  intl
+  intl,
 ) => dispatch => {
   const jsonMetadata = jsonParse(json_metadata);
   const draft = {
@@ -103,13 +103,13 @@ export const editPost = (
     parentPermlink: parent_permlink,
     permlink,
     reward,
-    title
+    title,
   };
   dispatch(saveDraft(draft, true, intl));
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(
-  ','
+  ',',
 );
 
 const broadcastComment = (
@@ -126,7 +126,7 @@ const broadcastComment = (
   upvote,
   permlink,
   referral,
-  authUsername
+  authUsername,
 ) => {
   const operations = [];
   const commentOp = [
@@ -138,8 +138,8 @@ const broadcastComment = (
       permlink,
       title,
       body,
-      json_metadata: JSON.stringify(jsonMetadata)
-    }
+      json_metadata: JSON.stringify(jsonMetadata),
+    },
   ];
   operations.push(commentOp);
 
@@ -152,7 +152,7 @@ const broadcastComment = (
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 SBD',
     percent_steem_dollars: 10000,
-    extensions: []
+    extensions: [],
   };
 
   if (reward === rewardsValues.none) {
@@ -184,8 +184,8 @@ const broadcastComment = (
         voter: author,
         author,
         permlink,
-        weight: 10000
-      }
+        weight: 10000,
+      },
     ]);
   }
 
@@ -209,7 +209,7 @@ export function createPost(postData) {
       beneficiary,
       upvote,
       draftId,
-      isUpdating
+      isUpdating,
     } = postData;
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
@@ -249,7 +249,7 @@ export function createPost(postData) {
             !isUpdating && !isGuest && upvote,
             permlink,
             referral,
-            authUser.name
+            authUser.name,
           )
             .then(result => {
               if (draftId) {
@@ -274,7 +274,7 @@ export function createPost(postData) {
                 window.analytics.track('Post', {
                   category: 'post',
                   label: 'submit',
-                  value: 10
+                  value: 10,
                 });
               }
 
@@ -286,9 +286,9 @@ export function createPost(postData) {
             })
             .catch(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
-            })
-        )
-      }
+            }),
+        ),
+      },
     });
   };
 }
