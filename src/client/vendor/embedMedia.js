@@ -55,7 +55,7 @@ SteemEmbed.get = function(url, options) {
       provider_name: 'YouTube',
       thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/mqdefault.jpg',
       id: youtubeId,
-      embed: this.youtube(url, youtubeId, options),
+      embed: this.youtube(url, youtubeId, options)
     };
   } else if (dTubeId) {
     return {
@@ -64,7 +64,7 @@ SteemEmbed.get = function(url, options) {
       provider_name: 'DTube',
       thumbnail: 'https://steemitimages.com/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
       id: dTubeId,
-      embed: this.dTube(url, dTubeId, options),
+      embed: this.dTube(url, dTubeId, options)
     };
   } else if (threeSpeakId) {
     const [, permlink] = threeSpeakId.split('/');
@@ -74,7 +74,7 @@ SteemEmbed.get = function(url, options) {
       provider_name: '3Speak',
       thumbnail: `https://img.3speakcontent.online/${permlink}/thumbnail.png`,
       id: threeSpeakId,
-      embed: this.threeSpeak(url, threeSpeakId, options),
+      embed: this.threeSpeak(url, threeSpeakId, options)
     };
   } else if (twitchChannel) {
     return {
@@ -82,7 +82,7 @@ SteemEmbed.get = function(url, options) {
       url: url,
       provider_name: 'Twitch',
       id: twitchChannel,
-      embed: this.twitch(url, twitchChannel, options),
+      embed: this.twitch(url, twitchChannel, options)
     };
   } else if (periscopeId) {
     return {
@@ -90,7 +90,7 @@ SteemEmbed.get = function(url, options) {
       url: url,
       provider_name: 'Periscope',
       id: periscopeId,
-      embed: this.periscope(url, periscopeId, options),
+      embed: this.periscope(url, periscopeId, options)
     };
   } else if (soundcloudId) {
     return {
@@ -98,7 +98,7 @@ SteemEmbed.get = function(url, options) {
       url: url,
       provider_name: 'SoundCloud',
       id: soundcloudId,
-      embed: this.soundcloud(url, soundcloudId, options),
+      embed: this.soundcloud(url, soundcloudId, options)
     };
   } else if (vimeoId) {
     return {
@@ -106,7 +106,7 @@ SteemEmbed.get = function(url, options) {
       url: url,
       provider_name: 'Vimeo',
       id: vimeoId,
-      embed: this.vimeo(url, vimeoId, options),
+      embed: this.vimeo(url, vimeoId, options)
     };
   } else if (bitchuteId) {
     return {
@@ -114,7 +114,7 @@ SteemEmbed.get = function(url, options) {
       url: url,
       provider_name: 'BitChute',
       id: bitchuteId,
-      embed: this.bitchute(url, bitchuteId, options),
+      embed: this.bitchute(url, bitchuteId, options)
     };
   }
 };
