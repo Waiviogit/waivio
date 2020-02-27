@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
-import store from "store";
+import store from 'store';
 import { GUEST_COOKIES } from '../common/constants/waivio';
 import config from './routes';
 import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
@@ -978,10 +978,12 @@ class WaivioApiClient {
   }
 
   saveGuestData(accessToken, expiration, userName, social) {
-    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, { expires: new Date((expiration + 86400 * 7) * 1000 ) }); // there are 86400 sec in one day
-    Cookie.set(GUEST_COOKIES.USERNAME, userName );
+    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, {
+      expires: new Date((expiration + 86400 * 7) * 1000),
+    }); // there are 86400 sec in one day
+    Cookie.set(GUEST_COOKIES.USERNAME, userName);
     Cookie.set(GUEST_COOKIES.SOCIAL, social);
-    store.set('waivioTokenExpiration', String(expiration * 1000 ));
+    store.set('waivioTokenExpiration', String(expiration * 1000));
     this.authToken = accessToken;
   }
   clearGuestData() {

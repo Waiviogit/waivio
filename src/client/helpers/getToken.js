@@ -19,7 +19,12 @@ export const getValidTokenData = async () => {
   if (token && (!expiration || Date.now() < Number(expiration))) {
     const userData = await getNewToken(token);
     if (userData.status === 200) {
-      waivioAPI.saveGuestData(userData.token, userData.expiration, userData.name, get(userData, ['auth', 'provider']));
+      waivioAPI.saveGuestData(
+        userData.token,
+        userData.expiration,
+        userData.name,
+        get(userData, ['auth', 'provider']),
+      );
       return userData;
     }
   }
