@@ -168,9 +168,9 @@ export default class User extends React.Component {
       coverImage = profile.cover_image;
     }
     const hasCover = !!coverImage;
-    const waivioHost = global.postOrigin || 'https://waivio.com';
+    const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const image = getAvatarURL(username) || '/images/logo.png';
-    const canonicalUrl = `${waivioHost}/@${username}`;
+    const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
 
