@@ -88,7 +88,9 @@ export default class ProfileSettings extends React.Component {
     this.state = {
       bodyHTML: '',
       profileData: get(metadata, ['profile'], {}),
-      profilePicture: getAvatarURL(props.userName),
+      profilePicture: `${getAvatarURL(props.userName)}?${moment(
+        this.props.user.updatedAt || this.props.user.last_account_update,
+      ).unix()}`,
       coverPicture: get(metadata, ['profile', 'cover_image'], ''),
       isModal: false,
       isLoadingImage: false,
