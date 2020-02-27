@@ -2,6 +2,8 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
+import store from 'store';
+import { GUEST_COOKIES } from '../common/constants/waivio';
 import config from './routes';
 import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
@@ -17,7 +19,7 @@ let headers = {
 };
 
 const getFilterKey = () => {
-  if (localStorage) {
+  if (typeof localStorage !== 'undefined') {
     const isAppMyFeedFilterOn = !localStorage.getItem('isAppMyFeedFilterOn');
     return isAppMyFeedFilterOn ? '' : filterKey;
   }
@@ -717,15 +719,9 @@ export const getAuthenticatedUserMetadata = userName => {
 };
 
 export const updateUserMetadata = async (userName, data) => {
-  let isGuest = null;
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
-
-  if (isGuest) {
+  if (waivioAPI.isGuest) {
     const token = await getValidTokenData();
-    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
+    headers = { ...headers, 'access-token': waivioAPI.authToken, 'waivio-auth': true };
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
@@ -954,11 +950,63 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
 };
 //endregion
 
+const singleton = Symbol();
+const singletonEnforcer = Symbol();
+class WaivioApiClient {
+  constructor(enforcer) {
+    if (enforcer !== singletonEnforcer) {
+      throw new Error('Cannot construct singleton');
+    }
+    this._authToken = null;
+  }
+
+  static get instance() {
+    if (!this[singleton]) {
+      this[singleton] = new WaivioApiClient(singletonEnforcer);
+    }
+    return this[singleton];
+  }
+
+  broadcastGuestOperation() {
+    return broadcastGuestOperation(...arguments);
+  }
+  getAuthenticatedUserMetadata() {
+    return getAuthenticatedUserMetadata(...arguments);
+  }
+  getUserAccount() {
+    return getUserAccount(...arguments);
+  }
+
+  saveGuestData(accessToken, expiration, userName, social) {
+    Cookie.set(GUEST_COOKIES.TOKEN, accessToken, {
+      expires: new Date((expiration + 86400 * 7) * 1000),
+    }); // there are 86400 sec in one day
+    Cookie.set(GUEST_COOKIES.USERNAME, userName);
+    Cookie.set(GUEST_COOKIES.SOCIAL, social);
+    store.set('waivioTokenExpiration', String(expiration * 1000));
+    this.authToken = accessToken;
+  }
+  clearGuestData() {
+    Object.values(GUEST_COOKIES).forEach(cookieName => {
+      Cookie.remove(cookieName);
+    });
+    store.remove('waivioTokenExpiration');
+    this.authToken = null;
+  }
+
+  get authToken() {
+    return this._authToken;
+  }
+  set authToken(token) {
+    this._authToken = token;
+  }
+
+  get isGuest() {
+    return Boolean(this._authToken);
+  }
+}
+
 // injected as extra argument in Redux Thunk
-export const waivioAPI = {
-  getAuthenticatedUserMetadata,
-  broadcastGuestOperation,
-  getUserAccount,
-};
+export const waivioAPI = WaivioApiClient.instance;
 
 export default null;

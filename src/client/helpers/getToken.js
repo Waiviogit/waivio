@@ -1,32 +1,33 @@
-import { getAccessToken, getNewToken } from '../../waivioApi/ApiClient';
+import Cookie from 'js-cookie';
+import { get } from 'lodash';
+import store from 'store';
+import { getAccessToken, getNewToken, waivioAPI } from '../../waivioApi/ApiClient';
 
 export const setToken = async (socialToken, social, regData) => {
   try {
     const userData = await getAccessToken(socialToken, social, regData);
-    localStorage.setItem('accessToken', userData.token);
-    const expiration = userData.expiration;
-    localStorage.setItem('accessTokenExpiration', String(expiration));
-    localStorage.setItem('socialName', social);
-    localStorage.setItem('guestName', userData.userData.name);
+    waivioAPI.saveGuestData(userData.token, userData.expiration, userData.userData.name, social);
     return userData;
   } catch (err) {
     return err;
   }
 };
 
-// eslint-disable-next-line no-unused-vars
 export const getValidTokenData = async () => {
-  const token = localStorage.getItem('accessToken');
-  const expiration = localStorage.getItem('accessTokenExpiration');
-  if (expiration && Date.now() > expiration * 1000) {
+  const token = waivioAPI.authToken;
+  const expiration = store.get('waivioTokenExpiration');
+  if (token && (!expiration || Date.now() < Number(expiration))) {
     const userData = await getNewToken(token);
     if (userData.status === 200) {
-      localStorage.setItem('accessToken', userData.token);
-      localStorage.setItem('accessTokenExpiration', String(userData.expiration));
-      localStorage.setItem('guestName', userData.userData.name);
+      waivioAPI.saveGuestData(
+        userData.token,
+        userData.expiration,
+        userData.name,
+        get(userData, ['auth', 'provider']),
+      );
       return userData;
     }
   }
-  const name = localStorage.getItem('guestName');
+  const name = Cookie.get('guestName');
   return { token, userData: { name } };
 };
