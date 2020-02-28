@@ -19,17 +19,12 @@ export const averageRate = field => {
   return avrRate;
 };
 
-// export const getRatesWithMaxVotes = (ratings, count) => {
-//   _.forEach(ratings, rate => {
-//     sumRate += averageRate(rate);
-//   });
-//   return;
-// };
-
 export const avrRate = ratings => {
   let sumRate = 0;
+  let votedRatesCount = 0;
   forEach(ratings, rate => {
+    if (rate.rating_votes) votedRatesCount += 1;
     sumRate += averageRate(rate);
   });
-  return sumRate > 0 && ratings.length > 0 ? sumRate / ratings.length : 0;
+  return sumRate > 0 && votedRatesCount > 0 ? sumRate / votedRatesCount : 0;
 };
