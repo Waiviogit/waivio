@@ -1,7 +1,7 @@
 import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
-import Cookie from "js-cookie";
+import Cookie from 'js-cookie';
 
 function broadcast(operations, actionAuthor) {
   let operation;

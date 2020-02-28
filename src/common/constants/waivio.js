@@ -24,7 +24,7 @@ export const GUEST_COOKIES = {
   SID: 'sessionId',
   STOMP_USER: 'stompUser',
   STOMP_PASSWORD: 'stompPassword',
-  UM_SESSION: 'um_session'
+  UM_SESSION: 'um_session',
 };
 
 export const BANK_ACCOUNT = 'waiviobank';

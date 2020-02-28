@@ -1004,10 +1004,20 @@ export const beaxy2FALogin = (user, token2fa, code) => {
   };
   return beaxyLogin(body);
 };
+
+export const bxyKeepAlive = (sessionId, umSession) =>
+  fetch(`${config.baseUrl}${config.auth}/beaxy_keepalive?sid=${sessionId}`, {
+    headers: { ...headers, um_session: umSession },
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json());
+
 //endregion
 
 const singleton = Symbol();
 const singletonEnforcer = Symbol();
+const keepAliveDelay = 30000;
 class WaivioApiClient {
   constructor(enforcer) {
     if (enforcer !== singletonEnforcer) {
@@ -1033,6 +1043,24 @@ class WaivioApiClient {
     return getUserAccount(...arguments);
   }
 
+  setBxyKeepAliveTimer() {
+    let bxyKeepAliveTimer = setTimeout(async function keepAliveRequest() {
+      const sid = Cookie.get(GUEST_COOKIES.SID);
+      const umSession = Cookie.get(GUEST_COOKIES.UM_SESSION);
+      try {
+        const res = await bxyKeepAlive(sid, umSession);
+        console.log('\tALIVE > ', res);
+        bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
+      } catch (e) {
+          // handle keep alive error
+          clearTimeout(bxyKeepAliveTimer);
+          const waivioApi = WaivioApiClient.instance;
+          waivioApi.clearGuestData();
+          console.log('\tALIVE ERROR > ', e);
+      }
+    }, keepAliveDelay)
+  }
+
   saveGuestData(accessToken, expiration, userName, social, bxySession = null) {
     Cookie.set(GUEST_COOKIES.TOKEN, accessToken, {
       expires: new Date((expiration + 86400 * 7) * 1000),
@@ -1047,6 +1075,8 @@ class WaivioApiClient {
       Cookie.set(GUEST_COOKIES.STOMP_USER, bxySession.stompUser);
       Cookie.set(GUEST_COOKIES.STOMP_PASSWORD, bxySession.stompPassword);
       Cookie.set(GUEST_COOKIES.UM_SESSION, bxySession.umSession);
+      // keep alive bxy-session
+      this.setBxyKeepAliveTimer();
     }
   }
   clearGuestData() {

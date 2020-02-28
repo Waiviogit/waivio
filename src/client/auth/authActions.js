@@ -37,7 +37,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   getState,
   { steemConnectAPI, waivioAPI },
 ) => {
-
   // todo: call beaxy login
   const state = getState();
   let promise = Promise.resolve(null);
@@ -93,7 +92,13 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
     payload: new Promise(async (resolve, reject) => {
       try {
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
-        waivioAPI.saveGuestData(userData.token, userData.expiration, userData.user.name, 'beaxy', bxySessionData);
+        waivioAPI.saveGuestData(
+          userData.token,
+          userData.expiration,
+          userData.user.name,
+          'beaxy',
+          bxySessionData,
+        );
         resolve({
           account: userData.user,
           userMetaData,

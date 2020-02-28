@@ -31,13 +31,17 @@ const BeaxySignInFormContent = ({ form }) => {
                 setToken2FA(bxySessionData.token2fa);
               } else {
                 dispatch(
-                  beaxyLogin({ user: userData, token, expiration }, { ...bxySessionData, umSession }),
+                  beaxyLogin(
+                    { user: userData, token, expiration },
+                    { ...bxySessionData, umSession },
+                  ),
                 );
               }
               setAuthError(null);
             })
             .catch(error => {
-              const errMessage = error.message === 'Unauthorized' ? 'invalid_credentials' : 'server_error';
+              const errMessage =
+                error.message === 'Unauthorized' ? 'invalid_credentials' : 'server_error';
               setAuthError(errMessage);
               console.log('\tlogin error: ', error && error.message);
             })
@@ -54,7 +58,8 @@ const BeaxySignInFormContent = ({ form }) => {
                 );
               },
               error => {
-                const errMessage = error.message === 'Unauthorized' ? 'two_FA_error' : 'server_error';
+                const errMessage =
+                  error.message === 'Unauthorized' ? 'two_FA_error' : 'server_error';
                 setAuthError(errMessage);
                 console.log('\t2FA error', error && error.message);
               },
