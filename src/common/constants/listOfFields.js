@@ -34,6 +34,7 @@ export const TYPES_OF_MENU_ITEM = {
   BUTTON: 'menuButton',
   NEWS: 'menuNews',
 };
+
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
 export const objectFieldsWithInnerData = [
