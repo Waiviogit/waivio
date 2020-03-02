@@ -167,7 +167,6 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
 };
 
 export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink }) => dispatch => {
-  console.log('ger');
   dispatch({
     type: GET_USER_COMMENTS.ACTION,
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink),

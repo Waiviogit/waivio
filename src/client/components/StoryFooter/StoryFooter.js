@@ -84,15 +84,11 @@ class StoryFooter extends React.Component {
     }
   }
 
-  handleVisibleSlider() {
-    if (!this.state.sliderVisible) {
-      this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-    }
-  }
-
   handleLikeClick = (weight, type) => {
     if (this.props.sliderMode && !this.props.postState.isLiked) {
-      this.handleVisibleSlider();
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
     } else {
       this.props.onLikeClick(this.props.post, this.props.postState, weight, type);
     }
@@ -171,7 +167,6 @@ class StoryFooter extends React.Component {
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
-              handleVisibleSlider={this.handleVisibleSlider}
             />
           )}
         </div>

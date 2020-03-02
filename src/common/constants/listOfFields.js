@@ -12,9 +12,9 @@ export const objectFields = {
   website: 'website',
   phone: 'phone',
   email: 'email',
-  sorting: 'sortCustom',
+  // sorting: 'sortCustom',
   rating: 'rating',
-  listItem: 'listItem',
+  // listItem: 'listItem',
   price: 'price',
   parent: 'parent',
   newsFilter: 'newsFilter',
@@ -148,30 +148,5 @@ export const getAllowedFieldsByObjType = objectType => {
     }
   }
 };
-
-export const REQUIREDFIELDS = [
-  'name',
-  'title',
-  'website',
-  'avatar',
-  'background',
-  'address',
-  'description',
-  'map',
-  'link',
-  'tag',
-  'phone',
-  'email',
-  'rating',
-  'parent',
-  'tagCloud',
-  'price',
-  'button',
-  'workTime',
-  'chartid',
-  'newsFilter',
-  'pageContent',
-  'status',
-];
 
 export default null;

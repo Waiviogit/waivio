@@ -1,4 +1,4 @@
-import _, { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil } from 'lodash';
+import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil, some } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -28,8 +28,9 @@ import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
-import './Story.less';
 import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
+
+import './Story.less';
 
 @injectIntl
 @withRouter
@@ -145,11 +146,14 @@ class Story extends React.Component {
     if (isPostTaggedNSFW(post)) {
       return showNSFWPosts;
     }
+
     return true;
   }
+
   getObjectLayout = wobj => {
     const pathName = `/object/${wobj.author_permlink}`;
     let name = '';
+
     if (wobj.objectName) {
       name = wobj.objectName;
     } else {
@@ -157,8 +161,10 @@ class Story extends React.Component {
       const nameField = maxBy(nameFields, 'weight') || {
         body: wobj.default_name,
       };
+
       if (nameField) name = nameField.body;
     }
+
     return (
       <Link
         key={wobj.author_permlink}
@@ -172,32 +178,41 @@ class Story extends React.Component {
       </Link>
     );
   };
+
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;
     const returnData = map(wobjects, wobj => {
       if (wobj.author_permlink === this.props.match.params.name) {
         objectFromCurrentPage = this.getObjectLayout(wobj);
+
         return null;
       }
+
       if (i < 5) {
         i += 1;
         return this.getObjectLayout(wobj);
       }
+
       return null;
     });
+
     if (objectFromCurrentPage) {
       returnData.unshift(objectFromCurrentPage);
+
       if (i === 4) returnData.splice(-1, 1);
     }
+
     return returnData;
   };
 
   getWeighForUpdates = weight => {
     if (this.props.post.append_field_name) {
       if (weight > 9998) return weight - 1;
+
       return weight + 1;
     }
+
     return weight;
   };
 
@@ -207,7 +222,7 @@ class Story extends React.Component {
 
     if (post.append_field_name) {
       const upVotes = getAppendUpvotes(post.active_votes);
-      const isLiked = post.isLiked || _.some(upVotes, { voter: user.name });
+      const isLiked = post.isLiked || some(upVotes, { voter: user.name });
       const postId = `${post.author}/${post.permlink}`;
 
       if (isLiked) {
@@ -233,8 +248,9 @@ class Story extends React.Component {
 
     if (post.append_field_name) {
       const downVotes = getAppendDownvotes(post.active_votes);
-      const isReject = post.isReject || _.some(downVotes, { voter: this.props.user.name });
+      const isReject = post.isReject || some(downVotes, { voter: this.props.user.name });
       const postId = `${post.author}/${post.permlink}`;
+
       if (isReject) {
         this.props.votePostUpdate(postId, post.author, post.permlink, 0, type);
       } else {
@@ -244,6 +260,7 @@ class Story extends React.Component {
       if (isRejectField) {
         weight = postState.isReported ? 0 : 9999;
       }
+
       const author = post.author_original || post.author;
       this.props.votePost(post.id, author, post.permlink, weight);
     }
@@ -255,6 +272,7 @@ class Story extends React.Component {
 
   handleFollowClick(post) {
     const { userFollowed } = this.props.postState;
+
     if (userFollowed) {
       this.props.unfollowUser(post.author);
     } else {
@@ -264,12 +282,15 @@ class Story extends React.Component {
 
   handleEditClick(post) {
     const { intl } = this.props;
+
     if (post.depth === 0) return this.props.editPost(post, intl);
+
     return this.props.push(`${post.url}-edit`);
   }
 
   clickMenuItem(key) {
     const { post, postState } = this.props;
+
     switch (key) {
       case 'follow':
         this.handleFollowClick(post);
@@ -319,7 +340,7 @@ class Story extends React.Component {
   handlePreviewClickPostModalDisplay(e) {
     e.preventDefault();
 
-    const { post } = this.props;
+    const { post, history } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const elementNodeName = toLower(get(e, 'target.nodeName', ''));
     const elementClassName = get(e, 'target.className', '');
@@ -329,7 +350,7 @@ class Story extends React.Component {
     const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
 
     if (isReplyPreview) {
-      this.props.history.push(postURL);
+      history.push(postURL);
     } else if (openInNewTab && showPostModal) {
       if (window) {
         const url = `${window.location.origin}${postURL}`;
@@ -382,10 +403,10 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
+    let rebloggedUI = null;
 
     if (isPostDeleted(post)) return <div />;
-
-    let rebloggedUI = null;
 
     if (post.reblogged_by && post.reblogged_by.length > 0) {
       rebloggedUI = (
@@ -412,8 +433,6 @@ class Story extends React.Component {
         </div>
       );
     }
-
-    const author = post.guestInfo ? post.guestInfo.userId : post.author;
 
     return (
       <div className="Story" id={`${author}-${post.permlink}`}>

@@ -18,7 +18,6 @@ const AppendObjButtons = ({
   intl,
   likeTooltip,
   handleLikeClick,
-  // pendingLike,
   upVotesPreview,
   upVotesMore,
   handleCommentsClick,
@@ -166,9 +165,6 @@ AppendObjButtons.propTypes = {
 
 AppendObjButtons.defaultProps = { userName: '' };
 
-export default connect(
-  state => ({
-    userName: getAuthenticatedUserName(state),
-  }),
-  {},
-)(injectIntl(AppendObjButtons));
+export default connect(state => ({
+  userName: getAuthenticatedUserName(state),
+}))(injectIntl(AppendObjButtons));

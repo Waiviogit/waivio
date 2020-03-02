@@ -218,6 +218,7 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
+
     case postsActions.VOTE_UPDATE_START: {
       const matchPost = state.list[action.payload.postId];
 
@@ -232,6 +233,7 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+
     case postsActions.VOTE_UPDATE_SUCCESS: {
       const matchPost = state.list[action.payload.postId];
       const percent = action.payload.type === 'like' ? 100 : -100;
@@ -271,6 +273,7 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+
     case postsActions.VOTE_UPDATE_REJECT: {
       const matchPost = state.list[action.payload.postId];
 

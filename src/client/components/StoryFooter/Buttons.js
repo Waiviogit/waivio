@@ -15,6 +15,7 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import AppendObjButtons from './AppendObjButtons';
 import UserRebloggedModal from '../../user/UserReblogModal';
+
 import './Buttons.less';
 
 @injectIntl
@@ -37,7 +38,6 @@ export default class Buttons extends React.Component {
     onShareClick: PropTypes.func,
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
-    handleVisibleSlider: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -285,15 +285,7 @@ export default class Buttons extends React.Component {
   };
 
   render() {
-    const {
-      intl,
-      post,
-      postState,
-      pendingLike,
-      ownPost,
-      defaultVotePercent,
-      handleVisibleSlider,
-    } = this.props;
+    const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
     const isAppend = !!this.props.post.append_field_name;
 
     const upVotes = this.state.upVotes.sort(sortVotes);
@@ -373,7 +365,6 @@ export default class Buttons extends React.Component {
             ratio={ratio}
             handleCloseReactions={this.handleCloseReactions}
             reactionsModalVisible={this.state.reactionsModalVisible}
-            showSlider={handleVisibleSlider}
           />
         ) : (
           <React.Fragment>

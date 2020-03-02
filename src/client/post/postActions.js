@@ -48,14 +48,16 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   { steemConnectAPI },
 ) => {
   const { auth, posts } = getState();
-  if (!auth.isAuthenticated) {
-    return null;
-  }
   const isGuest = auth.isGuestUser;
   const post = posts.list[postId];
   const voter = auth.user.name;
   const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
   const votedPostAuthor = post.guestInfo ? post.author : author;
+
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
   return dispatch({
     type: TYPE,
     payload: {
@@ -105,6 +107,7 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
   const { auth, posts } = getState();
   const post = posts.list[postId];
   const voter = auth.user.name;
+
   if (!auth.isAuthenticated) {
     return null;
   }
