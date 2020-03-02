@@ -10,7 +10,7 @@ import './QuickPostEditor.less';
 const QuickPostEditor = ({ history }) => {
   const user = useSelector(getAuthenticatedUser, shallowEqual);
 
-  const isVisible = !['/notifications-api'].includes(get(history, ['location', 'pathname'], '/'));
+  const isVisible = !['/notifications-list'].includes(get(history, ['location', 'pathname'], '/'));
   const handleOnClick = () => {
     history.push('/editor');
   };

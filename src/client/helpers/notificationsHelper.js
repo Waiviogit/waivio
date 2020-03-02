@@ -124,7 +124,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
     default:
-      return '/notifications-api';
+      return '/notifications-list';
   }
 };
 
