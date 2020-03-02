@@ -136,7 +136,7 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
       }),
     )
     .catch(e => {
-      message.error(e);
+      message.error(e.error_description);
       dispatch({
         type: VOTE_UPDATE_REJECT,
         payload: {
