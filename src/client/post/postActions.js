@@ -1,3 +1,5 @@
+import { message } from 'antd';
+
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -11,6 +13,10 @@ export const FAKE_LIKE_POST = '@post/FAKE_LIKE_POST';
 export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
+
+export const VOTE_UPDATE_START = '@post/VOTE_UPDATE_START';
+export const VOTE_UPDATE_SUCCESS = '@post/VOTE_UPDATE_SUCCESS';
+export const VOTE_UPDATE_REJECT = '@post/VOTE_UPDATE_REJECT';
 
 export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
@@ -42,14 +48,16 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   { steemConnectAPI },
 ) => {
   const { auth, posts } = getState();
-  if (!auth.isAuthenticated) {
-    return null;
-  }
   const isGuest = auth.isGuestUser;
   const post = posts.list[postId];
   const voter = auth.user.name;
   const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
   const votedPostAuthor = post.guestInfo ? post.author : author;
+
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
   return dispatch({
     type: TYPE,
     payload: {
@@ -89,6 +97,53 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
         }
       : { postId, voter, weight },
   });
+};
+
+export const votePostUpdate = (postId, author, permlink, weight = 10000, type) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth, posts } = getState();
+  const post = posts.list[postId];
+  const voter = auth.user.name;
+
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  dispatch({
+    type: VOTE_UPDATE_START,
+    payload: {
+      postId,
+    },
+  });
+
+  return steemConnectAPI
+    .vote(voter, post.author_original || author, post.permlink, weight)
+    .then(() =>
+      dispatch({
+        type: VOTE_UPDATE_SUCCESS,
+        payload: {
+          postId,
+          voter,
+          weight,
+          postPermlink: postId,
+          rshares_weight: 1,
+          percent: weight,
+          type,
+        },
+      }),
+    )
+    .catch(e => {
+      message.error(e);
+      dispatch({
+        type: VOTE_UPDATE_REJECT,
+        payload: {
+          postId,
+        },
+      });
+    });
 };
 
 export const voteCommentFromRewards = (postId, author, permlink, weight = 10000) => (
