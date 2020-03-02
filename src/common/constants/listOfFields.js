@@ -149,4 +149,29 @@ export const getAllowedFieldsByObjType = objectType => {
   }
 };
 
+export const REQUIREDFIELDS = [
+  'name',
+  'title',
+  'website',
+  'avatar',
+  'background',
+  'address',
+  'description',
+  'map',
+  'link',
+  'tag',
+  'phone',
+  'email',
+  'rating',
+  'parent',
+  'tagCloud',
+  'price',
+  'button',
+  'workTime',
+  'chartid',
+  'newsFilter',
+  'pageContent',
+  'status',
+];
+
 export default null;

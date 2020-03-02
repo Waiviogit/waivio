@@ -37,6 +37,7 @@ export default class Buttons extends React.Component {
     onShareClick: PropTypes.func,
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
+    handleVisibleSlider: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -94,18 +95,18 @@ export default class Buttons extends React.Component {
     });
   }
 
-  onFlagClick() {
+  onFlagClick(weight, type) {
     if (this.props.post.append_field_name) {
-      this.props.onReportClick(this.props.post, this.props.postState, true);
+      this.props.onReportClick(this.props.post, this.props.postState, true, weight, type);
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
-  handleReject() {
-    this.props.onActionInitiated(this.onFlagClick);
+  handleReject(weight, type) {
+    this.props.onActionInitiated(() => this.onFlagClick(weight, type));
   }
 
-  handleLikeClick() {
-    this.props.onActionInitiated(this.props.onLikeClick);
+  handleLikeClick(weight, type) {
+    this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
   }
 
   handleCommentsClick(e) {
@@ -284,7 +285,15 @@ export default class Buttons extends React.Component {
   };
 
   render() {
-    const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
+    const {
+      intl,
+      post,
+      postState,
+      pendingLike,
+      ownPost,
+      defaultVotePercent,
+      handleVisibleSlider,
+    } = this.props;
     const isAppend = !!this.props.post.append_field_name;
 
     const upVotes = this.state.upVotes.sort(sortVotes);
@@ -358,12 +367,13 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={() => this.handleReject()}
+            onFlagClick={(weight, type) => this.handleReject(weight, type)}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}
             handleCloseReactions={this.handleCloseReactions}
             reactionsModalVisible={this.state.reactionsModalVisible}
+            showSlider={handleVisibleSlider}
           />
         ) : (
           <React.Fragment>

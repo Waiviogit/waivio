@@ -18,7 +18,7 @@ const AppendObjButtons = ({
   intl,
   likeTooltip,
   handleLikeClick,
-  pendingLike,
+  // pendingLike,
   upVotesPreview,
   upVotesMore,
   handleCommentsClick,
@@ -33,11 +33,13 @@ const AppendObjButtons = ({
   const downVotes = getAppendDownvotes(post.active_votes)
     .sort(sortVotes)
     .reverse();
+  const isLiked = post.isLiked || _.some(upVotes, { voter: userName });
+  const isReject = post.isReject || _.some(downVotes, { voter: userName });
 
   return (
     <div className="Buttons">
       <React.Fragment>
-        {pendingLike ? (
+        {post.loading ? (
           <Icon type="loading" />
         ) : (
           <React.Fragment>
@@ -45,10 +47,10 @@ const AppendObjButtons = ({
               <a
                 role="presentation"
                 className={classNames({
-                  active: postState.isLiked && _.some(upVotes, { voter: userName }),
+                  active: isLiked,
                   Buttons__link: true,
                 })}
-                onClick={handleLikeClick}
+                onClick={() => handleLikeClick(10000, 'like')}
               >
                 <FormattedMessage id="approve" defaultMessage="Approve" />
               </a>
@@ -91,10 +93,10 @@ const AppendObjButtons = ({
                 <a
                   role="presentation"
                   className={classNames({
-                    active: postState.isReported && _.some(downVotes, { voter: userName }),
+                    active: isReject,
                     Buttons__link: true,
                   })}
-                  onClick={onFlagClick}
+                  onClick={() => onFlagClick(9999, 'reject')}
                 >
                   <FormattedMessage id="reject" defaultMessage="Reject" />
                 </a>
@@ -151,7 +153,6 @@ AppendObjButtons.propTypes = {
   post: PropTypes.shape().isRequired,
   postState: PropTypes.shape().isRequired,
   handleLikeClick: PropTypes.func.isRequired,
-  pendingLike: PropTypes.bool.isRequired,
   reactionsModalVisible: PropTypes.bool.isRequired,
   upVotesPreview: PropTypes.func.isRequired,
   upVotesMore: PropTypes.bool.isRequired,
@@ -165,6 +166,9 @@ AppendObjButtons.propTypes = {
 
 AppendObjButtons.defaultProps = { userName: '' };
 
-export default connect(state => ({
-  userName: getAuthenticatedUserName(state),
-}))(injectIntl(AppendObjButtons));
+export default connect(
+  state => ({
+    userName: getAuthenticatedUserName(state),
+  }),
+  {},
+)(injectIntl(AppendObjButtons));

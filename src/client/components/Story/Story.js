@@ -1,4 +1,4 @@
-import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil } from 'lodash';
+import _, { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -29,6 +29,7 @@ import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 import './Story.less';
+import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
 
 @injectIntl
 @withRouter
@@ -44,6 +45,7 @@ class Story extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
+    votePostUpdate: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -199,26 +201,52 @@ class Story extends React.Component {
     return weight;
   };
 
-  handleLikeClick(post, postState, weight = 10000) {
-    const { sliderMode, defaultVotePercent } = this.props;
+  handleLikeClick(post, postState, weight = 10000, type) {
+    const { sliderMode, defaultVotePercent, votePost, votePostUpdate, user } = this.props;
     const author = post.guestInfo && !post.depth ? post.root_author : post.author;
 
-    if (sliderMode && !postState.isLiked) {
-      this.props.votePost(post.id, author, post.permlink, weight);
+    if (post.append_field_name) {
+      const upVotes = getAppendUpvotes(post.active_votes);
+      const isLiked = post.isLiked || _.some(upVotes, { voter: user.name });
+      const postId = `${post.author}/${post.permlink}`;
+
+      if (isLiked) {
+        votePostUpdate(postId, post.author, post.permlink, 0, type);
+      } else {
+        if (sliderMode && !isLiked) {
+          votePostUpdate(postId, post.author, post.permlink, defaultVotePercent, type);
+        }
+
+        votePostUpdate(postId, post.author, post.permlink, weight, type);
+      }
+    } else if (sliderMode && !postState.isLiked) {
+      votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, author, post.permlink, 0);
+      votePost(post.id, author, post.permlink, 0);
     } else {
-      this.props.votePost(post.id, author, post.permlink, defaultVotePercent);
+      votePost(post.id, author, post.permlink, defaultVotePercent);
     }
   }
 
-  handleReportClick(post, postState, isRejectField) {
+  handleReportClick(post, postState, isRejectField, myWeight, type) {
     let weight = postState.isReported ? 0 : -10000;
-    if (isRejectField) {
-      weight = postState.isReported ? 0 : 9999;
+
+    if (post.append_field_name) {
+      const downVotes = getAppendDownvotes(post.active_votes);
+      const isReject = post.isReject || _.some(downVotes, { voter: this.props.user.name });
+      const postId = `${post.author}/${post.permlink}`;
+      if (isReject) {
+        this.props.votePostUpdate(postId, post.author, post.permlink, 0, type);
+      } else {
+        this.props.votePostUpdate(postId, post.author, post.permlink, myWeight, type);
+      }
+    } else {
+      if (isRejectField) {
+        weight = postState.isReported ? 0 : 9999;
+      }
+      const author = post.author_original || post.author;
+      this.props.votePost(post.id, author, post.permlink, weight);
     }
-    const author = post.author_original || post.author;
-    this.props.votePost(post.id, author, post.permlink, weight);
   }
 
   handleShareClick(post) {
