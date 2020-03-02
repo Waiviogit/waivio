@@ -13,8 +13,9 @@ import BTooltip from '../BTooltip';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
-import './Buttons.less';
 import AppendObjButtons from './AppendObjButtons';
+
+import './Buttons.less';
 
 @injectIntl
 @withAuthActions
@@ -94,18 +95,18 @@ export default class Buttons extends React.Component {
     });
   }
 
-  onFlagClick() {
+  onFlagClick(weight, type) {
     if (this.props.post.append_field_name) {
-      this.props.onReportClick(this.props.post, this.props.postState, true);
+      this.props.onReportClick(this.props.post, this.props.postState, true, weight, type);
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
-  handleLikeClick() {
-    this.props.onActionInitiated(this.props.onLikeClick);
+  handleLikeClick(weight, type) {
+    this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
   }
 
-  handleRejectClick() {
-    this.props.onActionInitiated(this.onFlagClick);
+  handleRejectClick(weight, type) {
+    this.props.onActionInitiated(() => this.onFlagClick(weight, type));
   }
 
   handleCommentsClick(e) {
@@ -354,7 +355,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={() => this.handleRejectClick()}
+            onFlagClick={(weight, type) => this.handleRejectClick(weight, type)}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}

@@ -219,6 +219,77 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
+
+    case postsActions.VOTE_UPDATE_START: {
+      const matchPost = state.list[action.payload.postId];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.postId]: {
+            ...matchPost,
+            loading: true,
+          },
+        },
+      };
+    }
+
+    case postsActions.VOTE_UPDATE_SUCCESS: {
+      const matchPost = state.list[action.payload.postId];
+      const percent = action.payload.type === 'like' ? 100 : -100;
+      const voterIndex = matchPost.active_votes.findIndex(
+        vote => vote.voter === action.payload.voter,
+      );
+      const newVoter = {
+        voter: action.payload.voter,
+        percent: action.payload.weight && percent,
+        rshares_weight: 1,
+        weight: action.payload.weight,
+      };
+      let list = [...matchPost.active_votes];
+
+      if (voterIndex >= 0) {
+        if (!action.payload.weight) {
+          list.splice(voterIndex, 1);
+        } else {
+          list.splice(voterIndex, 1, newVoter);
+        }
+      } else {
+        list = [...matchPost.active_votes, newVoter];
+      }
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.postId]: {
+            ...matchPost,
+            type: action.payload.type,
+            active_votes: list,
+            loading: false,
+            isLiked: action.payload.weight % 10 === 0 && action.payload.weight !== 0,
+            isReject: action.payload.weight % 10 !== 0 && action.payload.weight !== 0,
+          },
+        },
+      };
+    }
+
+    case postsActions.VOTE_UPDATE_REJECT: {
+      const matchPost = state.list[action.payload.postId];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.postId]: {
+            ...matchPost,
+            loading: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
