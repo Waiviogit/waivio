@@ -32,6 +32,7 @@ import {
   getVotePercent,
   getFollowingObjectsList,
   getSuitableLanguage,
+  getRatingFields,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -52,6 +53,7 @@ import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
+
 import './AppendForm.less';
 
 @connect(
@@ -63,6 +65,7 @@ import './AppendForm.less';
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
     usedLocale: getSuitableLanguage(state),
+    ratingFields: getRatingFields(state),
   }),
   { appendObject, rateObject },
 )
@@ -87,6 +90,7 @@ export default class AppendForm extends Component {
     currentField: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
+    ratingFields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   };
 
   static defaultProps = {
@@ -461,27 +465,40 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
+
     this.props.form.validateFieldsAndScroll((err, values) => {
-      const { form, intl } = this.props;
-      const currentField = form.getFieldValue('currentField');
-      if (objectFields.newsFilter === currentField) {
-        const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-          sub => sub.length,
-        );
-        const ignoreList = map(this.state.ignoreList, o => o.id);
-        if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
-        else {
-          message.error(
-            intl.formatMessage({
-              id: 'at_least_one',
-              defaultMessage: 'You should add at least one object',
-            }),
-          );
+      const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
+        if (field.body === values.category) {
+          return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
-      } else if (err || this.checkRequiredField(form, currentField)) {
-        // this.props.onError();
+
+        return acc;
+      }, []);
+
+      if (!identicalNameFields.length) {
+        const { form, intl } = this.props;
+        const currentField = form.getFieldValue('currentField');
+        if (objectFields.newsFilter === currentField) {
+          const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
+            sub => sub.length,
+          );
+          const ignoreList = map(this.state.ignoreList, o => o.id);
+          if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
+          else {
+            message.error(
+              intl.formatMessage({
+                id: 'at_least_one',
+                defaultMessage: 'You should add at least one object',
+              }),
+            );
+          }
+        } else if (err || this.checkRequiredField(form, currentField)) {
+          // this.props.onError();
+        } else {
+          this.onSubmit(values);
+        }
       } else {
-        this.onSubmit(values);
+        message.error('The rating with such name already exist in this locale');
       }
     });
   };
