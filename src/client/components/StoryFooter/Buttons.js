@@ -105,9 +105,7 @@ export default class Buttons extends React.Component {
     this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
   }
 
-  handleRejectClick(weight, type) {
-    this.props.onActionInitiated(() => this.onFlagClick(weight, type));
-  }
+  handleRejectClick = (weight, type) => this.props.onActionInitiated(() => this.onFlagClick(weight, type));
 
   handleCommentsClick(e) {
     e.preventDefault();
@@ -172,7 +170,7 @@ export default class Buttons extends React.Component {
       postState,
       intl,
       post,
-      handlePostPopoverMenuClick,
+      // handlePostPopoverMenuClick,
       ownPost,
     } = this.props;
     const { isReported } = postState;
@@ -355,7 +353,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={(weight, type) => this.handleRejectClick(weight, type)}
+            onFlagClick={this.handleRejectClick}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}

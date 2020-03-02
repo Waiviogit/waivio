@@ -64,6 +64,7 @@ class Story extends React.Component {
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
     toggleBookmark: PropTypes.func,
+    votePostUpdate: PropTypes.func.isRequired,
     reblog: PropTypes.func,
     editPost: PropTypes.func,
     followUser: PropTypes.func,
