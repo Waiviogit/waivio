@@ -236,7 +236,7 @@ const posts = (state = initialState, action) => {
 
     case postsActions.VOTE_UPDATE_SUCCESS: {
       const matchPost = state.list[action.payload.postId];
-      const percent = action.payload.type === 'like' ? 100 : -100;
+      const percent = action.payload.type === 'approve' ? 100 : -100;
       const voterIndex = matchPost.active_votes.findIndex(
         vote => vote.voter === action.payload.voter,
       );

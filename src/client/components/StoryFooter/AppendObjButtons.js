@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { some } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
@@ -32,8 +32,10 @@ const AppendObjButtons = ({
   const downVotes = getAppendDownvotes(post.active_votes)
     .sort(sortVotes)
     .reverse();
-  const isLiked = post.isLiked || _.some(upVotes, { voter: userName });
-  const isReject = post.isReject || _.some(downVotes, { voter: userName });
+  const isLiked = post.isLiked || some(upVotes, { voter: userName });
+  const isReject = post.isReject || some(downVotes, { voter: userName });
+  const handleApprove = () => handleLikeClick(10000, 'approve');
+  const handleReject = () => onFlagClick(9999, 'reject');
 
   return (
     <div className="Buttons">
@@ -49,7 +51,7 @@ const AppendObjButtons = ({
                   active: isLiked,
                   Buttons__link: true,
                 })}
-                onClick={() => handleLikeClick(10000, 'like')}
+                onClick={handleApprove}
               >
                 <FormattedMessage id="approve" defaultMessage="Approve" />
               </a>
@@ -95,7 +97,7 @@ const AppendObjButtons = ({
                     active: isReject,
                     Buttons__link: true,
                   })}
-                  onClick={() => onFlagClick(9999, 'reject')}
+                  onClick={handleReject}
                 >
                   <FormattedMessage id="reject" defaultMessage="Reject" />
                 </a>

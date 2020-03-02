@@ -95,7 +95,7 @@ class StoryFooter extends React.Component {
   };
 
   handleLikeConfirm = () => {
-    const type = this.props.post.append_field_name ? 'like' : '';
+    const type = this.props.post.append_field_name ? 'approve' : '';
     this.setState({ sliderVisible: false }, () => {
       this.props.onLikeClick(
         this.props.post,

@@ -101,9 +101,8 @@ export default class Buttons extends React.Component {
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
-  handleReject(weight, type) {
+  handleReject = (weight, type) =>
     this.props.onActionInitiated(() => this.onFlagClick(weight, type));
-  }
 
   handleLikeClick(weight, type) {
     this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
@@ -283,11 +282,9 @@ export default class Buttons extends React.Component {
   toggleModalReblog = () => {
     this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
   };
-
   render() {
     const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
     const isAppend = !!this.props.post.append_field_name;
-
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
@@ -362,7 +359,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={(weight, type) => this.handleReject(weight, type)}
+            onFlagClick={this.handleReject}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}
