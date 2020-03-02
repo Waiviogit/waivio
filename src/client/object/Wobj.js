@@ -166,12 +166,12 @@ export default class Wobj extends React.Component {
           />
         </div>
       );
-    const waivioHost = global.postOrigin || 'https://waivio.com';
+    const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const desc = `${objectName || ''}`;
     const image =
       wobject.avatar ||
       'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
-    const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
+    const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
     let albumsAndImagesCount;
