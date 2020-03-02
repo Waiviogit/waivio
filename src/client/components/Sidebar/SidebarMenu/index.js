@@ -51,7 +51,7 @@ const getMenuConfig = ({ isAuthenticated }) => ({
       {
         name: 'Notifications',
         intlId: 'notifications',
-        linkTo: '/notifications-list',
+        linkTo: '/notifications-api',
       },
       {
         name: 'Updates',

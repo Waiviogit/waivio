@@ -301,7 +301,7 @@ const routes = [
         exact: true,
         routes: [
           {
-            path: '/notifications-list',
+            path: '/notifications-api',
             component: Notifications,
           },
           {

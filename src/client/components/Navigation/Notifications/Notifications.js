@@ -229,7 +229,7 @@ class Notifications extends React.Component {
           )}
         </div>
         <div className="Notifications__footer">
-          <Link to="/notifications-list" onClick={onNotificationClick}>
+          <Link to="/notifications-api" onClick={onNotificationClick}>
             <FormattedMessage id="see_all" defaultMessage="See All" />
           </Link>
         </div>
