@@ -53,6 +53,10 @@ class Page extends React.Component {
       <div>
         <Helmet>
           <title>Waivio</title>
+          <meta
+            property="twitter:description"
+            content="Waivio is an open distributed attention marketplace for business"
+          />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />

@@ -139,6 +139,4 @@ Disallow: /invite/
 Disallow: /feed/
 Disallow: /editor/
 
-User-agent: *
-Disallow: /
 
