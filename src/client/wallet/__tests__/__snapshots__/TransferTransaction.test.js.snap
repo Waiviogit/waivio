@@ -48,7 +48,7 @@ ShallowWrapper {
                 id="transferred_to"
                 values={
                   Object {
-                    "username": <Link
+                    "username": <UNDEFINED
                       to="/@hellosteem"
                     >
                       <span
@@ -56,7 +56,7 @@ ShallowWrapper {
                       >
                         hellosteem
                       </span>
-                    </Link>,
+                    </UNDEFINED>,
                   }
                 }
               />
@@ -146,7 +146,7 @@ ShallowWrapper {
                   id="transferred_to"
                   values={
                     Object {
-                      "username": <Link
+                      "username": <UNDEFINED
                         to="/@hellosteem"
                       >
                         <span
@@ -154,7 +154,7 @@ ShallowWrapper {
                         >
                           hellosteem
                         </span>
-                      </Link>,
+                      </UNDEFINED>,
                     }
                   }
                 />
@@ -214,7 +214,7 @@ ShallowWrapper {
                     id="transferred_to"
                     values={
                       Object {
-                        "username": <Link
+                        "username": <UNDEFINED
                           to="/@hellosteem"
                         >
                           <span
@@ -222,7 +222,7 @@ ShallowWrapper {
                           >
                             hellosteem
                           </span>
-                        </Link>,
+                        </UNDEFINED>,
                       }
                     }
                   />
@@ -250,7 +250,7 @@ ShallowWrapper {
                     id="transferred_to"
                     values={
                       Object {
-                        "username": <Link
+                        "username": <UNDEFINED
                           to="/@hellosteem"
                         >
                           <span
@@ -258,7 +258,7 @@ ShallowWrapper {
                           >
                             hellosteem
                           </span>
-                        </Link>,
+                        </UNDEFINED>,
                       }
                     }
                   />,
@@ -272,7 +272,7 @@ ShallowWrapper {
                     "defaultMessage": "Transferred to {username}",
                     "id": "transferred_to",
                     "values": Object {
-                      "username": <Link
+                      "username": <UNDEFINED
                         to="/@hellosteem"
                       >
                         <span
@@ -280,7 +280,7 @@ ShallowWrapper {
                         >
                           hellosteem
                         </span>
-                      </Link>,
+                      </UNDEFINED>,
                     },
                   },
                   "ref": null,
@@ -446,7 +446,7 @@ ShallowWrapper {
                   id="transferred_to"
                   values={
                     Object {
-                      "username": <Link
+                      "username": <UNDEFINED
                         to="/@hellosteem"
                       >
                         <span
@@ -454,7 +454,7 @@ ShallowWrapper {
                         >
                           hellosteem
                         </span>
-                      </Link>,
+                      </UNDEFINED>,
                     }
                   }
                 />
@@ -544,7 +544,7 @@ ShallowWrapper {
                     id="transferred_to"
                     values={
                       Object {
-                        "username": <Link
+                        "username": <UNDEFINED
                           to="/@hellosteem"
                         >
                           <span
@@ -552,7 +552,7 @@ ShallowWrapper {
                           >
                             hellosteem
                           </span>
-                        </Link>,
+                        </UNDEFINED>,
                       }
                     }
                   />
@@ -612,7 +612,7 @@ ShallowWrapper {
                       id="transferred_to"
                       values={
                         Object {
-                          "username": <Link
+                          "username": <UNDEFINED
                             to="/@hellosteem"
                           >
                             <span
@@ -620,7 +620,7 @@ ShallowWrapper {
                             >
                               hellosteem
                             </span>
-                          </Link>,
+                          </UNDEFINED>,
                         }
                       }
                     />
@@ -648,7 +648,7 @@ ShallowWrapper {
                       id="transferred_to"
                       values={
                         Object {
-                          "username": <Link
+                          "username": <UNDEFINED
                             to="/@hellosteem"
                           >
                             <span
@@ -656,7 +656,7 @@ ShallowWrapper {
                             >
                               hellosteem
                             </span>
-                          </Link>,
+                          </UNDEFINED>,
                         }
                       }
                     />,
@@ -670,7 +670,7 @@ ShallowWrapper {
                       "defaultMessage": "Transferred to {username}",
                       "id": "transferred_to",
                       "values": Object {
-                        "username": <Link
+                        "username": <UNDEFINED
                           to="/@hellosteem"
                         >
                           <span
@@ -678,7 +678,7 @@ ShallowWrapper {
                           >
                             hellosteem
                           </span>
-                        </Link>,
+                        </UNDEFINED>,
                       },
                     },
                     "ref": null,
