@@ -36,7 +36,6 @@ const AppendObjButtons = ({
   const isReject = post.isReject || some(downVotes, { voter: userName });
   const handleApprove = () => handleLikeClick(10000, 'approve');
   const handleReject = () => onFlagClick(9999, 'reject');
-  console.log(upVotes, downVotes);
 
   return (
     <div className="Buttons">
