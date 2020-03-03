@@ -2,6 +2,8 @@ import reducer from '../walletReducer';
 import * as actions from '../walletActions';
 
 const reducerInitialState = {
+  transferVisible: false,
+  transferTo: '',
   totalVestingShares: '',
   totalVestingFundSteem: '',
   powerUpOrDownVisible: false,
@@ -31,28 +33,44 @@ describe('walletReducer', () => {
     expect(
       reducer(undefined, {
         type: actions.OPEN_TRANSFER,
-        payload: 'sekhmet',
+        payload: {
+          userName: 'sekhmet',
+          amount: 0.1,
+          currency: 'STEEM',
+          memo: 'user_reward',
+        },
       }),
     ).toEqual({
       ...reducerInitialState,
       transferVisible: true,
       transferTo: 'sekhmet',
+      amount: 0.1,
+      currency: 'STEEM',
+      memo: 'user_reward',
     });
 
     expect(
       reducer(
         {
           transferVisible: true,
-          transferTo: 'sekhmet',
+          transferTo: 'fabien',
         },
         {
           type: actions.OPEN_TRANSFER,
-          payload: 'fabien',
+          payload: {
+            userName: 'fabien',
+            amount: 0.1,
+            currency: 'STEEM',
+            memo: 'user_reward',
+          },
         },
       ),
     ).toEqual({
       transferVisible: true,
       transferTo: 'fabien',
+      amount: 0.1,
+      currency: 'STEEM',
+      memo: 'user_reward',
     });
   });
 
