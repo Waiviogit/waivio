@@ -1,9 +1,9 @@
 import React from 'react';
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
-import MatchBotTable from './MatchBotTable';
+import MatchBotTable from '../MatchBotTable/MatchBotTable';
 
-jest.mock('./MatchBotTableRow', () => () => <tr className="MatchBotTableRow" />);
+jest.mock('../MatchBotTable/MatchBotTableRow', () => () => <tr className="MatchBotTableRow" />);
 
 describe('MatchBotTable', () => {
   let wrapper;

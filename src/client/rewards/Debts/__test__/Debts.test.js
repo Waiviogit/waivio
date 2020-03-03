@@ -2,7 +2,7 @@ import React from 'react';
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
 import Debts from '../Debts';
-import { mockDataDebts } from './__mock__/mockData';
+import { mockDataDebts } from '../__mock__/mockData';
 
 jest.mock('../../PaymentCard/PaymentCard', () => () => <div className="PaymentCard" />);
 

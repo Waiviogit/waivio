@@ -10,7 +10,7 @@ import {
   stateOnGetTopError,
   stateOnGetTopStart,
   stateOnGetTopSuccess,
-} from './__mock__/mockData';
+} from '../__mock__/mockData';
 
 describe('usersReducer', () => {
   it('GET_ACCOUNT.START', () => {

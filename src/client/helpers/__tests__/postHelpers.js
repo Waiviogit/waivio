@@ -22,10 +22,10 @@ describe('getAppData', () => {
   });
 
   // Todo is commented cuz default version in function 1.0.0
-  // it('should return an object with the appName and empty version if version is absent', () => {
-  //   const post = { json_metadata: '{ "app": "busy" }' };
-  //   expect(getAppData(post)).toEqual({ appName: 'Busy', version: '' });
-  // });
+  it('should return an object with the appName and empty version if version is absent', () => {
+    const post = { json_metadata: '{ "app": "busy" }' };
+    expect(getAppData(post)).toEqual({ appName: 'Busy', version: '1.0.0' });
+  });
 
   it('should handle more app parameters without failing, eg. busy/1.2/other', () => {
     const post = { json_metadata: '{ "app": "busy/1.2.3/something" }' };
