@@ -38,8 +38,6 @@ const AppendObjButtons = ({
   const handleReject = () => onFlagClick(9999, 'reject');
   console.log(upVotes, downVotes);
 
-  // const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
-
   return (
     <div className="Buttons">
       <React.Fragment>
