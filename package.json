@@ -64,7 +64,6 @@
     "debug": "~2.6.9",
     "diff-match-patch": "^1.0.0",
     "draft-js": "^0.10.5",
-    "enzyme-react-intl": "^2.0.6",
     "express": "^4.15.4",
     "file-loader": "^1.1.4",
     "filesize": "^3.5.11",

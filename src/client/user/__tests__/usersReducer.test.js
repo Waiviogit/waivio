@@ -10,6 +10,8 @@ import {
   stateOnGetTopError,
   stateOnGetTopStart,
   stateOnGetTopSuccess,
+  randomExpertsList,
+  topExpertsList,
 } from '../__mock__/mockData';
 
 describe('usersReducer', () => {
@@ -19,9 +21,7 @@ describe('usersReducer', () => {
       meta: { username: 'asd09' },
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetAccountStart,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetAccountStart);
   });
 
   it('GET_ACCOUNT.SUCCESS', () => {
@@ -30,9 +30,7 @@ describe('usersReducer', () => {
       meta: { username: 'asd09' },
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetAccountSuccess,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetAccountSuccess);
   });
 
   it('GET_ACCOUNT.ERROR', () => {
@@ -41,9 +39,7 @@ describe('usersReducer', () => {
       meta: { username: 'asd09' },
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetAccountError,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetAccountError);
   });
 
   it('GET_RANDOM_EXPERTS_START', () => {
@@ -51,20 +47,16 @@ describe('usersReducer', () => {
       type: actions.GET_RANDOM_EXPERTS_START,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetRandomStart,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetRandomStart);
   });
 
   it('GET_RANDOM_EXPERTS_SUCCESS', () => {
     const action = {
       type: actions.GET_RANDOM_EXPERTS_SUCCESS,
-      payload: stateOnGetRandomSuccess.randomExperts.list,
+      payload: randomExpertsList,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetRandomSuccess,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetRandomSuccess);
   });
 
   it('GET_RANDOM_EXPERTS_ERROR', () => {
@@ -72,9 +64,7 @@ describe('usersReducer', () => {
       type: actions.GET_RANDOM_EXPERTS_ERROR,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetRandomError,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetRandomError);
   });
 
   it('GET_TOP_EXPERTS_START', () => {
@@ -82,21 +72,17 @@ describe('usersReducer', () => {
       type: actions.GET_TOP_EXPERTS_START,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetTopStart,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetTopStart);
   });
 
   it('GET_TOP_EXPERTS_SUCCESS', () => {
     const action = {
       type: actions.GET_TOP_EXPERTS_SUCCESS,
-      payload: stateOnGetTopSuccess.topExperts.list,
+      payload: topExpertsList,
       meta: 2,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetTopSuccess,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetTopSuccess);
   });
 
   it('GET_TOP_EXPERTS_ERROR', () => {
@@ -104,8 +90,6 @@ describe('usersReducer', () => {
       type: actions.GET_TOP_EXPERTS_ERROR,
     };
 
-    expect(usersReducer(initialState, action)).toEqual({
-      ...stateOnGetTopError,
-    });
+    expect(usersReducer(initialState, action)).toEqual(stateOnGetTopError);
   });
 });

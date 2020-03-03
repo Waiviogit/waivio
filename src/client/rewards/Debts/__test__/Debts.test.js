@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
 import Debts from '../Debts';
@@ -23,6 +24,33 @@ describe('Debts', () => {
   });
 
   afterEach(() => jest.clearAllMocks());
+
+  it('should change way', () => {
+    const props = {
+      debtObjsData: {
+        histories: mockDataDebts.debtObjsData.histories,
+        payable: 0.21,
+      },
+      currentSteemPrice: 0.2,
+      componentLocation: '/rewards',
+    };
+
+    const component = mountWithIntl(<Debts {...props} />);
+    const container = component.find('.PaymentCard');
+    expect(container).toHaveLength(3);
+  });
+
+  it('should return empty string without payable', () => {
+    const props = {
+      debtObjsData: {},
+      currentSteemPrice: 0.2,
+      componentLocation: '/rewards',
+    };
+
+    const component = mountWithIntl(<Debts {...props} />);
+    const container = component.find('.Debts');
+    expect(container).toHaveLength(1);
+  });
 
   it('should render Debts wrap', () => {
     act(() => {
