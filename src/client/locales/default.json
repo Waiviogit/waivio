@@ -1041,5 +1041,6 @@
   "please_input_nickname": "Nickname cannot be empty",
   "link_placeholder": "Add url",
   "modal_button_cancel": "Cancel",
-  "modal_button_yes": "OK"
+  "modal_button_yes": "OK",
+  "append_validate_message": "The rating with such name already exist in this locale"
 }
