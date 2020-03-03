@@ -1,4 +1,4 @@
-import { map, filter, has, isEmpty, get, includes, isNan } from 'lodash';
+import { map, filter, has, isEmpty, get, includes, isNaN, trimStart } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -194,7 +194,6 @@ export default class AppendForm extends Component {
             defaultMessage: "Couldn't add the field to object.",
           }),
         );
-        console.log(e);
         this.setState({ loading: false });
       }
     }
@@ -218,7 +217,7 @@ export default class AppendForm extends Component {
 
   onUpdateCoordinate = positionField => e => {
     const value = Number(e.target.value);
-    if (!isNan(value)) {
+    if (!isNaN(value)) {
       this.props.form.setFieldsValue({
         [positionField]: Number(e.target.value),
       });
@@ -535,10 +534,15 @@ export default class AppendForm extends Component {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+    const triggerValue = trimStart(value).replace(/\s{2,}/g, ' ');
+
+    form.setFieldsValue({
+      [currentField]: triggerValue,
+    });
+
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
       callback(
         intl.formatMessage({
