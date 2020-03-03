@@ -542,11 +542,14 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const triggerValue = trimStart(value).replace(/\s{2,}/g, ' ');
 
-    form.setFieldsValue({
-      [currentField]: triggerValue,
-    });
+    if (currentField === 'name') {
+      const triggerValue = trimStart(form.getFieldValue('name')).replace(/\s{2,}/g, ' ');
+
+      form.setFieldsValue({
+        [currentField]: triggerValue,
+      });
+    }
 
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
       callback(
