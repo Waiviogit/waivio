@@ -332,7 +332,11 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
 
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`)
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`, {
+      headers: {
+        app: config.appName,
+      },
+    })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))

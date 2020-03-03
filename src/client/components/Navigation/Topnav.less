@@ -16,7 +16,11 @@
     height: 56px;
 
     img {
-      width: 150px;
+      width: 125px;
+
+      @media @xsmall {
+        width: 150px;
+      }
 
       @media @medium, @large {
         width: 160px;
@@ -194,7 +198,11 @@
   }
 
   &__menu-logged-out {
-    margin-left: 15px;
+    margin-left: 0;
+
+    @media @xsmall {
+      margin-left: 15px;
+    }
 
     @media @medium {
       margin-left: 0;
@@ -280,8 +288,12 @@
   }
 
   .icon-language {
+    margin-left: 0;
     vertical-align: -5px;
-    margin-left: 5px;
+
+    @media @xsmall {
+      margin-left: 5px;
+    }
   }
 }
 
@@ -464,6 +476,14 @@ div[data-dir='rtl'] .Topnav {
     .anticon-bars {
       display: none;
     }
+  }
+}
+
+.Topnav__menu-logged-out li.ant-menu-item-disabled {
+  display: none;
+
+  @media @xsmall {
+    display: flex;
   }
 }
 

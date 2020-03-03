@@ -15,6 +15,7 @@ import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import AppendObjButtons from './AppendObjButtons';
 import UserRebloggedModal from '../../user/UserReblogModal';
+
 import './Buttons.less';
 
 @injectIntl
@@ -94,18 +95,17 @@ export default class Buttons extends React.Component {
     });
   }
 
-  onFlagClick() {
+  onFlagClick(weight, type) {
     if (this.props.post.append_field_name) {
-      this.props.onReportClick(this.props.post, this.props.postState, true);
+      this.props.onReportClick(this.props.post, this.props.postState, true, weight, type);
     } else this.props.handlePostPopoverMenuClick('report');
   }
 
-  handleReject() {
-    this.props.onActionInitiated(this.onFlagClick);
-  }
+  handleReject = (weight, type) =>
+    this.props.onActionInitiated(() => this.onFlagClick(weight, type));
 
-  handleLikeClick() {
-    this.props.onActionInitiated(this.props.onLikeClick);
+  handleLikeClick(weight, type) {
+    this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
   }
 
   handleCommentsClick(e) {
@@ -282,11 +282,9 @@ export default class Buttons extends React.Component {
   toggleModalReblog = () => {
     this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
   };
-
   render() {
     const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
     const isAppend = !!this.props.post.append_field_name;
-
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
@@ -361,7 +359,7 @@ export default class Buttons extends React.Component {
             pendingLike={pendingLike}
             upVotesPreview={upVotesPreview}
             upVotesMore={upVotesMore}
-            onFlagClick={() => this.handleReject()}
+            onFlagClick={this.handleReject}
             handleShowReactions={this.handleShowReactions}
             handleCommentsClick={this.handleCommentsClick}
             ratio={ratio}
