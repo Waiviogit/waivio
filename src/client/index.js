@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import 'beautiful-react-redux/patch';
 import { message } from 'antd';
 import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
@@ -20,8 +21,12 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 }
 
 const accessToken = Cookie.get('access_token');
+const waivioToken = Cookie.get('waivio_token');
 if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
+}
+if (waivioToken) {
+  waivioAPI.authToken = waivioToken;
 }
 
 const store = getStore(steemConnectAPI, waivioAPI, '/', history);

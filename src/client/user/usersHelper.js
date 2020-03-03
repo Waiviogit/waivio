@@ -7,11 +7,9 @@ export const prepareData = forecasts => {
 };
 
 export const prepareInstrumentsData = (quotes, statData) =>
-  statData
-    .filter(instrument => Boolean(quotes[instrument.quote]))
-    .map(instrument => ({
-      ...instrument,
-      name: quotes[instrument.quote].name,
-      wobjData: quotes[instrument.quote].wobjData,
-      market: quotes[instrument.quote].market,
-    }));
+  statData.map(instrument => ({
+    ...instrument,
+    name: quotes[instrument.quote].name,
+    wobjData: quotes[instrument.quote].wobjData,
+    market: quotes[instrument.quote].market,
+  }));
