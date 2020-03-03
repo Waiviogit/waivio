@@ -1,6 +1,6 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { some } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { Icon } from 'antd';
 import classNames from 'classnames';
@@ -18,7 +18,6 @@ const AppendObjButtons = ({
   intl,
   likeTooltip,
   handleLikeClick,
-  pendingLike,
   upVotesPreview,
   upVotesMore,
   handleCommentsClick,
@@ -33,11 +32,15 @@ const AppendObjButtons = ({
   const downVotes = getAppendDownvotes(post.active_votes)
     .sort(sortVotes)
     .reverse();
+  const isLiked = post.isLiked || some(upVotes, { voter: userName });
+  const isReject = post.isReject || some(downVotes, { voter: userName });
+  const handleApprove = () => handleLikeClick(10000, 'approve');
+  const handleReject = () => onFlagClick(9999, 'reject');
 
   return (
     <div className="Buttons">
       <React.Fragment>
-        {pendingLike ? (
+        {post.loading ? (
           <Icon type="loading" />
         ) : (
           <React.Fragment>
@@ -45,10 +48,10 @@ const AppendObjButtons = ({
               <a
                 role="presentation"
                 className={classNames({
-                  active: postState.isLiked && _.some(upVotes, { voter: userName }),
+                  active: isLiked,
                   Buttons__link: true,
                 })}
-                onClick={handleLikeClick}
+                onClick={handleApprove}
               >
                 <FormattedMessage id="approve" defaultMessage="Approve" />
               </a>
@@ -91,10 +94,10 @@ const AppendObjButtons = ({
                 <a
                   role="presentation"
                   className={classNames({
-                    active: postState.isReported && _.some(downVotes, { voter: userName }),
+                    active: isReject,
                     Buttons__link: true,
                   })}
-                  onClick={onFlagClick}
+                  onClick={handleReject}
                 >
                   <FormattedMessage id="reject" defaultMessage="Reject" />
                 </a>
@@ -151,7 +154,6 @@ AppendObjButtons.propTypes = {
   post: PropTypes.shape().isRequired,
   postState: PropTypes.shape().isRequired,
   handleLikeClick: PropTypes.func.isRequired,
-  pendingLike: PropTypes.bool.isRequired,
   reactionsModalVisible: PropTypes.bool.isRequired,
   upVotesPreview: PropTypes.func.isRequired,
   upVotesMore: PropTypes.bool.isRequired,
