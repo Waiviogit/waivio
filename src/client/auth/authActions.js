@@ -117,8 +117,15 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, wai
 };
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
-  const accessToken = Cookie.get('access_token');
+  let accessToken = Cookie.get('access_token');
+  let method = 'login';
   const state = getState();
+
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) {
+    method = 'guest_login';
+    accessToken = guestAccessToken;
+  }
 
   if (!getIsAuthenticated(state)) {
     return dispatch({ type: BUSY_LOGIN.ERROR });
@@ -138,7 +145,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     type: BUSY_LOGIN.ACTION,
     meta: targetUsername,
     payload: {
-      promise: busyAPI.sendAsync('login', [accessToken]),
+      promise: busyAPI.sendAsync(method, [accessToken]),
     },
   });
 };
