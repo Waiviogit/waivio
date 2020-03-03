@@ -497,11 +497,10 @@ export default class AppendForm extends Component {
           this.onSubmit(values);
         }
       } else {
-        this.props.intl({
+        message.error(this.props.intl({
           id: 'append_validate_message',
           defaultMessage: 'The rating with such name already exist in this locale',
-        });
-        message.error('The rating with such name already exist in this locale');
+        }));
       }
     });
   };
