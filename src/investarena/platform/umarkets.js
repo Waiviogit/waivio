@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
-import Stomp from 'stompjs';
+import store from 'store';
+import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client/dist/sockjs.js';
 import { CMD, HOURS } from './platformData';
 import {
@@ -78,10 +79,10 @@ export class Umarkets {
   }
 
   createWebSocketConnection() {
-    this.stompUser = localStorage.getItem('stompUser');
-    this.stompPassword = localStorage.getItem('stompPassword');
-    this.sid = localStorage.getItem('sid');
-    this.um_session = localStorage.getItem('um_session');
+    this.stompUser = store.get('stompUser');
+    this.stompPassword = store.get('stompPassword');
+    this.sid = store.get('sid');
+    this.um_session = store.get('um_session');
     this.platformName = Cookies.get('platformName');
     this.websocket = this.createSockJS();
     this.stompClient = Stomp.over(this.websocket);
@@ -93,13 +94,13 @@ export class Umarkets {
       this.stompPassword,
       this.onConnect.bind(this),
       this.onError.bind(this),
+      this.onError.bind(this),
       'trading',
     );
   }
 
   createSockJS() {
-    const websrv = parseInt(localStorage.getItem('WEBSRV'));
-    const url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}websrv${websrv}`;
+    const url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}`;
     return new SockJS(url);
   }
 

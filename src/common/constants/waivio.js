@@ -19,12 +19,7 @@ export const GUEST_PREFIX = 'waivio_';
 export const GUEST_COOKIES = {
   TOKEN: 'waivio_token',
   USERNAME: 'guestName',
-  SOCIAL: 'socialName',
-  CRM_TOKEN: 'crmToken',
-  SID: 'sessionId',
-  STOMP_USER: 'stompUser',
-  STOMP_PASSWORD: 'stompPassword',
-  UM_SESSION: 'um_session',
+  SOCIAL: 'platformName',
 };
 
 export const BANK_ACCOUNT = 'waiviobank';

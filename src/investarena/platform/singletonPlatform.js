@@ -2,18 +2,6 @@ import Cookies from 'js-cookie';
 import { Umarkets } from './umarkets';
 import { Widgets } from './widgets';
 
-const platforms = {
-  umarkets: Umarkets,
-  maximarkets: Umarkets,
-  maxitrade: Umarkets,
-  tradeallcrypto: Umarkets,
-  tradiva: Umarkets,
-  '770capital': Umarkets,
-  dowmarkets: Umarkets,
-  limefx: Umarkets,
-  widgets: Widgets,
-};
-
 let instance = null;
 let store = null;
 
@@ -41,7 +29,7 @@ class SingletonPlatform {
   }
   setPlatformInstance(platform) {
     if (platform) {
-      this._platform = new platforms[platform]();
+      this._platform = new Umarkets();
     } else {
       this._platform = new Widgets();
     }

@@ -5,6 +5,7 @@
   "production": {
     "apiPrefix": "https://investarena.com/",
     "brokerWSUrl": {
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -13,7 +14,6 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
-      "beaxy": "https://uat-exchange.tokenexus.com",
 
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
@@ -33,6 +33,7 @@
   "staging": {
     "apiPrefix": "https://investarena.waiviodev.com/",
     "brokerWSUrl": {
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -41,7 +42,6 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
-      "beaxy": "https://uat-exchange.tokenexus.com",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -60,6 +60,7 @@
     "": "http://localhost:8095/",
     "apiPrefix": "https://investarena.waiviodev.com/",
     "brokerWSUrl": {
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -68,7 +69,6 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
-      "beaxy": "https://uat-exchange.tokenexus.com",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -166,6 +166,7 @@
   },
 
   "logonWithToken": {
+    "beaxy": "https://test-api.tokenexus.com/Account/logonWithToken?token=",
     "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
     "umarkets": "https://api.umarkets.com/account/logonWithToken?token=",
     "maxitrade": "https://api.maxitrade.com/account/logonWithToken?token=",

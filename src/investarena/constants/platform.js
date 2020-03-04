@@ -9,6 +9,7 @@ export const BROKER = {
   DOWMARKETS: 'dowmarkets',
   LIMEFX: 'limefx',
   LEXATRADE: 'lexatrade',
+  BEAXY: 'beaxy',
 };
 
 export const CALLERS = {
