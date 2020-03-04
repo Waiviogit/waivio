@@ -19,7 +19,7 @@
     "dev": "node --max-old-space-size=8192 ./scripts/start.js",
     "build": "node --max-old-space-size=6144 ./scripts/build.js",
     "start": "node ./build/server.js",
-    "test": "jest --config jest.config.json --coverage",
+    "test": "jest --config jest.config.jn --coverage",
     "test:watch": "jest --config jest.config.json --watch",
     "eslint-autofix": "eslint --fix \"src/**/*.js\"",
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.6",
+    "@stomp/stompjs": "^5.4.3",
     "@textlint/markdown-to-ast": "^6.1.2",
     "antd": "^3.4.4",
     "axios": "0.17.1",
@@ -119,7 +120,6 @@
     "speakingurl": "^11.0.0",
     "steem-uri": "^0.1.1",
     "steemscript": "^1.0.1",
-    "stompjs": "2.3.3",
     "store": "^1.3.20",
     "string-humanize": "1.0.0",
     "striptags": "^2.1.1",
@@ -127,6 +127,7 @@
     "url-parse": "^1.1.9",
     "url-search-params-polyfill": "^2.0.0",
     "uuid": "^3.3.2",
+    "websocket": "^1.0.31",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
