@@ -51,15 +51,10 @@ export const setLocale = locale => {
   store.set('locale', locale);
 };
 
-export const saveGuestData = ({ token, expiration, guestName }) => {
-  store.set('accessToken', token);
-  store.set('accessTokenExpiration', expiration);
-  store.set('guestName', guestName);
-};
-
-export const setBxySessionData = ({ crmToken, sessionId, stompUser, stompPassword }) => {
-  store.set('crmToken', crmToken);
-  store.set('sessionId', sessionId);
+export const setBxySessionData = ({ crmToken, umSession, sessionId, stompUser, stompPassword }) => {
+  store.set('token', crmToken);
+  store.set('um_session', umSession);
+  store.set('sid', sessionId);
   store.set('stompUser', stompUser);
   store.set('stompPassword', stompPassword);
 };

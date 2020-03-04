@@ -9,6 +9,7 @@ import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResour
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
+import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 
 const filterKey = 'investarena';
 
@@ -964,7 +965,6 @@ export const beaxyLogin = body => {
         response.expiration = data.headers.get('expires-in');
         response.umSession = data.headers.get('um_session');
       }
-      console.log('\theaders > ', JSON.stringify(response));
       return data.json();
     })
     .then(data => {
@@ -1045,18 +1045,16 @@ class WaivioApiClient {
 
   setBxyKeepAliveTimer() {
     let bxyKeepAliveTimer = setTimeout(async function keepAliveRequest() {
-      const sid = Cookie.get(GUEST_COOKIES.SID);
-      const umSession = Cookie.get(GUEST_COOKIES.UM_SESSION);
+      const sid = store.get('sid');
+      const umSession = store.get('um_session');
       try {
         const res = await bxyKeepAlive(sid, umSession);
-        console.log('\tALIVE > ', res);
         bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
       } catch (e) {
-          // handle keep alive error
+          // todo: handle keep alive error
           clearTimeout(bxyKeepAliveTimer);
           const waivioApi = WaivioApiClient.instance;
           waivioApi.clearGuestData();
-          console.log('\tALIVE ERROR > ', e);
       }
     }, keepAliveDelay)
   }
@@ -1070,12 +1068,9 @@ class WaivioApiClient {
     store.set('waivioTokenExpiration', String(expiration * 1000));
     this.authToken = accessToken;
     if (bxySession) {
-      Cookie.set(GUEST_COOKIES.CRM_TOKEN, bxySession.crmToken);
-      Cookie.set(GUEST_COOKIES.SID, bxySession.sessionId);
-      Cookie.set(GUEST_COOKIES.STOMP_USER, bxySession.stompUser);
-      Cookie.set(GUEST_COOKIES.STOMP_PASSWORD, bxySession.stompPassword);
-      Cookie.set(GUEST_COOKIES.UM_SESSION, bxySession.umSession);
-      // keep alive bxy-session
+      setBxySessionData({
+        crmToken: bxySession.crmToken, umSession: bxySession.umSession, sessionId: bxySession.sessionId, stompUser: bxySession.stompUser, stompPassword: bxySession.stompPassword
+      });
       this.setBxyKeepAliveTimer();
     }
   }
