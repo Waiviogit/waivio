@@ -623,7 +623,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [ratingFields.category]: [
+  [objectFields.rating]: [
     {
       max: 100,
       message: {

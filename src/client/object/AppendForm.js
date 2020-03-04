@@ -539,16 +539,22 @@ export default class AppendForm extends Component {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
+    const filds = form.getFieldsValue();
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+    const triggerValue = trimStart(form.getFieldValue(currentField)).replace(/\s{2,}/g, ' ');
 
-    if (currentField === 'name') {
-      const triggerValue = trimStart(form.getFieldValue('name')).replace(/\s{2,}/g, ' ');
+    form.setFieldsValue({
+      [currentField]: triggerValue,
+    });
 
-      form.setFieldsValue({
-        [currentField]: triggerValue,
-      });
+    if (currentField === 'phone') {
+      if (filds.name) {
+        form.setFieldsValue({
+          name: trimStart(form.getFieldValue('name')).replace(/\s{2,}/g, ' '),
+        });
+      }
     }
 
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
@@ -652,6 +658,7 @@ export default class AppendForm extends Component {
   getFieldRules = fieldName => {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
+
     return rules.map(rule => {
       if (has(rule, 'message')) {
         return {
@@ -1269,8 +1276,8 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(ratingFields.category, {
-                rules: this.getFieldRules(ratingFields.category),
+              {getFieldDecorator(objectFields.rating, {
+                rules: this.getFieldRules(objectFields.rating),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
