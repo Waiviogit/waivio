@@ -87,6 +87,7 @@ export const getAccountHistory = (account, { from, limit, isGuest = false }) => 
   if (isGuest) {
     return getGuestAccountHistory(account, from, limit);
   }
+
   return getSteemAccountHistory(account, from, limit);
 };
 

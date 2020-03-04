@@ -1041,5 +1041,7 @@
   "please_input_nickname": "Nickname cannot be empty",
   "link_placeholder": "Add url",
   "modal_button_cancel": "Cancel",
-  "modal_button_yes": "OK"
+  "modal_button_yes": "OK",
+  "transaction_message_for_user": "Your transaction is on the way!",
+  "transaction_error_message_for_user": "Transaction failed"
 }
