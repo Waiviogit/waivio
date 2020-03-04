@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const BeaxySignInButton = props => (
   <div className="ModalSignUp__signin" role="presentation" onClick={props.onClick}>
     <img
-      src="https://static.xcritical.com/images/svg/logo-beaxy.svg" // todo: add icon to project
+      src="/images/investarena/beaxy.png" // todo: add icon to project
       alt="Beaxy 2.0"
       className="ModalSignUp__icon-beaxy"
     />
