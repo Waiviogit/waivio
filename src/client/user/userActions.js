@@ -122,7 +122,7 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
-  if ((!username && !getIsAuthenticated(state)) || isGuestUser(state)) {
+  if (!username && !getIsAuthenticated(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
