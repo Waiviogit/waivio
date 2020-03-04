@@ -48,6 +48,12 @@ class MapOS extends React.Component {
     this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
+  componentDidMount() {
+    const { zoom, center } = this.state;
+    const { getMapAreaData } = this.props;
+    getMapAreaData(zoom, center);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
       this.setState({
@@ -57,8 +63,17 @@ class MapOS extends React.Component {
     }
   }
 
+  componentDidUpdate( prevProps, prevState) {
+    const { zoom, center } = this.state;
+    if ((prevState.zoom !== zoom) || (!_.isEqual(prevState.center, center))) {
+      const { getMapAreaData  } = this.props;
+      getMapAreaData(zoom, center);
+    }
+  }
+
   onBoundsChanged = ({ center, zoom }) => {
-    this.props.setArea({ center, zoom });
+    const { setArea } = this.props;
+    setArea({ center, zoom });
     this.setState({ center, zoom });
   };
 
@@ -143,6 +158,7 @@ class MapOS extends React.Component {
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick } = this.props;
     const { markersLayout, infoboxData, zoom, center } = this.state;
+    console.log('center', center);
     return center ? (
       <div className="MapOS">
         <Map
@@ -221,6 +237,7 @@ MapOS.propTypes = {
   onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,
+  getMapAreaData: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

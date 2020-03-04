@@ -11,6 +11,7 @@ const initialState = {
   map: false,
   fetching: false,
   hasMoreRelatedObjects: true,
+  mapWobjects: [],
 };
 const objectType = (state = initialState, action) => {
   switch (action.type) {
@@ -57,6 +58,30 @@ const objectType = (state = initialState, action) => {
         filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
+        mapWobjects: filteredObjects,
+      };
+    }
+    case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
+      const { locale } = action.meta;
+      const {
+        related_wobjects: relatedWobjects,
+
+      } = action.payload;
+      console.log('relatedWobjects', relatedWobjects)
+      const filteredObjects = [
+        ...relatedWobjects
+          // .filter(
+          //   wObj =>
+          //     !wObj.status ||
+          //     (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+          // )
+          .map(wObj => getClientWObj(wObj, locale)),
+      ];
+      console.log('filteredObjects', filteredObjects)
+
+      return {
+        ...state,
+        mapWobjects: filteredObjects,
       };
     }
     case wobjTypeActions.UPDATE_ACTIVE_FILTERS:
@@ -84,6 +109,7 @@ export default objectType;
 export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
+export const getFilteredObjectsMap = state => state.mapWobjects;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
 export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;
