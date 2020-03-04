@@ -10,8 +10,9 @@ import './Payout.less';
 
 const Payout = ({ intl, post }) => {
   const payout = calculatePayout(post);
-  const payoutValue = payout.cashoutInTime ? payout.potentialPayout : payout.pastPayouts;
-
+  const payoutValue = payout.cashoutInTime
+    ? payout.potentialPayout
+    : payout.pastPayouts || payout.curatorPayouts;
   return (
     <span className="Payout">
       <BTooltip title={<PayoutDetail post={post} />}>
