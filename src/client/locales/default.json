@@ -129,8 +129,8 @@
   "memo_placeholder": "Additional message to include in this payment (optional)",
   "memo_exchange_error": "Memo is required when sending to an exchange.",
   "memo_encryption_error": "Encrypted memos are not supported.",
-  "power_up": "Steem power +",
-  "power_down": "Steem power -",
+  "power_up": "Power Up",
+  "power_down": "Power Down",
   "message": "Message",
   "edit_profile": "Edit profile",
   "profile_name": "Name",
@@ -599,7 +599,7 @@
   "release": "Release",
   "days_left": "days left",
   "filterRule": "FilterRule",
-  "assigned_successfully": "Assigned successfully",
+  "assigned_successfully": "Reserved successfully",
   "min_images_count": "You should add images, minimum",
   "min_followers_count": "You should have followers, at least",
   "min_posts_count": "You should be author of post, minimum",
@@ -1041,5 +1041,6 @@
   "please_input_nickname": "Nickname cannot be empty",
   "link_placeholder": "Add url",
   "modal_button_cancel": "Cancel",
-  "modal_button_yes": "OK"
+  "modal_button_yes": "OK",
+  "append_validate_message": "The rating with such name already exist in this locale"
 }

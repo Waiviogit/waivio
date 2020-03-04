@@ -84,19 +84,25 @@ class StoryFooter extends React.Component {
     }
   }
 
-  handleLikeClick = () => {
+  handleLikeClick = (weight, type) => {
     if (this.props.sliderMode && !this.props.postState.isLiked) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     } else {
-      this.props.onLikeClick(this.props.post, this.props.postState);
+      this.props.onLikeClick(this.props.post, this.props.postState, weight, type);
     }
   };
 
   handleLikeConfirm = () => {
+    const type = this.props.post.append_field_name ? 'approve' : '';
     this.setState({ sliderVisible: false }, () => {
-      this.props.onLikeClick(this.props.post, this.props.postState, this.state.sliderValue * 100);
+      this.props.onLikeClick(
+        this.props.post,
+        this.props.postState,
+        this.state.sliderValue * 100,
+        type,
+      );
     });
   };
 

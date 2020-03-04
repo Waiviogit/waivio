@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { MemoryRouter as Router } from 'react-router-dom';
 import ReceiveTransaction from '../ReceiveTransaction';
 
 describe('(Component) ReceiveTransaction', () => {
@@ -11,7 +12,11 @@ describe('(Component) ReceiveTransaction', () => {
         amount: <span>{'0 STEEM'}</span>,
         timestamp: '0',
       };
-      const wrapper = shallow(<ReceiveTransaction {...props} />);
+      const wrapper = shallow(
+        <Router>
+          <ReceiveTransaction {...props} />
+        </Router>,
+      );
       expect(wrapper).toMatchSnapshot();
     });
   });

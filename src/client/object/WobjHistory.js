@@ -164,6 +164,7 @@ class WobjHistory extends React.Component {
       }
       return true;
     });
+
     const objName = getFieldWithMaxWeight(object, objectFields.name);
     return (
       <React.Fragment>
