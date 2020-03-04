@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Cookie from 'js-cookie';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -40,7 +41,7 @@ const Chat = ({
       case 'init_response': {
         requestData.cmd = 'auth_connection';
         if (isGuest) {
-          requestData.args.sessionData.authToken = localStorage.getItem('accessToken');
+          requestData.args.sessionData.authToken = Cookie.get('waivio_token');
         } else {
           requestData.args.sessionData.transactionId = data.value.result.id;
           requestData.args.sessionData.blockNumber = data.value.result.block_num;
@@ -70,6 +71,8 @@ const Chat = ({
               props
                 .setSessionId(event.data.args.session_id)
                 .then(data => sendChatRequestData('init_response', data));
+            } else {
+              sendChatRequestData('init_response');
             }
             break;
           case 'auth_connection_response':
