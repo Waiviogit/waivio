@@ -56,6 +56,7 @@ export const calculatePayout = post => {
   if (payout < 0.0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
   payoutDetails.payoutLimitHit = payout >= max_payout;
+  payoutDetails.totalPayout = payout;
 
   // There is an "active cashout" if: (a) there is a pending payout, OR (b)
   // there is a valid cashout_time AND it's NOT a comment with 0 votes.
