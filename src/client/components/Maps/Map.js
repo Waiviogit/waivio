@@ -63,10 +63,10 @@ class MapOS extends React.Component {
   //   }
   // }
 
-  componentDidUpdate( prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { zoom, center } = this.state;
-    if ((prevState.zoom !== zoom) || (!_.isEqual(prevState.center, center))) {
-      const { getMapAreaData  } = this.props;
+    if (prevState.zoom !== zoom || !_.isEqual(prevState.center, center)) {
+      const { getMapAreaData } = this.props;
       getMapAreaData(zoom, center);
     }
   }
@@ -92,7 +92,20 @@ class MapOS extends React.Component {
               onClick={() => {
                 props.onMarkerClick(wobject.author_permlink);
               }}
-            />
+            >
+              <img src="/public/images/icons/waivio-logo.svg" width={29} height={34} alt='' />
+
+            </Marker>
+            // <MapMarker
+            //   onClick={() => {
+            //     props.onMarkerClick(wobject.author_permlink);
+            //   }}
+            //   key={`obj${wobject.author_permlink}`}
+            //   anchor={[+lat, +lng]}
+            //   payload={wobject}
+            //   onMouseOver={this.handleMarkerClick}
+            //   onMouseOut={this.closeInfobox}
+            // />
           ) : null;
         })
       : null;

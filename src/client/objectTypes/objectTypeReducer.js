@@ -65,7 +65,6 @@ const objectType = (state = initialState, action) => {
       const { locale } = action.meta;
       const {
         related_wobjects: relatedWobjects,
-
       } = action.payload;
       const filteredObjects = [
         ...relatedWobjects
