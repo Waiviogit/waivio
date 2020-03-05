@@ -51,6 +51,7 @@ export const calculatePayout = post => {
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
   const is_comment = parent_author !== '';
+
   let payout = pending_payout + total_author_payout + total_curator_payout;
   if (payout < 0.0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
@@ -84,6 +85,7 @@ export const calculatePayout = post => {
     payoutDetails.authorPayouts = total_author_payout;
     payoutDetails.curatorPayouts = total_curator_payout;
   }
+
   return payoutDetails;
 };
 
