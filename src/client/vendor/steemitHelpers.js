@@ -51,7 +51,6 @@ export const calculatePayout = post => {
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
   const is_comment = parent_author !== '';
-
   let payout = pending_payout + total_author_payout + total_curator_payout;
   if (payout < 0.0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
@@ -65,16 +64,17 @@ export const calculatePayout = post => {
     (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
 
   if (cashout_active) {
+    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
+    payoutDetails.cashoutInTime = cashout_time + '.000Z';
     payoutDetails.potentialPayout = pending_payout;
+  }
+
+  if (!cashout_active && total_curator_payout > 0) {
+    payoutDetails.curatorPayouts = total_curator_payout;
   }
 
   if (promoted > 0) {
     payoutDetails.promotionCost = promoted;
-  }
-
-  if (cashout_active) {
-    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
-    payoutDetails.cashoutInTime = cashout_time + '.000Z';
   }
 
   if (max_payout === 0) {
@@ -88,7 +88,6 @@ export const calculatePayout = post => {
     payoutDetails.authorPayouts = total_author_payout;
     payoutDetails.curatorPayouts = total_curator_payout;
   }
-
   return payoutDetails;
 };
 
