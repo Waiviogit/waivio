@@ -1053,11 +1053,11 @@ class WaivioApiClient {
         const res = await bxyKeepAlive(sid, umSession);
         bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
       } catch (e) {
-          clearTimeout(bxyKeepAliveTimer);
-          const waivioApi = WaivioApiClient.instance;
-          waivioApi.dispatch(logout());
+        clearTimeout(bxyKeepAliveTimer);
+        const waivioApi = WaivioApiClient.instance;
+        waivioApi.dispatch(logout());
       }
-    }, keepAliveDelay)
+    }, keepAliveDelay);
   }
 
   saveGuestData(accessToken, expiration, userName, social, bxySession = null) {
@@ -1070,7 +1070,11 @@ class WaivioApiClient {
     this.authToken = accessToken;
     if (bxySession) {
       setBxySessionData({
-        crmToken: bxySession.crmToken, umSession: bxySession.umSession, sessionId: bxySession.sessionId, stompUser: bxySession.stompUser, stompPassword: bxySession.stompPassword
+        crmToken: bxySession.crmToken,
+        umSession: bxySession.umSession,
+        sessionId: bxySession.sessionId,
+        stompUser: bxySession.stompUser,
+        stompPassword: bxySession.stompPassword,
       });
       this.setBxyKeepAliveTimer();
     }

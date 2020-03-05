@@ -105,7 +105,8 @@ export default class Buttons extends React.Component {
     this.props.onActionInitiated(() => this.props.onLikeClick(weight, type));
   }
 
-  handleRejectClick = (weight, type) => this.props.onActionInitiated(() => this.onFlagClick(weight, type));
+  handleRejectClick = (weight, type) =>
+    this.props.onActionInitiated(() => this.onFlagClick(weight, type));
 
   handleCommentsClick(e) {
     e.preventDefault();
