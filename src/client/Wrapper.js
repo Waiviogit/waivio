@@ -105,13 +105,13 @@ export default class Wrapper extends React.PureComponent {
     isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     screenSize: PropTypes.string.isRequired,
-    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
     usedLocale: null,
     translations: {},
     username: '',
+    platformName: 'widgets',
     login: () => {},
     logout: () => {},
     getFollowing: () => {},

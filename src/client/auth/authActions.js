@@ -119,6 +119,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
     return e;
   });
 };
+
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
 
 export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
@@ -144,7 +145,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, wai
     Cookie.remove('access_token');
   }
   busyAPI.close();
-  dispatch(disconnectBroker());
+  // dispatch(disconnectBroker()); todo: now we do not connect any broker
   dispatch({
     type: LOGOUT,
   });
