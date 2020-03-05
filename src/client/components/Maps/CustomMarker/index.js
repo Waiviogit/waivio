@@ -1,3 +1,3 @@
-// import CustomMarker from '../CustomMarker';
-//
-// export default CustomMarker;
+import CustomMarker from './CustomMarker';
+
+export default CustomMarker;

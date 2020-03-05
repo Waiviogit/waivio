@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
-import Marker from 'pigeon-marker/react';
+// import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
@@ -15,6 +15,7 @@ import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
 import './Map.less';
 import mapProvider from '../../helpers/mapProvider';
+import CustomMarker from './CustomMarker';
 
 const defaultCoords = {
   centerLat: 37.0902,
@@ -82,30 +83,35 @@ class MapOS extends React.Component {
       ? _.map(props.wobjects, wobject => {
           const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
           const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+          const getMarkedWobject = (obj) => {
+            const fields = Object.keys(obj);
+            return fields.includes('campaigns');
+          };
+          const isMarked = getMarkedWobject(wobject);
           return lat && lng ? (
-            <Marker
+            <CustomMarker
               key={`obj${wobject.author_permlink}`}
+              isMarked={isMarked}
               anchor={[+lat, +lng]}
               payload={wobject}
               onMouseOver={this.handleMarkerClick}
-              onMouseOut={this.closeInfobox}
               onClick={() => {
                 props.onMarkerClick(wobject.author_permlink);
               }}
-            >
-              <img src="/public/images/icons/waivio-logo.svg" width={29} height={34} alt='' />
+              onMouseOut={this.closeInfobox}
+              />
 
-            </Marker>
-            // <MapMarker
-            //   onClick={() => {
-            //     props.onMarkerClick(wobject.author_permlink);
-            //   }}
+            // <Marker
             //   key={`obj${wobject.author_permlink}`}
             //   anchor={[+lat, +lng]}
             //   payload={wobject}
             //   onMouseOver={this.handleMarkerClick}
             //   onMouseOut={this.closeInfobox}
+            //   onClick={() => {
+            //     props.onMarkerClick(wobject.author_permlink);
+            //   }}
             // />
+
           ) : null;
         })
       : null;
