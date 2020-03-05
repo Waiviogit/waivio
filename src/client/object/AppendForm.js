@@ -467,7 +467,7 @@ export default class AppendForm extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-        if (field.body === values.category) {
+        if (field.body === values[values.currentField]) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
 
@@ -498,7 +498,7 @@ export default class AppendForm extends Component {
         }
       } else {
         message.error(
-          this.props.intl({
+          this.props.intl.formatMessage({
             id: 'append_validate_message',
             defaultMessage: 'The rating with such name already exist in this locale',
           }),
@@ -553,6 +553,12 @@ export default class AppendForm extends Component {
       if (fields.name) {
         form.setFieldsValue({
           name: trimStart(fields.name).replace(/\s{2,}/g, ' '),
+        });
+      }
+
+      if (fields.number) {
+        form.setFieldsValue({
+          number: trimStart(fields.number).replace(/\s{2,}/g, ' '),
         });
       }
     }

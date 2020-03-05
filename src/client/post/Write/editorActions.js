@@ -262,9 +262,9 @@ export function createPost(postData) {
                 if (upvote) {
                   steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                 }
-                dispatch(push('/'));
                 if (result.status === 200) {
                   dispatch(notify('Your post will be posted soon', 'success'));
+                  dispatch(push('/'));
                 }
               } else {
                 dispatch(push(`/@${author}/${permlink}`));
