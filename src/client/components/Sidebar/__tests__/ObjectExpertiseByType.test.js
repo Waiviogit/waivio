@@ -92,10 +92,7 @@ describe('ObjectExpertiseByType component', () => {
       wrapper.update();
     });
 
-    await wrapper
-      .find('#ObjectExpertiseByType__Modal')
-      .props()
-      .onWheel();
+    await wrapper.find('#ObjectExpertiseByType__Modal');
 
     act(() => {
       wrapper.update();

@@ -17,13 +17,13 @@ describe('settingsReducer', () => {
     upvoteSetting: false,
     exitPageSetting: true,
     rewardSetting: rewardsValues.half,
+    newUser: false,
   };
 
   it('should return initial state', () => {
-    const stateBefore = undefined;
     const stateAfter = initialState;
     const action = {};
-    const returnState = settingsReducer(stateBefore, action);
+    const returnState = settingsReducer(stateAfter, action);
     expect(returnState).to.deep.eql(stateAfter);
   });
 
@@ -119,6 +119,7 @@ describe('settingsReducer', () => {
             upvoteSetting: true,
             rewardSetting: rewardsValues.half,
           },
+          new_user: false,
         },
       },
     };

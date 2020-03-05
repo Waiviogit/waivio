@@ -1046,4 +1046,5 @@
   "please_input_nickname": "Введите никнейм",
   "transaction_message_for_user": "Ваша транзакция в пути!",
   "transaction_error_message_for_user": "Транзакция не удалась"
+  "append_validate_message": "Рейтинг с таким названием уже существует в этой локали"
 }
