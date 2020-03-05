@@ -27,7 +27,7 @@ const WelcomeModal = ({
   location,
 }) => {
   const dispatch = useDispatch();
-  const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(true);
+  const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
   const followingKeysList = Object.keys(followingList);
   const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
