@@ -54,14 +54,14 @@ class MapOS extends React.Component {
     getMapAreaData(zoom, center);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
-      this.setState({
-        markersLayout: this.getMarkers(nextProps),
-        // center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-      });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
+  //     this.setState({
+  //       markersLayout: this.getMarkers(nextProps),
+  //       // center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+  //     });
+  //   }
+  // }
 
   componentDidUpdate( prevProps, prevState) {
     const { zoom, center } = this.state;
@@ -158,7 +158,6 @@ class MapOS extends React.Component {
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick } = this.props;
     const { markersLayout, infoboxData, zoom, center } = this.state;
-    console.log('center', center);
     return center ? (
       <div className="MapOS">
         <Map
@@ -231,7 +230,6 @@ MapOS.propTypes = {
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
-  wobjects: PropTypes.arrayOf(PropTypes.shape()),
   customControl: PropTypes.node,
   usedLocale: PropTypes.string,
   onCustomControlClick: PropTypes.func,

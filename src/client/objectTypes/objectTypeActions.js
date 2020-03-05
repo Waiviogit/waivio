@@ -24,7 +24,7 @@ export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
-export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, skip: 0 }) => (
+export const getObjectType = (typeName, { limit = 30, skip = 0 } = { limit: 30, skip: 0 }) => (
   dispatch,
   getState,
 ) => {
@@ -62,7 +62,7 @@ export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, 
   });
 };
 
-export const getObjectTypeMap = ({ limit = 15, skip = 0, map = {} } = { limit: 15, skip: 0, map: {} }) => (
+export const getObjectTypeMap = ({ limit = 30, skip = 0, map = {} } = { limit: 30, skip: 0, map: {} }) => (
   dispatch,
   getState,
 ) => {
