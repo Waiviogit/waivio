@@ -26,7 +26,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
-import { mutateObject, getOS } from './platformHelper';
+import { mutateObject, getOS, exponentialToDecimal } from './platformHelper';
 import { CALLERS } from '../constants/platform';
 
 const multiplier = 1000000;
@@ -73,9 +73,9 @@ export class Umarkets {
     }
   }
 
-  initialize(store) {
-    this.store = store;
-    this.dispatch = store.dispatch;
+  initialize(reduxStore) {
+    this.store = reduxStore;
+    this.dispatch = reduxStore.dispatch;
   }
 
   createWebSocketConnection() {
@@ -86,8 +86,8 @@ export class Umarkets {
     this.platformName = Cookies.get('platformName');
     this.websocket = this.createSockJS();
     this.stompClient = Stomp.over(this.websocket);
-    this.stompClient.debug = null;
-    this.stompClient.heartbeat.outgoing = 0;
+    this.stompClient.debug = msg => console.log('\tstomp client > ', msg);
+    this.stompClient.heartbeat.outgoing = 2000;
     this.stompClient.heartbeat.incoming = 0;
     this.stompClient.connect(
       this.stompUser,
@@ -154,8 +154,8 @@ export class Umarkets {
     this.getUserSettings();
     this.getUserStatistics();
     this.getUserRates();
-    this.getOpenDeals();
-    this.getClosedDeals();
+    // this.getOpenDeals();
+    // this.getClosedDeals();
   }
 
   getServerTime() {
@@ -178,9 +178,9 @@ export class Umarkets {
     this.sendRequestToPlatform(CMD.getUserRates, '[]');
   }
 
-  getOpenDeals() {
-    this.sendRequestToPlatform(CMD.getOpenDeals, '[]');
-  }
+  // getOpenDeals() {
+  //   this.sendRequestToPlatform(CMD.getOpenDeals, '[]');
+  // }
 
   getClosedDeals(
     period = 'LAST_7_DAYS',
@@ -189,7 +189,7 @@ export class Umarkets {
   ) {
     this.getClosedDealsForStatistics = getClosedDealsForStatistics;
     this.lastClosedDealTime = lastClosedDealTime;
-    this.sendRequestToPlatform(CMD.getClosedDeals, `[${period}, null, null]`);
+    // this.sendRequestToPlatform(CMD.getClosedDeals, `[${period}, null, null]`);
   }
 
   getAppIdentity(callerKey) {
@@ -286,12 +286,13 @@ export class Umarkets {
         case CMD.getUserAccount:
           this.parseUserAccount(result);
           break;
-        case CMD.getOpenDeals:
-          this.parseOpenDeals(result);
-          break;
-        case CMD.getClosedDeals:
-          this.parseClosedDeals(result);
-          break;
+        // *** UNSUPPORTED_COMMAND ***
+        // case CMD.getOpenDeals:
+        //   this.parseOpenDeals(result);
+        //   break;
+        // case CMD.getClosedDeals:
+        //   this.parseClosedDeals(result);
+        //   break;
         case CMD.getChartData:
           this.parseChartData(result);
           break;
@@ -332,8 +333,9 @@ export class Umarkets {
       this.accountCurrency = result.content.currency;
       this.getServerTime();
       this.getUserStatistics();
-      this.getOpenDeals();
-      this.getClosedDeals();
+      // unsupported commands
+      // this.getOpenDeals(); // unsupported command
+      // this.getClosedDeals();
     }
   }
 
@@ -347,16 +349,16 @@ export class Umarkets {
       }
       this.quotes[q.security] = {
         security: q.security,
-        bidPrice: (q.bidPrice / multiplier).toString(),
-        askPrice: (q.askPrice / multiplier).toString(),
+        bidPrice: exponentialToDecimal(q.bidPrice),
+        askPrice: exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
       };
       data[q.security] = {
         security: q.security,
-        bidPrice: (q.bidPrice / multiplier).toString(),
-        askPrice: (q.askPrice / multiplier).toString(),
+        bidPrice: exponentialToDecimal(q.bidPrice),
+        askPrice: exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
@@ -533,7 +535,7 @@ export class Umarkets {
   }
 
   parseOpenByMarketOrder(result) {
-    this.getOpenDeals();
+    // this.getOpenDeals(); // unsupported command
     message.success('Deal successfully opened');
     if (this.dataDealToApi) {
       this.dataDealToApi.deal_id = result.content.dealId;
