@@ -69,10 +69,6 @@ export const calculatePayout = post => {
     payoutDetails.potentialPayout = pending_payout;
   }
 
-  if (!cashout_active && total_curator_payout > 0) {
-    payoutDetails.curatorPayouts = total_curator_payout;
-  }
-
   if (promoted > 0) {
     payoutDetails.promotionCost = promoted;
   }
