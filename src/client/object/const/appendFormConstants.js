@@ -3,7 +3,6 @@ import {
   mapFields,
   objectFields,
   phoneFields,
-  ratingFields,
   TYPES_OF_MENU_ITEM,
 } from '../../../common/constants/listOfFields';
 import {
