@@ -45,6 +45,7 @@ class WalletSidebar extends React.Component {
   handleOpenTransfer = () => {
     const { match, user, isCurrentUser } = this.props;
     const username = match.params.name === user.name || isCurrentUser ? '' : match.params.name;
+
     this.props.openTransfer(username);
   };
 
