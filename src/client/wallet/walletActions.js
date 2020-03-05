@@ -75,11 +75,13 @@ const parseGuestActions = actions => {
     DEMO_POST_TRANSFER: 'demo_post_transfer',
     DEMO_DEBT: 'demo_debt',
   };
+
   return actions.map((action, index) => {
     const transferDirection =
       action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
         ? { from: action.sponsor, to: action.userName }
         : { from: action.userName, to: action.sponsor || 'mock' };
+
     return {
       trx_id: action._id, // eslint-disable-line
       block: 39603148,
@@ -93,7 +95,7 @@ const parseGuestActions = actions => {
         {
           ...transferDirection,
           amount: `${action.amount} STEEM`,
-          memo: (action.type === guestActionType.DEMO_POST && action.details.post_permlink) || '',
+          memo: action.memo || '',
         },
       ],
       actionCount: index + 1,
