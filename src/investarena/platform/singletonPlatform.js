@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
-import { Umarkets } from './umarkets';
-import { Widgets } from './widgets';
+import Umarkets from './umarkets';
+import Widgets from './widgets';
 
 let instance = null;
 let store = null;

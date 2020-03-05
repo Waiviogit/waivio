@@ -116,7 +116,7 @@
     "sc2-sdk": "1.0.2",
     "secure-random": "^1.1.1",
     "socket.io-client": "2.1.0",
-    "sockjs": "0.3.18",
+    "sockjs-client": "^1.4.0",
     "speakingurl": "^11.0.0",
     "steem-uri": "^0.1.1",
     "steemscript": "^1.0.1",

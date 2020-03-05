@@ -3,7 +3,7 @@ import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
 import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client/dist/sockjs.js';
+import SockJS from 'sockjs-client';
 import { CMD, HOURS } from './platformData';
 import {
   connectPlatformSuccess,
@@ -31,7 +31,7 @@ import { CALLERS } from '../constants/platform';
 
 const multiplier = 1000000;
 
-export class Umarkets {
+export default class Umarkets {
   constructor() {
     this.accountCurrency = 'USD';
     this.currentAccount = '';
@@ -86,7 +86,7 @@ export class Umarkets {
     this.platformName = Cookies.get('platformName');
     this.websocket = this.createSockJS();
     this.stompClient = Stomp.over(this.websocket);
-    this.stompClient.debug = null;
+    this.stompClient.debug = msg => console.log('\tdebug > ', msg);
     this.stompClient.heartbeat.outgoing = 0;
     this.stompClient.heartbeat.incoming = 0;
     this.stompClient.connect(

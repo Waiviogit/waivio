@@ -13,7 +13,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { mutateObject } from './platformHelper';
 
-export class Widgets {
+export default class Widgets {
   constructor() {
     this.accountCurrency = 'USD';
     this.quotes = {};
