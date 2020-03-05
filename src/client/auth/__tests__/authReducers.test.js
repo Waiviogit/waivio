@@ -9,6 +9,7 @@ const initialStateMock = {
   loaded: false,
   user: {},
   userMetaData: {},
+  isGuestUser: false,
 };
 
 describe('authReducer', () => {

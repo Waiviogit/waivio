@@ -7,6 +7,7 @@ ShallowWrapper {
     defaultKey="comments"
     followers={42}
     following={21}
+    isGuest={false}
     onChange={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -62,8 +63,8 @@ ShallowWrapper {
               role="presentation"
             >
               <FormattedMessage
-                defaultMessage="Discussions"
-                id="discussions"
+                defaultMessage="Posts"
+                id="posts"
                 values={Object {}}
               />
             </li>
@@ -153,6 +154,18 @@ ShallowWrapper {
                 values={Object {}}
               />
             </li>
+            <li
+              className="UserMenu__item"
+              data-key="about"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <FormattedMessage
+                defaultMessage="About"
+                id="about"
+                values={Object {}}
+              />
+            </li>
           </ul>
         </Scrollbars>
       </div>,
@@ -201,8 +214,8 @@ ShallowWrapper {
                 role="presentation"
               >
                 <FormattedMessage
-                  defaultMessage="Discussions"
-                  id="discussions"
+                  defaultMessage="Posts"
+                  id="posts"
                   values={Object {}}
                 />
               </li>
@@ -289,6 +302,18 @@ ShallowWrapper {
                 <FormattedMessage
                   defaultMessage="Activity"
                   id="activity"
+                  values={Object {}}
+                />
+              </li>
+              <li
+                className="UserMenu__item"
+                data-key="about"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="About"
+                  id="about"
                   values={Object {}}
                 />
               </li>
@@ -331,8 +356,8 @@ ShallowWrapper {
                 role="presentation"
               >
                 <FormattedMessage
-                  defaultMessage="Discussions"
-                  id="discussions"
+                  defaultMessage="Posts"
+                  id="posts"
                   values={Object {}}
                 />
               </li>
@@ -422,6 +447,18 @@ ShallowWrapper {
                   values={Object {}}
                 />
               </li>
+              <li
+                className="UserMenu__item"
+                data-key="about"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="About"
+                  id="about"
+                  values={Object {}}
+                />
+              </li>
             </ul>,
             "hideTracksWhenNotNeeded": false,
             "renderThumbHorizontal": [Function],
@@ -451,8 +488,8 @@ ShallowWrapper {
                   role="presentation"
                 >
                   <FormattedMessage
-                    defaultMessage="Discussions"
-                    id="discussions"
+                    defaultMessage="Posts"
+                    id="posts"
                     values={Object {}}
                   />
                 </li>,
@@ -542,6 +579,18 @@ ShallowWrapper {
                     values={Object {}}
                   />
                 </li>,
+                <li
+                  className="UserMenu__item"
+                  data-key="about"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="About"
+                    id="about"
+                    values={Object {}}
+                  />
+                </li>,
               ],
               "className": "UserMenu__menu center",
             },
@@ -553,8 +602,8 @@ ShallowWrapper {
                 "nodeType": "host",
                 "props": Object {
                   "children": <FormattedMessage
-                    defaultMessage="Discussions"
-                    id="discussions"
+                    defaultMessage="Posts"
+                    id="posts"
                     values={Object {}}
                   />,
                   "className": "UserMenu__item",
@@ -568,8 +617,8 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "class",
                   "props": Object {
-                    "defaultMessage": "Discussions",
-                    "id": "discussions",
+                    "defaultMessage": "Posts",
+                    "id": "posts",
                     "values": Object {},
                   },
                   "ref": null,
@@ -834,6 +883,37 @@ ShallowWrapper {
                 },
                 "type": "li",
               },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": <FormattedMessage
+                    defaultMessage="About"
+                    id="about"
+                    values={Object {}}
+                  />,
+                  "className": "UserMenu__item",
+                  "data-key": "about",
+                  "onClick": [Function],
+                  "role": "presentation",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "defaultMessage": "About",
+                    "id": "about",
+                    "values": Object {},
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": "li",
+              },
             ],
             "type": "ul",
           },
@@ -889,8 +969,8 @@ ShallowWrapper {
                 role="presentation"
               >
                 <FormattedMessage
-                  defaultMessage="Discussions"
-                  id="discussions"
+                  defaultMessage="Posts"
+                  id="posts"
                   values={Object {}}
                 />
               </li>
@@ -980,6 +1060,18 @@ ShallowWrapper {
                   values={Object {}}
                 />
               </li>
+              <li
+                className="UserMenu__item"
+                data-key="about"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="About"
+                  id="about"
+                  values={Object {}}
+                />
+              </li>
             </ul>
           </Scrollbars>
         </div>,
@@ -1028,8 +1120,8 @@ ShallowWrapper {
                   role="presentation"
                 >
                   <FormattedMessage
-                    defaultMessage="Discussions"
-                    id="discussions"
+                    defaultMessage="Posts"
+                    id="posts"
                     values={Object {}}
                   />
                 </li>
@@ -1116,6 +1208,18 @@ ShallowWrapper {
                   <FormattedMessage
                     defaultMessage="Activity"
                     id="activity"
+                    values={Object {}}
+                  />
+                </li>
+                <li
+                  className="UserMenu__item"
+                  data-key="about"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="About"
+                    id="about"
                     values={Object {}}
                   />
                 </li>
@@ -1158,8 +1262,8 @@ ShallowWrapper {
                   role="presentation"
                 >
                   <FormattedMessage
-                    defaultMessage="Discussions"
-                    id="discussions"
+                    defaultMessage="Posts"
+                    id="posts"
                     values={Object {}}
                   />
                 </li>
@@ -1249,6 +1353,18 @@ ShallowWrapper {
                     values={Object {}}
                   />
                 </li>
+                <li
+                  className="UserMenu__item"
+                  data-key="about"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="About"
+                    id="about"
+                    values={Object {}}
+                  />
+                </li>
               </ul>,
               "hideTracksWhenNotNeeded": false,
               "renderThumbHorizontal": [Function],
@@ -1278,8 +1394,8 @@ ShallowWrapper {
                     role="presentation"
                   >
                     <FormattedMessage
-                      defaultMessage="Discussions"
-                      id="discussions"
+                      defaultMessage="Posts"
+                      id="posts"
                       values={Object {}}
                     />
                   </li>,
@@ -1369,6 +1485,18 @@ ShallowWrapper {
                       values={Object {}}
                     />
                   </li>,
+                  <li
+                    className="UserMenu__item"
+                    data-key="about"
+                    onClick={[Function]}
+                    role="presentation"
+                  >
+                    <FormattedMessage
+                      defaultMessage="About"
+                      id="about"
+                      values={Object {}}
+                    />
+                  </li>,
                 ],
                 "className": "UserMenu__menu center",
               },
@@ -1380,8 +1508,8 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": <FormattedMessage
-                      defaultMessage="Discussions"
-                      id="discussions"
+                      defaultMessage="Posts"
+                      id="posts"
                       values={Object {}}
                     />,
                     "className": "UserMenu__item",
@@ -1395,8 +1523,8 @@ ShallowWrapper {
                     "key": undefined,
                     "nodeType": "class",
                     "props": Object {
-                      "defaultMessage": "Discussions",
-                      "id": "discussions",
+                      "defaultMessage": "Posts",
+                      "id": "posts",
                       "values": Object {},
                     },
                     "ref": null,
@@ -1653,6 +1781,37 @@ ShallowWrapper {
                     "props": Object {
                       "defaultMessage": "Activity",
                       "id": "activity",
+                      "values": Object {},
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  "type": "li",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": <FormattedMessage
+                      defaultMessage="About"
+                      id="about"
+                      values={Object {}}
+                    />,
+                    "className": "UserMenu__item",
+                    "data-key": "about",
+                    "onClick": [Function],
+                    "role": "presentation",
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "defaultMessage": "About",
+                      "id": "about",
                       "values": Object {},
                     },
                     "ref": null,

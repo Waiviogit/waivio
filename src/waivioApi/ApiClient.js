@@ -60,10 +60,18 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, requiredField) => {
-  const query = requiredField ? `?required_fields=${requiredField}` : '';
+export const getObject = (authorPermlink, requiredField = []) => {
+  const queryString = Array.isArray(requiredField)
+    ? requiredField.reduce((acc, field, index) => {
+        if (index !== requiredField.length - 1) {
+          return acc + `required_fields=${field}&`;
+        }
 
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
+        return acc + `required_fields=${field}`;
+      }, '?')
+    : `?required_fields=${requiredField}`;
+
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
     },
@@ -332,7 +340,11 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
 
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`)
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`, {
+      headers: {
+        app: config.appName,
+      },
+    })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
