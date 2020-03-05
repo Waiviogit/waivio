@@ -40,6 +40,7 @@ const render = async Component => {
   const state = store.getState();
   store.dispatch(connectPlatform());
   singleton.initialize(store);
+  waivioAPI.dispatch = store.dispatch;
 
   const userLocale = getLocale(state);
 

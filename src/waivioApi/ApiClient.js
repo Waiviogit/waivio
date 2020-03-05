@@ -10,6 +10,7 @@ import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
+import { logout } from '../client/auth/authActions';
 
 const filterKey = 'investarena';
 
@@ -1024,6 +1025,7 @@ class WaivioApiClient {
       throw new Error('Cannot construct singleton');
     }
     this._authToken = null;
+    this._dispatch = () => console.warn('Set reference to dispatch function before call it');
   }
 
   static get instance() {
@@ -1051,10 +1053,9 @@ class WaivioApiClient {
         const res = await bxyKeepAlive(sid, umSession);
         bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
       } catch (e) {
-          // todo: handle keep alive error
           clearTimeout(bxyKeepAliveTimer);
           const waivioApi = WaivioApiClient.instance;
-          waivioApi.clearGuestData();
+          waivioApi.dispatch(logout());
       }
     }, keepAliveDelay)
   }
@@ -1087,6 +1088,13 @@ class WaivioApiClient {
   }
   set authToken(token) {
     this._authToken = token;
+  }
+
+  get dispatch() {
+    return this._dispatch;
+  }
+  set dispatch(dispatch) {
+    this._dispatch = dispatch;
   }
 
   get isGuest() {
