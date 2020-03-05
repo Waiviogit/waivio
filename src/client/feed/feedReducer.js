@@ -48,7 +48,7 @@ const feedIdsList = (state = [], action) => {
       }
       return [];
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
-      return uniq([...state, ...mapPostsKeys(action.payload)]);
+      return [...state, ...mapPostsKeys(action.payload)];
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:

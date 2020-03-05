@@ -56,6 +56,7 @@ export const calculatePayout = post => {
   if (payout < 0.0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
   payoutDetails.payoutLimitHit = payout >= max_payout;
+  payoutDetails.totalPayout = payout;
 
   // There is an "active cashout" if: (a) there is a pending payout, OR (b)
   // there is a valid cashout_time AND it's NOT a comment with 0 votes.
@@ -64,16 +65,13 @@ export const calculatePayout = post => {
     (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
 
   if (cashout_active) {
+    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
+    payoutDetails.cashoutInTime = cashout_time + '.000Z';
     payoutDetails.potentialPayout = pending_payout;
   }
 
   if (promoted > 0) {
     payoutDetails.promotionCost = promoted;
-  }
-
-  if (cashout_active) {
-    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
-    payoutDetails.cashoutInTime = cashout_time + '.000Z';
   }
 
   if (max_payout === 0) {
