@@ -539,20 +539,20 @@ export default class AppendForm extends Component {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const filds = form.getFieldsValue();
+    const fields = form.getFieldsValue();
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const triggerValue = trimStart(form.getFieldValue(currentField)).replace(/\s{2,}/g, ' ');
+    const triggerValue = trimStart(fields[currentField]).replace(/\s{2,}/g, ' ');
 
     form.setFieldsValue({
       [currentField]: triggerValue,
     });
 
     if (currentField === 'phone') {
-      if (filds.name) {
+      if (fields.name) {
         form.setFieldsValue({
-          name: trimStart(form.getFieldValue('name')).replace(/\s{2,}/g, ' '),
+          name: trimStart(fields.name).replace(/\s{2,}/g, ' '),
         });
       }
     }
