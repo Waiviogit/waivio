@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { attempt, isError, has } from 'lodash';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import Avatar from '../components/Avatar';
@@ -8,9 +8,9 @@ import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
 const DiscoverUser = ({ user, isReblogged }) => {
-  const parsedJSON = _.attempt(JSON.parse, user.json_metadata);
-  const userJSON = _.isError(parsedJSON) ? {} : parsedJSON;
-  const userProfile = _.has(userJSON, 'profile') ? userJSON.profile : {};
+  const parsedJSON = attempt(JSON.parse, user.json_metadata);
+  const userJSON = isError(parsedJSON) ? {} : parsedJSON;
+  const userProfile = has(userJSON, 'profile') ? userJSON.profile : {};
   const name = userProfile.name;
 
   return (
@@ -27,7 +27,7 @@ const DiscoverUser = ({ user, isReblogged }) => {
                   <span className="username">{name || user.name}</span>
                 </span>
               </Link>
-              {user.wobjects_weight && typeof user.wobjects_weight === 'number' && (
+              {has(user, 'wobjects_weight') && typeof user.wobjects_weight === 'number' && (
                 <WeightTag weight={user.wobjects_weight} />
               )}
               {isReblogged && (
