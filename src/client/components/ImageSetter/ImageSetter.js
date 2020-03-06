@@ -8,9 +8,9 @@ import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
 import {
-  ALLOWED_IMG_FORMATS,
+  ALLOWED_UPDATED_IMG_FORMATS,
   MAX_IMG_SIZE,
-  objectURLValidationRegExp,
+  objectImageURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
 
@@ -50,7 +50,7 @@ const ImageSetter = ({
       return;
     }
 
-    const urlValidation = image.src.match(objectURLValidationRegExp);
+    const urlValidation = image.src.match(objectImageURLValidationRegExp);
 
     if (isValidLink && urlValidation) {
       if (!isMultiple) {
@@ -126,10 +126,12 @@ const ImageSetter = ({
       onLoadingImage(true);
       /* eslint-disable no-restricted-syntax */
       for (const image of images) {
-        if (!isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)) {
+        if (
+          !isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_UPDATED_IMG_FORMATS)
+        ) {
           onImageInvalid(
             MAX_IMG_SIZE[objectFields.background],
-            `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+            `(${ALLOWED_UPDATED_IMG_FORMATS.join(', ')}) `,
           );
         } else {
           /* eslint-disable no-await-in-loop */

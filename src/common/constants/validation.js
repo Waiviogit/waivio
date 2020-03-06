@@ -7,6 +7,8 @@ export const websiteTitleRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._ -]{0,100}$/;
 
 export const objectURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 
+export const objectImageURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)(?:jpg|jpeg)/;
+
 export const phoneNameValidationRegExp = /^[^!@#$%^&*,?":{}|<>]{0,100}$/;
 
 export const emailValidationRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]{0,100}$/;
@@ -14,6 +16,9 @@ export const emailValidationRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]{0,100}$/;
 export const wordsWithSpaceRegExp = /^([\w-_.,:!?]+ )*([\w-_.,:?!]+)?$/;
 
 export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif'];
+
+export const ALLOWED_UPDATED_IMG_FORMATS = ['jpg', 'jpeg'];
+
 export const MAX_IMG_SIZE = {
   [objectFields.avatar]: 2097152,
   [objectFields.background]: 15728640,
