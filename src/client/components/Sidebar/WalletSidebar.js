@@ -45,6 +45,7 @@ class WalletSidebar extends React.Component {
   handleOpenTransfer = () => {
     const { match, user, isCurrentUser } = this.props;
     const username = match.params.name === user.name || isCurrentUser ? '' : match.params.name;
+
     this.props.openTransfer(username);
   };
 
@@ -85,7 +86,7 @@ class WalletSidebar extends React.Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {!isGuest && (
+          {!isEmpty(user) && !isGuest && (
             <Action big className="WalletSidebar__transfer">
               <FormattedMessage id="exchange" defaultMessage="Exchange" />
             </Action>

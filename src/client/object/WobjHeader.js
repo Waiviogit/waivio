@@ -26,7 +26,7 @@ const WobjHeader = ({
   authenticated,
   isMobile,
 }) => {
-  const { usedLocale, isGuestUser } = useContext(AppSharedContext);
+  const { usedLocale } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
@@ -69,7 +69,7 @@ const WobjHeader = ({
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
-                {accessExtend && !isGuestUser && authenticated && (
+                {accessExtend && authenticated && (
                   <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode

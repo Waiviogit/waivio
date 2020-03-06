@@ -28,7 +28,6 @@ const getFormattedTransactionAmount = (amount, currency) => {
     </span>
   );
 };
-
 const WalletTransaction = ({
   transaction,
   currentUsername,
@@ -37,6 +36,7 @@ const WalletTransaction = ({
 }) => {
   const transactionType = transaction.op[0];
   const transactionDetails = transaction.op[1];
+
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
       return (
