@@ -38,6 +38,7 @@ import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 
 import './Topnav.less';
+import { replacer } from '../../helpers/parser';
 
 @injectIntl
 @withRouter
@@ -396,12 +397,11 @@ class Topnav extends React.Component {
   }
 
   handleSearchForInput(event) {
-    const value = event.target.value;
+    const value = replacer(event.target.value, '@');
     const { searchData } = this.state;
     const search = searchData.type === Topnav.markers.USER ? '' : `search=${value}`;
-    const pathname = searchData.type === Topnav.markers.USER ? `/${value}` : '/discover-objects';
-
-    this.hideAutoCompleteDropdown();
+    const pathname = searchData.type === Topnav.markers.USER ? `/@${value}` : '/discover-objects';
+    this.props.resetSearchAutoCompete();
     this.props.history.push({
       pathname,
       search,
@@ -409,6 +409,14 @@ class Topnav extends React.Component {
         query: value,
       },
     });
+    this.setState({
+      searchBarValue: '',
+      searchData: '',
+      currentItem: '',
+      searchBarActive: false,
+      dropdownOpen: false,
+    });
+    this.handleClearSearchData();
   }
 
   handleSearchAllResultsClick = () => {
@@ -485,6 +493,14 @@ class Topnav extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value, data) {
+    if (!value) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: '',
+      });
+    }
+
     if (value[0] === '@') {
       this.setState({
         searchBarValue: value,
@@ -672,7 +688,11 @@ class Topnav extends React.Component {
       this.props.resetSearchAutoCompete,
     );
 
-  handleOnFocus = () => this.setState({ dropdownOpen: true });
+  handleOnFocus = () => {
+    if (this.state.searchBarValue) {
+      this.setState({ dropdownOpen: true });
+    }
+  };
 
   renderTitle = title => <span>{title}</span>;
 

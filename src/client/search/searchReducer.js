@@ -59,6 +59,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         autoCompleteSearchResults: [],
+        searchObjectsResults: [],
+        searchUsersResults: [],
       };
     }
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
