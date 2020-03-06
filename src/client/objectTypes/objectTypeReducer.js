@@ -58,7 +58,6 @@ const objectType = (state = initialState, action) => {
         filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
-        mapWobjects: filteredObjects,
       };
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {

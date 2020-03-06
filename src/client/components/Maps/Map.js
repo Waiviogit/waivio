@@ -36,7 +36,6 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      markersLayout: this.getMarkers(props),
       zoom: 8,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
@@ -55,15 +54,6 @@ class MapOS extends React.Component {
     getMapAreaData(zoom, center);
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
-  //     this.setState({
-  //       markersLayout: this.getMarkers(nextProps),
-  //       // center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-  //     });
-  //   }
-  // }
-
   componentDidUpdate(prevProps, prevState) {
     const { zoom, center } = this.state;
     if (prevState.zoom !== zoom || !_.isEqual(prevState.center, center)) {
@@ -78,43 +68,33 @@ class MapOS extends React.Component {
     this.setState({ center, zoom });
   };
 
-  getMarkers = props =>
-    !_.isEmpty(props.wobjects)
-      ? _.map(props.wobjects, wobject => {
-          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-          const getMarkedWobject = (obj) => {
-            const fields = Object.keys(obj);
-            return fields.includes('campaigns');
-          };
-          const isMarked = getMarkedWobject(wobject);
-          return lat && lng ? (
-            <CustomMarker
-              key={`obj${wobject.author_permlink}`}
-              isMarked={isMarked}
-              anchor={[+lat, +lng]}
-              payload={wobject}
-              onMouseOver={this.handleMarkerClick}
-              onClick={() => {
-                props.onMarkerClick(wobject.author_permlink);
-              }}
-              onMouseOut={this.closeInfobox}
-              />
-
-            // <Marker
-            //   key={`obj${wobject.author_permlink}`}
-            //   anchor={[+lat, +lng]}
-            //   payload={wobject}
-            //   onMouseOver={this.handleMarkerClick}
-            //   onMouseOut={this.closeInfobox}
-            //   onClick={() => {
-            //     props.onMarkerClick(wobject.author_permlink);
-            //   }}
-            // />
-
-          ) : null;
-        })
-      : null;
+  getMarkers = props => {
+    const { wobjects } = this.props;
+    return (!_.isEmpty(wobjects)
+      ? _.map(wobjects, wobject => {
+        const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+        const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+        const getMarkedWobject = (obj) => {
+          const fields = Object.keys(obj);
+          return fields.includes('campaigns');
+        };
+        const isMarked = getMarkedWobject(wobject);
+        return lat && lng ? (
+          <CustomMarker
+            key={`obj${wobject.author_permlink}`}
+            isMarked={isMarked}
+            anchor={[+lat, +lng]}
+            payload={wobject}
+            onMouseOver={this.handleMarkerClick}
+            onClick={() => {
+              props.onMarkerClick(wobject.author_permlink);
+            }}
+            onMouseOut={this.closeInfobox}
+          />
+        ) : null;
+      })
+      : null)
+  };
 
   getOverlayLayout = () => {
     const wobj = getClientWObj(this.state.infoboxData.wobject, this.props.usedLocale);
@@ -175,8 +155,9 @@ class MapOS extends React.Component {
   );
 
   render() {
-    const { heigth, isFullscreenMode, customControl, onCustomControlClick } = this.props;
-    const { markersLayout, infoboxData, zoom, center } = this.state;
+    const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
+    const { infoboxData, zoom, center } = this.state;
+    const markersLayout = this.getMarkers(wobjects);
     return center ? (
       <div className="MapOS">
         <Map
@@ -246,6 +227,7 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
+  wobjects: PropTypes.array.isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
