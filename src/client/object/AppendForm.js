@@ -545,7 +545,7 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const trimOptionalFields = name => {
+    const trimNestedFields = name => {
       if (fields[name]) {
         form.setFieldsValue({
           [name]: this.trimText(fields[name]),
@@ -557,22 +557,22 @@ export default class AppendForm extends Component {
       [currentField]: triggerValue,
     });
 
-    if (currentField === 'phone') {
-      trimOptionalFields('name');
-      trimOptionalFields('number');
+    if (currentField === objectFields.phone) {
+      trimNestedFields(phoneFields.name);
+      trimNestedFields(phoneFields.number);
     }
 
-    if (currentField === 'website') {
-      trimOptionalFields('title');
-      trimOptionalFields('link');
+    if (currentField === objectFields.website) {
+      trimNestedFields(websiteFields.title);
+      trimNestedFields(websiteFields.link);
     }
 
-    if (currentField === 'address') {
-      trimOptionalFields('street');
-      trimOptionalFields('city');
-      trimOptionalFields('state');
-      trimOptionalFields('postalCode');
-      trimOptionalFields('country');
+    if (currentField === objectFields.address) {
+      trimNestedFields(addressFields.street);
+      trimNestedFields(addressFields.city);
+      trimNestedFields(addressFields.state);
+      trimNestedFields(addressFields.postalCode);
+      trimNestedFields(addressFields.country);
     }
 
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
