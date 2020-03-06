@@ -3,7 +3,6 @@ import {
   mapFields,
   objectFields,
   phoneFields,
-  ratingFields,
   TYPES_OF_MENU_ITEM,
 } from '../../../common/constants/listOfFields';
 import {
@@ -623,7 +622,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [ratingFields.category]: [
+  [objectFields.rating]: [
     {
       max: 100,
       message: {

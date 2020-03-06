@@ -10,8 +10,6 @@ import './Payout.less';
 
 const Payout = ({ intl, post }) => {
   const payout = calculatePayout(post);
-  const payoutValue = payout.cashoutInTime ? payout.potentialPayout : payout.pastPayouts;
-
   return (
     <span className="Payout">
       <BTooltip title={<PayoutDetail post={post} />}>
@@ -20,7 +18,7 @@ const Payout = ({ intl, post }) => {
             'Payout--rejected': payout.isPayoutDeclined,
           })}
         >
-          <USDDisplay value={payoutValue} />
+          <USDDisplay value={payout.totalPayout} />
         </span>
       </BTooltip>
       {post.percent_steem_dollars === 0 && (

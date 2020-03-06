@@ -467,7 +467,7 @@ export default class AppendForm extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-        if (field.body === values.category) {
+        if (field.body === values[values.currentField]) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
 
@@ -498,7 +498,7 @@ export default class AppendForm extends Component {
         }
       } else {
         message.error(
-          this.props.intl({
+          this.props.intl.formatMessage({
             id: 'append_validate_message',
             defaultMessage: 'The rating with such name already exist in this locale',
           }),
@@ -539,16 +539,28 @@ export default class AppendForm extends Component {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
+    const fields = form.getFieldsValue();
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+    const triggerValue = trimStart(fields[currentField]).replace(/\s{2,}/g, ' ');
 
-    if (currentField === 'name') {
-      const triggerValue = trimStart(form.getFieldValue('name')).replace(/\s{2,}/g, ' ');
+    form.setFieldsValue({
+      [currentField]: triggerValue,
+    });
 
-      form.setFieldsValue({
-        [currentField]: triggerValue,
-      });
+    if (currentField === 'phone') {
+      if (fields.name) {
+        form.setFieldsValue({
+          name: trimStart(fields.name).replace(/\s{2,}/g, ' '),
+        });
+      }
+
+      if (fields.number) {
+        form.setFieldsValue({
+          number: trimStart(fields.number).replace(/\s{2,}/g, ' '),
+        });
+      }
     }
 
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
@@ -652,6 +664,7 @@ export default class AppendForm extends Component {
   getFieldRules = fieldName => {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
+
     return rules.map(rule => {
       if (has(rule, 'message')) {
         return {
@@ -1269,8 +1282,8 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(ratingFields.category, {
-                rules: this.getFieldRules(ratingFields.category),
+              {getFieldDecorator(objectFields.rating, {
+                rules: this.getFieldRules(objectFields.rating),
               })(
                 <Input
                   className={classNames('AppendForm__input', {

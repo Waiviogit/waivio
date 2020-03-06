@@ -152,6 +152,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
+
   const countWithWobj = feed.feed[userName].list.length;
 
   return dispatch({
