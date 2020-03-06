@@ -397,10 +397,14 @@ class Topnav extends React.Component {
 
   handleSearchForInput(event) {
     const value = event.target.value;
+    const { searchData } = this.state;
+    const search = searchData.type === Topnav.markers.USER ? '' : `search=${value}`;
+    const pathname = searchData.type === Topnav.markers.USER ? `/${value}` : '/discover-objects';
+
     this.hideAutoCompleteDropdown();
     this.props.history.push({
-      pathname: '/discover-objects',
-      search: `search=${value}`,
+      pathname,
+      search,
       state: {
         query: value,
       },
@@ -411,6 +415,7 @@ class Topnav extends React.Component {
     const { searchData, searchBarValue } = this.state;
     this.handleOnBlur();
     let redirectUrl = '';
+
     switch (searchData.type) {
       case 'wobject':
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
@@ -442,7 +447,6 @@ class Topnav extends React.Component {
         });
         return;
       }
-
       const nextState = {
         searchData: {
           subtype: optionValue,
@@ -463,7 +467,6 @@ class Topnav extends React.Component {
         return;
       }
     }
-
     let redirectUrl = '';
     switch (data.props.marker) {
       case Topnav.markers.USER:
@@ -483,7 +486,14 @@ class Topnav extends React.Component {
 
   handleOnChangeForAutoComplete(value, data) {
     if (value[0] === '@') {
-      this.setState({ searchBarValue: value, searchData: '', currentItem: 'Users' });
+      this.setState({
+        searchBarValue: value,
+        searchData: {
+          subtype: 'Users',
+          type: 'user',
+        },
+        currentItem: 'Users',
+      });
     } else if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
@@ -598,6 +608,7 @@ class Topnav extends React.Component {
     const { searchData } = this.state;
     const { searchByObject, searchByUser, searchByObjectType } = this.props;
     const dataSource = [];
+
     if (!isEmpty(searchResults)) {
       dataSource.push(this.searchSelectBar(searchResults));
     }
