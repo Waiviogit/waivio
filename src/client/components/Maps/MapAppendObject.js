@@ -112,9 +112,13 @@ class MapAppendObject extends React.Component {
           onBoundsChanged={this.onBoundsChanged}
           center={userCoordinates}
           zoom={zoom}
-          height={heigth}
           onClick={this.setCoordinates}
           animate
+          height={heigth}
+          // defaultHeight='400px'
+          // defaultWidth='719px'
+          // width='719px'
+          // height='400px'
         >
           {this.props.center && !_.isNan(this.props.center[0]) && (
             <Marker
