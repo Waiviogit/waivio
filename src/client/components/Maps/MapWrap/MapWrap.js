@@ -51,7 +51,7 @@ class MapWrap extends React.Component {
     (zoom, center) => {
       const { setMapArea } = this.props;
       setMapArea({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
-    },1000);
+    },200);
 
   setArea = ({ center, zoom }) => {
     this.setState({ center, zoom });
