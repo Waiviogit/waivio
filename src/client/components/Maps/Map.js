@@ -4,7 +4,6 @@ import _ from 'lodash';
 import React from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
-// import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
