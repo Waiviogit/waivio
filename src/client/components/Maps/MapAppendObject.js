@@ -103,7 +103,6 @@ class MapAppendObject extends React.Component {
   );
 
   render() {
-    const { heigth } = this.props;
     const { infoboxData, zoom, userCoordinates } = this.state;
     return userCoordinates ? (
       <div className="MapOS">
@@ -114,11 +113,8 @@ class MapAppendObject extends React.Component {
           zoom={zoom}
           onClick={this.setCoordinates}
           animate
-          height={heigth}
-          // defaultHeight='400px'
-          // defaultWidth='719px'
-          // width='719px'
-          // height='400px'
+          width={719}
+          height={400}
         >
           {this.props.center && !_.isNan(this.props.center[0]) && (
             <Marker
@@ -146,7 +142,6 @@ class MapAppendObject extends React.Component {
 
 MapAppendObject.defaultProps = {
   center: defaultCoords,
-  heigth: 200,
   userLocation: {},
   setCoordinates: () => {},
   getCoordinates: () => {},
@@ -155,7 +150,6 @@ MapAppendObject.defaultProps = {
 MapAppendObject.propTypes = {
   setCoordinates: PropTypes.func,
   getCoordinates: PropTypes.func,
-  heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
   center: PropTypes.arrayOf(PropTypes.number),
 };
