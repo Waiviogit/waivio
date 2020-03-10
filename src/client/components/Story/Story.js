@@ -171,7 +171,7 @@ class Story extends React.Component {
         to={{ pathname: pathName }}
         title={`${this.props.intl.formatMessage({
           id: 'related_to_object',
-          defaultMessage: 'Related to object',
+          defaultMessage: 'Related',
         })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
       >
         <ObjectAvatar item={wobj} size={40} />

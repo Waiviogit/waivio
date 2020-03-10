@@ -38,6 +38,7 @@ import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 
 import './Topnav.less';
+import { replacer } from '../../helpers/parser';
 
 @injectIntl
 @withRouter
@@ -396,21 +397,33 @@ class Topnav extends React.Component {
   }
 
   handleSearchForInput(event) {
-    const value = event.target.value;
-    this.hideAutoCompleteDropdown();
+    const value = replacer(event.target.value, '@');
+    const { searchData } = this.state;
+    const search = searchData.type === Topnav.markers.USER ? '' : `search=${value}`;
+    const pathname = searchData.type === Topnav.markers.USER ? `/@${value}` : '/discover-objects';
+    this.props.resetSearchAutoCompete();
     this.props.history.push({
-      pathname: '/discover-objects',
-      search: `search=${value}`,
+      pathname,
+      search,
       state: {
         query: value,
       },
     });
+    this.setState({
+      searchBarValue: '',
+      searchData: '',
+      currentItem: '',
+      searchBarActive: false,
+      dropdownOpen: false,
+    });
+    this.handleClearSearchData();
   }
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
     this.handleOnBlur();
     let redirectUrl = '';
+
     switch (searchData.type) {
       case 'wobject':
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
@@ -442,7 +455,6 @@ class Topnav extends React.Component {
         });
         return;
       }
-
       const nextState = {
         searchData: {
           subtype: optionValue,
@@ -463,7 +475,6 @@ class Topnav extends React.Component {
         return;
       }
     }
-
     let redirectUrl = '';
     switch (data.props.marker) {
       case Topnav.markers.USER:
@@ -482,8 +493,23 @@ class Topnav extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value, data) {
+    if (!value) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: '',
+      });
+    }
+
     if (value[0] === '@') {
-      this.setState({ searchBarValue: value, searchData: '', currentItem: 'Users' });
+      this.setState({
+        searchBarValue: value,
+        searchData: {
+          subtype: 'Users',
+          type: 'user',
+        },
+        currentItem: 'Users',
+      });
     } else if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
@@ -598,6 +624,7 @@ class Topnav extends React.Component {
     const { searchData } = this.state;
     const { searchByObject, searchByUser, searchByObjectType } = this.props;
     const dataSource = [];
+
     if (!isEmpty(searchResults)) {
       dataSource.push(this.searchSelectBar(searchResults));
     }
@@ -661,7 +688,11 @@ class Topnav extends React.Component {
       this.props.resetSearchAutoCompete,
     );
 
-  handleOnFocus = () => this.setState({ dropdownOpen: true });
+  handleOnFocus = () => {
+    if (this.state.searchBarValue) {
+      this.setState({ dropdownOpen: true });
+    }
+  };
 
   renderTitle = title => <span>{title}</span>;
 
