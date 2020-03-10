@@ -1122,5 +1122,9 @@
   "authForm_two_FA_code": "Authentication code",
   "authForm_invalid_credentials": "Incorrect login or password",
   "authForm_two_FA_error": "Code is not match",
-  "authForm_server_error": "Server error. Try later"
+  "authForm_server_error": "Server error. Try later",
+  "authForm_USER_SESSIONS_LIMIT_IS_REACHED": "User session limit is reached",
+  "authForm_IP_WHITE_LIST_ERROR": "Access from your ip is prohibited",
+  "authForm_REGION_ERROR":"Access in your area is prohibited",
+  "authForm_CRM_ERROR": "Server error"
 }

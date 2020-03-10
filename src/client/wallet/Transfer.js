@@ -197,14 +197,18 @@ export default class Transfer extends React.Component {
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.ok) {
-              this.props.notify(intl.formatMessage({
-                id: 'transfer_success_for_guest',
-                defaultMessage: 'Your transaction is on the way!',
-              }), 'success');
+              this.props.notify(
+                intl.formatMessage({
+                  id: 'transfer_success_for_guest',
+                  defaultMessage: 'Your transaction is on the way!',
+                }),
+                'success',
+              );
             } else {
               this.props.notify(res.error.message, 'error');
             }
-          })} else {
+          });
+        } else {
           const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
           win.focus();
         }

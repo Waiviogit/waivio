@@ -8,7 +8,7 @@ import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
-import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+import GuestSignUpModalContent from '../GuestSignUpForm/GuestSignUpModalContent';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import Spinner from '../../Icon/Loading';
 import SignUpInfo from '../SignUpInfo/SignUpInfo';
@@ -104,7 +104,7 @@ const ModalSignUp = ({ isButton }) => {
       >
         <div className="ModalSignUp">
           {isFormVisible ? (
-            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+            <GuestSignUpModalContent userData={userData} isModalOpen={isModalOpen} />
           ) : (
             renderSignUp()
           )}

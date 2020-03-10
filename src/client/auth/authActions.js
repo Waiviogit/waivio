@@ -38,6 +38,8 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   { steemConnectAPI, waivioAPI },
 ) => {
   // todo: call beaxy login
+  if (socialNetwork === 'beaxy')
+    return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();
   let promise = Promise.resolve(null);
 

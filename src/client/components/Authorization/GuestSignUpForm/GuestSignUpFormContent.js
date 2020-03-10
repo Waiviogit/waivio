@@ -20,6 +20,7 @@ const GuestSignUpFormContent = ({
   setIsLoading,
   image,
   initialLanguages,
+  socialNetwork,
 }) => {
   const usernameError = getFieldError('username');
   const aliasError = getFieldError('alias');
@@ -62,7 +63,12 @@ const GuestSignUpFormContent = ({
             ],
           })(
             // todo: get prefix by app
-            <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
+            <Input
+              disabled={socialNetwork === 'beaxy'}
+              placeholder="Enter nickname"
+              addonBefore={`@${GUEST_PREFIX}`}
+              maxLength={16}
+            />,
           )}
         </Form.Item>
 
@@ -189,6 +195,7 @@ const GuestSignUpFormContent = ({
 };
 
 GuestSignUpFormContent.propTypes = {
+  socialNetwork: PropTypes.oneOf(['beaxy', 'google', 'facebook']).isRequired,
   getFieldDecorator: PropTypes.func,
   getFieldsError: PropTypes.func,
   getFieldError: PropTypes.func,

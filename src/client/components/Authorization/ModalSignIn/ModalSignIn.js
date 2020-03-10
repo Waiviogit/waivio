@@ -3,16 +3,19 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { get } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
-import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+import GuestSignUpModalContent from '../GuestSignUpForm/GuestSignUpModalContent';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import BeaxySignInButton from '../SocialButtons/BeaxySignInButton';
+import BeaxyAuthForm from '../GuestSignUpForm/BeaxyAuthForm';
+import { DEFAULT_USER_AVATAR_URL } from '../../../../common/constants/waivio';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
@@ -20,9 +23,10 @@ const ModalSignIn = ({ next }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isLoginForm, setIsLoginForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const responseSocial = async (response, socialNetwork) => {
+  const socialLoginResponse = async (response, socialNetwork) => {
     if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
@@ -59,38 +63,48 @@ const ModalSignIn = ({ next }) => {
     }
   };
 
-  const handleBeaxySignIn = () => {
-    setUserData({ socialNetwork: 'beaxy' });
+  const loginByCredentialsResponse = response => {
+    const image = get(response, ['jsonMetadata', 'profile', 'profile_image'], '');
+    setUserData({ ...response, image, socialNetwork: 'beaxy' });
     setIsFormVisible(true);
   };
 
-  const renderSignIn = () => (
-    <React.Fragment>
-      <h2 className="ModalSignUp__title">
-        <FormattedMessage id="login" defaultMessage="Log in" />
-      </h2>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <React.Fragment>
-          <BeaxySignInButton onClick={handleBeaxySignIn} />
-          <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
-            <img
-              src="/images/icons/steemit.svg"
-              alt="steemit"
-              className="ModalSignUp__icon-steemit"
-            />
-            <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
-          </a>
-          <SocialButtons responseSocial={responseSocial} />
-        </React.Fragment>
-      )}
-    </React.Fragment>
-  );
+  const handleBeaxySignIn = () => {
+    setUserData({ socialNetwork: 'beaxy' });
+    setIsLoginForm(true);
+  };
+
+  const renderSignIn = loginWithCredentials =>
+    loginWithCredentials ? (
+      <BeaxyAuthForm firstLoginResponse={loginByCredentialsResponse} />
+    ) : (
+      <React.Fragment>
+        <h2 className="ModalSignUp__title">
+          <FormattedMessage id="login" defaultMessage="Log in" />
+        </h2>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <React.Fragment>
+            <BeaxySignInButton onClick={handleBeaxySignIn} />
+            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
+              <img
+                src="/images/icons/steemit.svg"
+                alt="steemit"
+                className="ModalSignUp__icon-steemit"
+              />
+              <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+            </a>
+            <SocialButtons responseSocial={socialLoginResponse} />
+          </React.Fragment>
+        )}
+      </React.Fragment>
+    );
 
   const onModalClose = () => {
     setIsModalOpen(false);
     setIsFormVisible(false);
+    setIsLoginForm(false);
   };
 
   const memoizedOnModalClose = useCallback(() => {
@@ -108,12 +122,13 @@ const ModalSignIn = ({ next }) => {
         visible={isModalOpen}
         onCancel={memoizedOnModalClose}
         footer={null}
+        destroyOnClose
       >
         <div className="ModalSignUp">
           {isFormVisible ? (
-            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+            <GuestSignUpModalContent userData={userData} isModalOpen={isModalOpen} />
           ) : (
-            renderSignIn()
+            renderSignIn(isLoginForm)
           )}
         </div>
       </Modal>

@@ -6,16 +6,17 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
-import { getUserAccount } from '../../../../waivioApi/ApiClient';
+import { getGuestAvatarUrl, getUserAccount, updateGuestProfile } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { getLocale } from '../../../reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
-import BeaxySignInFormContent from './BeaxySignInFormContent';
 import './GuestSignUpForm.less';
 
-const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
+const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
   const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
+
+  console.log('\tGuestSignUpModalContent > ', userData);
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
@@ -23,16 +24,28 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (userData.socialNetwork === 'facebook') {
-      setFieldsValue({
-        username: getSlug(userData.name).slice(0, 16),
-      });
-    } else if (userData.socialNetwork === 'google') {
-      setFieldsValue({
-        username: getSlug(
-          `${userData.profileObj.givenName} ${userData.profileObj.familyName}`,
-        ).slice(0, 16),
-      });
+    switch (userData.socialNetwork) {
+      case 'google':
+        setFieldsValue({
+          username: getSlug(userData.name).slice(0, 16),
+        });
+        break;
+      case 'facebook':
+        setFieldsValue({
+          username: getSlug(
+            `${userData.profileObj.givenName} ${userData.profileObj.familyName}`,
+          ).slice(0, 16),
+        });
+        break;
+      case 'beaxy':
+        debugger;
+        setFieldsValue({
+          username: getSlug(userData.userName.split('_')[1]),
+          alias: userData.displayName,
+        });
+        break;
+      default:
+        break;
     }
   }, [userData]);
 
@@ -46,6 +59,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   const dispatch = useDispatch();
 
   const validateUserName = async (rule, value, callback) => {
+    if (userData.socialNetwork === 'beaxy') callback();
     if (value.length >= 25) {
       callback(
         <FormattedMessage
@@ -86,15 +100,42 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        const regData = {
-          userName: `${GUEST_PREFIX}${values.username}`,
-          avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
-          alias: values.alias || '',
-          locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
-        };
-        dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
-          setIsLoading(false);
-        });
+        // if (userData.socialNetwork === 'beaxy') {
+        //   debugger;
+        //   updateGuestProfile(userData.userName, { ...userData.userMetadata }).then(res => {
+        //     console.log('\t> > > ', res);
+        //   })
+        // }
+        const userAvatar = isEmpty(values.avatar) ? '' : values.avatar[0].src;
+        const userAlias = values.alias || '';
+        const regData =
+          userData.socialNetwork === 'beaxy'
+            ? userData
+            : {
+                userName: `${GUEST_PREFIX}${values.username}`,
+                avatar: userAvatar,
+                alias: userAlias,
+                locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
+              };
+        dispatch(login(userData.accessToken, userData.socialNetwork, regData))
+          .then(() => {
+            setIsLoading(false);
+          })
+          .then(async () => {
+            if (userData.socialNetwork === 'beaxy') {
+              debugger;
+              const { image } = await getGuestAvatarUrl(userData.userName, userAvatar);
+              const response = await updateGuestProfile(userData.userName, {
+                ...userData.jsonMetadata,
+                profile: {
+                  ...userData.jsonMetadata.profile,
+                  profile_image: image || userAvatar,
+                  name: userAlias,
+                },
+              });
+              console.log('\t> > > profile is updated', response);
+            }
+          });
       } else {
         dispatch(notify(`${err.username.errors[0].message.props.defaultMessage}`, 'error'));
         setIsLoading(false);
@@ -106,9 +147,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     setFieldsValue({ avatar: image });
   };
 
-  return userData.socialNetwork === 'beaxy' ? (
-    <BeaxySignInFormContent form={form} />
-  ) : (
+  return (
     <GuestSignUpFormContent
       getFieldDecorator={getFieldDecorator}
       getFieldsError={getFieldsError}
@@ -122,14 +161,15 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
       setIsLoading={setIsLoading}
       image={userData.image}
       initialLanguages={initialLanguages}
+      socialNetwork={userData.socialNetwork}
     />
   );
 };
 
-GuestSignUpForm.propTypes = {
+GuestSignUpModalContent.propTypes = {
   form: PropTypes.shape().isRequired,
   userData: PropTypes.shape().isRequired,
   isModalOpen: PropTypes.bool.isRequired,
 };
 
-export default Form.create({ name: 'username' })(GuestSignUpForm);
+export default Form.create({ name: 'username' })(GuestSignUpModalContent);
