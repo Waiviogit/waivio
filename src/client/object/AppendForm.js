@@ -145,7 +145,6 @@ export default class AppendForm extends Component {
       wObject,
     } = this.props;
     const postData = this.getNewPostData(formValues);
-
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
       try {
@@ -269,7 +268,7 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.rating: {
-        fieldBody.push(rest[ratingFields.category]);
+        fieldBody.push(rest[objectFields.rating]);
         break;
       }
       case objectFields.tagCategory: {
@@ -467,7 +466,7 @@ export default class AppendForm extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-        if (field.body === values[values.currentField]) {
+        if (field.body === values.rating) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
 
@@ -535,32 +534,45 @@ export default class AppendForm extends Component {
     return false;
   };
 
+  trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
+
   validateFieldValue = (rule, value, callback) => {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
     const fields = form.getFieldsValue();
+    const triggerValue = this.trimText(fields[currentField]);
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const triggerValue = trimStart(fields[currentField]).replace(/\s{2,}/g, ' ');
+    const trimNestedFields = name => {
+      if (fields[name]) {
+        form.setFieldsValue({
+          [name]: this.trimText(fields[name]),
+        });
+      }
+    };
 
     form.setFieldsValue({
       [currentField]: triggerValue,
     });
 
-    if (currentField === 'phone') {
-      if (fields.name) {
-        form.setFieldsValue({
-          name: trimStart(fields.name).replace(/\s{2,}/g, ' '),
-        });
-      }
+    if (currentField === objectFields.phone) {
+      trimNestedFields(phoneFields.name);
+      trimNestedFields(phoneFields.number);
+    }
 
-      if (fields.number) {
-        form.setFieldsValue({
-          number: trimStart(fields.number).replace(/\s{2,}/g, ' '),
-        });
-      }
+    if (currentField === objectFields.website) {
+      trimNestedFields(websiteFields.title);
+      trimNestedFields(websiteFields.link);
+    }
+
+    if (currentField === objectFields.address) {
+      trimNestedFields(addressFields.street);
+      trimNestedFields(addressFields.city);
+      trimNestedFields(addressFields.state);
+      trimNestedFields(addressFields.postalCode);
+      trimNestedFields(addressFields.country);
     }
 
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
@@ -643,6 +655,7 @@ export default class AppendForm extends Component {
 
   handleCreateObject = (createdObject, options) => {
     const currentField = this.props.form.getFieldValue('currentField');
+
     this.props.form.setFieldsValue({
       [currentField]: createdObject.id,
       menuItemName: createdObject.name,
