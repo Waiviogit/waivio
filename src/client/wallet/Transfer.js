@@ -170,7 +170,7 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form, isGuest, memo } = this.props;
+    const { form, isGuest, memo, intl } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -197,9 +197,15 @@ export default class Transfer extends React.Component {
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.ok) {
-              this.props.notify('Successful transaction', 'success');
+              this.props.notify(
+                intl.formatMessage({
+                  id: 'transfer_success_for_guest',
+                  defaultMessage: 'Your transaction is on the way!',
+                }),
+                'success',
+              );
             } else {
-              this.props.notify('Transaction failed', 'error');
+              this.props.notify(res.error.message, 'error');
             }
           });
         } else {

@@ -14,7 +14,7 @@ export const WAIVIO_POST_TYPE = {
 
 export const PRIMARY_COLOR = '#f87007';
 
-export const GUEST_PREFIX = 'waivio_';
+export const GUEST_PREFIX = 'bxy_';
 
 export const GUEST_COOKIES = {
   TOKEN: 'waivio_token',

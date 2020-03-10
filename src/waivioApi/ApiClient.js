@@ -895,12 +895,14 @@ export const getGuestAvatarUrl = (username, url, intl) => {
     .then(data => data)
     .catch(err => {
       console.error('err', err);
-      message.error(
-        intl.formatMessage({
-          id: 'notify_uploading_iamge_error',
-          defaultMessage: "Couldn't upload image",
-        }),
-      );
+      if (intl && intl.formatMessage) {
+        message.error(
+          intl.formatMessage({
+            id: 'notify_uploading_iamge_error',
+            defaultMessage: "Couldn't upload image",
+          }),
+        );
+      }
     });
 };
 
@@ -951,6 +953,13 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .catch(err => err);
 };
 
+export const setUserStatus = username => {
+  return fetch(`${config.apiPrefix}${config.user}/${username}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 // beaxy login
 export const beaxyLogin = body => {
   const response = {};
@@ -959,7 +968,6 @@ export const beaxyLogin = body => {
     headers,
     body: JSON.stringify(body),
   })
-    .then(handleErrors)
     .then(data => {
       if (data.headers.has('access-token')) {
         response.token = data.headers.get('access-token');
@@ -969,14 +977,26 @@ export const beaxyLogin = body => {
       return data.json();
     })
     .then(data => {
-      if (data.code === 321 && data.response === 'TWO_FA_VERIFICATION_NEEDED') {
-        response.code = data.code;
-        response.status = data.response;
+      if ((data.user && data.payload) || data.success === true) {
+        switch (data.response) {
+          case 'TWO_FA_VERIFICATION_NEEDED':
+            response.code = data.code;
+            response.status = data.response;
+            break;
+          case 'IP_WHITE_LIST_ERROR':
+          case 'REGION_ERROR':
+          case 'CRM_ERROR':
+            throw new Error(data.response);
+          case 'SUCCESS':
+          default:
+            response.user = data.user;
+            break;
+        }
+        response.bxySessionData = data.payload;
+        return response;
       } else {
-        response.userData = data.user;
+        throw new Error(data.message || data.statusText);
       }
-      response.bxySessionData = data.payload;
-      return response;
     })
     .catch(error => {
       throw error;

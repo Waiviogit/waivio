@@ -246,16 +246,6 @@ class Topnav extends React.Component {
       case 'deposit':
         this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
         break;
-      case 'openDeals':
-        this.setState({ popoverBrokerVisible: false }, () => {
-          this.props.history.push('/deals/open');
-        });
-        break;
-      case 'closedDeals':
-        this.setState({ popoverBrokerVisible: false }, () => {
-          this.props.history.push('/deals/closed');
-        });
-        break;
       case 'broker-disconnect':
         this.setState({ popoverBrokerVisible: false }, () => {
           this.props.disconnectBroker('broker');

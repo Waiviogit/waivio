@@ -1079,6 +1079,7 @@
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
   "please_input_nickname": "Введите никнейм",
   "signin": "Вход",
+  "transfer_success_for_guest": "Ваша транзакция в пути!",
   "authForm_validation_email_required": "Введите E-mail",
   "authForm_validation_password_required": "Введите пароль",
   "authForm_two_auth_code": "Код аутентификации",
@@ -1087,5 +1088,9 @@
   "authForm_two_FA_code": "Проверочный код",
   "authForm_invalid_credentials": "Неверный логин или пароль",
   "authForm_two_FA_error": "Неверный код",
-  "authForm_server_error": "Ошибка сервера. Попробуйте позже"
+  "authForm_server_error": "Ошибка сервера. Попробуйте позже",
+  "authForm_USER_SESSIONS_LIMIT_IS_REACHED": "Достигнут лимит сессий пользователя",
+  "authForm_IP_WHITE_LIST_ERROR": "Доступ с вашего IP адреса запрещен",
+  "authForm_REGION_ERROR":"Авторизация через Beaxy недоступна в вашем регионе",
+  "authForm_CRM_ERROR": "Ошибка сервера Beaxy"
 }
