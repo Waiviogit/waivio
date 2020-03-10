@@ -81,14 +81,14 @@ export function authorizeBroker(data) {
           singleton.closeWebSocketConnection();
           singleton.platform = data.platform;
           singleton.createWebSocketConnection();
-          dispatch(toggleModal('broker'));
+          // dispatch(toggleModal('broker'));
         } else if (status === 'error') {
           dispatch(authorizeBrokerError());
         }
         message.success('Successfully connected to broker');
       } else {
         dispatch(authorizeBrokerError());
-        message.error(error.toString());
+        // message.error(error.toString());
       }
     });
   };
@@ -109,7 +109,7 @@ export function registerBroker(registrationData) {
         }
       } else {
         dispatch(registerBrokerError());
-        message.error(error.toString());
+        // message.error(error.toString());
       }
     });
   };
@@ -124,13 +124,13 @@ export function disconnectBroker(isReconnect = false) {
       localStorage.removeItem(data);
     });
     dispatch(disconnectTokenSuccess());
-    if (singleton.platform && singleton.platform.platformName)
-      message.success('Broker successfully disconnected');
+    // if (singleton.platform && singleton.platform.platformName)
+    //   message.success('Broker successfully disconnected');
     singleton.closeWebSocketConnection();
     singleton.platform = 'widgets';
     singleton.createWebSocketConnection();
     if (!isReconnect) {
-      dispatch(toggleModal('broker'));
+      //   dispatch(toggleModal('broker'));
     }
     return { type: DISCONNECT_BROKER_SUCCESS };
   };
@@ -146,7 +146,7 @@ export function reconnectBroker(data) {
           dispatch(disconnectBroker(true));
         }
       } else {
-        message.error(error.toString());
+        // message.error(error.toString());
       }
     });
 }
