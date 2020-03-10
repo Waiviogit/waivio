@@ -3,6 +3,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getSuitableLanguage, getFollowingList } from '../reducers';
+import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
@@ -36,15 +37,20 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
   getState,
 ) => {
   const state = getState();
+  const searchString = replacer(search, '@');
+
   dispatch({
     type: AUTO_COMPLETE_SEARCH.ACTION,
     payload: {
-      promise: ApiClient.getSearchResult(search, userLimit, wobjectsLimi, objectTypesLimit).then(
-        result => ({
-          result,
-          search,
-        }),
-      ),
+      promise: ApiClient.getSearchResult(
+        searchString,
+        userLimit,
+        wobjectsLimi,
+        objectTypesLimit,
+      ).then(result => ({
+        result,
+        search: searchString,
+      })),
     },
     meta: {
       followingUsersList: getFollowingList(state),
@@ -63,37 +69,45 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
 ) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
+  const search = replacer(searchString, '@');
+
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
+    payload: ApiClient.searchObjects(search, objType, forParent).then(result => ({
       result,
-      search: searchString,
+      search,
       locale: usedLocale,
     })),
   }).catch(error => console.log('Object search >', error.message));
 };
 
-export const searchUsersAutoCompete = (userName, limit) => dispatch =>
+export const searchUsersAutoCompete = (userName, limit) => dispatch => {
+  const search = replacer(userName, '@');
+
   dispatch({
     type: SEARCH_USERS.ACTION,
     payload: {
-      promise: ApiClient.searchUsers(userName, limit).then(result => ({
+      promise: ApiClient.searchUsers(search, limit).then(result => ({
         result,
-        search: userName,
+        search,
       })),
     },
   });
+};
 
-export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch =>
+export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch => {
+  const search = replacer(searchString, '@');
+
   dispatch({
     type: SEARCH_OBJECT_TYPES.ACTION,
     payload: {
-      promise: ApiClient.searchObjectTypes(searchString, objType).then(result => ({
+      promise: ApiClient.searchObjectTypes(search, objType).then(result => ({
         result,
-        search: searchString,
+        search,
       })),
     },
   });
+};
 
 export const clearSearchObjectsResults = () => dispatch =>
   dispatch({

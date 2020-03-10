@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty } from 'lodash';
+import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -138,11 +138,17 @@ const ObjectCardView = ({
               {/* eslint-disable-next-line no-nested-ternary */}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
-                  {wObject.title}
+                  {truncate(wObject.title, {
+                    length: 140,
+                    separator: ' ',
+                  })}
                 </div>
               ) : wObject.description ? (
                 <div className="ObjectCardView__title" title={wObject.description}>
-                  {wObject.description}
+                  {truncate(wObject.description, {
+                    length: 140,
+                    separator: ' ',
+                  })}
                 </div>
               ) : null}
             </div>
