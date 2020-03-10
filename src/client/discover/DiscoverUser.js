@@ -10,8 +10,7 @@ import WeightTag from '../../client/components/WeightTag';
 const DiscoverUser = ({ user, isReblogged }) => {
   const parsedJSON = attempt(JSON.parse, user.json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
-  const userProfile = has(userJSON, 'profile') ? userJSON.profile : {};
-  const name = userProfile.name;
+  const userName = has(userJSON, 'profile') && userJSON.profile.name ? userJSON.profile.name : '';
 
   return (
     <div key={user.name} className="Discover__user">
@@ -24,12 +23,10 @@ const DiscoverUser = ({ user, isReblogged }) => {
             <div className="Discover__user__profile__header">
               <Link to={`/@${user.name}`}>
                 <span className="Discover__user__name">
-                  <span className="username">{name || user.name}</span>
+                  <span className="username">{userName || user.name}</span>
                 </span>
               </Link>
-              {has(user, 'wobjects_weight') && typeof user.wobjects_weight === 'number' && (
-                <WeightTag weight={user.wobjects_weight} />
-              )}
+              {has(user, 'wobjects_weight') && <WeightTag weight={user.wobjects_weight} />}
               {isReblogged && (
                 <span className="reblogged">
                   &nbsp;&middot;{` ${user.followers_count} `}

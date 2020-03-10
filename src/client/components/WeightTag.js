@@ -10,23 +10,14 @@ const WeightTag = ({ intl, weight }) => {
   // redux-store
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
-  const isFullParams =
-    weight && rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
+  const isValidWeight = typeof weight === 'number';
+  const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const tagTitle = intl.formatMessage({
     id: 'total_ralated_payout',
     defaultMessage:
       'Total payout for all related posts in USD, without bidbots and upvote services',
   });
-  if (weight === 0) {
-    return (
-      <span className="Weight" title={tagTitle}>
-        <Tag>
-          <WeightDisplay value={weight} />
-        </Tag>
-      </span>
-    );
-  }
-  if (isFullParams) {
+  if (isFullParams && isValidWeight) {
     const value =
       (weight / rewardFund.recent_claims) *
       rewardFund.reward_balance.replace(' STEEM', '') *
