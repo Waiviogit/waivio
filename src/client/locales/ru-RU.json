@@ -1079,6 +1079,7 @@
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
   "please_input_nickname": "Введите никнейм",
   "signin": "Вход",
+  "transfer_success_for_guest": "Ваша транзакция в пути!",
   "authForm_validation_email_required": "Введите E-mail",
   "authForm_validation_password_required": "Введите пароль",
   "authForm_two_auth_code": "Код аутентификации",
