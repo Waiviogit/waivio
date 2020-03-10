@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon, Tag } from 'antd';
+import { isNil, isNaN } from 'lodash';
 import { useSelector } from 'react-redux';
 import { getRate, getRewardFund } from '../reducers';
 import WeightDisplay from './Utils/WeightDisplay';
@@ -10,7 +11,7 @@ const WeightTag = ({ intl, weight }) => {
   // redux-store
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
-  const isValidWeight = typeof weight === 'number';
+  const isValidWeight = !isNil(weight) && !isNaN(weight);
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const tagTitle = intl.formatMessage({
     id: 'total_ralated_payout',

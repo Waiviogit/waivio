@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { attempt, isError, has } from 'lodash';
+import { attempt, isError, has, get } from 'lodash';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import Avatar from '../components/Avatar';
@@ -10,8 +10,7 @@ import WeightTag from '../../client/components/WeightTag';
 const DiscoverUser = ({ user, isReblogged }) => {
   const parsedJSON = attempt(JSON.parse, user.json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
-  const profileName =
-    has(userJSON, 'profile') && userJSON.profile.name ? userJSON.profile.name : '';
+  const profileName = get(userJSON, 'profile.name');
 
   return (
     <div key={user.name} className="Discover__user">
