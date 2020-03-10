@@ -5,7 +5,7 @@ module.exports = {
    */
   apps: [
     {
-      name: 'busy',
+      name: 'crypto-arena',
       script: 'build/server.js',
       env: {
         NODE_ENV: 'staging',
