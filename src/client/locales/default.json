@@ -1115,5 +1115,6 @@
   "modal_button_cancel": "Cancel",
   "modal_button_yes": "OK",
   "need_confirm_agreement": "You need to confirm agreement",
-  "please_input_nickname": "Nickname cannot be empty"
+  "please_input_nickname": "Nickname cannot be empty",
+  "transfer_success_for_guest": "Your transaction is on the way!"
 }

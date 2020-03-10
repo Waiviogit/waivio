@@ -1078,5 +1078,6 @@
   "modal_button_yes": "OK",
   "need_confirm_agreement": "Вам нужно подтвердить согласие",
   "please_input_nickname": "Введите никнейм",
-  "signin": "Вход"
+  "signin": "Вход",
+  "transfer_success_for_guest": "Ваша транзакция в пути!"
 }
