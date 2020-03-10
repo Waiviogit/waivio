@@ -62,6 +62,14 @@ export const getObjectType = (typeName, { limit = 30, skip = 0 } = { limit: 30, 
   });
 };
 
+// export const getObjectTypeMap = (typeName, {limit = 30, skip = 0, map = {}, activeFilters = {rating: [], map }}) => dispatch => {
+//   dispatch({
+//     type: GET_OBJECT_TYPE_MAP.ACTION,
+//     payload: ApiClient.getObjectType(typeName, limit, skip, activeFilters),
+//   });
+// };
+
+
 export const getObjectTypeMap = ({ limit = 30, skip = 0, map = {} } = { limit: 30, skip: 0, map: {} }) => (
   dispatch,
   getState,

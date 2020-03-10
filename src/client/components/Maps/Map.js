@@ -12,9 +12,9 @@ import { mapFields, objectFields } from '../../../common/constants/listOfFields'
 import Loading from '../Icon/Loading';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
-import './Map.less';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
+import './Map.less';
 
 const defaultCoords = {
   centerLat: 37.0902,
