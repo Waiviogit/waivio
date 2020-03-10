@@ -71,12 +71,12 @@ export default class CampaignButtons extends React.Component {
   getFollowText(isFollowed, permlink) {
     if (isFollowed) {
       return this.props.intl.formatMessage(
-        { id: 'campaign_buttons_unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { id: 'campaign_buttons_unfollow_@username', defaultMessage: 'Unfollow @{username}' },
         { username: permlink },
       );
     }
     return this.props.intl.formatMessage(
-      { id: 'campaign_buttons_follow_username', defaultMessage: 'Follow {username}' },
+      { id: 'campaign_buttons_follow_@username', defaultMessage: 'Follow @{username}' },
       { username: permlink },
     );
   }
@@ -152,7 +152,7 @@ export default class CampaignButtons extends React.Component {
         />
         {this.props.intl.formatMessage({
           id: 'campaign_buttons_release',
-          defaultMessage: 'Release',
+          defaultMessage: 'Release reservation',
         })}
       </PopoverMenuItem>,
     ];

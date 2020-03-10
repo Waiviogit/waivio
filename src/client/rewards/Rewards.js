@@ -308,7 +308,7 @@ class Rewards extends React.Component {
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
+            defaultMessage: 'Reservation released',
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
