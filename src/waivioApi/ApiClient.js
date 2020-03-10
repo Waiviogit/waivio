@@ -951,6 +951,13 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .catch(err => err);
 };
 
+export const setUserStatus = username => {
+  return fetch(`${config.apiPrefix}${config.user}/${username}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 // beaxy login
 export const beaxyLogin = body => {
   const response = {};

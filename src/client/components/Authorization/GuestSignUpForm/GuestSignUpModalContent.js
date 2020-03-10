@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
-import { getGuestAvatarUrl, getUserAccount, updateGuestProfile } from '../../../../waivioApi/ApiClient';
+import { getGuestAvatarUrl, getUserAccount, setUserStatus, updateGuestProfile } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { getLocale } from '../../../reducers';
@@ -133,7 +133,9 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
                   name: userAlias,
                 },
               });
-              console.log('\t> > > profile is updated', response);
+              if(response.ok) {
+                setUserStatus(userData.userName);
+              }
             }
           });
       } else {

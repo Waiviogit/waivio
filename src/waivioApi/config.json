@@ -38,6 +38,7 @@
   "user": "/user",
   "userMetadata": "/userMetadata",
   "users": "/users",
+  "setUserStatus": "/setState",
   "feed": "/feed",
   "posts": "/posts",
   "post": "/post",
