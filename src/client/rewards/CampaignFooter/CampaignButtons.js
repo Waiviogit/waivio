@@ -17,7 +17,6 @@ export default class CampaignButtons extends React.Component {
     daysLeft: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    requiredObjectPermlink: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
@@ -25,6 +24,7 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     toggleModalDetails: PropTypes.func,
+    requiredObjectName: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -71,12 +71,12 @@ export default class CampaignButtons extends React.Component {
   getFollowText(isFollowed, permlink) {
     if (isFollowed) {
       return this.props.intl.formatMessage(
-        { id: 'campaign_buttons_unfollow_@username', defaultMessage: 'Unfollow @{username}' },
+        { id: 'campaign_buttons_unfollow_username', defaultMessage: 'Unfollow {username}' },
         { username: permlink },
       );
     }
     return this.props.intl.formatMessage(
-      { id: 'campaign_buttons_follow_@username', defaultMessage: 'Follow @{username}' },
+      { id: 'campaign_buttons_follow_username', defaultMessage: 'Follow {username}' },
       { username: permlink },
     );
   }
@@ -115,10 +115,10 @@ export default class CampaignButtons extends React.Component {
       postState,
       post,
       handlePostPopoverMenuClick,
-      requiredObjectPermlink,
+      requiredObjectName,
     } = this.props;
-    const followText = this.getFollowText(postState.userFollowed, post.parent_author);
-    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectPermlink);
+    const followText = this.getFollowText(postState.userFollowed, `@${post.parent_author}`);
+    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
 
     let popoverMenu = [];
 
