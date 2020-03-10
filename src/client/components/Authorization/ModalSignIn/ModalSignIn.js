@@ -15,7 +15,6 @@ import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import BeaxySignInButton from '../SocialButtons/BeaxySignInButton';
 import BeaxyAuthForm from '../GuestSignUpForm/BeaxyAuthForm';
-import { DEFAULT_USER_AVATAR_URL } from '../../../../common/constants/waivio';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {

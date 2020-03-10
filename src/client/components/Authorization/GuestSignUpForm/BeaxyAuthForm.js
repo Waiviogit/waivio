@@ -32,10 +32,6 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
               if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
                 setToken2FA(bxySessionData.token2fa);
               } else if (get(user, ['user_metadata', 'new_user'], false)) {
-                // && !userMetadata.profile.profile_image) {
-                debugger;
-                // todo: use flag from backEnd to detect new users ⤴
-                console.log('\t> > > ', userJsonMetadata);
                 firstLoginResponse({
                   userData: { user, token, expiration },
                   bxySessionData: { ...bxySessionData, umSession },

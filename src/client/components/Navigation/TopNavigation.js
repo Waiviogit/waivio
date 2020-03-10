@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {FormattedMessage} from 'react-intl';
-import {Link} from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
 const LINKS = {
@@ -12,7 +12,7 @@ const LINKS = {
   // QUICK_FORECAST: '/quickforecast',
 };
 
-const TopNavigation = ({authenticated, location: {pathname}, onMenuClick}) => (
+const TopNavigation = ({ authenticated, location: { pathname }, onMenuClick }) => (
   <ul className="TopNavigation" role="presentation" onClick={onMenuClick}>
     <li className="TopNavigation__item">
       <Link
@@ -21,7 +21,7 @@ const TopNavigation = ({authenticated, location: {pathname}, onMenuClick}) => (
           'TopNavigation__link--active': pathname === '/',
         })}
       >
-        <FormattedMessage id="home" defaultMessage="Home"/>
+        <FormattedMessage id="home" defaultMessage="Home" />
       </Link>
     </li>
     {authenticated && (
@@ -32,7 +32,7 @@ const TopNavigation = ({authenticated, location: {pathname}, onMenuClick}) => (
             'TopNavigation__link--active': pathname === LINKS.MY_FEED,
           })}
         >
-          <FormattedMessage id="my_feed" defaultMessage="My feed"/>
+          <FormattedMessage id="my_feed" defaultMessage="My feed" />
         </Link>
       </li>
     )}
@@ -43,7 +43,7 @@ const TopNavigation = ({authenticated, location: {pathname}, onMenuClick}) => (
           'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
         })}
       >
-        <FormattedMessage id="discover" defaultMessage="Discover"/>
+        <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
     </li>
     <li className="TopNavigation__item">
@@ -53,7 +53,7 @@ const TopNavigation = ({authenticated, location: {pathname}, onMenuClick}) => (
           'TopNavigation__link--active': pathname.includes(LINKS.ABOUT),
         })}
       >
-        <FormattedMessage id="about" defaultMessage="About"/>
+        <FormattedMessage id="about" defaultMessage="About" />
       </Link>
     </li>
     {/*<li className="TopNavigation__item">*/}
@@ -80,8 +80,7 @@ TopNavigation.defaultProps = {
     pathname: '',
   },
   isMobile: true,
-  onMenuClick: () => {
-  },
+  onMenuClick: () => {},
 };
 
 export default TopNavigation;

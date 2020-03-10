@@ -895,12 +895,14 @@ export const getGuestAvatarUrl = (username, url, intl) => {
     .then(data => data)
     .catch(err => {
       console.error('err', err);
-      message.error(
-        intl.formatMessage({
-          id: 'notify_uploading_iamge_error',
-          defaultMessage: "Couldn't upload image",
-        }),
-      );
+      if (intl && intl.formatMessage) {
+        message.error(
+          intl.formatMessage({
+            id: 'notify_uploading_iamge_error',
+            defaultMessage: "Couldn't upload image",
+          }),
+        );
+      }
     });
 };
 
@@ -961,46 +963,44 @@ export const setUserStatus = username => {
 // beaxy login
 export const beaxyLogin = body => {
   const response = {};
-  return (
-    fetch(`${config.baseUrl}${config.auth}/beaxy`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+  return fetch(`${config.baseUrl}${config.auth}/beaxy`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+    .then(data => {
+      if (data.headers.has('access-token')) {
+        response.token = data.headers.get('access-token');
+        response.expiration = data.headers.get('expires-in');
+        response.umSession = data.headers.get('um_session');
+      }
+      return data.json();
     })
-      .then(data => {
-        if (data.headers.has('access-token')) {
-          response.token = data.headers.get('access-token');
-          response.expiration = data.headers.get('expires-in');
-          response.umSession = data.headers.get('um_session');
+    .then(data => {
+      if ((data.user && data.payload) || data.success === true) {
+        switch (data.response) {
+          case 'TWO_FA_VERIFICATION_NEEDED':
+            response.code = data.code;
+            response.status = data.response;
+            break;
+          case 'IP_WHITE_LIST_ERROR':
+          case 'REGION_ERROR':
+          case 'CRM_ERROR':
+            throw new Error(data.response);
+          case 'SUCCESS':
+          default:
+            response.user = data.user;
+            break;
         }
-        return data.json();
-      })
-      .then(data => {
-        if ((data.user && data.payload) || data.success === true) {
-          switch (data.response) {
-            case 'TWO_FA_VERIFICATION_NEEDED':
-              response.code = data.code;
-              response.status = data.response;
-              break;
-            case 'IP_WHITE_LIST_ERROR':
-            case 'REGION_ERROR':
-            case 'CRM_ERROR':
-              throw new Error(data.response);
-            case 'SUCCESS':
-            default:
-              response.user = data.user;
-              break;
-          }
-          response.bxySessionData = data.payload;
-          return response;
-        } else {
-          throw new Error(data.message || data.statusText);
-        }
-      })
-      .catch(error => {
-        throw error;
-      })
-  );
+        response.bxySessionData = data.payload;
+        return response;
+      } else {
+        throw new Error(data.message || data.statusText);
+      }
+    })
+    .catch(error => {
+      throw error;
+    });
 };
 
 export const beaxyLoginByCredentials = (user, password) => {

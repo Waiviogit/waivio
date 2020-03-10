@@ -6,7 +6,12 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
-import { getGuestAvatarUrl, getUserAccount, setUserStatus, updateGuestProfile } from '../../../../waivioApi/ApiClient';
+import {
+  getGuestAvatarUrl,
+  getUserAccount,
+  setUserStatus,
+  updateGuestProfile,
+} from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { getLocale } from '../../../reducers';
@@ -38,7 +43,6 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
         });
         break;
       case 'beaxy':
-        debugger;
         setFieldsValue({
           username: getSlug(userData.userName.split('_')[1]),
           alias: userData.displayName,
@@ -100,12 +104,6 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        // if (userData.socialNetwork === 'beaxy') {
-        //   debugger;
-        //   updateGuestProfile(userData.userName, { ...userData.userMetadata }).then(res => {
-        //     console.log('\t> > > ', res);
-        //   })
-        // }
         const userAvatar = isEmpty(values.avatar) ? '' : values.avatar[0].src;
         const userAlias = values.alias || '';
         const regData =
@@ -123,7 +121,6 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
           })
           .then(async () => {
             if (userData.socialNetwork === 'beaxy') {
-              debugger;
               const { image } = await getGuestAvatarUrl(userData.userName, userAvatar);
               const response = await updateGuestProfile(userData.userName, {
                 ...userData.jsonMetadata,
@@ -133,7 +130,7 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
                   name: userAlias,
                 },
               });
-              if(response.ok) {
+              if (response.ok) {
                 setUserStatus(userData.userName);
               }
             }
