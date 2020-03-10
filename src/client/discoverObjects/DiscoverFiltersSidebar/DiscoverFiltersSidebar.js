@@ -13,7 +13,7 @@ import {
   getUserLocation,
   getHasMap,
 } from '../../reducers';
-import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
+import { setFiltersAndLoad, getObjectType } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
@@ -34,7 +34,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   }
 
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
-  const setMapArea = map => dispatch(getObjectTypeMap({ map }));
+  const setMapArea = map => dispatch(getObjectType('', { map }));
 
   const handleMapSearchClick = map => {
     setSearchArea(map);

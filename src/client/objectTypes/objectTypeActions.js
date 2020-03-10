@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   getActiveFilters,
@@ -24,78 +25,61 @@ export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
-export const getObjectType = (typeName, { limit = 30, skip = 0 } = { limit: 30, skip: 0 }) => (
+export const getObjectType = (
+  typeName,
+  {
+    limit = 30,
+    skip = 0,
+    map = {}
+  } = { limit: 30, skip: 0, map: {} }) => (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const usedLocale = getSuitableLanguage(state);
-  const activeFilters = { ...getActiveFilters(state) };
   const sort = getObjectTypeSorting(state);
-  const searchString = new URLSearchParams(getQueryString(state)).get('search');
+  const requestTypeName = typeName || getTypeName(state);
+  let requestActionType = GET_OBJECT_TYPE.ACTION;
+  let requestFilter = {};
 
-  // if use sort by proximity, require to use map filter
-  if (sort === 'proximity' && !activeFilters.map) {
-    const userLocation = getUserLocation(state);
-    activeFilters.map = {
-      coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
-      radius: 50000000,
-    };
+  if(_.isEmpty(map)) {
+    const activeFilters = { ...getActiveFilters(state) };
+    const searchString = new URLSearchParams(getQueryString(state)).get('search');
+
+    // if use sort by proximity, require to use map filter
+    if (sort === 'proximity' && !activeFilters.map) {
+      const userLocation = getUserLocation(state);
+      activeFilters.map = {
+        coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
+        radius: 50000000,
+      };
+    }
+    if (searchString) {
+      activeFilters.searchString = searchString;
+    }
+    requestFilter = activeFilters;
+  } else {
+    requestFilter = {rating: [], map };
+    requestActionType = GET_OBJECT_TYPE_MAP.ACTION;
   }
-  if (searchString) {
-    activeFilters.searchString = searchString;
-  }
+
   const preparedData = {
     wobjects_count: limit,
     wobjects_skip: skip,
-    filter: activeFilters,
+    filter: requestFilter,
     sort,
   };
+
   if (username) preparedData.userName = username;
   dispatch({
-    type: GET_OBJECT_TYPE.ACTION,
-    payload: ApiClient.getObjectType(typeName, preparedData),
+    type: requestActionType,
+    payload: ApiClient.getObjectType(requestTypeName, preparedData),
     meta: {
       locale: usedLocale,
     },
   });
 };
-
-// export const getObjectTypeMap = (typeName, {limit = 30, skip = 0, map = {}, activeFilters = {rating: [], map }}) => dispatch => {
-//   dispatch({
-//     type: GET_OBJECT_TYPE_MAP.ACTION,
-//     payload: ApiClient.getObjectType(typeName, limit, skip, activeFilters),
-//   });
-// };
-
-
-export const getObjectTypeMap = ({ limit = 30, skip = 0, map = {} } = { limit: 30, skip: 0, map: {} }) => (
-  dispatch,
-  getState,
-) => {
-  const state = getState();
-  const typeName = getTypeName(state);
-  const username = getAuthenticatedUserName(state);
-  const usedLocale = getSuitableLanguage(state);
-  const sort = getObjectTypeSorting(state);
-
-  const preparedData = {
-    wobjects_count: limit,
-    wobjects_skip: skip,
-    filter: {rating: [], map },
-    sort,
-  };
-  if (username) preparedData.userName = username;
-  dispatch({
-    type: GET_OBJECT_TYPE_MAP.ACTION,
-    payload: ApiClient.getObjectType(typeName, preparedData),
-    meta: {
-      locale: usedLocale,
-    },
-  });
-};
-
 
 export const clearType = () => dispatch => {
   dispatch({ type: CLEAR_OBJECT_TYPE });
