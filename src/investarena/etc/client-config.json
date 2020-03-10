@@ -15,7 +15,7 @@
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
 
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "wss://wgt-srv0.beaxy.com/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
@@ -42,7 +42,7 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "wss://wgt-srv0.beaxy.com/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
@@ -69,7 +69,7 @@
       "770capital": "https://trading.770capital.com/stomp/",
       "dowmarkets": "https://trading.dowmarkets.com/stomp/",
       "limefx": "https://trading.limefx.com/stomp/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "wss://wgt-srv0.beaxy.com/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",

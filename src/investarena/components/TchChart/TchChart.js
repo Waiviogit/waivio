@@ -16,7 +16,7 @@ class TchChart extends Component {
     let fullName = singleton.platform.quotesSettings[name]
       ? singleton.platform.quotesSettings[name].name
       : name;
-    let market = this.props.market;
+    let market = 'crypto';
     let period = humanize(this.props.period);
     let params = {
       pair: { Name: name, FullName: fullName, Category: market },
@@ -36,7 +36,7 @@ class TchChart extends Component {
         um_session: '',
         sockjspath: '',
       },
-      settingsUrl: '//informer.maximarkets.org/wss/quotation/getsettings?tch=true',
+      settingsUrl: '//44.233.188.11/wss/quotation/getsettings?tch=true',
       lang: 'ru',
       isHeaderHidden: false,
       isSidebarHidden: false,
@@ -55,7 +55,7 @@ class TchChart extends Component {
         chartElements: {},
       },
     };
-    configuration.settingsUrl = '//informer.maximarkets.org/wss/quotation/getsettings?tch=true';
+    configuration.settingsUrl = '//44.233.188.11/wss/quotation/getsettings?tch=true';
     configuration.lang = 'en';
     configuration.modules.isShowNews = false;
     configuration.modules.isHeaderCreate = true;
