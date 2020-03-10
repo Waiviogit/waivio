@@ -22,7 +22,6 @@ const LeftSidebar = ({ quoteSettingsSorted }) => {
         path="/markets/:marketType"
         render={props => <MarketsList quoteSettingsSorted={quoteSettingsSorted} {...props} />}
       />
-      <Route path="/deals/:dealType" component={DealsList} />
       <Route path="/activity" component={SidenavUser} />
       <Route
         path="/rewards/(active|reserved|history|promoted|created|receivables)"
