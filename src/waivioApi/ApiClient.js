@@ -977,7 +977,7 @@ export const beaxyLogin = body => {
       return data.json();
     })
     .then(data => {
-      if ((data.user && data.payload) || data.success === true) {
+      if ((data.user && data.payload) || data.response) {
         switch (data.response) {
           case 'TWO_FA_VERIFICATION_NEEDED':
             response.code = data.code;
