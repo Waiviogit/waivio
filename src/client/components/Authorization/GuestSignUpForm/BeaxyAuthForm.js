@@ -28,10 +28,10 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
           beaxyLoginByCredentials(values.email, values.password)
             .then(async res => {
               const { code, status, bxySessionData, user, token, expiration, umSession } = res;
-              const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
               if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
                 setToken2FA(bxySessionData.token2fa);
               } else if (get(user, ['user_metadata', 'new_user'], false)) {
+                const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
                 firstLoginResponse({
                   userData: { user, token, expiration },
                   bxySessionData: { ...bxySessionData, umSession },
@@ -62,7 +62,7 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
               },
               error => {
                 const errMessage =
-                  error.message === 'Unauthorized' ? 'two_FA_error' : 'server_error';
+                  error.message === 'TWO_FA_CODE_ERROR' ? 'two_FA_error' : 'server_error';
                 setAuthError(errMessage);
                 console.log('\t2FA error', error && error.message);
               },
