@@ -23,7 +23,7 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
             title={name}
             className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
           >
-            <span className="username">{name}</span>
+            {name}
           </Link>
         </div>
         {alt && <span className="ObjectCard__alt">{alt}</span>}
