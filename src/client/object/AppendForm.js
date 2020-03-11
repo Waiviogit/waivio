@@ -137,23 +137,36 @@ export default class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  onSubmit = async formValues => {
+  onSubmit = formValues => {
+    const { form, wObject } = this.props;
+    const postData = this.getNewPostData(formValues);
     this.setState({ loading: true });
 
-    const {
-      form: { getFieldValue },
-      wObject,
-    } = this.props;
-    const postData = this.getNewPostData(formValues);
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      try {
-        // we do not vote append when append just created page/list
-        if (data.votePower === null) {
-          this.props.hideModal();
-          this.props
-            .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
-            .then(() => {
+      this.props
+        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+        .then(res => {
+          if (data.votePower !== null) {
+            if (res.value.message) {
+              message.error(
+                this.props.intl.formatMessage({
+                  defaultMessage: 'You are blacklisted and you cannot add appends!',
+                  id: 'append_black_list',
+                }),
+              );
+            } else {
+              if (objectFields.rating === formValues.currentField && formValues.rate) {
+                const { author, permlink } = res.value;
+
+                this.props.rateObject(
+                  author,
+                  permlink,
+                  wObject.author_permlink,
+                  ratePercent[formValues.rate - 1],
+                );
+              }
+
               message.success(
                 this.props.intl.formatMessage(
                   {
@@ -161,57 +174,30 @@ export default class AppendForm extends Component {
                     defaultMessage: `You successfully have added the {field} field to {wobject} object`,
                   },
                   {
-                    field: getFieldValue('currentField'),
-                    wobject: wObject.name,
+                    field: form.getFieldValue('currentField'),
+                    wobject: getFieldWithMaxWeight(wObject, objectFields.name),
                   },
                 ),
               );
-            });
-          return;
-        }
+            }
+            this.props.hideModal();
+            this.setState({ loading: false });
+          }
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'couldnt_append',
+              defaultMessage: "Couldn't add the field to object.",
+            }),
+          );
 
-        /* eslint-disable no-await-in-loop */
-        const response = await this.props.appendObject(data, {
-          votePower: data.votePower,
-          follow: formValues.follow,
+          this.props.hideModal();
+          this.setState({ loading: false });
         });
 
-        if (objectFields.rating === formValues.currentField && formValues.rate) {
-          const { author, permlink } = response.value;
-          await this.props.rateObject(
-            author,
-            permlink,
-            wObject.author_permlink,
-            ratePercent[formValues.rate - 1],
-          );
-        }
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (e) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'couldnt_append',
-            defaultMessage: "Couldn't add the field to object.",
-          }),
-        );
-        this.setState({ loading: false });
-      }
+      return;
     }
-
-    this.setState({ loading: false });
-
-    this.props.hideModal();
-    message.success(
-      this.props.intl.formatMessage(
-        {
-          id: 'added_field_to_wobject',
-          defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-        },
-        {
-          field: getFieldValue('currentField'),
-          wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-        },
-      ),
-    );
   };
 
   onUpdateCoordinate = positionField => e => {

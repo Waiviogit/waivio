@@ -61,15 +61,19 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
   }).then(res => res.json());
 
 export const getObject = (authorPermlink, requiredField = []) => {
-  const queryString = Array.isArray(requiredField)
-    ? requiredField.reduce((acc, field, index) => {
-        if (index !== requiredField.length - 1) {
-          return acc + `required_fields=${field}&`;
-        }
+  let queryString = '';
 
-        return acc + `required_fields=${field}`;
-      }, '?')
-    : `?required_fields=${requiredField}`;
+  if (requiredField.length) {
+    queryString = Array.isArray(requiredField)
+      ? requiredField.reduce((acc, field, index) => {
+          if (index !== requiredField.length - 1) {
+            return acc + `required_fields=${field}&`;
+          }
+
+          return acc + `required_fields=${field}`;
+        }, '?')
+      : `?required_fields=${requiredField}`;
+  }
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
@@ -233,17 +237,14 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify(postData),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(postData),
+  })
+    .then(res => res.json())
+    .then(result => result)
+    .catch(error => error);
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit) =>
