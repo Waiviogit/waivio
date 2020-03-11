@@ -76,13 +76,10 @@ const CreateAlbum = ({
             rules: [
               {
                 required: true,
-                message: intl.formatMessage(
-                  {
-                    id: 'field_error',
-                    defaultMessage: 'Field is required',
-                  },
-                  { field: 'Album' },
-                ),
+                message: intl.formatMessage({
+                  id: 'album_field_error',
+                  defaultMessage: 'Album name is required',
+                }),
               },
               {
                 max: 100,

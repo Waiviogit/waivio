@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import FollowButton from '../widgets/FollowButton';
 import Avatar from '../components/Avatar';
+
 import './UserCard.less';
 
 const UserCard = ({ user, alt, showFollow }) => (
