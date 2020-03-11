@@ -141,21 +141,20 @@ export default class AppendForm extends Component {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
     this.setState({ loading: true });
-
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
       this.props
         .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
         .then(res => {
-          if (data.votePower !== null) {
-            if (res.value.message) {
-              message.error(
-                this.props.intl.formatMessage({
-                  defaultMessage: 'You are blacklisted and you cannot add appends!',
-                  id: 'append_black_list',
-                }),
-              );
-            } else {
+          if (res.value.message) {
+            message.error(
+              this.props.intl.formatMessage({
+                defaultMessage: 'You are blacklisted and you cannot add appends!',
+                id: 'append_black_list',
+              }),
+            );
+          } else {
+            if (data.votePower !== null) {
               if (objectFields.rating === formValues.currentField && formValues.rate) {
                 const { author, permlink } = res.value;
 
@@ -166,23 +165,24 @@ export default class AppendForm extends Component {
                   ratePercent[formValues.rate - 1],
                 );
               }
-
-              message.success(
-                this.props.intl.formatMessage(
-                  {
-                    id: 'added_field_to_wobject',
-                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                  },
-                  {
-                    field: form.getFieldValue('currentField'),
-                    wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-                  },
-                ),
-              );
             }
-            this.props.hideModal();
-            this.setState({ loading: false });
+
+            message.success(
+              this.props.intl.formatMessage(
+                {
+                  id: 'added_field_to_wobject',
+                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                },
+                {
+                  field: form.getFieldValue('currentField'),
+                  wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                },
+              ),
+            );
           }
+
+          this.props.hideModal();
+          this.setState({ loading: false });
         })
         .catch(() => {
           message.error(
@@ -195,8 +195,6 @@ export default class AppendForm extends Component {
           this.props.hideModal();
           this.setState({ loading: false });
         });
-
-      return;
     }
   };
 
@@ -213,7 +211,6 @@ export default class AppendForm extends Component {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
-
     let fieldBody = [];
     const postData = [];
 

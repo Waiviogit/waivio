@@ -243,7 +243,6 @@ export const postAppendWaivioObject = postData =>
     body: JSON.stringify(postData),
   })
     .then(res => res.json())
-    .then(result => result)
     .catch(error => error);
 
 // region Follow API requests

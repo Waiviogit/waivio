@@ -15,15 +15,18 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
     payload: {
       promise: postAppendWaivioObject(postData)
         .then(res => {
-          if (votePower !== null) {
-            dispatch(voteObject(res.author, res.permlink, votePower || getVotePercent(state)));
+          if (!res.message) {
+            if (votePower !== null) {
+              dispatch(voteObject(res.author, res.permlink, votePower || getVotePercent(state)));
+            }
+            if (follow) {
+              dispatch(followObject(postData.parentPermlink));
+            }
           }
-          if (follow) {
-            dispatch(followObject(postData.parentPermlink));
-          }
+
           return { ...res, ...postData.field, creator: postData.author, weight: 1 };
         })
-        .catch(e => e),
+        .catch(e => console.log(e)),
     },
   });
 };
