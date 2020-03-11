@@ -10,7 +10,7 @@ import WeightTag from '../../client/components/WeightTag';
 const DiscoverUser = ({ user, isReblogged }) => {
   const parsedJSON = attempt(JSON.parse, user.json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
-  const profileName = get(userJSON, 'profile.name');
+  const profileName = get(userJSON, ['profile', 'name']);
 
   return (
     <div key={user.name} className="Discover__user">
