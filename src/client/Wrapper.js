@@ -181,10 +181,6 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRate();
       this.props.getChartsData();
     });
-
-    if (this.props.screenSize !== 'large') {
-      window.$crisp.push(['do', 'chat:hide']);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
