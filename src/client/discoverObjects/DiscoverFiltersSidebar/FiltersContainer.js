@@ -8,7 +8,7 @@ import { updateActiveFilters } from '../helper';
 import { sortStrings } from '../../helpers/sortHelpers';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 
-const FiltersContainer = ({ intl, filters }) => {
+const FiltersContainer = ({ intl, filters, objectType }) => {
   // redux-store
   const dispatch = useDispatch();
   const activeFilters = useSelector(getActiveFilters);
@@ -26,7 +26,7 @@ const FiltersContainer = ({ intl, filters }) => {
   const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter, checked } = e.target;
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
-    dispatch(setFiltersAndLoad(updatedFilters));
+    dispatch(setFiltersAndLoad(objectType, updatedFilters));
   };
 
   return (

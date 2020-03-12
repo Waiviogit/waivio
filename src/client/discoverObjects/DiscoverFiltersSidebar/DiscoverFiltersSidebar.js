@@ -67,7 +67,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
           </div>
-          <FiltersContainer intl={intl} filters={filters} />
+          <FiltersContainer intl={intl} filters={filters} objectType={objectType} />
         </div>
       ) : null}
     </div>
