@@ -92,12 +92,6 @@ export const setActiveFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-// export const setFiltersAndLoad = (typeName, filters) => dispatch => {
-//   dispatch(setActiveFilters(filters)).then(() => {
-//     dispatch(getObjectTypeByStateFilters(typeName));
-//   });
-// };
-
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
@@ -116,6 +110,6 @@ export const changeSorting = sorting => dispatch => {
 export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectType(typeName));
+    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
