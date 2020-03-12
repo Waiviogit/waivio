@@ -1046,5 +1046,9 @@
   "transaction_error_message_for_user": "Transaction failed",
   "append_validate_message": "The rating with such name already exist in this locale",
   "album_field_error": "Album name is required",
-  "steem_accounts": "STEEM ACCOUNTS"
+  "steem_accounts": "STEEM ACCOUNTS",
+  "sing_in_modal_message": "Waivio is powered by Steem open social blockchain",
+  "sing_in_modal_rules": "By using this Service, you agree to be bound by",
+  "privacy_policy": "the Privacy Policy",
+  "cookies_policy": "the Cookies Policy"
 }

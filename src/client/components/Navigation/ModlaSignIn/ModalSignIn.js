@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import SteemConnect from '../../../steemConnectAPI';
 import { login, busyLogin } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
@@ -15,7 +15,7 @@ import SocialButtons from '../SocialButtons/SocialButtons';
 
 import './ModalSignIn.less';
 
-const ModalSignIn = ({ next }) => {
+const ModalSignIn = ({ next, intl }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -62,15 +62,26 @@ const ModalSignIn = ({ next }) => {
   const renderSignIn = () => (
     <React.Fragment>
       <h2 className="ModalSignIn__title">
-        <FormattedMessage id="login" defaultMessage="Log in" />
+        {intl.formatMessage({
+          id: 'login',
+          defaultMessage: 'Log in',
+        })}
       </h2>
       {isLoading ? (
         <Spinner />
       ) : (
         <React.Fragment>
-          <p className="ModalSignIn__rules">Waivio is powered by Steem open social blockchain</p>
+          <p className="ModalSignIn__rules">
+            {intl.formatMessage({
+              id: 'sing_in_modal_message',
+              defaultMessage: 'Waivio is powered by Steem open social blockchain',
+            })}
+          </p>
           <p className="ModalSignIn__title ModalSignIn__title--lined">
-            <FormattedMessage id="steem_accounts" defaultMessage="STEEM ACCOUNTS" />
+            {intl.formatMessage({
+              id: 'steem_accounts',
+              defaultMessage: 'STEEM ACCOUNTS',
+            })}
           </p>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignIn__signin">
             <img
@@ -78,24 +89,56 @@ const ModalSignIn = ({ next }) => {
               alt="steemit"
               className="ModalSignIn__icon-steemit"
             />
-            <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+            {intl.formatMessage({
+              id: 'signin_with_steemIt',
+              defaultMessage: 'SteemConnect',
+            })}
           </a>
           <p className="ModalSignIn__title ModalSignIn__title--lined">
-            <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
+            {intl.formatMessage({
+              id: 'guestAccounts',
+              defaultMessage: 'GUEST ACCOUNTS',
+            })}
           </p>
-          <SocialButtons responseSocial={responseSocial} />
+          <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
           <p className="ModalSignIn__rules">
-            By using this Service, you agree to be bound by the
-            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions">
-              Terms and Conditions
+            {intl.formatMessage({
+              id: 'sing_in_modal_rules',
+              defaultMessage: 'By using this Service, you agree to be bound by',
+            })}
+            &nbsp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: 'terms_and_conditions',
+                defaultMessage: 'the Terms and Conditions',
+              })}
             </a>
-            , the
-            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy">
-              Privacy Policy
+            , &nbsp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: 'privacy_policy',
+                defaultMessage: 'the Privacy Policy',
+              })}
+              the Privacy Policy
             </a>
-            , and the
-            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy">
-              Cookies Policy
+            ,&nbsp;
+            <a
+              href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: 'cookies_policy',
+                defaultMessage: 'the Cookies Policy',
+              })}
             </a>
             .
           </p>
@@ -116,7 +159,10 @@ const ModalSignIn = ({ next }) => {
   return (
     <React.Fragment>
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
-        <FormattedMessage id="signin" defaultMessage="Log in" />
+        {intl.formatMessage({
+          id: 'signin',
+          defaultMessage: 'Log in',
+        })}
       </a>
       <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
         <div className="ModalSignIn">
@@ -133,10 +179,13 @@ const ModalSignIn = ({ next }) => {
 
 ModalSignIn.propTypes = {
   next: PropTypes.string,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 ModalSignIn.defaultProps = {
   next: '',
 };
 
-export default ModalSignIn;
+export default injectIntl(ModalSignIn);
