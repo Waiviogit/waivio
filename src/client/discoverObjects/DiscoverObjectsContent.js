@@ -174,9 +174,9 @@ class DiscoverObjectsContent extends Component {
   };
 
   resetMapFilter = () => {
-    const { activeFilters, dispatchSetActiveFilters, typeName } = this.props;
+    const { activeFilters, dispatchSetActiveFilters } = this.props;
     const updatedFilters = omit(activeFilters, ['map']);
-    dispatchSetActiveFilters(typeName, updatedFilters);
+    dispatchSetActiveFilters(updatedFilters);
   };
 
   resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);

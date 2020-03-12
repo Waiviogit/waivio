@@ -51,8 +51,9 @@ export const getObjectType = (objectTypeName, actionType, filters, { limit = 30,
   });
 };
 
-export const getObjectTypeMap = (typeName, map = {}) => dispatch => {
+export const getObjectTypeMap = ( map = {}) => (dispatch, getState) => {
   const filters = {rating: [], map};
+  const typeName = getTypeName(getState());
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
   return dispatch(getObjectType(typeName, actionType, filters, { limit: 30, skip: 0 }));
 };
@@ -91,18 +92,18 @@ export const setActiveFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-export const setFiltersAndLoad = (typeName, filters) => dispatch => {
-  dispatch(setActiveFilters(filters)).then(() => {
-    dispatch(getObjectTypeByStateFilters(typeName));
-  });
-};
-
-// export const setFiltersAndLoad = filters => (dispatch, getState) => {
+// export const setFiltersAndLoad = (typeName, filters) => dispatch => {
 //   dispatch(setActiveFilters(filters)).then(() => {
-//     const typeName = getTypeName(getState());
-//     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+//     dispatch(getObjectTypeByStateFilters(typeName));
 //   });
 // };
+
+export const setFiltersAndLoad = filters => (dispatch, getState) => {
+  dispatch(setActiveFilters(filters)).then(() => {
+    const typeName = getTypeName(getState());
+    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+  });
+};
 
 export const changeSorting = sorting => dispatch => {
   dispatch({

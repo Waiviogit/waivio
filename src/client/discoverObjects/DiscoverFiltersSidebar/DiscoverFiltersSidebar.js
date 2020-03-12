@@ -35,8 +35,8 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
 
   const objectType = match.params.typeName;
 
-  const setSearchArea = map => dispatch(setFiltersAndLoad(objectType, { ...activeFilters, map }));
-  const setMapArea = map => dispatch(getObjectTypeMap(objectType, map));
+  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
+  const setMapArea = map => dispatch(getObjectTypeMap(map));
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
@@ -67,7 +67,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
           </div>
-          <FiltersContainer intl={intl} filters={filters} objectType={objectType} />
+          <FiltersContainer intl={intl} filters={filters} />
         </div>
       ) : null}
     </div>
