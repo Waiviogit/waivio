@@ -78,14 +78,14 @@ const CustomMarker = ({ payload, anchor, onMouseOut, onMouseOver, onClick, onCon
 
 CustomMarker.propTypes = {
   onClick: PropTypes.func.isRequired,
-  onContextMenu: PropTypes.func.isRequired,
+  onContextMenu: PropTypes.func,
   onMouseOver: PropTypes.func.isRequired,
   onMouseOut: PropTypes.func.isRequired,
-  left: PropTypes.number.isRequired,
-  top: PropTypes.number.isRequired,
+  left: PropTypes.number,
+  top: PropTypes.number,
   anchor: PropTypes.array.isRequired,
   payload: PropTypes.any.isRequired,
-  hover: PropTypes.bool.isRequired,
+  hover: PropTypes.bool,
   isMarked: PropTypes.bool.isRequired,
 };
 
