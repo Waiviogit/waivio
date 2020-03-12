@@ -1,9 +1,10 @@
 import Cookies from 'js-cookie';
+import store from 'store';
 import { message } from 'antd';
 import api from '../../configApi/apiResources';
-import { authorizeToken, connectPlatform } from './platformActions';
+import { authorizeToken } from './platformActions';
 import { singleton } from '../../platform/singletonPlatform';
-import { toggleModal } from './modalsActions';
+// import { toggleModal } from './modalsActions';
 
 export const AUTHORIZE_BROKER_REQUEST = 'AUTHORIZE_BROKER_REQUEST';
 export const AUTHORIZE_BROKER_SUCCESS = 'AUTHORIZE_BROKER_SUCCESS';
@@ -71,28 +72,39 @@ export function disconnectTokenSuccess() {
 }
 
 export function authorizeBroker(data) {
+  const token = store.get('token');
   return dispatch => {
-    dispatch(authorizeBrokerRequest());
-    return api.brokers.authorizeBroker(data, 'en-UK').then(({ status, error, broker }) => {
-      if (!error && status) {
-        if (status === 'success') {
-          dispatch(authorizeBrokerSuccess());
-          dispatch(authorizeToken(broker.token));
-          singleton.closeWebSocketConnection();
-          singleton.platform = data.platform;
-          singleton.createWebSocketConnection();
-          // dispatch(toggleModal('broker'));
-        } else if (status === 'error') {
-          dispatch(authorizeBrokerError());
-        }
-        message.success('Successfully connected to broker');
-      } else {
-        dispatch(authorizeBrokerError());
-        // message.error(error.toString());
-      }
-    });
-  };
+      // dispatch(authorizeBrokerSuccess());
+      dispatch(authorizeToken(token));
+      singleton.closeWebSocketConnection();
+      singleton.platform = data.platform;
+      singleton.createWebSocketConnection();
+      // dispatch(toggleModal('broker'));
+    }
 }
+// export function authorizeBroker(data) {
+//   return dispatch => {
+//     dispatch(authorizeBrokerRequest());
+//     return api.brokers.authorizeBroker(data, 'en-UK').then(({ status, error, broker }) => {
+//       if (!error && status) {
+//         if (status === 'success') {
+//           dispatch(authorizeBrokerSuccess());
+//           dispatch(authorizeToken(broker.token));
+//           singleton.closeWebSocketConnection();
+//           singleton.platform = data.platform;
+//           singleton.createWebSocketConnection();
+//           dispatch(toggleModal('broker'));
+//         } else if (status === 'error') {
+//           dispatch(authorizeBrokerError());
+//         }
+//         message.success('Successfully connected to broker');
+//       } else {
+//         dispatch(authorizeBrokerError());
+//         message.error(error.toString());
+//       }
+//     });
+//   };
+// }
 export function registerBroker(registrationData) {
   return dispatch => {
     dispatch(registerBrokerRequest());
@@ -136,20 +148,28 @@ export function disconnectBroker(isReconnect = false) {
   };
 }
 export function reconnectBroker(data) {
-  return dispatch =>
-    api.brokers.reconnectBroker(data).then(({ status, resMessage, result, error }) => {
-      if (!error && status && resMessage) {
-        if (result) {
-          dispatch(connectPlatform());
-        } else {
-          message.error(resMessage);
-          dispatch(disconnectBroker(true));
-        }
-      } else {
-        // message.error(error.toString());
-      }
-    });
+  const token = store.get('token');
+  return dispatch => {
+    dispatch(authorizeToken(token));
+    singleton.platform = data.platform;
+    singleton.createWebSocketConnection();
+  }
 }
+// export function reconnectBroker(data) {
+//   return dispatch =>
+//     api.brokers.reconnectBroker(data).then(({ status, resMessage, result, error }) => {
+//       if (!error && status && resMessage) {
+//         if (result) {
+//           dispatch(connectPlatform());
+//         } else {
+//           message.error(resMessage);
+//           dispatch(disconnectBroker(true));
+//         }
+//       } else {
+//         message.error(error.toString());
+//       }
+//     });
+// }
 export function forgotPassBroker(data) {
   return dispatch => {
     dispatch(forgotBrokerPassRequest());

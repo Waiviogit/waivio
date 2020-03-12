@@ -6,7 +6,11 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { disconnectBroker } from '../../investarena/redux/actions/brokersActions';
+import {
+  authorizeBroker,
+  authorizeBrokerSuccess,
+  disconnectBroker
+} from '../../investarena/redux/actions/brokersActions';
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
@@ -89,6 +93,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
   const state = getState();
 
+  console.log('beaxyLogin action', bxySessionData);
   return dispatch({
     type: LOGIN,
     payload: new Promise(async (resolve, reject) => {
@@ -101,6 +106,10 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           'beaxy',
           bxySessionData,
         );
+        if (typeof localStorage !== 'undefined') {
+          dispatch(authorizeBroker({ platform : 'beaxy' }));
+        }
+
         resolve({
           account: userData.user,
           userMetaData,
