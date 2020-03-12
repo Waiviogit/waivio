@@ -52,7 +52,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
             <div style={{ ...style, marginBottom: '-20px' }} />
           )}
         >
-          <ul className="TopNavigation__menu center topNav">
+          <ul className="TopNavigation__menu center">
             <li className="TopNavigation__item">
               <Link
                 to="/"
