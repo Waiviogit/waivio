@@ -27,29 +27,14 @@ const menuConfig = {
     isCollapsed: false,
     items: [
       {
-        name: 'Commodities',
-        intlId: 'wia.commodities',
-        linkTo: '/discover-objects/commodity',
+        name: 'Cryptopairs',
+        intlId: 'modalAssets.cryptopairs',
+        linkTo: '/discover-objects/cryptopairs',
       },
       {
         name: 'Cryptocurrencies',
         intlId: 'modalAssets.cryptocurrencies',
         linkTo: '/discover-objects/crypto',
-      },
-      {
-        name: 'Currencies',
-        intlId: 'wia.currencies',
-        linkTo: '/discover-objects/currencies',
-      },
-      {
-        name: 'Indices',
-        intlId: 'modalAssets.indices',
-        linkTo: '/discover-objects/indices',
-      },
-      {
-        name: 'Stocks',
-        intlId: 'modalAssets.stocks',
-        linkTo: '/discover-objects/stocks',
       },
     ],
   },
