@@ -138,6 +138,7 @@ export default class AppendForm extends Component {
   };
 
   onSubmit = async formValues => {
+    console.log('onSubmit');
     this.setState({ loading: true });
 
     const {
@@ -146,6 +147,8 @@ export default class AppendForm extends Component {
     } = this.props;
     const postData = this.getNewPostData(formValues);
     /* eslint-disable no-restricted-syntax */
+    console.log('after getNewPostData');
+    console.log(postData);
     for (const data of postData) {
       try {
         // we do not vote append when append just created page/list
@@ -463,7 +466,8 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
-
+    console.log('handleSubmit.start');
+    console.log(event);
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
@@ -476,6 +480,8 @@ export default class AppendForm extends Component {
       if (!identicalNameFields.length) {
         const { form, intl } = this.props;
         const currentField = form.getFieldValue('currentField');
+        console.log('getFieldValue.after');
+        console.log(event);
         if (objectFields.newsFilter === currentField) {
           const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
             sub => sub.length,
@@ -492,6 +498,8 @@ export default class AppendForm extends Component {
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
           // this.props.onError();
+          console.log(err);
+          console.log(event);
         } else {
           this.onSubmit(values);
         }
@@ -526,6 +534,7 @@ export default class AppendForm extends Component {
     }
 
     if (formFields) {
+      console.log('checkRequiredField');
       const isSomeValueFilled = Object.values(formFields).some(f => Boolean(f));
       this.setState({ isSomeValue: isSomeValueFilled });
       return !isSomeValueFilled;
@@ -537,6 +546,9 @@ export default class AppendForm extends Component {
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
   validateFieldValue = (rule, value, callback) => {
+    console.log('validateFieldValue');
+    console.log(rule);
+    console.log(value);
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
@@ -551,6 +563,9 @@ export default class AppendForm extends Component {
           [name]: this.trimText(fields[name]),
         });
       }
+      console.log('trimNestedFields');
+      console.log(name);
+      console.log(fields[name]);
     };
 
     form.setFieldsValue({
@@ -583,6 +598,9 @@ export default class AppendForm extends Component {
         }),
       );
     }
+    console.log('validateFieldValue');
+    console.log(rule);
+    console.log(value);
     callback();
   };
 
@@ -688,6 +706,8 @@ export default class AppendForm extends Component {
       if (has(rule, 'validator')) {
         return { validator: this.validateFieldValue };
       }
+      console.log('getFieldRules');
+      console.log(fieldName);
       return rule;
     });
   };
