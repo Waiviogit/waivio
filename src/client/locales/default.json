@@ -1045,5 +1045,6 @@
   "transaction_message_for_user": "Your transaction is on the way!",
   "transaction_error_message_for_user": "Transaction failed",
   "append_validate_message": "The rating with such name already exist in this locale",
-  "album_field_error": "Album name is required"
+  "album_field_error": "Album name is required",
+  "steem_accounts": "STEEM ACCOUNTS"
 }

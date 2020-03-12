@@ -13,7 +13,7 @@ import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 
-import '../ModalSignUp/ModalSignUp.less';
+import './ModalSignIn.less';
 
 const ModalSignIn = ({ next }) => {
   const dispatch = useDispatch();
@@ -61,22 +61,44 @@ const ModalSignIn = ({ next }) => {
 
   const renderSignIn = () => (
     <React.Fragment>
-      <h2 className="ModalSignUp__title">
+      <h2 className="ModalSignIn__title">
         <FormattedMessage id="login" defaultMessage="Log in" />
       </h2>
       {isLoading ? (
         <Spinner />
       ) : (
         <React.Fragment>
-          <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
+          <p className="ModalSignIn__rules">Waivio is powered by Steem open social blockchain</p>
+          <p className="ModalSignIn__title ModalSignIn__title--lined">
+            <FormattedMessage id="steem_accounts" defaultMessage="STEEM ACCOUNTS" />
+          </p>
+          <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignIn__signin">
             <img
               src="/images/icons/steemit.svg"
               alt="steemit"
-              className="ModalSignUp__icon-steemit"
+              className="ModalSignIn__icon-steemit"
             />
             <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
           </a>
+          <p className="ModalSignIn__title ModalSignIn__title--lined">
+            <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
+          </p>
           <SocialButtons responseSocial={responseSocial} />
+          <p className="ModalSignIn__rules">
+            By using this Service, you agree to be bound by the
+            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions">
+              Terms and Conditions
+            </a>
+            , the
+            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy">
+              Privacy Policy
+            </a>
+            , and the
+            <a href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy">
+              Cookies Policy
+            </a>
+            .
+          </p>
         </React.Fragment>
       )}
     </React.Fragment>
@@ -96,8 +118,8 @@ const ModalSignIn = ({ next }) => {
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
         <FormattedMessage id="signin" defaultMessage="Log in" />
       </a>
-      <Modal width={416} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
-        <div className="ModalSignUp">
+      <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
+        <div className="ModalSignIn">
           {isFormVisible ? (
             <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
           ) : (

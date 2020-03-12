@@ -1,9 +1,10 @@
 @import (reference) '../../../styles/custom.less';
 @import (reference) '../../../styles/modules/variables.less';
 
-.ModalSignUp {
+.ModalSignIn {
   display: flex;
   flex-direction: column;
+  padding: 0 66px;
 
   &__social {
     display: flex;
@@ -18,21 +19,46 @@
   }
 
   &__title {
-    margin-bottom: 15px;
-
     &--lined {
       width: 100%;
       text-align: center;
-      border-bottom: 1px solid @black;
-      line-height: 2px;
-      margin: 10px 0 20px;
       font-weight: 500;
       font-size: 20px;
       color: @black;
+      position: relative;
+      margin: 20px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       & > span {
-        background: @white;
-        padding: 0 10px;
+        position: relative;
+        background-color: @white;
+        padding: 0 18px;
+        z-index: 10;
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        background-color: @black;
+        width: 55px;
+        height: 1px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+      }
+
+      &::before {
+        content: '';
+        display: block;
+        background-color: @black;
+        width: 55px;
+        height: 1px;
+        position: absolute;
+        right: 0;
+        top: 50%;
       }
     }
   }
