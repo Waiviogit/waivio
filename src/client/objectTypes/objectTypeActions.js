@@ -91,18 +91,18 @@ export const setActiveFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-// export const setFiltersAndLoad = (typeName, filters) => dispatch => {
-//   dispatch(setActiveFilters(filters)).then(() => {
-//     dispatch(getObjectTypeByStateFilters(typeName));
-//   });
-// };
-
-export const setFiltersAndLoad = filters => (dispatch, getState) => {
+export const setFiltersAndLoad = (typeName, filters) => dispatch => {
   dispatch(setActiveFilters(filters)).then(() => {
-    const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
+
+// export const setFiltersAndLoad = filters => (dispatch, getState) => {
+//   dispatch(setActiveFilters(filters)).then(() => {
+//     const typeName = getTypeName(getState());
+//     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+//   });
+// };
 
 export const changeSorting = sorting => dispatch => {
   dispatch({
