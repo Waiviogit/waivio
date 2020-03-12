@@ -13,7 +13,7 @@ import {
   getUserLocation,
   getHasMap,
 } from '../../reducers';
-import { setFiltersAndLoad, getObjectType } from '../../objectTypes/objectTypeActions';
+import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
@@ -33,8 +33,10 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     dispatch(getCoordinates());
   }
 
-  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
-  const setMapArea = map => dispatch(getObjectType('', { map }));
+  const objectType = match.params.typeName;
+
+  const setSearchArea = map => dispatch(setFiltersAndLoad(objectType, { ...activeFilters, map }));
+  const setMapArea = map => dispatch(getObjectTypeMap(objectType, map));
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
@@ -46,7 +48,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
 
   const isTypeHasFilters = memoize(isNeedFilters);
-  return isTypeHasFilters(match.params.objectType) ? (
+  return isTypeHasFilters(objectType) ? (
     <div className="discover-objects-filters">
       {hasMap ? (
         <MapWrap

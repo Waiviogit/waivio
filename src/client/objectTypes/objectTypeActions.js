@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   getActiveFilters,
@@ -20,18 +19,14 @@ export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
 /**
  * Action to get wobject of specific type with related wobjects
  *
- * @param {string} typeName - name of the Object Type
+ * @param {string} objectTypeName - name of the Object Type
+ * @param {string} actionType - action to dispatch
+ * @param {object} filters - filters for related wobjects
  * @param {number} limit - count of wobjects to return
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
-export const getObjectType = (
-  typeName,
-  {
-    limit = 30,
-    skip = 0,
-    map = {}
-  } = { limit: 30, skip: 0, map: {} }) => (
+export const getObjectType = (objectTypeName, actionType, filters, { limit = 30, skip = 0 } = { }) => (
   dispatch,
   getState,
 ) => {
@@ -39,46 +34,48 @@ export const getObjectType = (
   const username = getAuthenticatedUserName(state);
   const usedLocale = getSuitableLanguage(state);
   const sort = getObjectTypeSorting(state);
-  const requestTypeName = typeName || getTypeName(state);
-  let requestActionType = GET_OBJECT_TYPE.ACTION;
-  let requestFilter = {};
-
-  if(_.isEmpty(map)) {
-    const activeFilters = { ...getActiveFilters(state) };
-    const searchString = new URLSearchParams(getQueryString(state)).get('search');
-
-    // if use sort by proximity, require to use map filter
-    if (sort === 'proximity' && !activeFilters.map) {
-      const userLocation = getUserLocation(state);
-      activeFilters.map = {
-        coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
-        radius: 50000000,
-      };
-    }
-    if (searchString) {
-      activeFilters.searchString = searchString;
-    }
-    requestFilter = activeFilters;
-  } else {
-    requestFilter = {rating: [], map };
-    requestActionType = GET_OBJECT_TYPE_MAP.ACTION;
-  }
 
   const preparedData = {
     wobjects_count: limit,
     wobjects_skip: skip,
-    filter: requestFilter,
+    filter: filters,
     sort,
   };
-
   if (username) preparedData.userName = username;
   dispatch({
-    type: requestActionType,
-    payload: ApiClient.getObjectType(requestTypeName, preparedData),
+    type: actionType,
+    payload: ApiClient.getObjectType(objectTypeName, preparedData),
     meta: {
       locale: usedLocale,
     },
   });
+};
+
+export const getObjectTypeMap = (typeName, map = {}) => dispatch => {
+  const filters = {rating: [], map};
+  const actionType = GET_OBJECT_TYPE_MAP.ACTION;
+  return dispatch(getObjectType(typeName, actionType, filters, { limit: 30, skip: 0 }));
+};
+
+export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 30 } = {}) => (dispatch, getState) => {
+  const state = getState();
+  const activeFilters = { ...getActiveFilters(state) };
+  const searchString = new URLSearchParams(getQueryString(state)).get('search');
+  const sort = getObjectTypeSorting(state);
+
+  // if use sort by proximity, require to use map filter
+  if (sort === 'proximity' && !activeFilters.map) {
+    const userLocation = getUserLocation(state);
+    activeFilters.map = {
+      coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
+      radius: 50000000,
+    };
+  }
+  if (searchString) {
+    activeFilters.searchString = searchString;
+  }
+  const actionType = GET_OBJECT_TYPE.ACTION;
+  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip }));
 };
 
 export const clearType = () => dispatch => {
@@ -94,10 +91,9 @@ export const setActiveFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-export const setFiltersAndLoad = filters => (dispatch, getState) => {
+export const setFiltersAndLoad = (typeName, filters) => dispatch => {
   dispatch(setActiveFilters(filters)).then(() => {
-    const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectType(typeName));
+    dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
 
