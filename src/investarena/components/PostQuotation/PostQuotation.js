@@ -120,30 +120,36 @@ const PostQuotation = ({
               </button>
             </div>
             <div className="st-post-quotation-footer">
-              <div
-                role="presentation"
+              <a
+                // role="presentation"
+                href="https://beaxy.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`st-post-action-block st-margin-right-small st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Sell', caller)}
+                // onClick={handleOpenDeal.bind(this, 'Sell', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}
                 </span>
                 <div>{quoteFormat(quote.bidPrice, quoteSettings)}</div>
-              </div>
-              <div
-                role="presentation"
+              </a>
+              <a
+                // role="presentation"
+                href="https://beaxy.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`st-post-action-block st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Buy', caller)}
+                // onClick={handleOpenDeal.bind(this, 'Buy', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}
                 </span>
                 <div>{quoteFormat(quote.askPrice, quoteSettings)}</div>
-              </div>
+              </a>
             </div>
           </div>
         </React.Fragment>
