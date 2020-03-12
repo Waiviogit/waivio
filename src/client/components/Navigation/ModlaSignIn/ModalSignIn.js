@@ -78,10 +78,12 @@ const ModalSignIn = ({ next, intl }) => {
             })}
           </p>
           <p className="ModalSignIn__title ModalSignIn__title--lined">
-            {intl.formatMessage({
-              id: 'steem_accounts',
-              defaultMessage: 'STEEM ACCOUNTS',
-            })}
+            <span>
+              {intl.formatMessage({
+                id: 'steem_accounts',
+                defaultMessage: 'STEEM ACCOUNTS',
+              })}
+            </span>
           </p>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignIn__signin">
             <img
@@ -95,10 +97,12 @@ const ModalSignIn = ({ next, intl }) => {
             })}
           </a>
           <p className="ModalSignIn__title ModalSignIn__title--lined">
-            {intl.formatMessage({
-              id: 'guestAccounts',
-              defaultMessage: 'GUEST ACCOUNTS',
-            })}
+            <span>
+              {intl.formatMessage({
+                id: 'guestAccounts',
+                defaultMessage: 'GUEST ACCOUNTS',
+              })}
+            </span>
           </p>
           <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
           <p className="ModalSignIn__rules">
@@ -106,7 +110,7 @@ const ModalSignIn = ({ next, intl }) => {
               id: 'sing_in_modal_rules',
               defaultMessage: 'By using this Service, you agree to be bound by',
             })}
-            &nbsp;
+            &ensp;
             <a
               href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
               target="_blank"
@@ -117,7 +121,7 @@ const ModalSignIn = ({ next, intl }) => {
                 defaultMessage: 'the Terms and Conditions',
               })}
             </a>
-            , &nbsp;
+            ,&ensp;
             <a
               href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
               target="_blank"
@@ -127,9 +131,8 @@ const ModalSignIn = ({ next, intl }) => {
                 id: 'privacy_policy',
                 defaultMessage: 'the Privacy Policy',
               })}
-              the Privacy Policy
             </a>
-            ,&nbsp;
+            ,&ensp;
             <a
               href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
               target="_blank"

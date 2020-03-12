@@ -716,7 +716,7 @@
   "select_time": "Please, select time!",
   "agree_to_the": "I agree to the ",
   "agreement": "agreement",
-  "terms_and_conditions": "Terms and Conditions ",
+  "terms_and_conditions": "Terms and Conditions",
   "service_acknowledge_campaign_not_violate_laws": "of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.",
   "change": "change",
   "not_less_zero_posts": "Number of posts cannot be negative",
@@ -1050,6 +1050,6 @@
   "sing_in_modal_message": "Waivio is powered by Steem open social blockchain",
   "sing_in_modal_rules": "By using this Service, you agree to be bound by",
   "privacy_policy": "the Privacy Policy",
-  "cookies_policy": "the Cookies Policy"
+  "cookies_policy": "the Cookies Policy",
   "append_black_list": "You are blacklisted and you can not add appends!"
 }
