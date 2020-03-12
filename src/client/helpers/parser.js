@@ -49,4 +49,6 @@ export function extractLinks(body) {
   return extract(body, hrefRegex).map(unescape);
 }
 
+export const replacer = (value, item) => value.replace(item, '');
+
 export default null;

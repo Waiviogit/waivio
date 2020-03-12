@@ -538,7 +538,7 @@
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
-  "related_to_object": "Related to object",
+  "related_to_object": "Related",
   "emptyList": "This list is empty",
   "list": "list",
   "list_update": "Update list",
@@ -1044,5 +1044,7 @@
   "modal_button_yes": "OK",
   "transaction_message_for_user": "Your transaction is on the way!",
   "transaction_error_message_for_user": "Transaction failed",
-  "append_validate_message": "The rating with such name already exist in this locale"
+  "append_validate_message": "The rating with such name already exist in this locale",
+  "album_field_error": "Album name is required",
+  "append_black_list": "You are blacklisted and you can not add appends!"
 }

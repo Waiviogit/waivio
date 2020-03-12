@@ -1,38 +1,38 @@
-import { map, filter, has, isEmpty, get, includes, isNaN, trimStart } from 'lodash';
+import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Form, Input, message, Select, Rate, Icon } from 'antd';
+import { Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
 import {
-  linkFields,
-  objectFields,
-  mapFields,
   addressFields,
-  socialObjectFields,
-  websiteFields,
-  phoneFields,
-  ratingFields,
-  ratePercent,
-  getAllowedFieldsByObjType,
   buttonFields,
-  TYPES_OF_MENU_ITEM,
+  getAllowedFieldsByObjType,
+  linkFields,
+  mapFields,
+  objectFields,
+  phoneFields,
+  ratePercent,
+  ratingFields,
+  socialObjectFields,
   statusFields,
+  TYPES_OF_MENU_ITEM,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
-  getObject,
-  getRewardFund,
-  getRate,
-  getVotingPower,
-  getVotePercent,
   getFollowingObjectsList,
-  getSuitableLanguage,
+  getObject,
+  getRate,
   getRatingFields,
+  getRewardFund,
+  getSuitableLanguage,
+  getVotePercent,
+  getVotingPower,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -137,82 +137,65 @@ export default class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  onSubmit = async formValues => {
-    this.setState({ loading: true });
-
-    const {
-      form: { getFieldValue },
-      wObject,
-    } = this.props;
+  onSubmit = formValues => {
+    const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
-
+    this.setState({ loading: true });
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      try {
-        // we do not vote append when append just created page/list
-        if (data.votePower === null) {
+      this.props
+        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+        .then(res => {
+          if (res.value.message) {
+            message.error(
+              this.props.intl.formatMessage({
+                defaultMessage: 'You are blacklisted and you cannot add appends!',
+                id: 'append_black_list',
+              }),
+            );
+          } else {
+            if (data.votePower !== null) {
+              if (objectFields.rating === formValues.currentField && formValues.rate) {
+                const { author, permlink } = res.value;
+
+                this.props.rateObject(
+                  author,
+                  permlink,
+                  wObject.author_permlink,
+                  ratePercent[formValues.rate - 1],
+                );
+              }
+            }
+
+            message.success(
+              this.props.intl.formatMessage(
+                {
+                  id: 'added_field_to_wobject',
+                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                },
+                {
+                  field: form.getFieldValue('currentField'),
+                  wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                },
+              ),
+            );
+          }
+
           this.props.hideModal();
-          this.props
-            .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
-            .then(() => {
-              message.success(
-                this.props.intl.formatMessage(
-                  {
-                    id: 'added_field_to_wobject',
-                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                  },
-                  {
-                    field: getFieldValue('currentField'),
-                    wobject: wObject.name,
-                  },
-                ),
-              );
-            });
-          return;
-        }
-
-        /* eslint-disable no-await-in-loop */
-        const response = await this.props.appendObject(data, {
-          votePower: data.votePower,
-          follow: formValues.follow,
-        });
-
-        if (objectFields.rating === formValues.currentField && formValues.rate) {
-          const { author, permlink } = response.value;
-          await this.props.rateObject(
-            author,
-            permlink,
-            wObject.author_permlink,
-            ratePercent[formValues.rate - 1],
+          this.setState({ loading: false });
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'couldnt_append',
+              defaultMessage: "Couldn't add the field to object.",
+            }),
           );
-        }
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (e) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'couldnt_append',
-            defaultMessage: "Couldn't add the field to object.",
-          }),
-        );
-        this.setState({ loading: false });
-      }
+
+          this.props.hideModal();
+          this.setState({ loading: false });
+        });
     }
-
-    this.setState({ loading: false });
-
-    this.props.hideModal();
-    message.success(
-      this.props.intl.formatMessage(
-        {
-          id: 'added_field_to_wobject',
-          defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-        },
-        {
-          field: getFieldValue('currentField'),
-          wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-        },
-      ),
-    );
   };
 
   onUpdateCoordinate = positionField => e => {
@@ -228,7 +211,6 @@ export default class AppendForm extends Component {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
-
     let fieldBody = [];
     const postData = [];
 
@@ -269,7 +251,7 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.rating: {
-        fieldBody.push(rest[ratingFields.category]);
+        fieldBody.push(rest[objectFields.rating]);
         break;
       }
       case objectFields.tagCategory: {
@@ -464,10 +446,9 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-        if (field.body === values[values.currentField]) {
+        if (field.body === values.rating) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
 
@@ -535,43 +516,68 @@ export default class AppendForm extends Component {
     return false;
   };
 
-  validateFieldValue = (rule, value, callback) => {
-    const { intl, wObject, form } = this.props;
-    const currentField = form.getFieldValue('currentField');
-    const currentLocale = form.getFieldValue('currentLocale');
-    const fields = form.getFieldsValue();
+  trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
+
+  isDuplicate = (currentLocale, currentField, value) => {
+    const { wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const triggerValue = trimStart(fields[currentField]).replace(/\s{2,}/g, ' ');
+    return filtered.map(f => f.body.toLowerCase()).includes(value);
+  };
 
-    form.setFieldsValue({
-      [currentField]: triggerValue,
-    });
-
-    if (currentField === 'phone') {
-      if (fields.name) {
-        form.setFieldsValue({
-          name: trimStart(fields.name).replace(/\s{2,}/g, ' '),
-        });
-      }
-
-      if (fields.number) {
-        form.setFieldsValue({
-          number: trimStart(fields.number).replace(/\s{2,}/g, ' '),
-        });
-      }
-    }
-
-    if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
+  validateFieldValue = (rule, value, callback) => {
+    const { intl, form } = this.props;
+    const currentField = form.getFieldValue('currentField');
+    const currentLocale = form.getFieldValue('currentLocale');
+    const isDuplicated = this.isDuplicate(currentLocale, currentField, value);
+    if (isDuplicated) {
       callback(
         intl.formatMessage({
           id: 'append_object_validation_msg',
           defaultMessage: 'The field with this value already exists',
         }),
       );
+    } else {
+      const fields = form.getFieldsValue();
+      if (fields[currentField]) {
+        const triggerValue = this.trimText(fields[currentField]);
+        if (triggerValue)
+          form.setFieldsValue({
+            [currentField]: triggerValue,
+          });
+      } else {
+        const trimNestedFieldsInFormData = name => {
+          if (fields[name]) {
+            form.setFieldsValue({
+              [name]: this.trimText(fields[name]),
+            });
+          }
+        };
+
+        const trimNestedFields = innerFields => {
+          each(innerFields, innerField => trimNestedFieldsInFormData(innerField));
+        };
+
+        switch (currentField) {
+          case objectFields.phone:
+            trimNestedFields(phoneFields);
+            break;
+          case objectFields.website:
+            trimNestedFields(websiteFields);
+            break;
+          case objectFields.address:
+            trimNestedFields(addressFields);
+            break;
+          case objectFields.map:
+            trimNestedFields(mapFields);
+            break;
+          default:
+            break;
+        }
+      }
+      callback();
     }
-    callback();
   };
 
   handleChangeSorting = sortedList => {
@@ -643,6 +649,7 @@ export default class AppendForm extends Component {
 
   handleCreateObject = (createdObject, options) => {
     const currentField = this.props.form.getFieldValue('currentField');
+
     this.props.form.setFieldsValue({
       [currentField]: createdObject.id,
       menuItemName: createdObject.name,
