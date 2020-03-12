@@ -22,11 +22,13 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
             if (follow) {
               dispatch(followObject(postData.parentPermlink));
             }
+
+            return { ...res, ...postData.field, creator: postData.author, weight: 1 };
           }
 
-          return { ...res, ...postData.field, creator: postData.author, weight: 1 };
+          return res;
         })
-        .catch(e => console.log(e)),
+        .catch(e => e),
     },
   });
 };
