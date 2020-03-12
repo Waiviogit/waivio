@@ -152,7 +152,7 @@ class ObjectProfile extends React.Component {
     let createdAt = null;
     let forecast = null;
     const showChart =
-      !isLoadingPlatform &&
+      !isLoadingPlatform && object &&
       some(supportedObjectTypes, objectType => objectType === object.object_type);
     const loadMoreContentAction = () => {
       const { skip } = this.state;

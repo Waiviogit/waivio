@@ -58,7 +58,7 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
               res => {
                 const { bxySessionData, user, token, expiration, umSession } = res;
                 setAuthError(null);
-                dispatch(beaxyLogin({ user, token, expiration, umSession }, bxySessionData));
+                dispatch(beaxyLogin({ user, token, expiration }, { ...bxySessionData, umSession }));
               },
               error => {
                 const errMessage =

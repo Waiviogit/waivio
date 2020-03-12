@@ -2,6 +2,7 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
@@ -50,7 +51,7 @@ const PostQuotation = ({
   intl,
 }) => {
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
-  const dailyChange = `${quote.dailyChange.toFixed(2)}%`;
+  const dailyChange = `${get(quote, ["dailyChange"], 0).toFixed(2)}%`;
   const classOfDailyChange = quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down';
   const classOfIndicator =
     quoteSettings.isSession || quote.isSession
