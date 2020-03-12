@@ -1,38 +1,38 @@
-import { map, filter, has, isEmpty, get, includes, isNaN, trimStart } from 'lodash';
+import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Form, Input, message, Select, Rate, Icon } from 'antd';
+import { Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
 import {
-  linkFields,
-  objectFields,
-  mapFields,
   addressFields,
-  socialObjectFields,
-  websiteFields,
-  phoneFields,
-  ratingFields,
-  ratePercent,
-  getAllowedFieldsByObjType,
   buttonFields,
-  TYPES_OF_MENU_ITEM,
+  getAllowedFieldsByObjType,
+  linkFields,
+  mapFields,
+  objectFields,
+  phoneFields,
+  ratePercent,
+  ratingFields,
+  socialObjectFields,
   statusFields,
+  TYPES_OF_MENU_ITEM,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
-  getObject,
-  getRewardFund,
-  getRate,
-  getVotingPower,
-  getVotePercent,
   getFollowingObjectsList,
-  getSuitableLanguage,
+  getObject,
+  getRate,
   getRatingFields,
+  getRewardFund,
+  getSuitableLanguage,
+  getVotePercent,
+  getVotingPower,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -446,7 +446,6 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
@@ -519,45 +518,11 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  validateFieldValue = (rule, value, callback) => {
-    const { intl, wObject, form } = this.props;
-    const currentField = form.getFieldValue('currentField');
-    const currentLocale = form.getFieldValue('currentLocale');
-    const fields = form.getFieldsValue();
-    const triggerValue = this.trimText(fields[currentField]);
+  duplicatesCheck = (currentLocale, currentField, value, callback) => {
+    const { intl, wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    const trimNestedFields = name => {
-      if (fields[name]) {
-        form.setFieldsValue({
-          [name]: this.trimText(fields[name]),
-        });
-      }
-    };
-
-    form.setFieldsValue({
-      [currentField]: triggerValue,
-    });
-
-    if (currentField === objectFields.phone) {
-      trimNestedFields(phoneFields.name);
-      trimNestedFields(phoneFields.number);
-    }
-
-    if (currentField === objectFields.website) {
-      trimNestedFields(websiteFields.title);
-      trimNestedFields(websiteFields.link);
-    }
-
-    if (currentField === objectFields.address) {
-      trimNestedFields(addressFields.street);
-      trimNestedFields(addressFields.city);
-      trimNestedFields(addressFields.state);
-      trimNestedFields(addressFields.postalCode);
-      trimNestedFields(addressFields.country);
-    }
-
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
       callback(
         intl.formatMessage({
@@ -565,6 +530,50 @@ export default class AppendForm extends Component {
           defaultMessage: 'The field with this value already exists',
         }),
       );
+    }
+  };
+
+  validateFieldValue = (rule, value, callback) => {
+    const { form } = this.props;
+    const currentField = form.getFieldValue('currentField');
+    const currentLocale = form.getFieldValue('currentLocale');
+    const fields = form.getFieldsValue();
+    this.duplicatesCheck(currentLocale, currentField, value, callback);
+    if (fields[currentField]) {
+      const triggerValue = this.trimText(fields[currentField]);
+      if (triggerValue)
+        form.setFieldsValue({
+          [currentField]: triggerValue,
+        });
+    } else {
+      const trimNestedFieldsInFormData = name => {
+        if (fields[name]) {
+          form.setFieldsValue({
+            [name]: this.trimText(fields[name]),
+          });
+        }
+      };
+
+      const trimNestedFields = innerFields => {
+        each(innerFields, innerField => trimNestedFieldsInFormData(innerField));
+      };
+
+      switch (currentField) {
+        case objectFields.phone:
+          trimNestedFields(phoneFields);
+          break;
+        case objectFields.website:
+          trimNestedFields(websiteFields);
+          break;
+        case objectFields.address:
+          trimNestedFields(addressFields);
+          break;
+        case objectFields.map:
+          trimNestedFields(mapFields);
+          break;
+        default:
+          break;
+      }
     }
     callback();
   };
