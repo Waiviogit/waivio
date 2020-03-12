@@ -2,6 +2,7 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
@@ -50,7 +51,7 @@ const PostQuotation = ({
   intl,
 }) => {
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
-  const dailyChange = `${quote.dailyChange.toFixed(2)}%`;
+  const dailyChange = `${get(quote, ["dailyChange"], 0).toFixed(2)}%`;
   const classOfDailyChange = quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down';
   const classOfIndicator =
     quoteSettings.isSession || quote.isSession
@@ -119,30 +120,36 @@ const PostQuotation = ({
               </button>
             </div>
             <div className="st-post-quotation-footer">
-              <div
-                role="presentation"
+              <a
+                // role="presentation"
+                href="https://beaxy.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`st-post-action-block st-margin-right-small st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Sell', caller)}
+                // onClick={handleOpenDeal.bind(this, 'Sell', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}
                 </span>
                 <div>{quoteFormat(quote.bidPrice, quoteSettings)}</div>
-              </div>
-              <div
-                role="presentation"
+              </a>
+              <a
+                // role="presentation"
+                href="https://beaxy.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`st-post-action-block st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Buy', caller)}
+                // onClick={handleOpenDeal.bind(this, 'Buy', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}
                 </span>
                 <div>{quoteFormat(quote.askPrice, quoteSettings)}</div>
-              </div>
+              </a>
             </div>
           </div>
         </React.Fragment>

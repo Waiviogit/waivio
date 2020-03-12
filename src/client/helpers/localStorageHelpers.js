@@ -53,10 +53,9 @@ export const setLocale = locale => {
 
 // eslint-disable-next-line no-unused-vars
 export const setBxySessionData = ({ crmToken, umSession, sessionId, stompUser, stompPassword }) => {
-  // todo: use commented code to connect to platform
-  // store.set('token', crmToken);
+  store.set('token', crmToken);
   store.set('um_session', umSession);
   store.set('sid', sessionId);
-  // store.set('stompUser', stompUser);
-  // store.set('stompPassword', stompPassword);
+  store.set('stompUser', stompUser);
+  store.set('stompPassword', stompPassword);
 };

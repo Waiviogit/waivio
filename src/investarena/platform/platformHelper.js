@@ -484,9 +484,11 @@ export class PlatformHelper {
     }
     return false;
   }
+
   static countDecimals(value) {
-    if (Math.floor(value) === value) return 0;
-    return value.toString().split('.')[1].length || 0;
+    const parsedValue = exponentialToDecimal(value);
+    if (Math.floor(parsedValue) === Number(parsedValue)) return 0;
+    return parsedValue.toString().split('.')[1].length || 0;
   }
 }
 
@@ -507,4 +509,17 @@ export const getOS = () => {
   if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX';
   if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
   return OSName;
+};
+
+export const exponentialToDecimal = exponentialNumber => {
+  // sanity check - is it exponential number
+  const str = exponentialNumber.toString();
+  if (str.indexOf('e') !== -1) {
+    const exponent = parseInt(str.split('-')[1], 10);
+    const res = exponentialNumber.toFixed(exponent);
+    console.log('\texponentialToDecimal :: ', exponentialNumber, res);
+    return res;
+  }
+  console.log('\texponentialToDecimal : ', exponentialNumber);
+  return exponentialNumber.toString();
 };
