@@ -518,64 +518,66 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  duplicatesCheck = (currentLocale, currentField, value, callback) => {
-    const { intl, wObject } = this.props;
+  isDuplicate = (currentLocale, currentField, value) => {
+    const { wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
+    return filtered.map(f => f.body.toLowerCase()).includes(value);
+  };
+
+  validateFieldValue = (rule, value, callback) => {
+    const { intl, form } = this.props;
+    const currentField = form.getFieldValue('currentField');
+    const currentLocale = form.getFieldValue('currentLocale');
+    const isDuplicated = this.isDuplicate(currentLocale, currentField, value);
+    if (isDuplicated) {
       callback(
         intl.formatMessage({
           id: 'append_object_validation_msg',
           defaultMessage: 'The field with this value already exists',
         }),
       );
-    }
-  };
-
-  validateFieldValue = (rule, value, callback) => {
-    const { form } = this.props;
-    const currentField = form.getFieldValue('currentField');
-    const currentLocale = form.getFieldValue('currentLocale');
-    const fields = form.getFieldsValue();
-    this.duplicatesCheck(currentLocale, currentField, value, callback);
-    if (fields[currentField]) {
-      const triggerValue = this.trimText(fields[currentField]);
-      if (triggerValue)
-        form.setFieldsValue({
-          [currentField]: triggerValue,
-        });
     } else {
-      const trimNestedFieldsInFormData = name => {
-        if (fields[name]) {
+      const fields = form.getFieldsValue();
+      if (fields[currentField]) {
+        const triggerValue = this.trimText(fields[currentField]);
+        if (triggerValue)
           form.setFieldsValue({
-            [name]: this.trimText(fields[name]),
+            [currentField]: triggerValue,
           });
+      } else {
+        const trimNestedFieldsInFormData = name => {
+          if (fields[name]) {
+            form.setFieldsValue({
+              [name]: this.trimText(fields[name]),
+            });
+          }
+        };
+
+        const trimNestedFields = innerFields => {
+          each(innerFields, innerField => trimNestedFieldsInFormData(innerField));
+        };
+
+        switch (currentField) {
+          case objectFields.phone:
+            trimNestedFields(phoneFields);
+            break;
+          case objectFields.website:
+            trimNestedFields(websiteFields);
+            break;
+          case objectFields.address:
+            trimNestedFields(addressFields);
+            break;
+          case objectFields.map:
+            trimNestedFields(mapFields);
+            break;
+          default:
+            break;
         }
-      };
-
-      const trimNestedFields = innerFields => {
-        each(innerFields, innerField => trimNestedFieldsInFormData(innerField));
-      };
-
-      switch (currentField) {
-        case objectFields.phone:
-          trimNestedFields(phoneFields);
-          break;
-        case objectFields.website:
-          trimNestedFields(websiteFields);
-          break;
-        case objectFields.address:
-          trimNestedFields(addressFields);
-          break;
-        case objectFields.map:
-          trimNestedFields(mapFields);
-          break;
-        default:
-          break;
       }
+      callback();
     }
-    callback();
   };
 
   handleChangeSorting = sortedList => {
