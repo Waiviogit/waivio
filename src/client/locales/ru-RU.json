@@ -1048,5 +1048,11 @@
   "transaction_error_message_for_user": "Транзакция не удалась",
   "append_validate_message": "Рейтинг с таким названием уже существует в этой локали",
   "album_field_error": "Требуется имя альбома",
-  "append_black_list": "Вы попали в черный список и не можете вносить изменения в объект!"
+  "append_black_list": "Вы попали в черный список и не можете вносить изменения в объект!",
+  "upvoting_mana": "Сила лайка",
+  "downvoting_mana": "Сила дизлайка",
+  "resource_credits": "Ресурсы",
+  "active_info": "Активность",
+  "vote_price": "Цена голоса",
+  "steem_reputation": "Репутация"
 }
