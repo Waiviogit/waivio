@@ -1,4 +1,4 @@
-import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart } from 'lodash';
+import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart, isEqual } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -523,7 +523,34 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    return filtered.map(f => f.body.toLowerCase()).includes(value);
+    if (
+      currentField === objectFields.phone ||
+      currentField === objectFields.website ||
+      currentField === objectFields.address ||
+      currentField === objectFields.map
+    ) {
+      return filtered.some(f => isEqual(this.getCurrentFieldValue(), JSON.parse(f.body)));
+    }
+    return filtered.some(f => f.body.toLowerCase() === value);
+  };
+
+  getCurrentFieldValue = () => {
+    const { form } = this.props;
+    const filteredData = form.getFieldsValue();
+    const currentObj = {};
+
+    for (const key in filteredData) {
+      if (
+        key !== 'currentField' &&
+        key !== 'currentLocale' &&
+        key !== 'like' &&
+        key !== 'follow' &&
+        filteredData[key]
+      ) {
+        currentObj[key] = filteredData[key];
+      }
+    }
+    return currentObj;
   };
 
   validateFieldValue = (rule, value, callback) => {
@@ -531,6 +558,7 @@ export default class AppendForm extends Component {
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
     const isDuplicated = this.isDuplicate(currentLocale, currentField, value);
+
     if (isDuplicated) {
       callback(
         intl.formatMessage({
