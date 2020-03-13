@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
+import * as dsteem from 'dsteem';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { get } from 'lodash';
 import urlParse from 'url-parse';
@@ -11,8 +12,6 @@ import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
-import * as dsteem from 'dsteem';
-
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -110,15 +109,12 @@ class UserInfo extends React.Component {
               </div>
               <div>
                 <i className="hashtag text-icon">#</i>
-                <FormattedMessage
-                  id="steem_reputation"
-                  defaultMessage="Steem reputation"
-                />:
+                <FormattedMessage id="steem_reputation" defaultMessage="Steem reputation" />:
               </div>
               {!user.name.startsWith(GUEST_PREFIX) && (
                 <React.Fragment>
                   <div>
-                    <Icon type="like-o" className="text-icon"  />
+                    <Icon type="like-o" className="text-icon" />
                     <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
                     <FormattedNumber
                       style="percent" // eslint-disable-line react/style-prop-object
@@ -137,7 +133,10 @@ class UserInfo extends React.Component {
                   </div>
                   <div>
                     <i className="iconfont icon-flashlight text-icon" />
-                    <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />:{' '}
+                    <FormattedMessage
+                      id="resource_credits"
+                      defaultMessage="Resource credits"
+                    />:{' '}
                     <FormattedNumber
                       style="percent" // eslint-disable-line react/style-prop-object
                       value={calculateVotingPower(user)}
@@ -146,10 +145,7 @@ class UserInfo extends React.Component {
                   </div>
                   <div>
                     <i className="iconfont icon-time text-icon" />
-                    <FormattedMessage
-                      id="active_info"
-                      defaultMessage="Active"
-                    />: {lastActive}
+                    <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
                   </div>
                   <div>
                     <i className="iconfont icon-dollar text-icon" />
