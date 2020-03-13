@@ -62,9 +62,73 @@ class MapOS extends React.Component {
   }
 
   onBoundsChanged = ({ center, zoom }) => {
+    this.setRadius(zoom);
+    const {radius} = this.state;
+    console.log(radius);
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
+  };
+
+  setRadius = (zoom) => {
+    switch (zoom) {
+      case 18:
+        this.setState({radius: 70});
+        break;
+      case 17:
+        this.setState({radius: 140});
+        break;
+      case 16:
+        this.setState({radius: 290});
+        break;
+      case 15:
+        this.setState({radius: 560});
+        break;
+      case 14:
+        this.setState({radius: 1150});
+        break;
+      case 13:
+        this.setState({radius: 2300});
+        break;
+      case 12:
+        this.setState({radius: 4600});
+        break;
+      case 11:
+        this.setState({radius: 9400});
+        break;
+      case 10:
+        this.setState({radius: 18500});
+        break;
+      case 9:
+        this.setState({radius: 37000});
+        break;
+      case 8:
+        this.setState({radius: 72000});
+        break;
+      case 7:
+        this.setState({ radius: 145000 });
+        break;
+      case 6:
+        this.setState({radius: 300000});
+        break;
+      case 5:
+        this.setState({radius: 565000});
+        break;
+      case 4:
+        this.setState({radius: 1200000});
+        break;
+      case 3:
+        this.setState({radius: 2570000});
+        break;
+      case 2:
+        this.setState({radius: 6050000});
+        break;
+      case 1:
+        this.setState({radius: 950000000});
+        break;
+      default:
+        this.setState({radius: 72000})
+    }
   };
 
   getMarkers = props => {

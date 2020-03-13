@@ -32,6 +32,7 @@ class MapWrap extends React.Component {
   state = {
     center: [],
     zoom: 8,
+    radius: 72000,
   };
 
   getAreaSearchData = () => {
@@ -50,8 +51,10 @@ class MapWrap extends React.Component {
   getMapAreaData = _.debounce(
     (zoom, center) => {
       const { setMapArea } = this.props;
-      setMapArea({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
-    },200);
+      const { radius} = this.state;
+      console.log('getMapAreaData', radius);
+      setMapArea({ radius, coordinates: center });
+    }, 200);
 
   setArea = ({ center, zoom }) => {
     this.setState({ center, zoom });
