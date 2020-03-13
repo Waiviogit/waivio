@@ -30,6 +30,7 @@ function broadcast(operations, actionAuthor) {
 
 async function getUserAccount() {
   const userData = await getValidTokenData();
+  if (!userData) return null;
   const account = await waivioAPI.getUserAccount(userData.userData.name, true);
   return { account, name: account.name };
 }

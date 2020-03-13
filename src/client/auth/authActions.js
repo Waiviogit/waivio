@@ -36,58 +36,26 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = (oAuthToken = '', socialNetwork = '', regData = '') => async (
-  dispatch,
-  getState,
-  { steemConnectAPI, waivioAPI },
-) => {
-  // todo: call beaxy login
-  if (socialNetwork === 'beaxy')
-    return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
-  const state = getState();
-  let promise = Promise.resolve(null);
-
-  const isGuest = waivioAPI.isGuest;
-
-  if (getIsLoaded(state)) {
-    promise = Promise.resolve(null);
-  } else if (oAuthToken && socialNetwork) {
-    promise = new Promise(async (resolve, reject) => {
-      try {
-        const tokenData = await setToken(oAuthToken, socialNetwork, regData);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
-      } catch (e) {
-        dispatch(notify(e.error.details[0].message));
-        reject(e);
-      }
-    });
-  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
-    promise = Promise.reject(new Error('There is not accessToken present'));
-  } else if (isGuest || steemConnectAPI.options.accessToken) {
-    promise = new Promise(async (resolve, reject) => {
-      try {
-        const scUserData = await steemConnectAPI.me();
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
-      } catch (e) {
-        reject(e);
-      }
-    });
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+  if (waivioAPI.isGuest) {
+    waivioAPI.clearGuestData();
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-unused-expressions
+      window.FB && window.FB.logout();
+      // eslint-disable-next-line no-unused-expressions
+      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
+    }
+  } else {
+    steemConnectAPI.revokeToken();
+    steemConnectAPI.removeAccessToken();
+    Cookie.remove('access_token');
   }
-  return dispatch({
-    type: LOGIN,
-    payload: {
-      promise,
-    },
-    meta: {
-      refresh: getIsLoaded(state),
-    },
-  }).catch(e => {
-    console.warn(e);
-    dispatch(loginError());
-    return e;
+  busyAPI.close();
+  dispatch(disconnectBroker());
+  dispatch({
+    type: LOGOUT,
   });
+  dispatch(push('/'));
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
@@ -131,6 +99,61 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
   });
 };
 
+export const login = (oAuthToken = '', socialNetwork = '', regData = '') => async (
+  dispatch,
+  getState,
+  { steemConnectAPI, waivioAPI },
+) => {
+  // todo: call beaxy login
+  if (socialNetwork === 'beaxy')
+    return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
+  const state = getState();
+  let promise = Promise.resolve(null);
+
+  const isGuest = waivioAPI.isGuest;
+
+  if (getIsLoaded(state)) {
+    promise = Promise.resolve(null);
+  } else if (oAuthToken && socialNetwork) {
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const tokenData = await setToken(oAuthToken, socialNetwork, regData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+      } catch (e) {
+        dispatch(notify(e.error.details[0].message));
+        reject(e);
+      }
+    });
+  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
+    promise = Promise.reject(new Error('There is not accessToken present'));
+  } else if (isGuest || steemConnectAPI.options.accessToken) {
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const scUserData = await steemConnectAPI.me();
+        if (!scUserData) dispatch(logout());
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  return dispatch({
+    type: LOGIN,
+    payload: {
+      promise,
+    },
+    meta: {
+      refresh: getIsLoaded(state),
+    },
+  }).catch(e => {
+    console.warn(e);
+    dispatch(loginError());
+    return e;
+  });
+};
+
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
 
 export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
@@ -140,28 +163,6 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
       promise: steemConnectAPI.me(),
     },
   });
-
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
-  if (waivioAPI.isGuest) {
-    waivioAPI.clearGuestData();
-    if (window) {
-      // eslint-disable-next-line no-unused-expressions
-      window.FB && window.FB.logout();
-      // eslint-disable-next-line no-unused-expressions
-      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
-    }
-  } else {
-    steemConnectAPI.revokeToken();
-    steemConnectAPI.removeAccessToken();
-    Cookie.remove('access_token');
-  }
-  busyAPI.close();
-  // dispatch(disconnectBroker()); todo: now we do not connect any broker
-  dispatch({
-    type: LOGOUT,
-  });
-  dispatch(push('/'));
-};
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   let accessToken = Cookie.get('access_token');

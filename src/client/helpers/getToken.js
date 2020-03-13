@@ -27,6 +27,7 @@ export const getValidTokenData = async () => {
       );
       return userData;
     }
+    return null;
   }
   const name = Cookie.get('guestName');
   return { token, userData: { name } };
