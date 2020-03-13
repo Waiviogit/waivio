@@ -94,7 +94,7 @@ export const getUsersByObject = object =>
 
 export const getFeedContentByObject = (name, limit = 10, user_languages = ['en-US', 'ru-RU']) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
+    fetch(`${config.bxyApiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
@@ -138,7 +138,7 @@ export const getFeedContentWithForecastsByObject = (objectPermlink, skip, limit)
 
 export const getFeedContent = (sortBy, queryData) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.posts}`, {
+    fetch(`${config.bxyApiPrefix}${config.posts}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -153,7 +153,7 @@ export const getUserProfileBlog = (
   { startAuthor = '', startPermlink = '', limit = 10, skip },
 ) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
+    fetch(`${config.bxyApiPrefix}${config.user}/${userName}${config.blog}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
@@ -197,7 +197,7 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
+    fetch(`${config.bxyApiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
@@ -215,7 +215,7 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
 
 export const getContent = (author, permlink) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
+    fetch(`${config.bxyApiPrefix}${config.post}/${author}/${permlink}`, {
       headers,
       method: 'GET',
     })
