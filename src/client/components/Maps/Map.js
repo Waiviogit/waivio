@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import React from 'react';
+import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
@@ -43,6 +43,8 @@ class MapOS extends React.Component {
       radius: 90000,
     };
 
+    this.mapRef = createRef();
+
     this.onBoundsChanged = this.onBoundsChanged.bind(this);
     this.showUserPosition = this.showUserPosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
@@ -72,7 +74,12 @@ class MapOS extends React.Component {
   };
 
   setRadius = zoom => {
-    this.setState({ radius: getRadius(zoom) });
+    const { isFullscreenMode, width } = this.props;
+    if (!isFullscreenMode) {
+      this.setState({ radius: getRadius(zoom) });
+    }
+    this.setState({ radius: getRadius(zoom) * this.mapRef.current.state.width/width})
+
   };
 
   getMarkers = props => {
@@ -203,6 +210,7 @@ class MapOS extends React.Component {
           >
             <div className="MapOS__fullscreenContent">
               <Map
+                ref={this.mapRef}
                 onBoundsChanged={this.onBoundsChanged}
                 provider={mapProvider}
                 center={center}
@@ -242,6 +250,7 @@ MapOS.propTypes = {
   wobjects: PropTypes.array.isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
+  width: PropTypes.number,
   userLocation: PropTypes.shape(),
   customControl: PropTypes.node,
   usedLocale: PropTypes.string,

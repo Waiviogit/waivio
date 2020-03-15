@@ -99,6 +99,7 @@ class MapWrap extends React.Component {
           <MapOS
             wobjects={wobjects}
             heigth={268}
+            width={270}
             userLocation={userLocation}
             onMarkerClick={onMarkerClick}
             setArea={this.setArea}
