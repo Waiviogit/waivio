@@ -10,6 +10,7 @@ import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import { getRadius } from './mapHelper';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
@@ -20,6 +21,7 @@ const defaultCoords = {
   centerLat: 37.0902,
   centerLng: 95.0235,
 };
+
 @connect(
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
@@ -38,6 +40,7 @@ class MapOS extends React.Component {
       zoom: 8,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
+      radius: 90000,
     };
 
     this.onBoundsChanged = this.onBoundsChanged.bind(this);
@@ -48,115 +51,56 @@ class MapOS extends React.Component {
   }
 
   componentDidMount() {
-    const { zoom, center } = this.state;
-    const { getMapAreaData } = this.props;
-    getMapAreaData(zoom, center);
+    const { radius, center } = this.state;
+    const { setMapArea } = this.props;
+    setMapArea({ radius, coordinates: center });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { zoom, center } = this.state;
+    const { zoom, center, radius } = this.state;
     if (prevState.zoom !== zoom || !_.isEqual(prevState.center, center)) {
-      const { getMapAreaData } = this.props;
-      getMapAreaData(zoom, center);
+      const { setMapArea } = this.props;
+      setMapArea({ radius, coordinates: center });
     }
   }
 
   onBoundsChanged = ({ center, zoom }) => {
     this.setRadius(zoom);
-    const {radius} = this.state;
-    console.log(radius);
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
   };
 
-  setRadius = (zoom) => {
-    switch (zoom) {
-      case 18:
-        this.setState({radius: 70});
-        break;
-      case 17:
-        this.setState({radius: 140});
-        break;
-      case 16:
-        this.setState({radius: 290});
-        break;
-      case 15:
-        this.setState({radius: 560});
-        break;
-      case 14:
-        this.setState({radius: 1150});
-        break;
-      case 13:
-        this.setState({radius: 2300});
-        break;
-      case 12:
-        this.setState({radius: 4600});
-        break;
-      case 11:
-        this.setState({radius: 9400});
-        break;
-      case 10:
-        this.setState({radius: 18500});
-        break;
-      case 9:
-        this.setState({radius: 37000});
-        break;
-      case 8:
-        this.setState({radius: 72000});
-        break;
-      case 7:
-        this.setState({ radius: 145000 });
-        break;
-      case 6:
-        this.setState({radius: 300000});
-        break;
-      case 5:
-        this.setState({radius: 565000});
-        break;
-      case 4:
-        this.setState({radius: 1200000});
-        break;
-      case 3:
-        this.setState({radius: 2570000});
-        break;
-      case 2:
-        this.setState({radius: 6050000});
-        break;
-      case 1:
-        this.setState({radius: 950000000});
-        break;
-      default:
-        this.setState({radius: 72000})
-    }
+  setRadius = zoom => {
+    this.setState({ radius: getRadius(zoom) });
   };
 
   getMarkers = props => {
     const { wobjects } = this.props;
-    return (!_.isEmpty(wobjects)
+    return !_.isEmpty(wobjects)
       ? _.map(wobjects, wobject => {
-        const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-        const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-        const getMarkedWobject = (obj) => {
-          const fields = Object.keys(obj);
-          return fields.includes('campaigns');
-        };
-        const isMarked = getMarkedWobject(wobject);
-        return lat && lng ? (
-          <CustomMarker
-            key={`obj${wobject.author_permlink}`}
-            isMarked={isMarked}
-            anchor={[+lat, +lng]}
-            payload={wobject}
-            onMouseOver={this.handleMarkerClick}
-            onClick={() => {
-              props.onMarkerClick(wobject.author_permlink);
-            }}
-            onMouseOut={this.closeInfobox}
-          />
-        ) : null;
-      })
-      : null)
+          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+          const getMarkedWobject = obj => {
+            const fields = Object.keys(obj);
+            return fields.includes('campaigns');
+          };
+          const isMarked = getMarkedWobject(wobject);
+          return lat && lng ? (
+            <CustomMarker
+              key={`obj${wobject.author_permlink}`}
+              isMarked={isMarked}
+              anchor={[+lat, +lng]}
+              payload={wobject}
+              onMouseOver={this.handleMarkerClick}
+              onClick={() => {
+                props.onMarkerClick(wobject.author_permlink);
+              }}
+              onMouseOut={this.closeInfobox}
+            />
+          ) : null;
+        })
+      : null;
   };
 
   getOverlayLayout = () => {
@@ -200,9 +144,14 @@ class MapOS extends React.Component {
   };
 
   incrementZoom = () =>
-    this.state.zoom < 20 ? this.setState({ zoom: this.state.zoom + 1 }) : null;
+    this.state.zoom < 20
+      ? this.setState({ zoom: this.state.zoom + 1 }, () => this.setRadius(this.state.zoom))
+      : null;
 
-  decrementZoom = () => (this.state.zoom > 0 ? this.setState({ zoom: this.state.zoom - 1 }) : null);
+  decrementZoom = () =>
+    this.state.zoom > 0
+      ? this.setState({ zoom: this.state.zoom - 1 }, () => this.setRadius(this.state.zoom))
+      : null;
 
   toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
 
@@ -299,7 +248,7 @@ MapOS.propTypes = {
   onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,
-  getMapAreaData: PropTypes.func.isRequired,
+  setMapArea: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

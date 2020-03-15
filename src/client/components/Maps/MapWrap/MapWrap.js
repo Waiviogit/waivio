@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import _ from 'lodash';
 import MapOS from '../Map';
-import { calculateAreaRadius } from '../mapHelper';
+import { getRadius } from '../mapHelper';
 import Loading from '../../Icon/Loading';
 import './MapWrap.less';
 
@@ -44,17 +44,9 @@ class MapWrap extends React.Component {
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     } else {
-      getAreaSearchData({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
+      getAreaSearchData({ radius: getRadius(zoom), coordinates: center });
     }
   };
-
-  getMapAreaData = _.debounce(
-    (zoom, center) => {
-      const { setMapArea } = this.props;
-      const { radius} = this.state;
-      console.log('getMapAreaData', radius);
-      setMapArea({ radius, coordinates: center });
-    }, 200);
 
   setArea = ({ center, zoom }) => {
     this.setState({ center, zoom });
@@ -69,12 +61,12 @@ class MapWrap extends React.Component {
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     } else {
-      onCustomControlClick({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
+      onCustomControlClick({ radius: getRadius(zoom), coordinates: center });
     }
   };
 
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects, customControl } = this.props;
+    const { intl, userLocation, onMarkerClick, wobjects, customControl, setMapArea } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
@@ -112,7 +104,7 @@ class MapWrap extends React.Component {
             setArea={this.setArea}
             customControl={customControl}
             onCustomControlClick={this.handleCustomControlClick}
-            getMapAreaData={this.getMapAreaData}
+            setMapArea={setMapArea}
           />
         )}
       </div>
