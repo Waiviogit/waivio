@@ -147,12 +147,7 @@ export default class AppendForm extends Component {
         .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
         .then(res => {
           if (res.value.message) {
-            message.error(
-              this.props.intl.formatMessage({
-                defaultMessage: 'You are blacklisted and you cannot add appends!',
-                id: 'append_black_list',
-              }),
-            );
+            message.error(res.value.message);
           } else {
             if (data.votePower !== null) {
               if (objectFields.rating === formValues.currentField && formValues.rate) {
