@@ -37,6 +37,11 @@
   padding-bottom: @content-margin;
   word-break: break-word;
 
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
   &:last-child {
     padding: 0;
   }
@@ -123,6 +128,7 @@
   .price-field-view {
     display: flex;
     align-items: baseline;
+
     .field-icon {
       font-weight: 600;
       text-align: center;
@@ -135,6 +141,7 @@
       box-shadow: @text-color 0 0 2px;
       margin-right: 5px;
     }
+
     .price-value {
       white-space: pre-wrap;
     }
