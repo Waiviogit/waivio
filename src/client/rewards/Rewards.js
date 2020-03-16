@@ -11,7 +11,7 @@ import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getCryptosPriceHistory,
+  getCryptosPriceHistory, getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
 } from '../reducers';
@@ -35,7 +35,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import './Rewards.less';
-import {getObjectTypeMap} from "../objectTypes/objectTypeActions";
+import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
 
 @withRouter
 @injectIntl
@@ -46,6 +46,7 @@ import {getObjectTypeMap} from "../objectTypes/objectTypeActions";
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
+    wobjects: getFilteredObjectsMap(state),
   }),
   { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
 )
@@ -64,6 +65,7 @@ class Rewards extends React.Component {
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
+    wobjects: PropTypes.array,
   };
 
   static defaultProps = {
@@ -143,7 +145,7 @@ class Rewards extends React.Component {
   setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
 
   getRequiredObjects = () =>
-    map(this.state.propositions, proposition => proposition.required_object);
+    this.props.wobjects.filter(wobj => !isEmpty(wobj.map));
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
@@ -204,7 +206,7 @@ class Rewards extends React.Component {
     });
   };
 
-  setCoordinates = () => {
+  resetMapFilter = () => {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters } = this.state;
     this.setState({ loadingCampaigns: true });
@@ -218,9 +220,8 @@ class Rewards extends React.Component {
       sort,
       activeFilters,
     });
+    this.setState({ isSearchAreaFilter: false });
   };
-
-  resetMapFilter = () => this.setState({ isSearchAreaFilter: false });
 
   handleSortChange = sort => {
     const { radius, coordinates, activeFilters } = this.state;

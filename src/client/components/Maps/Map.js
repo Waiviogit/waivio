@@ -96,7 +96,7 @@ class MapOS extends React.Component {
           const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
           const getMarkedWobject = obj => {
             const fields = Object.keys(obj);
-            return fields.includes('campaigns' || '');
+            return fields.includes('campaigns');
           };
           const isMarked = getMarkedWobject(wobject);
           return lat && lng ? (
