@@ -2,7 +2,7 @@
 import { message } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
@@ -35,6 +35,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import './Rewards.less';
+import {getObjectTypeMap} from "../objectTypes/objectTypeActions";
 
 @withRouter
 @injectIntl
@@ -46,7 +47,7 @@ import './Rewards.less';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign },
+  { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
 )
 class Rewards extends React.Component {
   static propTypes = {
@@ -62,6 +63,7 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
+    getObjectTypeMap: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -137,6 +139,8 @@ class Rewards extends React.Component {
       this.props.history.push(`/rewards/all`);
     }
   }
+
+  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
 
   getRequiredObjects = () =>
     map(this.state.propositions, proposition => proposition.required_object);
@@ -506,6 +510,7 @@ class Rewards extends React.Component {
                 <div className="right">
                   {!isEmpty(this.props.userLocation) && !isCreate && (
                     <MapWrap
+                      setMapArea={this.setMapArea}
                       wobjects={this.getRequiredObjects()}
                       userLocation={this.props.userLocation}
                       onMarkerClick={this.goToCampaign}

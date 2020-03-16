@@ -18,7 +18,7 @@ class MapWrap extends React.Component {
     userLocation: PropTypes.shape().isRequired,
     customControl: PropTypes.node,
     onCustomControlClick: PropTypes.func,
-    setMapArea: PropTypes.func.isRequired,
+    setMapArea: PropTypes.func,
   };
 
   static defaultProps = {
@@ -67,6 +67,7 @@ class MapWrap extends React.Component {
 
   render() {
     const { intl, userLocation, onMarkerClick, wobjects, customControl, setMapArea } = this.props;
+    console.log(wobjects);
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">

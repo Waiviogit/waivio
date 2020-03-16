@@ -63,8 +63,7 @@ const objectType = (state = initialState, action) => {
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
       const { locale } = action.meta;
       const {
-        wobjects: relatedWobjects,
-        hasMore,
+        related_wobjects: relatedWobjects,
       } = action.payload;
       const filteredObjects = [
         ...relatedWobjects
@@ -78,7 +77,6 @@ const objectType = (state = initialState, action) => {
       return {
         ...state,
         mapWobjects: filteredObjects,
-        hasMore,
       };
     }
     case wobjTypeActions.UPDATE_ACTIVE_FILTERS:

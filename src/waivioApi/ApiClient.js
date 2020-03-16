@@ -441,18 +441,6 @@ export const getObjectType = (typeName, requestData) =>
       .catch(error => reject(error));
   });
 
-export const getObjectTypeMap = (requestData) =>
-    new Promise((resolve, reject) => {
-        fetch(`${config.apiPrefix}/wobject`, {
-            headers,
-            method: 'POST',
-            body: JSON.stringify(requestData),
-        })
-            .then(res => res.json())
-            .then(data => resolve(data))
-            .catch(error => reject(error));
-    });
-
 export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesLimit = 5) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {

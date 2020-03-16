@@ -89,13 +89,14 @@ class MapOS extends React.Component {
 
   getMarkers = props => {
     const { wobjects } = this.props;
+    console.log(wobjects);
     return !_.isEmpty(wobjects)
       ? _.map(wobjects, wobject => {
           const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
           const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
           const getMarkedWobject = obj => {
             const fields = Object.keys(obj);
-            return fields.includes('campaigns');
+            return fields.includes('campaigns' || '');
           };
           const isMarked = getMarkedWobject(wobject);
           return lat && lng ? (
