@@ -3,7 +3,7 @@
   "app": "Investarena.com",
   "version": "2.0.0",
   "production": {
-    "apiPrefix": "https://investarena.com/",
+    "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
@@ -31,7 +31,7 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "staging": {
-    "apiPrefix": "https://investarena.waiviodev.com/",
+    "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
@@ -58,7 +58,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://investarena.waiviodev.com/",
+    "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",

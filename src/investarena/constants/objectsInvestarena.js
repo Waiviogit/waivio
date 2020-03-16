@@ -4,11 +4,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 export const CHART_ID = 'chartid';
 
 export const supportedObjectTypes = [
-  OBJ_TYPE.CRYPTO,
-  OBJ_TYPE.CURRENCIES,
-  OBJ_TYPE.COMMODITY,
-  OBJ_TYPE.STOCKS,
-  OBJ_TYPE.INDICES,
+  OBJ_TYPE.CRYPTOPAIRS,
 ];
 export const supportedObjectFields = [
   objectFields.button,

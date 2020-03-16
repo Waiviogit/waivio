@@ -844,6 +844,7 @@
   "modalAssets.stocks": "Акции",
   "modalAssets.indices": "Индексы",
   "modalAssets.cryptocurrencies": "Криптовалюты",
+  "modalAssets.cryptopairs": "Криптопары",
   "sidebar.nav.assets": "Инструменты",
   "sidebar.nav.deals": "Сделки",
   "deals.closeAll": "Закрыть сделку",

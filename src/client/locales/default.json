@@ -473,6 +473,7 @@
   "assets.trend": "Trend",
   "charts.noData": "No data",
   "modalAssets.cryptocurrencies": "Cryptocurrencies",
+  "modalAssets.cryptopairs": "Cryptopairs",
   "wia.cryptos": "Cryptos",
   "modalAssets.indices": "Indices",
   "modalAssets.stocks": "Stocks",

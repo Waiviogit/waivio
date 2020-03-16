@@ -4,7 +4,7 @@
     "": "www.waivio.com",
     "host": "waiviodev.com",
     "": "localhost:8093",
-    "appName": "investarena"
+    "appName": "crypto-investarena"
   },
   "test": {
     "protocol": "https://",
@@ -14,14 +14,15 @@
   "staging": {
     "protocol": "https://",
     "host": "waiviodev.com",
-    "appName": "investarena"
+    "appName": "crypto-investarena"
   },
   "production": {
     "protocol": "https://",
     "host": "www.waivio.com",
-    "appName": "investarena"
+    "appName": "crypto-investarena"
   },
   "apiPrefix": "/api",
+  "bxyApiPrefix": "waivio-posts",
   "objectsBotApiPrefix": "/objects-bot",
   "campaignApiPrefix": "/campaigns-api",
   "objectsBot": {
