@@ -1047,6 +1047,7 @@
   "transaction_message_for_user": "Ваша транзакция в пути!",
   "transaction_error_message_for_user": "Транзакция не удалась",
   "append_validate_message": "Рейтинг с таким названием уже существует в этой локали",
+  "append_validate_common_message": "Значение уже существует",
   "album_field_error": "Требуется имя альбома",
   "steem_accounts": "STEEM АККАУНТ",
   "sing_in_modal_message": "Waivio работает на Steem с открытым социальным блокчейном",

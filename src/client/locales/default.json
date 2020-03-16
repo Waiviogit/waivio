@@ -1045,6 +1045,7 @@
   "transaction_message_for_user": "Your transaction is on the way!",
   "transaction_error_message_for_user": "Transaction failed",
   "append_validate_message": "The rating with such name already exist in this locale",
+  "append_validate_common_message": "The value is already exist",
   "album_field_error": "Album name is required",
   "steem_accounts": "STEEM ACCOUNTS",
   "sing_in_modal_message": "Waivio is powered by Steem open social blockchain",

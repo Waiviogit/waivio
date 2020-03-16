@@ -473,7 +473,12 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          // this.props.onError();
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'The value is already exist',
+            }),
+          );
         } else {
           this.onSubmit(values);
         }
@@ -527,7 +532,9 @@ export default class AppendForm extends Component {
       currentField === objectFields.phone ||
       currentField === objectFields.website ||
       currentField === objectFields.address ||
-      currentField === objectFields.map
+      currentField === objectFields.map ||
+      currentField === objectFields.status ||
+      currentField === objectFields.button
     ) {
       return filtered.some(f => isEqual(this.getCurrentFieldValue(), JSON.parse(f.body)));
     }
@@ -1450,6 +1457,7 @@ export default class AppendForm extends Component {
         </div>
         <Form.Item>
           {getFieldDecorator('currentLocale', {
+            rules: this.getFieldRules('currentLocale'),
             initialValue: chosenLocale || usedLocale,
           })(
             <Select
