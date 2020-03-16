@@ -16,7 +16,7 @@ import {
   getAuthenticatedUserName,
 } from '../reducers';
 import {
-  getObjectTypeByStateFilters,
+  getObjectType,
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
@@ -59,7 +59,7 @@ const SORT_OPTIONS = {
   }),
   {
     dispatchClearObjectTypeStore: clearType,
-    dispatchGetObjectType: getObjectTypeByStateFilters,
+    dispatchGetObjectType: getObjectType,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,

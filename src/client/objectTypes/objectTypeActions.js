@@ -26,43 +26,16 @@ export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
-export const getObjectType = (objectTypeName, actionType, filters, { limit = 30, skip = 0 } = { }) => (
+export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, skip: 0 }) => (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const usedLocale = getSuitableLanguage(state);
-  const sort = getObjectTypeSorting(state);
-
-  const preparedData = {
-    wobjects_count: limit,
-    wobjects_skip: skip,
-    filter: filters,
-    sort,
-  };
-  if (username) preparedData.userName = username;
-  dispatch({
-    type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData),
-    meta: {
-      locale: usedLocale,
-    },
-  });
-};
-
-export const getObjectTypeMap = ( map = {}) => (dispatch, getState) => {
-  const filters = {rating: [], map};
-  const typeName = getTypeName(getState());
-  const actionType = GET_OBJECT_TYPE_MAP.ACTION;
-  return dispatch(getObjectType(typeName, actionType, filters, { limit: 150, skip: 0 }));
-};
-
-export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 30 } = {}) => (dispatch, getState) => {
-  const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
-  const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
+  const searchString = new URLSearchParams(getQueryString(state)).get('search');
 
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
@@ -75,8 +48,42 @@ export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 30 } =
   if (searchString) {
     activeFilters.searchString = searchString;
   }
-  const actionType = GET_OBJECT_TYPE.ACTION;
-  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip }));
+  const preparedData = {
+    wobjects_count: limit,
+    wobjects_skip: skip,
+    filter: activeFilters,
+    sort,
+  };
+  if (username) preparedData.userName = username;
+  dispatch({
+    type: GET_OBJECT_TYPE.ACTION,
+    payload: ApiClient.getObjectType(typeName, preparedData),
+    meta: {
+      locale: usedLocale,
+    },
+  });
+};
+
+export const getObjectTypeMap = (map = {}, { limit = 150, skip = 0 } = { limit: 150, skip: 0 }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const usedLocale = getSuitableLanguage(state);
+  const typeName = getTypeName(getState());
+  const preparedData = {
+    limit,
+    skip,
+    map,
+    object_types: [typeName],
+  };
+  dispatch({
+    type: GET_OBJECT_TYPE_MAP.ACTION,
+    payload: ApiClient.getObjectTypeMap(preparedData),
+    meta: {
+      locale: usedLocale,
+    },
+  });
 };
 
 export const clearType = () => dispatch => {
@@ -95,7 +102,7 @@ export const setActiveFilters = filters => dispatch => {
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    if (typeName) dispatch(getObjectType(typeName));
   });
 };
 
@@ -110,6 +117,6 @@ export const changeSorting = sorting => dispatch => {
 export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    if (typeName) dispatch(getObjectType(typeName));
   });
 };
