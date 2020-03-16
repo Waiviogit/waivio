@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import * as dsteem from 'dsteem';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { get } from 'lodash';
 import urlParse from 'url-parse';
 import { getUser, getRewardFund, getRate } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
-import { calculateVotingPower } from '../../vendor/steemitHelpers';
+import { calculateDownVote, calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { calcReputation, dSteem } from '../../dsteem';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -26,16 +26,20 @@ class UserInfo extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
   };
+  state = {
+    rc_percentage: 0,
+    downVoting: 0,
+  };
 
   render() {
     const { intl, user, rewardFund, rate } = this.props;
-
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
     let lastActive;
+
     if (user && user.json_metadata && user.json_metadata !== '') {
       lastActive = intl.formatRelative(Date.parse(user.updatedAt));
 
@@ -57,6 +61,14 @@ class UserInfo extends React.Component {
       }
     }
 
+    if (user.name && !this.state.rc_percentage) {
+      dSteem.rc.getRCMana(user.name).then(res => {
+        this.setState({
+          rc_percentage: res.percentage,
+        });
+      });
+    }
+
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
       website = `http://${website}`;
     }
@@ -71,8 +83,8 @@ class UserInfo extends React.Component {
       user && rewardFund.recent_claims && rewardFund.reward_balance && rate
         ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
         : 0;
-    const client = new dsteem.Client('https://api.steemit.com');
-    console.log(client.rc.getRCMana(user.name));
+    const rc = this.state.rc_percentage / 100;
+
     return (
       <div className="UserInfo">
         {user.name && (
@@ -93,73 +105,67 @@ class UserInfo extends React.Component {
                   </a>
                 </div>
               )}
-              <div>
-                <Icon type="calendar" className="text-icon" />
-                <FormattedMessage
-                  id="joined_date"
-                  defaultMessage="Joined {date}"
-                  values={{
-                    date: intl.formatDate(user.created || user.createdAt, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    }),
-                  }}
-                />
-              </div>
-              <div>
-                <i className="hashtag text-icon">#</i>
-                <FormattedMessage id="steem_reputation" defaultMessage="Steem reputation" />:
-              </div>
-              {!user.name.startsWith(GUEST_PREFIX) && (
-                <React.Fragment>
-                  <div>
-                    <Icon type="like-o" className="text-icon" />
-                    <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
-                    <FormattedNumber
-                      style="percent" // eslint-disable-line react/style-prop-object
-                      value={calculateVotingPower(user)}
-                      maximumFractionDigits={0}
-                    />
-                  </div>
-                  <div>
-                    <Icon type="dislike-o" className="text-icon" />
-                    <FormattedMessage id="downvoting_mana" defaultMessage="Downvoting mana" />:{' '}
-                    <FormattedNumber
-                      style="percent" // eslint-disable-line react/style-prop-object
-                      value={calculateVotingPower(user)}
-                      maximumFractionDigits={0}
-                    />
-                  </div>
-                  <div>
-                    <i className="iconfont icon-flashlight text-icon" />
-                    <FormattedMessage
-                      id="resource_credits"
-                      defaultMessage="Resource credits"
-                    />:{' '}
-                    <FormattedNumber
-                      style="percent" // eslint-disable-line react/style-prop-object
-                      value={calculateVotingPower(user)}
-                      maximumFractionDigits={0}
-                    />
-                  </div>
-                  <div>
-                    <i className="iconfont icon-time text-icon" />
-                    <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
-                  </div>
-                  <div>
-                    <i className="iconfont icon-dollar text-icon" />
-                    <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                    {isNaN(voteWorth) ? (
-                      <Icon type="loading" className="text-icon-right" />
-                    ) : (
-                      <USDDisplay value={voteWorth} />
-                    )}
-                  </div>
-                </React.Fragment>
-              )}
+              <div className="UserInfo__list">
+                <div>
+                  <Icon type="calendar" className="text-icon" />
+                  <FormattedMessage
+                    id="joined_date"
+                    defaultMessage="Joined: {date}"
+                    values={{
+                      date: intl.formatDate(user.created || user.createdAt, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      }),
+                    }}
+                  />
+                </div>
+                <div>
+                  <i className="hashtag text-icon">#</i>
+                  <FormattedMessage id="steem_reputation" defaultMessage="Steem reputation" />:{' '}
+                  {calcReputation(user.reputation)}
+                </div>
+                {!user.name.startsWith(GUEST_PREFIX) && (
+                  <React.Fragment>
+                    <div>
+                      <Icon type="like-o" className="text-icon" />
+                      <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
+                      <FormattedNumber
+                        style="percent" // eslint-disable-line react/style-prop-object
+                        value={calculateVotingPower(user)}
+                        maximumFractionDigits={0}
+                      />
+                    </div>
+                    <div>
+                      <Icon type="dislike-o" className="text-icon" />
+                      <FormattedMessage
+                        id="downvoting_mana"
+                        defaultMessage="Downvoting mana"
+                      />: <span>{calculateDownVote(user)}%</span>
+                    </div>
+                    <div>
+                      <i className="iconfont icon-flashlight text-icon" />
+                      <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
+                      <span>: {rc}%</span>
+                    </div>
+                    <div>
+                      <i className="iconfont icon-time text-icon" />
+                      <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+                    </div>
+                    <div>
+                      <i className="iconfont icon-dollar text-icon" />
+                      <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                      {isNaN(voteWorth) ? (
+                        <Icon type="loading" className="text-icon-right" />
+                      ) : (
+                        <USDDisplay value={voteWorth} />
+                      )}
+                    </div>
+                  </React.Fragment>
+                )}
 
-              <SocialLinks profile={profile} />
+                <SocialLinks profile={profile} />
+              </div>
             </div>
           </div>
         )}

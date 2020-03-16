@@ -60,7 +60,7 @@
   "comments": "Comments",
   "comments_count": "{count} comments",
   "comment_count": "{count} comment",
-  "joined_date": "Joined {date}",
+  "joined_date": "Joined: {date}",
   "follow": "Follow",
   "unfollow": "Unfollow",
   "following": "Following",
