@@ -32,7 +32,6 @@ class UserInfo extends React.Component {
   };
   state = {
     rc_percentage: 0,
-    downVoting: 0,
   };
 
   render() {
