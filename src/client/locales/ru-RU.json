@@ -864,7 +864,6 @@
   "link_error_empty": "Пожалуйста, введите URL",
   "image_modal_add": "Добавить",
   "image_modal_cancel": "Oтмена",
-  "broker_modal_broker_settings": "Настройки брокера",
   "modalBroker.tab.connect": "Подключить брокера",
   "modalBroker.tab.create": "Создать аккаунт",
   "modalBroker.connectTo": "Подключиться к:",

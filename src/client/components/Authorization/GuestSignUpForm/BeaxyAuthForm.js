@@ -8,7 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import { beaxyLogin } from '../../../auth/authActions';
 import { beaxy2FALogin, beaxyLoginByCredentials } from '../../../../waivioApi/ApiClient';
 
-const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
+const BeaxyAuthForm = ({ form, firstLoginResponse, btnText }) => {
   const dispatch = useDispatch();
   const { getFieldDecorator, getFieldsError, validateFields } = form;
 
@@ -75,6 +75,9 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 
   return (
     <React.Fragment>
+      <div className="bxy-sing-in-form__logo">
+        <img src="/images/investarena/beaxy-caption-logo.svg" alt="Beaxy" className="icon-beaxy" />
+      </div>
       <div className="auth-form-error-msg">
         {Boolean(authError) && (
           <FormattedMessage id={`authForm_${authError}`} defaultMessage="Login error" />
@@ -157,12 +160,13 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 
         <Form.Item>
           <Button
+            block
             type="primary"
             htmlType="submit"
             loading={isLoading}
             disabled={hasErrors(getFieldsError())}
           >
-            <FormattedMessage id="login" defaultMessage="Log in" />
+            {btnText || <FormattedMessage id="login" defaultMessage="Log in" />}
           </Button>
         </Form.Item>
       </Form>
@@ -173,6 +177,11 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 BeaxyAuthForm.propTypes = {
   firstLoginResponse: PropTypes.func.isRequired,
   form: PropTypes.shape().isRequired,
+  btnText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+};
+
+BeaxyAuthForm.defaultProps = {
+  btnText: '',
 };
 
 export default Form.create({ name: 'username' })(BeaxyAuthForm);

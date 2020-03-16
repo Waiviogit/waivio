@@ -4,6 +4,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import ModalBrokerTab from '../ModalBroker/ModalBrokerTab';
 import './ModalBroker.less';
+import BrokerAuthorization from './BrokerAuthorization';
 
 const propTypes = {
   forgotPassBroker: PropTypes.func.isRequired,
@@ -18,24 +19,22 @@ const propTypes = {
 
 const ModalBroker = props => (
   <Modal
-    title={props.intl.formatMessage({
-      id: 'broker_modal_broker_settings',
-      defaultMessage: 'Broker Settings',
-    })}
+    title={null}
     visible={props.isOpen}
     footer={null}
     onCancel={props.toggleModal}
-    style={{ maxWidth: '600px' }}
-    width={null}
+    width={416}
   >
-    <ModalBrokerTab
-      isLoading={props.isLoading}
+    <BrokerAuthorization
       platformName={props.platformName}
-      forgotPassBroker={props.forgotPassBroker}
-      registerBroker={props.registerBroker}
+      // email={this.state.email}
+      isLoading={props.isLoading}
+      // forgotPassBroker={this.props.forgotPassBroker}
       authorizeBroker={props.authorizeBroker}
       disconnectBroker={props.disconnectBroker}
       toggleModal={props.toggleModal}
+      // changeEmail={this.changeEmail}
+      brokerConnected={props.platformName !== 'widgets'}
     />
   </Modal>
 );
