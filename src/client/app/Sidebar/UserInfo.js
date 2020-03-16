@@ -7,11 +7,15 @@ import { get } from 'lodash';
 import urlParse from 'url-parse';
 import { getUser, getRewardFund, getRate } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
-import { calculateDownVote, calculateVotingPower } from '../../vendor/steemitHelpers';
+import {
+  calculateDownVote,
+  calculateVotingPower,
+  calcReputation,
+  dSteem,
+} from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
-import { calcReputation, dSteem } from '../../dsteem';
 
 @injectIntl
 @connect((state, ownProps) => ({

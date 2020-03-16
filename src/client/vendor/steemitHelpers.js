@@ -2,9 +2,11 @@ import base58 from 'bs58';
 import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
+import * as steem from 'steem';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
+import * as dsteem from '../dsteem';
 
 const dmp = new diff_match_patch();
 /**
@@ -270,3 +272,7 @@ export const roundNumberToThousands = number => {
   }
   return number;
 };
+
+export const dSteem = new dsteem.Client('https://api.steemit.com');
+
+export const calcReputation = rep => steem.formatter.reputation(rep);
