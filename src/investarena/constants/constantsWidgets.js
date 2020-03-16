@@ -24,5 +24,5 @@ export const quoteIdForWidget = {
   ZECBTC: '7',
   WAVESBTC: '6',
   BTCUSDC: '22',
-  MTLBTC: '20'
+  MTLBTC: '20',
 };
