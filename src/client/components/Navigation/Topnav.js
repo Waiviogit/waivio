@@ -104,6 +104,7 @@ class Topnav extends React.Component {
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
+    platformName: PropTypes.string.isRequired,
     screenSize: PropTypes.string,
     toggleModal: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
@@ -854,6 +855,7 @@ class Topnav extends React.Component {
       screenSize,
       openChat,
       messagesCount,
+      platformName,
     } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -981,7 +983,9 @@ class Topnav extends React.Component {
 
             <div className="Topnav__broker">
               <div className="st-header-broker-balance-pl-wrap">
-                <Button type="primary" onClick={this.toggleModalBroker}>
+                <Button
+                  type={platformName === 'widgets' ? "dashed" : "primary"}
+                  onClick={this.toggleModalBroker}>
                   {intl.formatMessage({
                     id: 'headerAuthorized.connectToBroker',
                     defaultMessage: 'Connect to broker',

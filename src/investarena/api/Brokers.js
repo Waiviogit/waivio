@@ -7,26 +7,27 @@ export default class Brokers extends Base {
   getBroker() {
     return this.apiClient
       .get(`${config.brokers.getBroker}${localStorage.getItem('broker_id')}`, {}, {})
-      .then(response => {
-        return {
+      .then(response => ({
           headers: response.headers,
           data: getBrokerFormatter(response.data.broker),
           error: response.error,
-        };
-      });
+        }));
   }
   getBrokers() {
-    return this.apiClient.get(config.brokers.userBrokers, {}, {}).then(response => {
-      return {
+    return this.apiClient.get(config.brokers.userBrokers, {}, {}).then(response => ({
         headers: response.headers,
         data: getBrokersFormatter(response.data.brokers),
         error: response.error,
-      };
-    });
+      }));
   }
   authorizeBroker(data) {
     return this.apiClient.post(config.brokers.brokerAuthorization, data).then(response => {
       let status = 'error';
+      let code = null;
+      let payload = null;
+      if (response.error) {
+        throw new Error(response.error.toString());
+      }
       if (response.data) {
         switch (response.data.code) {
           case 1:
@@ -37,6 +38,11 @@ export default class Brokers extends Base {
           case 2:
             // message = locale.messages['brokerAction.authorizeBrokerErrorCredentials'];
             break;
+          case 321:
+            status = 'TWO_FA_VERIFICATION_NEEDED';
+            code = response.data.code;
+            payload = response.data.payload;
+            break;
           default:
             // message = locale.messages['brokerAction.authorizeBrokerError'];
             break;
@@ -44,6 +50,8 @@ export default class Brokers extends Base {
       }
       return {
         headers: response.headers,
+        code,
+        payload,
         status,
         message: '',
         error: response.error,

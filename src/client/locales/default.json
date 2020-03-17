@@ -1119,6 +1119,7 @@
   "transfer_success_for_guest": "Your transaction is on the way!",
   "authForm_validation_email_required": "Please input your E-mail",
   "authForm_validation_password_required": "Please input your password",
+  "authForm_validation_two_FA_code_required": "Please input verification code",
   "authForm_two_FA_code": "Authentication code",
   "authForm_invalid_credentials": "Incorrect login or password",
   "authForm_two_FA_error": "Code is not match",

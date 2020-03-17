@@ -76,6 +76,7 @@ const request = ({ url, method, data, params = {} }) =>
       // if (xhr.response && xhr.response.headers) {
       //     updateHeaders(xhr.response.headers);
       // }
+      debugger;
       const response = { error: {} };
       response.error.statusCode = (xhr && xhr.response && xhr.response.status) || 500;
       response.error.status = 'error';
@@ -86,13 +87,14 @@ const request = ({ url, method, data, params = {} }) =>
           if (errors && errors.full_messages) {
             result = errors.full_messages.toString();
           } else if (errors) {
-            result = errors.toString();
+            result = errors.message || errors.toString();
           }
         } else {
           result = xhr.message;
         }
         return result;
       };
+      response.error.message = response.error.toString();
       return response;
     },
   );

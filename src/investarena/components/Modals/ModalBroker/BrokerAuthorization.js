@@ -2,12 +2,11 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
-import { Select, Button, Form, Input, Checkbox, Icon } from 'antd';
-import BeaxyAuthForm from '../../../../client/components/Authorization/GuestSignUpForm/BeaxyAuthForm';
-import { optionsPlatform } from '../../../constants/selectData';
+import BeaxyAuthForm from '../../../../client/components/Authorization/BeaxyAuthForm/BeaxyAuthForm';
+import api from '../../../../investarena/configApi/apiResources';
+import { initBrokerConnection } from "../../../redux/actions/brokersActions";
 
 const propTypes = {
-  form: PropTypes.shape().isRequired,
   isLoading: PropTypes.bool.isRequired,
   platformName: PropTypes.string,
   email: PropTypes.string,
@@ -19,22 +18,36 @@ const propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-
 class BrokerAuthorization extends Component {
+
   state = {
     checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
   };
-  connectBroker = event => {
-    event.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.props.changeEmail(values.email);
-        this.props.authorizeBroker(values);
+
+  connectBroker = (user, password) => {
+    return api.brokers.authorizeBroker({
+      platform: 'beaxy',
+      authBy: 'credentials',
+      authData: {
+        user,
+        password
       }
     });
   };
+
+  broker2FAVerification (user, token2fa, code) {
+    return api.brokers.authorizeBroker({
+      platform: 'beaxy',
+      authBy: '2fa',
+      authData: {
+        token2fa,
+        code,
+      }
+    });
+  }
+
+  handleAuthSuccess = () => initBrokerConnection({ platform: 'beaxy' } );
+
   disconnectBroker = event => {
     event.preventDefault();
     this.props.disconnectBroker();
@@ -47,6 +60,8 @@ class BrokerAuthorization extends Component {
     return (
       <React.Fragment>
         <BeaxyAuthForm
+          authRequest={this.connectBroker}
+          auth2FARequest={this.broker2FAVerification}
           btnText={
             <span>
               {this.props.intl.formatMessage({
@@ -55,8 +70,8 @@ class BrokerAuthorization extends Component {
               })}
             </span>
           }
-          form={this.props.form}
           firstLoginResponse={res => console.log('\tonFirstLoginResponse ', res)}
+          onAuthSuccessAction={this.handleAuthSuccess}
         />
       </React.Fragment>
     );
@@ -65,4 +80,4 @@ class BrokerAuthorization extends Component {
 
 BrokerAuthorization.propTypes = propTypes;
 
-export default injectIntl(Form.create()(BrokerAuthorization));
+export default injectIntl(BrokerAuthorization);
