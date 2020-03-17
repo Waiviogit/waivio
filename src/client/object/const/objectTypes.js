@@ -4,8 +4,4 @@ export default {
   HASHTAG: 'hashtag',
   CRYPTO: 'crypto',
   CRYPTOPAIRS: 'cryptopairs',
-  CURRENCIES: 'currencies',
-  COMMODITY: 'commodity',
-  STOCKS: 'stocks',
-  INDICES: 'indices',
 };

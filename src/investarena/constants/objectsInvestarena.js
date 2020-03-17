@@ -54,6 +54,9 @@ export const discoverObjectsContentTypes = {
   commodity: {
     intl: { id: 'wia.commodities', defaultMessage: 'Commodities' },
   },
+  cryptopairs: {
+    intl: { id: 'wia.cryptopairs', defaultMessage: 'Crypto pairs' },
+  },
   crypto: {
     intl: { id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' },
   },

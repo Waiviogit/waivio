@@ -1,9 +1,7 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import { Select, Button, Form, Input, Checkbox, Icon } from 'antd';
-import { optionsPlatform } from '../../../constants/selectData';
 
 const propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -59,7 +57,7 @@ class BrokerAuthorization extends Component {
         {getFieldDecorator('platform', {
           initialValue: this.props.brokerConnected
             ? this.props.platformName
-            : null || optionsPlatform[0].value,
+            : null,
         })(
           <Select
             style={{ width: '100%' }}
@@ -69,11 +67,6 @@ class BrokerAuthorization extends Component {
             })}
             disabled={this.props.brokerConnected}
           >
-            {_.map(optionsPlatform, option => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
           </Select>,
         )}
         {!this.props.brokerConnected ? (
