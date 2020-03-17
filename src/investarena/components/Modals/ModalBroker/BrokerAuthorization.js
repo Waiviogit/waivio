@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import BeaxyAuthForm from '../../../../client/components/Authorization/BeaxyAuthForm/BeaxyAuthForm';
 import api from '../../../../investarena/configApi/apiResources';
-import { initBrokerConnection } from "../../../redux/actions/brokersActions";
+import { initBrokerConnection } from '../../../redux/actions/brokersActions';
 
 const propTypes = {
   // isLoading: PropTypes.bool.isRequired,
@@ -15,32 +15,32 @@ const propTypes = {
 };
 
 class BrokerAuthorization extends Component {
-
   state = {
     checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
   };
 
-  connectBroker = (user, password) => api.brokers.authorizeBroker({
+  connectBroker = (user, password) =>
+    api.brokers.authorizeBroker({
       platform: 'beaxy',
       authBy: 'credentials',
       authData: {
         user,
-        password
-      }
+        password,
+      },
     });
 
-  broker2FAVerification (user, token2fa, code) {
+  broker2FAVerification(user, token2fa, code) {
     return api.brokers.authorizeBroker({
       platform: 'beaxy',
       authBy: '2fa',
       authData: {
         token2fa,
         code,
-      }
+      },
     });
   }
 
-  handleAuthSuccess = () => initBrokerConnection({ platform: 'beaxy' } );
+  handleAuthSuccess = () => initBrokerConnection({ platform: 'beaxy' });
 
   disconnectBroker = () => {
     this.props.disconnectBroker();
@@ -65,7 +65,12 @@ class BrokerAuthorization extends Component {
               })}
             </span>
           }
-          firstLoginResponse={res => console.log("\tonFirstLoginResponse - we shouldn't see this message in the console", res)}
+          firstLoginResponse={res =>
+            console.log(
+              "\tonFirstLoginResponse - we shouldn't see this message in the console",
+              res,
+            )
+          }
           onAuthSuccessAction={this.handleAuthSuccess}
         />
       </React.Fragment>

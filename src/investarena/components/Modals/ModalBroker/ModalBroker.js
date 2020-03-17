@@ -15,7 +15,14 @@ const propTypes = {
 };
 
 const ModalBroker = props => (
-  <Modal title={null} visible={props.isOpen} footer={null} onCancel={props.toggleModal} width={416} destroyOnClose>
+  <Modal
+    title={null}
+    visible={props.isOpen}
+    footer={null}
+    onCancel={props.toggleModal}
+    width={416}
+    destroyOnClose
+  >
     <BrokerAuthorization
       // platformName={props.platformName}
       // isLoading={props.isLoading}

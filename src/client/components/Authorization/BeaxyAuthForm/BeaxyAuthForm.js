@@ -47,10 +47,7 @@ const BeaxyAuthForm = ({
                 });
               } else {
                 dispatch(
-                  onAuthSuccessAction(
-                    { user, token, expiration },
-                    { ...payload, umSession },
-                  ),
+                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
                 );
               }
               setAuthError(null);
@@ -70,10 +67,7 @@ const BeaxyAuthForm = ({
               res => {
                 const { payload, user, token, expiration, umSession } = res;
                 dispatch(
-                  onAuthSuccessAction(
-                    { user, token, expiration },
-                    { ...payload, umSession },
-                  ),
+                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
                 );
               },
               error => {

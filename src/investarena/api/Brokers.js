@@ -8,17 +8,17 @@ export default class Brokers extends Base {
     return this.apiClient
       .get(`${config.brokers.getBroker}${localStorage.getItem('broker_id')}`, {}, {})
       .then(response => ({
-          headers: response.headers,
-          data: getBrokerFormatter(response.data.broker),
-          error: response.error,
-        }));
+        headers: response.headers,
+        data: getBrokerFormatter(response.data.broker),
+        error: response.error,
+      }));
   }
   getBrokers() {
     return this.apiClient.get(config.brokers.userBrokers, {}, {}).then(response => ({
-        headers: response.headers,
-        data: getBrokersFormatter(response.data.brokers),
-        error: response.error,
-      }));
+      headers: response.headers,
+      data: getBrokersFormatter(response.data.brokers),
+      error: response.error,
+    }));
   }
   authorizeBroker(data) {
     return this.apiClient.post(config.brokers.brokerAuthorization, data).then(response => {

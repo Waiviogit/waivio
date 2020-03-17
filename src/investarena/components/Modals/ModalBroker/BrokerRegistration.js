@@ -400,27 +400,27 @@ class BrokerRegistration extends Component {
       <React.Fragment>
         <Form onSubmit={this.handleSubmit}>
           {/*{stepNumber === 1 ? (*/}
-            {/*this.firstStepRenderer()*/}
+          {/*this.firstStepRenderer()*/}
           {/*) : stepNumber === 2 ? (*/}
-            {/*this.secondStepRenderer()*/}
+          {/*this.secondStepRenderer()*/}
           {/*) : stepNumber === 3 ? (*/}
-            {/*<React.Fragment>*/}
-              {/*{this.thirdStepRenderer()}*/}
-              {/*<FormItem {...this.tailFormItemLayout}>*/}
-                {/*<Button*/}
-                  {/*className="w-100"*/}
-                  {/*type="primary"*/}
-                  {/*htmlType="submit"*/}
-                  {/*disabled={!this.state.isAgreementRead}*/}
-                  {/*loading={this.props.isLoading}*/}
-                {/*>*/}
-                  {/*{this.props.intl.formatMessage({*/}
-                    {/*id: 'broker_modal_register',*/}
-                    {/*defaultMessage: 'Register',*/}
-                  {/*})}*/}
-                {/*</Button>*/}
-              {/*</FormItem>*/}
-            {/*</React.Fragment>*/}
+          {/*<React.Fragment>*/}
+          {/*{this.thirdStepRenderer()}*/}
+          {/*<FormItem {...this.tailFormItemLayout}>*/}
+          {/*<Button*/}
+          {/*className="w-100"*/}
+          {/*type="primary"*/}
+          {/*htmlType="submit"*/}
+          {/*disabled={!this.state.isAgreementRead}*/}
+          {/*loading={this.props.isLoading}*/}
+          {/*>*/}
+          {/*{this.props.intl.formatMessage({*/}
+          {/*id: 'broker_modal_register',*/}
+          {/*defaultMessage: 'Register',*/}
+          {/*})}*/}
+          {/*</Button>*/}
+          {/*</FormItem>*/}
+          {/*</React.Fragment>*/}
           {/*) : null}*/}
         </Form>
         <div className="BrokerRegistration__buttons">

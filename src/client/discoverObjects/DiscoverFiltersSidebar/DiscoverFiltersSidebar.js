@@ -5,9 +5,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
-import {
-  getAvailableFilters,
-} from '../../reducers';
+import { getAvailableFilters } from '../../reducers';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
 
