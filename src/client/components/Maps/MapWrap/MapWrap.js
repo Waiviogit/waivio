@@ -67,7 +67,6 @@ class MapWrap extends React.Component {
 
   render() {
     const { intl, userLocation, onMarkerClick, wobjects, customControl, setMapArea } = this.props;
-    console.log(wobjects);
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">

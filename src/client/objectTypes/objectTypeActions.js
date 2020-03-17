@@ -53,9 +53,9 @@ export const getObjectType = (objectTypeName, actionType, filters, { limit = 30,
 
 export const getObjectTypeMap = ( map = {}) => (dispatch, getState) => {
   const filters = {rating: [], map};
-  const typeName = 'restaurant';
+  const typeName = getTypeName(getState());
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
-  return dispatch(getObjectType(typeName, actionType, filters, { limit: 200, skip: 0 }));
+  return dispatch(getObjectType(typeName, actionType, filters, { limit: 400, skip: 0 }));
 };
 
 export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 30 } = {}) => (dispatch, getState) => {

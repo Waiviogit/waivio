@@ -89,16 +89,11 @@ class MapOS extends React.Component {
 
   getMarkers = props => {
     const { wobjects } = this.props;
-    console.log(wobjects);
     return !_.isEmpty(wobjects)
       ? _.map(wobjects, wobject => {
           const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
           const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-          const getMarkedWobject = obj => {
-            const fields = Object.keys(obj);
-            return fields.includes('campaigns');
-          };
-          const isMarked = getMarkedWobject(wobject);
+          const isMarked = Boolean(wobject && wobject.campaigns);
           return lat && lng ? (
             <CustomMarker
               key={`obj${wobject.author_permlink}`}

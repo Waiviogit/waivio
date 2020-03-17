@@ -145,7 +145,9 @@ class Rewards extends React.Component {
   setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
 
   getRequiredObjects = () =>
-    this.props.wobjects.filter(wobj => !isEmpty(wobj.map));
+    this.state.propositions
+      .filter(proposition => proposition.required_object)
+      .map(proposition => ({ ...proposition.required_object, campaigns: {}})); // for rendering wobjects with campaigns
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
