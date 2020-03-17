@@ -981,18 +981,21 @@ class Topnav extends React.Component {
           <div className="Topnav__right-bottom">
             {this.content()}
 
-            <div className="Topnav__broker">
-              <div className="st-header-broker-balance-pl-wrap">
-                <Button
-                  type={platformName === 'widgets' ? "dashed" : "primary"}
-                  onClick={this.toggleModalBroker}>
-                  {intl.formatMessage({
-                    id: 'headerAuthorized.connectToBroker',
-                    defaultMessage: 'Connect to broker',
-                  })}
-                </Button>
+            {isAuthenticated && (
+              <div className="Topnav__broker">
+                <div className="st-header-broker-balance-pl-wrap">
+                  <Button
+                    type={platformName === 'widgets' ? 'dashed' : 'primary'}
+                    onClick={this.toggleModalBroker}
+                  >
+                    {intl.formatMessage({
+                      id: 'headerAuthorized.connectToBroker',
+                      defaultMessage: 'Connect to broker',
+                    })}
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
