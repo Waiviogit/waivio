@@ -523,7 +523,12 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField, value) => {
+  isDuplicate = (currentLocale, currentField) => {
+    console.log('this.props.form.setFieldsValue: ', this.props.form.setFieldsValue);
+    const currentValue = Object.values(this.getCurrentFieldValue())
+      .toString()
+      .toLowerCase();
+
     const { wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
@@ -536,9 +541,11 @@ export default class AppendForm extends Component {
       currentField === objectFields.status ||
       currentField === objectFields.button
     ) {
-      return filtered.some(f => isEqual(this.getCurrentFieldValue(), JSON.parse(f.body)));
+      return filtered.some(
+        f => isEqual(this.getCurrentFieldValue(), JSON.parse(f.body)) && f.locale === currentLocale,
+      );
     }
-    return filtered.some(f => f.body.toLowerCase() === value);
+    return filtered.some(f => f.body.toLowerCase() === currentValue);
   };
 
   getCurrentFieldValue = () => {
@@ -548,8 +555,8 @@ export default class AppendForm extends Component {
 
     for (const key in filteredData) {
       if (
-        key !== 'currentField' &&
         key !== 'currentLocale' &&
+        key !== 'currentField' &&
         key !== 'like' &&
         key !== 'follow' &&
         filteredData[key]
@@ -564,7 +571,8 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const isDuplicated = this.isDuplicate(currentLocale, currentField, value);
+    const isDuplicated = this.isDuplicate(currentLocale, currentField);
+    console.log('rule: ', rule.field);
 
     if (isDuplicated) {
       callback(
@@ -606,6 +614,12 @@ export default class AppendForm extends Component {
             break;
           case objectFields.map:
             trimNestedFields(mapFields);
+            break;
+          case objectFields.button:
+            trimNestedFields(buttonFields);
+            break;
+          case objectFields.status:
+            trimNestedFields(statusFields);
             break;
           default:
             break;
