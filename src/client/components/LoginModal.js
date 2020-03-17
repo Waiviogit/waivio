@@ -175,7 +175,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
             className="ModalSignUp__social-btn"
           />
           <FacebookLogin
-            appId="754038848413420"
+            appId="249047489455025"
             autoLoad={false}
             fields="name,email,picture"
             callback={responseFacebook}

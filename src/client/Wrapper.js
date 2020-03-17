@@ -257,7 +257,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.history.push(`/@${this.props.username}`);
         break;
       case 'discover-objects':
-        this.props.history.push(`/discover-objects/crypto`);
+        this.props.history.push(`/discover-objects/cryptopairs`);
         break;
       case 'about':
         this.props.history.push(`/object/qjr-investarena-q-and-a/list`);
