@@ -9,7 +9,7 @@ import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import {
   authorizeBroker,
   authorizeBrokerSuccess,
-  disconnectBroker
+  disconnectBroker,
 } from '../../investarena/redux/actions/brokersActions';
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
@@ -107,7 +107,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           bxySessionData,
         );
         if (typeof localStorage !== 'undefined') {
-          dispatch(authorizeBroker({ platform : 'beaxy' }));
+          dispatch(authorizeBroker({ platform: 'beaxy' }));
         }
 
         resolve({

@@ -24,6 +24,7 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
+  getPlatformName,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -31,6 +32,7 @@ import {
   getUserAccountHistory,
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
+import { getCrossStatistics } from '../../investarena/redux/actions/platformActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 
 @withRouter
@@ -57,12 +59,14 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
+    platformName: getPlatformName(state),
   }),
   {
     getGlobalProperties,
     getUserAccountHistory,
     getMoreUserAccountHistory,
     getAccount,
+    getCrossStatistics,
   },
 )
 class Wallet extends Component {
@@ -102,10 +106,15 @@ class Wallet extends Component {
       user,
       isCurrentUser,
       authenticatedUserName,
+      platformName,
     } = this.props;
     const username = isCurrentUser
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+
+    if (platformName === 'beaxy') {
+      this.props.getCrossStatistics();
+    }
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();

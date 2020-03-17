@@ -16,6 +16,7 @@ import {
   UPDATE_USER_ACCOUNT_CURRENCY,
   UPDATE_USER_ACCOUNTS,
   UPDATE_USER_STATISTICS,
+  GET_USER_SETTINGS,
 } from '../actions/platformActions';
 // import { SIGN_OUT_SUCCESS } from '../actions/authenticate/authenticate';
 
@@ -25,6 +26,7 @@ const initialState = {
   platformName: 'widgets',
   userStatistics: {},
   userSettings: {},
+  accountsMap: {},
   isLoading: false,
   accountCurrency: 'USD',
   currentAccountName: '',
@@ -59,6 +61,8 @@ export default function(state = initialState, action) {
       };
     case UPDATE_USER_STATISTICS:
       return { ...state, userStatistics: action.payload };
+    case GET_USER_SETTINGS:
+      return { ...state, accountsMap: action.payload };
     case UPDATE_USER_ACCOUNT_CURRENCY:
       return { ...state, accountCurrency: action.payload };
     case UPDATE_USER_ACCOUNTS:
@@ -83,3 +87,6 @@ export default function(state = initialState, action) {
       return state;
   }
 }
+
+export const getPlatformName = state => state.platformName;
+export const getAccountsMap = state => state.accountsMap;

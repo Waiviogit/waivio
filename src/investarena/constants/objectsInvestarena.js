@@ -3,9 +3,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 
 export const CHART_ID = 'chartid';
 
-export const supportedObjectTypes = [
-  OBJ_TYPE.CRYPTOPAIRS,
-];
+export const supportedObjectTypes = [OBJ_TYPE.CRYPTOPAIRS];
 export const supportedObjectFields = [
   objectFields.button,
   objectFields.name,

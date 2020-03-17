@@ -11,6 +11,7 @@ import {
   updateUserAccountCurrency,
   updateUserAccounts,
   updateUserStatistics,
+  getUserSettings,
 } from '../redux/actions/platformActions';
 import {
   getOpenDealsSuccess,
@@ -176,6 +177,10 @@ export default class Umarkets {
 
   getUserRates() {
     this.sendRequestToPlatform(CMD.getUserRates, '[]');
+  }
+
+  getCrossStatistics() {
+    this.sendRequestToPlatform(CMD.getCrossStatistics, '[]');
   }
 
   // getOpenDeals() {
@@ -382,6 +387,7 @@ export default class Umarkets {
     const content = result.content;
     const quotesSettings = content.securitySettings;
     const tradingSessions = content.tradingSessions;
+    this.dispatch(getUserSettings(content.accountsMap));
     this.userSettings = content;
     const sortedQuotesSettings = {};
     const currentTime = Date.now();
