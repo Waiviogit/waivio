@@ -86,7 +86,7 @@ export default class Umarkets {
     this.platformName = Cookies.get('platformName');
     this.websocket = this.createSockJS();
     this.stompClient = Stomp.over(this.websocket);
-    this.stompClient.debug = msg => console.log('\tstomp client > ', msg);
+    this.stompClient.debug = () => {};
     this.stompClient.heartbeat.outgoing = 2000;
     this.stompClient.heartbeat.incoming = 0;
     this.stompClient.connect(

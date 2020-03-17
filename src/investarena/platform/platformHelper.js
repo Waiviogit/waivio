@@ -516,10 +516,7 @@ export const exponentialToDecimal = exponentialNumber => {
   const str = exponentialNumber.toString();
   if (str.indexOf('e') !== -1) {
     const exponent = parseInt(str.split('-')[1], 10);
-    const res = exponentialNumber.toFixed(exponent);
-    console.log('\texponentialToDecimal :: ', exponentialNumber, res);
-    return res;
+    return exponentialNumber.toFixed(exponent);
   }
-  console.log('\texponentialToDecimal : ', exponentialNumber);
   return exponentialNumber.toString();
 };
