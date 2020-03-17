@@ -523,3 +523,17 @@ export const exponentialToDecimal = exponentialNumber => {
   console.log('\texponentialToDecimal : ', exponentialNumber);
   return exponentialNumber.toString();
 };
+
+export function fillUserStatistics(userStats, userStatistics) {
+  if (!userStats || !Object.keys(userStats).length) {
+    return userStatistics;
+  }
+  const { accountId } = userStats;
+  const accountStatistics = { ...userStatistics[accountId], ...userStats };
+  delete accountStatistics.accountId;
+
+  return {
+    ...userStatistics,
+    [accountId]: accountStatistics,
+  };
+}
