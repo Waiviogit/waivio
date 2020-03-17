@@ -1,12 +1,12 @@
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Icon } from 'antd';
 import quoteData from '../../../default/quoteData';
 import { quoteFormat } from '../../../platform/parsingPrice';
 import quoteSettingsData from '../../../default/quoteSettingsData';
 import withTrade from '../../HOC/withTrade';
 import './TradeButtons.less';
+import DailyChange from "../../DailyChange/DailyChange";
 
 const propTypes = {
   quoteSettings: PropTypes.object,
@@ -41,16 +41,7 @@ const TradeButtons = props => {
         className="stl-trade-buttons-wrap"
       >
         <div className="st-trade-buttons-footer">
-          <span className={`TradeButtons__quote ${quote.dailyChange >= 0 ? 'long' : 'short'}`}>
-            {`${quote.dailyChange.toFixed(2)}%`}
-          </span>
-          <span className="TradeButtons__arrow">
-            {quote.dailyChange >= 0 ? (
-              <Icon type="arrow-up" className="long" />
-            ) : (
-              <Icon type="arrow-down" className="short" />
-            )}
-          </span>
+          <DailyChange quote={quote}/>
           <div
             className={`st-trade-buttons-action-block st-quote-down`}
             onClick={props.handleClickOpenDeal.bind(this, 'Sell', 'od-dp')}
