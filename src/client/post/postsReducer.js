@@ -150,6 +150,9 @@ const posts = (state = initialState, action) => {
           [key]: {
             ...state.list[key],
             ...action.payload,
+            reblogged_by: state.list[key].reblogged_by.length
+              ? state.list[key].reblogged_by
+              : action.payload.reblogged_by,
             author,
             id: key,
           },
@@ -182,6 +185,40 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
+    case postsActions.LIKE_POST_SUCCESS: {
+      const matchPosts = Object.values(state.list).filter(
+        post => post.permlink === action.payload.permlink,
+      );
+      const changePosts = matchPosts.reduce((acc, p) => {
+        let key;
+
+        if (p.reblogged_by.length) {
+          key = `${action.payload.author}/${action.payload.permlink}/${p.reblogged_by}`;
+        } else {
+          key = `${action.payload.author}/${action.payload.permlink}`;
+        }
+
+        acc[key] = {
+          ...p,
+          active_votes: [
+            ...p.active_votes,
+            {
+              voter: action.payload.voter,
+            },
+          ],
+        };
+
+        return acc;
+      }, {});
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          ...changePosts,
+        },
+      };
+    }
     case postsActions.LIKE_POST_ERROR:
       return {
         ...state,
@@ -285,6 +322,36 @@ const posts = (state = initialState, action) => {
             ...matchPost,
             loading: false,
           },
+        },
+      };
+    }
+    case postsActions.REBLOGGED_POST: {
+      const matchPosts = Object.values(state.list).filter(
+        post => post.permlink === action.payload.permlink,
+      );
+      const changePosts = matchPosts.reduce((acc, p) => {
+        let key;
+
+        if (p.reblogged_by.length) {
+          key = `${action.payload.author}/${action.payload.permlink}/${p.reblogged_by}`;
+        } else {
+          key = `${action.payload.author}/${action.payload.permlink}`;
+        }
+
+        acc[key] = {
+          ...p,
+          reblogged_by: [],
+          reblogged_users: [...p.reblogged_users, action.payload.rebloger],
+        };
+
+        return acc;
+      }, {});
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          ...changePosts,
         },
       };
     }
