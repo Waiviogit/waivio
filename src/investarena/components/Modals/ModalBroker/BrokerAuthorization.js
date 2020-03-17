@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
@@ -7,14 +6,11 @@ import api from '../../../../investarena/configApi/apiResources';
 import { initBrokerConnection } from "../../../redux/actions/brokersActions";
 
 const propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  platformName: PropTypes.string,
-  email: PropTypes.string,
-  forgotPassBroker: PropTypes.func.isRequired,
-  authorizeBroker: PropTypes.func.isRequired,
+  // isLoading: PropTypes.bool.isRequired,
+  // platformName: PropTypes.string,
+  // authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
-  changeEmail: PropTypes.func.isRequired,
-  brokerConnected: PropTypes.bool.isRequired,
+  // brokerConnected: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 
@@ -24,8 +20,7 @@ class BrokerAuthorization extends Component {
     checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
   };
 
-  connectBroker = (user, password) => {
-    return api.brokers.authorizeBroker({
+  connectBroker = (user, password) => api.brokers.authorizeBroker({
       platform: 'beaxy',
       authBy: 'credentials',
       authData: {
@@ -33,7 +28,6 @@ class BrokerAuthorization extends Component {
         password
       }
     });
-  };
 
   broker2FAVerification (user, token2fa, code) {
     return api.brokers.authorizeBroker({
@@ -48,14 +42,15 @@ class BrokerAuthorization extends Component {
 
   handleAuthSuccess = () => initBrokerConnection({ platform: 'beaxy' } );
 
-  disconnectBroker = event => {
-    event.preventDefault();
+  disconnectBroker = () => {
     this.props.disconnectBroker();
   };
+
   handleOneClickTrading = e => {
     localStorage.setItem('isOneClickTrade', e.target.checked);
     this.setState({ checked: e.target.checked });
   };
+
   render() {
     return (
       <React.Fragment>
@@ -70,7 +65,7 @@ class BrokerAuthorization extends Component {
               })}
             </span>
           }
-          firstLoginResponse={res => console.log('\tonFirstLoginResponse ', res)}
+          firstLoginResponse={res => console.log("\tonFirstLoginResponse - we shouldn't see this message in the console", res)}
           onAuthSuccessAction={this.handleAuthSuccess}
         />
       </React.Fragment>

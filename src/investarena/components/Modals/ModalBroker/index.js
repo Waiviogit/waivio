@@ -16,8 +16,6 @@ import ModalBroker from './ModalBroker';
 import { toggleModal } from '../../../redux/actions/modalsActions';
 
 const propTypes = {
-  forgotPassBroker: PropTypes.func.isRequired,
-  registerBroker: PropTypes.func.isRequired,
   authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,

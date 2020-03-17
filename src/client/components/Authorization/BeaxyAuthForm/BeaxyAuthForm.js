@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -100,6 +100,7 @@ const BeaxyAuthForm = ({
         )}
       </div>
       <Form
+        form={form}
         className="bxy-sing-in-form"
         layout="vertical"
         style={{ width: '100%' }}
