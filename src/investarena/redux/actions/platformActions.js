@@ -16,6 +16,7 @@ export const GET_USER_SETTINGS = 'GET_USER_SETTINGS';
 export const GET_CROSS_STATISTICS = 'GET_CROSS_STATISTICS';
 export const GET_ACCOUNT_STATISTICS_MAP = 'GET_ACCOUNT_STATISTICS_MAP';
 export const GET_CURRENCY_SETTINGS = 'GET_CURRENCY_SETTINGS';
+export const UPDATE_USER_WALLET = 'UPDATE_USER_WALLET';
 
 const localStorageData = [
   'sid',
@@ -111,6 +112,9 @@ export function connectPlatformSuccess(platformName) {
 
 export function updateUserStatistics(balance) {
   return { type: UPDATE_USER_STATISTICS, payload: balance };
+}
+export function updateUserWallet() {
+  return { type: UPDATE_USER_WALLET };
 }
 export function updateUserAccountCurrency(currency) {
   return { type: UPDATE_USER_ACCOUNT_CURRENCY, payload: currency };

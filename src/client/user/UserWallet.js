@@ -25,6 +25,9 @@ import {
   getUsersAccountHistoryLoading,
   getUsersTransactions,
   getPlatformName,
+  getAccountsMap,
+  getCurrencySettings,
+  getUserStatistics,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -32,8 +35,8 @@ import {
   getUserAccountHistory,
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
-import { getCrossStatistics } from '../../investarena/redux/actions/platformActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+import { getHoldingsByAccounts } from './usersHelper';
 
 @withRouter
 @connect(
@@ -66,7 +69,6 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     getUserAccountHistory,
     getMoreUserAccountHistory,
     getAccount,
-    getCrossStatistics,
   },
 )
 class Wallet extends Component {
@@ -90,12 +92,16 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
+    // TODO: need on next task
+    // platformName: PropTypes.string,
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
     guestBalance: null,
+    // TODO: need on next task
+    // platformName:'',
   };
 
   componentDidMount() {
@@ -106,15 +112,10 @@ class Wallet extends Component {
       user,
       isCurrentUser,
       authenticatedUserName,
-      platformName,
     } = this.props;
     const username = isCurrentUser
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
-
-    if (platformName === 'beaxy') {
-      this.props.getCrossStatistics();
-    }
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();

@@ -537,3 +537,38 @@ export function fillUserStatistics(userStats, userStatistics) {
     [accountId]: accountStatistics,
   };
 }
+
+export const getHolding = (accountId, userStatistics, currencySetting) => {
+  const { name, currency } = currencySetting;
+  const holding = {
+    id: accountId,
+    name,
+    balance: 0,
+    currency,
+    logoName: currency,
+  };
+
+  if (!userStatistics || !userStatistics[accountId]) {
+    return holding;
+  }
+
+  const accountStatistics = userStatistics[accountId];
+  const { balance } = accountStatistics;
+
+  return {
+    ...holding,
+    balance,
+  };
+};
+
+export const getHoldingByAccount = (account, userStatistics, currencySettings) => {
+  const { id: accountId, currency } = account;
+
+  return getHolding(accountId, userStatistics, currencySettings[currency]);
+};
+
+export const getHoldingsByAccounts = (accountsMap, userStatistics, currencySettings) => {
+  return Object.keys(accountsMap).map(accountId => {
+    return getHoldingByAccount(accountsMap[accountId], userStatistics, currencySettings);
+  });
+};

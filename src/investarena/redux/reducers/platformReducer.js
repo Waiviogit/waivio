@@ -19,8 +19,9 @@ import {
   GET_USER_SETTINGS,
   GET_ACCOUNT_STATISTICS_MAP,
   GET_CURRENCY_SETTINGS,
+  UPDATE_USER_WALLET,
 } from '../actions/platformActions';
-import { fillUserStatistics } from '../../platform/platformHelper';
+import { fillUserStatistics, getHoldingsByAccounts } from '../../platform/platformHelper';
 // import { SIGN_OUT_SUCCESS } from '../actions/authenticate/authenticate';
 
 const initialState = {
@@ -66,6 +67,16 @@ export default function(state = initialState, action) {
       };
     case UPDATE_USER_STATISTICS:
       return { ...state, userStatistics: fillUserStatistics(action.payload, state.userStatistics) };
+    case UPDATE_USER_WALLET: {
+      return {
+        ...state,
+        userWallet: getHoldingsByAccounts(
+          state.accountsMap,
+          state.userStatistics,
+          state.currencySettings,
+        ),
+      };
+    }
     case GET_USER_SETTINGS:
       return { ...state, accountsMap: action.payload };
     case GET_CURRENCY_SETTINGS:
@@ -99,3 +110,5 @@ export default function(state = initialState, action) {
 
 export const getPlatformName = state => state.platformName;
 export const getAccountsMap = state => state.accountsMap;
+export const getCurrencySettings = state => state.currencySettings;
+export const getUserStatistics = state => state.userStatistics;

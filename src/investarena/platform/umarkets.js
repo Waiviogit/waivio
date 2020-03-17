@@ -14,6 +14,7 @@ import {
   getUserSettings,
   getAccountStatisticsMap,
   getCurrencySettings,
+  updateUserWallet,
 } from '../redux/actions/platformActions';
 import {
   getOpenDealsSuccess,
@@ -541,6 +542,7 @@ export default class Umarkets {
       unrealizedPnl: content.unrealizedPnl,
     };
     this.dispatch(updateUserStatistics(this.userStatistics));
+    this.dispatch(updateUserWallet());
   }
 
   parseOpenMarketOrderResult(result) {

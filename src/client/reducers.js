@@ -262,3 +262,5 @@ export const getForecastData = state => fromForecastReducer.getForecastData(stat
 
 export const getPlatformName = state => fromPlatformReducer.getPlatformName(state.platform);
 export const getAccountsMap = state => fromPlatformReducer.getAccountsMap(state.platform);
+export const getCurrencySettings = state => fromPlatformReducer.getCurrencySettings(state.platform);
+export const getUserStatistics = state => fromPlatformReducer.getUserStatistics(state.platform);
