@@ -2,7 +2,7 @@
 import { message } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
@@ -11,7 +11,8 @@ import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getCryptosPriceHistory, getFilteredObjectsMap,
+  getCryptosPriceHistory,
+  getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
 } from '../reducers';
@@ -147,7 +148,7 @@ class Rewards extends React.Component {
   getRequiredObjects = () =>
     this.state.propositions
       .filter(proposition => proposition.required_object)
-      .map(proposition => ({ ...proposition.required_object, campaigns: {}})); // for rendering wobjects with campaigns
+      .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // for rendering wobjects with campaigns
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
