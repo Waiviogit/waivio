@@ -14,6 +14,7 @@ export const UPDATE_USER_ACCOUNT_CURRENCY = 'UPDATE_USER_ACCOUNT_CURRENCY';
 export const UPDATE_USER_ACCOUNTS = 'UPDATE_USER_ACCOUNTS';
 export const GET_USER_SETTINGS = 'GET_USER_SETTINGS';
 export const GET_CROSS_STATISTICS = 'GET_CROSS_STATISTICS';
+export const GET_ACCOUNT_STATISTICS_MAP = 'GET_ACCOUNT_STATISTICS_MAP';
 
 const localStorageData = [
   'sid',
@@ -65,6 +66,10 @@ export function authorizeToken(token) {
 
 export function getUserSettings(data) {
   return { type: GET_USER_SETTINGS, payload: data };
+}
+
+export function getAccountStatisticsMap(data) {
+  return { type: GET_ACCOUNT_STATISTICS_MAP, payload: data };
 }
 
 export function checkAccountId() {

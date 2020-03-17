@@ -12,6 +12,7 @@ import {
   updateUserAccounts,
   updateUserStatistics,
   getUserSettings,
+  getAccountStatisticsMap,
 } from '../redux/actions/platformActions';
 import {
   getOpenDealsSuccess,
@@ -291,6 +292,9 @@ export default class Umarkets {
         case CMD.getUserAccount:
           this.parseUserAccount(result);
           break;
+        case CMD.getCrossStatistics:
+          this.parseCrossStatistics(result);
+          break;
         // *** UNSUPPORTED_COMMAND ***
         // case CMD.getOpenDeals:
         //   this.parseOpenDeals(result);
@@ -381,6 +385,11 @@ export default class Umarkets {
     if (newPrice !== oldPrice) {
       this.statesQuotes[security] = newPrice > oldPrice ? 'up' : 'down';
     }
+  }
+
+  parseCrossStatistics(result) {
+    const content = result.content.accountsAssetStatisticsMap;
+    this.dispatch(getAccountStatisticsMap(content));
   }
 
   parseUserSettings(result) {
