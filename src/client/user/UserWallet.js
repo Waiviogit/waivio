@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { get, isEmpty, isNull } from 'lodash';
+import { get, isEmpty, isNull, sortBy } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
 import { SBD, STEEM } from '../../common/constants/cryptos';
@@ -25,9 +25,8 @@ import {
   getUsersAccountHistoryLoading,
   getUsersTransactions,
   getPlatformName,
-  getAccountsMap,
-  getCurrencySettings,
-  getUserStatistics, getBeaxyWallet,
+  getBeaxyWallet,
+  getCurrenciesDescriptions,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -36,7 +35,7 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
-import { getHoldingsByAccounts } from './usersHelper';
+import { getHoldingsWithLogo } from './usersHelper';
 
 @withRouter
 @connect(
@@ -64,6 +63,7 @@ import { getHoldingsByAccounts } from './usersHelper';
     guestBalance: getGuestUserBalance(state),
     platformName: getPlatformName(state),
     beaxyBalance: getBeaxyWallet(state),
+    currenciesDescriptions: getCurrenciesDescriptions(state),
   }),
   {
     getGlobalProperties,
@@ -95,6 +95,7 @@ class Wallet extends Component {
     guestBalance: PropTypes.number,
     platformName: PropTypes.string,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
+    currenciesDescriptions: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -103,6 +104,11 @@ class Wallet extends Component {
     guestBalance: null,
     platformName: '',
     beaxyBalance: [],
+    currenciesDescriptions: {},
+  };
+
+  state = {
+    isShowMoreBeaxy: false,
   };
 
   componentDidMount() {
@@ -131,6 +137,21 @@ class Wallet extends Component {
     }
   }
 
+  getBeaxyBalanceWithLogo = () => {
+    const { currenciesDescriptions, beaxyBalance } = this.props;
+    const { isShowMoreBeaxy } = this.state;
+    const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
+    if (!isShowMoreBeaxy) {
+      const validCurrencies = sortedBalance.filter(item => item.balance > 0);
+      return getHoldingsWithLogo(validCurrencies, currenciesDescriptions);
+    }
+    return getHoldingsWithLogo(sortedBalance, currenciesDescriptions);
+  };
+
+  showMoreToggler = () => {
+    this.setState({ isShowMoreBeaxy: !this.state.isShowMoreBeaxy });
+  };
+
   render() {
     const {
       user,
@@ -145,8 +166,9 @@ class Wallet extends Component {
       cryptosPriceHistory,
       screenSize,
       guestBalance,
-      beaxyBalance,
+      // beaxyBalance,
     } = this.props;
+    const { isShowMoreBeaxy } = this.state;
     const userKey = getUserDetailsKey(user.name);
     const transactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
@@ -155,6 +177,7 @@ class Wallet extends Component {
       `${STEEM.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
+    const beaxyBalance = this.getBeaxyBalanceWithLogo();
     const currentSBDRate = get(
       cryptosPriceHistory,
       `${SBD.symbol}.priceDetails.currentUSDPrice`,
@@ -168,7 +191,7 @@ class Wallet extends Component {
 
     const walletTransactions =
       transactions.length === 0 && usersAccountHistoryLoading ? (
-        <Loading style={{ marginTop: '20px' }}/>
+        <Loading style={{ marginTop: '20px' }} />
       ) : (
         <UserWalletTransactions
           transactions={transactions}
@@ -188,6 +211,8 @@ class Wallet extends Component {
           user={user}
           balance={isGuest ? guestBalance : user.balance}
           beaxyBalance={beaxyBalance}
+          isShowMore={isShowMoreBeaxy}
+          showMore={this.showMoreToggler}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
@@ -197,7 +222,7 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
-        {isMobile && <WalletSidebar/>}
+        {isMobile && <WalletSidebar />}
         {walletTransactions}
       </div>
     );

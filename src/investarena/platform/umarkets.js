@@ -288,7 +288,6 @@ export default class Umarkets {
 
   onWebSocketMessage(mes) {
     const result = JSON.parse(mes.body);
-    console.log('result', result);
     if (result.type === 'response' || result.type === 'update') {
       switch (result.cmd) {
         case CMD.getUserRates:

@@ -265,3 +265,5 @@ export const getAccountsMap = state => fromPlatformReducer.getAccountsMap(state.
 export const getCurrencySettings = state => fromPlatformReducer.getCurrencySettings(state.platform);
 export const getUserStatistics = state => fromPlatformReducer.getUserStatistics(state.platform);
 export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.platform);
+export const getCurrenciesDescriptions = state =>
+  fromPlatformReducer.getCurrenciesDescriptions(state.platform);

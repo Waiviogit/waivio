@@ -13,3 +13,11 @@ export const prepareInstrumentsData = (quotes, statData) =>
     wobjData: quotes[instrument.quote].wobjData,
     market: quotes[instrument.quote].market,
   }));
+
+export const getHoldingsWithLogo = (holdings, currencies) => {
+  const parsedHoldings = holdings.map(holding => ({
+    ...holding,
+    logoUrl: currencies[holding.logoName].iconSvg,
+  }));
+  return parsedHoldings;
+};

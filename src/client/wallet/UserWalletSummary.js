@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import formatter from '../helpers/steemitFormatter';
 import {
@@ -91,26 +90,42 @@ const UserWalletSummary = ({
   steemRateLoading,
   isGuest,
   beaxyBalance,
+  showMore,
+  isShowMore,
 }) => (
   <React.Fragment>
-    {!!beaxyBalance.length &&
-      beaxyBalance.map(item => (
+    {!!beaxyBalance.length && (
+      <React.Fragment>
         <div className="UserWalletSummary">
-          <div className="UserWalletSummary__item">
-            <i className="iconfont icon-steem UserWalletSummary__icon" />
-            <div className="UserWalletSummary__label">
-              <div>{item.name}</div>
+          {beaxyBalance.map(item => (
+            <div className="UserWalletSummary__item">
+              <i
+                className="UserWalletSummary__beaxy-icon"
+                style={{ backgroundImage: `url(${item.logoUrl})` }}
+              />
+              <div className="UserWalletSummary__label">
+                <div>{item.name}</div>
+              </div>
+              <div className="UserWalletSummary__value">
+                <span>
+                  <FormattedNumber value={item.balance ? item.balance : 0} />
+                  {` ${item.currency}`}
+                </span>
+              </div>
             </div>
-            <div className="UserWalletSummary__value">
-              <span>
-                <FormattedNumber value={item.balance ? item.balance : 0} />
-                {` ${item.currency}`}
-              </span>
-            </div>
-          </div>
-          ,
+          ))}
         </div>
-      ))}
+        <div className="UserWalletSummary__show-more">
+          <div className="UserWalletSummary__show-more-btn" onClick={showMore} role="presentation">
+            {!isShowMore ? (
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+            ) : (
+              <FormattedMessage id="show_less" defaultMessage="View less" />
+            )}
+          </div>
+        </div>
+      </React.Fragment>
+    )}
     <div className="UserWalletSummary">
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-steem UserWalletSummary__icon" />
@@ -231,6 +246,7 @@ UserWalletSummary.propTypes = {
   steemRateLoading: PropTypes.bool,
   isGuest: PropTypes.bool,
   beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
+  showMore: PropTypes.func,
 };
 
 UserWalletSummary.defaultProps = {
@@ -241,6 +257,8 @@ UserWalletSummary.defaultProps = {
   isGuest: false,
   balance: 0,
   beaxyBalance: [],
+  isShowMore: false,
+  showMore: () => {},
 };
 
 export default UserWalletSummary;

@@ -89,8 +89,8 @@ export default function(state = initialState, action) {
       return { ...state, walletMap: action.payload };
     case UPDATE_USER_ACCOUNT_CURRENCY:
       return { ...state, accountCurrency: action.payload };
-    case GET_CURRENCIES_DESCRIPTIONS:
-      return { ...state, currenciesDescriptions: action.payload };
+    case GET_CURRENCIES_DESCRIPTIONS.SUCCESS:
+      return { ...state, currenciesDescriptions: action.payload.instrumentsSymbolDescriptions };
     case UPDATE_USER_ACCOUNTS:
       return {
         ...state,
@@ -127,3 +127,4 @@ export const getAccountsMap = state => state.accountsMap;
 export const getCurrencySettings = state => state.currencySettings;
 export const getUserStatistics = state => state.userStatistics;
 export const getBeaxyWallet = state => state.userWallet;
+export const getCurrenciesDescriptions = state => state.currenciesDescriptions;
