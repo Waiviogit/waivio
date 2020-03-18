@@ -174,12 +174,16 @@ export const createAsyncActionType = type => ({
 export const getUserDetailsKey = username => `user-${username}`;
 
 export const getPostKey = post => {
+  if (post.reblogged_by && post.reblogged_by.length) {
+    return `${post.author}/${post.permlink}/${post.reblogged_by}`;
+  }
   if (post.authorGuest) {
     return `${post.authorGuest}/${post.permlink}`;
   }
   if (post.guestInfo) {
     return `${post.guestInfo.userId}/${post.permlink}`;
   }
+
   return `${post.author}/${post.permlink}`;
 };
 

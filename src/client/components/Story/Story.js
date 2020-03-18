@@ -408,7 +408,7 @@ class Story extends React.Component {
 
     if (isPostDeleted(post)) return <div />;
 
-    if (post.reblogged_by && post.reblogged_by.length > 0) {
+    if (post.reblogged_by && post.reblogged_by.length) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
