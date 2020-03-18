@@ -83,7 +83,6 @@ export function initBrokerConnection(data) {
   };
 }
 export function authorizeBroker(data) {
-  debugger;
   return dispatch => {
     dispatch(authorizeBrokerRequest());
     return api.brokers.authorizeBroker(data, 'en-UK').then(({ status, error, broker }) => {

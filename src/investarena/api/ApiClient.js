@@ -76,7 +76,6 @@ const request = ({ url, method, data, params = {} }) =>
       // if (xhr.response && xhr.response.headers) {
       //     updateHeaders(xhr.response.headers);
       // }
-      debugger;
       const response = { error: {} };
       response.error.statusCode = (xhr && xhr.response && xhr.response.status) || 500;
       response.error.status = 'error';
