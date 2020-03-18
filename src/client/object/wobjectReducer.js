@@ -63,6 +63,7 @@ export default function wobjectReducer(state = initialState, action) {
     }
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       const { payload } = action;
+      const newField = { ...payload, active_votes: payload.active_votes || [] };
       // check menu item appending; type uses for menuItems only. (type values: 'menuList' or 'menuPage')
       if (
         payload.name === 'listItem' &&
@@ -81,7 +82,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...state,
           wobject: {
             ...state.wobject,
-            fields: [...state.wobject.fields, payload],
+            fields: [...state.wobject.fields, newField],
             menuItems,
           },
         };
@@ -91,7 +92,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         wobject: {
           ...state.wobject,
-          fields: [...state.wobject.fields, payload],
+          fields: [...state.wobject.fields, newField],
         },
       };
     }

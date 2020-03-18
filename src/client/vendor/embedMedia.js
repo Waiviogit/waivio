@@ -53,7 +53,7 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: 'YouTube',
-      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/mqdefault.jpg',
+      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/maxresdefault.jpg',
       id: youtubeId,
       embed: this.youtube(url, youtubeId, options),
     };

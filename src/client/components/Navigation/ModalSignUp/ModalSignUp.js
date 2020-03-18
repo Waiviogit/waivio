@@ -80,7 +80,7 @@ const ModalSignUp = ({ isButton }) => {
         <React.Fragment>
           <SteemSignUpCard />
           <SignUpInfo />
-          <SocialButtons responseSocial={responseSocial} />
+          <SocialButtons className="ModalSignUp__social" responseSocial={responseSocial} />
         </React.Fragment>
       )}
       {/* Waiting for Grampo agreement */}
