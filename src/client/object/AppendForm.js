@@ -524,7 +524,6 @@ export default class AppendForm extends Component {
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
   isDuplicate = (currentLocale, currentField) => {
-    console.log('this.props.form.setFieldsValue: ', this.props.form.setFieldsValue);
     const currentValue = Object.values(this.getCurrentFieldValue())
       .toString()
       .toLowerCase();
@@ -572,7 +571,6 @@ export default class AppendForm extends Component {
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
     const isDuplicated = this.isDuplicate(currentLocale, currentField);
-    console.log('rule: ', rule.field);
 
     if (isDuplicated) {
       callback(
