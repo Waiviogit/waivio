@@ -473,12 +473,15 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'append_validate_common_message',
-              defaultMessage: 'The value is already exist',
-            }),
-          );
+          const fieldsIsEmpty = form.getFieldsValue();
+          for (const key in fieldsIsEmpty) {
+            if (key === undefined) {
+              intl.formatMessage({
+                id: 'append_object_validation_msg',
+                defaultMessage: 'The field with this value already exists',
+              });
+            }
+          }
         } else {
           this.onSubmit(values);
         }
@@ -730,6 +733,12 @@ export default class AppendForm extends Component {
     const rules = fieldsRules[fieldName] || [];
 
     return rules.map(rule => {
+      if (has(rule, 'min')) {
+        return {
+          ...rule,
+          message: intl.formatMessage(get(rule, 'message.intlId'), get(rule, 'message.intlMeta')),
+        };
+      }
       if (has(rule, 'message')) {
         return {
           ...rule,
