@@ -524,10 +524,6 @@ export default class AppendForm extends Component {
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
   isDuplicate = (currentLocale, currentField) => {
-    const currentValue = Object.values(this.getCurrentFieldValue())
-      .toString()
-      .toLowerCase();
-
     const { wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
@@ -541,14 +537,16 @@ export default class AppendForm extends Component {
       currentField === objectFields.button
     ) {
       return filtered.some(
-        f => isEqual(this.getCurrentFieldValue(), JSON.parse(f.body)) && f.locale === currentLocale,
+        f =>
+          isEqual(this.getCurrentFieldValue(currentField), JSON.parse(f.body)) &&
+          f.locale === currentLocale,
       );
     }
-    return filtered.some(f => f.body.toLowerCase() === currentValue);
+    return filtered.some(f => f.body.toLowerCase() === this.getCurrentFieldValue(currentField));
   };
 
-  getCurrentFieldValue = () => {
-    const { form } = this.props;
+  getCurrentFieldValue = currentField => {
+    const form = this.props.form;
     const filteredData = form.getFieldsValue();
     const currentObj = {};
 
@@ -563,7 +561,22 @@ export default class AppendForm extends Component {
         currentObj[key] = filteredData[key];
       }
     }
-    return currentObj;
+
+    if (
+      currentField === objectFields.phone ||
+      currentField === objectFields.website ||
+      currentField === objectFields.address ||
+      currentField === objectFields.map ||
+      currentField === objectFields.status ||
+      currentField === objectFields.button
+    ) {
+      return currentObj;
+    }
+
+    const currentValue = Object.values(currentObj)
+      .toString()
+      .toLowerCase();
+    return currentValue;
   };
 
   validateFieldValue = (rule, value, callback) => {
