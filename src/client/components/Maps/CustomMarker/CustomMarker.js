@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import pinMarked from '../../../../../public/images/icons/pin-mark@2x.png';
 import pinHoverMarked from '../../../../../public/images/icons/pin-hover-mark@2x.png';
-import pinHoverRetina from '../../../../../public/images/icons/pin-hover@2x.png';
-import pinRetina from '../../../../../public/images/icons/pin@2x.png';
+import pinHover from '../../../../../public/images/icons/pin-hover@2x.png';
+import pin from '../../../../../public/images/icons/pin@2x.png';
 
 const imageOffset = {
   left: 15,
@@ -14,14 +14,14 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    onContextMenu: PropTypes.func.isRequired,
+    onContextMenu: PropTypes.func,
     onMouseOver: PropTypes.func.isRequired,
     onMouseOut: PropTypes.func.isRequired,
-    left: PropTypes.number.isRequired,
-    top: PropTypes.number.isRequired,
+    left: PropTypes.number,
+    top: PropTypes.number,
     anchor: PropTypes.array.isRequired,
     payload: PropTypes.any.isRequired,
-    hover: PropTypes.bool.isRequired,
+    hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
   };
 
@@ -34,7 +34,7 @@ class CustomMarker extends React.Component {
   }
 
   componentDidMount() {
-    const images = this.isRetina() ? [pinRetina, pinHoverRetina] : [pinMarked, pinHoverMarked];
+    const images = this.props.isMarked ? [pin, pinHover] : [pinMarked, pinHoverMarked];
 
     images.forEach(pinImg => {
       const img = new window.Image();
@@ -48,20 +48,13 @@ class CustomMarker extends React.Component {
     payload: this.props.payload,
   });
 
-  isRetina = () => typeof window !== 'undefined' && window.devicePixelRatio >= 2;
-
   isHover = () => (typeof this.props.hover === 'boolean' ? this.props.hover : this.state.hoverImg);
 
-  image = () =>
-    this.props.isMarked
-      ? this.isHover()
-        ? pinHoverMarked
-        : pinMarked
-      : this.isHover()
-      ? pinHoverRetina
-      : pinRetina;
-
-
+  image = () => {
+    const { isMarked } = this.props;
+    if (isMarked) return this.isHover() ? pinHoverMarked : pinMarked;
+    return this.isHover() ? pinHover : pin
+  };
 
   handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
 
