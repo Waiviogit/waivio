@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Checkbox, Form, Input, Radio, Select } from 'antd';
-import { optionsPlatform } from '../../../constants/selectData';
 import { country } from '../../../constants/countryData';
 import { phoneCode } from '../../../constants/phoneCodeData';
 import { agreements } from '../../../configApi/licenseAgreements';
@@ -35,9 +34,9 @@ class BrokerRegistration extends Component {
 
   componentDidMount = async () => {
     const permlinksArray = [];
-    optionsPlatform.forEach(platform => {
-      permlinksArray.push(platform.permlink);
-    });
+    // optionsPlatform.forEach(platform => {
+    //   permlinksArray.push(platform.permlink);
+    // });
     const wobjectsArray = await getObjectsByIds({ authorPermlinks: permlinksArray });
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ platformsWobjects: wobjectsArray.wobjects });
@@ -176,30 +175,30 @@ class BrokerRegistration extends Component {
             className="BrokerRegistration__radiogroup"
           >
             {/* eslint-disable-next-line consistent-return */}
-            {_.map(optionsPlatform, option => {
-              if (!option.excludedCountries.includes(this.state.currentCountryValue)) {
-                const platformWobject = this.state.platformsWobjects.find(
-                  item => item.author_permlink === option.permlink,
-                );
-                const platformClientWobject = getClientWObj(platformWobject);
-                return (
-                  <Radio
-                    key={option.value}
-                    value={option.value}
-                    className="BrokerRegistration__checkbox"
-                  >
-                    <a
-                      href={`https://www.waivio.com/object/${option.permlink}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span>Languages: {option.languages.join(', ')}</span>
-                    </a>
-                    <ObjectCardView wObject={platformClientWobject} showSmallVersion />
-                  </Radio>
-                );
-              }
-            })}
+            {/*{_.map(optionsPlatform, option => {*/}
+              {/*if (!option.excludedCountries.includes(this.state.currentCountryValue)) {*/}
+                {/*const platformWobject = this.state.platformsWobjects.find(*/}
+                  {/*item => item.author_permlink === option.permlink,*/}
+                {/*);*/}
+                {/*const platformClientWobject = getClientWObj(platformWobject);*/}
+                {/*return (*/}
+                  {/*<Radio*/}
+                    {/*key={option.value}*/}
+                    {/*value={option.value}*/}
+                    {/*className="BrokerRegistration__checkbox"*/}
+                  {/*>*/}
+                    {/*<a*/}
+                      {/*href={`https://www.waivio.com/object/${option.permlink}`}*/}
+                      {/*target="_blank"*/}
+                      {/*rel="noopener noreferrer"*/}
+                    {/*>*/}
+                      {/*<span>Languages: {option.languages.join(', ')}</span>*/}
+                    {/*</a>*/}
+                    {/*<ObjectCardView wObject={platformClientWobject} showSmallVersion />*/}
+                  {/*</Radio>*/}
+                {/*);*/}
+              {/*}*/}
+            {/*})}*/}
           </Radio.Group>
         ),
       )}
@@ -382,17 +381,17 @@ class BrokerRegistration extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        values.phoneNumber = values.phone.substring(2, values.phone.length - 1);
-        values.phoneOperator = values.phone.substring(0, 2);
-        values.country = this.state.currentCountryValue;
-        values.platform = this.state.platformName;
-        this.props.changeEmail(values.email);
-        this.props.registerBroker(values);
-      }
-    });
+    // this.props.form.validateFieldsAndScroll((err, values) => {
+    //   if (!err) {
+    //     console.log('Received values of form: ', values);
+    //     values.phoneNumber = values.phone.substring(2, values.phone.length - 1);
+    //     values.phoneOperator = values.phone.substring(0, 2);
+    //     values.country = this.state.currentCountryValue;
+    //     values.platform = this.state.platformName;
+    //     this.props.changeEmail(values.email);
+    //     this.props.registerBroker(values);
+    //   }
+    // });
   };
 
   render() {
@@ -400,29 +399,29 @@ class BrokerRegistration extends Component {
     return (
       <React.Fragment>
         <Form onSubmit={this.handleSubmit}>
-          {stepNumber === 1 ? (
-            this.firstStepRenderer()
-          ) : stepNumber === 2 ? (
-            this.secondStepRenderer()
-          ) : stepNumber === 3 ? (
-            <React.Fragment>
-              {this.thirdStepRenderer()}
-              <FormItem {...this.tailFormItemLayout}>
-                <Button
-                  className="w-100"
-                  type="primary"
-                  htmlType="submit"
-                  disabled={!this.state.isAgreementRead}
-                  loading={this.props.isLoading}
-                >
-                  {this.props.intl.formatMessage({
-                    id: 'broker_modal_register',
-                    defaultMessage: 'Register',
-                  })}
-                </Button>
-              </FormItem>
-            </React.Fragment>
-          ) : null}
+          {/*{stepNumber === 1 ? (*/}
+            {/*this.firstStepRenderer()*/}
+          {/*) : stepNumber === 2 ? (*/}
+            {/*this.secondStepRenderer()*/}
+          {/*) : stepNumber === 3 ? (*/}
+            {/*<React.Fragment>*/}
+              {/*{this.thirdStepRenderer()}*/}
+              {/*<FormItem {...this.tailFormItemLayout}>*/}
+                {/*<Button*/}
+                  {/*className="w-100"*/}
+                  {/*type="primary"*/}
+                  {/*htmlType="submit"*/}
+                  {/*disabled={!this.state.isAgreementRead}*/}
+                  {/*loading={this.props.isLoading}*/}
+                {/*>*/}
+                  {/*{this.props.intl.formatMessage({*/}
+                    {/*id: 'broker_modal_register',*/}
+                    {/*defaultMessage: 'Register',*/}
+                  {/*})}*/}
+                {/*</Button>*/}
+              {/*</FormItem>*/}
+            {/*</React.Fragment>*/}
+          {/*) : null}*/}
         </Form>
         <div className="BrokerRegistration__buttons">
           <Button onClick={this.handleStepBack} disabled={this.state.stepNumber === 1}>

@@ -20,7 +20,6 @@ import {
   setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
-import { BROKER } from '../../investarena/constants/platform';
 import { discoverObjectsContentTypes } from '../../investarena/constants/objectsInvestarena';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
@@ -164,7 +163,7 @@ class DiscoverObjectsContent extends Component {
       hasMoreObjects,
     } = this.props;
 
-    const tradingTypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
+    const tradingTypes = ['cryptopairs'];
 
     let objectsRenderer;
     if (tradingTypes.includes(typeName)) {
@@ -179,11 +178,6 @@ class DiscoverObjectsContent extends Component {
           quoteSecurity={wObj.chartid}
         />
       ));
-    } else if (typeName === 'brokers') {
-      const brokerNames = Object.values(BROKER);
-      objectsRenderer = filteredObjects
-        .filter(obj => obj.name && brokerNames.includes(obj.name.toLowerCase()))
-        .map(wObj => <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />);
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
         <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
@@ -221,7 +215,7 @@ class DiscoverObjectsContent extends Component {
           </div>
           {isTypeHasFilters ? (
             <React.Fragment>
-              {!isEmpty(availableFilters) ? (
+              {!isEmpty(availableFilters) && (
                 <div className="discover-objects-header__tags-block">
                   <span className="discover-objects-header__topic ttc">
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
@@ -247,7 +241,7 @@ class DiscoverObjectsContent extends Component {
                     {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
                   </span>
                 </div>
-              ) : null}
+              )}
             </React.Fragment>
           ) : null}
         </div>
@@ -273,7 +267,7 @@ class DiscoverObjectsContent extends Component {
             </div>
           )
         )}
-        {modalTitle ? (
+        {modalTitle && (
           <Modal
             className="discover-filters-modal"
             footer={null}
@@ -290,7 +284,7 @@ class DiscoverObjectsContent extends Component {
             )}
             {modalTitle === modalName.OBJECTS && <SidenavDiscoverObjects withTitle={false} />}
           </Modal>
-        ) : null}
+        )}
       </React.Fragment>
     );
   }
