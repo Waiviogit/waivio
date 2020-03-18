@@ -523,3 +523,65 @@ export const exponentialToDecimal = exponentialNumber => {
   console.log('\texponentialToDecimal : ', exponentialNumber);
   return exponentialNumber.toString();
 };
+
+export function fillUserStatistics(userStats, userStatistics) {
+  if (!userStats || !Object.keys(userStats).length) {
+    return userStatistics;
+  }
+  const { accountId } = userStats;
+  const accountStatistics = { ...userStatistics[accountId], ...userStats };
+  delete accountStatistics.accountId;
+
+  return {
+    ...userStatistics,
+    [accountId]: accountStatistics,
+  };
+}
+
+export const getHolding = (accountId, userStatistics, currencySetting, crossBalance) => {
+  const { name, currency } = currencySetting;
+  const holding = {
+    id: accountId,
+    value: crossBalance,
+    name,
+    balance: 0,
+    currency,
+    logoName: currency,
+  };
+
+  if (!userStatistics || !userStatistics[accountId]) {
+    return holding;
+  }
+
+  const accountStatistics = userStatistics[accountId];
+  const { balance } = accountStatistics;
+
+  return {
+    ...holding,
+    balance,
+  };
+};
+
+export const getCrossBalance = (accountId, crossStatistics) => {
+  const { balance } =
+    (crossStatistics[accountId] &&
+      crossStatistics[accountId].filter(item => item.asset === 'USDC')[0]) ||
+    {};
+  return balance;
+};
+
+export const getHoldingByAccount = (account, userStatistics, currencySettings, crossStatistics) => {
+  const { id: accountId, currency } = account;
+  const crossBalance = getCrossBalance(accountId, crossStatistics);
+  return getHolding(accountId, userStatistics, currencySettings[currency], crossBalance);
+};
+
+export const getHoldingsByAccounts = (
+  accountsMap,
+  userStatistics,
+  currencySettings,
+  crossStatistics = {},
+) =>
+  Object.keys(accountsMap).map(accountId =>
+    getHoldingByAccount(accountsMap[accountId], userStatistics, currencySettings, crossStatistics),
+  );

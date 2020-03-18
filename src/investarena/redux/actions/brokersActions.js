@@ -74,13 +74,13 @@ export function disconnectTokenSuccess() {
 export function authorizeBroker(data) {
   const token = store.get('token');
   return dispatch => {
-      // dispatch(authorizeBrokerSuccess());
-      dispatch(authorizeToken(token));
-      singleton.closeWebSocketConnection();
-      singleton.platform = data.platform;
-      singleton.createWebSocketConnection();
-      // dispatch(toggleModal('broker'));
-    }
+    // dispatch(authorizeBrokerSuccess());
+    dispatch(authorizeToken(token));
+    singleton.closeWebSocketConnection();
+    singleton.platform = data.platform;
+    singleton.createWebSocketConnection();
+    // dispatch(toggleModal('broker'));
+  };
 }
 // export function authorizeBroker(data) {
 //   return dispatch => {
@@ -153,7 +153,7 @@ export function reconnectBroker(data) {
     dispatch(authorizeToken(token));
     singleton.platform = data.platform;
     singleton.createWebSocketConnection();
-  }
+  };
 }
 // export function reconnectBroker(data) {
 //   return dispatch =>

@@ -51,7 +51,7 @@ const PostQuotation = ({
   intl,
 }) => {
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
-  const dailyChange = `${get(quote, ["dailyChange"], 0).toFixed(2)}%`;
+  const dailyChange = `${get(quote, ['dailyChange'], 0).toFixed(2)}%`;
   const classOfDailyChange = quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down';
   const classOfIndicator =
     quoteSettings.isSession || quote.isSession

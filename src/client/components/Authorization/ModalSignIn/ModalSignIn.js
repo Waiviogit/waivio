@@ -86,7 +86,7 @@ const ModalSignIn = ({ next }) => {
         ) : (
           <React.Fragment>
             <BeaxySignInButton onClick={handleBeaxySignIn} />
-            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin" >
+            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
               <img
                 src="/images/icons/steemit.svg"
                 alt="steemit"
