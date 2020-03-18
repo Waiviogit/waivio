@@ -623,9 +623,6 @@ export default class AppendForm extends Component {
           case objectFields.address:
             trimNestedFields(addressFields);
             break;
-          case objectFields.map:
-            trimNestedFields(mapFields);
-            break;
           case objectFields.button:
             trimNestedFields(buttonFields);
             break;
