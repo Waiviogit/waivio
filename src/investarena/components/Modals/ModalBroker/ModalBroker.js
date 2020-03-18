@@ -2,12 +2,10 @@ import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import ModalBrokerTab from '../ModalBroker/ModalBrokerTab';
+import BrokerAuthorization from './BrokerAuthorization';
 import './ModalBroker.less';
 
 const propTypes = {
-  forgotPassBroker: PropTypes.func.isRequired,
-  registerBroker: PropTypes.func.isRequired,
   authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
@@ -18,24 +16,20 @@ const propTypes = {
 
 const ModalBroker = props => (
   <Modal
-    title={props.intl.formatMessage({
-      id: 'broker_modal_broker_settings',
-      defaultMessage: 'Broker Settings',
-    })}
+    title={null}
     visible={props.isOpen}
     footer={null}
     onCancel={props.toggleModal}
-    style={{ maxWidth: '600px' }}
-    width={null}
+    width={416}
+    destroyOnClose
   >
-    <ModalBrokerTab
-      isLoading={props.isLoading}
-      platformName={props.platformName}
-      forgotPassBroker={props.forgotPassBroker}
-      registerBroker={props.registerBroker}
-      authorizeBroker={props.authorizeBroker}
+    <BrokerAuthorization
+      // platformName={props.platformName}
+      // isLoading={props.isLoading}
+      // authorizeBroker={props.authorizeBroker}
       disconnectBroker={props.disconnectBroker}
       toggleModal={props.toggleModal}
+      // brokerConnected={props.platformName !== 'widgets'}
     />
   </Modal>
 );

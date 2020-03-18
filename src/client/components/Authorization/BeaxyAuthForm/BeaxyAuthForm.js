@@ -5,10 +5,16 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
 import { FormattedMessage } from 'react-intl';
-import { beaxyLogin } from '../../../auth/authActions';
-import { beaxy2FALogin, beaxyLoginByCredentials } from '../../../../waivioApi/ApiClient';
+import './BeaxyAuthForm.less';
 
-const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
+const BeaxyAuthForm = ({
+  form,
+  firstLoginResponse,
+  authRequest,
+  auth2FARequest,
+  btnText,
+  onAuthSuccessAction,
+}) => {
   const dispatch = useDispatch();
   const { getFieldDecorator, getFieldsError, validateFields } = form;
 
@@ -25,22 +31,24 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
       if (!err) {
         if (!token2FA) {
           setIsLoading(true);
-          beaxyLoginByCredentials(values.email, values.password)
+          authRequest(values.email, values.password)
             .then(async res => {
-              const { code, status, bxySessionData, user, token, expiration, umSession } = res;
+              const { code, status, payload, user, token, expiration, umSession } = res;
               if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
-                setToken2FA(bxySessionData.token2fa);
+                setToken2FA(payload.token2fa);
               } else if (get(user, ['user_metadata', 'new_user'], false)) {
                 const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
                 firstLoginResponse({
                   userData: { user, token, expiration },
-                  bxySessionData: { ...bxySessionData, umSession },
+                  bxySessionData: { ...payload, umSession },
                   jsonMetadata: isError(userJsonMetadata) ? {} : userJsonMetadata,
                   userName: user.name,
                   displayName: user.alias,
                 });
               } else {
-                dispatch(beaxyLogin({ user, token, expiration }, { ...bxySessionData, umSession }));
+                dispatch(
+                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
+                );
               }
               setAuthError(null);
             })
@@ -53,12 +61,14 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
             .finally(() => setIsLoading(false));
         } else {
           setIsLoading(true);
-          beaxy2FALogin(values.email, token2FA, values.authCode)
+          setAuthError(null);
+          auth2FARequest(values.email, token2FA, values.authCode)
             .then(
               res => {
-                const { bxySessionData, user, token, expiration, umSession } = res;
-                setAuthError(null);
-                dispatch(beaxyLogin({ user, token, expiration }, { ...bxySessionData, umSession }));
+                const { payload, user, token, expiration, umSession } = res;
+                dispatch(
+                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
+                );
               },
               error => {
                 const errMessage =
@@ -75,12 +85,16 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 
   return (
     <React.Fragment>
-      <div className="auth-form-error-msg">
+      <div className="bxy-sing-in-form__logo">
+        <img src="/images/investarena/beaxy-caption-logo.svg" alt="Beaxy" className="icon-beaxy" />
+      </div>
+      <div className="bxy-sing-in-form__error-msg">
         {Boolean(authError) && (
           <FormattedMessage id={`authForm_${authError}`} defaultMessage="Login error" />
         )}
       </div>
       <Form
+        form={form}
         className="bxy-sing-in-form"
         layout="vertical"
         style={{ width: '100%' }}
@@ -157,12 +171,13 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 
         <Form.Item>
           <Button
+            block
             type="primary"
             htmlType="submit"
             loading={isLoading}
             disabled={hasErrors(getFieldsError())}
           >
-            <FormattedMessage id="login" defaultMessage="Log in" />
+            {btnText || <FormattedMessage id="login" defaultMessage="Log in" />}
           </Button>
         </Form.Item>
       </Form>
@@ -171,8 +186,16 @@ const BeaxyAuthForm = ({ form, firstLoginResponse }) => {
 };
 
 BeaxyAuthForm.propTypes = {
+  authRequest: PropTypes.func.isRequired,
+  auth2FARequest: PropTypes.func.isRequired,
+  onAuthSuccessAction: PropTypes.func.isRequired,
   firstLoginResponse: PropTypes.func.isRequired,
   form: PropTypes.shape().isRequired,
+  btnText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+};
+
+BeaxyAuthForm.defaultProps = {
+  btnText: '',
 };
 
 export default Form.create({ name: 'username' })(BeaxyAuthForm);

@@ -86,13 +86,14 @@ const request = ({ url, method, data, params = {} }) =>
           if (errors && errors.full_messages) {
             result = errors.full_messages.toString();
           } else if (errors) {
-            result = errors.toString();
+            result = errors.message || errors.toString();
           }
         } else {
           result = xhr.message;
         }
         return result;
       };
+      response.error.message = response.error.toString();
       return response;
     },
   );
