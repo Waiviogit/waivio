@@ -17,6 +17,7 @@ export const GET_CROSS_STATISTICS = 'GET_CROSS_STATISTICS';
 export const GET_ACCOUNT_STATISTICS_MAP = 'GET_ACCOUNT_STATISTICS_MAP';
 export const GET_CURRENCY_SETTINGS = 'GET_CURRENCY_SETTINGS';
 export const UPDATE_USER_WALLET = 'UPDATE_USER_WALLET';
+export const CLEAN_STATISTICS_DATA = 'CLEAN_STATISTICS_DATA';
 
 const localStorageData = [
   'sid',
@@ -124,4 +125,8 @@ export function updateUserAccounts(accountsData) {
 }
 export function connectPlatformError() {
   return { type: CONNECT_PLATFORM_ERROR };
+}
+
+export function cleanUserStatisticsData() {
+  return { type: CLEAN_STATISTICS_DATA };
 }

@@ -110,6 +110,7 @@ export default class Umarkets {
 
   closeWebSocketConnection() {
     if (this.websocket && this.stompClient) {
+      this.dispatch();
       this.websocket.close();
       this.stompClient.disconnect();
     }
@@ -158,6 +159,7 @@ export default class Umarkets {
     this.getUserSettings();
     this.getUserStatistics();
     this.getUserRates();
+    this.getCrossStatistics();
     // this.getOpenDeals();
     // this.getClosedDeals();
   }

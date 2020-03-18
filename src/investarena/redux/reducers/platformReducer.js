@@ -20,6 +20,7 @@ import {
   GET_ACCOUNT_STATISTICS_MAP,
   GET_CURRENCY_SETTINGS,
   UPDATE_USER_WALLET,
+  CLEAN_STATISTICS_DATA,
 } from '../actions/platformActions';
 import { fillUserStatistics, getHoldingsByAccounts } from '../../platform/platformHelper';
 // import { SIGN_OUT_SUCCESS } from '../actions/authenticate/authenticate';
@@ -74,6 +75,7 @@ export default function(state = initialState, action) {
           state.accountsMap,
           state.userStatistics,
           state.currencySettings,
+          state.walletMap,
         ),
       };
     }
@@ -90,6 +92,14 @@ export default function(state = initialState, action) {
         ...state,
         currentAccountName: action.payload.currentAccountName,
         accounts: action.payload.accounts,
+      };
+    case CLEAN_STATISTICS_DATA:
+      return {
+        ...state,
+        accountCurrency: {},
+        userStatistics: {},
+        userWallet: {},
+        walletMap: {},
       };
     case AUTHORIZE_BROKER_REQUEST:
     case FORGOT_PASS_BROKER_REQUEST:
