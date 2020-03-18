@@ -176,28 +176,28 @@ class BrokerRegistration extends Component {
           >
             {/* eslint-disable-next-line consistent-return */}
             {/*{_.map(optionsPlatform, option => {*/}
-              {/*if (!option.excludedCountries.includes(this.state.currentCountryValue)) {*/}
-                {/*const platformWobject = this.state.platformsWobjects.find(*/}
-                  {/*item => item.author_permlink === option.permlink,*/}
-                {/*);*/}
-                {/*const platformClientWobject = getClientWObj(platformWobject);*/}
-                {/*return (*/}
-                  {/*<Radio*/}
-                    {/*key={option.value}*/}
-                    {/*value={option.value}*/}
-                    {/*className="BrokerRegistration__checkbox"*/}
-                  {/*>*/}
-                    {/*<a*/}
-                      {/*href={`https://www.waivio.com/object/${option.permlink}`}*/}
-                      {/*target="_blank"*/}
-                      {/*rel="noopener noreferrer"*/}
-                    {/*>*/}
-                      {/*<span>Languages: {option.languages.join(', ')}</span>*/}
-                    {/*</a>*/}
-                    {/*<ObjectCardView wObject={platformClientWobject} showSmallVersion />*/}
-                  {/*</Radio>*/}
-                {/*);*/}
-              {/*}*/}
+            {/*if (!option.excludedCountries.includes(this.state.currentCountryValue)) {*/}
+            {/*const platformWobject = this.state.platformsWobjects.find(*/}
+            {/*item => item.author_permlink === option.permlink,*/}
+            {/*);*/}
+            {/*const platformClientWobject = getClientWObj(platformWobject);*/}
+            {/*return (*/}
+            {/*<Radio*/}
+            {/*key={option.value}*/}
+            {/*value={option.value}*/}
+            {/*className="BrokerRegistration__checkbox"*/}
+            {/*>*/}
+            {/*<a*/}
+            {/*href={`https://www.waivio.com/object/${option.permlink}`}*/}
+            {/*target="_blank"*/}
+            {/*rel="noopener noreferrer"*/}
+            {/*>*/}
+            {/*<span>Languages: {option.languages.join(', ')}</span>*/}
+            {/*</a>*/}
+            {/*<ObjectCardView wObject={platformClientWobject} showSmallVersion />*/}
+            {/*</Radio>*/}
+            {/*);*/}
+            {/*}*/}
             {/*})}*/}
           </Radio.Group>
         ),
@@ -400,27 +400,27 @@ class BrokerRegistration extends Component {
       <React.Fragment>
         <Form onSubmit={this.handleSubmit}>
           {/*{stepNumber === 1 ? (*/}
-            {/*this.firstStepRenderer()*/}
+          {/*this.firstStepRenderer()*/}
           {/*) : stepNumber === 2 ? (*/}
-            {/*this.secondStepRenderer()*/}
+          {/*this.secondStepRenderer()*/}
           {/*) : stepNumber === 3 ? (*/}
-            {/*<React.Fragment>*/}
-              {/*{this.thirdStepRenderer()}*/}
-              {/*<FormItem {...this.tailFormItemLayout}>*/}
-                {/*<Button*/}
-                  {/*className="w-100"*/}
-                  {/*type="primary"*/}
-                  {/*htmlType="submit"*/}
-                  {/*disabled={!this.state.isAgreementRead}*/}
-                  {/*loading={this.props.isLoading}*/}
-                {/*>*/}
-                  {/*{this.props.intl.formatMessage({*/}
-                    {/*id: 'broker_modal_register',*/}
-                    {/*defaultMessage: 'Register',*/}
-                  {/*})}*/}
-                {/*</Button>*/}
-              {/*</FormItem>*/}
-            {/*</React.Fragment>*/}
+          {/*<React.Fragment>*/}
+          {/*{this.thirdStepRenderer()}*/}
+          {/*<FormItem {...this.tailFormItemLayout}>*/}
+          {/*<Button*/}
+          {/*className="w-100"*/}
+          {/*type="primary"*/}
+          {/*htmlType="submit"*/}
+          {/*disabled={!this.state.isAgreementRead}*/}
+          {/*loading={this.props.isLoading}*/}
+          {/*>*/}
+          {/*{this.props.intl.formatMessage({*/}
+          {/*id: 'broker_modal_register',*/}
+          {/*defaultMessage: 'Register',*/}
+          {/*})}*/}
+          {/*</Button>*/}
+          {/*</FormItem>*/}
+          {/*</React.Fragment>*/}
           {/*) : null}*/}
         </Form>
         <div className="BrokerRegistration__buttons">

@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import apiExtra from '../../apiExtra/Account';
 import { authorizeTokenSuccess } from './userActions';
 import { singleton } from '../../platform/singletonPlatform';
+import { GET_PERFORMERS_STATS } from './topPerformersActions';
+import api from '../../configApi/apiResources';
 
 export const AUTHORIZE_TOKEN_SUCCESS = 'AUTHORIZE_TOKEN_SUCCESS';
 export const CONNECT_PLATFORM_REQUEST = 'CONNECT_PLATFORM_REQUEST';
@@ -18,6 +20,7 @@ export const GET_ACCOUNT_STATISTICS_MAP = 'GET_ACCOUNT_STATISTICS_MAP';
 export const GET_CURRENCY_SETTINGS = 'GET_CURRENCY_SETTINGS';
 export const UPDATE_USER_WALLET = 'UPDATE_USER_WALLET';
 export const CLEAN_STATISTICS_DATA = 'CLEAN_STATISTICS_DATA';
+export const GET_CURRENCIES_DESCRIPTIONS = 'GET_CURRENCIES_DESCRIPTIONS';
 
 const localStorageData = [
   'sid',
@@ -79,6 +82,16 @@ export function getAccountStatisticsMap(data) {
   return { type: GET_ACCOUNT_STATISTICS_MAP, payload: data };
 }
 
+export function getCurrenciesDescription() {
+  return dispatch =>
+    dispatch({
+      type: GET_CURRENCIES_DESCRIPTIONS,
+      payload: {
+        promise: api.platform.getCryptoCurrenciesDescription(),
+      },
+    });
+}
+
 export function checkAccountId() {
   return dispatch => {
     const accounts = localStorage.getItem('accounts');
@@ -114,15 +127,19 @@ export function connectPlatformSuccess(platformName) {
 export function updateUserStatistics(balance) {
   return { type: UPDATE_USER_STATISTICS, payload: balance };
 }
+
 export function updateUserWallet() {
   return { type: UPDATE_USER_WALLET };
 }
+
 export function updateUserAccountCurrency(currency) {
   return { type: UPDATE_USER_ACCOUNT_CURRENCY, payload: currency };
 }
+
 export function updateUserAccounts(accountsData) {
   return { type: UPDATE_USER_ACCOUNTS, payload: accountsData };
 }
+
 export function connectPlatformError() {
   return { type: CONNECT_PLATFORM_ERROR };
 }

@@ -27,7 +27,7 @@ import {
   getPlatformName,
   getAccountsMap,
   getCurrencySettings,
-  getUserStatistics,
+  getUserStatistics, getBeaxyWallet,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -63,6 +63,7 @@ import { getHoldingsByAccounts } from './usersHelper';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
     platformName: getPlatformName(state),
+    beaxyBalance: getBeaxyWallet(state),
   }),
   {
     getGlobalProperties,
@@ -92,16 +93,16 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
-    // TODO: need on next task
-    // platformName: PropTypes.string,
+    platformName: PropTypes.string,
+    beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
     guestBalance: null,
-    // TODO: need on next task
-    // platformName:'',
+    platformName: '',
+    beaxyBalance: [],
   };
 
   componentDidMount() {
@@ -144,8 +145,8 @@ class Wallet extends Component {
       cryptosPriceHistory,
       screenSize,
       guestBalance,
+      beaxyBalance,
     } = this.props;
-
     const userKey = getUserDetailsKey(user.name);
     const transactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
@@ -167,7 +168,7 @@ class Wallet extends Component {
 
     const walletTransactions =
       transactions.length === 0 && usersAccountHistoryLoading ? (
-        <Loading style={{ marginTop: '20px' }} />
+        <Loading style={{ marginTop: '20px' }}/>
       ) : (
         <UserWalletTransactions
           transactions={transactions}
@@ -186,6 +187,7 @@ class Wallet extends Component {
         <UserWalletSummary
           user={user}
           balance={isGuest ? guestBalance : user.balance}
+          beaxyBalance={beaxyBalance}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
@@ -195,7 +197,7 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
-        {isMobile && <WalletSidebar />}
+        {isMobile && <WalletSidebar/>}
         {walletTransactions}
       </div>
     );

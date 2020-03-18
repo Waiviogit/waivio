@@ -62,7 +62,7 @@ class InstrumentsPage extends Component {
     this.props.history.push(`/markets/${marketType.toLowerCase()}`);
 
   render() {
-    const { intl, quoteSettings} = this.props;
+    const { intl, quoteSettings } = this.props;
     const paramMarket = this.props.match.params.marketType;
     // const marketType = typesWithChartId.some(market => market === paramMarket)
     //   ? paramMarket

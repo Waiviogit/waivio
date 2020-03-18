@@ -55,9 +55,7 @@ class BrokerAuthorization extends Component {
           </div>
         </div>
         {getFieldDecorator('platform', {
-          initialValue: this.props.brokerConnected
-            ? this.props.platformName
-            : null,
+          initialValue: this.props.brokerConnected ? this.props.platformName : null,
         })(
           <Select
             style={{ width: '100%' }}
@@ -66,8 +64,7 @@ class BrokerAuthorization extends Component {
               defaultMessage: 'Please fill in this field',
             })}
             disabled={this.props.brokerConnected}
-          >
-          </Select>,
+          ></Select>,
         )}
         {!this.props.brokerConnected ? (
           <FormItem>
