@@ -21,23 +21,24 @@ import './Proposition.less';
 import { NavLink } from 'react-router-dom';
 
 const Proposition = ({
-  intl,
-  proposition,
-  assignProposition,
-  assignCommentPermlink,
-  discardProposition,
-  loading,
-  wobj,
-  assigned,
-  post,
-  getSingleComment,
-  authorizedUserName,
-  history,
-}) => {
+                       intl,
+                       proposition,
+                       assignProposition,
+                       assignCommentPermlink,
+                       discardProposition,
+                       loading,
+                       wobj,
+                       assigned,
+                       post,
+                       getSingleComment,
+                       authorizedUserName,
+                       history,
+                     }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
+  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
@@ -82,7 +83,6 @@ const Proposition = ({
       });
   };
 
-  const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
     const reserveData = {
@@ -101,10 +101,9 @@ const Proposition = ({
           companyId: proposition._id,
         });
         setReservation(true);
-        history.push('/rewards/reserved');
         setModalDetailsOpen(!isModalDetailsOpen);
       })
-      .catch((e) => {
+      .catch(() => {
         message.error(
           intl.formatMessage({
             id: 'cannot_reserve_company',
@@ -117,10 +116,10 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} />
+        <CampaignCardHeader campaignData={proposition}/>
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id}/>
       </div>
       <div
         className={classNames('Proposition__footer', {
@@ -156,13 +155,13 @@ const Proposition = ({
                   })}
                 </Button>
                 {proposition.count_reservation_days &&
-                  `${intl.formatMessage({
-                    id: 'for_days',
-                    defaultMessage: `for`,
-                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
-                    id: 'days',
-                    defaultMessage: `days`,
-                  })}`}
+                `${intl.formatMessage({
+                  id: 'for_days',
+                  defaultMessage: `for`,
+                })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                  id: 'days',
+                  defaultMessage: `days`,
+                })}`}
               </div>
             )}
             <div className="Proposition__footer-details" onClick={toggleModalDetails}>
@@ -172,7 +171,7 @@ const Proposition = ({
                   defaultMessage: `Details`,
                 })}
               </span>
-              <Icon type="right" />
+              <Icon type="right"/>
             </div>
           </React.Fragment>
         )}

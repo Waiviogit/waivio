@@ -258,7 +258,7 @@ class Rewards extends React.Component {
           companyAuthor,
         );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-        // this.props.history.push(`/rewards/reserved`);
+        this.props.history.push(`/rewards/reserved`)
       })
       .catch(() => {
         message.error(
