@@ -16,7 +16,13 @@ import {
   UPDATE_USER_ACCOUNT_CURRENCY,
   UPDATE_USER_ACCOUNTS,
   UPDATE_USER_STATISTICS,
+  GET_USER_SETTINGS,
+  GET_ACCOUNT_STATISTICS_MAP,
+  GET_CURRENCY_SETTINGS,
+  UPDATE_USER_WALLET,
+  CLEAN_STATISTICS_DATA,
 } from '../actions/platformActions';
+import { fillUserStatistics, getHoldingsByAccounts } from '../../platform/platformHelper';
 // import { SIGN_OUT_SUCCESS } from '../actions/authenticate/authenticate';
 
 const initialState = {
@@ -25,6 +31,9 @@ const initialState = {
   platformName: 'widgets',
   userStatistics: {},
   userSettings: {},
+  accountsMap: {},
+  walletMap: {},
+  currencySettings: {},
   isLoading: false,
   accountCurrency: 'USD',
   currentAccountName: '',
@@ -58,7 +67,24 @@ export default function(state = initialState, action) {
         platformName: 'widgets',
       };
     case UPDATE_USER_STATISTICS:
-      return { ...state, userStatistics: action.payload };
+      return { ...state, userStatistics: fillUserStatistics(action.payload, state.userStatistics) };
+    case UPDATE_USER_WALLET: {
+      return {
+        ...state,
+        userWallet: getHoldingsByAccounts(
+          state.accountsMap,
+          state.userStatistics,
+          state.currencySettings,
+          state.walletMap,
+        ),
+      };
+    }
+    case GET_USER_SETTINGS:
+      return { ...state, accountsMap: action.payload };
+    case GET_CURRENCY_SETTINGS:
+      return { ...state, currencySettings: action.payload };
+    case GET_ACCOUNT_STATISTICS_MAP:
+      return { ...state, walletMap: action.payload };
     case UPDATE_USER_ACCOUNT_CURRENCY:
       return { ...state, accountCurrency: action.payload };
     case UPDATE_USER_ACCOUNTS:
@@ -66,6 +92,14 @@ export default function(state = initialState, action) {
         ...state,
         currentAccountName: action.payload.currentAccountName,
         accounts: action.payload.accounts,
+      };
+    case CLEAN_STATISTICS_DATA:
+      return {
+        ...state,
+        accountCurrency: {},
+        userStatistics: {},
+        userWallet: {},
+        walletMap: {},
       };
     case AUTHORIZE_BROKER_REQUEST:
     case FORGOT_PASS_BROKER_REQUEST:
@@ -83,3 +117,8 @@ export default function(state = initialState, action) {
       return state;
   }
 }
+
+export const getPlatformName = state => state.platformName;
+export const getAccountsMap = state => state.accountsMap;
+export const getCurrencySettings = state => state.currencySettings;
+export const getUserStatistics = state => state.userStatistics;

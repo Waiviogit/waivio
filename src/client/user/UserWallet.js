@@ -24,6 +24,10 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
+  getPlatformName,
+  getAccountsMap,
+  getCurrencySettings,
+  getUserStatistics,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -32,6 +36,7 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+import { getHoldingsByAccounts } from './usersHelper';
 
 @withRouter
 @connect(
@@ -57,6 +62,7 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
+    platformName: getPlatformName(state),
   }),
   {
     getGlobalProperties,
@@ -86,12 +92,16 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
+    // TODO: need on next task
+    // platformName: PropTypes.string,
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
     guestBalance: null,
+    // TODO: need on next task
+    // platformName:'',
   };
 
   componentDidMount() {
