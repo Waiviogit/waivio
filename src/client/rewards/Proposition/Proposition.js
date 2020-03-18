@@ -80,14 +80,9 @@ const Proposition = ({
       });
   };
 
-  const [isModalOpen, openModal] = useState(false);
   const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
-    openModal(!isModalOpen);
-  };
-
-  const modalOnOklHandler = () => {
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
@@ -103,7 +98,6 @@ const Proposition = ({
           objPermlink: wobj.author_permlink,
           companyId: proposition._id,
         });
-        openModal(false);
         setReservation(true);
       })
       .catch(() => {
@@ -114,10 +108,7 @@ const Proposition = ({
           }),
         );
       });
-  };
-
-  const modalOnCancelHandler = () => {
-    openModal(false);
+    setModalDetailsOpen(!isModalDetailsOpen);
   };
 
   return (
@@ -195,22 +186,6 @@ const Proposition = ({
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
       />
-      <Modal
-        closable
-        maskClosable={false}
-        title={intl.formatMessage({
-          id: 'reserve_campaign',
-          defaultMessage: `Reserve rewards campaign`,
-        })}
-        visible={isModalOpen}
-        onOk={modalOnOklHandler}
-        onCancel={modalOnCancelHandler}
-      >
-        {intl.formatMessage({
-          id: 'reserve_campaign_accept',
-          defaultMessage: `Do you want to reserve rewards campaign?`,
-        })}
-      </Modal>
     </div>
   );
 };
