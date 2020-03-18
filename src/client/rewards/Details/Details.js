@@ -160,7 +160,7 @@ const Details = ({
                 objectDetails.match_bots.map(bot => (
                   <React.Fragment>
                     ,
-                    <Link className="ml1" to={`/object/${bot}`}>
+                    <Link className="ml1" to={`/@${bot}`}>
                       {`@${bot}`}
                     </Link>
                   </React.Fragment>

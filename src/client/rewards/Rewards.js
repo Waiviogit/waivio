@@ -258,6 +258,7 @@ class Rewards extends React.Component {
           companyAuthor,
         );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        // this.props.history.push(`/rewards/reserved`);
       })
       .catch(() => {
         message.error(
@@ -372,6 +373,7 @@ class Rewards extends React.Component {
                 loading={loadingAssignDiscard}
                 key={`${wobj.object.author_permlink}`}
                 assigned={wobj.assigned}
+                history={this.props.history}
               />
             ),
         ),

@@ -18,6 +18,7 @@ import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
+import { NavLink } from 'react-router-dom';
 
 const Proposition = ({
   intl,
@@ -31,6 +32,7 @@ const Proposition = ({
   post,
   getSingleComment,
   authorizedUserName,
+  history,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
@@ -99,8 +101,10 @@ const Proposition = ({
           companyId: proposition._id,
         });
         setReservation(true);
+        history.push('/rewards/reserved');
+        setModalDetailsOpen(!isModalDetailsOpen);
       })
-      .catch(() => {
+      .catch((e) => {
         message.error(
           intl.formatMessage({
             id: 'cannot_reserve_company',
@@ -108,7 +112,6 @@ const Proposition = ({
           }),
         );
       });
-    setModalDetailsOpen(!isModalDetailsOpen);
   };
 
   return (
