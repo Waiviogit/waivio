@@ -63,6 +63,8 @@ const UserHero = ({
   hasCover,
   isFollowing,
   onTransferClick,
+  rewardFund,
+  rate,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
@@ -80,6 +82,7 @@ const UserHero = ({
                 <UserHeaderLoading />
               ) : (
                 <UserHeader
+                  user={user}
                   username={username}
                   handle={user.name}
                   wobjWeight={user.wobjects_weight}
@@ -90,6 +93,8 @@ const UserHero = ({
                   isFollowing={isFollowing}
                   onTransferClick={onTransferClick}
                   isActive={isUserActive(user)}
+                  rewardFund={rewardFund}
+                  rate={rate}
                 />
               )}
               <UserMenuWrapper followers={followersCount} following={followingCount} />
@@ -111,6 +116,8 @@ UserHero.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
+  rate: PropTypes.number.isRequired,
+  rewardFund: PropTypes.shape().isRequired,
 };
 
 UserHero.defaultProps = {
