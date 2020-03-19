@@ -55,10 +55,10 @@ export const getObjectTypeMap = ( map = {}) => (dispatch) => {
   const filters = {rating: [], map};
   const typeName = 'restaurant';
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
-  return dispatch(getObjectType(typeName, actionType, filters, { limit: 300, skip: 0 }));
+  return dispatch(getObjectType(typeName, actionType, filters, { limit: 50, skip: 0 }));
 };
 
-export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 300 } = {}) => (dispatch, getState) => {
+export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (dispatch, getState) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
