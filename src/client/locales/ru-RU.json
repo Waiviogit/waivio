@@ -970,6 +970,7 @@
   "headerAuthorized.deposit": "Депозит",
   "headerAuthorized.openDeals": "Открытые сделки",
   "headerAuthorized.closedDeals": "Закрытые сделки",
+  "headerAuthorized.allBalances": "Весь баланс",
   "deals.opened": "Сделка открыта",
   "deals.price": "Стоимость",
   "deals.cumPnl": "Общий P&L",

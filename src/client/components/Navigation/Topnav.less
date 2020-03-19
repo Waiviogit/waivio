@@ -95,6 +95,44 @@
     }
   }
 
+  &__broker {
+    //TODO: need mobile design
+    display: none;
+    @media @small {
+      display: flex;
+      position: absolute;
+      box-sizing: border-box;
+      top: 48px;
+      right: 0;
+      left: unset;
+      justify-content: space-between;
+      width: 270px;
+      font-size: 16px;
+      color: @white;
+      height: 36px;
+    }
+
+    .ant-dropdown-trigger {
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      .CurrencyItem {
+        height: 100%;
+        margin: 0 2px 0 0;
+
+        &__beaxy-icon {
+          margin-right: 2px;
+        }
+
+        &__value {
+          color: @blue-botticelli;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
   &__search-content-small {
     margin-left: 10px;
     font-size: small;
@@ -695,6 +733,21 @@ div[data-dir='rtl'] .Topnav {
     @media @small and (max-width: @small-bp) {
       width: 46%;
     }
+  }
+}
+
+.currencies-dropdown {
+  .ant-dropdown-menu-item {
+    border-bottom: 1px solid @white-gainsboro;
+  }
+
+  .ant-dropdown-menu-item:last-child {
+    border-bottom: 0;
+  }
+
+  .CurrencyItem {
+    margin: 0;
+    padding: 0;
   }
 }
 

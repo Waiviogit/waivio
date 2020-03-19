@@ -138,14 +138,13 @@ class Wallet extends Component {
   }
 
   getBeaxyBalanceWithLogo = () => {
-    const { currenciesDescriptions, beaxyBalance } = this.props;
+    const { beaxyBalance } = this.props;
     const { isShowMoreBeaxy } = this.state;
     const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
     if (!isShowMoreBeaxy) {
-      const validCurrencies = sortedBalance.filter(item => item.balance > 0);
-      return getHoldingsWithLogo(validCurrencies, currenciesDescriptions);
+      return sortedBalance.filter(item => item.balance > 0);
     }
-    return getHoldingsWithLogo(sortedBalance, currenciesDescriptions);
+    return sortedBalance;
   };
 
   showMoreToggler = () => {
@@ -166,7 +165,6 @@ class Wallet extends Component {
       cryptosPriceHistory,
       screenSize,
       guestBalance,
-      // beaxyBalance,
     } = this.props;
     const { isShowMoreBeaxy } = this.state;
     const userKey = getUserDetailsKey(user.name);

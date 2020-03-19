@@ -10,6 +10,7 @@ import {
 import BTooltip from '../components/BTooltip';
 import Loading from '../components/Icon/Loading';
 import USDDisplay from '../components/Utils/USDDisplay';
+import CurrencyItem from './CurrencyItem/CurrencyItem';
 
 import './UserWalletSummary.less';
 
@@ -98,21 +99,7 @@ const UserWalletSummary = ({
       <React.Fragment>
         <div className="UserWalletSummary">
           {beaxyBalance.map(item => (
-            <div className="UserWalletSummary__item">
-              <i
-                className="UserWalletSummary__beaxy-icon"
-                style={{ backgroundImage: `url(${item.logoUrl})` }}
-              />
-              <div className="UserWalletSummary__label">
-                <div>{item.name}</div>
-              </div>
-              <div className="UserWalletSummary__value">
-                <span>
-                  <FormattedNumber value={item.balance ? item.balance : 0} />
-                  {` ${item.currency}`}
-                </span>
-              </div>
-            </div>
+            <CurrencyItem item={item} />
           ))}
         </div>
         <div className="UserWalletSummary__show-more">

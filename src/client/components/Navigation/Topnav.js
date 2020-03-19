@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { sortBy, isEmpty, isEqual } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu } from 'antd';
+import { AutoComplete, Dropdown, Icon, Input, Menu, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -19,6 +19,8 @@ import { disconnectBroker } from '../../../investarena/redux/actions/brokersActi
 import {
   getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
+  getBeaxyWallet,
+  getCurrenciesDescriptions,
   getIsAuthenticated,
   getIsLoadingNotifications,
   getNightmode,
@@ -50,6 +52,8 @@ import { getTopPosts } from '../../../waivioApi/ApiClient';
 import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
 import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import './Topnav.less';
+import { getHoldingsWithLogo } from '../../user/usersHelper';
+import CurrencyItem from '../../wallet/CurrencyItem/CurrencyItem';
 
 @injectIntl
 @withRouter
@@ -68,6 +72,8 @@ import './Topnav.less';
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
+    beaxyBalance: getBeaxyWallet(state),
+    currenciesDescriptions: getCurrenciesDescriptions(state),
   }),
   {
     disconnectBroker,
@@ -120,6 +126,7 @@ class Topnav extends React.Component {
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
     isGuest: PropTypes.bool,
+    beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -135,6 +142,7 @@ class Topnav extends React.Component {
     screenSize: 'medium',
     messagesCount: 0,
     isGuest: false,
+    beaxyBalance: [],
   };
 
   constructor(props) {
@@ -158,6 +166,10 @@ class Topnav extends React.Component {
       weeklyChosenPost: '',
       scrolling: false,
       visible: false,
+      initFirstCurrency: {},
+      initSecondCurrency: {},
+      firstCurrency: {},
+      secondCurrency: {},
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -190,6 +202,16 @@ class Topnav extends React.Component {
     ) {
       this.debouncedSearchByUser(this.state.searchBarValue);
       this.debouncedSearchByObjectTypes(this.state.searchBarValue);
+    }
+    if (prevProps.beaxyBalance !== this.props.beaxyBalance && !!this.props.beaxyBalance.length) {
+      if (isEmpty(this.state.firstCurrency)) {
+        this.setState({ initFirstCurrency: this.props.beaxyBalance[0] });
+      }
+      if (isEmpty(this.state.secondCurrency)) {
+        this.setState({
+          initSecondCurrency: this.props.beaxyBalance[1] ? this.props.beaxyBalance[1] : {},
+        });
+      }
     }
   }
 
@@ -847,6 +869,77 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
+  setFirstCurrency = item => {
+    this.setState({ firstCurrency: item });
+  };
+
+  setSecondCurrency = item => {
+    this.setState({ secondCurrency: item });
+  };
+
+  currenciesMenu = (setCurrency, firstCurrency, secondCurrency) => {
+    const { beaxyBalance } = this.props;
+    const filteredBalance = beaxyBalance.filter(
+      item => !isEqual(item, firstCurrency) && !isEqual(item, secondCurrency),
+    );
+    const sortedBalance = sortBy(filteredBalance, 'value').reverse();
+    return (
+      <Menu>
+        {sortedBalance.map(item => (
+          <Menu.Item key="0" onClick={() => setCurrency(item)}>
+            <CurrencyItem item={item} isSmall />
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+  };
+
+  dropDownCurrencies = () => {
+    const { beaxyBalance } = this.props;
+    const { firstCurrency, initFirstCurrency, secondCurrency, initSecondCurrency } = this.state;
+    const firstCurrencyRender = !isEmpty(firstCurrency) ? firstCurrency : initFirstCurrency;
+    const secondCurrencyRender = !isEmpty(secondCurrency) ? secondCurrency : initSecondCurrency;
+    const currenciesFirstMenu = this.currenciesMenu(
+      this.setFirstCurrency,
+      firstCurrencyRender,
+      secondCurrencyRender,
+    );
+    const currenciesSecondMenu = this.currenciesMenu(
+      this.setSecondCurrency,
+      firstCurrencyRender,
+      secondCurrencyRender,
+    );
+    if (beaxyBalance && !!beaxyBalance.length) {
+      return (
+        <React.Fragment>
+          <Dropdown
+            overlayClassName="currencies-dropdown"
+            placement="bottomCenter"
+            overlay={currenciesFirstMenu}
+            trigger={['click']}
+          >
+            <div>
+              <CurrencyItem item={firstCurrencyRender} isSmall />
+              <Icon type="down" />
+            </div>
+          </Dropdown>
+          <Dropdown
+            overlayClassName="currencies-dropdown"
+            placement="bottomCenter"
+            overlay={currenciesSecondMenu}
+            trigger={['click']}
+          >
+            <div>
+              <CurrencyItem item={secondCurrencyRender} isSmall />
+              <Icon type="down" />
+            </div>
+          </Dropdown>
+        </React.Fragment>
+      );
+    }
+    return null;
+  };
+
   render() {
     const {
       intl,
@@ -861,6 +954,7 @@ class Topnav extends React.Component {
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
+    const dropDownCurrencies = this.dropDownCurrencies();
     // const downBar = (
     //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
     //     <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
@@ -980,9 +1074,8 @@ class Topnav extends React.Component {
           </div>
           <div className="Topnav__right-bottom">
             {this.content()}
-
-            {isAuthenticated && (
-              <div className="Topnav__broker">
+            <div className={classNames('Topnav__broker', { 'justify-end': !isAuthenticated })}>
+              {!isAuthenticated ? (
                 <div className="st-header-broker-balance-pl-wrap">
                   <Button
                     type={platformName === 'widgets' ? 'dashed' : 'primary'}
@@ -994,8 +1087,10 @@ class Topnav extends React.Component {
                     })}
                   </Button>
                 </div>
-              </div>
-            )}
+              ) : (
+                dropDownCurrencies
+              )}
+            </div>
           </div>
         </div>
       </div>

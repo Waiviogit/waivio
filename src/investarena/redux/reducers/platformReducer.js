@@ -34,6 +34,7 @@ const initialState = {
   userSettings: {},
   accountsMap: {},
   walletMap: {},
+  userWallet: [],
   currencySettings: {},
   currenciesDescriptions: {},
   isLoading: false,
@@ -78,6 +79,7 @@ export default function(state = initialState, action) {
           state.userStatistics,
           state.currencySettings,
           state.walletMap,
+          state.currenciesDescriptions,
         ),
       };
     }
