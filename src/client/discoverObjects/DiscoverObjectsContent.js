@@ -188,15 +188,15 @@ class DiscoverObjectsContent extends Component {
     this.setState({ loadingAssign: true });
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
-      .then(() =>
+      .then(() => {
         message.success(
           this.props.intl.formatMessage({
             id: 'assigned_successfully',
             defaultMessage: 'Assigned successfully',
           }),
-        ),
-      )
-      .then(() => this.setState({ loadingAssign: false }))
+        );
+        this.setState({ loadingAssign: false });
+      })
       .catch(() => {
         message.error(
           this.props.intl.formatMessage({

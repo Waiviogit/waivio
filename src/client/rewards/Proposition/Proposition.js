@@ -18,22 +18,20 @@ import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
-import { NavLink } from 'react-router-dom';
 
 const Proposition = ({
-                       intl,
-                       proposition,
-                       assignProposition,
-                       assignCommentPermlink,
-                       discardProposition,
-                       loading,
-                       wobj,
-                       assigned,
-                       post,
-                       getSingleComment,
-                       authorizedUserName,
-                       history,
-                     }) => {
+  intl,
+  proposition,
+  assignProposition,
+  assignCommentPermlink,
+  discardProposition,
+  loading,
+  wobj,
+  assigned,
+  post,
+  getSingleComment,
+  authorizedUserName,
+}) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -83,7 +81,6 @@ const Proposition = ({
       });
   };
 
-
   const reserveOnClickHandler = () => {
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
@@ -116,10 +113,10 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition}/>
+        <CampaignCardHeader campaignData={proposition} />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id}/>
+        <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
       </div>
       <div
         className={classNames('Proposition__footer', {
@@ -156,13 +153,13 @@ const Proposition = ({
                   })}
                 </Button>
                 {proposition.count_reservation_days &&
-                `${intl.formatMessage({
-                  id: 'for_days',
-                  defaultMessage: `for`,
-                })} ${proposition.count_reservation_days} ${intl.formatMessage({
-                  id: 'days',
-                  defaultMessage: `days`,
-                })}`}
+                  `${intl.formatMessage({
+                    id: 'for_days',
+                    defaultMessage: `for`,
+                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                    id: 'days',
+                    defaultMessage: `days`,
+                  })}`}
               </div>
             )}
             <div className="Proposition__footer-details" onClick={toggleModalDetails}>
@@ -172,7 +169,7 @@ const Proposition = ({
                   defaultMessage: `Details`,
                 })}
               </span>
-              <Icon type="right"/>
+              <Icon type="right" />
             </div>
           </React.Fragment>
         )}
