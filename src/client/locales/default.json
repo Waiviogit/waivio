@@ -1056,5 +1056,7 @@
   "sing_in_modal_message": "Waivio is powered by Steem open social blockchain",
   "sing_in_modal_rules": "By using this Service, you agree to be bound by",
   "privacy_policy": "the Privacy Policy",
-  "cookies_policy": "the Cookies Policy"
+  "cookies_policy": "the Cookies Policy",
+  "mutual_follow": "mutual following",
+  "following_user": "following"
 }

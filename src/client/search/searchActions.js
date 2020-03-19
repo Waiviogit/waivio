@@ -2,7 +2,7 @@ import { each, concat, reverse, sortBy } from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getSuitableLanguage, getFollowingList } from '../reducers';
+import { getSuitableLanguage, getFollowingList, getAuthenticatedUserName } from '../reducers';
 import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
@@ -38,6 +38,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
 ) => {
   const state = getState();
   const searchString = replacer(search, '@');
+  const user = getAuthenticatedUserName(state);
 
   dispatch({
     type: AUTO_COMPLETE_SEARCH.ACTION,
@@ -47,6 +48,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
         userLimit,
         wobjectsLimi,
         objectTypesLimit,
+        user,
       ).then(result => ({
         result,
         search: searchString,

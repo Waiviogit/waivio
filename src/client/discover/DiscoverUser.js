@@ -29,8 +29,8 @@ const DiscoverUser = ({ user, isReblogged }) => {
               {has(user, 'wobjects_weight') && <WeightTag weight={user.wobjects_weight} />}
               {isReblogged && (
                 <span className="reblogged">
-                  &nbsp;&middot;{` ${user.followers_count} `}
-                  {user.followsMe && (
+                  &middot;&nbsp;&nbsp;{` ${user.followers_count} `}
+                  {user.followsYou && (
                     <span>
                       &middot;&nbsp;
                       <FormattedMessage id="follows you" defaultMessage="follows you" />
