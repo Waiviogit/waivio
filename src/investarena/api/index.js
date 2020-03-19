@@ -8,10 +8,12 @@ import Forecasts from './Forecasts';
 import Statistics from './Statistics';
 import ApiClient from './ApiClient';
 import QuickForecast from './QuickForecast';
+import Platform from './Platform';
 
 export default function({ apiPrefix } = {}) {
   const api = new ApiClient({ prefix: apiPrefix });
   const apiForecast = new ApiClient({ prefix: '' });
+  const apiPlatform = new ApiClient({ prefix: '' });
 
   return {
     authentications: new Authentications({ apiClient: api }),
@@ -23,5 +25,6 @@ export default function({ apiPrefix } = {}) {
     forecasts: new Forecasts({ apiClient: api }),
     quickForecast: new QuickForecast({ apiClient: apiForecast }),
     statistics: new Statistics({ apiClient: api }),
+    platform: new Platform({ apiClient: apiPlatform }),
   };
 }

@@ -21,6 +21,7 @@ import {
   GET_CURRENCY_SETTINGS,
   UPDATE_USER_WALLET,
   CLEAN_STATISTICS_DATA,
+  GET_CURRENCIES_DESCRIPTIONS,
 } from '../actions/platformActions';
 import { fillUserStatistics, getHoldingsByAccounts } from '../../platform/platformHelper';
 // import { SIGN_OUT_SUCCESS } from '../actions/authenticate/authenticate';
@@ -34,6 +35,8 @@ const initialState = {
   accountsMap: {},
   walletMap: {},
   currencySettings: {},
+  currenciesDescriptions: {},
+  userWallet: {},
   isLoading: false,
   accountCurrency: 'USD',
   currentAccountName: '',
@@ -87,6 +90,8 @@ export default function(state = initialState, action) {
       return { ...state, walletMap: action.payload };
     case UPDATE_USER_ACCOUNT_CURRENCY:
       return { ...state, accountCurrency: action.payload };
+    case GET_CURRENCIES_DESCRIPTIONS.SUCCESS:
+      return { ...state, currenciesDescriptions: action.payload.instrumentsSymbolDescriptions };
     case UPDATE_USER_ACCOUNTS:
       return {
         ...state,
@@ -122,3 +127,5 @@ export const getPlatformName = state => state.platformName;
 export const getAccountsMap = state => state.accountsMap;
 export const getCurrencySettings = state => state.currencySettings;
 export const getUserStatistics = state => state.userStatistics;
+export const getBeaxyWallet = state => state.userWallet;
+export const getCurrenciesDescriptions = state => state.currenciesDescriptions;

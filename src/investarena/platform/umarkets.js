@@ -15,6 +15,7 @@ import {
   getAccountStatisticsMap,
   getCurrencySettings,
   updateUserWallet,
+  getCurrenciesDescription,
 } from '../redux/actions/platformActions';
 import {
   getOpenDealsSuccess,
@@ -160,6 +161,7 @@ export default class Umarkets {
     this.getUserStatistics();
     this.getUserRates();
     this.getCrossStatistics();
+    this.getCryptoCurrenciesDescription();
     // this.getOpenDeals();
     // this.getClosedDeals();
   }
@@ -262,6 +264,10 @@ export default class Umarkets {
     }
   }
 
+  getCryptoCurrenciesDescription() {
+    this.dispatch(getCurrenciesDescription());
+  }
+
   sendRequestToPlatform(cmd, params, submissionReason) {
     if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
       try {
@@ -282,7 +288,6 @@ export default class Umarkets {
 
   onWebSocketMessage(mes) {
     const result = JSON.parse(mes.body);
-    console.log('result', result);
     if (result.type === 'response' || result.type === 'update') {
       switch (result.cmd) {
         case CMD.getUserRates:
