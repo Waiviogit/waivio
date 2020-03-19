@@ -282,16 +282,6 @@ export const fieldsRules = {
       },
     },
     {
-      min: 0,
-      message: {
-        intlId: {
-          id: 'field_is_empty',
-          defaultMessage: '',
-        },
-        intlMeta: { value: 0 },
-      },
-    },
-    {
       validator: true,
     },
   ],

@@ -733,12 +733,6 @@ export default class AppendForm extends Component {
     const rules = fieldsRules[fieldName] || [];
 
     return rules.map(rule => {
-      if (has(rule, 'min')) {
-        return {
-          ...rule,
-          message: intl.formatMessage(get(rule, 'message.intlId'), get(rule, 'message.intlMeta')),
-        };
-      }
       if (has(rule, 'message')) {
         return {
           ...rule,
