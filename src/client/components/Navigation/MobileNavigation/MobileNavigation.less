@@ -5,6 +5,7 @@
   display: flex;
   padding: 8px 15px;
   font-size: 1rem;
+  margin-top: -20px;
 
   @media @small {
     padding: 8px 0;
@@ -25,10 +26,12 @@
   &__title {
     font-weight: 500;
   }
+
   &__topic {
     font-weight: 600;
     padding-right: 5px;
   }
+
   &__selector {
     font-size: 1rem;
     font-weight: 400;
@@ -37,19 +40,24 @@
     & > span {
       color: @primary-color;
     }
+
     &:hover {
       color: @primary-color;
     }
   }
+
   &__toggle-map {
     padding: 10px 0 5px 0;
   }
+
   &__toggle-map,
   &__tags-block {
     padding-left: 15px;
+
     @media @small, @medium, @large {
       display: none;
     }
+
     &.common {
       display: none;
 
@@ -58,10 +66,12 @@
       }
     }
   }
+
   &__selection-block {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     @media @medium {
       justify-content: flex-end;
     }

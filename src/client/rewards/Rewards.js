@@ -12,6 +12,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
+  getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
 } from '../reducers';
@@ -35,6 +36,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import './Rewards.less';
+import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
 
 @withRouter
 @injectIntl
@@ -45,8 +47,9 @@ import './Rewards.less';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
+    wobjects: getFilteredObjectsMap(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign },
+  { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
 )
 class Rewards extends React.Component {
   static propTypes = {
@@ -62,6 +65,8 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
+    getObjectTypeMap: PropTypes.func.isRequired,
+    wobjects: PropTypes.array,
   };
 
   static defaultProps = {
@@ -138,8 +143,12 @@ class Rewards extends React.Component {
     }
   }
 
+  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
+
   getRequiredObjects = () =>
-    map(this.state.propositions, proposition => proposition.required_object);
+    this.state.propositions
+      .filter(proposition => proposition.required_object)
+      .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
@@ -200,7 +209,7 @@ class Rewards extends React.Component {
     });
   };
 
-  setCoordinates = () => {
+  resetMapFilter = () => {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters } = this.state;
     this.setState({ loadingCampaigns: true });
@@ -214,9 +223,8 @@ class Rewards extends React.Component {
       sort,
       activeFilters,
     });
+    this.setState({ isSearchAreaFilter: false });
   };
-
-  resetMapFilter = () => this.setState({ isSearchAreaFilter: false });
 
   handleSortChange = sort => {
     const { radius, coordinates, activeFilters } = this.state;
@@ -308,7 +316,7 @@ class Rewards extends React.Component {
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
+            defaultMessage: 'Reservation released',
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
@@ -506,6 +514,7 @@ class Rewards extends React.Component {
                 <div className="right">
                   {!isEmpty(this.props.userLocation) && !isCreate && (
                     <MapWrap
+                      setMapArea={this.setMapArea}
                       wobjects={this.getRequiredObjects()}
                       userLocation={this.props.userLocation}
                       onMarkerClick={this.goToCampaign}

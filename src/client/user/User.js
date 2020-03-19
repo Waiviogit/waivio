@@ -12,6 +12,8 @@ import {
   getIsAuthenticated,
   getIsUserFailed,
   getIsUserLoaded,
+  getRate,
+  getRewardFund,
   getUser,
   getUsersAccountHistory,
 } from '../reducers';
@@ -36,6 +38,8 @@ import NotFound from '../statics/NotFound';
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
     usersAccountHistory: getUsersAccountHistory(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   {
     getUserAccount,
@@ -57,6 +61,8 @@ export default class User extends React.Component {
     openTransfer: PropTypes.func,
     getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
+    rate: PropTypes.number.isRequired,
+    rewardFund: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -132,7 +138,15 @@ export default class User extends React.Component {
   };
 
   render() {
-    const { authenticated, authenticatedUser, loaded, failed, match } = this.props;
+    const {
+      authenticated,
+      authenticatedUser,
+      loaded,
+      failed,
+      match,
+      rewardFund,
+      rate,
+    } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -215,6 +229,8 @@ export default class User extends React.Component {
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
             onTransferClick={this.handleTransferClick}
+            rewardFund={rewardFund}
+            rate={rate}
           />
         )}
         <div className="shifted">

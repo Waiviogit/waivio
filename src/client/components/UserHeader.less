@@ -34,6 +34,56 @@
     }
   }
 
+  &__info-mobile {
+    @media @small {
+      display: none;
+    }
+
+    width: 100%;
+    background-color: #fafbfc;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__info-fields {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+
+    div {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:first-child {
+      padding-right: 10px;
+
+      div {
+        text-align: right;
+      }
+    }
+
+    &:last-child {
+      padding-left: 10px;
+
+      div {
+        text-align: left;
+      }
+    }
+  }
+
+  &__about {
+    text-align: center;
+  }
+
   &__handle {
     .UserHeader__follows-you {
       display: none;
@@ -69,9 +119,11 @@
   padding: 30px 16px;
   align-items: center;
   flex-direction: column;
+
   a {
     position: relative;
   }
+
   &--active {
     position: absolute;
     left: 75px;
