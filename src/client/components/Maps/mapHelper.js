@@ -5,13 +5,14 @@ export const regexCoordsLatitude = /^(\+|-)?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7
 export const regexCoordsLongitude = /^(\+|-)?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
 // const zeroZoomInPixel = 78206; //  metres/pixel
 const earthAraund = 40075016.686;
+const INITIAL_RADIUS = 12100000;
 export const isCoordinatesValid = (lat, lng) =>
   lat &&
   lng &&
   lat > -85 &&
   lat < 85 &&
-  lng > -180 &&
-  lng < 180 &&
+  lng > -181 &&
+  lng < 181 &&
   String(lat).match(regexCoordsLatitude) &&
   String(lng).match(regexCoordsLongitude);
 
@@ -29,4 +30,6 @@ export const getUserCoordinatesByIpAdress = () =>
   });
 
 export const calculateAreaRadius = (zoom, weight, center) =>
-  Math.abs((earthAraund * Math.cos(center[0])) / (2 ** zoom + 8));
+  Math.abs((earthAraund * Math.cos(center[0]) / 2 ** zoom + 8) * 1.2);
+
+export const getRadius = (zoom) => INITIAL_RADIUS / 2.01 ** (zoom - 1);

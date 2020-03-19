@@ -58,7 +58,7 @@ class InterestingObjects extends React.Component {
               />
             ))}
           <h4 className="InterestingObjects__more">
-            <Link to={'/objects'}>
+            <Link to={'/discover-objects'}>
               <FormattedMessage id="discover_more_objects" defaultMessage="Discover more objects" />
             </Link>
           </h4>

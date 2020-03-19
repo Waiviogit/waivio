@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import _ from 'lodash';
 import MapOS from '../Map';
-import { calculateAreaRadius } from '../mapHelper';
+import { getRadius } from '../mapHelper';
 import Loading from '../../Icon/Loading';
 import './MapWrap.less';
 
@@ -18,6 +18,7 @@ class MapWrap extends React.Component {
     userLocation: PropTypes.shape().isRequired,
     customControl: PropTypes.node,
     onCustomControlClick: PropTypes.func,
+    setMapArea: PropTypes.func,
   };
 
   static defaultProps = {
@@ -31,6 +32,7 @@ class MapWrap extends React.Component {
   state = {
     center: [],
     zoom: 8,
+    radius: 72000,
   };
 
   getAreaSearchData = () => {
@@ -42,7 +44,7 @@ class MapWrap extends React.Component {
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     } else {
-      getAreaSearchData({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
+      getAreaSearchData({ radius: getRadius(zoom), coordinates: center });
     }
   };
 
@@ -59,12 +61,12 @@ class MapWrap extends React.Component {
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     } else {
-      onCustomControlClick({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
+      onCustomControlClick({ radius: getRadius(zoom), coordinates: center });
     }
   };
 
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects, customControl } = this.props;
+    const { intl, userLocation, onMarkerClick, wobjects, customControl, setMapArea } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
@@ -97,11 +99,13 @@ class MapWrap extends React.Component {
           <MapOS
             wobjects={wobjects}
             heigth={268}
+            width={270}
             userLocation={userLocation}
             onMarkerClick={onMarkerClick}
             setArea={this.setArea}
             customControl={customControl}
             onCustomControlClick={this.handleCustomControlClick}
+            setMapArea={setMapArea}
           />
         )}
       </div>

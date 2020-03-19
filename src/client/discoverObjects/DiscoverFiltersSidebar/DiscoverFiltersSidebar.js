@@ -8,12 +8,12 @@ import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
   getAvailableFilters,
-  getFilteredObjects,
+  getFilteredObjectsMap,
   getActiveFilters,
   getUserLocation,
   getHasMap,
 } from '../../reducers';
-import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
+import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
@@ -23,7 +23,7 @@ import '../../components/Sidebar/SidebarContentBlock.less';
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store
   const dispatch = useDispatch();
-  const wobjects = useSelector(getFilteredObjects);
+  const wobjects = useSelector(getFilteredObjectsMap);
   const userLocation = useSelector(getUserLocation);
   const filters = useSelector(getAvailableFilters);
   const activeFilters = useSelector(getActiveFilters);
@@ -33,7 +33,10 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     dispatch(getCoordinates());
   }
 
+  const objectType = match.params.typeName;
+
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
+  const setMapArea = map => dispatch(getObjectTypeMap(map));
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
@@ -45,13 +48,14 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
 
   const isTypeHasFilters = memoize(isNeedFilters);
-  return isTypeHasFilters(match.params.objectType) ? (
+  return isTypeHasFilters(objectType) ? (
     <div className="discover-objects-filters">
       {hasMap ? (
         <MapWrap
           wobjects={wobjectsWithMap}
           onMarkerClick={handleMapMarkerClick}
           getAreaSearchData={setSearchArea}
+          setMapArea={setMapArea}
           userLocation={userLocation}
           customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
           onCustomControlClick={handleMapSearchClick}
