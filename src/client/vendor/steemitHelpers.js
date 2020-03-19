@@ -2,6 +2,9 @@ import base58 from 'bs58';
 import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
+import * as steem from 'steem';
+import * as dsteem from 'dsteem';
+
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
@@ -186,6 +189,22 @@ export const calculateVoteValue = (
   return (rshares / recentClaims) * rewardBalance * rate;
 };
 
+export const calculateDownVote = user => {
+  const currentMana = user.voting_manabar.current_mana;
+  const downvoteMana = user.downvote_manabar.current_mana;
+
+  if (currentMana && downvoteMana) {
+    const downvoteUpdate = user.downvote_manabar.last_update_time;
+    const downvotePer = downvoteMana / (currentMana / (user.voting_power / 100) / 4);
+    const secondsago = (new Date() - new Date(downvoteUpdate * 1000)) / 1000;
+    const pow = Math.min((downvotePer * 100 + (10000 * secondsago) / 432000) / 100, 100);
+
+    return pow % 10 ? pow.toFixed(2) : pow.toFixed(0);
+  }
+
+  return 0;
+};
+
 export const calculateTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
   const receivedSP = parseFloat(
     formatter.vestToSteem(user.received_vesting_shares, totalVestingShares, totalVestingFundSteem),
@@ -254,3 +273,7 @@ export const roundNumberToThousands = number => {
   }
   return number;
 };
+
+export const dSteem = new dsteem.Client('https://api.steemit.com');
+
+export const calcReputation = rep => steem.formatter.reputation(rep);

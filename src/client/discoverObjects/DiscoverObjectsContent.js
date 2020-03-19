@@ -16,7 +16,7 @@ import {
   getAuthenticatedUserName,
 } from '../reducers';
 import {
-  getObjectType,
+  getObjectTypeByStateFilters,
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
@@ -59,7 +59,7 @@ const SORT_OPTIONS = {
   }),
   {
     dispatchClearObjectTypeStore: clearType,
-    dispatchGetObjectType: getObjectType,
+    dispatchGetObjectType: getObjectTypeByStateFilters,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
@@ -88,7 +88,7 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
   };

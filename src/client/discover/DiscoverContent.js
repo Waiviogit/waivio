@@ -67,7 +67,7 @@ class DiscoverContent extends React.Component {
           loader={<Loading />}
         >
           {topExperts.map(expert => (
-            <DiscoverUser user={expert} key={expert.name} />
+            <DiscoverUser user={expert} key={expert.name} isReblogged />
           ))}
         </ReduxInfiniteScroll>
       </div>
