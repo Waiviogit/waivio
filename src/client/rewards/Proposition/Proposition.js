@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, message, Modal, Icon } from 'antd';
+import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -17,6 +17,7 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
@@ -31,6 +32,7 @@ const Proposition = ({
   post,
   getSingleComment,
   authorizedUserName,
+  history,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
@@ -61,24 +63,24 @@ const Proposition = ({
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
-    rejectReservationCampaign(rejectData)
-      .then(() => {
+    return rejectReservationCampaign(rejectData)
+      .then(() =>
         discardProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
           objPermlink: obj.author_permlink,
           reservationPermlink: rejectData.reservation_permlink,
           unreservationPermlink,
-        });
-      })
-      .catch(() => {
+        }),
+      )
+      .catch(() =>
         message.error(
           intl.formatMessage({
             id: 'cannot_reject_campaign',
             defaultMessage: 'You cannot reject the campaign at the moment',
           }),
-        );
-      });
+        ),
+      );
   };
 
   const reserveOnClickHandler = () => {
@@ -89,25 +91,27 @@ const Proposition = ({
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
     reserveActivatedCampaign(reserveData)
-      .then(() => {
+      .then(() =>
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
           resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
           companyId: proposition._id,
-        });
-        setReservation(true);
-        setTimeout(() => setModalDetailsOpen(!isModalDetailsOpen), 7000);
-      })
-      .catch(() => {
-        message.error(
-          intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-      });
+        }),
+      )
+      .then(() => setReservation(true))
+      .then(() => delay(1500))
+      .then(() => setModalDetailsOpen(!isModalDetailsOpen))
+      .then(() => history.push(`/rewards/reserved`));
+    // .catch(() => {
+    //   message.error(
+    //     intl.formatMessage({
+    //       id: 'cannot_reserve_company',
+    //       defaultMessage: 'You cannot reserve the campaign at the moment',
+    //     }),
+    //   );
+    // });
   };
 
   return (
@@ -136,6 +140,7 @@ const Proposition = ({
             discardPr={discardPr}
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
+            history={history}
           />
         ) : (
           <React.Fragment>

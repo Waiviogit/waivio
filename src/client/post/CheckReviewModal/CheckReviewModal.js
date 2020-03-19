@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get, memoize } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
 import './CheckReviewModal.less';
 
 const getReviewRequirements = memoize((campaign, authorName) => ({
@@ -139,16 +139,14 @@ const CheckReviewModal = ({
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(secondaryObject && secondaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_secondaryObject_link`,
-                defaultMessage: 'Link to ',
-              }
-            )}
+            {intl.formatMessage({
+              id: `check_review_secondaryObject_link`,
+              defaultMessage: 'Link to ',
+            })}
             <Link className="ml1" to={`/object/${postRequirements.secondaryObject}`}>
               {postRequirements.secondaryObject}
             </Link>
-              :
+            :
             <Link
               to={`/object/${postRequirements.secondaryObject}`}
             >{` www.waivio.com/object/${postRequirements.secondaryObject}`}</Link>
@@ -156,24 +154,22 @@ const CheckReviewModal = ({
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(primaryObject && primaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_primaryObject_link`,
-                defaultMessage: 'Link to ',
-              }
-            )}
+            {intl.formatMessage({
+              id: `check_review_primaryObject_link`,
+              defaultMessage: 'Link to ',
+            })}
             <Link className="ml1" to={`/object/${postRequirements.primaryObject}`}>
               {postRequirements.primaryObject}
             </Link>
-              :
+            :
             <Link
               to={`/object/${postRequirements.primaryObject}`}
             >{` www.waivio.com/object/${postRequirements.primaryObject}`}</Link>
-             ;
+            ;
           </div>
         </div>
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" type='primary' onClick={onEdit} size="large">
+          <Button htmlType="button" type="primary" onClick={onEdit} size="large">
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
           </Button>
         </div>

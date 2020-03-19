@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import { find, includes, isEmpty, map, remove, size } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -20,12 +20,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import {
-  activateCampaign,
-  assignProposition,
-  declineProposition,
-  getCoordinates,
-} from '../user/userActions';
+import { activateCampaign, assignProposition, declineProposition, getCoordinates } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
@@ -35,8 +30,8 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import './Rewards.less';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import './Rewards.less';
 
 @withRouter
 @injectIntl
@@ -66,7 +61,6 @@ class Rewards extends React.Component {
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
-    wobjects: PropTypes.array,
   };
 
   static defaultProps = {
@@ -243,7 +237,7 @@ class Rewards extends React.Component {
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
-    this.props
+    return this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
       .then(() => {
         message.success(
@@ -252,14 +246,14 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
+        // eslint-disable-next-line no-unreachable
         const updatedPropositions = this.updateProposition(
           companyId,
           true,
           objPermlink,
           companyAuthor,
         );
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-        setTimeout(() => this.props.history.push(`/rewards/reserved`), 2000)
+        return this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
         message.error(
@@ -268,13 +262,12 @@ class Rewards extends React.Component {
             defaultMessage: 'You cannot reserve the campaign at the moment',
           }),
         );
-        this.setState({ loadingAssignDiscard: false });
+        return this.setState({ loadingAssignDiscard: false });
       });
   };
 
   // eslint-disable-next-line consistent-return
-  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
-    const newPropos = this.state.propositions.map(proposition => {
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => this.state.propositions.map(proposition => {
       if (proposition._id === propsId) {
         proposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
@@ -292,8 +285,6 @@ class Rewards extends React.Component {
       }
       return proposition;
     });
-    return newPropos;
-  };
 
   discardProposition = ({
     companyAuthor,
@@ -304,7 +295,7 @@ class Rewards extends React.Component {
     reservationPermlink,
   }) => {
     this.setState({ loadingAssignDiscard: true });
-    this.props
+    return this.props
       .declineProposition({
         companyAuthor,
         companyPermlink,
@@ -321,8 +312,7 @@ class Rewards extends React.Component {
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        setTimeout(() => this.props.history.push(`/rewards/active`), 2000);
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        return this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
         console.log(e.toString());
@@ -332,7 +322,7 @@ class Rewards extends React.Component {
             defaultMessage: 'You cannot reject the campaign at the moment',
           }),
         );
-        this.setState({ loadingAssignDiscard: false });
+        return this.setState({ loadingAssignDiscard: false });
       });
   };
   // END Propositions

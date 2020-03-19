@@ -12,6 +12,7 @@ import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
+import { delay } from '../rewardsHelpers';
 import './CampaignFooter.less';
 
 @injectIntl
@@ -50,6 +51,7 @@ class CampaignFooter extends React.Component {
     toggleModalDetails: PropTypes.func,
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -81,7 +83,7 @@ class CampaignFooter extends React.Component {
       modalVisible: false,
       reservedUser: {},
       daysLeft: 0,
-      loading: false
+      loading: false,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -176,8 +178,12 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    setTimeout(() => this.toggleModal(), 6000);
-    discardPr(proposedWobj);
+    discardPr(proposedWobj)
+      .then(() => delay(1500))
+      .then(() => {
+        this.toggleModal();
+        this.props.history.push(`/rewards/active`);
+      });
   };
 
   handlePostPopoverMenuClick(key) {
