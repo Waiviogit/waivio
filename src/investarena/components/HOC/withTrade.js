@@ -66,16 +66,6 @@ const withTrade = Component => {
         }
       }
     }
-    handleClickLess = () => {
-      const amount = PlatformHelper.lessDeal(this.state.amount, this.props.quoteSettings);
-      const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
-      this.setState({ amount, margin });
-    };
-    handleClickMore = () => {
-      const amount = PlatformHelper.moreDeal(this.state.amount, this.props.quoteSettings);
-      const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
-      this.setState({ amount, margin });
-    };
     handleClickOpenDeal = (side, caller) => {
       this.props.createOpenDeal(side, this.state.amount, this.state.margin, caller);
     };

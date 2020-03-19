@@ -402,28 +402,6 @@ export class PlatformHelper {
     ranges.takeProfit.rate = this.getPriceTakeProfitRange(quote, deal);
     return ranges;
   }
-  static lessDeal(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
-    const step = quoteSettings.quantityIncrement / 1000000;
-    const res = amountInt - step;
-    const decimals = PlatformHelper.countDecimals(step);
-    if (res > quoteSettings.minimumQuantity / 1000000) {
-      return numberFormat(res, decimals);
-    }
-    return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
-  }
-  static moreDeal(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
-    const step = quoteSettings.quantityIncrement / 1000000;
-    const res = amountInt + step;
-    const decimals = PlatformHelper.countDecimals(step);
-    if (res < quoteSettings.maximumQuantity / 1000000) {
-      return numberFormat(res, decimals);
-    }
-    return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
-  }
   static validateOnBlur(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
