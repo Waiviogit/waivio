@@ -1,0 +1,42 @@
+@import (reference) '../Common.less';
+
+.st-trade-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 100%;
+  box-sizing: border-box;
+  background-image: linear-gradient(to top, rgba(0, 255, 0, .1) 50%, transparent 10%);
+  background-size: 100% 200%;
+  border: 3px solid @color-darkest-gray;
+  border-radius: 4px;
+  border-image: initial;
+  background-position: center top;
+  transition: background-position .1s ease-out 0s;
+  text-transform: uppercase;
+  margin: 0 5px; // todo: pass margins in props
+
+  &:hover {
+    cursor: pointer;
+    transition: box-shadow .5s ease 0s;
+  }
+
+  &.sell {
+    border-color: @color-red-bright;
+    color: @color-red-bright;
+
+    &:hover {
+      box-shadow: @color-red-bright 0 0 .6em .1em inset;
+    }
+  }
+
+  &.buy {
+    border-color: @color-green-bright;
+    color: @color-green-bright;
+
+    &:hover {
+      box-shadow: @color-green-bright 0 0 .6em .1em inset;
+    }
+  }
+}
