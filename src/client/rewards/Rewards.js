@@ -258,7 +258,7 @@ class Rewards extends React.Component {
           companyAuthor,
         );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-        this.props.history.push(`/rewards/reserved`)
+        setTimeout(() => this.props.history.push(`/rewards/reserved`), 2000)
       })
       .catch(() => {
         message.error(
@@ -320,7 +320,7 @@ class Rewards extends React.Component {
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        this.props.history.push(`/rewards/active`);
+        setTimeout(() => this.props.history.push(`/rewards/active`), 2000);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {

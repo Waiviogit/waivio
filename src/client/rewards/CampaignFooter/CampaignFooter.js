@@ -49,6 +49,7 @@ class CampaignFooter extends React.Component {
     discardPr: PropTypes.func,
     toggleModalDetails: PropTypes.func,
     requiredObjectName: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -80,6 +81,7 @@ class CampaignFooter extends React.Component {
       modalVisible: false,
       reservedUser: {},
       daysLeft: 0,
+      loading: false
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -174,7 +176,7 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    this.toggleModal();
+    setTimeout(() => this.toggleModal(), 6000);
     discardPr(proposedWobj);
   };
 
@@ -223,7 +225,8 @@ class CampaignFooter extends React.Component {
       pendingFollowObject,
       intl,
       toggleModalDetails,
-      requiredObjectName
+      requiredObjectName,
+      loading,
     } = this.props;
     return (
       <div className="CampaignFooter">
@@ -271,6 +274,7 @@ class CampaignFooter extends React.Component {
           visible={modalVisible}
           onOk={this.modalOnOklHandler}
           onCancel={this.toggleModal}
+          confirmLoading={loading}
         >
           {intl.formatMessage({
             id: 'reject_campaign_accept',

@@ -101,7 +101,7 @@ const Proposition = ({
           companyId: proposition._id,
         });
         setReservation(true);
-        setModalDetailsOpen(!isModalDetailsOpen);
+        setTimeout(() => setModalDetailsOpen(!isModalDetailsOpen), 7000);
       })
       .catch(() => {
         message.error(
@@ -132,6 +132,7 @@ const Proposition = ({
         {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
           <CampaignFooter
             post={post}
+            loading={loading}
             proposedWobj={proposedWobj}
             requiredObjectPermlink={proposition.required_object.author_permlink}
             requiredObjectName={requiredObjectName}
