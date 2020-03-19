@@ -37,6 +37,8 @@ const Details = ({
 
   let indexItem = 1;
 
+  const onClickHandler = setTimeout(() => reserveOnClickHandler, 1000);
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -193,7 +195,7 @@ const Details = ({
               type="primary"
               loading={loading}
               disabled={isCamaignReserved && !isEligible}
-              onClick={reserveOnClickHandler}
+              onClick={onClickHandler}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
             </Button>
