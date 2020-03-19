@@ -88,7 +88,7 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    userName: PropTypes.string,
+    userName: PropTypes.string.isRequired,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
   };

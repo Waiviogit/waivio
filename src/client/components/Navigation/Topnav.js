@@ -430,7 +430,7 @@ class Topnav extends React.Component {
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
         break;
       case 'user':
-        redirectUrl = `/search?q=${searchBarValue}`;
+        redirectUrl = `/discover/?search=${searchBarValue}`;
         break;
       case 'type':
       default:
@@ -548,7 +548,7 @@ class Topnav extends React.Component {
                   <Avatar username={option.account} size={40} />
                   <div className="Topnav__search-content">{option.account}</div>
                   <span className="Topnav__search-expertize">
-                    <WeightTag weight={option.weight} />
+                    <WeightTag weight={option.wobjects_weight} />
                     &middot;
                     <span className="Topnav__search-follow-counter">{option.followers_count}</span>
                   </span>
