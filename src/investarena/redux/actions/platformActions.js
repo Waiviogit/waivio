@@ -2,7 +2,6 @@ import Cookies from 'js-cookie';
 import apiExtra from '../../apiExtra/Account';
 import { authorizeTokenSuccess } from './userActions';
 import { singleton } from '../../platform/singletonPlatform';
-import { GET_PERFORMERS_STATS } from './topPerformersActions';
 import api from '../../configApi/apiResources';
 import { createAsyncActionType } from '../../../client/helpers/stateHelpers';
 
