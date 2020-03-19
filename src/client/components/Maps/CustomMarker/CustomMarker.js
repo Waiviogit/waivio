@@ -33,15 +33,6 @@ class CustomMarker extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const images = this.props.isMarked ? [pin, pinHover] : [pinMarked, pinHoverMarked];
-
-    images.forEach(pinImg => {
-      const img = new window.Image();
-      img.src = pinImg;
-    });
-  }
-
   eventParameters = event => ({
     event,
     anchor: this.props.anchor,
