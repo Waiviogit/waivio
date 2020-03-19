@@ -1,6 +1,3 @@
-
-export const agreements = {
-
-};
+export const agreements = {};
 
 export default null;
