@@ -24,11 +24,14 @@ export const GET_RANDOM_EXPERTS_START = '@users/GET_RANDOM_EXPERTS_START';
 export const GET_RANDOM_EXPERTS_SUCCESS = '@users/GET_RANDOM_EXPERTS_SUCCESS';
 export const GET_RANDOM_EXPERTS_ERROR = '@users/GET_RANDOM_EXPERTS_ERROR';
 
-export const getRandomExperts = () => dispatch =>
-  dispatch({
+export const getRandomExperts = () => (dispatch, getState) => {
+const user = getAuthenticatedUserName(getState());
+
+dispatch({
     type: GET_RANDOM_EXPERTS,
-    payload: ApiClient.getTopUsers(true),
-  });
+    payload: ApiClient.getTopUsers(user, {isRandom: true}),
+  })
+};
 
 export const GET_TOP_EXPERTS = '@users/GET_TOP_EXPERTS';
 export const GET_TOP_EXPERTS_START = '@users/GET_TOP_EXPERTS_START';
@@ -37,10 +40,10 @@ export const GET_TOP_EXPERTS_ERROR = '@users/GET_TOP_EXPERTS_ERROR';
 
 export const getTopExperts = (limit = 20, skip = 0) => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
-  console.log(user);
+
   dispatch({
     type: GET_TOP_EXPERTS,
-    payload: ApiClient.getTopUsers(false, { limit, skip }, user),
+    payload: ApiClient.getTopUsers(user, {isRandom: false, limit, skip }),
     meta: { limit },
   });
 };
