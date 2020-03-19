@@ -67,24 +67,17 @@ class MapOS extends React.Component {
   }
 
   onBoundsChanged = ({ center, zoom }) => {
-    const { isFullscreenMode } = this.props;
-    if (isFullscreenMode) {
-      this.setRadiusFullscreen(zoom);
-    } else {
-      this.setRadius(zoom);
-    }
+    this.setState({radius: this.calculateRadius(zoom)});
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
   };
 
-  setRadius = zoom => {
-    this.setState({radius: getRadius(zoom)});
-  };
-
-  setRadiusFullscreen = zoom => {
-    const { width } = this.props;
-    this.setState({ radius: getRadius(zoom) * this.mapRef.current.state.width/width});
+  calculateRadius = zoom => {
+    const { width, isFullscreenMode } = this.props;
+    let radius = getRadius(zoom);
+    if (isFullscreenMode) radius = (radius * this.mapRef.current.state.width) / width;
+    return radius;
   };
 
   getMarkers = props => {
@@ -152,17 +145,17 @@ class MapOS extends React.Component {
   };
 
   incrementZoom = () => {
-    const { isFullscreenMode } = this.props;
-    return this.state.zoom < 18
-      ? this.setState({ zoom: this.state.zoom + 1 }, () =>  (isFullscreenMode ? this.setRadiusFullscreen(this.state.zoom) : this.setRadius(this.state.zoom)))
-      : null;
+    if (this.state.zoom >= 18) return null;
+    const zoom = this.state.zoom + 1;
+    const radius = this.calculateRadius(zoom);
+    this.setState({ zoom, radius });
   };
 
   decrementZoom = () => {
-    const { isFullscreenMode } = this.props;
-    return this.state.zoom > 0
-      ? this.setState({ zoom: this.state.zoom - 1 }, () =>  (isFullscreenMode ? this.setRadiusFullscreen(this.state.zoom) : this.setRadius(this.state.zoom)))
-      : null;
+    if (this.state.zoom <= 1) return null;
+    const zoom = this.state.zoom - 1;
+    const radius = this.calculateRadius(zoom);
+    this.setState({ zoom, radius });
   };
 
   toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);

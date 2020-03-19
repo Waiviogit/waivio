@@ -65,15 +65,14 @@ const objectType = (state = initialState, action) => {
       const {
         related_wobjects: relatedWobjects,
       } = action.payload;
-      const filteredObjects = [
-        ...relatedWobjects
+      const filteredObjects =
+        relatedWobjects
           .filter(
             wObj =>
               !wObj.status ||
               (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
           )
-          .map(wObj => getClientWObj(wObj, locale)),
-      ];
+          .map(wObj => getClientWObj(wObj, locale));
       return {
         ...state,
         mapWobjects: filteredObjects,

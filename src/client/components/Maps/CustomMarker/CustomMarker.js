@@ -1,92 +1,89 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import pinMarked from '../../../../../public/images/icons/pin-mark@2x.png';
 import pinHoverMarked from '../../../../../public/images/icons/pin-hover-mark@2x.png';
-import pinHoverRetina from '../../../../../public/images/icons/pin-hover@2x.png';
-import pinRetina from '../../../../../public/images/icons/pin@2x.png';
+import pinHover from '../../../../../public/images/icons/pin-hover@2x.png';
+import pin from '../../../../../public/images/icons/pin@2x.png';
 
 const imageOffset = {
   left: 15,
   top: 31,
 };
 
-const CustomMarker = ({ payload, anchor, onMouseOut, onMouseOver, onClick, onContextMenu, left, top, hover, isMarked }) => {
-  const [hoverImg, setHoverImg] = useState(false);
-  const eventParameters = (event) => ({
+class CustomMarker extends React.Component {
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+    onContextMenu: PropTypes.func,
+    onMouseOver: PropTypes.func.isRequired,
+    onMouseOut: PropTypes.func.isRequired,
+    left: PropTypes.number,
+    top: PropTypes.number,
+    anchor: PropTypes.array.isRequired,
+    payload: PropTypes.any.isRequired,
+    hover: PropTypes.bool,
+    isMarked: PropTypes.bool.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hoverImg: false,
+    };
+  }
+
+  eventParameters = event => ({
     event,
-    anchor,
-    payload
+    anchor: this.props.anchor,
+    payload: this.props.payload,
   });
 
-  // controls
-  const isRetina = () => typeof window !== 'undefined' && window.devicePixelRatio >= 2;
+  isHover = () => (typeof this.props.hover === 'boolean' ? this.props.hover : this.state.hoverImg);
 
-  // modifiers
-  const isHover = () => typeof hover === 'boolean' ? hover : hoverImg;
-
-  const image = () => isMarked ? (isHover() ? pinHoverMarked : pinMarked) : (isHover() ? pinHoverRetina : pinRetina);
-
-  // lifecycle
-
-  useEffect(() => {
-    const images = isRetina() ? [
-      pinRetina, pinHoverRetina
-    ] : [
-      pinMarked, pinHoverMarked
-    ];
-
-    images.forEach(pinImg => {
-      const img = new window.Image()
-      img.src = pinImg
-    })
-  }, []);
-
-
-  const handleClick = (event) => onClick && onClick(eventParameters(event));
-
-  const handleContextMenu = (event) => onContextMenu && onContextMenu(eventParameters(event));
-
-  const handleMouseOver = (event) => {
-    onMouseOver && onMouseOver(eventParameters(event));
-    setHoverImg(true);
+  image = () => {
+    const { isMarked } = this.props;
+    if (isMarked) return this.isHover() ? pinHoverMarked : pinMarked;
+    return this.isHover() ? pinHover : pin
   };
 
-  const handleMouseOut = (event) => {
-    onMouseOut && onMouseOut(eventParameters(event));
-    setHoverImg(false);
+  handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
+
+  handleContextMenu = event =>
+    this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));
+
+  handleMouseOver = event => {
+    this.props.onMouseOver && this.props.onMouseOver(this.eventParameters(event));
+    this.setState({ hoverImg: true });
   };
 
-  const style = {
-    position: 'absolute',
-    transform: `translate(${left - imageOffset.left}px, ${top - imageOffset.top}px)`,
-    cursor: onClick ? 'pointer' : 'default'
+  handleMouseOut = event => {
+    this.props.onMouseOut && this.props.onMouseOut(this.eventParameters(event));
+    this.setState({ hoverImg: false });
   };
 
-  return (
-    <div style={style}
-         className='pigeon-click-block'
-         onClick={handleClick}
-         onContextMenu={handleContextMenu}
-         onMouseOver={handleMouseOver}
-         onMouseOut={handleMouseOut}>
-      <img src={image()} width={29} height={34} alt='' />
-    </div>
-  )
+  render() {
+    const { left, top, onClick } = this.props;
 
-};
+    const style = {
+      position: 'absolute',
+      transform: `translate(${left - imageOffset.left}px, ${top - imageOffset.top}px)`,
+      cursor: onClick ? 'pointer' : 'default',
+    };
 
-CustomMarker.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  onContextMenu: PropTypes.func,
-  onMouseOver: PropTypes.func.isRequired,
-  onMouseOut: PropTypes.func.isRequired,
-  left: PropTypes.number,
-  top: PropTypes.number,
-  anchor: PropTypes.array.isRequired,
-  payload: PropTypes.any.isRequired,
-  hover: PropTypes.bool,
-  isMarked: PropTypes.bool.isRequired,
-};
+    return (
+      <div
+        style={style}
+        className="pigeon-click-block"
+        onClick={this.handleClick}
+        onContextMenu={this.handleContextMenu}
+        onMouseOver={this.handleMouseOver}
+        onMouseOut={this.handleMouseOut}
+      >
+        <img src={this.image()} width={29} height={34} alt="" />
+      </div>
+    );
+  }
+}
 
 export default CustomMarker;
