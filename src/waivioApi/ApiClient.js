@@ -477,7 +477,7 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getTopUsers = (
   user,
-  { isRandom, limit, skip } = { isRandom: false, limit: 30, skip: 0 },
+  { limit, skip, isRandom } = { limit: 30, skip: 0, isRandom: false },
 ) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
   return new Promise((resolve, reject) => {

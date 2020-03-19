@@ -43,7 +43,7 @@ export const getTopExperts = (limit = 20, skip = 0) => (dispatch, getState) => {
 
   dispatch({
     type: GET_TOP_EXPERTS,
-    payload: ApiClient.getTopUsers(user, { isRandom: false, limit, skip }),
+    payload: ApiClient.getTopUsers(user, { limit, skip }),
     meta: { limit },
   });
 };
