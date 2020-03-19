@@ -36,6 +36,7 @@ const initialState = {
   walletMap: {},
   currencySettings: {},
   currenciesDescriptions: {},
+  userWallet: {},
   isLoading: false,
   accountCurrency: 'USD',
   currentAccountName: '',

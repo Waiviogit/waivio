@@ -166,7 +166,6 @@ class Wallet extends Component {
       cryptosPriceHistory,
       screenSize,
       guestBalance,
-      // beaxyBalance,
     } = this.props;
     const { isShowMoreBeaxy } = this.state;
     const userKey = getUserDetailsKey(user.name);
