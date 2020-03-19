@@ -1058,5 +1058,6 @@
   "sing_in_modal_message": "Waivio работает на Steem с открытым социальным блокчейном",
   "sing_in_modal_rules": "Используя этот Сервис, вы соглашаетесь c",
   "privacy_policy": "Политикой конфиденциальности",
-  "cookies_policy": "Политикой использования файлов cookie"
+  "cookies_policy": "Политикой использования файлов cookie",
+  "mutual__follow": "Взаимная подписка"
 }

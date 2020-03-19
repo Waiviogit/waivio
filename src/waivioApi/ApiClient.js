@@ -441,12 +441,15 @@ export const getObjectType = (typeName, requestData) =>
       .catch(error => reject(error));
   });
 
-export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesLimit = 5) =>
+export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectTypesLimit = 5, user) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
-      headers,
+      headers: {
+        ...headers,
+        user,
+      },
       method: 'POST',
-      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit }),
+      body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -472,11 +475,14 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .catch(error => reject(error));
   });
 
-export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
+export const getTopUsers = ( user, { limit = 30, skip = 0, isRandom = false } = {} ) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.users}${queryString}`, {
-      headers,
+      headers: {
+        ...headers,
+        user,
+      },
       method: 'GET',
     })
       .then(res => res.json())
