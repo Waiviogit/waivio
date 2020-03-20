@@ -9,8 +9,8 @@ import {
 } from '../../../../investarena/redux/selectors/platformSelectors';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
-import './BrokerBalance.less';
 import Loading from '../../Icon/Loading';
+import './BrokerBalance.less';
 
 const BrokerBalance = ({ beaxyBalance, platformName, getStatistics }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
