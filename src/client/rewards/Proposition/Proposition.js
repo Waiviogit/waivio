@@ -40,11 +40,7 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
-  const requiredObjectName = getFieldWithMaxWeight(
-    proposition.required_object,
-    'name',
-    proposition.required_object.author_permlink,
-  );
+  const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
   useEffect(() => {
     getSingleComment(authorizedUserName, assignCommentPermlink);

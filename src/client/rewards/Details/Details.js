@@ -132,7 +132,7 @@ const Details = ({
             {/* eslint-disable-next-line no-plusplus */}
             {`${indexItem++}. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-              {objectDetails.required_object.fields[0].body}
+              {requiredObjectName}
             </Link>
             <span className="no-visible">
               :
