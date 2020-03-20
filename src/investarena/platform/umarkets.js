@@ -11,6 +11,11 @@ import {
   updateUserAccountCurrency,
   updateUserAccounts,
   updateUserStatistics,
+  getUserSettings,
+  getAccountStatisticsMap,
+  getCurrencySettings,
+  updateUserWallet,
+  getCurrenciesDescription,
 } from '../redux/actions/platformActions';
 import {
   getOpenDealsSuccess,
@@ -86,7 +91,7 @@ export default class Umarkets {
     this.platformName = Cookies.get('platformName');
     this.websocket = this.createSockJS();
     this.stompClient = Stomp.over(this.websocket);
-    this.stompClient.debug = msg => console.log('\tstomp client > ', msg);
+    this.stompClient.debug = () => {};
     this.stompClient.heartbeat.outgoing = 2000;
     this.stompClient.heartbeat.incoming = 0;
     this.stompClient.connect(
@@ -106,6 +111,7 @@ export default class Umarkets {
 
   closeWebSocketConnection() {
     if (this.websocket && this.stompClient) {
+      this.dispatch();
       this.websocket.close();
       this.stompClient.disconnect();
     }
@@ -154,6 +160,8 @@ export default class Umarkets {
     this.getUserSettings();
     this.getUserStatistics();
     this.getUserRates();
+    this.getCrossStatistics();
+    this.getCryptoCurrenciesDescription();
     // this.getOpenDeals();
     // this.getClosedDeals();
   }
@@ -176,6 +184,10 @@ export default class Umarkets {
 
   getUserRates() {
     this.sendRequestToPlatform(CMD.getUserRates, '[]');
+  }
+
+  getCrossStatistics() {
+    this.sendRequestToPlatform(CMD.getCrossStatistics, '[]');
   }
 
   // getOpenDeals() {
@@ -252,6 +264,10 @@ export default class Umarkets {
     }
   }
 
+  getCryptoCurrenciesDescription() {
+    this.dispatch(getCurrenciesDescription());
+  }
+
   sendRequestToPlatform(cmd, params, submissionReason) {
     if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
       try {
@@ -285,6 +301,9 @@ export default class Umarkets {
           break;
         case CMD.getUserAccount:
           this.parseUserAccount(result);
+          break;
+        case CMD.getCrossStatistics:
+          this.parseCrossStatistics(result);
           break;
         // *** UNSUPPORTED_COMMAND ***
         // case CMD.getOpenDeals:
@@ -378,10 +397,17 @@ export default class Umarkets {
     }
   }
 
+  parseCrossStatistics(result) {
+    const content = result.content.accountsAssetStatisticsMap;
+    this.dispatch(getAccountStatisticsMap(content));
+  }
+
   parseUserSettings(result) {
     const content = result.content;
     const quotesSettings = content.securitySettings;
     const tradingSessions = content.tradingSessions;
+    this.dispatch(getUserSettings(content.accountsMap));
+    this.dispatch(getCurrencySettings(content.currencySettings));
     this.userSettings = content;
     const sortedQuotesSettings = {};
     const currentTime = Date.now();
@@ -515,6 +541,7 @@ export default class Umarkets {
   parseUserStatistics(result) {
     const content = result.content;
     this.userStatistics = {
+      accountId: content.accountId,
       balance: content.balance,
       freeBalance: content.freeBalance,
       marginUsed: content.marginUsed,
@@ -522,6 +549,7 @@ export default class Umarkets {
       unrealizedPnl: content.unrealizedPnl,
     };
     this.dispatch(updateUserStatistics(this.userStatistics));
+    this.dispatch(updateUserWallet());
   }
 
   parseOpenMarketOrderResult(result) {

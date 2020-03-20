@@ -992,7 +992,7 @@ export const beaxyLogin = body => {
             response.user = data.user;
             break;
         }
-        response.bxySessionData = data.payload;
+        response.payload = data.payload;
         return response;
       } else {
         throw new Error(data.message || data.statusText);

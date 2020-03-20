@@ -41,16 +41,20 @@ const TradeButtons = props => {
         className="stl-trade-buttons-wrap"
       >
         <div className="st-trade-buttons-footer">
-          <span className={`TradeButtons__quote ${quote.dailyChange >= 0 ? 'long' : 'short'}`}>
-            {`${quote.dailyChange.toFixed(2)}%`}
-          </span>
-          <span className="TradeButtons__arrow">
-            {quote.dailyChange >= 0 ? (
-              <Icon type="arrow-up" className="long" />
-            ) : (
-              <Icon type="arrow-down" className="short" />
-            )}
-          </span>
+          {quote.dailyChange !== undefined ? (
+            <React.Fragment>
+              <span className={`TradeButtons__quote ${quote.dailyChange >= 0 ? 'long' : 'short'}`}>
+                {`${quote.dailyChange.toFixed(2)}%`}
+              </span>
+              <span className="TradeButtons__arrow">
+                {quote.dailyChange >= 0 ? (
+                  <Icon type="arrow-up" className="long" />
+                ) : (
+                  <Icon type="arrow-down" className="short" />
+                )}
+              </span>
+            </React.Fragment>
+          ) : null}
           <div
             className={`st-trade-buttons-action-block st-quote-down`}
             onClick={props.handleClickOpenDeal.bind(this, 'Sell', 'od-dp')}

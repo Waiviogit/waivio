@@ -3,9 +3,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 
 export const CHART_ID = 'chartid';
 
-export const supportedObjectTypes = [
-  OBJ_TYPE.CRYPTOPAIRS,
-];
+export const supportedObjectTypes = [OBJ_TYPE.CRYPTOPAIRS];
 export const supportedObjectFields = [
   objectFields.button,
   objectFields.name,
@@ -53,6 +51,9 @@ const investArena = {
 export const discoverObjectsContentTypes = {
   commodity: {
     intl: { id: 'wia.commodities', defaultMessage: 'Commodities' },
+  },
+  cryptopairs: {
+    intl: { id: 'wia.cryptopairs', defaultMessage: 'Crypto pairs' },
   },
   crypto: {
     intl: { id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' },

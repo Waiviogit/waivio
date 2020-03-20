@@ -3,7 +3,6 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
-import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
 import { marketNames, typesWithChartId } from '../../constants/objectsInvestarena';
 import Affix from '../../../client/components/Utils/Affix';
@@ -63,11 +62,11 @@ class InstrumentsPage extends Component {
     this.props.history.push(`/markets/${marketType.toLowerCase()}`);
 
   render() {
-    const { intl, quoteSettings, openDeals, charts } = this.props;
+    const { intl, quoteSettings } = this.props;
     const paramMarket = this.props.match.params.marketType;
-    const marketType = typesWithChartId.some(market => market === paramMarket)
-      ? paramMarket
-      : 'crypto';
+    // const marketType = typesWithChartId.some(market => market === paramMarket)
+    //   ? paramMarket
+    //   : 'crypto';
     const quoteSettingsSorted = {};
     Object.entries(quoteSettings).forEach(([key, value]) => {
       if (value.wobjData && value.priceRounding) {
@@ -123,13 +122,6 @@ class InstrumentsPage extends Component {
             <div role="presentation" className="st-instruments-toggle-view">
               {sortSelector}
             </div>
-            <AssetsTab
-              charts={charts}
-              signals={this.state.signals}
-              deals={openDeals}
-              quoteSettingsFiltered={quoteSettingsSorted[marketType]}
-              viewMode={this.state.viewMode}
-            />
           </div>
         </div>
       </div>

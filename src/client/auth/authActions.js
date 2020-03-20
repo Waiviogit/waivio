@@ -7,9 +7,8 @@ import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import {
-  authorizeBroker,
-  authorizeBrokerSuccess,
-  disconnectBroker
+  initBrokerConnection,
+  disconnectBroker,
 } from '../../investarena/redux/actions/brokersActions';
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
@@ -35,6 +34,69 @@ export const LOGOUT = '@auth/LOGOUT';
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
+
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+  if (waivioAPI.isGuest) {
+    waivioAPI.clearGuestData();
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-unused-expressions
+      window.FB && window.FB.logout();
+      // eslint-disable-next-line no-unused-expressions
+      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
+    }
+  } else {
+    steemConnectAPI.revokeToken();
+    steemConnectAPI.removeAccessToken();
+    Cookie.remove('access_token');
+  }
+  busyAPI.close();
+  dispatch(disconnectBroker());
+  dispatch({
+    type: LOGOUT,
+  });
+  dispatch(push('/'));
+};
+
+export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
+  const state = getState();
+
+  console.log('beaxyLogin action', bxySessionData);
+  return dispatch({
+    type: LOGIN,
+    payload: new Promise(async (resolve, reject) => {
+      try {
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
+        waivioAPI.saveGuestData(
+          userData.token,
+          userData.expiration,
+          userData.user.name,
+          'beaxy',
+          bxySessionData,
+        );
+        if (typeof localStorage !== 'undefined') {
+          dispatch(initBrokerConnection({ platform: 'beaxy' }));
+        }
+
+        resolve({
+          account: userData.user,
+          userMetaData,
+          socialNetwork: 'beaxy',
+          isGuestUser: true,
+        });
+      } catch (e) {
+        dispatch(notify(e.error.details[0].message));
+        reject(e);
+      }
+    }),
+    meta: {
+      refresh: getIsLoaded(state),
+    },
+  }).catch(e => {
+    console.warn(e);
+    dispatch(loginError());
+    return e;
+  });
+};
 
 export const login = (oAuthToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
@@ -68,6 +130,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
+        if (!scUserData) dispatch(logout());
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
@@ -90,47 +153,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   });
 };
 
-export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
-  const state = getState();
-
-  console.log('beaxyLogin action', bxySessionData);
-  return dispatch({
-    type: LOGIN,
-    payload: new Promise(async (resolve, reject) => {
-      try {
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
-        waivioAPI.saveGuestData(
-          userData.token,
-          userData.expiration,
-          userData.user.name,
-          'beaxy',
-          bxySessionData,
-        );
-        if (typeof localStorage !== 'undefined') {
-          dispatch(authorizeBroker({ platform : 'beaxy' }));
-        }
-
-        resolve({
-          account: userData.user,
-          userMetaData,
-          socialNetwork: 'beaxy',
-          isGuestUser: true,
-        });
-      } catch (e) {
-        dispatch(notify(e.error.details[0].message));
-        reject(e);
-      }
-    }),
-    meta: {
-      refresh: getIsLoaded(state),
-    },
-  }).catch(e => {
-    console.warn(e);
-    dispatch(loginError());
-    return e;
-  });
-};
-
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
 
 export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
@@ -140,28 +162,6 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
       promise: steemConnectAPI.me(),
     },
   });
-
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
-  if (waivioAPI.isGuest) {
-    waivioAPI.clearGuestData();
-    if (window) {
-      // eslint-disable-next-line no-unused-expressions
-      window.FB && window.FB.logout();
-      // eslint-disable-next-line no-unused-expressions
-      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
-    }
-  } else {
-    steemConnectAPI.revokeToken();
-    steemConnectAPI.removeAccessToken();
-    Cookie.remove('access_token');
-  }
-  busyAPI.close();
-  // dispatch(disconnectBroker()); todo: now we do not connect any broker
-  dispatch({
-    type: LOGOUT,
-  });
-  dispatch(push('/'));
-};
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   let accessToken = Cookie.get('access_token');

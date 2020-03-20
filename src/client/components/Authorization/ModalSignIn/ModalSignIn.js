@@ -5,8 +5,12 @@ import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { get } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
-import { login, busyLogin } from '../../../auth/authActions';
-import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { login, beaxyLogin, busyLogin } from '../../../auth/authActions';
+import {
+  isUserRegistered,
+  beaxyLoginByCredentials,
+  beaxy2FALogin,
+} from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
@@ -14,7 +18,7 @@ import GuestSignUpModalContent from '../GuestSignUpForm/GuestSignUpModalContent'
 import Spinner from '../../Icon/Loading';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import BeaxySignInButton from '../SocialButtons/BeaxySignInButton';
-import BeaxyAuthForm from '../GuestSignUpForm/BeaxyAuthForm';
+import BeaxyAuthForm from '../BeaxyAuthForm/BeaxyAuthForm';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
@@ -75,7 +79,12 @@ const ModalSignIn = ({ next }) => {
 
   const renderSignIn = loginWithCredentials =>
     loginWithCredentials ? (
-      <BeaxyAuthForm firstLoginResponse={loginByCredentialsResponse} />
+      <BeaxyAuthForm
+        authRequest={beaxyLoginByCredentials}
+        auth2FARequest={beaxy2FALogin}
+        firstLoginResponse={loginByCredentialsResponse}
+        onAuthSuccessAction={beaxyLogin}
+      />
     ) : (
       <React.Fragment>
         <h2 className="ModalSignUp__title">
@@ -86,7 +95,7 @@ const ModalSignIn = ({ next }) => {
         ) : (
           <React.Fragment>
             <BeaxySignInButton onClick={handleBeaxySignIn} />
-            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin" >
+            <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
               <img
                 src="/images/icons/steemit.svg"
                 alt="steemit"

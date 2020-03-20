@@ -26,6 +26,7 @@ export const CMD = {
   getUserAccount: 'get_user_account',
   getUserSettings: 'get_user_settings',
   getUserStatistics: 'get_user_statistics',
+  getCrossStatistics: 'get_cross_statistics',
   getUserRates: 'get_user_rates',
   getFavorites: 'get_favorites',
   addFavorites: 'add_favorites',

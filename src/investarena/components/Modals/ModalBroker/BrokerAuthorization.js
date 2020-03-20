@@ -1,205 +1,83 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
-import { Select, Button, Form, Input, Checkbox, Icon } from 'antd';
-import { optionsPlatform } from '../../../constants/selectData';
+import BeaxyAuthForm from '../../../../client/components/Authorization/BeaxyAuthForm/BeaxyAuthForm';
+import api from '../../../../investarena/configApi/apiResources';
+import { initBrokerConnection } from '../../../redux/actions/brokersActions';
 
 const propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  platformName: PropTypes.string,
-  email: PropTypes.string,
-  forgotPassBroker: PropTypes.func.isRequired,
-  authorizeBroker: PropTypes.func.isRequired,
+  // isLoading: PropTypes.bool.isRequired,
+  // platformName: PropTypes.string,
+  // authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
-  changeEmail: PropTypes.func.isRequired,
-  brokerConnected: PropTypes.bool.isRequired,
+  // brokerConnected: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
 };
-
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 class BrokerAuthorization extends Component {
   state = {
     checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
   };
-  connectBroker = event => {
-    event.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.props.changeEmail(values.email);
-        this.props.authorizeBroker(values);
-      }
+
+  connectBroker = (user, password) =>
+    api.brokers.authorizeBroker({
+      platform: 'beaxy',
+      authBy: 'credentials',
+      authData: {
+        user,
+        password,
+      },
     });
-  };
-  disconnectBroker = event => {
-    event.preventDefault();
+
+  broker2FAVerification(user, token2fa, code) {
+    return api.brokers.authorizeBroker({
+      platform: 'beaxy',
+      authBy: '2fa',
+      authData: {
+        token2fa,
+        code,
+      },
+    });
+  }
+
+  handleAuthSuccess = () => initBrokerConnection({ platform: 'beaxy' });
+
+  disconnectBroker = () => {
     this.props.disconnectBroker();
   };
+
   handleOneClickTrading = e => {
     localStorage.setItem('isOneClickTrade', e.target.checked);
     this.setState({ checked: e.target.checked });
   };
+
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
-      <Form
-        onSubmit={this.props.brokerConnected ? this.disconnectBroker : this.connectBroker}
-        className="login-form"
-      >
-        <div className="d-flex justify-content-center st-margin-bottom-middle">
-          <div className="st-broker-select-title">
-            {this.props.intl.formatMessage({
-              id: 'modalBroker.connectTo',
-              defaultMessage: 'Connect to:',
-            })}
-          </div>
-        </div>
-        {getFieldDecorator('platform', {
-          initialValue: this.props.brokerConnected
-            ? this.props.platformName
-            : null || optionsPlatform[0].value,
-        })(
-          <Select
-            style={{ width: '100%' }}
-            placeholder={this.props.intl.formatMessage({
-              id: 'tooltip.empty',
-              defaultMessage: 'Please fill in this field',
-            })}
-            disabled={this.props.brokerConnected}
-          >
-            {_.map(optionsPlatform, option => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>,
-        )}
-        {!this.props.brokerConnected ? (
-          <FormItem>
-            {getFieldDecorator('email', {
-              rules: [
-                {
-                  type: 'email',
-                  message: this.props.intl.formatMessage({
-                    id: 'tooltip.emailValid',
-                    defaultMessage: 'Please enter a valid email',
-                  }),
-                },
-                {
-                  required: true,
-                  message: this.props.intl.formatMessage({
-                    id: 'tooltip.empty',
-                    defaultMessage: 'Please fill in this field',
-                  }),
-                },
-              ],
-            })(
-              <Input
-                prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="E-mail"
-                disabled={this.props.brokerConnected}
-              />,
-            )}
-          </FormItem>
-        ) : (
-          <div className="d-flex flex-column align-items-center st-margin-bottom-middle">
-            <div className="st-broker-text">{this.props.email}</div>
-          </div>
-        )}
-        {!this.props.brokerConnected && (
-          <FormItem>
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: this.props.intl.formatMessage({
-                    id: 'broker_modal_enter_password',
-                    defaultMessage: 'Please input your Password!',
-                  }),
-                },
-                {
-                  min: 5,
-                  message: this.props.intl.formatMessage({
-                    id: 'broker_modal_valid_password',
-                    defaultMessage: 'Require more then 5 symbols',
-                  }),
-                },
-              ],
-            })(
-              <Input
-                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type="password"
-                placeholder="Password"
-                disabled={this.props.brokerConnected}
-              />,
-            )}
-          </FormItem>
-        )}
-        <div className="d-flex justify-content-between">
-          {/* todo: hided forgot password link */}
-          {/* {!this.props.brokerConnected ? ( */}
-          {/* <span className="st-modal-broker-authorization-text-click"> */}
-          {/* {this.props.intl.formatMessage({ */}
-          {/* id: 'modalBroker.forgotPassword', */}
-          {/* defaultMessage: 'Forgot password?', */}
-          {/* })} */}
-          {/* </span> */}
-          {/* ) : ( */}
-          {/* <span /> */}
-          {/* )} */}
-          <span />
-          <Checkbox onChange={this.handleOneClickTrading} checked={this.state.checked}>
-            {this.props.intl.formatMessage({
-              id: 'modalBroker.oneClickTrade',
-              defaultMessage: 'One click trade',
-            })}
-          </Checkbox>
-        </div>
-        <div className="d-flex flex-column align-items-center st-margin-bottom-middle">
-          <div className="st-broker-text">
-            {this.props.intl.formatMessage({
-              id: 'modalBroker.weNeverKeep',
-              defaultMessage: 'We never keep your passwords',
-            })}
-          </div>
-          <div className="st-broker-text">
-            {this.props.intl.formatMessage({
-              id: 'modalBroker.tradingAccounts',
-              defaultMessage: 'from brokers trading accounts',
-            })}
-          </div>
-          <div className="st-broker-text">
-            {this.props.intl.formatMessage({
-              id: 'modalBroker.brokers',
-              defaultMessage: 'in our database.',
-            })}
-          </div>
-        </div>
-        <div className="d-flex justify-content-end">
-          <Button
-            htmlType="submit"
-            type={!this.props.brokerConnected ? 'primary' : 'danger'}
-            disabled={this.props.isLoading}
-            loading={this.props.isLoading}
-          >
-            {!this.props.brokerConnected
-              ? this.props.intl.formatMessage({
-                  id: 'modalBroker.connect',
-                  defaultMessage: 'CONNECT',
-                })
-              : this.props.intl.formatMessage({
-                  id: 'modalBroker.disconnect',
-                  defaultMessage: 'DISCONNECT',
-                })}
-          </Button>
-        </div>
-      </Form>
+      <React.Fragment>
+        <BeaxyAuthForm
+          authRequest={this.connectBroker}
+          auth2FARequest={this.broker2FAVerification}
+          btnText={
+            <span>
+              {this.props.intl.formatMessage({
+                id: 'modalBroker.connect',
+                defaultMessage: 'Connect',
+              })}
+            </span>
+          }
+          firstLoginResponse={res =>
+            console.log(
+              "\tonFirstLoginResponse - we shouldn't see this message in the console",
+              res,
+            )
+          }
+          onAuthSuccessAction={this.handleAuthSuccess}
+        />
+      </React.Fragment>
     );
   }
 }
 
 BrokerAuthorization.propTypes = propTypes;
 
-export default injectIntl(Form.create()(BrokerAuthorization));
+export default injectIntl(BrokerAuthorization);

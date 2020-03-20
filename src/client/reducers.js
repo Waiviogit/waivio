@@ -19,7 +19,7 @@ import settingsReducer, * as fromSettings from './settings/settingsReducer';
 import searchReducer, * as fromSearch from './search/searchReducer';
 import quotesReducer from '../investarena/redux/reducers/quotesReducer';
 import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
-import platformReducer from '../investarena/redux/reducers/platformReducer';
+import platformReducer, * as fromPlatformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
@@ -259,3 +259,11 @@ export const getPerformersStatisticLoaded = state =>
   fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);
 
 export const getForecastData = state => fromForecastReducer.getForecastData(state.forecasts);
+
+export const getPlatformName = state => fromPlatformReducer.getPlatformName(state.platform);
+export const getAccountsMap = state => fromPlatformReducer.getAccountsMap(state.platform);
+export const getCurrencySettings = state => fromPlatformReducer.getCurrencySettings(state.platform);
+export const getUserStatistics = state => fromPlatformReducer.getUserStatistics(state.platform);
+export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.platform);
+export const getCurrenciesDescriptions = state =>
+  fromPlatformReducer.getCurrenciesDescriptions(state.platform);

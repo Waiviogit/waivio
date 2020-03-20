@@ -92,7 +92,7 @@ class PostChart extends Component {
           () => this.updateChartData(this.props),
         );
       } else if (connect && quoteSettings) {
-      // } else if (connect && quoteSettings && quoteSettings.leverage) {
+        // } else if (connect && quoteSettings && quoteSettings.leverage) {
         if (quote && bars && bars[this.state.timeScale]) {
           this.updateChartData(this.props);
         } else {
@@ -116,7 +116,7 @@ class PostChart extends Component {
           },
           () => this.updateChartData(nextProps),
         );
-      // } else if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
+        // } else if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
       } else if (nextProps.connect && nextProps.quoteSettings) {
         if (nextProps.quote && (!nextProps.bars || !nextProps.bars[this.state.timeScale])) {
           this.props.getChartData(this.state.timeScale);

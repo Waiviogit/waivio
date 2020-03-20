@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu } from 'antd';
+import { AutoComplete, Button, Icon, Input, Menu } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -104,7 +104,9 @@ class Topnav extends React.Component {
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
+    platformName: PropTypes.string.isRequired,
     screenSize: PropTypes.string,
+    toggleModal: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
@@ -809,6 +811,10 @@ class Topnav extends React.Component {
     );
   };
 
+  toggleModalBroker = () => {
+    this.props.toggleModal('broker');
+  };
+
   toggleModalDeposit = () => {
     this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
@@ -849,6 +855,7 @@ class Topnav extends React.Component {
       screenSize,
       openChat,
       messagesCount,
+      platformName,
     } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -971,7 +978,25 @@ class Topnav extends React.Component {
               </div>
             )}
           </div>
-          <div className="Topnav__right-bottom">{this.content()}</div>
+          <div className="Topnav__right-bottom">
+            {this.content()}
+
+            {isAuthenticated && (
+              <div className="Topnav__broker">
+                <div className="st-header-broker-balance-pl-wrap">
+                  <Button
+                    type={platformName === 'widgets' ? 'dashed' : 'primary'}
+                    onClick={this.toggleModalBroker}
+                  >
+                    {intl.formatMessage({
+                      id: 'headerAuthorized.connectToBroker',
+                      defaultMessage: 'Connect to broker',
+                    })}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
