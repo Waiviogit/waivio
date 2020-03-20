@@ -258,7 +258,7 @@ class Rewards extends React.Component {
           objPermlink,
           companyAuthor,
         );
-        return this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
         message.error(
@@ -267,7 +267,7 @@ class Rewards extends React.Component {
             defaultMessage: 'You cannot reserve the campaign at the moment',
           }),
         );
-        return this.setState({ loadingAssignDiscard: false });
+        this.setState({ loadingAssignDiscard: false });
       });
   };
 
@@ -318,7 +318,7 @@ class Rewards extends React.Component {
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        return this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
         console.log(e.toString());
@@ -328,7 +328,7 @@ class Rewards extends React.Component {
             defaultMessage: 'You cannot reject the campaign at the moment',
           }),
         );
-        return this.setState({ loadingAssignDiscard: false });
+        this.setState({ loadingAssignDiscard: false });
       });
   };
   // END Propositions
