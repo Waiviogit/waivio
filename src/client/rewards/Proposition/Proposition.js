@@ -104,14 +104,6 @@ const Proposition = ({
       .then(() => delay(1500))
       .then(() => setModalDetailsOpen(!isModalDetailsOpen))
       .then(() => history.push(`/rewards/reserved`));
-    // .catch(() => {
-    //   message.error(
-    //     intl.formatMessage({
-    //       id: 'cannot_reserve_company',
-    //       defaultMessage: 'You cannot reserve the campaign at the moment',
-    //     }),
-    //   );
-    // });
   };
 
   return (
