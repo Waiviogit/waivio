@@ -137,7 +137,7 @@ class Wallet extends Component {
     }
   }
 
-  getBeaxyBalanceWithLogo = () => {
+  getBeaxyBalance = () => {
     const { beaxyBalance } = this.props;
     const { isShowMoreBeaxy } = this.state;
     const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
@@ -175,7 +175,7 @@ class Wallet extends Component {
       `${STEEM.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const beaxyBalance = this.getBeaxyBalanceWithLogo();
+    const beaxyBalance = this.getBeaxyBalance();
     const currentSBDRate = get(
       cryptosPriceHistory,
       `${SBD.symbol}.priceDetails.currentUSDPrice`,
