@@ -2,16 +2,23 @@
 @import (reference) '../../../styles/custom.less';
 
 .BrokerBalance {
-  .ant-dropdown-menu-item {
-    border-bottom: 1px solid @white-gainsboro;
-  }
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
 
-  .ant-dropdown-menu-item:last-child {
-    border-bottom: 0;
-  }
+  &__dropdown {
+    .ant-dropdown-menu-item {
+      border-bottom: 1px solid @white-gainsboro;
+    }
 
-  .CurrencyItem {
-    margin: 0;
-    padding: 0;
+    .ant-dropdown-menu-item:last-child {
+      border-bottom: 0;
+    }
+
+    .CurrencyItem {
+      margin: 0;
+      padding: 0;
+    }
   }
 }

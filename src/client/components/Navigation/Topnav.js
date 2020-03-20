@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _, { sortBy, isEmpty, isEqual } from 'lodash';
+import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Dropdown, Icon, Input, Menu, Button } from 'antd';
+import { AutoComplete, Icon, Input, Menu, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -42,7 +42,6 @@ import LanguageSettings from './LanguageSettings';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
-  getUserWalletState,
 } from '../../../investarena/redux/selectors/platformSelectors';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -70,7 +69,6 @@ import './Topnav.less';
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
-    beaxyBalance: getUserWalletState(state),
     isGuest: isGuestUser(state),
   }),
   {
@@ -204,8 +202,6 @@ class Topnav extends React.Component {
       this.debouncedSearchByUser(this.state.searchBarValue);
       this.debouncedSearchByObjectTypes(this.state.searchBarValue);
     }
-    if (this.props.platformName === 'beaxy' && !this.props.beaxyBalance.length)
-      this.props.getUserStatistics();
   }
 
   componentWillUnmount() {
@@ -1011,8 +1007,7 @@ class Topnav extends React.Component {
                   </Button>
                 </div>
               ) : (
-                beaxyBalance &&
-                !!beaxyBalance.length && <BrokerBalance beaxyBalance={beaxyBalance} />
+                <BrokerBalance />
               )}
             </div>
           </div>
