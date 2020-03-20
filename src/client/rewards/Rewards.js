@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { find, includes, isEmpty, map, remove, size } from 'lodash';
+import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -36,7 +36,6 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
-import './Rewards.less';
 
 @withRouter
 @injectIntl

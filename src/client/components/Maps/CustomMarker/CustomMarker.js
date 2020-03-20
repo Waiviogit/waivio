@@ -14,14 +14,16 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    onContextMenu: PropTypes.func,
+    onContextMenu: PropTypes.func.isRequired,
     onMouseOver: PropTypes.func.isRequired,
     onMouseOut: PropTypes.func.isRequired,
-    left: PropTypes.number,
-    top: PropTypes.number,
+    left: PropTypes.number.isRequired,
+    top: PropTypes.number.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     anchor: PropTypes.array.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
-    hover: PropTypes.bool,
+    hover: PropTypes.bool.isRequired,
     isMarked: PropTypes.bool.isRequired,
   };
 
@@ -44,7 +46,7 @@ class CustomMarker extends React.Component {
   image = () => {
     const { isMarked } = this.props;
     if (isMarked) return this.isHover() ? pinHoverMarked : pinMarked;
-    return this.isHover() ? pinHover : pin
+    return this.isHover() ? pinHover : pin;
   };
 
   handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
@@ -53,11 +55,13 @@ class CustomMarker extends React.Component {
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));
 
   handleMouseOver = event => {
+    // eslint-disable-next-line no-unused-expressions
     this.props.onMouseOver && this.props.onMouseOver(this.eventParameters(event));
     this.setState({ hoverImg: true });
   };
 
   handleMouseOut = event => {
+    // eslint-disable-next-line no-unused-expressions
     this.props.onMouseOut && this.props.onMouseOut(this.eventParameters(event));
     this.setState({ hoverImg: false });
   };
@@ -79,6 +83,7 @@ class CustomMarker extends React.Component {
         onContextMenu={this.handleContextMenu}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
+        role="presentation"
       >
         <img src={this.image()} width={29} height={34} alt="" />
       </div>

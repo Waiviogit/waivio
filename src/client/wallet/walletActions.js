@@ -72,15 +72,14 @@ const parseSteemUserActions = userActions => {
 const parseGuestActions = actions => {
   const guestActionType = {
     DEMO_POST: 'demo_post',
-    DEMO_POST_TRANSFER: 'demo_post_transfer',
+    GUEST_TRANSFER: 'user_to_guest_transfer',
     DEMO_DEBT: 'demo_debt',
   };
 
   return actions.map((action, index) => {
-    const transferDirection =
-      action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
-        ? { from: action.sponsor, to: action.userName }
-        : { from: action.userName, to: action.sponsor || 'mock' };
+    const transferDirection = Object.values(guestActionType).includes(action.type)
+      ? { from: action.sponsor, to: action.userName }
+      : { from: action.userName, to: action.sponsor || 'mock' };
 
     return {
       trx_id: action._id, // eslint-disable-line

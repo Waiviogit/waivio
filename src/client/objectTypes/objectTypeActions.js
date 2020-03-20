@@ -26,10 +26,12 @@ export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
  * @param {number} skip - count of skipping objects (for infinite scroll)
  * @returns {Function} - dispatch action
  */
-export const getObjectType = (objectTypeName, actionType, filters, { limit = 30, skip = 0 } = { }) => (
-  dispatch,
-  getState,
-) => {
+export const getObjectType = (
+  objectTypeName,
+  actionType,
+  filters,
+  { limit = 30, skip = 0 } = {},
+) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const usedLocale = getSuitableLanguage(state);
@@ -51,14 +53,17 @@ export const getObjectType = (objectTypeName, actionType, filters, { limit = 30,
   });
 };
 
-export const getObjectTypeMap = ( map = {}) => (dispatch) => {
-  const filters = {rating: [], map};
+export const getObjectTypeMap = (map = {}) => dispatch => {
+  const filters = { rating: [], map };
   const typeName = 'restaurant';
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
   return dispatch(getObjectType(typeName, actionType, filters, { limit: 50, skip: 0 }));
 };
 
-export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (dispatch, getState) => {
+export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
   const searchString = new URLSearchParams(getQueryString(state)).get('search');

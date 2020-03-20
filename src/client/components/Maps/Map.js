@@ -67,7 +67,7 @@ class MapOS extends React.Component {
   }
 
   onBoundsChanged = ({ center, zoom }) => {
-    this.setState({radius: this.calculateRadius(zoom)});
+    this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
@@ -144,6 +144,7 @@ class MapOS extends React.Component {
     this.setState({ infoboxData: null });
   };
 
+  // eslint-disable-next-line consistent-return
   incrementZoom = () => {
     if (this.state.zoom >= 18) return null;
     const zoom = this.state.zoom + 1;
@@ -151,6 +152,7 @@ class MapOS extends React.Component {
     this.setState({ zoom, radius });
   };
 
+  // eslint-disable-next-line consistent-return
   decrementZoom = () => {
     if (this.state.zoom <= 1) return null;
     const zoom = this.state.zoom - 1;
@@ -245,7 +247,7 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
-  wobjects: PropTypes.array.isRequired,
+  wobjects: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   width: PropTypes.number,
