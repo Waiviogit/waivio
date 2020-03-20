@@ -7,8 +7,6 @@ import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
-import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
@@ -40,7 +38,7 @@ class MapOS extends React.Component {
       zoom: 8,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: 90000,
+      radius: 91287,
     };
 
     this.mapRef = createRef();
@@ -67,7 +65,7 @@ class MapOS extends React.Component {
   }
 
   onBoundsChanged = ({ center, zoom }) => {
-    this.setState({radius: this.calculateRadius(zoom)});
+    this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
@@ -80,12 +78,12 @@ class MapOS extends React.Component {
     return radius;
   };
 
-  getMarkers = props => {
-    const { wobjects } = this.props;
+  getMarkers = () => {
+    const { wobjects, onMarkerClick } = this.props;
     return !_.isEmpty(wobjects)
       ? _.map(wobjects, wobject => {
-          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+          const lat = wobject.map.coordinates[1];
+          const lng = wobject.map.coordinates[0];
           const isMarked = Boolean(wobject && wobject.campaigns);
           return lat && lng ? (
             <CustomMarker
@@ -94,9 +92,7 @@ class MapOS extends React.Component {
               anchor={[+lat, +lng]}
               payload={wobject}
               onMouseOver={this.handleMarkerClick}
-              onClick={() => {
-                props.onMarkerClick(wobject.author_permlink);
-              }}
+              onClick={onMarkerClick}
               onMouseOut={this.closeInfobox}
             />
           ) : null;
@@ -144,6 +140,7 @@ class MapOS extends React.Component {
     this.setState({ infoboxData: null });
   };
 
+  // eslint-disable-next-line consistent-return
   incrementZoom = () => {
     if (this.state.zoom >= 18) return null;
     const zoom = this.state.zoom + 1;
@@ -151,6 +148,7 @@ class MapOS extends React.Component {
     this.setState({ zoom, radius });
   };
 
+  // eslint-disable-next-line consistent-return
   decrementZoom = () => {
     if (this.state.zoom <= 1) return null;
     const zoom = this.state.zoom - 1;
@@ -245,6 +243,7 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   wobjects: PropTypes.array.isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
@@ -256,6 +255,7 @@ MapOS.propTypes = {
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,
   setMapArea: PropTypes.func.isRequired,
+  onMarkerClick: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

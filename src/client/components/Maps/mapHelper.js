@@ -30,6 +30,6 @@ export const getUserCoordinatesByIpAdress = () =>
   });
 
 export const calculateAreaRadius = (zoom, weight, center) =>
-  Math.abs((earthAraund * Math.cos(center[0]) / 2 ** zoom + 8) * 1.2);
+  Math.abs(((earthAraund * Math.cos(center[0])) / 2 ** zoom + 8) * 1.2);
 
-export const getRadius = (zoom) => INITIAL_RADIUS / 2.01 ** (zoom - 1);
+export const getRadius = zoom => Math.floor(INITIAL_RADIUS / 2.01 ** (zoom - 1));
