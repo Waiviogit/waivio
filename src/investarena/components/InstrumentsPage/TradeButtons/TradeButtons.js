@@ -6,11 +6,11 @@ import { quoteFormat } from '../../../platform/parsingPrice';
 import quoteSettingsData from '../../../default/quoteSettingsData';
 import withTrade from '../../HOC/withTrade';
 import './TradeButtons.less';
-import DailyChange from "../../DailyChange/DailyChange";
 
 const propTypes = {
   quoteSettings: PropTypes.object,
   quote: PropTypes.object,
+  intl: PropTypes.shape().isRequired,
   className: PropTypes.string.isRequired,
   handleClickLess: PropTypes.func.isRequired,
   handleClickMore: PropTypes.func.isRequired,
@@ -41,7 +41,6 @@ const TradeButtons = props => {
         className="stl-trade-buttons-wrap"
       >
         <div className="st-trade-buttons-footer">
-          <DailyChange quote={quote}/>
           <div
             className={`st-trade-buttons-action-block st-quote-down`}
             onClick={props.handleClickOpenDeal.bind(this, 'Sell', 'od-dp')}

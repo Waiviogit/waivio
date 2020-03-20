@@ -3,18 +3,19 @@ import React from 'react';
 import { Icon } from 'antd';
 import './DailyChange.less';
 
-const DailyChange = quote => <>
+const DailyChange = ({quote}) => <React.Fragment>
   <span className={`DailyChange__quote ${quote.dailyChange >= 0 ? 'long' : 'short'}`}>
             {`${quote.dailyChange.toFixed(2)}%`}
-  </span>,
+  </span>
   <span className="DailyChange__arrow">
     {quote.dailyChange >= 0 ? (
         <Icon type="arrow-up" className="long" />
       ) : (
         <Icon type="arrow-down" className="short" />
-      )}
-</span>
-</>;
+      )
+    }
+  </span>
+</React.Fragment>;
 
 DailyChange.propTypes = {
   quote: PropTypes.shape().isRequired
