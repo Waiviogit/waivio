@@ -86,7 +86,7 @@ class WalletSidebar extends React.Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {!isEmpty(user) && !isGuest && (
+          {!isEmpty(user) && !isGuest && ownProfile && (
             <Action big className="WalletSidebar__transfer">
               <FormattedMessage id="exchange" defaultMessage="Exchange" />
             </Action>
