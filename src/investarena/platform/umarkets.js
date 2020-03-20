@@ -111,7 +111,6 @@ export default class Umarkets {
 
   closeWebSocketConnection() {
     if (this.websocket && this.stompClient) {
-      this.dispatch();
       this.websocket.close();
       this.stompClient.disconnect();
     }

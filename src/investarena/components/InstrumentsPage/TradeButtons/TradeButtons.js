@@ -1,7 +1,6 @@
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Icon } from 'antd';
 import quoteData from '../../../default/quoteData';
 import { quoteFormat } from '../../../platform/parsingPrice';
 import quoteSettingsData from '../../../default/quoteSettingsData';
@@ -11,6 +10,7 @@ import './TradeButtons.less';
 const propTypes = {
   quoteSettings: PropTypes.object,
   quote: PropTypes.object,
+  intl: PropTypes.shape().isRequired,
   className: PropTypes.string.isRequired,
   handleClickLess: PropTypes.func.isRequired,
   handleClickMore: PropTypes.func.isRequired,
@@ -41,20 +41,6 @@ const TradeButtons = props => {
         className="stl-trade-buttons-wrap"
       >
         <div className="st-trade-buttons-footer">
-          {quote.dailyChange !== undefined ? (
-            <React.Fragment>
-              <span className={`TradeButtons__quote ${quote.dailyChange >= 0 ? 'long' : 'short'}`}>
-                {`${quote.dailyChange.toFixed(2)}%`}
-              </span>
-              <span className="TradeButtons__arrow">
-                {quote.dailyChange >= 0 ? (
-                  <Icon type="arrow-up" className="long" />
-                ) : (
-                  <Icon type="arrow-down" className="short" />
-                )}
-              </span>
-            </React.Fragment>
-          ) : null}
           <div
             className={`st-trade-buttons-action-block st-quote-down`}
             onClick={props.handleClickOpenDeal.bind(this, 'Sell', 'od-dp')}
