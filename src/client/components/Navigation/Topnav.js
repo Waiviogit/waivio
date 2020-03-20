@@ -13,6 +13,7 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
+import { getUserStatistics } from '../../../investarena/redux/actions/platformActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
@@ -51,9 +52,8 @@ import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
 import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
 import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
-import './Topnav.less';
-import { getHoldingsWithLogo } from '../../user/usersHelper';
 import CurrencyItem from '../../wallet/CurrencyItem/CurrencyItem';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -84,6 +84,7 @@ import CurrencyItem from '../../wallet/CurrencyItem/CurrencyItem';
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
     toggleModal,
+    getUserStatistics,
   },
 )
 class Topnav extends React.Component {
@@ -127,6 +128,7 @@ class Topnav extends React.Component {
     messagesCount: PropTypes.number,
     isGuest: PropTypes.bool,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
+    getUserStatistics: PropTypes.func,
   };
 
   static defaultProps = {
@@ -143,6 +145,7 @@ class Topnav extends React.Component {
     messagesCount: 0,
     isGuest: false,
     beaxyBalance: [],
+    getUserStatistics: () => {},
   };
 
   constructor(props) {
@@ -193,6 +196,7 @@ class Topnav extends React.Component {
       window.addEventListener('scroll', this.handleScroll);
       this.prevScrollpos = window.pageYOffset;
     }
+    if (this.props.platformName === 'beaxy') this.props.getUserStatistics();
   }
 
   componentDidUpdate(prevProps, prevState) {
