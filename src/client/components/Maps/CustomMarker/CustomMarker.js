@@ -19,8 +19,8 @@ class CustomMarker extends React.Component {
     onMouseOut: PropTypes.func.isRequired,
     left: PropTypes.number.isRequired,
     top: PropTypes.number.isRequired,
-    anchor: PropTypes.array.isRequired.isRequired,
-    payload: PropTypes.any.isRequired.isRequired,
+    anchor: PropTypes.array.isRequired,
+    payload: PropTypes.any.isRequired,
     hover: PropTypes.bool.isRequired,
     isMarked: PropTypes.bool.isRequired,
   };
