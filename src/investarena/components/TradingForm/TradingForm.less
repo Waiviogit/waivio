@@ -1,0 +1,46 @@
+@import (reference) '../Common.less';
+
+.st-trading-form-wrapper {
+  width: 375px;
+  background-color: transparent;
+  border: 1px solid @color-darkest-gray;
+}
+
+.st-trading-form {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  .st-trading-form-header {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .st-trading-form-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+
+    &.amount {
+      justify-content: center;
+    }
+
+    &.button {
+      justify-content: center;
+    }
+  }
+
+  .info-icon {
+    font-size: 16px;
+  }
+
+  .flex-info-block {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+  }
+}
