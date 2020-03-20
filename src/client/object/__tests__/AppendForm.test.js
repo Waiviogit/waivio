@@ -69,7 +69,6 @@ describe('AppendForm', () => {
 
   it('should check props on validation', () => {
     const props = {
-      rate: 0.17448994918829397,
       wObject: {
         fields: initialState,
       },
@@ -77,9 +76,14 @@ describe('AppendForm', () => {
 
     const store = mockStore({});
 
+    const testForm = {
+      getFieldDecorator: jest.fn(() => c => c),
+      getFieldValue: jest.fn(() => () => 'currantValue'),
+    };
+
     wrapper = mountWithIntl(
       <Provider store={store}>
-        <AppendForm {...props} />
+        <AppendForm {...props} form={testForm} />
       </Provider>,
     );
     const input = wrapper.find('.AppendForm__input').at(1);
