@@ -1,6 +1,6 @@
 {
   "moduleNameMapper": {
-    "\\.((s)css|less)$": "identity-obj-proxy"
+    ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
   },
   "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js",
   "testURL": "http://localhost/"

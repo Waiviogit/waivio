@@ -473,15 +473,12 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          const fieldsIsEmpty = form.getFieldsValue();
-          for (const key in fieldsIsEmpty) {
-            if (key === undefined) {
-              intl.formatMessage({
-                id: 'append_object_validation_msg',
-                defaultMessage: 'The field with this value already exists',
-              });
-            }
-          }
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'The value is already exist',
+            }),
+          );
         } else {
           this.onSubmit(values);
         }
