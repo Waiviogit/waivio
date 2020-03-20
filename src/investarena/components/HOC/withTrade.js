@@ -117,58 +117,15 @@ const withTrade = Component => {
     const { quote, quoteSettings, platformName, isSignIn, isOpen } = stateProps;
     const { dispatch } = dispatchProps;
     const { postId } = ownProps;
-    const isOneClickTrade =
-      document && localStorage && localStorage.getItem('isOneClickTrade') === 'true';
+
     return {
       ...ownProps,
       ...stateProps,
       createOpenDeal: (side, amount, margin, caller) => {
-        if (
-          platformName !== 'widgets' &&
-          !isOpen &&
-          !isOneClickTrade &&
-          isSignIn &&
-          quote &&
-          quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
-        ) {
-          dispatch(
-            toggleModal('openDeals', {
-              quote,
-              quoteSettings,
-              side,
-              amount,
-              margin,
-              postId,
-              platformName,
-              caller,
-            }),
-          );
-        } else if (!isSignIn) {
+        if (!isSignIn) {
           dispatch(toggleModal('authorizeSinglePost'));
         } else if (platformName === 'widgets' && isSignIn) {
           dispatch(toggleModal('broker'));
-        } else if (
-          platformName !== 'widgets' &&
-          !isOpen &&
-          isSignIn &&
-          isOneClickTrade &&
-          quote &&
-          quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
-        ) {
-          dispatch(
-            createOpenDealPlatform(
-              quote,
-              quoteSettings,
-              side,
-              amount,
-              margin,
-              postId,
-              platformName,
-              caller,
-            ),
-          );
         } else if (
           platformName !== 'widgets' &&
           isOpen &&
