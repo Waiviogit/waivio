@@ -424,7 +424,7 @@ class Rewards extends React.Component {
 
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';
     const currentSteemPrice =
       cryptosPriceHistory && cryptosPriceHistory.STEEM && cryptosPriceHistory.STEEM.priceDetails

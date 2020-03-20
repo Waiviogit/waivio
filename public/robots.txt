@@ -1,4 +1,4 @@
-User-agent: *
+User-agent: Applebot
 Disallow: /settings/
 Disallow: /bookmarks/
 Disallow: /drafts/
@@ -7,3 +7,136 @@ Disallow: /activity/
 Disallow: /invite/
 Disallow: /feed/
 Disallow: /editor/
+
+User-agent: baiduspider
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Bingbot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Googlebot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Googlebot-Image
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: ia_archiver
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: msnbot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Naverbot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: seznambot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Slurp
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: teoma
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Twitterbot
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+User-agent: Yandex
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+Host: www.waivio.com
+
+User-agent: Yeti
+Disallow: /settings/
+Disallow: /bookmarks/
+Disallow: /drafts/
+Disallow: /edit-profile/
+Disallow: /activity/
+Disallow: /invite/
+Disallow: /feed/
+Disallow: /editor/
+
+
