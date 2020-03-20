@@ -11,7 +11,7 @@ import './MapWrap.less';
 @injectIntl
 class MapWrap extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
     wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     onMarkerClick: PropTypes.func.isRequired,
     getAreaSearchData: PropTypes.func,
@@ -27,6 +27,7 @@ class MapWrap extends React.Component {
     center: [],
     customControl: null,
     onCustomControlClick: () => {},
+    intl: {},
   };
 
   state = {

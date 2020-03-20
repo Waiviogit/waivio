@@ -20,7 +20,12 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { activateCampaign, assignProposition, declineProposition, getCoordinates } from '../user/userActions';
+import {
+  activateCampaign,
+  assignProposition,
+  declineProposition,
+  getCoordinates,
+} from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
@@ -267,7 +272,8 @@ class Rewards extends React.Component {
   };
 
   // eslint-disable-next-line consistent-return
-  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => this.state.propositions.map(proposition => {
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
+    this.state.propositions.map(proposition => {
       if (proposition._id === propsId) {
         proposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
