@@ -4,7 +4,7 @@ import React from 'react';
 import Map from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Marker from 'pigeon-marker/react';
+import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
 import { getUserLocation } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
@@ -91,7 +91,7 @@ class MapObjectInfo extends React.Component {
           onClick={setCoordinates}
           animate
         >
-          <Marker
+          <CustomMarker
             key={`${this.props.center[0]}${this.props.center[1]}`}
             anchor={this.props.center}
           />
@@ -122,7 +122,7 @@ class MapObjectInfo extends React.Component {
                 onClick={setCoordinates}
                 animate
               >
-                <Marker
+                <CustomMarker
                   key={`${this.props.center[0]}${this.props.center[1]}`}
                   anchor={this.props.center}
                 />
