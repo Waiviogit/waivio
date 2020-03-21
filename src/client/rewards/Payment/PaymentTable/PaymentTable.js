@@ -19,10 +19,10 @@ const PaymentTable = ({ intl, sponsors }) => (
           {intl.formatMessage({ id: 'paymentTable_details', defaultMessage: `Details` })}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({ id: 'paymentTable_amount', defaultMessage: `Amount STEEM` })}
+          {intl.formatMessage({ id: 'paymentTable_amount', defaultMessage: `Amount HIVE` })}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({ id: 'paymentTable_balance', defaultMessage: `Balance STEEM` })}
+          {intl.formatMessage({ id: 'paymentTable_balance', defaultMessage: `Balance HIVE` })}
         </th>
       </tr>
     </thead>

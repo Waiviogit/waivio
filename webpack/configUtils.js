@@ -38,17 +38,15 @@ const POSTCSS_LOADER = {
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
-    process.env.STEEMCONNECT_CLIENT_ID || 'waiviodev.com',
+    process.env.STEEMCONNECT_CLIENT_ID || 'www.waivio.com',
   ),
-  'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(
-    process.env.STEEMCONNECT_REDIRECT_URL || `http://${CALLBACK_HOST_URL}/callback`,
-  ),
+  'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(`https://${CALLBACK_HOST_URL}/callback`),
   'process.env.STEEMCONNECT_HOST': JSON.stringify(
-    process.env.STEEMCONNECT_HOST || 'https://steemconnect.com',
+    process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
   ),
-  'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://api.steemit.com'),
+  'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://anyx.io'),
   'process.env.SIGNUP_URL': JSON.stringify(
-    process.env.SIGNUP_URL || 'https://signup.steemit.com/?ref=waiviodev',
+    process.env.SIGNUP_URL || 'https://signup.hive.io/?ref=waivio',
   ),
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });

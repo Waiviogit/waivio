@@ -10,7 +10,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
   const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
     ? `${(currentUSDPrice * campaignData.reward).toFixed(2)} USD`
-    : `${campaignData.reward} STEEM`;
+    : `${campaignData.reward} HIVE`;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -37,7 +37,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
             <React.Fragment>
               <span className="CampaignCardHeader__data-colored">
                 <span className="fw6">{` ${campaignData.reward} `}</span>
-                <span>STEEM</span>
+                <span>HIVE</span>
               </span>
               {currentUSDPrice && (
                 <span className="CampaignCardHeader__rewardPriсe">
@@ -66,7 +66,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
             <div className="total-paid__colon">:</div>
             <div>{`${
               campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-            } STEEM`}</div>
+            } HIVE`}</div>
           </div>
         </div>
       </div>

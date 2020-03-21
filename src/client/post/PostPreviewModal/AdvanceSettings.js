@@ -69,13 +69,13 @@ class AdvanceSettings extends Component {
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
                     id: 'reward_option_100',
-                    defaultMessage: '100% Steem Power',
+                    defaultMessage: '100% Hive Power',
                   })}
                 </Select.Option>
                 <Select.Option value={rewardsValues.half}>
                   {intl.formatMessage({
                     id: 'reward_option_50',
-                    defaultMessage: '50% SBD and 50% SP',
+                    defaultMessage: '50% HBD and 50% HP',
                   })}
                 </Select.Option>
                 <Select.Option value={rewardsValues.none}>

@@ -223,7 +223,7 @@ class CampaignFooter extends React.Component {
       pendingFollowObject,
       intl,
       toggleModalDetails,
-      requiredObjectName
+      requiredObjectName,
     } = this.props;
     return (
       <div className="CampaignFooter">

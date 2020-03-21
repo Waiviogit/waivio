@@ -30,7 +30,7 @@ export default function createSsrHandler(template) {
     try {
       const sc2Api = sc2.Initialize({
         app: process.env.STEEMCONNECT_CLIENT_ID,
-        baseURL: process.env.STEEMCONNECT_HOST,
+        baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       if (req.cookies.access_token) {
@@ -65,13 +65,11 @@ export default function createSsrHandler(template) {
       }
 
       return res.send(
-        renderSsrPage(store, content, assets, template, req.hostname !== 'waiviodev.com'),
+        renderSsrPage(store, content, assets, template, req.hostname !== 'waivio.com'),
       );
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
-      return res.send(
-        renderSsrPage(null, null, assets, template, req.hostname !== 'waiviodev.com'),
-      );
+      return res.send(renderSsrPage(null, null, assets, template, req.hostname !== 'waivio.com'));
     }
   };
 }

@@ -1,8 +1,7 @@
-/* eslint-disable no-underscore-dangle */
-import { message } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { message } from 'antd';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
@@ -12,7 +11,6 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
 } from '../reducers';
@@ -33,10 +31,10 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-// eslint-disable-next-line import/extensions
-import * as apiConfig from '../../waivioApi/config';
-import './Rewards.less';
+import * as apiConfig from '../../waivioApi/config.json';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+
+import './Rewards.less';
 
 @withRouter
 @injectIntl
@@ -47,7 +45,6 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
-    wobjects: getFilteredObjectsMap(state),
   }),
   { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
 )
@@ -66,7 +63,6 @@ class Rewards extends React.Component {
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
-    wobjects: PropTypes.array,
   };
 
   static defaultProps = {
@@ -274,6 +270,7 @@ class Rewards extends React.Component {
   // eslint-disable-next-line consistent-return
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
     const newPropos = this.state.propositions.map(proposition => {
+      // eslint-disable-next-line no-underscore-dangle
       if (proposition._id === propsId) {
         proposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
@@ -285,6 +282,7 @@ class Rewards extends React.Component {
           }
         });
       }
+      // eslint-disable-next-line no-underscore-dangle
       if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
         // eslint-disable-next-line no-param-reassign
         proposition.isReservedSiblingObj = true;
@@ -432,11 +430,11 @@ class Rewards extends React.Component {
 
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';
     const currentSteemPrice =
-      cryptosPriceHistory && cryptosPriceHistory.STEEM && cryptosPriceHistory.STEEM.priceDetails
-        ? cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice
+      cryptosPriceHistory && cryptosPriceHistory.HIVE && cryptosPriceHistory.HIVE.priceDetails
+        ? cryptosPriceHistory.HIVE.priceDetails.currentUSDPrice
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {
