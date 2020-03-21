@@ -93,7 +93,7 @@ const UserWalletSummary = ({
     <div className="UserWalletSummary__item">
       <i className="iconfont icon-steem UserWalletSummary__icon" />
       <div className="UserWalletSummary__label">
-        <FormattedMessage id="steem" defaultMessage="Hive" />
+        <FormattedMessage id="hive" defaultMessage="Hive" />
       </div>
       <div className="UserWalletSummary__value">
         {loading ? (
