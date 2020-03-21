@@ -116,9 +116,9 @@ class ClaimRewardsBlock extends Component {
         <div className="SidebarContentBlock__content">
           {!rewardClaimed && (
             <div>
-              {rewardSteem > 0 && this.renderReward(rewardSteem, 'STEEM', 'steem')}
-              {rewardSbd > 0 && this.renderReward(rewardSbd, 'SBD', 'steem_dollar')}
-              {rewardSP > 0 && this.renderReward(rewardSP, 'SP', 'steem_power')}
+              {rewardSteem > 0 && this.renderReward(rewardSteem, 'HIVE', 'steem')}
+              {rewardSbd > 0 && this.renderReward(rewardSbd, 'HBD', 'steem_dollar')}
+              {rewardSP > 0 && this.renderReward(rewardSP, 'HP', 'steem_power')}
             </div>
           )}
           <Action

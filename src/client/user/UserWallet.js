@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
-import { SBD, STEEM } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
@@ -141,12 +141,12 @@ class Wallet extends Component {
     const actions = get(usersAccountHistory, userKey, []);
     const currentSteemRate = get(
       cryptosPriceHistory,
-      `${STEEM.symbol}.priceDetails.currentUSDPrice`,
+      `${HIVE.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
     const currentSBDRate = get(
       cryptosPriceHistory,
-      `${SBD.symbol}.priceDetails.currentUSDPrice`,
+      `${HBD.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
