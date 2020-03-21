@@ -60,7 +60,10 @@ export const getObjectTypeMap = (map = {}) => dispatch => {
   return dispatch(getObjectType(typeName, actionType, filters, { limit: 50, skip: 0 }));
 };
 
-export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (dispatch, getState) => {
+export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
   const searchString = new URLSearchParams(getQueryString(state)).get('search');

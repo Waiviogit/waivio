@@ -35,7 +35,7 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = '') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '') => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -93,7 +93,7 @@ const parseGuestActions = actions => {
         'transfer',
         {
           ...transferDirection,
-          amount: `${action.amount} STEEM`,
+          amount: `${action.amount} HIVE`,
           memo: action.memo || '',
         },
       ],

@@ -8,13 +8,13 @@ import { getIsAuthenticated } from '../../../reducers';
 import ModalSignIn from '../../Navigation/ModlaSignIn/ModalSignIn';
 
 const menuSections = {
-  STEEM: 'Steem',
+  STEEM: 'Hive',
   PERSONAL: 'Personal',
 };
 const getMenuConfig = ({ isAuthenticated }) => ({
   [menuSections.STEEM]: {
     name: menuSections.STEEM,
-    intlId: 'steem',
+    intlId: 'hive',
     isCollapsible: true,
     isCollapsed: isAuthenticated,
     items: [
