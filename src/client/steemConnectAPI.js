@@ -39,7 +39,7 @@ function sc2Extended() {
 
   const sc2api = sc2.Initialize({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    baseURL: process.env.STEEMCONNECT_HOST,
+    baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
 

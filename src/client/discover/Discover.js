@@ -6,6 +6,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+
 import './Discover.less';
 
 const Discover = ({ intl }) => (

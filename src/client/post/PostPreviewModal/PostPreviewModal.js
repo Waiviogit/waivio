@@ -194,7 +194,7 @@ class PostPreviewModal extends Component {
               policyText={intl.formatMessage({
                 id: 'legal_notice_create_post',
                 defaultMessage:
-                  '"I understand that this post will be published on the Steem social blockchain and that it could be reproduced on many websites around the world. I also acknowledge that the content and images in this post do not infringe the rights of other parties."',
+                  '"I understand that this post will be published on the Hive social blockchain and that it could be reproduced on many websites around the world. I also acknowledge that the content and images in this post do not infringe the rights of other parties."',
               })}
               onChange={this.handleConfirmedChange}
             />

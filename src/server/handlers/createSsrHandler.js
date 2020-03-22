@@ -30,7 +30,7 @@ export default function createSsrHandler(template) {
     try {
       const sc2Api = sc2.Initialize({
         app: process.env.STEEMCONNECT_CLIENT_ID,
-        baseURL: process.env.STEEMCONNECT_HOST,
+        baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       if (req.cookies.access_token) {

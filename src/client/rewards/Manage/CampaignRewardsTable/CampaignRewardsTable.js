@@ -58,11 +58,11 @@ const CampaignRewardsTable = ({
         <tr>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
-            <p>(STEEM)</p>
+            <p>(HIVE)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
-            <p>(STEEM)</p>
+            <p>(HIVE)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}

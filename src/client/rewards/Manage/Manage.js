@@ -105,7 +105,7 @@ class Manage extends React.Component {
               <div className="Manage__account-balance-wrap-title">
                 {intl.formatMessage({
                   id: 'manage_page_account_balance',
-                  defaultMessage: `Account balance (STEEM)`,
+                  defaultMessage: `Account balance (HIVE)`,
                 })}
               </div>
               <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
