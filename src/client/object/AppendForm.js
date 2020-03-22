@@ -475,20 +475,13 @@ export default class AppendForm extends Component {
         } else if (err || this.checkRequiredField(form, currentField)) {
           message.error(
             this.props.intl.formatMessage({
-              id: 'append_validate_common_message',
-              defaultMessage: 'The value is already exist',
+              id: 'append_validate_message',
+              defaultMessage: 'The rating with such name already exist in this locale',
             }),
           );
         } else {
           this.onSubmit(values);
         }
-      } else {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'append_validate_message',
-            defaultMessage: 'The rating with such name already exist in this locale',
-          }),
-        );
       }
     });
   };
@@ -583,7 +576,11 @@ export default class AppendForm extends Component {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const isDuplicated = this.isDuplicate(currentLocale, currentField);
+    const getAllFields = form.getFieldsValue();
+    // eslint-disable-next-line
+    const isDuplicated = !!getAllFields[rule.field]
+      ? this.isDuplicate(currentLocale, currentField)
+      : false;
 
     if (isDuplicated) {
       callback(
