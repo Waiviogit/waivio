@@ -984,7 +984,7 @@ class Topnav extends React.Component {
             {isAuthenticated && (
               <div
                 className={classNames('Topnav__broker', {
-                  'justify-end': !isAuthenticated || platformName === 'widgets',
+                  'justify-end': platformName === 'widgets',
                 })}
               >
                 {platformName === 'widgets' ? (
