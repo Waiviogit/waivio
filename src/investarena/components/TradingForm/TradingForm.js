@@ -22,23 +22,27 @@ const TradingForm = ({ direction }) => {
         </div>
       </div>
 
-      <div className="st-trading-form__row amount">
-        Amount input
+      <div className="flex-info-block">
+        <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />:&nbsp;
+        <div className="trading_form_amount__input">
+          <input type="text"/>
+        </div>
+        <span>{baseCurrency}</span>
       </div>
 
-      <div className="st-trading-form__row button">
+      <div>
         <TradeButton type={direction} />
       </div>
 
       <div className="st-trading-form-footer">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_" defaultMessage="Total" />&nbsp;≈&nbsp;
+          <FormattedMessage id="trading_form_total" defaultMessage="Total" />&nbsp;≈&nbsp;
           <span className="fw5">{totalValue}&nbsp;{termCurrency}</span>
         </div>
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_" defaultMessage="Fee" />&nbsp;≈&nbsp;
+          <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />&nbsp;≈&nbsp;
           <span className="fw5">{feeValue}&nbsp;{feeCurrency}</span>
         </div>
       </div>

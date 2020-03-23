@@ -7,19 +7,19 @@
   height: 36px;
   width: 100%;
   box-sizing: border-box;
-  background-image: linear-gradient(to top, rgba(0, 255, 0, .1) 50%, transparent 10%);
+  background-image: linear-gradient(to top, rgba(0, 255, 0, 0.1) 50%, transparent 10%);
   background-size: 100% 200%;
   border: 3px solid @color-darkest-gray;
   border-radius: 4px;
   border-image: initial;
   background-position: center top;
-  transition: background-position .1s ease-out 0s;
+  transition: background-position 0.1s ease-out 0s;
   text-transform: uppercase;
   margin: 0 5px; // todo: pass margins in props
 
   &:hover {
     cursor: pointer;
-    transition: box-shadow .5s ease 0s;
+    transition: box-shadow 0.5s ease 0s;
   }
 
   &.sell {
@@ -27,7 +27,7 @@
     color: @color-red-bright;
 
     &:hover {
-      box-shadow: @color-red-bright 0 0 .6em .1em inset;
+      box-shadow: @color-red-bright 0 0 0.6em 0.1em inset;
     }
   }
 
@@ -36,7 +36,7 @@
     color: @color-green-bright;
 
     &:hover {
-      box-shadow: @color-green-bright 0 0 .6em .1em inset;
+      box-shadow: @color-green-bright 0 0 0.6em 0.1em inset;
     }
   }
 }

@@ -122,7 +122,47 @@ const withTrade = Component => {
       ...ownProps,
       ...stateProps,
       createOpenDeal: (side, amount, margin, caller) => {
-        if (!isSignIn) {
+        if  (
+          platformName !== 'widgets' &&
+          !isOpen &&
+          isSignIn &&
+          quote &&
+          quoteSettings &&
+          (side === 'Sell' || side === 'Buy')
+        ) {
+          dispatch(
+            toggleModal('openDeals', {
+              quote,
+              quoteSettings,
+              side,
+              amount,
+              margin,
+              postId,
+              platformName,
+              caller,
+            }),
+          );
+        } else if (
+          platformName !== 'widgets' &&
+          !isOpen &&
+          isSignIn &&
+          quote &&
+          quoteSettings &&
+          (side === 'Sell' || side === 'Buy')
+        ) {
+          dispatch(
+            toggleModal('openDeals', {
+              quote,
+              quoteSettings,
+              side,
+              amount,
+              margin,
+              postId,
+              platformName,
+              caller,
+            }),
+          );
+        } else if (!isSignIn) {
           dispatch(toggleModal('authorizeSinglePost'));
         } else if (platformName === 'widgets' && isSignIn) {
           dispatch(toggleModal('broker'));

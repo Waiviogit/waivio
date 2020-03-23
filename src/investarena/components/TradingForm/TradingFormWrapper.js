@@ -6,6 +6,7 @@ const TradingFormWrapper = props => {
   return (
     <div className="st-trading-form-wrapper">
       <TradingForm direction="buy" />
+      <hr/>
       <TradingForm direction="sell" />
     </div>
   );

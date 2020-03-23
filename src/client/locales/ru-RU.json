@@ -1093,5 +1093,9 @@
   "authForm_USER_SESSIONS_LIMIT_IS_REACHED": "Достигнут лимит сессий пользователя",
   "authForm_IP_WHITE_LIST_ERROR": "Доступ с вашего IP адреса запрещен",
   "authForm_REGION_ERROR":"Авторизация через Beaxy недоступна в вашем регионе",
-  "authForm_CRM_ERROR": "Ошибка сервера Beaxy"
+  "authForm_CRM_ERROR": "Ошибка сервера Beaxy",
+  "trading_form_available": "Доступно",
+  "trading_form_amount": "Сумма",
+  "trading_form_total": "Всего",
+  "trading_form_fee": "Коммисия"
 }

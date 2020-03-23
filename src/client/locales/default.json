@@ -1123,5 +1123,9 @@
   "authForm_USER_SESSIONS_LIMIT_IS_REACHED": "User session limit is reached",
   "authForm_IP_WHITE_LIST_ERROR": "Access from your ip is prohibited",
   "authForm_REGION_ERROR":"Access in your area is prohibited",
-  "authForm_CRM_ERROR": "Server error"
+  "authForm_CRM_ERROR": "Server error",
+  "trading_form_available": "Available",
+  "trading_form_amount": "Amount",
+  "trading_form_total": "Total",
+  "trading_form_fee": "Fee"
 }
