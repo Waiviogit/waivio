@@ -1,4 +1,17 @@
-import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart, isEqual } from 'lodash';
+import {
+  each,
+  filter,
+  get,
+  has,
+  includes,
+  isEmpty,
+  isNaN,
+  map,
+  trimStart,
+  isEqual,
+  omitBy,
+  isNil,
+} from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -473,7 +486,12 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          // this.props.onError();
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'The value is already exist',
+            }),
+          );
         } else {
           this.onSubmit(values);
         }
@@ -519,7 +537,7 @@ export default class AppendForm extends Component {
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
   isDuplicate = (currentLocale, currentField) => {
-    const { wObject } = this.props;
+    const { form, wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
@@ -533,30 +551,20 @@ export default class AppendForm extends Component {
     ) {
       return filtered.some(
         f =>
-          isEqual(this.getCurrentFieldValue(currentField), JSON.parse(f.body)) &&
+          isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)) &&
           f.locale === currentLocale,
       );
     }
-    return filtered.some(f => f.body.toLowerCase() === currentField);
+    const currentValue = form.getFieldValue(currentField);
+    return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
 
-  getCurrentFieldValue = () => {
+  getCurrentObjectBody = () => {
     const form = this.props.form;
     const formValues = form.getFieldsValue();
-    const currentObj = {};
 
-    for (const key in formValues) {
-      if (
-        key !== 'currentLocale' &&
-        key !== 'currentField' &&
-        key !== 'like' &&
-        key !== 'follow' &&
-        formValues[key]
-      ) {
-        currentObj[key] = formValues[key];
-      }
-    }
-    return currentObj;
+    const { currentLocale, currentField, like, follow, ...otherValues } = formValues;
+    return omitBy(otherValues, isNil);
   };
 
   validateFieldValue = (rule, value, callback) => {
