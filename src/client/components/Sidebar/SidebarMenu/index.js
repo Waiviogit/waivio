@@ -10,7 +10,7 @@ const menuSections = {
 const menuConfig = {
   [menuSections.HIVE]: {
     name: menuSections.HIVE,
-    intlId: 'steem',
+    intlId: 'hive',
     isCollapsible: true,
     isCollapsed: false,
     items: [
