@@ -535,7 +535,13 @@ export function fillUserStatistics(userStats, userStatistics) {
   };
 }
 
-export const getHolding = (accountId, userStatistics, currencySetting, crossBalance) => {
+export const getHolding = (
+  accountId,
+  userStatistics,
+  currencySetting,
+  crossBalance,
+  currenciesDescriptions,
+) => {
   const { name, currency } = currencySetting;
   const holding = {
     id: accountId,
@@ -552,10 +558,11 @@ export const getHolding = (accountId, userStatistics, currencySetting, crossBala
 
   const accountStatistics = userStatistics[accountId];
   const { balance } = accountStatistics;
-
+  const logoUrl = currenciesDescriptions[currency].iconSvg;
   return {
     ...holding,
     balance,
+    logoUrl,
   };
 };
 
@@ -567,10 +574,22 @@ export const getCrossBalance = (accountId, crossStatistics) => {
   return balance;
 };
 
-export const getHoldingByAccount = (account, userStatistics, currencySettings, crossStatistics) => {
+export const getHoldingByAccount = (
+  account,
+  userStatistics,
+  currencySettings,
+  crossStatistics,
+  currenciesDescriptions,
+) => {
   const { id: accountId, currency } = account;
   const crossBalance = getCrossBalance(accountId, crossStatistics);
-  return getHolding(accountId, userStatistics, currencySettings[currency], crossBalance);
+  return getHolding(
+    accountId,
+    userStatistics,
+    currencySettings[currency],
+    crossBalance,
+    currenciesDescriptions,
+  );
 };
 
 export const getHoldingsByAccounts = (
@@ -578,7 +597,14 @@ export const getHoldingsByAccounts = (
   userStatistics,
   currencySettings,
   crossStatistics = {},
+  currenciesDescriptions,
 ) =>
   Object.keys(accountsMap).map(accountId =>
-    getHoldingByAccount(accountsMap[accountId], userStatistics, currencySettings, crossStatistics),
+    getHoldingByAccount(
+      accountsMap[accountId],
+      userStatistics,
+      currencySettings,
+      crossStatistics,
+      currenciesDescriptions,
+    ),
   );

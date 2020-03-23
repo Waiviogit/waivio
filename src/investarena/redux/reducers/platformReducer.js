@@ -3,7 +3,6 @@ import {
   AUTHORIZE_BROKER_SUCCESS,
   AUTHORIZE_BROKER_ERROR,
   REGISTER_BROKER_REQUEST,
-  REGISTER_BROKER_SUCCESS,
   REGISTER_BROKER_ERROR,
   FORGOT_PASS_BROKER_REQUEST,
   FORGOT_PASS_BROKER_SUCCESS,
@@ -34,9 +33,9 @@ const initialState = {
   userSettings: {},
   accountsMap: {},
   walletMap: {},
+  userWallet: [],
   currencySettings: {},
   currenciesDescriptions: {},
-  userWallet: {},
   isLoading: false,
   accountCurrency: 'USD',
   currentAccountName: '',
@@ -79,6 +78,7 @@ export default function(state = initialState, action) {
           state.userStatistics,
           state.currencySettings,
           state.walletMap,
+          state.currenciesDescriptions,
         ),
       };
     }

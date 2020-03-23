@@ -32,3 +32,7 @@ export const getPlatformAccountCurrencyState = createSelector(
   [getPlatformState],
   platform => platform.accountCurrency,
 );
+export const getUserWalletState = createSelector(
+  [getPlatformState],
+  platform => platform.userWallet,
+);

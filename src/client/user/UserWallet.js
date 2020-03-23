@@ -137,15 +137,14 @@ class Wallet extends Component {
     }
   }
 
-  getBeaxyBalanceWithLogo = () => {
-    const { currenciesDescriptions, beaxyBalance } = this.props;
+  getBeaxyBalance = () => {
+    const { beaxyBalance } = this.props;
     const { isShowMoreBeaxy } = this.state;
     const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
     if (!isShowMoreBeaxy) {
-      const validCurrencies = sortedBalance.filter(item => item.balance > 0);
-      return getHoldingsWithLogo(validCurrencies, currenciesDescriptions);
+      return sortedBalance.filter(item => item.balance > 0);
     }
-    return getHoldingsWithLogo(sortedBalance, currenciesDescriptions);
+    return sortedBalance;
   };
 
   showMoreToggler = () => {
@@ -176,7 +175,7 @@ class Wallet extends Component {
       `${STEEM.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const beaxyBalance = this.getBeaxyBalanceWithLogo();
+    const beaxyBalance = this.getBeaxyBalance();
     const currentSBDRate = get(
       cryptosPriceHistory,
       `${SBD.symbol}.priceDetails.currentUSDPrice`,
