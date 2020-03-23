@@ -4,12 +4,12 @@ import SidebarMenu from './SidebarMenu';
 // todo: sync with dev branch
 
 const menuSections = {
-  STEEM: 'Steem',
+  HIVE: 'Steem',
   PERSONAL: 'Personal',
 };
 const menuConfig = {
-  [menuSections.STEEM]: {
-    name: menuSections.STEEM,
+  [menuSections.HIVE]: {
+    name: menuSections.HIVE,
     intlId: 'steem',
     isCollapsible: true,
     isCollapsed: false,

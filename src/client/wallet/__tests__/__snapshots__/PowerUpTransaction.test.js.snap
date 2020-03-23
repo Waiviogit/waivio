@@ -6,7 +6,7 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <PowerUpTransaction
     amount={
       <span>
-        0 STEEM
+        0 HIVE
       </span>
     }
     from="hellosteem"
@@ -52,7 +52,7 @@ ShallowWrapper {
               className="UserWalletTransactions__payout"
             >
               <span>
-                0 STEEM
+                0 HIVE
               </span>
             </span>
           </div>

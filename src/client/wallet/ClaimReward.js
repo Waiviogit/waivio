@@ -26,39 +26,39 @@ const getFormattedPayout = (
 
   if (parsedRewardSteem > 0) {
     payouts.push(
-      <span key="STEEM" className="UserWalletTransactions__payout-rewards">
+      <span key="HIVE" className="UserWalletTransactions__payout-rewards">
         <FormattedNumber
           value={parsedRewardSteem}
           minimumFractionDigits={3}
           maximumFractionDigits={3}
         />
-        {' STEEM'}
+        {' HIVE'}
       </span>,
     );
   }
 
   if (parsedRewardSbd > 0) {
     payouts.push(
-      <span key="SBD" className="UserWalletTransactions__payout-rewards">
+      <span key="HBD" className="UserWalletTransactions__payout-rewards">
         <FormattedNumber
           value={parsedRewardSbd}
           minimumFractionDigits={3}
           maximumFractionDigits={3}
         />
-        {' SBD'}
+        {' HBD'}
       </span>,
     );
   }
 
   if (parsedRewardVests > 0) {
     payouts.push(
-      <span key="SP" className="UserWalletTransactions__payout-rewards">
+      <span key="HP" className="UserWalletTransactions__payout-rewards">
         <FormattedNumber
           value={parsedRewardVests}
           minimumFractionDigits={3}
           maximumFractionDigits={3}
         />
-        {' SP'}
+        {' HP'}
       </span>,
     );
   }
