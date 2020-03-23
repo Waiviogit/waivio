@@ -473,15 +473,17 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'append_validate_message',
-              defaultMessage: 'The rating with such name already exist in this locale',
-            }),
-          );
+          // this.props.onError();
         } else {
           this.onSubmit(values);
         }
+      } else {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'append_validate_message',
+            defaultMessage: 'The rating with such name already exist in this locale',
+          }),
+        );
       }
     });
   };
@@ -535,50 +537,35 @@ export default class AppendForm extends Component {
           f.locale === currentLocale,
       );
     }
-    return filtered.some(f => f.body.toLowerCase() === this.getCurrentFieldValue(currentField));
+    return filtered.some(f => f.body.toLowerCase() === currentField);
   };
 
-  getCurrentFieldValue = currentField => {
+  getCurrentFieldValue = () => {
     const form = this.props.form;
-    const filteredData = form.getFieldsValue();
+    const formValues = form.getFieldsValue();
     const currentObj = {};
 
-    for (const key in filteredData) {
+    for (const key in formValues) {
       if (
         key !== 'currentLocale' &&
         key !== 'currentField' &&
         key !== 'like' &&
         key !== 'follow' &&
-        filteredData[key]
+        formValues[key]
       ) {
-        currentObj[key] = filteredData[key];
+        currentObj[key] = formValues[key];
       }
     }
-
-    if (
-      currentField === objectFields.phone ||
-      currentField === objectFields.website ||
-      currentField === objectFields.address ||
-      currentField === objectFields.map ||
-      currentField === objectFields.status ||
-      currentField === objectFields.button
-    ) {
-      return currentObj;
-    }
-
-    const currentValue = Object.values(currentObj)
-      .toString()
-      .toLowerCase();
-    return currentValue;
+    return currentObj;
   };
 
   validateFieldValue = (rule, value, callback) => {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const getAllFields = form.getFieldsValue();
+    const formFields = form.getFieldsValue();
     // eslint-disable-next-line
-    const isDuplicated = !!getAllFields[rule.field]
+    const isDuplicated = !!formFields[rule.field]
       ? this.isDuplicate(currentLocale, currentField)
       : false;
 
