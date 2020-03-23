@@ -2,6 +2,7 @@ import { message } from 'antd';
 
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { voteAppends } from '../object/wobjActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 
@@ -119,22 +120,30 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
     },
   });
 
-  return steemConnectAPI
+  voteAppends(permlink);
+
+  steemConnectAPI
     .vote(voter, post.author_original || author, post.permlink, weight)
-    .then(() =>
-      dispatch({
-        type: VOTE_UPDATE_SUCCESS,
-        payload: {
-          postId,
-          voter,
-          weight,
-          postPermlink: postId,
-          rshares_weight: 1,
-          percent: weight,
-          type,
-        },
-      }),
-    )
+    .then(() => {
+      setTimeout(
+        () =>
+          dispatch({
+            type: VOTE_UPDATE_SUCCESS,
+            payload: {
+              postId,
+              voter,
+              weight,
+              postPermlink: postId,
+              rshares_weight: 1,
+              percent: weight,
+              type,
+            },
+          }),
+        2000,
+      );
+
+      voteAppends(permlink);
+    })
     .catch(e => {
       message.error(e.error_description);
       dispatch({
@@ -168,3 +177,5 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
     return res;
   });
 };
+
+export const addPost = () => 8;

@@ -10,6 +10,7 @@ import { getRatingFields } from '../../../reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
 import './RateInfo.less';
+import { calculateApprovePercent } from '../../../helpers/wObjectHelper';
 
 @injectIntl
 @connect(state => ({
@@ -73,35 +74,41 @@ class RateInfo extends React.Component {
     return (
       <React.Fragment>
         {rankingList &&
-          rankingList.map(field => (
-            <div className="RateInfo__header" key={field.permlink}>
-              <div>{field.body}</div>
-              <div className="RateInfo__stars">
-                {this.rateDescription(field) ? (
-                  <BTooltip title={this.rateDescription(field)}>
-                    <div
-                      className="RateInfo__stars-container"
-                      role="presentation"
-                      data-field={JSON.stringify(field)}
-                      onClick={this.handleOnClick(field)}
-                    >
-                      <Rate allowHalf disabled value={+averageRate(field)} />
-                    </div>
-                  </BTooltip>
-                ) : (
-                  <div
-                    className="RateInfo__stars-container"
-                    role="presentation"
-                    data-field={JSON.stringify(field)}
-                    onClick={this.handleOnClick(field)}
-                  >
-                    <Rate allowHalf disabled value={+averageRate(field)} />
+          rankingList.map(field => {
+            if (calculateApprovePercent(field.active_votes) >= 70) {
+              return (
+                <div className="RateInfo__header" key={field.permlink}>
+                  <div>{field.body}</div>
+                  <div className="RateInfo__stars">
+                    {this.rateDescription(field) ? (
+                      <BTooltip title={this.rateDescription(field)}>
+                        <div
+                          className="RateInfo__stars-container"
+                          role="presentation"
+                          data-field={JSON.stringify(field)}
+                          onClick={this.handleOnClick(field)}
+                        >
+                          <Rate allowHalf disabled value={+averageRate(field)} />
+                        </div>
+                      </BTooltip>
+                    ) : (
+                      <div
+                        className="RateInfo__stars-container"
+                        role="presentation"
+                        data-field={JSON.stringify(field)}
+                        onClick={this.handleOnClick(field)}
+                      >
+                        <Rate allowHalf disabled value={+averageRate(field)} />
+                      </div>
+                    )}
+                    <div>({rateCount(field)})</div>
                   </div>
-                )}
-                <div>({rateCount(field)})</div>
-              </div>
-            </div>
-          ))}
+                </div>
+              );
+            }
+
+            return null;
+          })}
         {this.state.showModal && (
           <RateObjectModal
             isVisible={this.state.showModal}

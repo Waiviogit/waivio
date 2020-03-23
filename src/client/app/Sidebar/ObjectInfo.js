@@ -6,7 +6,12 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
-import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
+import {
+  haveAccess,
+  hasType,
+  accessTypesArr,
+  calculateApprovePercent,
+} from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
@@ -155,7 +160,13 @@ class ObjectInfo extends React.Component {
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(nameFld => nameFld.body !== wobject.name)
-        .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
+        .map(nameFld => {
+          if (calculateApprovePercent(nameFld.active_votes) >= 70) {
+            return <div key={nameFld.permlink}>{nameFld.body}</div>;
+          }
+
+          return null;
+        });
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
@@ -386,6 +397,7 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
+
     return (
       <React.Fragment>
         {wobject && wobject.name && (

@@ -114,13 +114,18 @@ class Story extends React.Component {
   getApprovalTagLayoyt = () => {
     const percent = calculateApprovePercent(this.props.post.active_votes);
     const { formatMessage } = this.props.intl;
+
     return (
       <React.Fragment>
         <Tag>
           <span>
             Approval:{' '}
-            <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
-              {percent.toFixed(2)}%
+            <span
+              className={`CalculatedPercent-${
+                percent >= 70 || this.props.post.upvotedByModerator ? 'green' : 'red'
+              }`}
+            >
+              {this.props.post.upvotedByModerator ? 100 : percent.toFixed(2)}%
             </span>
           </span>
         </Tag>

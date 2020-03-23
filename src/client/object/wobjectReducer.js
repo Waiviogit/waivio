@@ -1,7 +1,8 @@
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
-import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
+import { APPENDS_VOTE, RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { ADD_NEW_FIELD } from './wobjActions';
 
 const initialState = {
   wobject: {},
@@ -61,6 +62,44 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+    case APPENDS_VOTE: {
+      // const fields = state.wobject.fields;
+      // const matchPost = fields.find(p => p.permlink === action.payload.permlink);
+
+      return {
+        ...state,
+        // matchPost,
+      };
+    }
+
+    case ADD_NEW_FIELD: {
+      const newField = {
+        weight: 2,
+        locale: 'en-US',
+        creator: 'monterey',
+        author: 'zxc43',
+        permlink: 'monterey-yoxfgnaowae',
+        name: 'name',
+        body: 'testing123',
+        active_votes: [
+          {
+            voter: action.payload.voter,
+            percent: 100,
+            rshares_weight: 1,
+            weight: 9900,
+          },
+        ],
+      };
+
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          fields: [...state.wobject.fields, ...newField],
+        },
+      };
+    }
+
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       const { payload } = action;
       const newField = { ...payload, active_votes: payload.active_votes || [] };

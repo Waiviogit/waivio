@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
+import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -106,15 +107,24 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
 
 export const calculateApprovePercent = votes => {
   if (!_.isEmpty(votes)) {
-    const filteredByOriginalFlag = votes.filter(vote => vote.percent > 0);
-    if (!_.isEmpty(filteredByOriginalFlag)) {
-      const onlyApproved = filteredByOriginalFlag.filter(vote => vote.percent % 10 === 0);
-      if (!_.isEmpty(onlyApproved)) {
-        return (onlyApproved.length / filteredByOriginalFlag.length) * 100;
-      }
+    const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
+    const approveRshares = getAppendUpvotes(votes).reduce(
+      (acc, vote) => acc + vote.rshares_weight,
+      0,
+    );
+    const rejectRshares = getAppendDownvotes(votes).reduce(
+      (acc, vote) => acc + Math.abs(vote.rshares_weight),
+      0,
+    );
+
+    if (rejectRshares) {
+      return summRshares ? (approveRshares * 100) / summRshares : 0;
     }
+
+    return 100;
   }
-  return 0;
+
+  return 100;
 };
 
 /* eslint-enable no-underscore-dangle */
