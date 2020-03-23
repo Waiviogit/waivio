@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Dropdown, Icon, Menu } from 'antd';
+import store from 'store';
 import {
   getPlatformNameState,
   getUserWalletState,
@@ -15,31 +16,31 @@ import './BrokerBalance.less';
 const BrokerBalance = ({ beaxyBalance, platformName, getStatistics }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
-  const storageFirstItem = localStorage.getItem('firstCurrency');
-  const storageSecondCurrency = localStorage.getItem('secondCurrency');
+  const storageFirstItem = store.get('firstCurrency');
+  const storageSecondCurrency = store.get('secondCurrency');
   useEffect(() => {
     if (beaxyBalance && !!beaxyBalance.length) {
       if (!storageFirstItem) {
         setInitFirstCurrency(beaxyBalance[0]);
       } else {
-        setInitFirstCurrency(JSON.parse(storageFirstItem));
+        setInitFirstCurrency(storageFirstItem);
       }
       if (!storageSecondCurrency) {
         setInitSecondCurrency(beaxyBalance[1] ? beaxyBalance[1] : {});
       } else {
-        setInitSecondCurrency(JSON.parse(storageSecondCurrency));
+        setInitSecondCurrency(storageSecondCurrency);
       }
     }
     if (platformName === 'beaxy' && !beaxyBalance.length) getStatistics();
   }, [beaxyBalance]);
 
   const setFirstCurrency = item => {
-    localStorage.setItem('firstCurrency', JSON.stringify(item));
+    store.set('firstCurrency', item);
     setInitFirstCurrency(item);
   };
 
   const setSecondCurrency = item => {
-    localStorage.setItem('secondCurrency', JSON.stringify(item));
+    store.set('secondCurrency', item);
     setInitSecondCurrency(item);
   };
 

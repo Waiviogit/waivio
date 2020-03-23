@@ -13,7 +13,6 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserStatistics } from '../../../investarena/redux/actions/platformActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
@@ -80,7 +79,6 @@ import './Topnav.less';
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
     toggleModal,
-    getUserStatistics,
   },
 )
 class Topnav extends React.Component {
@@ -123,8 +121,6 @@ class Topnav extends React.Component {
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
     isGuest: PropTypes.bool,
-    beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
-    getUserStatistics: PropTypes.func,
   };
 
   static defaultProps = {
@@ -140,8 +136,6 @@ class Topnav extends React.Component {
     screenSize: 'medium',
     messagesCount: 0,
     isGuest: false,
-    beaxyBalance: [],
-    getUserStatistics: () => {},
   };
 
   constructor(props) {
@@ -165,10 +159,6 @@ class Topnav extends React.Component {
       weeklyChosenPost: '',
       scrolling: false,
       visible: false,
-      initFirstCurrency: {},
-      initSecondCurrency: {},
-      firstCurrency: {},
-      secondCurrency: {},
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -867,7 +857,6 @@ class Topnav extends React.Component {
       openChat,
       messagesCount,
       platformName,
-      beaxyBalance,
     } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -992,24 +981,26 @@ class Topnav extends React.Component {
           </div>
           <div className="Topnav__right-bottom">
             {this.content()}
-            <div
-              className={classNames('Topnav__broker', {
-                'justify-end': !isAuthenticated || platformName === 'widgets',
-              })}
-            >
-              {!isAuthenticated || platformName === 'widgets' ? (
-                <div className="st-header-broker-balance-pl-wrap">
-                  <Button type="primary" onClick={this.toggleModalBroker}>
-                    {intl.formatMessage({
-                      id: 'headerAuthorized.connectToBroker',
-                      defaultMessage: 'Connect to broker',
-                    })}
-                  </Button>
-                </div>
-              ) : (
-                <BrokerBalance />
-              )}
-            </div>
+            {isAuthenticated && (
+              <div
+                className={classNames('Topnav__broker', {
+                  'justify-end': !isAuthenticated || platformName === 'widgets',
+                })}
+              >
+                {platformName === 'widgets' ? (
+                  <div className="st-header-broker-balance-pl-wrap">
+                    <Button type="primary" onClick={this.toggleModalBroker}>
+                      {intl.formatMessage({
+                        id: 'headerAuthorized.connectToBroker',
+                        defaultMessage: 'Connect to broker',
+                      })}
+                    </Button>
+                  </div>
+                ) : (
+                  <BrokerBalance />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
