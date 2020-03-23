@@ -716,7 +716,7 @@
   "rate_average_count": "Rating: {count}",
   "open_deals": "Open deals",
   "closed_deals": "Closed deals",
-  "headerAuthorized.connectToBroker": "Connect to broker",
+  "headerAuthorized.connectToBeaxy": "Connect to beaxy",
   "wia.followingInstruments": "Following instruments",
   "headerAuthorized.deposit": "Deposit",
   "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
