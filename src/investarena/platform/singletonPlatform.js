@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import Umarkets from './umarkets';
 import Widgets from './widgets';
+import { getCurrenciesDescription } from '../redux/actions/platformActions';
 
 let instance = null;
 let store = null;
@@ -19,6 +20,7 @@ class SingletonPlatform {
   initialize(_store) {
     store = _store;
     this._platform.initialize(_store);
+    store.dispatch(getCurrenciesDescription());
   }
   get platform() {
     return this._platform;

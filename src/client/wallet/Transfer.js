@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isEmpty, isNull } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
-import { SBD, STEEM } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { closeTransfer } from './walletActions';
@@ -75,7 +75,7 @@ export default class Transfer extends React.Component {
     visible: false,
     amount: 0,
     memo: '',
-    currency: 'STEEM',
+    currency: 'HIVE',
     closeTransfer: () => {},
     screenSize: 'large',
     isGuest: false,
@@ -90,26 +90,26 @@ export default class Transfer extends React.Component {
   static maxAccountLength = 16;
   static exchangeRegex = /^(bittrex|blocktrades|poloniex|changelly|openledge|shapeshiftio|deepcrypto8)$/;
   static CURRENCIES = {
-    STEEM: 'STEEM',
-    SBD: 'SBD',
+    HIVE: 'HIVE',
+    HBD: 'HBD',
   };
 
   state = {
-    currency: Transfer.CURRENCIES.STEEM,
+    currency: Transfer.CURRENCIES.HIVE,
     oldAmount: undefined,
   };
 
   componentDidMount() {
     const { cryptosPriceHistory } = this.props;
-    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const currentSteemRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
 
     if (isNull(currentSteemRate)) {
-      this.props.getCryptoPriceHistory(STEEM.symbol);
+      this.props.getCryptoPriceHistory(HIVE.symbol);
     }
 
     if (isNull(currentSBDRate)) {
-      this.props.getCryptoPriceHistory(SBD.symbol);
+      this.props.getCryptoPriceHistory(HBD.symbol);
     }
   }
 
@@ -119,10 +119,10 @@ export default class Transfer extends React.Component {
       form.setFieldsValue({
         to: nextProps.to,
         amount: nextProps.amount,
-        currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
+        currency: nextProps.currency === 'HIVE' ? HIVE.symbol : HBD.symbol,
       });
       this.setState({
-        currency: STEEM.symbol,
+        currency: HIVE.symbol,
       });
     }
   }
@@ -130,8 +130,8 @@ export default class Transfer extends React.Component {
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
     const { currency, oldAmount } = this.state;
-    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const currentSteemRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
     const parsedAmount = parseFloat(oldAmount);
     const invalidAmount = parsedAmount <= 0 || isNaN(parsedAmount);
@@ -139,7 +139,7 @@ export default class Transfer extends React.Component {
 
     if (steemRateLoading || invalidAmount) return '';
 
-    if (currency === STEEM.symbol) {
+    if (currency === HIVE.symbol) {
       amount = parsedAmount * parseFloat(currentSteemRate);
     } else {
       amount = parsedAmount * parseFloat(currentSBDRate);
@@ -343,7 +343,7 @@ export default class Transfer extends React.Component {
     }
 
     const selectedBalance =
-      this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const currentSelectedBalance = this.props.isGuest ? this.props.guestsBalance : selectedBalance;
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
@@ -373,9 +373,9 @@ export default class Transfer extends React.Component {
     const guestName = to && to.startsWith(GUEST_PREFIX);
 
     const balance =
-      this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
+      this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-    const currentBalance = isGuest ? `${guestsBalance} STEEM` : balance;
+    const currentBalance = isGuest ? `${guestsBalance} HIVE` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
@@ -384,15 +384,15 @@ export default class Transfer extends React.Component {
         onChange={this.handleCurrencyChange}
         className="Transfer__amount__type"
       >
-        <Radio.Button value={Transfer.CURRENCIES.STEEM} className="Transfer__amount__type-steem">
-          {Transfer.CURRENCIES.STEEM}
+        <Radio.Button value={Transfer.CURRENCIES.HIVE} className="Transfer__amount__type-steem">
+          {Transfer.CURRENCIES.HIVE}
         </Radio.Button>
         <Radio.Button
-          value={Transfer.CURRENCIES.SBD}
+          value={Transfer.CURRENCIES.HBD}
           className="Transfer__amount__type-sbd"
           disabled={isGuest}
         >
-          {Transfer.CURRENCIES.SBD}
+          {Transfer.CURRENCIES.HBD}
         </Radio.Button>
       </Radio.Group>,
     );

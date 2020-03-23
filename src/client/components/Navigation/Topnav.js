@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu } from 'antd';
+import { AutoComplete, Icon, Input, Menu, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -49,6 +49,7 @@ import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
 import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
 import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
+import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
 
 @injectIntl
@@ -980,20 +981,24 @@ class Topnav extends React.Component {
           </div>
           <div className="Topnav__right-bottom">
             {this.content()}
-
             {isAuthenticated && (
-              <div className="Topnav__broker">
-                <div className="st-header-broker-balance-pl-wrap">
-                  <Button
-                    type={platformName === 'widgets' ? 'dashed' : 'primary'}
-                    onClick={this.toggleModalBroker}
-                  >
-                    {intl.formatMessage({
-                      id: 'headerAuthorized.connectToBroker',
-                      defaultMessage: 'Connect to broker',
-                    })}
-                  </Button>
-                </div>
+              <div
+                className={classNames('Topnav__broker', {
+                  'justify-end': platformName === 'widgets',
+                })}
+              >
+                {platformName === 'widgets' ? (
+                  <div className="st-header-broker-balance-pl-wrap">
+                    <Button type="primary" onClick={this.toggleModalBroker}>
+                      {intl.formatMessage({
+                        id: 'headerAuthorized.connectToBroker',
+                        defaultMessage: 'Connect to broker',
+                      })}
+                    </Button>
+                  </div>
+                ) : (
+                  <BrokerBalance />
+                )}
               </div>
             )}
           </div>
