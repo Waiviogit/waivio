@@ -505,7 +505,6 @@ class ObjectInfo extends React.Component {
                 <MapObjectInfo
                   mapHeigth={200}
                   center={[Number(map.latitude), Number(map.longitude)]}
-                  // heigth={268}
                   width={270}
                   wobject={wobject}
                   history={this.props.history}

@@ -146,7 +146,6 @@ class MapObjectInfo extends React.Component {
       <div className="MapOS">
         <Map
           provider={mapProvider}
-          // onBoundsChanged={this.onBoundsChanged}
           center={center}
           zoom={zoom}
           height={mapHeigth}
@@ -177,7 +176,6 @@ class MapObjectInfo extends React.Component {
             <div className="MapOS__fullscreenContent">
               <Map
                 ref={this.mapRef}
-                // onBoundsChanged={this.onBoundsChanged}
                 center={center}
                 zoom={zoom}
                 provider={mapProvider}
