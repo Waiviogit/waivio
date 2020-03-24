@@ -7,6 +7,8 @@ import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
+import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
@@ -80,24 +82,29 @@ class MapOS extends React.Component {
 
   getMarkers = () => {
     const { wobjects, onMarkerClick } = this.props;
-    return !_.isEmpty(wobjects)
-      ? _.map(wobjects, wobject => {
-          const lat = wobject.map.coordinates[1];
-          const lng = wobject.map.coordinates[0];
-          const isMarked = Boolean(wobject && wobject.campaigns);
-          return lat && lng ? (
-            <CustomMarker
-              key={`obj${wobject.author_permlink}`}
-              isMarked={isMarked}
-              anchor={[+lat, +lng]}
-              payload={wobject}
-              onMouseOver={this.handleMarkerClick}
-              onClick={onMarkerClick}
-              onMouseOut={this.closeInfobox}
-            />
-          ) : null;
-        })
-      : null;
+    return (
+      !_.isEmpty(wobjects) &&
+      _.map(wobjects, wobject => {
+        const lat =
+          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude) ||
+          _.get(wobject, 'map.coordinates[1]');
+        const lng =
+          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
+          _.get(wobject, 'map.coordinates[0]');
+        const isMarked = Boolean(wobject && wobject.campaigns);
+        return lat && lng ? (
+          <CustomMarker
+            key={`obj${wobject.author_permlink}`}
+            isMarked={isMarked}
+            anchor={[+lat, +lng]}
+            payload={wobject}
+            onMouseOver={this.handleMarkerClick}
+            onClick={onMarkerClick}
+            onMouseOut={this.closeInfobox}
+          />
+        ) : null;
+      })
+    );
   };
 
   getOverlayLayout = () => {
