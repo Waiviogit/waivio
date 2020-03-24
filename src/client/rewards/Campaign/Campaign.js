@@ -23,13 +23,13 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
     : proposition.max_reward;
   const rewardPrise = currentUSDPrice
     ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
-    : `${maxReward} STEEM`;
+    : `${maxReward} HIVE`;
   const rewardMax =
     // eslint-disable-next-line no-nested-ternary
     maxReward !== minReward
       ? currentUSDPrice
         ? `${(currentUSDPrice * maxReward).toFixed(2)} USD`
-        : `${maxReward} STEEM`
+        : `${maxReward} HIVE`
       : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);

@@ -250,8 +250,7 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  wobjects: PropTypes.array.isRequired,
+  wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   width: PropTypes.number,

@@ -65,7 +65,7 @@ export const getObjectTypeMap = (map = {}) => dispatch => {
 
 export const getObjectTypeByStateFilters = (
   typeName,
-  { skip = 0, limit = 15, simplified = false } = {},
+  { skip = 0, limit = 15, simplified = true } = {},
 ) => (dispatch, getState) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };

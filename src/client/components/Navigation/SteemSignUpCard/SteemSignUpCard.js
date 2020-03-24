@@ -5,10 +5,7 @@ const SteemSignUpCard = () => (
   <div className="SignUpCard">
     <div className="SignUpCard__line">
       <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-        <img
-          alt="linkLogo"
-          src="https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png"
-        />
+        <img alt="linkLogo" src="/images/icons/logo-hive-big.svg" />
       </a>
     </div>
     <div className="ModalSignUp__link mb3">

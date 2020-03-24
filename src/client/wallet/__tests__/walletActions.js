@@ -13,7 +13,7 @@ describe('walletActions', () => {
       payload: {
         userName: 'sekhmet',
         amount: 0,
-        currency: 'STEEM',
+        currency: 'HIVE',
         memo: '',
       },
     };

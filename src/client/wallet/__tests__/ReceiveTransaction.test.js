@@ -9,7 +9,7 @@ describe('(Component) ReceiveTransaction', () => {
       const props = {
         from: 'hellosteem',
         memo: 'Test Memo',
-        amount: <span>{'0 STEEM'}</span>,
+        amount: <span>{'0 HIVE'}</span>,
         timestamp: '0',
       };
       const wrapper = shallow(

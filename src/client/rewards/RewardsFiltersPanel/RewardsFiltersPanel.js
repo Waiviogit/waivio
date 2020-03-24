@@ -43,7 +43,7 @@ const RewardsFiltersPanel = ({
     {
       filterName: 'payable',
       value: location.pathname === '/rewards/payables' ? 10 : 20,
-      defaultMessage: `Over {value} STEEM`,
+      defaultMessage: `Over {value} HIVE`,
     },
   ];
 

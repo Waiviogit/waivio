@@ -67,13 +67,13 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, 'STEEM', memo))}
+              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
             >
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable} STEEM`}
+              {` ${payable} HIVE`}
             </Action>
           )}
         </div>
