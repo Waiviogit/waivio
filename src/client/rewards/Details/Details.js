@@ -46,7 +46,7 @@ const Details = ({
       visible={isModalDetailsOpen}
       wrapClassName="Details"
       footer={null}
-      width={765}
+      width={768}
     >
       <CampaignCardHeader campaignData={objectDetails} isDetails />
       <div className="Details__text-wrap">
