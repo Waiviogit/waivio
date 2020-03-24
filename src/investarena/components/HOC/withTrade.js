@@ -27,59 +27,44 @@ const withTrade = Component => {
   class WithTrade extends React.Component {
     constructor(props) {
       super(props);
-      this.state = { amount: '', margin: '' };
+      this.state = { amount: '' };
     }
     componentDidMount() {
       if (this.props.quote && this.props.quoteSettings) {
-        const amountValue = this.props.quoteSettings.defaultQuantity / 1000000;
+        const amountValue = this.props.quoteSettings.defaultQuantity;
         const amount =
           this.props.amountModal ||
           numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-        const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
-        this.setState({ amount, margin });
+        this.setState({ amount });
       }
     }
     componentWillReceiveProps(nexProps) {
       if (nexProps.quote && nexProps.quoteSettings) {
         if (
           this.state.amount === '' ||
-          this.state.margin === '' ||
-          this.state.margin === '---' ||
           !this.props.quote ||
           !this.props.quoteSettings
         ) {
-          const amountValue = nexProps.quoteSettings.defaultQuantity / 1000000;
+          const amountValue = nexProps.quoteSettings.defaultQuantity;
           const amount =
             this.props.amountModal ||
             numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-          const margin =
-            this.props.marginModal ||
-            PlatformHelper.getMargin(nexProps.quote, nexProps.quoteSettings, amount);
-          this.setState({ amount, margin });
-        } else {
-          const margin = PlatformHelper.getMargin(
-            nexProps.quote,
-            nexProps.quoteSettings,
-            this.state.amount,
-          );
-          this.setState({ margin });
+          this.setState({ amount });
         }
       }
     }
     handleClickOpenDeal = (side, caller) => {
-      this.props.createOpenDeal(side, this.state.amount, this.state.margin, caller);
+      this.props.createOpenDeal(side, this.state.amount, 'margin[removed]', caller);
     };
     handleBlurInput = e => {
       const amount = PlatformHelper.validateOnBlur(e.target.value, this.props.quoteSettings);
-      const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
-      this.setState({ amount, margin });
+      this.setState({ amount });
     };
     handleChangeInput = e => {
       const position = e.target.selectionStart;
       const amount = PlatformHelper.validateOnChange(e.target.value, this.props.quoteSettings);
-      const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
       e.persist();
-      this.setState({ amount, margin }, () => {
+      this.setState({ amount }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
       });
     };
@@ -91,8 +76,6 @@ const withTrade = Component => {
         <Component
           {...this.props}
           {...this.state}
-          handleClickLess={this.handleClickLess}
-          handleClickMore={this.handleClickMore}
           handleClickOpenDeal={this.handleClickOpenDeal}
           handleBlurInput={this.handleBlurInput}
           handleChangeInput={this.handleChangeInput}
@@ -121,7 +104,7 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin, caller) => {
+      createOpenDeal: (side, amount, margin, caller) => { // todo: remove margin
         if  (
           platformName !== 'widgets' &&
           !isOpen &&
