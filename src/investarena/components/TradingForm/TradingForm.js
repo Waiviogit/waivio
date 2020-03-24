@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import TradeButton from '../TradeButton';
 import { exponentialToDecimal } from '../../platform/platformHelper';
+import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
-const TradingForm = ({ direction }) => {
+const TradingForm = ({ amount, direction, quoteSettings, handleChangeInput }) => {
+  const { baseCurrency, termCurrency } = quoteSettings;
   const amountAvailable = 100;
-  const termCurrency = 'BTC';
-  const baseCurrency = 'GO';
   const feeCurrency = direction === 'buy' ? baseCurrency : termCurrency;
   const totalValue = exponentialToDecimal(0.0000515);
   const feeValue = exponentialToDecimal(0.00000013);
@@ -22,10 +22,10 @@ const TradingForm = ({ direction }) => {
         </div>
       </div>
 
-      <div className="flex-info-block">
+      <div className="flex-info-block justify-content-center">
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />:&nbsp;
         <div className="trading_form_amount__input">
-          <input type="text"/>
+          <input type="text" value={amount} onChange={handleChangeInput}/>
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -51,7 +51,14 @@ const TradingForm = ({ direction }) => {
 };
 
 TradingForm.propTypes = {
+  amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   direction: PropTypes.oneOf(['buy', 'sell']).isRequired,
+  // quoteSecurity: PropTypes.string.isRequired, // pass to withTrade
+  quoteSettings: PropTypes.shape({
+    baseCurrency: PropTypes.string.isRequired,
+    termCurrency: PropTypes.string.isRequired,
+  }).isRequired,
+  handleChangeInput: PropTypes.func.isRequired,
 };
 
-export default TradingForm;
+export default withTrade(TradingForm);
