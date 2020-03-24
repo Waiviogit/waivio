@@ -13,6 +13,7 @@ import mapProvider from '../../helpers/mapProvider';
 import { setMapFullscreenMode } from './mapActions';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
+import { RADIUS, ZOOM } from '../../../common/constants/map';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 
@@ -34,19 +35,14 @@ class MapObjectInfo extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: 8,
+      zoom: ZOOM,
       center: this.props.center,
       bounds: null,
       initial: true,
-      radius: 91287,
+      radius: RADIUS,
     };
 
     this.mapRef = createRef();
-
-    this.incrementZoom = this.incrementZoom.bind(this);
-    this.decrementZoom = this.decrementZoom.bind(this);
-    this.setPosition = this.setPosition.bind(this);
-    this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
   getMarkers = () => {
@@ -77,10 +73,6 @@ class MapObjectInfo extends React.Component {
         </div>
       </Overlay>
     );
-  };
-
-  setPosition = () => {
-    this.setCoordinates();
   };
 
   setCoordinates = () => {
@@ -156,7 +148,7 @@ class MapObjectInfo extends React.Component {
           {infoboxData && this.getOverlayLayout()}
         </Map>
         {this.zoomButtonsLayout()}
-        <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
+        <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
         <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
@@ -189,7 +181,7 @@ class MapObjectInfo extends React.Component {
               <div
                 role="presentation"
                 className="MapOS__locateGPS"
-                onClick={this.setPosition}
+                onClick={this.setCoordinates}
                 title="find me"
               >
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
