@@ -7,48 +7,30 @@ import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import SidebarMenu from '../components/Sidebar/SidebarMenu/SidebarMenu';
 
 const menuSections = {
-  ALL: 'All',
-  ASSETS: 'Assets',
-  BROKERS: 'Brokers',
   HASHTAGS: 'Hashtags',
+  CRYPTOPAIRS: 'Crypto pairs',
+  CRYPTOCURRENCIES: 'Cryptocurrencies',
 };
 const menuConfig = {
-  [menuSections.ALL]: {
-    name: menuSections.ALL,
-    intlId: 'all',
-    isCollapsible: false,
-    linkTo: '/discover-objects/show_all',
-    items: [],
-  },
-  [menuSections.ASSETS]: {
-    name: menuSections.ASSETS,
-    intlId: 'sidebar.nav.assets',
-    isCollapsible: true,
-    isCollapsed: false,
-    items: [
-      {
-        name: 'Cryptopairs',
-        intlId: 'modalAssets.cryptopairs',
-        linkTo: '/discover-objects/cryptopairs',
-      },
-      {
-        name: 'Cryptocurrencies',
-        intlId: 'modalAssets.cryptocurrencies',
-        linkTo: '/discover-objects/crypto',
-      },
-    ],
-  },
-  [menuSections.BROKERS]: {
-    name: menuSections.BROKERS,
-    intlId: 'brokers',
-    isCollapsible: false,
-    linkTo: '/discover-objects/brokers',
-  },
   [menuSections.HASHTAGS]: {
     name: menuSections.HASHTAGS,
     intlId: 'hashtags',
     isCollapsible: false,
     linkTo: '/discover-objects/hashtag',
+    items: [],
+  },
+  [menuSections.CRYPTOPAIRS]: {
+    name: menuSections.CRYPTOPAIRS,
+    intlId: 'modalAssets.cryptopairs',
+    isCollapsible: false,
+    linkTo: '/discover-objects/cryptopairs',
+    items: [],
+  },
+  [menuSections.CRYPTOCURRENCIES]: {
+    name: menuSections.CRYPTOCURRENCIES,
+    intlId: 'modalAssets.cryptocurrencies',
+    isCollapsible: false,
+    linkTo: '/discover-objects/crypto',
     items: [],
   },
 };

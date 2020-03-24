@@ -716,7 +716,7 @@
   "rate_average_count": "Rating: {count}",
   "open_deals": "Open deals",
   "closed_deals": "Closed deals",
-  "headerAuthorized.connectToBroker": "Connect to broker",
+  "headerAuthorized.connectToBeaxy": "Connect to beaxy",
   "wia.followingInstruments": "Following instruments",
   "headerAuthorized.deposit": "Deposit",
   "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
@@ -1123,5 +1123,9 @@
   "authForm_USER_SESSIONS_LIMIT_IS_REACHED": "User session limit is reached",
   "authForm_IP_WHITE_LIST_ERROR": "Access from your ip is prohibited",
   "authForm_REGION_ERROR":"Access in your area is prohibited",
-  "authForm_CRM_ERROR": "Server error"
+  "authForm_CRM_ERROR": "Server error",
+  "trading_form_available": "Available",
+  "trading_form_amount": "Amount",
+  "trading_form_total": "Total",
+  "trading_form_fee": "Fee"
 }

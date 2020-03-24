@@ -15,10 +15,6 @@ const propTypes = {
 };
 
 class BrokerAuthorization extends Component {
-  state = {
-    checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
-  };
-
   connectBroker = (user, password) =>
     api.brokers.authorizeBroker({
       platform: 'beaxy',
@@ -44,11 +40,6 @@ class BrokerAuthorization extends Component {
 
   disconnectBroker = () => {
     this.props.disconnectBroker();
-  };
-
-  handleOneClickTrading = e => {
-    localStorage.setItem('isOneClickTrade', e.target.checked);
-    this.setState({ checked: e.target.checked });
   };
 
   render() {
