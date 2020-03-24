@@ -74,7 +74,6 @@ const ObjectCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
-
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -86,11 +85,15 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${wObject.parent}`}
-                  title={goToObjTitle(wObject.parent)}
+                  to={`/object/${
+                    isEmpty(passedParent)
+                      ? wObject.parent.author_permlink
+                      : passedParent.author_permlink
+                  }`}
+                  title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
-                  {wObject.parent}
+                  {parentName}
                 </Link>
               )}
               <div className="ObjectCardView__name">
