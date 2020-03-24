@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
+import { RADIUS, ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
@@ -37,10 +38,10 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: 8,
+      zoom: ZOOM,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: 91287,
+      radius: RADIUS,
     };
 
     this.mapRef = createRef();
