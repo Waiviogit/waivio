@@ -65,7 +65,6 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  console.log(wObject);
   const parentName = isEmpty(passedParent)
     ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
     : passedParent.name || passedParent.default_name;
@@ -76,7 +75,6 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
-  console.log(wObject);
   return (
     <React.Fragment>
       <div className="ObjectCardView">
