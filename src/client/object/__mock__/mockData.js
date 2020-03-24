@@ -48,7 +48,7 @@ export const wObjectInRowDataWithSameWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 1,
@@ -89,7 +89,7 @@ export const wObjectInRowDataWithDifferentWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 2,
@@ -121,7 +121,7 @@ export const wObjectNotInRowDataWithSameWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 1,
@@ -180,7 +180,7 @@ export const wObjectNotInRowDataWithDifferentWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
 
     {
@@ -213,7 +213,7 @@ export const wObjectMoreTwoObjInRowDataWithSameWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 1,
@@ -263,7 +263,7 @@ export const wObjectMoreTwoObjInRowDataWithDifferentWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 3,
@@ -304,7 +304,7 @@ export const wObjectMoreTwoObjNotInRowDataWithSameWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
     {
       weight: 1,
@@ -372,7 +372,7 @@ export const wObjectMoreTwoObjNotInRowDataWithDifferentWeigth = {
       creator: 'alexeygrigurko',
       author: 'b23df',
       name: 'newsFilter',
-      body: 'steem',
+      body: 'hive',
     },
 
     {
@@ -395,3 +395,18 @@ export const wObjectMoreTwoObjNotInRowDataWithDifferentWeigth = {
     },
   ],
 };
+
+export const initialState = [
+  {
+    author: 'sor31',
+    body: 'Молоко2',
+    locale: 'en-US',
+    name: 'name',
+  },
+  {
+    author: 'sor31',
+    body: '2',
+    locale: 'en-US',
+    name: 'rating',
+  },
+];

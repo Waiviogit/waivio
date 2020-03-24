@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { openTransfer, openPowerUpOrDown } from '../../wallet/walletActions';
 import { getAuthenticatedUser, getCryptosPriceHistory, isGuestUser } from '../../reducers';
-import { STEEM, SBD } from '../../../common/constants/cryptos';
+import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
@@ -62,7 +62,7 @@ class WalletSidebar extends React.Component {
   render() {
     const { match, user, isCurrentUser, cryptosPriceHistory, isGuest } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
-    const cryptos = [STEEM.symbol, SBD.symbol];
+    const cryptos = [HIVE.symbol, HBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
     return (
       <div className="WalletSidebar">
@@ -82,7 +82,7 @@ class WalletSidebar extends React.Component {
         {!isEmpty(cryptosPriceHistory) && <CryptoTrendingCharts cryptos={cryptos} />}
         {ownProfile && <ClaimRewardsBlock />}
         <a
-          href={`https://widget.blocktrades.us/trade?affiliate_id=8523b1e2-b2d5-4f76-b920-8f11cd4f45f0&input_coin_type=steem&input_coin_amount=${steemBalance}&output_coin_type=ltc`}
+          href={`https://widget.blocktrades.us/trade?affiliate_id=8523b1e2-b2d5-4f76-b920-8f11cd4f45f0&input_coin_type=hive&input_coin_amount=${steemBalance}&output_coin_type=ltc`}
           target="_blank"
           rel="noopener noreferrer"
         >

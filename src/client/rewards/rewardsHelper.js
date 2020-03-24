@@ -156,8 +156,8 @@ export const getCurrentUSDPrice = () => {
   if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
   const currentUSDPrice =
     cryptosPriceHistory &&
-    cryptosPriceHistory.STEEM &&
-    cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice;
+    cryptosPriceHistory.HIVE &&
+    cryptosPriceHistory.HIVE.priceDetails.currentUSDPrice;
   return currentUSDPrice;
 };
 

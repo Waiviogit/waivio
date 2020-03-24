@@ -530,6 +530,11 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  currentLocale: [
+    {
+      validator: true,
+    },
+  ],
   phoneName: [
     {
       max: 100,

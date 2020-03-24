@@ -91,8 +91,8 @@ const WelcomeModal = ({
       list: getRecommendList(recommendedExperts, newUserRecommendExperts.science),
     },
     {
-      name: 'steem',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.steem),
+      name: 'hive',
+      list: getRecommendList(recommendedExperts, newUserRecommendExperts.hive),
     },
     {
       name: 'cryptos',

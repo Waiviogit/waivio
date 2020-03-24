@@ -125,7 +125,7 @@ class UserInfo extends React.Component {
                 </div>
                 <div>
                   <i className="hashtag text-icon">#</i>
-                  <FormattedMessage id="steem_reputation" defaultMessage="Steem reputation" />:{' '}
+                  <FormattedMessage id="steem_reputation" defaultMessage="Hive reputation" />:{' '}
                   {calcReputation(user.reputation)}
                 </div>
                 {!user.name.startsWith(GUEST_PREFIX) && (
