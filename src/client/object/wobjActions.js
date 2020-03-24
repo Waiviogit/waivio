@@ -9,7 +9,6 @@ export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 
 export const APPENDS_VOTE = '@wobj/APPENDS_VOTE';
-export const ADD_NEW_FIELD = '@wobj/ADD_NEW_FIELD';
 
 export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -151,25 +150,12 @@ export const rateObject = (author, permlink, authorPermlink, rate) => (
   });
 };
 
-export const voteAppends = permlink => dispatch => {
+export const voteAppends = (permlink, voteData) => dispatch => {
   dispatch({
     type: APPENDS_VOTE,
     payload: {
       permlink,
-    },
-  });
-};
-
-export const addNewFields = (permlink, locale, creator, author, name, body) => dispatch => {
-  dispatch({
-    type: ADD_NEW_FIELD,
-    payload: {
-      locale,
-      creator,
-      author,
-      permlink,
-      name,
-      body,
+      ...voteData,
     },
   });
 };

@@ -289,6 +289,41 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case postsActions.ADD_NEW_FIELD: {
+      console.log(action.payload);
+      const newField = {
+        weight: 2,
+        locale: 'en-US',
+        creator: 'monterey',
+        author: 'zxc43',
+        permlink: 'monterey-yoxfgnaowae',
+        name: 'name',
+        body: action.payload.body,
+        type: 'menuList',
+        alias: 'test list',
+        created: Date.now(),
+        active_votes: [
+          {
+            voter: action.payload.author,
+            percent: 100,
+            rshares_weight: 1,
+            weight: action.payload.votePower,
+          },
+        ],
+      };
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [`${action.payload.author}/${action.payload.permlink}`]: {
+            ...newField,
+            loading: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }

@@ -2,7 +2,6 @@ import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { APPENDS_VOTE, RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
-import { ADD_NEW_FIELD } from './wobjActions';
 
 const initialState = {
   wobject: {},
@@ -63,39 +62,39 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
     case APPENDS_VOTE: {
-      // const fields = state.wobject.fields;
-      // const matchPost = fields.find(p => p.permlink === action.payload.permlink);
-
-      return {
-        ...state,
-        // matchPost,
+      const { permlink, type, voter, weight } = action.payload;
+      const matchPost = state.wobject.fields.find(f => f.permlink === permlink);
+      const matchPostIndex = state.wobject.fields.findIndex(f => f.permlink === permlink);
+      const percent = type === 'approve' ? 100 : -100;
+      const voterIndex = matchPost.active_votes.findIndex(vote => vote.voter === voter);
+      const newVoter = {
+        voter,
+        percent: weight && percent,
+        rshares_weight: 1,
+        weight,
       };
-    }
+      let list = [...matchPost.active_votes];
 
-    case ADD_NEW_FIELD: {
-      const newField = {
-        weight: 2,
-        locale: 'en-US',
-        creator: 'monterey',
-        author: 'zxc43',
-        permlink: 'monterey-yoxfgnaowae',
-        name: 'name',
-        body: 'testing123',
-        active_votes: [
-          {
-            voter: action.payload.voter,
-            percent: 100,
-            rshares_weight: 1,
-            weight: 9900,
-          },
-        ],
-      };
+      if (voterIndex >= 0) {
+        if (!weight) {
+          list.splice(voterIndex, 1);
+        } else {
+          list.splice(voterIndex, 1, newVoter);
+        }
+      } else {
+        list = [...matchPost.active_votes, newVoter];
+      }
+
+      state.wobject.fields.splice(matchPostIndex, 1, {
+        ...matchPost,
+        active_votes: list,
+      });
 
       return {
         ...state,
         wobject: {
           ...state.wobject,
-          fields: [...state.wobject.fields, ...newField],
+          fields: [...state.wobject.fields],
         },
       };
     }

@@ -43,7 +43,7 @@ import { appendObject } from '../object/appendActions';
 import withEditor from '../components/Editor/withEditor';
 import { getVoteValue } from '../helpers/user';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
-import { rateObject, addNewFields } from '../object/wobjActions';
+import { rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
@@ -55,6 +55,7 @@ import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 
 import './AppendForm.less';
+import { getObjectComments } from '../feed/feedActions';
 
 @connect(
   state => ({
@@ -67,7 +68,7 @@ import './AppendForm.less';
     usedLocale: getSuitableLanguage(state),
     ratingFields: getRatingFields(state),
   }),
-  { appendObject, rateObject, addNewFields },
+  { appendObject, rateObject, getObjectComments },
 )
 @Form.create()
 @withEditor
@@ -89,7 +90,7 @@ export default class AppendForm extends Component {
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
     hideModal: PropTypes.func,
-    addNewFields: PropTypes.func.isRequired,
+    getObjectComments: PropTypes.func.isRequired,
     intl: PropTypes.shape(),
     ratingFields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   };
@@ -150,9 +151,6 @@ export default class AppendForm extends Component {
           if (res.value.message) {
             message.error(res.value.message);
           } else {
-            this.props.addNewFields(res.value.permlink);
-            // console.log(form);
-            // console.log(res.value);
             if (data.votePower !== null) {
               if (objectFields.rating === formValues.currentField && formValues.rate) {
                 const { author, permlink } = res.value;
@@ -182,6 +180,10 @@ export default class AppendForm extends Component {
 
           this.props.hideModal();
           this.setState({ loading: false });
+          setTimeout(
+            () => this.props.getObjectComments(wObject.author, wObject.author_permlink),
+            3000,
+          );
         })
         .catch(() => {
           message.error(
@@ -191,7 +193,6 @@ export default class AppendForm extends Component {
             }),
           );
 
-          this.props.hideModal();
           this.setState({ loading: false });
         });
     }

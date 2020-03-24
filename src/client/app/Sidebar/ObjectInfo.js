@@ -119,13 +119,19 @@ class ObjectInfo extends React.Component {
 
   renderTagCategories = tagCategories => {
     if (tagCategories) {
-      return tagCategories.map(item => (
-        <div key={item.id}>
-          {`${item.body}:`}
-          <br />
-          {this.renderCategoryItems(item.categoryItems)}
-        </div>
-      ));
+      return tagCategories.map(item => {
+        if (calculateApprovePercent(item.active_votes) >= 70) {
+          return (
+            <div key={item.id}>
+              {`${item.body}:`}
+              <br />
+              {this.renderCategoryItems(item.categoryItems)}
+            </div>
+          );
+        }
+
+        return null;
+      });
     }
     return null;
   };
@@ -192,18 +198,29 @@ class ObjectInfo extends React.Component {
       menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
+          ? menuItems.filter(
+              item =>
+                item.object_type === OBJECT_TYPE.LIST &&
+                calculateApprovePercent(item.active_votes) >= 70,
+            )
           : null;
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
-          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
+          ? menuItems.filter(
+              item =>
+                item.object_type === OBJECT_TYPE.PAGE &&
+                calculateApprovePercent(item.active_votes) >= 70,
+            )
           : null;
 
       photosCount = wobject.photos_count;
 
       tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
 
-      const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
+      const filteredPhones = wobject.fields.filter(
+        field =>
+          field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
+      );
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 

@@ -35,7 +35,9 @@ const WobjHeader = ({
   const parentName = wobject.parent
     ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
-
+  const path =
+    wobject.object_type === 'list' || wobject.object_type === 'page' ? wobject.object_type : '';
+  const editLink = `/object/${wobject.author_permlink}/${isMobile ? 'about' : path}`;
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -70,7 +72,7 @@ const WobjHeader = ({
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
+                  <Link to={editLink}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })

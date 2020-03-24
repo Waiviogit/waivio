@@ -5,6 +5,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { voteAppends } from '../object/wobjActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
+export const ADD_NEW_FIELD = '@wobj/ADD_NEW_FIELD';
 
 export const LIKE_POST = '@post/LIKE_POST';
 export const LIKE_POST_START = '@post/LIKE_POST_START';
@@ -108,6 +109,14 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
   const { auth, posts } = getState();
   const post = posts.list[postId];
   const voter = auth.user.name;
+  const voteData = {
+    postId,
+    voter,
+    weight,
+    postPermlink: postId,
+    percent: weight,
+    type,
+  };
 
   if (!auth.isAuthenticated) {
     return null;
@@ -120,9 +129,7 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
     },
   });
 
-  voteAppends(permlink);
-
-  steemConnectAPI
+  return steemConnectAPI
     .vote(voter, post.author_original || author, post.permlink, weight)
     .then(() => {
       setTimeout(
@@ -130,19 +137,13 @@ export const votePostUpdate = (postId, author, permlink, weight = 10000, type) =
           dispatch({
             type: VOTE_UPDATE_SUCCESS,
             payload: {
-              postId,
-              voter,
-              weight,
-              postPermlink: postId,
-              rshares_weight: 1,
-              percent: weight,
-              type,
+              ...voteData,
             },
           }),
         2000,
       );
 
-      voteAppends(permlink);
+      dispatch(voteAppends(permlink, { ...voteData }));
     })
     .catch(e => {
       message.error(e.error_description);
@@ -175,6 +176,13 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
     // Delay to make sure you get the latest data (unknown issue with API)
     setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
     return res;
+  });
+};
+
+export const addNewFields = postData => dispatch => {
+  dispatch({
+    type: ADD_NEW_FIELD,
+    payload: { ...postData },
   });
 };
 
