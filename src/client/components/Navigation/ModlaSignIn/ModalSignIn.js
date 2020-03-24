@@ -81,14 +81,14 @@ const ModalSignIn = ({ next, intl }) => {
             <span>
               {intl.formatMessage({
                 id: 'steem_accounts',
-                defaultMessage: 'STEEM ACCOUNTS',
+                defaultMessage: 'HIVE ACCOUNTS',
               })}
             </span>
           </p>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignIn__signin">
             <img
-              src="/images/icons/steemit.svg"
-              alt="steemit"
+              src="/images/icons/logo-hive.svg"
+              alt="hive"
               className="ModalSignIn__icon-steemit"
             />
             {intl.formatMessage({

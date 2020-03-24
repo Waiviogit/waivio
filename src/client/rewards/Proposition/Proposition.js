@@ -42,6 +42,7 @@ const Proposition = ({
     'name',
     proposition.required_object.author_permlink,
   );
+
   useEffect(() => {
     getSingleComment(authorizedUserName, assignCommentPermlink);
   }, []);

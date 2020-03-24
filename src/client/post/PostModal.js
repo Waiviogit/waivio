@@ -100,7 +100,7 @@ class PostModal extends React.Component {
     const { root_author, permlink, title, url } = currentShownPost;
     // eslint-disable-next-line camelcase
     const author = currentShownPost.guestInfo ? currentShownPost.guestInfo.userId : root_author;
-    const baseURL = window ? window.location.origin : 'https://waiviodev.com';
+    const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,

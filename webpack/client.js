@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const CSSExtract = require('mini-css-extract-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
@@ -124,11 +123,6 @@ module.exports = function createConfig(env = 'dev') {
       }),
       new CSSExtract({
         filename: '[name].[contenthash].css',
-      }),
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: './statistics.html',
-        openAnalyzer: false,
       }),
       new SWPrecacheWebpackPlugin({
         filepath: paths.sw,

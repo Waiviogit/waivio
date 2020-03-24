@@ -36,7 +36,7 @@ describe('walletReducer', () => {
         payload: {
           userName: 'sekhmet',
           amount: 0.1,
-          currency: 'STEEM',
+          currency: 'HIVE',
           memo: 'user_reward',
         },
       }),
@@ -45,7 +45,7 @@ describe('walletReducer', () => {
       transferVisible: true,
       transferTo: 'sekhmet',
       amount: 0.1,
-      currency: 'STEEM',
+      currency: 'HIVE',
       memo: 'user_reward',
     });
 
@@ -60,7 +60,7 @@ describe('walletReducer', () => {
           payload: {
             userName: 'fabien',
             amount: 0.1,
-            currency: 'STEEM',
+            currency: 'HIVE',
             memo: 'user_reward',
           },
         },
@@ -69,7 +69,7 @@ describe('walletReducer', () => {
       transferVisible: true,
       transferTo: 'fabien',
       amount: 0.1,
-      currency: 'STEEM',
+      currency: 'HIVE',
       memo: 'user_reward',
     });
   });

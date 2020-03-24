@@ -39,6 +39,7 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 
 import './Topnav.less';
 import { replacer } from '../../helpers/parser';
+import WeightTag from '../WeightTag';
 
 @injectIntl
 @withRouter
@@ -429,7 +430,7 @@ class Topnav extends React.Component {
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
         break;
       case 'user':
-        redirectUrl = `/search?q=${searchBarValue}`;
+        redirectUrl = `/discover/?search=${searchBarValue}`;
         break;
       case 'type':
       default:
@@ -533,22 +534,39 @@ class Topnav extends React.Component {
           size(accounts),
         )}
       >
-        {map(accounts, option => (
-          <AutoComplete.Option
-            marker={Topnav.markers.USER}
-            key={`user${option.account}`}
-            value={`user${option.account}`}
-            className="Topnav__search-autocomplete"
-          >
-            <div className="Topnav__search-content-wrap">
-              <Avatar username={option.account} size={40} />
-              <div className="Topnav__search-content">{option.account}</div>
-            </div>
-            <div className="Topnav__search-content-small">
-              {option.isFollowing && <span>following</span>}
-            </div>
-          </AutoComplete.Option>
-        ))}
+        {map(
+          accounts,
+          option =>
+            option && (
+              <AutoComplete.Option
+                marker={Topnav.markers.USER}
+                key={`user${option.account}`}
+                value={`user${option.account}`}
+                className="Topnav__search-autocomplete"
+              >
+                <div className="Topnav__search-content-wrap">
+                  <Avatar username={option.account} size={40} />
+                  <div className="Topnav__search-content">{option.account}</div>
+                  <span className="Topnav__search-expertize">
+                    <WeightTag weight={option.wobjects_weight} />
+                    &middot;
+                    <span className="Topnav__search-follow-counter">{option.followers_count}</span>
+                  </span>
+                </div>
+                <div className="Topnav__search-content-small">
+                  {option.isFollowing && !option.followsYou && (
+                    <FormattedMessage id="following_user" defaultMessage="following" />
+                  )}
+                  {!option.isFollowing && option.followsYou && (
+                    <FormattedMessage id="follows you" defaultMessage="follows you" />
+                  )}
+                  {option.isFollowing && option.followsYou && (
+                    <FormattedMessage id="mutual_follow" defaultMessage="mutual following" />
+                  )}
+                </div>
+              </AutoComplete.Option>
+            ),
+        )}
       </AutoComplete.OptGroup>
     );
   }

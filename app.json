@@ -8,7 +8,7 @@
       "required": false,
     },
     "STEEMJS_URL": {
-      "description": "Steem node URL",
+      "description": "Hive node URL",
       "value": "https://anyx.io",
       "required": false
     }

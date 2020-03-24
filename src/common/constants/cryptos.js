@@ -4,6 +4,18 @@ export const BTC = {
   symbol: 'BTC',
 };
 
+export const HIVE = {
+  id: 'hive',
+  name: 'Hive',
+  symbol: 'HIVE',
+};
+
+export const HBD = {
+  id: 'hive-dollars',
+  name: 'Hive Dollars',
+  symbol: 'HBD',
+};
+
 export const ETH = {
   id: 'ethereum',
   name: 'Ethereum',
@@ -637,6 +649,8 @@ export const CRYPTO_MAP = {
   [BCN.symbol]: BCN,
   [TRX.symbol]: TRX,
   [STEEM.symbol]: STEEM,
+  [HIVE.symbol]: HIVE,
+  [HBD.symbol]: HBD,
   [SBD.symbol]: SBD,
   [VERI.symbol]: VERI,
   [ARK.symbol]: ARK,

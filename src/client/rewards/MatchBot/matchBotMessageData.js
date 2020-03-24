@@ -16,7 +16,7 @@ export default localizer => ({
   ),
   contentUserPostedReview: localizer(
     'matchBot_content_user_has_posted_review_eligible_receive_direct_reward',
-    "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 STEEM. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 STEEM in author's rewards and the direct payment can be reduced to 4.50 STEEM.",
+    "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 HIVE. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 HIVE in author's rewards and the direct payment can be reduced to 4.50 HIVE.",
   ),
   thirdPartyCampaignSponsors: localizer(
     'matchBot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
@@ -30,7 +30,7 @@ export default localizer => ({
   removeAuthorization: localizer('matchBot_remove_authorization', 'Remove authorization'),
   authorizationCompletedSteemconnect: localizer(
     'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-    'The authorization is completed via SteemConnect and can be revoked at any time.',
+    'The authorization is completed via Hive and can be revoked at any time.',
   ),
   minimumVotingPower: localizer('matchBot_minimum_voting_power', 'Minimum voting power'),
   change: localizer('matchBot_minimum_voting_power_change', 'change'),

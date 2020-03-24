@@ -3,16 +3,16 @@ import { isEmpty } from 'lodash';
 export const validatorMessagesCreator = messageFactory => ({
   budgetLess: messageFactory(
     'budget_more_than_thousandth',
-    'Budget should be more or equal 0,001 STEEM',
+    'Budget should be more or equal 0,001 HIVE',
   ),
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
   budgetToSteemBalance: messageFactory(
     'budget_overprices_wallet_balance',
-    'Budget should not exceed your STEEM wallet balance',
+    'Budget should not exceed your HIVE wallet balance',
   ),
   rewardsLess: messageFactory(
     'reward_more_than_thousandth',
-    'Reward should be more or equal 0,001 STEEM',
+    'Reward should be more or equal 0,001 HIVE',
   ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
   rewardToBudget: messageFactory(
@@ -34,7 +34,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   steemReputation: messageFactory(
     'steem_reputation_from_100_to_100',
-    'The Steem reputation must be from -100 to 100',
+    'The Hive reputation must be from -100 to 100',
   ),
   followersQuality: messageFactory(
     'not_less_zero_followers',

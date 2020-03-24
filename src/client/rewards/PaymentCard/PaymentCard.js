@@ -25,19 +25,19 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, 'STEEM', memo))}
+      onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
         id: 'pay',
         defaultMessage: 'Pay',
       })}
-      {` ${payable && payable.toFixed(2)} STEEM`}
+      {` ${payable && payable.toFixed(2)} HIVE`}
     </Action>
   );
 
   if (match.path === '/rewards/receivables') {
-    renderTransferButton = <span>{` ${payable && payable.toFixed(2)} STEEM`}</span>;
+    renderTransferButton = <span>{` ${payable && payable.toFixed(2)} HIVE`}</span>;
   }
 
   return (

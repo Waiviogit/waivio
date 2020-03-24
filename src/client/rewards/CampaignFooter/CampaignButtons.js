@@ -17,7 +17,6 @@ export default class CampaignButtons extends React.Component {
     daysLeft: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    requiredObjectPermlink: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
@@ -25,6 +24,7 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     toggleModalDetails: PropTypes.func,
+    requiredObjectName: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -115,10 +115,10 @@ export default class CampaignButtons extends React.Component {
       postState,
       post,
       handlePostPopoverMenuClick,
-      requiredObjectPermlink,
+      requiredObjectName,
     } = this.props;
-    const followText = this.getFollowText(postState.userFollowed, post.parent_author);
-    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectPermlink);
+    const followText = this.getFollowText(postState.userFollowed, `@${post.parent_author}`);
+    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
 
     let popoverMenu = [];
 
@@ -152,7 +152,7 @@ export default class CampaignButtons extends React.Component {
         />
         {this.props.intl.formatMessage({
           id: 'campaign_buttons_release',
-          defaultMessage: 'Release',
+          defaultMessage: 'Release reservation',
         })}
       </PopoverMenuItem>,
     ];

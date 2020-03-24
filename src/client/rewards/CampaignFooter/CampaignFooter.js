@@ -48,6 +48,7 @@ class CampaignFooter extends React.Component {
     onLikeClick: PropTypes.func,
     discardPr: PropTypes.func,
     toggleModalDetails: PropTypes.func,
+    requiredObjectName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -220,9 +221,9 @@ class CampaignFooter extends React.Component {
       saving,
       singlePostVew,
       pendingFollowObject,
-      requiredObjectPermlink,
       intl,
       toggleModalDetails,
+      requiredObjectName,
     } = this.props;
     return (
       <div className="CampaignFooter">
@@ -246,7 +247,7 @@ class CampaignFooter extends React.Component {
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
-              requiredObjectPermlink={requiredObjectPermlink}
+              requiredObjectName={requiredObjectName}
             />
           )}
         </div>
