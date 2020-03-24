@@ -79,10 +79,15 @@ const RewardsFiltersPanel = ({
         ) : (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
-              {`${intl.formatMessage({
-                id: 'payables',
-                defaultMessage: 'Payables',
-              })}:`}
+              {location.pathname !== '/rewards/payables'
+                ? `${intl.formatMessage({
+                    id: 'payables',
+                    defaultMessage: 'Receivables',
+                  })}:`
+                : `${intl.formatMessage({
+                    id: 'payables',
+                    defaultMessage: 'Payables',
+                  })}:`}
             </div>
             {_.map(payablesFilterData, payable =>
               filterPaymentLayout(
