@@ -77,7 +77,7 @@ const Details = ({
                     >{` @${objectDetails.guide.name} `}</Link>
                     {messageData.forReviewing}
                     <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
-                      {` ${objectDetails.required_object.default_name} `}
+                      {` ${objectDetails.requiredObject} `}
                     </Link>
                     {messageData.inTheLast}
                   </div>
