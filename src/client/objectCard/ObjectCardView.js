@@ -65,6 +65,7 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
+  console.log(wObject);
   const parentName = isEmpty(passedParent)
     ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
     : passedParent.name || passedParent.default_name;
@@ -74,6 +75,8 @@ const ObjectCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
+
+  console.log(wObject);
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -85,15 +88,11 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${
-                    isEmpty(passedParent)
-                      ? wObject.parent.author_permlink
-                      : passedParent.author_permlink
-                  }`}
-                  title={goToObjTitle(parentName)}
+                  to={`/object/${wObject.parent}`}
+                  title={goToObjTitle(wObject.parent)}
                   className="ObjectCardView__type"
                 >
-                  {parentName}
+                  {wObject.parent}
                 </Link>
               )}
               <div className="ObjectCardView__name">
