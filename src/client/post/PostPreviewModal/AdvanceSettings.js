@@ -76,7 +76,7 @@ class AdvanceSettings extends Component {
                 <Select.Option value={rewardsValues.half}>
                   {intl.formatMessage({
                     id: 'reward_option_50',
-                    defaultMessage: '50% SBD and 50% SP',
+                    defaultMessage: '50% SBD and 50% HP',
                   })}
                 </Select.Option>
                 <Select.Option value={rewardsValues.none}>

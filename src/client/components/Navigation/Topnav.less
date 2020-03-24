@@ -55,6 +55,12 @@
     }
   }
 
+  &__beaxy-icon {
+    height: 34px;
+    width: 34px;
+    background-image: url('https://static.xcritical.com/images/svg/logo-beaxy.svg');
+  }
+
   .mobile-menu-btn {
     position: absolute;
     height: 36px;
@@ -92,6 +98,44 @@
     white-space: nowrap;
     @media @small, @medium, @large {
       max-width: 350px;
+    }
+  }
+
+  &__broker {
+    //TODO: need mobile design
+    display: none;
+    @media @small {
+      display: flex;
+      position: absolute;
+      box-sizing: border-box;
+      top: 48px;
+      right: 0;
+      left: unset;
+      justify-content: space-between;
+      width: 270px;
+      font-size: 16px;
+      color: @white;
+      height: 36px;
+    }
+
+    .ant-dropdown-trigger {
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      .CurrencyItem {
+        height: 100%;
+        margin: 0 2px 0 0;
+
+        &__beaxy-icon {
+          margin-right: 2px;
+        }
+
+        &__value {
+          color: @blue-botticelli;
+          white-space: nowrap;
+        }
+      }
     }
   }
 
@@ -695,6 +739,16 @@ div[data-dir='rtl'] .Topnav {
     @media @small and (max-width: @small-bp) {
       width: 46%;
     }
+  }
+}
+
+.st-header-broker-balance-pl-wrap {
+  .ant-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 38px;
+    min-width: 175px;
   }
 }
 

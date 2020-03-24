@@ -33,16 +33,16 @@ describe('parseBlockChainError', () => {
     expect(actual).toEqual(expected);
 
     actual = parseBlockChainError(
-      'Account: account bandwidth limit exceeded. Please wait to transact or power up STEEM.',
+      'Account: account bandwidth limit exceeded. Please wait to transact or power up HIVE.',
     );
-    expected = 'Your bandwith has been exceeded. Please wait to transact or power up STEEM.';
+    expected = 'Your bandwith has been exceeded. Please wait to transact or power up HIVE.';
     expect(actual).toEqual(expected);
 
     actual = parseBlockChainError(
       'info->abs_rshares > STEEM_VOTE_DUST_THRESHOLD || vote_weight == 0: Voting weight is too small, please accumulate more voting power or steem power.',
     );
     expected =
-      'Your voting power is too small, please accumulate more voting power or steem power.';
+      'Your voting power is too small, please accumulate more voting power or hive power.';
     expect(actual).toEqual(expected);
 
     actual = parseBlockChainError('Cannot increase payout within last twelve hours before payout.');

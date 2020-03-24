@@ -20,6 +20,7 @@ export const GET_ACCOUNT_STATISTICS_MAP = 'GET_ACCOUNT_STATISTICS_MAP';
 export const GET_CURRENCY_SETTINGS = 'GET_CURRENCY_SETTINGS';
 export const UPDATE_USER_WALLET = 'UPDATE_USER_WALLET';
 export const CLEAN_STATISTICS_DATA = 'CLEAN_STATISTICS_DATA';
+export const GET_USER_STATISTICS = 'GET_USER_STATISTICS';
 
 export const GET_CURRENCIES_DESCRIPTIONS = createAsyncActionType('GET_CURRENCIES_DESCRIPTIONS');
 
@@ -54,6 +55,16 @@ export function getCrossStatistics() {
   };
 }
 
+export function getUserUpdatedStatistics() {
+  return { type: GET_USER_STATISTICS };
+}
+
+export function getUserStatistics() {
+  return dispatch => {
+    singleton._platform.getUserStatistics();
+    dispatch(getUserUpdatedStatistics());
+  };
+}
 export function authorizeToken(token) {
   return dispatch => {
     apiExtra.logonWithToken(token).then(({ data, error }) => {

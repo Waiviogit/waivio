@@ -112,7 +112,7 @@ class UserActionMessage extends React.Component {
         return (
           <FormattedMessage
             id="curation_reward_for_post"
-            defaultMessage="Curation reward: {steemPower} SP for {author} ({postLink})"
+            defaultMessage="Curation reward: {steemPower} HP for {author} ({postLink})"
             values={{
               steemPower: (
                 <FormattedNumber

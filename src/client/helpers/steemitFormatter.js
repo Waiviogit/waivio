@@ -20,7 +20,7 @@ const createFormatter = api => {
     const sbdOrders = !open_orders
       ? 0
       : open_orders.reduce((o, order) => {
-          if (order.sell_price.base.indexOf('SBD') !== -1) {
+          if (order.sell_price.base.indexOf('HBD') !== -1) {
             o += order.for_sale;
           }
           return o;
@@ -29,7 +29,7 @@ const createFormatter = api => {
     const steemOrders = !open_orders
       ? 0
       : open_orders.reduce((o, order) => {
-          if (order.sell_price.base.indexOf('STEEM') !== -1) {
+          if (order.sell_price.base.indexOf('HIVE') !== -1) {
             o += order.for_sale;
           }
           return o;
@@ -43,8 +43,8 @@ const createFormatter = api => {
     let savings_sbd_pending = 0;
     savings_withdraws.forEach(withdraw => {
       const [amount, asset] = withdraw.amount.split(' ');
-      if (asset === 'STEEM') savings_pending += parseFloat(amount);
-      else if (asset === 'SBD') savings_sbd_pending += parseFloat(amount);
+      if (asset === 'HIVE') savings_pending += parseFloat(amount);
+      else if (asset === 'HBD') savings_sbd_pending += parseFloat(amount);
     });
     return { savings_pending, savings_sbd_pending };
   }
@@ -114,7 +114,7 @@ const createFormatter = api => {
         const finishTime = timestamp + 86400000 * 3.5; // add 3.5day conversion delay
         if (finishTime < currentTime) return out;
 
-        const amount = parseFloat(get(item, [1, 'op', 1, 'amount']).replace(' SBD', ''));
+        const amount = parseFloat(get(item, [1, 'op', 1, 'amount']).replace(' HBD', ''));
         conversionValue += amount;
       }, []);
 
