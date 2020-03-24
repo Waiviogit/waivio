@@ -34,7 +34,6 @@ import { supportedObjectTypes } from '../../investarena/constants/objectsInvesta
 import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
 import TradeButton from '../../investarena/components/TradeButton';
 import './ObjectProfile.less';
-import Icons from "../statics/Icons";
 
 @withRouter
 @connect(
