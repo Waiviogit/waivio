@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, message, Modal, Icon } from 'antd';
+import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -17,6 +17,7 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
@@ -31,17 +32,15 @@ const Proposition = ({
   post,
   getSingleComment,
   authorizedUserName,
+  history,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
+  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
-  const requiredObjectName = getFieldWithMaxWeight(
-    proposition.required_object,
-    'name',
-    proposition.required_object.author_permlink,
-  );
+  const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
   useEffect(() => {
     getSingleComment(authorizedUserName, assignCommentPermlink);
@@ -60,34 +59,27 @@ const Proposition = ({
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
-    rejectReservationCampaign(rejectData)
-      .then(() => {
+    return rejectReservationCampaign(rejectData)
+      .then(() =>
         discardProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
           objPermlink: obj.author_permlink,
           reservationPermlink: rejectData.reservation_permlink,
           unreservationPermlink,
-        });
-      })
-      .catch(() => {
+        }),
+      )
+      .catch(() =>
         message.error(
           intl.formatMessage({
             id: 'cannot_reject_campaign',
             defaultMessage: 'You cannot reject the campaign at the moment',
           }),
-        );
-      });
+        ),
+      );
   };
-
-  const [isModalOpen, openModal] = useState(false);
-  const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
-    openModal(!isModalOpen);
-  };
-
-  const modalOnOklHandler = () => {
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
@@ -95,29 +87,19 @@ const Proposition = ({
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
     reserveActivatedCampaign(reserveData)
-      .then(() => {
+      .then(() =>
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
           resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
           companyId: proposition._id,
-        });
-        openModal(false);
-        setReservation(true);
-      })
-      .catch(() => {
-        message.error(
-          intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-      });
-  };
-
-  const modalOnCancelHandler = () => {
-    openModal(false);
+        }),
+      )
+      .then(() => setReservation(true))
+      .then(() => delay(1500))
+      .then(() => setModalDetailsOpen(!isModalDetailsOpen))
+      .then(() => history.push(`/rewards/reserved`));
   };
 
   return (
@@ -139,12 +121,14 @@ const Proposition = ({
         {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
           <CampaignFooter
             post={post}
+            loading={loading}
             proposedWobj={proposedWobj}
             requiredObjectPermlink={proposition.required_object.author_permlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
+            history={history}
           />
         ) : (
           <React.Fragment>
@@ -195,22 +179,6 @@ const Proposition = ({
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
       />
-      <Modal
-        closable
-        maskClosable={false}
-        title={intl.formatMessage({
-          id: 'reserve_campaign',
-          defaultMessage: `Reserve rewards campaign`,
-        })}
-        visible={isModalOpen}
-        onOk={modalOnOklHandler}
-        onCancel={modalOnCancelHandler}
-      >
-        {intl.formatMessage({
-          id: 'reserve_campaign_accept',
-          defaultMessage: `Do you want to reserve rewards campaign?`,
-        })}
-      </Modal>
     </div>
   );
 };
