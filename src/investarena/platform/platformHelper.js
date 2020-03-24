@@ -5,109 +5,6 @@ import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
 export class PlatformHelper {
-  static getMargin(quote, quoteSettings, amount) {
-    let margin = '---';
-    if (typeof amount === 'string') {
-      amount = +amount.replace(/,/g, '');
-    }
-    if (
-      quote &&
-      quote.askPrice &&
-      +quote.askPrice > 0 &&
-      quote.bidPrice &&
-      +quote.bidPrice > 0 &&
-      quoteSettings &&
-      quoteSettings.baseCurrency &&
-      quoteSettings.termCurrency &&
-      quoteSettings.leverage &&
-      +quoteSettings.leverage > 0 &&
-      amount &&
-      amount > 0
-    ) {
-      const instrCurrency =
-        quoteSettings.baseCurrency !== 'XXX'
-          ? quoteSettings.baseCurrency
-          : quoteSettings.termCurrency;
-      const accountCurrency = singleton.platform.accountCurrency;
-      const values = (() => {
-        const baseCurrency = quoteSettings.baseCurrency;
-        const termCurrency = quoteSettings.termCurrency;
-        const value = {};
-        const arrRates = singleton.platform.quotes;
-        let mid = null;
-        let midPrice = null;
-        let substrFirs = null;
-        let substrSecond = null;
-        let isSymbolTrue = false;
-        let isCrossCurrTrue = false;
-        if (termCurrency === accountCurrency || baseCurrency === accountCurrency) {
-          _.forEach(arrRates, item => {
-            if (quote.security === item.security) {
-              value.askPrice = quote.askPrice;
-              value.bidPrice = quote.bidPrice;
-              return false;
-            }
-          });
-        } else {
-          _.forEach(arrRates, item => {
-            if (quote.security === item.security) {
-              value.askPrice = quote.askPrice;
-              value.bidPrice = quote.bidPrice;
-              midPrice = (parseFloat(value.askPrice) + parseFloat(value.bidPrice)) / 2;
-              isSymbolTrue = true;
-              _.forEach(arrRates, item => {
-                substrFirs = item.security.substring(0, 3);
-                substrSecond = item.security.substring(3, 6);
-                if (substrFirs === baseCurrency && substrSecond === accountCurrency) {
-                  value.midPrice = (parseFloat(item.askPrice) + parseFloat(item.bidPrice)) / 2;
-                  value.isAccountCurrencyBasic = false;
-                  isCrossCurrTrue = true;
-                } else if (substrSecond === baseCurrency && substrFirs === accountCurrency) {
-                  value.midPrice = (parseFloat(item.askPrice) + parseFloat(item.bidPrice)) / 2;
-                  value.isAccountCurrencyBasic = true;
-                  isCrossCurrTrue = true;
-                } else if (substrFirs === termCurrency && substrSecond === accountCurrency) {
-                  mid = (parseFloat(item.askPrice) + parseFloat(item.bidPrice)) / 2;
-                  value.midPrice = midPrice * mid;
-                  value.isAccountCurrencyBasic = false;
-                  isCrossCurrTrue = true;
-                } else if (substrSecond === termCurrency && substrFirs === accountCurrency) {
-                  mid = (parseFloat(item.askPrice) + parseFloat(item.bidPrice)) / 2;
-                  value.midPrice = midPrice / mid;
-                  value.isAccountCurrencyBasic = false;
-                  isCrossCurrTrue = true;
-                }
-                if (isSymbolTrue && isCrossCurrTrue) {
-                  return false;
-                }
-              });
-            }
-          });
-        }
-        return value;
-      })();
-      const askPrice = parseFloat(values.askPrice);
-      const bidPrice = parseFloat(values.bidPrice);
-      margin = (() => {
-        let margin = 0;
-        const midPrice = (askPrice + bidPrice) / 2;
-        if (quote.security.substring(0, 3) === accountCurrency) {
-          margin = amount / quoteSettings.leverage;
-        } else if (
-          quote.security.substring(3, 6) === accountCurrency ||
-          instrCurrency === accountCurrency
-        ) {
-          margin = (amount / quoteSettings.leverage) * midPrice;
-        } else if (values.isAccountCurrencyBasic && values.midPrice) {
-          margin = amount / quoteSettings.leverage / values.midPrice;
-        } else if (!values.isAccountCurrencyBasic && values.midPrice) {
-          margin = (amount / quoteSettings.leverage) * values.midPrice;
-        }
-        return margin;
-      })().toFixed(2);
-    }
-    return margin > 0 ? margin : '---';
-  }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -402,28 +299,6 @@ export class PlatformHelper {
     ranges.takeProfit.rate = this.getPriceTakeProfitRange(quote, deal);
     return ranges;
   }
-  static lessDeal(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
-    const step = quoteSettings.quantityIncrement / 1000000;
-    const res = amountInt - step;
-    const decimals = PlatformHelper.countDecimals(step);
-    if (res > quoteSettings.minimumQuantity / 1000000) {
-      return numberFormat(res, decimals);
-    }
-    return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
-  }
-  static moreDeal(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
-    const step = quoteSettings.quantityIncrement / 1000000;
-    const res = amountInt + step;
-    const decimals = PlatformHelper.countDecimals(step);
-    if (res < quoteSettings.maximumQuantity / 1000000) {
-      return numberFormat(res, decimals);
-    }
-    return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
-  }
   static validateOnBlur(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
@@ -444,14 +319,14 @@ export class PlatformHelper {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
     if (
-      amountParseString.length > (quoteSettings.maximumQuantity / 1000000).toString().length ||
-      amountInt > quoteSettings.maximumQuantity / 1000000
+      amountParseString.length > (quoteSettings.maximumQuantity).toString().length ||
+      amountInt > quoteSettings.maximumQuantity
     ) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
-      return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
+      return numberFormat(quoteSettings.maximumQuantity, decimals);
     } else if (amountParseString.length === 0) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
-      return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
+      return numberFormat(quoteSettings.minimumQuantity, decimals);
     }
     if (amountParseString.match(/[1-9]+?/)) {
       const decimals = PlatformHelper.countDecimals(amountInt);

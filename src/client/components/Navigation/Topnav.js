@@ -991,9 +991,10 @@ class Topnav extends React.Component {
                   <div className="st-header-broker-balance-pl-wrap">
                     <Button type="primary" onClick={this.toggleModalBroker}>
                       {intl.formatMessage({
-                        id: 'headerAuthorized.connectToBroker',
-                        defaultMessage: 'Connect to broker',
+                        id: 'headerAuthorized.connectToBeaxy',
+                        defaultMessage: 'Connect to beaxy',
                       })}
+                      <i className="Topnav__beaxy-icon" />
                     </Button>
                   </div>
                 ) : (

@@ -12,9 +12,9 @@ const AuthorRewardMessage = ({
   totalVestingFundSteem,
 }) => {
   const rewards = [
-    { payout: actionDetails.sbd_payout, currency: 'SBD' },
-    { payout: actionDetails.steem_payout, currency: 'STEEM' },
-    { payout: actionDetails.vesting_payout, currency: 'SP' },
+    { payout: actionDetails.sbd_payout, currency: 'HBD' },
+    { payout: actionDetails.steem_payout, currency: 'HIVE' },
+    { payout: actionDetails.vesting_payout, currency: 'HP' },
   ];
 
   const parsedRewards = _.reduce(
@@ -24,7 +24,7 @@ const AuthorRewardMessage = ({
 
       if (parsedPayout > 0) {
         let rewardsStr;
-        if (reward.currency === 'SP') {
+        if (reward.currency === 'HP') {
           const vestsToSP = formatter.vestToSteem(
             parsedPayout,
             totalVestingShares,

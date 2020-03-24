@@ -125,7 +125,7 @@ const UserWalletSummary = ({
           ) : (
             <span>
               <FormattedNumber value={balance ? parseFloat(balance) : 0} />
-              {' STEEM'}
+              {' HIVE'}
             </span>
           )}
         </div>
@@ -153,7 +153,7 @@ const UserWalletSummary = ({
                   />
                   {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
                   {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
-                  {' SP'}
+                  {' HP'}
                 </span>
               )}
             </div>
@@ -169,7 +169,7 @@ const UserWalletSummary = ({
               ) : (
                 <span>
                   <FormattedNumber value={parseFloat(user.sbd_balance)} />
-                  {' SBD'}
+                  {' HBD'}
                 </span>
               )}
             </div>
@@ -185,9 +185,9 @@ const UserWalletSummary = ({
               ) : (
                 <span>
                   <FormattedNumber value={parseFloat(user.savings_balance)} />
-                  {' STEEM, '}
+                  {' HIVE, '}
                   <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
-                  {' SBD'}
+                  {' HBD'}
                 </span>
               )}
             </div>
