@@ -1,0 +1,53 @@
+@import (reference) '../Common.less';
+
+.st-trading-form-wrapper {
+  width: 375px;
+  background-color: transparent;
+  border: 1px solid @color-darkest-gray;
+}
+
+.st-trading-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 50%;
+  padding: 10px;
+
+  .st-trading-form-header {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .trading_form_amount {
+    &__input {
+      border-bottom: 1px solid @color-light-gray;
+
+      &:focus-within {
+        border-bottom-color: @color-black;
+      }
+
+      input {
+        border: none;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .st-trading-form-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .info-icon {
+    font-size: 16px;
+  }
+
+  .flex-info-block {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+  }
+}
