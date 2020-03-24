@@ -381,8 +381,8 @@ class Rewards extends React.Component {
     })}`;
   };
 
-  goToCampaign = WobjPermlink => {
-    this.props.history.push(`/rewards/active/${WobjPermlink}`);
+  goToCampaign = wobjPermlink => {
+    this.props.history.push(`/object/${wobjPermlink.payload.author_permlink}`);
   };
 
   handleLoadMore = () => {

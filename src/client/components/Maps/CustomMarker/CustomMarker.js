@@ -19,8 +19,7 @@ class CustomMarker extends React.Component {
     onMouseOut: PropTypes.func.isRequired,
     left: PropTypes.number.isRequired,
     top: PropTypes.number.isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    anchor: PropTypes.array.isRequired,
+    anchor: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
     hover: PropTypes.bool.isRequired,

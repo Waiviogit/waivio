@@ -55,6 +55,13 @@ class ObjectInfo extends React.Component {
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     usedLocale: PropTypes.string.isRequired,
+    history: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    getAreaSearchData: () => {},
+    userLocation: {},
+    center: [],
   };
 
   state = {
@@ -386,6 +393,7 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
+
     return (
       <React.Fragment>
         {wobject && wobject.name && (
@@ -497,6 +505,9 @@ class ObjectInfo extends React.Component {
                 <MapObjectInfo
                   mapHeigth={200}
                   center={[Number(map.latitude), Number(map.longitude)]}
+                  width={270}
+                  wobject={wobject}
+                  history={this.props.history}
                 />
               ),
             )}
