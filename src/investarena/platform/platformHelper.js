@@ -1,10 +1,42 @@
-import _ from 'lodash';
+import { isEmpty, isNil, map } from 'lodash';
 import { numberFormat } from './numberFormat';
+import { round } from '../helpers/calculationsHelper';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
 export class PlatformHelper {
+  static calculateFees(amount, direction, quoteSettings, quote) {
+    if (amount && !isEmpty(quoteSettings) && !isEmpty(quote)) {
+      const amountValue = typeof amount === 'string' ? Number(amount.replace(/,/g, '')) : amount;
+      const {
+        buyerTakerCommissionProgressive,
+        sellerTakerCommissionProgressive,
+        buyerMakerCommissionProgressive,
+        sellerMakerCommissionProgressive,
+      } = quoteSettings;
+      if (direction === 'buy' && !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))) {
+        const makerFeeValue = amountValue * buyerMakerCommissionProgressive / 100;
+        const takerFeeValue = amountValue * buyerTakerCommissionProgressive / 100;
+        return {
+          makerFee: round(makerFeeValue, 8),
+          takerFee: round(takerFeeValue, 8),
+        }
+      }
+      if (direction === 'sell' && !isNil(sellerTakerCommissionProgressive) && !isNil(sellerMakerCommissionProgressive) && quote.bidPrice) {
+        const makerFeeValue = amountValue * sellerMakerCommissionProgressive * quote.bidPrice / 100;
+        const takerFeeValue = amountValue * sellerTakerCommissionProgressive * quote.bidPrice / 100;
+        return {
+          makerFee: round(makerFeeValue, 8),
+          takerFee: round(takerFeeValue, 8),
+        }
+      }
+    }
+    return {
+      makerFee: '',
+      takerFee: '',
+    }
+  }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -212,7 +244,7 @@ export class PlatformHelper {
     const rangesPrice = {};
     const tempDealForMin = {};
     const tempDealForMax = {};
-    _.map(deal, (item, key) => {
+    map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
     });
@@ -254,7 +286,7 @@ export class PlatformHelper {
     const rangesPrice = {};
     const tempDealForMin = {};
     const tempDealForMax = {};
-    _.map(deal, (item, key) => {
+    map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
     });
@@ -266,6 +298,8 @@ export class PlatformHelper {
       case 'LONG':
         takeProfitMin = (dealParams.price * (100 + minPercent / 1000000)) / 100;
         takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
+        break;
+      default:
         break;
     }
     tempDealForMin.currentValue = takeProfitMin;
@@ -341,8 +375,8 @@ export class PlatformHelper {
   }
   static validateChangeProfitLossText(input, rangeMin, rangeMax) {
     const completeRegex = /^\d+\.\d+$|^\d+$/i;
-    rangeMin = parseFloat(rangeMin);
-    rangeMax = parseFloat(rangeMax);
+    const minRange = parseFloat(rangeMin);
+    const maxRange = parseFloat(rangeMax);
     const digitRegex = /^\d+\.\d+$|^\d+$|^\d+\.$/i;
     const softDigitRegex = /\d+\.\d*|\d+\.|\d*/i;
     if (!digitRegex.test(input.value)) {
@@ -352,8 +386,8 @@ export class PlatformHelper {
       return true;
     } else if (
       completeRegex.test(input.value) &&
-      parseFloat(input.value) > rangeMin &&
-      parseFloat(input.value) < rangeMax
+      parseFloat(input.value) > minRange &&
+      parseFloat(input.value) < maxRange
     ) {
       return true;
     }

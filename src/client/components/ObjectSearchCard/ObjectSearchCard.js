@@ -9,7 +9,7 @@ import './ObjectSearchCard.less';
 const ObjectSearchCard = props => {
   const { object, name, type, parentElement } = props;
   const parentString = getFieldWithMaxWeight(object.parent, objectFields.name);
-  const titleSrting = getFieldWithMaxWeight(object, objectFields.title);
+  const titleString = getFieldWithMaxWeight(object, objectFields.title);
   const description = getFieldWithMaxWeight(object, objectFields.description);
   return (
     <div className="object-search-card">
@@ -25,7 +25,7 @@ const ObjectSearchCard = props => {
       <div className="object-search-card__content-info">
         <div className="object-search-card__content-name">{name}</div>
         <div className={`object-search-card__content-text${parentElement ? '-nav' : ''}`}>
-          {parentString || titleSrting || description || ''}
+          {parentString || titleString || description || ''}
         </div>
       </div>
       <div className="object-search-card__content-type">{type}</div>

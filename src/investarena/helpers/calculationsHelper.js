@@ -48,3 +48,7 @@ export function toFixNumberLength(value, digitsLimit = 3) {
   const fractSigns = digitsLimit - intSigns;
   return Number.parseFloat(value).toFixed(fractSigns > 0 ? fractSigns : 0);
 }
+
+export function round(value, decimals = 0) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}

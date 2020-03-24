@@ -6,12 +6,11 @@ import { exponentialToDecimal } from '../../platform/platformHelper';
 import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
-const TradingForm = ({ amount, direction, quoteSettings, handleChangeInput }) => {
+const TradingForm = ({ amount, direction, fees, quoteSettings, handleChangeInput }) => {
   const { baseCurrency, termCurrency } = quoteSettings;
   const amountAvailable = 100;
   const feeCurrency = direction === 'buy' ? baseCurrency : termCurrency;
   const totalValue = exponentialToDecimal(0.0000515);
-  const feeValue = exponentialToDecimal(0.00000013);
   return (
     <div className={`st-trading-form ${direction}`}>
       <div className="st-trading-form-header">
@@ -43,7 +42,7 @@ const TradingForm = ({ amount, direction, quoteSettings, handleChangeInput }) =>
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
           <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />&nbsp;≈&nbsp;
-          <span className="fw5">{feeValue}&nbsp;{feeCurrency}</span>
+          <span className="fw5">{fees.takerFee}&nbsp;{feeCurrency}</span>
         </div>
       </div>
     </div>
@@ -54,6 +53,10 @@ TradingForm.propTypes = {
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   direction: PropTypes.oneOf(['buy', 'sell']).isRequired,
   // quoteSecurity: PropTypes.string.isRequired, // pass to withTrade
+  fees: PropTypes.shape({
+    makerFee: PropTypes.string,
+    takerFee: PropTypes.string,
+  }).isRequired,
   quoteSettings: PropTypes.shape({
     baseCurrency: PropTypes.string.isRequired,
     termCurrency: PropTypes.string.isRequired,

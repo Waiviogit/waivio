@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { get } from 'lodash';
 import { createOpenDealPlatform } from '../../redux/actions/dealsActions';
-// import { getIsSignInState } from '../../redux/selectors/userSelectors';
 import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
 import { getPlatformNameState } from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
@@ -10,49 +10,53 @@ import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import { numberFormat } from '../../platform/numberFormat';
 import { PlatformHelper } from '../../platform/platformHelper';
 import { toggleModal } from '../../redux/actions/modalsActions';
+import { getIsAuthenticated } from '../../../client/reducers';
 
 const propTypes = {
-  quoteSettings: PropTypes.shape(),
-  quote: PropTypes.shape(),
-  postId: PropTypes.string,
-  amountModal: PropTypes.string,
-  marginModal: PropTypes.string,
+  /* passed props */
+  direction: PropTypes.oneOf(['buy', 'sell']).isRequired,
   quoteSecurity: PropTypes.string.isRequired,
+  // postId: PropTypes.string, // unused?
+
+  /* from connect */
+  quote: PropTypes.shape(),
+  quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isSignIn: PropTypes.bool.isRequired,
   createOpenDeal: PropTypes.func.isRequired,
+};
+
+const defaultProps = {
+  quote: undefined,
+  quoteSettings: undefined,
 };
 
 const withTrade = Component => {
   class WithTrade extends React.Component {
     constructor(props) {
       super(props);
-      this.state = { amount: '' };
+
+      const amountValue = get(props, ['quoteSettings', 'defaultQuantity'], '');
+      const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
+      this.state = {
+        amount,
+        fees: PlatformHelper.calculateFees(amountValue, props.direction, props.quoteSettings, props.quote),
+      };
     }
-    componentDidMount() {
-      if (this.props.quote && this.props.quoteSettings) {
-        const amountValue = this.props.quoteSettings.defaultQuantity;
-        const amount =
-          this.props.amountModal ||
-          numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-        this.setState({ amount });
-      }
-    }
-    componentWillReceiveProps(nexProps) {
-      if (nexProps.quote && nexProps.quoteSettings) {
-        if (
-          this.state.amount === '' ||
-          !this.props.quote ||
-          !this.props.quoteSettings
-        ) {
-          const amountValue = nexProps.quoteSettings.defaultQuantity;
-          const amount =
-            this.props.amountModal ||
-            numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-          this.setState({ amount });
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { quote, quoteSettings, direction } = nextProps;
+      if (quote && quoteSettings) {
+        if (prevState.amount === '') {
+          const amountValue = quoteSettings.defaultQuantity;
+          const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
+          const fees = PlatformHelper.calculateFees(amountValue, direction, quoteSettings);
+          return{ amount, fees };
         }
       }
+      return null;
     }
+
     handleClickOpenDeal = (side, caller) => {
       this.props.createOpenDeal(side, this.state.amount, 'margin[removed]', caller);
     };
@@ -61,16 +65,19 @@ const withTrade = Component => {
       this.setState({ amount });
     };
     handleChangeInput = e => {
+      const { quote, quoteSettings, direction } = this.props;
       const position = e.target.selectionStart;
-      const amount = PlatformHelper.validateOnChange(e.target.value, this.props.quoteSettings);
+      const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
+      const fees = PlatformHelper.calculateFees(e.target.value, direction, quoteSettings, quote);
       e.persist();
-      this.setState({ amount }, () => {
+      this.setState({ amount, fees }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
       });
     };
     handleKeyPressInput = e => {
       PlatformHelper.validateOnKeyPress(e);
     };
+
     render() {
       return (
         <Component
@@ -85,6 +92,7 @@ const withTrade = Component => {
     }
   }
   WithTrade.propTypes = propTypes;
+  WithTrade.defaultProps = defaultProps;
   const mapState = () => {
     const getQuoteState = makeGetQuoteState();
     const getQuoteSettingsState = makeGetQuoteSettingsState();
@@ -92,7 +100,7 @@ const withTrade = Component => {
       quote: getQuoteState(state, ownProps),
       quoteSettings: getQuoteSettingsState(state, ownProps),
       platformName: getPlatformNameState(state),
-      isSignIn: true,
+      isSignIn: getIsAuthenticated(state),
       isOpen: getModalIsOpenState(state, 'openDeals'),
     });
   };
