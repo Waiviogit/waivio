@@ -81,7 +81,7 @@ const RewardsFiltersPanel = ({
             <div className="RewardsFiltersPanel__title-text">
               {location.pathname !== '/rewards/payables'
                 ? `${intl.formatMessage({
-                    id: 'payables',
+                    id: 'receivables',
                     defaultMessage: 'Receivables',
                   })}:`
                 : `${intl.formatMessage({
