@@ -195,7 +195,6 @@ class ObjectProfile extends React.Component {
                 <TradeButton type="sell" />
               </div>
               <PostQuotation quoteSecurity={object.chartid} caller="od-op" />
-              <Icons/>;
             </div>
           )}
           {isAuthenticated && (
