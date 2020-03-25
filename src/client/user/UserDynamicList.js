@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { unionBy } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
@@ -43,7 +42,7 @@ export default class UserDynamicList extends React.Component {
             this.setState(state => ({
               loading: false,
               hasMore: newUsers.hasMore,
-              users: unionBy(state.users, newUsers.users, 'name'),
+              users: [state.users, ...newUsers.users],
             })),
           )
           .catch(err => {
@@ -55,7 +54,6 @@ export default class UserDynamicList extends React.Component {
 
   render() {
     const { loading, hasMore, users } = this.state;
-
     const empty = !hasMore && users.length === 0;
 
     return (
@@ -70,7 +68,11 @@ export default class UserDynamicList extends React.Component {
           {users.map(user => {
             if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
               return (
-                <UserCard key={user.name} user={user} alt={<WeightTag weight={user.weight} />} />
+                <UserCard
+                  key={user.name}
+                  user={user}
+                  alt={<WeightTag weight={user.wobjects_weight} />}
+                />
               );
             }
             return null;
