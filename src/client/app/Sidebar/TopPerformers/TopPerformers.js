@@ -51,8 +51,9 @@ const getPerformerLinks = performer => {
 };
 
 const formatPerformance = performanceValue => {
-  const plusSign = performanceValue > 0 ? '+' : '';
-  return `${plusSign}${toFixNumberLength(performanceValue, 3)}%`;
+  const performance = performanceValue;
+  const plusSign = performance > 0 ? '+' : '';
+  return performanceValue !== null ? `${plusSign}${toFixNumberLength(performance, 3)}%` : `${'-'}`;
 };
 
 @connect(
