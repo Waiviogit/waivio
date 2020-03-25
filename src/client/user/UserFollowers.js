@@ -9,7 +9,7 @@ const UserFollowers = ({ match }) => {
 
   const fetcher = async () => {
     const response = await getFollowersFromAPI(match.params.name, limit, skip);
-    const users = response.followers.map(user => ({ name: user }));
+    const users = response.followers;
     skip += limit;
     return { users, hasMore: response.hasMore };
   };
