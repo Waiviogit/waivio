@@ -66,7 +66,7 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) 
           <Menu.Item>
             <FormattedMessage
               id="no_more_cryptocurrencies"
-              defaultMessage="No more  cryptocurrencies"
+              defaultMessage="No more cryptocurrencies"
             />
           </Menu.Item>
         )}
