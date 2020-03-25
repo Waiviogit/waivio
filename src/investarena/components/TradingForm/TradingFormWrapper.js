@@ -5,15 +5,9 @@ import TradingForm from './TradingForm';
 const TradingFormWrapper = ({ quoteSecurity }) => {
   return (
     <div className="st-trading-form-wrapper">
-      <TradingForm
-        direction="buy"
-        quoteSecurity={quoteSecurity}
-      />
-      <hr/>
-      <TradingForm
-        direction="sell"
-        quoteSecurity={quoteSecurity}
-      />
+      <TradingForm direction="buy" quoteSecurity={quoteSecurity} />
+      <hr />
+      <TradingForm direction="sell" quoteSecurity={quoteSecurity} />
     </div>
   );
 };

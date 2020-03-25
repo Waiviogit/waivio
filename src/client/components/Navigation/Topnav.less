@@ -1,6 +1,7 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/mixins.less';
+@import (reference) '../../../investarena/components/Common.less';
 
 @base-spacing: 0;
 
@@ -53,12 +54,6 @@
     @media @small {
       display: none;
     }
-  }
-
-  &__beaxy-icon {
-    height: 34px;
-    width: 34px;
-    background-image: url('https://static.xcritical.com/images/svg/logo-beaxy.svg');
   }
 
   .mobile-menu-btn {
@@ -126,10 +121,6 @@
       .CurrencyItem {
         height: 100%;
         margin: 0 2px 0 0;
-
-        &__beaxy-icon {
-          margin-right: 2px;
-        }
 
         &__value {
           color: @blue-botticelli;
@@ -744,11 +735,19 @@ div[data-dir='rtl'] .Topnav {
 
 .st-header-broker-balance-pl-wrap {
   .ant-btn {
+    background: none !important;
+    color: @color-blue;
+    font-weight: bold;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 38px;
-    min-width: 175px;
+  }
+  &:hover {
+    cursor: pointer;
+    transition: box-shadow 0.5s ease 0s;
+    box-shadow: @color-blue 0 0 0.6em 0.1em inset;
+    border-radius: 4px;
   }
 }
 

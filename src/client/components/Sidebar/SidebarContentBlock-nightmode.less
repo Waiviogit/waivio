@@ -29,10 +29,15 @@
       .collapsible-block {
         &__title {
           &.active > .collapsible-block__title-text {
-            border-bottom: 1px solid @blue-botticelli;
+            background: @grey-nero;
+            border: @border-width-base @border-style-base @normal-grey !important;
+            color: @white !important;
           }
           span {
-            color: @blue-botticelli;
+            transition: 0.5s;
+            &:hover {
+              color: @white;
+            }
           }
         }
       }
