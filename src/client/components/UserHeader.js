@@ -145,7 +145,7 @@ const UserHeader = ({
               {isNaN(voteWorth) ? (
                 <Icon type="loading" className="text-icon-right" />
               ) : (
-                <USDDisplay value={0} />
+                <USDDisplay value={voteWorth} />
               )}
             </div>
           </div>
