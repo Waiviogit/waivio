@@ -43,9 +43,7 @@ const ModalDealConfirmation = props => {
                 period={'60'}
               />
             </div>
-            <TradingForm
-              quoteSecurity={props.modalInfo.quote.security}
-            />
+            <TradingForm quoteSecurity={props.modalInfo.quote.security} />
             {/* {props.platformName !== 'widgets' && ( */}
             {/*  <PostQuotation */}
             {/*    quoteSecurity={props.modalInfo.quote.security} */}

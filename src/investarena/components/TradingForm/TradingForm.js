@@ -17,15 +17,19 @@ const TradingForm = ({ amount, direction, quoteSettings, handleChangeInput }) =>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_available" defaultMessage="Available" />:&nbsp;&nbsp;
-          <span className="fw5">{amountAvailable}&nbsp;{termCurrency}</span>
+          <FormattedMessage id="trading_form_available" defaultMessage="Available" />
+          :&nbsp;&nbsp;
+          <span className="fw5">
+            {amountAvailable}&nbsp;{termCurrency}
+          </span>
         </div>
       </div>
 
       <div className="flex-info-block justify-content-center">
-        <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />:&nbsp;
+        <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
+        :&nbsp;
         <div className="trading_form_amount__input">
-          <input type="text" value={amount} onChange={handleChangeInput}/>
+          <input type="text" value={amount} onChange={handleChangeInput} />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -37,13 +41,19 @@ const TradingForm = ({ amount, direction, quoteSettings, handleChangeInput }) =>
       <div className="st-trading-form-footer">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_total" defaultMessage="Total" />&nbsp;≈&nbsp;
-          <span className="fw5">{totalValue}&nbsp;{termCurrency}</span>
+          <FormattedMessage id="trading_form_total" defaultMessage="Total" />
+          &nbsp;≈&nbsp;
+          <span className="fw5">
+            {totalValue}&nbsp;{termCurrency}
+          </span>
         </div>
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />&nbsp;≈&nbsp;
-          <span className="fw5">{feeValue}&nbsp;{feeCurrency}</span>
+          <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />
+          &nbsp;≈&nbsp;
+          <span className="fw5">
+            {feeValue}&nbsp;{feeCurrency}
+          </span>
         </div>
       </div>
     </div>
