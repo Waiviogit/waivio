@@ -70,7 +70,9 @@ const WobjHeader = ({
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
+                  <Link
+                    to={isMobile && !isEditMode ? `/object/${wobject.author_permlink}/about` : null}
+                  >
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
