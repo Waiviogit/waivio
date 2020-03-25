@@ -1,4 +1,17 @@
-import { each, filter, get, has, includes, isEmpty, isNaN, map, trimStart } from 'lodash';
+import {
+  each,
+  filter,
+  get,
+  has,
+  includes,
+  isEmpty,
+  isNaN,
+  map,
+  trimStart,
+  isEqual,
+  omitBy,
+  isNil,
+} from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -468,7 +481,12 @@ export default class AppendForm extends Component {
             );
           }
         } else if (err || this.checkRequiredField(form, currentField)) {
-          // this.props.onError();
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'The value is already exist',
+            }),
+          );
         } else {
           this.onSubmit(values);
         }
@@ -513,19 +531,47 @@ export default class AppendForm extends Component {
 
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
-  isDuplicate = (currentLocale, currentField, value) => {
-    const { wObject } = this.props;
+  isDuplicate = (currentLocale, currentField) => {
+    const { form, wObject } = this.props;
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
-    return filtered.map(f => f.body.toLowerCase()).includes(value);
+    if (
+      currentField === objectFields.phone ||
+      currentField === objectFields.website ||
+      currentField === objectFields.address ||
+      currentField === objectFields.map ||
+      currentField === objectFields.status ||
+      currentField === objectFields.button
+    ) {
+      return filtered.some(
+        f =>
+          isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)) &&
+          f.locale === currentLocale,
+      );
+    }
+    const currentValue = form.getFieldValue(currentField);
+    return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
+  };
+
+  getCurrentObjectBody = () => {
+    const form = this.props.form;
+    const formValues = form.getFieldsValue();
+
+    const { currentLocale, currentField, like, follow, ...otherValues } = formValues;
+    return omitBy(otherValues, isNil);
   };
 
   validateFieldValue = (rule, value, callback) => {
     const { intl, form } = this.props;
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
-    const isDuplicated = this.isDuplicate(currentLocale, currentField, value);
+    const formFields = form.getFieldsValue();
+    // eslint-disable-next-line
+    const isDuplicated = !!formFields[rule.field]
+      ? this.isDuplicate(currentLocale, currentField)
+      : false;
+
     if (isDuplicated) {
       callback(
         intl.formatMessage({
@@ -564,8 +610,11 @@ export default class AppendForm extends Component {
           case objectFields.address:
             trimNestedFields(addressFields);
             break;
-          case objectFields.map:
-            trimNestedFields(mapFields);
+          case objectFields.button:
+            trimNestedFields(buttonFields);
+            break;
+          case objectFields.status:
+            trimNestedFields(statusFields);
             break;
           default:
             break;
@@ -1417,6 +1466,7 @@ export default class AppendForm extends Component {
         </div>
         <Form.Item>
           {getFieldDecorator('currentLocale', {
+            rules: this.getFieldRules('currentLocale'),
             initialValue: chosenLocale || usedLocale,
           })(
             <Select

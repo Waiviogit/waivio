@@ -76,10 +76,9 @@ const Details = ({
                       to={`/@${objectDetails.guide.name}`}
                     >{` @${objectDetails.guide.name} `}</Link>
                     {messageData.forReviewing}
-                    <Link
-                      className="nowrap"
-                      to={`/object/${objectDetails.requiredObject}`}
-                    >{` ${objectDetails.name} `}</Link>
+                    <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
+                      {` ${requiredObjectName} `}
+                    </Link>
                     {messageData.inTheLast}
                   </div>
                 </div>
@@ -133,7 +132,7 @@ const Details = ({
             {/* eslint-disable-next-line no-plusplus */}
             {`${indexItem++}. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-              {objectDetails.name}
+              {requiredObjectName}
             </Link>
             <span className="no-visible">
               :
@@ -156,13 +155,13 @@ const Details = ({
             <div className="Details__text fw6 mv3">{messageData.reward}:</div>
             <span>
               {messageData.amountRewardDetermined}(
-              <Link to={`/object/${objectDetails.guide.name}`}>{objectDetails.guide.name}</Link>
+              <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
               {!isEmpty(objectDetails.match_bots) &&
                 objectDetails.match_bots.map(bot => (
                   <React.Fragment>
                     ,
-                    <Link className="ml1" to={`/object/${bot}`}>
-                      {`www.waivio.com/object/${bot}`}
+                    <Link className="ml1" to={`/@${bot}`}>
+                      {`@${bot}`}
                     </Link>
                   </React.Fragment>
                 ))}

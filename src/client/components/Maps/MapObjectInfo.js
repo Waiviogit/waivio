@@ -1,24 +1,32 @@
 import { Icon, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Marker from 'pigeon-marker/react';
+import Overlay from 'pigeon-overlay';
+import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getUserLocation } from '../../reducers';
+import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
 import mapProvider from '../../helpers/mapProvider';
+import { setMapFullscreenMode } from './mapActions';
+import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { mapFields, objectFields } from '../../../common/constants/listOfFields';
+import { RADIUS, ZOOM } from '../../../common/constants/map';
+import { getClientWObj } from '../../adapters';
 import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];
 
 @connect(
   state => ({
-    userLocation: getUserLocation(state),
+    isFullscreenMode: getIsMapModalOpen(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     getCoordinates,
+    setMapFullscreenMode,
   },
 )
 class MapObjectInfo extends React.Component {
@@ -26,22 +34,46 @@ class MapObjectInfo extends React.Component {
     super(props);
 
     this.state = {
-      zoom: 12,
+      infoboxData: false,
+      zoom: ZOOM,
       center: this.props.center,
       bounds: null,
       initial: true,
-      isFullscreenMode: false,
+      radius: RADIUS,
     };
 
-    this.onBoundsChanged = this.onBoundsChanged.bind(this);
-    this.incrementZoom = this.incrementZoom.bind(this);
-    this.decrementZoom = this.decrementZoom.bind(this);
-    this.setPosition = this.setPosition.bind(this);
-    this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
+    this.mapRef = createRef();
   }
 
-  onBoundsChanged = ({ center, zoom, bounds, initial }) =>
-    this.setState({ center, zoom, bounds, initial });
+  getMarkers = () => {
+    const { wobject } = this.props;
+    const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+    const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+    const isMarked = Boolean(wobject && wobject.campaigns);
+    return lat && lng ? (
+      <CustomMarker
+        key={`obj${wobject.author_permlink}`}
+        isMarked={isMarked}
+        anchor={[+lat, +lng]}
+        payload={wobject}
+        onMouseOver={this.handleMarkerClick}
+        onClick={this.onMarkerClick}
+        onMouseOut={this.closeInfobox}
+      />
+    ) : null;
+  };
+
+  getOverlayLayout = () => {
+    const wobj = getClientWObj(this.state.infoboxData.wobject, this.props.usedLocale);
+    return (
+      <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
+        <div role="presentation" className="MapOS__overlay-wrap">
+          <img src={wobj.avatar} width={35} height={35} alt="" />
+          <div className="MapOS__overlay-wrap-name">{wobj.name}</div>
+        </div>
+      </Overlay>
+    );
+  };
 
   setCoordinates = () => {
     if (navigator && navigator.geolocation) {
@@ -50,22 +82,43 @@ class MapObjectInfo extends React.Component {
         this.setState({ center: positionGPS });
       }
     }
-    // this.setState({ center: [this.props.centerLat, this.props.centerLng] });
   };
 
-  setPosition = () => {
-    this.setState({ userCoordinates: null });
-    this.setCoordinates();
+  onMarkerClick = permlink => {
+    this.props.history.push(`/object/${permlink.payload.id}`);
   };
 
   showUserPosition = position =>
     this.setState({ center: [position.coords.latitude, position.coords.longitude] });
 
-  incrementZoom = () => this.setState({ zoom: this.state.zoom + 1 });
+  handleMarkerClick = ({ payload, anchor }) => {
+    if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
+      this.setState({ infoboxData: null });
+    }
+    this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+  };
 
-  decrementZoom = () => this.setState({ zoom: this.state.zoom - 1 });
+  closeInfobox = () => {
+    this.setState({ infoboxData: null });
+  };
 
-  toggleModal = () => this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
+  // eslint-disable-next-line consistent-return
+  incrementZoom = () => {
+    if (this.state.zoom >= 18) return null;
+    const zoom = this.state.zoom + 1;
+    const radius = this.calculateRadius(zoom);
+    this.setState({ zoom, radius });
+  };
+
+  // eslint-disable-next-line consistent-return
+  decrementZoom = () => {
+    if (this.state.zoom <= 1) return null;
+    const zoom = this.state.zoom - 1;
+    const radius = this.calculateRadius(zoom);
+    this.setState({ zoom, radius });
+  };
+
+  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -78,26 +131,24 @@ class MapObjectInfo extends React.Component {
     </div>
   );
   render() {
-    const { heigth, setCoordinates } = this.props;
-    const { center, isFullscreenMode, zoom } = this.state;
+    const { mapHeigth, isFullscreenMode, wobject } = this.props;
+    const { center, infoboxData, zoom } = this.state;
+    const markersLayout = this.getMarkers(wobject);
     return center ? (
       <div className="MapOS">
         <Map
           provider={mapProvider}
-          onBoundsChanged={this.onBoundsChanged}
           center={center}
           zoom={zoom}
-          height={heigth}
-          onClick={setCoordinates}
+          height={mapHeigth}
+          onClick={this.setCoordinates}
           animate
         >
-          <Marker
-            key={`${this.props.center[0]}${this.props.center[1]}`}
-            anchor={this.props.center}
-          />
+          {markersLayout}
+          {infoboxData && this.getOverlayLayout()}
         </Map>
         {this.zoomButtonsLayout()}
-        <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
+        <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
         <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
@@ -116,22 +167,21 @@ class MapObjectInfo extends React.Component {
           >
             <div className="MapOS__fullscreenContent">
               <Map
-                onBoundsChanged={this.onBoundsChanged}
+                ref={this.mapRef}
                 center={center}
                 zoom={zoom}
-                onClick={setCoordinates}
+                provider={mapProvider}
+                onClick={this.setCoordinates}
                 animate
               >
-                <Marker
-                  key={`${this.props.center[0]}${this.props.center[1]}`}
-                  anchor={this.props.center}
-                />
+                {markersLayout}
+                {infoboxData && this.getOverlayLayout()}
               </Map>
               {this.zoomButtonsLayout()}
               <div
                 role="presentation"
                 className="MapOS__locateGPS"
-                onClick={this.setPosition}
+                onClick={this.setCoordinates}
                 title="find me"
               >
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
@@ -151,14 +201,23 @@ class MapObjectInfo extends React.Component {
 
 MapObjectInfo.defaultProps = {
   center: defaultCoords,
-  heigth: 200,
+  mapHeigth: 200,
   setCoordinates: () => {},
+  setArea: () => {},
+  isFullscreenMode: false,
+  usedLocale: 'en-US',
+  setMapFullscreenMode: () => {},
 };
 
 MapObjectInfo.propTypes = {
-  setCoordinates: PropTypes.func,
-  heigth: PropTypes.number,
+  mapHeigth: PropTypes.number,
   center: PropTypes.arrayOf(PropTypes.number),
+  isFullscreenMode: PropTypes.bool,
+  usedLocale: PropTypes.string,
+  setMapFullscreenMode: PropTypes.func,
+  // eslint-disable-next-line react/forbid-prop-types
+  wobject: PropTypes.object.isRequired,
+  history: PropTypes.shape().isRequired,
 };
 
 export default MapObjectInfo;

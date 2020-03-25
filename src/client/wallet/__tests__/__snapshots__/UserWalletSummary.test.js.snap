@@ -5,20 +5,20 @@ ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <UserWalletSummary
     balance={0}
-    estAccountValue="100.00 STEEM"
+    estAccountValue="100.00 HIVE"
     isGuest={false}
     loading={false}
     loadingGlobalProperties={false}
     sbdRate={1}
     steemRate={1}
     steemRateLoading={false}
-    totalVestingFundSteem="100 STEEM"
-    totalVestingShares="100 STEEM"
+    totalVestingFundSteem="100 HIVE"
+    totalVestingShares="100 HIVE"
     user={
       Object {
         "balance": "100",
-        "savings_balance": "100 STEEM",
-        "savings_sbd_balance": "1000 STEEM",
+        "savings_balance": "100 HIVE",
+        "savings_sbd_balance": "1000 HIVE",
         "vesting_shares": "0",
       }
     }
@@ -60,7 +60,7 @@ ShallowWrapper {
               <FormattedNumber
                 value={0}
               />
-               STEEM
+               HIVE
             </span>
           </div>
         </div>,
@@ -131,7 +131,7 @@ ShallowWrapper {
                     )
                   </span>
                 </BTooltip>
-                 SP
+                 HP
               </span>
             </div>
           </div>
@@ -157,7 +157,7 @@ ShallowWrapper {
                 <FormattedNumber
                   value={NaN}
                 />
-                 SBD
+                 HBD
               </span>
             </div>
           </div>
@@ -183,11 +183,11 @@ ShallowWrapper {
                 <FormattedNumber
                   value={100}
                 />
-                 STEEM, 
+                 HIVE,
                 <FormattedNumber
                   value={1000}
                 />
-                 SBD
+                 HBD
               </span>
             </div>
           </div>
@@ -245,7 +245,7 @@ ShallowWrapper {
                 <FormattedNumber
                   value={0}
                 />
-                 STEEM
+                 HIVE
               </span>
             </div>,
           ],
@@ -301,7 +301,7 @@ ShallowWrapper {
                 <FormattedNumber
                   value={0}
                 />
-                 STEEM
+                 HIVE
               </span>,
               "className": "UserWalletSummary__value",
             },
@@ -315,7 +315,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={0}
                   />,
-                  " STEEM",
+                  " HIVE",
                 ],
               },
               "ref": null,
@@ -412,7 +412,7 @@ ShallowWrapper {
                       )
                     </span>
                   </BTooltip>
-                   SP
+                   HP
                 </span>
               </div>
             </div>,
@@ -438,7 +438,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={NaN}
                   />
-                   SBD
+                   HBD
                 </span>
               </div>
             </div>,
@@ -468,7 +468,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={1000}
                   />
-                   SBD
+                   HBD
                 </span>
               </div>
             </div>,
@@ -545,7 +545,7 @@ ShallowWrapper {
                         )
                       </span>
                     </BTooltip>
-                     SP
+                     HP
                   </span>
                 </div>,
               ],
@@ -645,7 +645,7 @@ ShallowWrapper {
                         )
                       </span>
                     </BTooltip>
-                     SP
+                     HP
                   </span>,
                   "className": "UserWalletSummary__value",
                 },
@@ -703,7 +703,7 @@ ShallowWrapper {
                           )
                         </span>
                       </BTooltip>,
-                      " SP",
+                      " HP",
                     ],
                   },
                   "ref": null,
@@ -831,7 +831,7 @@ ShallowWrapper {
                       },
                       "type": [Function],
                     },
-                    " SP",
+                    " HP",
                   ],
                   "type": "span",
                 },
@@ -865,7 +865,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={NaN}
                     />
-                     SBD
+                     HBD
                   </span>
                 </div>,
               ],
@@ -921,7 +921,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={NaN}
                     />
-                     SBD
+                     HBD
                   </span>,
                   "className": "UserWalletSummary__value",
                 },
@@ -935,7 +935,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={NaN}
                       />,
-                      " SBD",
+                      " HBD",
                     ],
                   },
                   "ref": null,
@@ -951,7 +951,7 @@ ShallowWrapper {
                       "rendered": null,
                       "type": [Function],
                     },
-                    " SBD",
+                    " HBD",
                   ],
                   "type": "span",
                 },
@@ -989,7 +989,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={1000}
                     />
-                     SBD
+                     HBD
                   </span>
                 </div>,
               ],
@@ -1049,7 +1049,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={1000}
                     />
-                     SBD
+                     HBD
                   </span>,
                   "className": "UserWalletSummary__value",
                 },
@@ -1067,7 +1067,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={1000}
                       />,
-                      " SBD",
+                      " HBD",
                     ],
                   },
                   "ref": null,
@@ -1095,7 +1095,7 @@ ShallowWrapper {
                       "rendered": null,
                       "type": [Function],
                     },
-                    " SBD",
+                    " HBD",
                   ],
                   "type": "span",
                 },
@@ -1306,7 +1306,7 @@ ShallowWrapper {
                       )
                     </span>
                   </BTooltip>
-                   SP
+                   HP
                 </span>
               </div>
             </div>
@@ -1332,7 +1332,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={NaN}
                   />
-                   SBD
+                   HBD
                 </span>
               </div>
             </div>
@@ -1362,7 +1362,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={1000}
                   />
-                   SBD
+                   HBD
                 </span>
               </div>
             </div>
@@ -1587,7 +1587,7 @@ ShallowWrapper {
                         )
                       </span>
                     </BTooltip>
-                     SP
+                     HP
                   </span>
                 </div>
               </div>,
@@ -1613,7 +1613,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={NaN}
                     />
-                     SBD
+                     HBD
                   </span>
                 </div>
               </div>,
@@ -1643,7 +1643,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={1000}
                     />
-                     SBD
+                     HBD
                   </span>
                 </div>
               </div>,
@@ -2040,7 +2040,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={NaN}
                       />
-                       SBD
+                       HBD
                     </span>
                   </div>,
                 ],
@@ -2096,7 +2096,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={NaN}
                       />
-                       SBD
+                       HBD
                     </span>,
                     "className": "UserWalletSummary__value",
                   },
@@ -2110,7 +2110,7 @@ ShallowWrapper {
                         <FormattedNumber
                           value={NaN}
                         />,
-                        " SBD",
+                        " HBD",
                       ],
                     },
                     "ref": null,
@@ -2126,7 +2126,7 @@ ShallowWrapper {
                         "rendered": null,
                         "type": [Function],
                       },
-                      " SBD",
+                      " HBD",
                     ],
                     "type": "span",
                   },
@@ -2164,7 +2164,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={1000}
                       />
-                       SBD
+                       HBD
                     </span>
                   </div>,
                 ],
@@ -2224,7 +2224,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={1000}
                       />
-                       SBD
+                       HBD
                     </span>,
                     "className": "UserWalletSummary__value",
                   },
@@ -2242,7 +2242,7 @@ ShallowWrapper {
                         <FormattedNumber
                           value={1000}
                         />,
-                        " SBD",
+                        " HBD",
                       ],
                     },
                     "ref": null,
@@ -2270,7 +2270,7 @@ ShallowWrapper {
                         "rendered": null,
                         "type": [Function],
                       },
-                      " SBD",
+                      " HBD",
                     ],
                     "type": "span",
                   },
