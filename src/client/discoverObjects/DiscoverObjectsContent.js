@@ -106,7 +106,6 @@ class DiscoverObjectsContent extends Component {
       isModalOpen: false,
       modalTitle: '',
       loadingAssign: false,
-      discover: true,
     };
   }
 
@@ -249,7 +248,7 @@ class DiscoverObjectsContent extends Component {
   };
 
   render() {
-    const { isTypeHasFilters, isModalOpen, modalTitle, loadingAssign, discover } = this.state;
+    const { isTypeHasFilters, isModalOpen, modalTitle, loadingAssign } = this.state;
     const {
       intl,
       isFetching,
@@ -344,9 +343,8 @@ class DiscoverObjectsContent extends Component {
               if (wObj.campaigns) {
                 return (
                   <Campaign
-                    discover={discover}
                     proposition={wObj}
-                    filterKey={'active'}
+                    filterKey={'all'}
                     key={wObj.id}
                     userName={userName}
                   />

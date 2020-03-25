@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
@@ -32,10 +32,10 @@ const WobjHeader = ({
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const isList = Boolean(wobject && wobject.object_type === 'list');
   const parentName = wobject.parent
     ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
+  const objectTypes = useRef(['list', 'page']).current;
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -47,17 +47,12 @@ const WobjHeader = ({
   );
 
   const getLink = () => {
-    let link;
-    if (isMobile && !isEditMode) {
-      link = `/object/${wobject.author_permlink}/about`;
-    } else if (!isMobile && isList && !isEditMode) {
-      link = `/object/${wobject.author_permlink}/list`;
-    } else if (!isMobile && !isList && !isEditMode) {
-      link = `/object/${wobject.author_permlink}/reviews`;
-    } else {
-      link = null;
-    }
-    return link;
+    const link = `/object/${wobject.author_permlink}`;
+    if (isEditMode) return null;
+    if (isMobile) return `${link}/about`;
+    if (wobject && objectTypes.includes(wobject.object_type))
+      return `${link}/${wobject.object_type}`;
+    return `${link}/reviews`;
   };
 
   return (
