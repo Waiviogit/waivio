@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({ proposition, history, intl }) => {
+const Campaign = ({ proposition, filterKey, history, intl, discover }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = proposition.campaigns
     ? getClientWObj(proposition, usedLocale)
@@ -31,9 +31,11 @@ const Campaign = ({ proposition, history, intl }) => {
         ? `${(currentUSDPrice * maxReward).toFixed(2)} USD`
         : `${maxReward} HIVE`
       : '';
+  const isDiscover = discover;
   const goToProducts = () => {
-    history.push(`/rewards/all/${requiredObject.id}`);
+    history.push(`/rewards/${isDiscover ? 'all' : filterKey}/${requiredObject.id}`);
   };
+
   return (
     <div className="Campaign">
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
@@ -76,7 +78,9 @@ const Campaign = ({ proposition, history, intl }) => {
 Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
+  filterKey: PropTypes.string.isRequired,
   history: PropTypes.shape().isRequired,
+  discover: PropTypes.string.isRequired,
 };
 
 Campaign.defaultProps = {
