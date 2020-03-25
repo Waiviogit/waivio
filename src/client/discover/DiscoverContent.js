@@ -47,26 +47,26 @@ class DiscoverContent extends React.Component {
     typesList: PropTypes.shape().isRequired,
     getObjectTypes: PropTypes.func.isRequired,
     searchUsersAutoCompete: PropTypes.func.isRequired,
-    params: PropTypes.string,
+    searchString: PropTypes.string,
     searchUsersList: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
-    params: '',
+    searchString: '',
     searchUsersList: [],
   };
 
   componentDidMount() {
-    const { typesList, params } = this.props;
-    if (params) {
-      this.props.searchUsersAutoCompete(params, 100);
+    const { typesList, searchString } = this.props;
+    if (searchString) {
+      this.props.searchUsersAutoCompete(searchString, 100);
     }
 
     if (isEmpty(typesList)) this.props.getObjectTypes();
   }
 
   componentDidUpdate() {
-    if (!this.props.params && isEmpty(this.props.topExperts)) {
+    if (!this.props.searchString && isEmpty(this.props.topExperts)) {
       this.props.getObjectTypes();
     }
   }
@@ -78,7 +78,13 @@ class DiscoverContent extends React.Component {
   };
 
   render() {
-    const { topExperts, topExpertsLoading, hasMoreExperts, params, searchUsersList } = this.props;
+    const {
+      topExperts,
+      topExpertsLoading,
+      hasMoreExperts,
+      searchString,
+      searchUsersList,
+    } = this.props;
     const mapSearchUsersList =
       !isEmpty(searchUsersList) &&
       searchUsersList.map(user => ({
@@ -86,12 +92,12 @@ class DiscoverContent extends React.Component {
         wobjects_weight: user.wobjects_weight,
         followers_count: user.followers_count,
       }));
-    const renderedList = params ? mapSearchUsersList : topExperts;
+    const renderedList = searchString ? mapSearchUsersList : topExperts;
 
     return (
       <div>
         <ReduxInfiniteScroll
-          hasMore={!params && hasMoreExperts}
+          hasMore={!searchString && hasMoreExperts}
           loadMore={this.handleLoadMore}
           elementIsScrollable={false}
           loadingMore={topExpertsLoading}
