@@ -213,12 +213,16 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, limit = 15) =>
+export const searchUsers = (searchString, username, limit = 15) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          following: username,
+          follower: username,
+        },
         method: 'GET',
       },
     )
@@ -286,7 +290,12 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
 
 export const getUserAccount = (username, with_followings = false) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`, {
+      headers: {
+        following: username,
+        follower: username,
+      },
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -446,7 +455,8 @@ export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectType
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers: {
         ...headers,
-        user,
+        following: user,
+        follower: user,
       },
       method: 'POST',
       body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
@@ -477,11 +487,18 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {}) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  const headersObj = user
+    ? {
+        ...headers,
+        following: user,
+        follower: user,
+      }
+    : headers;
+
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.users}${queryString}`, {
       headers: {
-        ...headers,
-        user,
+        ...headersObj,
       },
       method: 'GET',
     })
@@ -840,6 +857,12 @@ export const broadcastGuestOperation = async (operationId, data) => {
 export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -849,6 +872,12 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
 export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)

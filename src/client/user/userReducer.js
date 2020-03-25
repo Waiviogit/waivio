@@ -71,13 +71,13 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_FOLLOWING_SUCCESS:
       const followingObject = {};
       action.payload.forEach(user => {
-        followingObject[user] = true;
+        followingObject[user.name] = true;
       });
       return {
         ...state,
         following: {
           ...state.following,
-          list: action.payload,
+          list: followingObject,
           isFetching: false,
           fetched: true,
         },

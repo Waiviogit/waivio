@@ -42,7 +42,7 @@ export default class UserDynamicList extends React.Component {
             this.setState(state => ({
               loading: false,
               hasMore: newUsers.hasMore,
-              users: [state.users, ...newUsers.users],
+              users: [...state.users, ...newUsers.users],
             })),
           )
           .catch(err => {

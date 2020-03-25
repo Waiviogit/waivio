@@ -555,13 +555,13 @@ class Topnav extends React.Component {
                   </span>
                 </div>
                 <div className="Topnav__search-content-small">
-                  {option.isFollowing && !option.followsYou && (
+                  {option.youFollows && !option.followsYou && (
                     <FormattedMessage id="following_user" defaultMessage="following" />
                   )}
-                  {!option.isFollowing && option.followsYou && (
+                  {!option.youFollows && option.followsYou && (
                     <FormattedMessage id="follows you" defaultMessage="follows you" />
                   )}
-                  {option.isFollowing && option.followsYou && (
+                  {option.youFollows && option.followsYou && (
                     <FormattedMessage id="mutual_follow" defaultMessage="mutual following" />
                   )}
                 </div>

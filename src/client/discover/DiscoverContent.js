@@ -11,6 +11,7 @@ import {
   getTopExpertsHasMore,
   getObjectTypesList,
   getSearchUsersResults,
+  getAuthenticatedUserName,
 } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
@@ -25,6 +26,7 @@ const displayLimit = 20;
     hasMoreExperts: getTopExpertsHasMore(state),
     typesList: getObjectTypesList(state),
     searchUsersList: getSearchUsersResults(state),
+    username: getAuthenticatedUserName(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
@@ -61,14 +63,7 @@ class DiscoverContent extends React.Component {
     if (searchString) {
       this.props.searchUsersAutoCompete(searchString, 100);
     }
-
     if (isEmpty(typesList)) this.props.getObjectTypes();
-  }
-
-  componentDidUpdate() {
-    if (!this.props.searchString && isEmpty(this.props.topExperts)) {
-      this.props.getObjectTypes();
-    }
   }
 
   handleLoadMore = () => {
@@ -93,7 +88,6 @@ class DiscoverContent extends React.Component {
         followers_count: user.followers_count,
       }));
     const renderedList = searchString ? mapSearchUsersList : topExperts;
-
     return (
       <div>
         <ReduxInfiniteScroll
