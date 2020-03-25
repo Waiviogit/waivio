@@ -32,6 +32,7 @@ const WobjHeader = ({
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
+  const isList = Boolean(wobject && wobject.object_type === 'list');
   const parentName = wobject.parent
     ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
@@ -44,6 +45,20 @@ const WobjHeader = ({
       )}
     </div>
   );
+
+  const getLink = () => {
+    let link;
+    if (isMobile && !isEditMode) {
+      link = `/object/${wobject.author_permlink}/about`;
+    } else if (!isMobile && isList && !isEditMode) {
+      link = `/object/${wobject.author_permlink}/list`;
+    } else if (!isMobile && !isList && !isEditMode) {
+      link = `/object/${wobject.author_permlink}/reviews`;
+    } else {
+      link = null;
+    }
+    return link;
+  };
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -70,9 +85,7 @@ const WobjHeader = ({
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Link
-                    to={isMobile && !isEditMode ? `/object/${wobject.author_permlink}/about` : null}
-                  >
+                  <Link to={getLink()}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
