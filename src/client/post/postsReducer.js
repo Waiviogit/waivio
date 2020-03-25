@@ -185,40 +185,7 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
-    case postsActions.LIKE_POST_SUCCESS: {
-      const matchPosts = Object.values(state.list).filter(
-        post => post.permlink === action.payload.permlink,
-      );
-      const changePosts = matchPosts.reduce((acc, p) => {
-        let key;
 
-        if (p.reblogged_by.length) {
-          key = `${action.payload.author}/${action.payload.permlink}/${p.reblogged_by}`;
-        } else {
-          key = `${action.payload.author}/${action.payload.permlink}`;
-        }
-
-        acc[key] = {
-          ...p,
-          active_votes: [
-            ...p.active_votes,
-            {
-              voter: action.payload.voter,
-            },
-          ],
-        };
-
-        return acc;
-      }, {});
-
-      return {
-        ...state,
-        list: {
-          ...state.list,
-          ...changePosts,
-        },
-      };
-    }
     case postsActions.LIKE_POST_ERROR:
       return {
         ...state,
