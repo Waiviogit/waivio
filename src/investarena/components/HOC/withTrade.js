@@ -40,11 +40,7 @@ const withTrade = Component => {
     }
     componentWillReceiveProps(nexProps) {
       if (nexProps.quote && nexProps.quoteSettings) {
-        if (
-          this.state.amount === '' ||
-          !this.props.quote ||
-          !this.props.quoteSettings
-        ) {
+        if (this.state.amount === '' || !this.props.quote || !this.props.quoteSettings) {
           const amountValue = nexProps.quoteSettings.defaultQuantity;
           const amount =
             this.props.amountModal ||
@@ -104,8 +100,9 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin, caller) => { // todo: remove margin
-        if  (
+      createOpenDeal: (side, amount, margin, caller) => {
+        // todo: remove margin
+        if (
           platformName !== 'widgets' &&
           !isOpen &&
           isSignIn &&

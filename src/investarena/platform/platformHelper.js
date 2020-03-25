@@ -319,7 +319,7 @@ export class PlatformHelper {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
     if (
-      amountParseString.length > (quoteSettings.maximumQuantity).toString().length ||
+      amountParseString.length > quoteSettings.maximumQuantity.toString().length ||
       amountInt > quoteSettings.maximumQuantity
     ) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
