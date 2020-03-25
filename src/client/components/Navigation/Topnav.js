@@ -430,13 +430,14 @@ class Topnav extends React.Component {
         redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
         break;
       case 'user':
-        redirectUrl = `/discover/?search=${searchBarValue}`;
+        redirectUrl = `/discover/${searchBarValue.replace('@', '')}`;
         break;
       case 'type':
       default:
         redirectUrl = `/discover-objects?search=${searchBarValue}`;
         break;
     }
+
     this.props.history.push(redirectUrl);
   };
 
