@@ -150,6 +150,9 @@ const posts = (state = initialState, action) => {
           [key]: {
             ...state.list[key],
             ...action.payload,
+            reblogged_by: state.list[key].reblogged_by.length
+              ? state.list[key].reblogged_by
+              : action.payload.reblogged_by,
             author,
             id: key,
           },
@@ -182,6 +185,7 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
+
     case postsActions.LIKE_POST_ERROR:
       return {
         ...state,

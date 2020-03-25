@@ -8,7 +8,6 @@ import {
   getBookmarks,
   getPendingBookmarks,
   getPendingLikes,
-  getRebloggedList,
   getPendingReblogs,
   getFollowingList,
   getPendingFollows,
@@ -32,7 +31,7 @@ const mapStateToProps = (state, { id }) => {
   const isAppend = !!post.append_field_name;
   const bookmarks = getBookmarks(state);
   const postState = {
-    isReblogged: getRebloggedList(state).includes(post.id),
+    isReblogged: post.reblogged_users && post.reblogged_users.includes(user.name),
     isReblogging: getPendingReblogs(state).includes(post.id),
     isSaved: post.guestInfo
       ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)

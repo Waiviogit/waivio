@@ -10,9 +10,11 @@ import {
   getTopExpertsLoading,
   getTopExpertsHasMore,
   getObjectTypesList,
+  getSearchUsersResults,
 } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
+import { searchUsersAutoCompete } from '../search/searchActions';
 
 const displayLimit = 20;
 
@@ -22,10 +24,12 @@ const displayLimit = 20;
     topExpertsLoading: getTopExpertsLoading(state),
     hasMoreExperts: getTopExpertsHasMore(state),
     typesList: getObjectTypesList(state),
+    searchUsersList: getSearchUsersResults(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
     getObjectTypes,
+    searchUsersAutoCompete,
   },
 )
 class DiscoverContent extends React.Component {
@@ -42,11 +46,29 @@ class DiscoverContent extends React.Component {
     hasMoreExperts: PropTypes.bool.isRequired,
     typesList: PropTypes.shape().isRequired,
     getObjectTypes: PropTypes.func.isRequired,
+    searchUsersAutoCompete: PropTypes.func.isRequired,
+    searchString: PropTypes.string,
+    searchUsersList: PropTypes.arrayOf(PropTypes.shape()),
+  };
+
+  static defaultProps = {
+    searchString: '',
+    searchUsersList: [],
   };
 
   componentDidMount() {
-    const { typesList } = this.props;
+    const { typesList, searchString } = this.props;
+    if (searchString) {
+      this.props.searchUsersAutoCompete(searchString, 100);
+    }
+
     if (isEmpty(typesList)) this.props.getObjectTypes();
+  }
+
+  componentDidUpdate() {
+    if (!this.props.searchString && isEmpty(this.props.topExperts)) {
+      this.props.getObjectTypes();
+    }
   }
 
   handleLoadMore = () => {
@@ -56,19 +78,35 @@ class DiscoverContent extends React.Component {
   };
 
   render() {
-    const { topExperts, topExpertsLoading, hasMoreExperts } = this.props;
+    const {
+      topExperts,
+      topExpertsLoading,
+      hasMoreExperts,
+      searchString,
+      searchUsersList,
+    } = this.props;
+    const mapSearchUsersList =
+      !isEmpty(searchUsersList) &&
+      searchUsersList.map(user => ({
+        name: user.account,
+        wobjects_weight: user.wobjects_weight,
+        followers_count: user.followers_count,
+      }));
+    const renderedList = searchString ? mapSearchUsersList : topExperts;
+
     return (
       <div>
         <ReduxInfiniteScroll
-          hasMore={hasMoreExperts}
+          hasMore={!searchString && hasMoreExperts}
           loadMore={this.handleLoadMore}
           elementIsScrollable={false}
           loadingMore={topExpertsLoading}
           loader={<Loading />}
         >
-          {topExperts.map(expert => (
-            <DiscoverUser user={expert} key={expert.name} isReblogged />
-          ))}
+          {renderedList &&
+            renderedList.map(expert => (
+              <DiscoverUser user={expert} key={expert.name} isReblogged />
+            ))}
         </ReduxInfiniteScroll>
       </div>
     );
