@@ -54,7 +54,7 @@ const formatPerformance = performanceValue => {
   const plusSign = performanceValue > 0 ? '+' : '';
   return performanceValue !== null
     ? `${plusSign}${toFixNumberLength(performanceValue, 3)}%`
-    : `${'—'}`;
+    : '—';
 };
 
 @connect(
