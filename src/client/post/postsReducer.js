@@ -292,36 +292,6 @@ const posts = (state = initialState, action) => {
         },
       };
     }
-    case postsActions.REBLOGGED_POST: {
-      const matchPosts = Object.values(state.list).filter(
-        post => post.permlink === action.payload.permlink,
-      );
-      const changePosts = matchPosts.reduce((acc, p) => {
-        let key;
-
-        if (p.reblogged_by.length) {
-          key = `${action.payload.author}/${action.payload.permlink}/${p.reblogged_by}`;
-        } else {
-          key = `${action.payload.author}/${action.payload.permlink}`;
-        }
-
-        acc[key] = {
-          ...p,
-          reblogged_by: [],
-          reblogged_users: [...p.reblogged_users, action.payload.rebloger],
-        };
-
-        return acc;
-      }, {});
-
-      return {
-        ...state,
-        list: {
-          ...state.list,
-          ...changePosts,
-        },
-      };
-    }
 
     default:
       return state;

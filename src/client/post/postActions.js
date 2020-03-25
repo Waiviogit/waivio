@@ -13,7 +13,6 @@ export const FAKE_LIKE_POST = '@post/FAKE_LIKE_POST';
 export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
-export const REBLOGGED_POST = '@post/REBLOGGED_POST';
 
 export const VOTE_UPDATE_START = '@post/VOTE_UPDATE_START';
 export const VOTE_UPDATE_SUCCESS = '@post/VOTE_UPDATE_SUCCESS';
@@ -169,14 +168,3 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
     return res;
   });
 };
-
-export const reblogPost = (rebloger, author, permlink, rebloged) => dispatch =>
-  dispatch({
-    type: REBLOGGED_POST,
-    payload: {
-      rebloger,
-      author,
-      permlink,
-      rebloged,
-    },
-  });

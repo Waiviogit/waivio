@@ -1,6 +1,5 @@
 import store from 'store';
 import { createAction } from 'redux-actions';
-import { reblogPost } from '../../post/postActions';
 
 export const REBLOG_POST = '@reblog/REBLOG_POST';
 export const REBLOG_POST_START = '@reblog/REBLOG_POST_START';
@@ -28,8 +27,8 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
       promise: steemConnectAPI.reblog(auth.user.name, author, post.permlink).then(result => {
         const list = storePostId(postId);
 
-        dispatch(reblogPost(auth.user.name, author, post.permlink, post.reblogged_by));
         dispatch(getRebloggedListAction(list));
+
         if (window.analytics) {
           window.analytics.track('Reblog', {
             category: 'reblog',
