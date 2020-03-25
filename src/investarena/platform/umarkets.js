@@ -30,7 +30,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
-import { mutateObject, getOS, exponentialToDecimal } from './platformHelper';
+import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
 
 const multiplier = 1000000;
@@ -368,16 +368,16 @@ export default class Umarkets {
       }
       this.quotes[q.security] = {
         security: q.security,
-        bidPrice: exponentialToDecimal(q.bidPrice),
-        askPrice: exponentialToDecimal(q.askPrice),
+        bidPrice: PlatformHelper.exponentialToDecimal(q.bidPrice),
+        askPrice: PlatformHelper.exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
       };
       data[q.security] = {
         security: q.security,
-        bidPrice: exponentialToDecimal(q.bidPrice),
-        askPrice: exponentialToDecimal(q.askPrice),
+        bidPrice: PlatformHelper.exponentialToDecimal(q.bidPrice),
+        askPrice: PlatformHelper.exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],

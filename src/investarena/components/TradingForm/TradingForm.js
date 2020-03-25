@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import TradeButton from '../TradeButton';
-import { exponentialToDecimal } from '../../platform/platformHelper';
+import { PlatformHelper } from '../../platform/platformHelper';
 import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
@@ -10,7 +10,7 @@ const TradingForm = ({ amount, side, fees, quoteSettings, handleChangeInput, cre
   const { baseCurrency, termCurrency } = quoteSettings;
   const amountAvailable = 100;
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
-  const totalValue = exponentialToDecimal(0.0000515);
+  const totalValue = PlatformHelper.exponentialToDecimal(0.0000515);
 
   const handleTradeButtonClick = () => {
     createMarketOrder(side, amount);

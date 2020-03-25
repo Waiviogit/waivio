@@ -393,12 +393,20 @@ export class PlatformHelper {
     }
     return false;
   }
-
   static countDecimals(value) {
-    const parsedValue = exponentialToDecimal(value);
+    const parsedValue = this.exponentialToDecimal(value);
     if (Math.floor(parsedValue) === Number(parsedValue)) return 0;
     return parsedValue.toString().split('.')[1].length || 0;
   }
+  static exponentialToDecimal(exponentialNumber) {
+    // sanity check - is it exponential number
+    const str = exponentialNumber.toString();
+    if (str.indexOf('e') !== -1) {
+      const exponent = parseInt(str.split('-')[1], 10);
+      return exponentialNumber.toFixed(exponent);
+    }
+    return exponentialNumber.toString();
+  };
 }
 
 export const mutateObject = wobjects =>
@@ -418,16 +426,6 @@ export const getOS = () => {
   if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX';
   if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
   return OSName;
-};
-
-export const exponentialToDecimal = exponentialNumber => {
-  // sanity check - is it exponential number
-  const str = exponentialNumber.toString();
-  if (str.indexOf('e') !== -1) {
-    const exponent = parseInt(str.split('-')[1], 10);
-    return exponentialNumber.toFixed(exponent);
-  }
-  return exponentialNumber.toString();
 };
 
 export function fillUserStatistics(userStats, userStatistics) {
