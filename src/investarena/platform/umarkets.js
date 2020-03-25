@@ -210,20 +210,27 @@ export default class Umarkets {
     });
   }
 
-  createOpenDeal(deal, dataDealToApi, callerKey) {
-    this.dataDealToApi = dataDealToApi;
-    this.sendRequestToPlatform(
-      CMD.sendOpenMarketOrder,
-      `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey),
-    );
-  }
+  // createOpenDeal(deal, dataDealToApi, callerKey) {
+  //   this.dataDealToApi = dataDealToApi;
+  //   this.sendRequestToPlatform(
+  //     CMD.sendOpenMarketOrder,
+  //     `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
+  //     this.getAppIdentity(callerKey),
+  //   );
+  // }
+  //
+  // closeOpenDeal(dealId, callerKey) {
+  //   this.sendRequestToPlatform(
+  //     CMD.sendCloseMarketOrder,
+  //     `["${dealId}","${config.appVersion}"]`,
+  //     this.getAppIdentity(callerKey),
+  //   );
+  // }
 
-  closeOpenDeal(dealId, callerKey) {
+  createMarketOrder(deal, dataDealToApi, callerKey) {
     this.sendRequestToPlatform(
-      CMD.sendCloseMarketOrder,
-      `["${dealId}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey),
+      CMD.createMarketOrder,
+      `["${deal.security}","${deal.side}","${Number(deal.amount)}", ${false}, "IMMEDIATE_OR_CANCEL", "OS: Linux,     App: crypto-investarena,     Caller: chart modal"]`
     );
   }
 

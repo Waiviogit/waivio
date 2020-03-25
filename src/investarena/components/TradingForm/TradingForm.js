@@ -6,13 +6,17 @@ import { exponentialToDecimal } from '../../platform/platformHelper';
 import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
-const TradingForm = ({ amount, direction, fees, quoteSettings, handleChangeInput }) => {
+const TradingForm = ({ amount, side, fees, quoteSettings, handleChangeInput, createMarketOrder }) => {
   const { baseCurrency, termCurrency } = quoteSettings;
   const amountAvailable = 100;
-  const feeCurrency = direction === 'buy' ? baseCurrency : termCurrency;
+  const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
   const totalValue = exponentialToDecimal(0.0000515);
+
+  const handleTradeButtonClick = () => {
+    createMarketOrder(side, amount);
+  };
   return (
-    <div className={`st-trading-form ${direction}`}>
+    <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
@@ -30,7 +34,7 @@ const TradingForm = ({ amount, direction, fees, quoteSettings, handleChangeInput
       </div>
 
       <div>
-        <TradeButton type={direction} />
+        <TradeButton type={side} onClick={handleTradeButtonClick} />
       </div>
 
       <div className="st-trading-form-footer">
@@ -51,7 +55,7 @@ const TradingForm = ({ amount, direction, fees, quoteSettings, handleChangeInput
 
 TradingForm.propTypes = {
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  direction: PropTypes.oneOf(['buy', 'sell']).isRequired,
+  side: PropTypes.oneOf(['buy', 'sell']).isRequired,
   // quoteSecurity: PropTypes.string.isRequired, // pass to withTrade
   fees: PropTypes.shape({
     makerFee: PropTypes.string,
@@ -62,6 +66,7 @@ TradingForm.propTypes = {
     termCurrency: PropTypes.string.isRequired,
   }).isRequired,
   handleChangeInput: PropTypes.func.isRequired,
+  createMarketOrder: PropTypes.func.isRequired,
 };
 
 export default withTrade(TradingForm);

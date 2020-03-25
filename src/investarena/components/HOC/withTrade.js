@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { get } from 'lodash';
-import { createOpenDealPlatform } from '../../redux/actions/dealsActions';
+import { createMarketOrder } from '../../redux/actions/dealsActions';
 import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
 import { getPlatformNameState } from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
@@ -14,7 +14,7 @@ import { getIsAuthenticated } from '../../../client/reducers';
 
 const propTypes = {
   /* passed props */
-  direction: PropTypes.oneOf(['buy', 'sell']).isRequired,
+  side: PropTypes.oneOf(['buy', 'sell']).isRequired,
   quoteSecurity: PropTypes.string.isRequired,
   // postId: PropTypes.string, // unused?
 
@@ -40,17 +40,17 @@ const withTrade = Component => {
       const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
       this.state = {
         amount,
-        fees: PlatformHelper.calculateFees(amountValue, props.direction, props.quoteSettings, props.quote),
+        fees: PlatformHelper.calculateFees(amountValue, props.side, props.quoteSettings, props.quote),
       };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { quote, quoteSettings, direction } = nextProps;
+        const { quote, quoteSettings, side } = nextProps;
       if (quote && quoteSettings) {
         if (prevState.amount === '') {
           const amountValue = quoteSettings.defaultQuantity;
           const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-          const fees = PlatformHelper.calculateFees(amountValue, direction, quoteSettings);
+          const fees = PlatformHelper.calculateFees(amountValue, side, quoteSettings);
           return{ amount, fees };
         }
       }
@@ -65,10 +65,10 @@ const withTrade = Component => {
       this.setState({ amount });
     };
     handleChangeInput = e => {
-      const { quote, quoteSettings, direction } = this.props;
+      const { quote, quoteSettings, side } = this.props;
       const position = e.target.selectionStart;
       const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
-      const fees = PlatformHelper.calculateFees(e.target.value, direction, quoteSettings, quote);
+      const fees = PlatformHelper.calculateFees(e.target.value, side, quoteSettings, quote);
       e.persist();
       this.setState({ amount, fees }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
@@ -112,14 +112,14 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin, caller) => { // todo: remove margin
+      createMarketOrder: (side, amount, caller = 'od-op') => {
         if  (
           platformName !== 'widgets' &&
           !isOpen &&
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'Sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -127,7 +127,6 @@ const withTrade = Component => {
               quoteSettings,
               side,
               amount,
-              margin,
               postId,
               platformName,
               caller,
@@ -139,7 +138,7 @@ const withTrade = Component => {
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'Sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -147,7 +146,6 @@ const withTrade = Component => {
               quoteSettings,
               side,
               amount,
-              margin,
               postId,
               platformName,
               caller,
@@ -163,15 +161,14 @@ const withTrade = Component => {
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
-            createOpenDealPlatform(
+            createMarketOrder(
               quote,
               quoteSettings,
               side,
               amount,
-              margin,
               postId,
               platformName,
               caller,
