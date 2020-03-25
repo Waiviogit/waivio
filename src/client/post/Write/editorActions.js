@@ -10,6 +10,7 @@ import {
 } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
+import { parseBlockChainError } from '../../helpers/errorMiddleware';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
@@ -285,7 +286,9 @@ export function createPost(postData) {
               return result;
             })
             .catch(err => {
-              dispatch(notify(err.error.message || err.error_description, 'error'));
+              dispatch(
+                notify(err.error.message || parseBlockChainError(err.error_description), 'error'),
+              );
             }),
         ),
       },
