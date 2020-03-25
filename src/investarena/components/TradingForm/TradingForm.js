@@ -6,29 +6,41 @@ import { exponentialToDecimal } from '../../platform/platformHelper';
 import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
-const TradingForm = ({ amount, side, fees, quoteSettings, handleChangeInput, createMarketOrder }) => {
+const TradingForm = ({
+  amount,
+  caller,
+  side,
+  fees,
+  quoteSettings,
+  handleChangeInput,
+  createMarketOrder,
+}) => {
   const { baseCurrency, termCurrency } = quoteSettings;
   const amountAvailable = 100;
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
   const totalValue = exponentialToDecimal(0.0000515);
 
   const handleTradeButtonClick = () => {
-    createMarketOrder(side, amount);
+    createMarketOrder(side, amount, caller);
   };
   return (
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_available" defaultMessage="Available" />:&nbsp;&nbsp;
-          <span className="fw5">{amountAvailable}&nbsp;{termCurrency}</span>
+          <FormattedMessage id="trading_form_available" defaultMessage="Available" />
+          :&nbsp;&nbsp;
+          <span className="fw5">
+            {amountAvailable}&nbsp;{termCurrency}
+          </span>
         </div>
       </div>
 
       <div className="flex-info-block justify-content-center">
-        <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />:&nbsp;
+        <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
+        :&nbsp;
         <div className="trading_form_amount__input">
-          <input type="text" value={amount} onChange={handleChangeInput}/>
+          <input type="text" value={amount} onChange={handleChangeInput} />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -40,13 +52,19 @@ const TradingForm = ({ amount, side, fees, quoteSettings, handleChangeInput, cre
       <div className="st-trading-form-footer">
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_total" defaultMessage="Total" />&nbsp;≈&nbsp;
-          <span className="fw5">{totalValue}&nbsp;{termCurrency}</span>
+          <FormattedMessage id="trading_form_total" defaultMessage="Total" />
+          &nbsp;≈&nbsp;
+          <span className="fw5">
+            {totalValue}&nbsp;{termCurrency}
+          </span>
         </div>
         <div className="flex-info-block">
           <i className="iconfont icon-prompt info-icon" />
-          <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />&nbsp;≈&nbsp;
-          <span className="fw5">{fees.takerFee}&nbsp;{feeCurrency}</span>
+          <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />
+          &nbsp;≈&nbsp;
+          <span className="fw5">
+            {fees.takerFee}&nbsp;{feeCurrency}
+          </span>
         </div>
       </div>
     </div>
@@ -54,9 +72,13 @@ const TradingForm = ({ amount, side, fees, quoteSettings, handleChangeInput, cre
 };
 
 TradingForm.propTypes = {
-  amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  side: PropTypes.oneOf(['buy', 'sell']).isRequired,
+  /* passed props */
+  caller: PropTypes.string.isRequired,
   // quoteSecurity: PropTypes.string.isRequired, // pass to withTrade
+  side: PropTypes.oneOf(['buy', 'sell']).isRequired,
+
+  /* withTrade */
+  amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   fees: PropTypes.shape({
     makerFee: PropTypes.string,
     takerFee: PropTypes.string,
