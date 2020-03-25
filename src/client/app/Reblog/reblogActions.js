@@ -26,6 +26,7 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
     payload: {
       promise: steemConnectAPI.reblog(auth.user.name, author, post.permlink).then(result => {
         const list = storePostId(postId);
+
         dispatch(getRebloggedListAction(list));
 
         if (window.analytics) {

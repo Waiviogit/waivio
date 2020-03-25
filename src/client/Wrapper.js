@@ -150,13 +150,19 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRebloggedList();
       this.props.getRate();
     });
+    if (this.props.isAuthenticated) {
+      window.Chat.init();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
+    const { locale, isAuthenticated } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
+    }
+    if (!isAuthenticated && isAuthenticated !== nextProps.isAuthenticated) {
+      window.Chat.init();
     }
   }
 
@@ -183,6 +189,7 @@ export default class Wrapper extends React.PureComponent {
     switch (key) {
       case 'logout':
         this.props.logout();
+        window.Chat.onLogout();
         break;
       case 'activity':
         this.props.history.push('/activity');
