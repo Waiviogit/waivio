@@ -742,13 +742,22 @@ div[data-dir='rtl'] .Topnav {
   }
 }
 
+@color-blue: #3a79ee;
+
 .st-header-broker-balance-pl-wrap {
   .ant-btn {
+    background: none !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 38px;
     min-width: 175px;
+  }
+  &:hover {
+    cursor: pointer;
+    transition: box-shadow 0.5s ease 0s;
+    box-shadow: @color-blue 0 0 0.6em 0.1em inset;
+    border-radius: 4px;
   }
 }
 
