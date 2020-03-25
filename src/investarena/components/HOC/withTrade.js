@@ -101,7 +101,6 @@ const withTrade = Component => {
       ...ownProps,
       ...stateProps,
       createOpenDeal: (side, amount, margin, caller) => {
-        // todo: remove margin
         if (
           platformName !== 'widgets' &&
           !isOpen &&
