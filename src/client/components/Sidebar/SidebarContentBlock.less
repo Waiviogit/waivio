@@ -22,16 +22,21 @@
 
     .collapsible-block {
       &__title {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
         &.active > .collapsible-block__title-text {
-          border-bottom: 1px solid @black;
+          background: white;
+          border: @border-width-base @border-style-base @border-color-base !important;
+          border-radius: @border-radius-base;
+          color: @blue-dodgerBlue;
         }
         span {
-          color: @black;
-          cursor: pointer;
-          font-weight: bold;
+          margin-bottom: -16px;
+          display: block;
+          padding: 0 10px !important;
+          color: @blue-baliHai;
+          font-weight: 500;
+          line-height: 2.3em;
+          transition: 0.5s;
+          border: @border-width-base @border-style-base transparent;
 
           &::first-letter {
             text-transform: uppercase;
@@ -45,6 +50,9 @@
             .iconfont {
               font-size: 22px !important;
             }
+          }
+          &:hover {
+            color: rgba(0, 0, 0, 0.75);
           }
         }
       }
