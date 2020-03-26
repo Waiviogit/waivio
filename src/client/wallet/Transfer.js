@@ -409,11 +409,11 @@ export default class Transfer extends React.Component {
           {Transfer.CURRENCIES.HIVE}
         </Radio.Button>
         <Radio.Button
-          value={Transfer.CURRENCIES.SBD}
+          value={Transfer.CURRENCIES.HBD}
           className="Transfer__amount__type-sbd"
           disabled={isGuest}
         >
-          {Transfer.CURRENCIES.SBD}
+          {Transfer.CURRENCIES.HBD}
         </Radio.Button>
       </Radio.Group>,
     );
