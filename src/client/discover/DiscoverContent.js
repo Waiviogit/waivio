@@ -57,6 +57,7 @@ class DiscoverContent extends React.Component {
 
   render() {
     const { topExperts, topExpertsLoading, hasMoreExperts } = this.props;
+
     return (
       <div>
         <ReduxInfiniteScroll
