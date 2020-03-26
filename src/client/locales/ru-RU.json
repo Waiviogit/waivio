@@ -970,6 +970,7 @@
   "headerAuthorized.deposit": "Депозит",
   "headerAuthorized.openDeals": "Открытые сделки",
   "headerAuthorized.closedDeals": "Закрытые сделки",
+  "no_more_cryptocurrencies": "Нет больше криптовалют",
   "deals.opened": "Сделка открыта",
   "deals.price": "Стоимость",
   "deals.cumPnl": "Общий P&L",
