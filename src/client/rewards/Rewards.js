@@ -37,7 +37,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
-import { delay } from './rewardsHelpers';
+// import { delay } from './rewardsHelpers';
 
 @withRouter
 @injectIntl
@@ -252,35 +252,37 @@ class Rewards extends React.Component {
     // console.log(pendingReserv);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
-    return this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
-      .then(() => delay(10000))
-      .pendingReservation()
-      .then(() => {
-        // message.success(
-        //   this.props.intl.formatMessage({
-        //     id: 'assigned_successfully',
-        //     defaultMessage: 'Assigned successfully',
-        //   }),
-        // );
-        // eslint-disable-next-line no-unreachable
-        const updatedPropositions = this.updateProposition(
-          companyId,
-          true,
-          objPermlink,
-          companyAuthor,
-        );
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssignDiscard: false });
-      });
+    return (
+      this.props
+        .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+        // .then(() => delay(10000))
+        // .then(() => this.props.pendingReservation())
+        .then(() => {
+          // message.success(
+          //   this.props.intl.formatMessage({
+          //     id: 'assigned_successfully',
+          //     defaultMessage: 'Assigned successfully',
+          //   }),
+          // );
+          // eslint-disable-next-line no-unreachable
+          const updatedPropositions = this.updateProposition(
+            companyId,
+            true,
+            objPermlink,
+            companyAuthor,
+          );
+          this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'cannot_reserve_company',
+              defaultMessage: 'You cannot reserve the campaign at the moment',
+            }),
+          );
+          this.setState({ loadingAssignDiscard: false });
+        })
+    );
   };
 
   // eslint-disable-next-line consistent-return
