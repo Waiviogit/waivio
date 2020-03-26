@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import cn from 'classnames';
-import { size } from 'lodash';
+import { size, isNil } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import TopInstrumentsLoading from '../TopInstrumentsLoading';
 import { getPerformersStatsMore } from '../../../../investarena/redux/actions/topPerformersActions';
@@ -51,6 +51,9 @@ const getPerformerLinks = performer => {
 };
 
 const formatPerformance = performanceValue => {
+  if (isNil(performanceValue)) {
+    return '—';
+  }
   const plusSign = performanceValue > 0 ? '+' : '';
   return `${plusSign}${toFixNumberLength(performanceValue, 3)}%`;
 };
