@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -65,12 +66,6 @@ class DiscoverContent extends React.Component {
     if (isEmpty(typesList)) this.props.getObjectTypes();
   }
 
-  componentDidUpdate() {
-    if (!this.props.searchString && isEmpty(this.props.topExperts)) {
-      this.props.getObjectTypes();
-    }
-  }
-
   handleLoadMore = () => {
     if (!this.props.topExpertsLoading) {
       this.props.getTopExperts(displayLimit, this.props.topExperts.length);
@@ -85,30 +80,43 @@ class DiscoverContent extends React.Component {
       searchString,
       searchUsersList,
     } = this.props;
-    
-    const mapSearchUsersList =
-      !isEmpty(searchUsersList) &&
-      searchUsersList.map(user => ({
-        name: user.account,
-        wobjects_weight: user.wobjects_weight,
-        followers_count: user.followers_count,
-      }));
-    const renderedList = searchString ? mapSearchUsersList : topExperts;
+    const noUserError = (
+      <div className="Discover__message">
+        <FormattedMessage
+          id="no_user_message"
+          defaultMessage="We have not users with this name, please try again."
+        />
+      </div>
+    );
+    const mapSearchUsersList = searchUsersList.map(user => ({
+      name: user.account,
+      wobjects_weight: user.wobjects_weight,
+      followers_count: user.followers_count,
+    }));
+
+    const searchUsers = mapSearchUsersList.length
+      ? mapSearchUsersList.map(expert => (
+          <DiscoverUser user={expert} key={expert.name} isReblogged />
+        ))
+      : noUserError;
 
     return (
       <div>
-        <ReduxInfiniteScroll
-          hasMore={!searchString && hasMoreExperts}
-          loadMore={this.handleLoadMore}
-          elementIsScrollable={false}
-          loadingMore={topExpertsLoading}
-          loader={<Loading />}
-        >
-          {renderedList &&
-            renderedList.map(expert => (
+        {searchString ? (
+          searchUsers
+        ) : (
+          <ReduxInfiniteScroll
+            hasMore={hasMoreExperts}
+            loadMore={this.handleLoadMore}
+            elementIsScrollable={false}
+            loadingMore={topExpertsLoading}
+            loader={<Loading />}
+          >
+            {topExperts.map(expert => (
               <DiscoverUser user={expert} key={expert.name} isReblogged />
             ))}
-        </ReduxInfiniteScroll>
+          </ReduxInfiniteScroll>
+        )}
       </div>
     );
   }
