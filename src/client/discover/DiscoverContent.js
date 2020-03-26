@@ -94,7 +94,7 @@ class DiscoverContent extends React.Component {
       followers_count: user.followers_count,
     }));
 
-    const searchUsres = mapSearchUsersList.length
+    const searchUsers = mapSearchUsersList.length
       ? mapSearchUsersList.map(expert => (
           <DiscoverUser user={expert} key={expert.name} isReblogged />
         ))
@@ -103,7 +103,7 @@ class DiscoverContent extends React.Component {
     return (
       <div>
         {searchString ? (
-          searchUsres
+          searchUsers
         ) : (
           <ReduxInfiniteScroll
             hasMore={hasMoreExperts}
