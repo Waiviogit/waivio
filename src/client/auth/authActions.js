@@ -74,7 +74,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           bxySessionData,
         );
         if (typeof localStorage !== 'undefined') {
-          dispatch(initBrokerConnection({ platform: 'beaxy' }));
+          dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true }));
         }
 
         resolve({
