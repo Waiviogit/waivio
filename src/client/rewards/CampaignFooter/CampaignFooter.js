@@ -179,11 +179,11 @@ class CampaignFooter extends React.Component {
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
     discardPr(proposedWobj)
-      .then(() => delay(1500))
       .then(() => {
         this.toggleModal();
-        this.props.history.push(`/rewards/active`);
-      });
+      })
+      .then(() => delay(1500))
+      .then(() => this.props.history.push(`/rewards/active`));
   };
 
   handlePostPopoverMenuClick(key) {

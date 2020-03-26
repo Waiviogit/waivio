@@ -97,8 +97,8 @@ const Proposition = ({
         }),
       )
       .then(() => setReservation(true))
-      .then(() => delay(1500))
       .then(() => setModalDetailsOpen(!isModalDetailsOpen))
+      .then(() => delay(1500))
       .then(() => history.push(`/rewards/reserved`));
   };
 
