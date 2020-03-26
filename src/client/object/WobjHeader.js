@@ -4,13 +4,13 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
+import OBJECT_TYPES from '../object/const/objectTypes';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -45,6 +45,15 @@ const WobjHeader = ({
     </div>
   );
 
+  const getLink = () => {
+    const link = `/object/${wobject.author_permlink}`;
+    if (isEditMode) return null;
+    if (isMobile) return `${link}/about`;
+    if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
+      return `${link}/${wobject.object_type}`;
+    return `${link}/reviews`;
+  };
+
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
       <div className="ObjectHeader__container">
@@ -70,7 +79,7 @@ const WobjHeader = ({
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
+                  <Link to={getLink()}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
