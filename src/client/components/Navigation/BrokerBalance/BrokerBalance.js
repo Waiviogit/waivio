@@ -18,17 +18,17 @@ import './BrokerBalance.less';
 const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
-  const storageFirstItem = store.get('firstCurrency');
+  const storageFirstCurrency = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
   const getCurrencyByName = name => find(beaxyBalance, { currency: name });
 
   useEffect(() => {
     if (beaxyBalance && !!beaxyBalance.length) {
-      if (!storageFirstItem) {
+      if (!storageFirstCurrency) {
         setInitFirstCurrency(beaxyBalance[0]);
         store.set('firstCurrency', initFirstCurrency.currency);
       } else {
-        setInitFirstCurrency(getCurrencyByName(storageFirstItem));
+        setInitFirstCurrency(getCurrencyByName(storageFirstCurrency));
       }
       if (!storageSecondCurrency) {
         setInitSecondCurrency(beaxyBalance[1] ? beaxyBalance[1] : {});
