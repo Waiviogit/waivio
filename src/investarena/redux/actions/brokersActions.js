@@ -79,7 +79,7 @@ export function initBrokerConnection(data) {
     singleton.closeWebSocketConnection();
     singleton.platform = data.platform;
     singleton.createWebSocketConnection();
-    dispatch(toggleModal('broker'));
+    if (!data.isBeaxyAuth) dispatch(toggleModal('broker'));
   };
 }
 export function authorizeBroker(data) {

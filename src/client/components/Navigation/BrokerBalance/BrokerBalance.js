@@ -26,13 +26,13 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) 
     if (beaxyBalance && !!beaxyBalance.length) {
       if (!storageFirstCurrency) {
         setInitFirstCurrency(beaxyBalance[0]);
-        store.set('firstCurrency', initFirstCurrency.currency);
+        store.set('firstCurrency', beaxyBalance[0].currency);
       } else {
         setInitFirstCurrency(getCurrencyByName(storageFirstCurrency));
       }
-      if (!storageSecondCurrency) {
-        setInitSecondCurrency(beaxyBalance[1] ? beaxyBalance[1] : {});
-        store.set('secondCurrency', initSecondCurrency.currency);
+      if (!storageSecondCurrency && beaxyBalance[1]) {
+        setInitSecondCurrency(beaxyBalance[1]);
+        store.set('secondCurrency', beaxyBalance[1].currency);
       } else {
         setInitSecondCurrency(getCurrencyByName(storageSecondCurrency));
       }
