@@ -184,10 +184,10 @@ export const TRX = {
   symbol: 'TRX',
 };
 
-export const STEEM = {
-  id: 'steem',
-  name: 'Steem',
-  symbol: 'STEEM',
+export const HIVE = {
+  id: 'hive',
+  name: 'Hive',
+  symbol: 'HIVE',
 };
 
 export const VERI = {
@@ -598,10 +598,10 @@ export const FTC = {
   symbol: 'FTC',
 };
 
-export const SBD = {
-  id: 'steem-dollars',
-  name: 'Steem Dollars',
-  symbol: 'SBD',
+export const HBD = {
+  id: 'hive-dollars',
+  name: 'Hive Dollars',
+  symbol: 'HBD',
 };
 
 export const CRYPTO_MAP = {
@@ -636,8 +636,8 @@ export const CRYPTO_MAP = {
   [BTS.symbol]: BTS,
   [BCN.symbol]: BCN,
   [TRX.symbol]: TRX,
-  [STEEM.symbol]: STEEM,
-  [SBD.symbol]: SBD,
+  [HIVE.symbol]: HIVE,
+  [HBD.symbol]: HBD,
   [VERI.symbol]: VERI,
   [ARK.symbol]: ARK,
   [SALT.symbol]: SALT,

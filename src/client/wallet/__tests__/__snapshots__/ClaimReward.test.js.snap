@@ -4,9 +4,9 @@ exports[`(Component) ClaimReward with default prop values renders and matches sn
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <ClaimReward
-    rewardSbd="0 SBD"
-    rewardSteem="0 STEEM"
-    rewardVests="0 SP"
+    rewardSbd="0 HBD"
+    rewardSteem="0 HIVE"
+    rewardVests="0 HP"
     timestamp="0"
     totalVestingFundSteem="0"
     totalVestingShares="0"

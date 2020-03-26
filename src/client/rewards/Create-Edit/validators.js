@@ -4,7 +4,7 @@ export const validatorMessagesCreator = messageFactory => ({
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
   budgetToUSBDbalance: messageFactory(
     'budget_overprices_wallet_balance',
-    'Budget should not exceed your SBD wallet balance',
+    'Budget should not exceed your HBD wallet balance',
   ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
   rewardToBudget: messageFactory(
@@ -26,7 +26,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   steemReputation: messageFactory(
     'steem_reputation_from_100_to_100',
-    'The Steem reputation must be from -100 to 100',
+    'The Hive reputation must be from -100 to 100',
   ),
   followersQuality: messageFactory(
     'not_less_zero_followers',

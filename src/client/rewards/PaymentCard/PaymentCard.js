@@ -34,7 +34,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path }) => {
       <div className="PaymentCard__end-wrap">
         <div className="PaymentCard__end-wrap-payable">
           {' '}
-          {`${payable && payable.toFixed(2)} SBD`}
+          {`${payable && payable.toFixed(2)} HBD`}
         </div>
         <div className="PaymentCard__end-wrap-icon">
           <Icon type="right" onClick={handleSetUser} />

@@ -43,7 +43,7 @@ export default (messageFactory, validators) => ({
   },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, SBD)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, HBD)'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_SBD', 'Reward (per review, SBD)'),
+    label: messageFactory('reward_per_review_SBD', 'Reward (per review, HBD)'),
     rules: [
       {
         required: true,
@@ -156,7 +156,7 @@ export default (messageFactory, validators) => ({
   },
   minSteemReputation: {
     name: 'minSteemReputation',
-    label: messageFactory('min_steem_reputation', 'Minimum Steem reputation (optional)'),
+    label: messageFactory('min_steem_reputation', 'Minimum Hive reputation (optional)'),
     rules: [
       {
         validator: validators.checkSteemReputation,
@@ -164,7 +164,7 @@ export default (messageFactory, validators) => ({
     ],
     caption: messageFactory(
       'users_steem_start_reputation',
-      'New users on Steem start with reputation of 25',
+      'New users on Hive start with reputation of 25',
     ),
   },
   minExpertise: {

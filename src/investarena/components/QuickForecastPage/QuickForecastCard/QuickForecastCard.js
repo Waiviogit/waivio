@@ -125,7 +125,7 @@ const QuickForecastCard = ({
       })
       .catch(() =>
         message.error(
-          'Not enough RC: you need to replenish the SP or wait until the RC (recovers 20% per day)',
+          'Not enough RC: you need to replenish the HP or wait until the RC (recovers 20% per day)',
         ),
       );
   };

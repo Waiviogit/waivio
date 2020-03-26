@@ -69,11 +69,11 @@ const ModalSignIn = ({ next }) => {
         <React.Fragment>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
             <img
-              src="/images/icons/steemit.svg"
-              alt="steemit"
+              src="/images/icons/logo-hive.svg"
+              alt="hive"
               className="ModalSignUp__icon-steemit"
             />
-            <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+            <FormattedMessage id="signin_with_steemIt" defaultMessage="HiveSigner" />
           </a>
           <SocialButtons responseSocial={responseSocial} />
         </React.Fragment>

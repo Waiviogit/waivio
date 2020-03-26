@@ -16,7 +16,7 @@ const WeightTag = ({ intl, weight }) => {
   if (isFullParams) {
     const value =
       (weight / rewardFund.recent_claims) *
-      rewardFund.reward_balance.replace(' STEEM', '') *
+      rewardFund.reward_balance.replace(' HIVE', '') *
       rate *
       1000000;
     return (
