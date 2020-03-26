@@ -1,16 +1,16 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
+import OBJECT_TYPES from '../object/const/objectTypes';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -35,7 +35,6 @@ const WobjHeader = ({
   const parentName = wobject.parent
     ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
-  const objectTypes = useRef(['list', 'page']).current;
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -50,7 +49,7 @@ const WobjHeader = ({
     const link = `/object/${wobject.author_permlink}`;
     if (isEditMode) return null;
     if (isMobile) return `${link}/about`;
-    if (wobject && objectTypes.includes(wobject.object_type))
+    if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
       return `${link}/${wobject.object_type}`;
     return `${link}/reviews`;
   };
