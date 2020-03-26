@@ -205,6 +205,9 @@ export const assignProposition = ({
   objPermlink,
   appName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
+  dispatch({
+    type: SET_PENDING_RESERVATION.ACTION,
+  });
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -224,11 +227,13 @@ export const assignProposition = ({
       }),
     },
   ];
-
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      // .then(() => dispatch({
+      //   type: SET_PENDING_RESERVATION.ACTION,
+      // }))
       .catch(error => reject(error));
   });
 };

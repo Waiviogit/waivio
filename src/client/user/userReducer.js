@@ -338,6 +338,7 @@ export default function userReducer(state = initialState, action) {
       return initialState;
 
     case userActions.SET_PENDING_RESERVATION.SUCCESS:
+      console.log('success');
       return {
         ...state,
         pendingReservation: true,

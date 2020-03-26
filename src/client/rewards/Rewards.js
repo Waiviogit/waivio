@@ -25,7 +25,6 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-  pendingReservation,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -56,7 +55,7 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     getCoordinates,
     activateCampaign,
     getObjectTypeMap,
-    pendingReservation,
+    // pendingReservation,
   },
 )
 class Rewards extends React.Component {
