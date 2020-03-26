@@ -12,7 +12,6 @@ import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
-import { delay } from '../rewardsHelpers';
 import './CampaignFooter.less';
 
 @injectIntl
@@ -177,7 +176,6 @@ class CampaignFooter extends React.Component {
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
     discardPr(proposedWobj)
-      .then(() => delay(5000))
       .then(() => {
         this.toggleModal();
       })

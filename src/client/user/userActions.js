@@ -196,7 +196,7 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
-export const SET_PENDING_RESERVATION = createAsyncActionType('@user/SET_PANDING_RESERVATION');
+export const SET_PENDING_UPDATE = createAsyncActionType('@user/SET_PANDING_UPDATE');
 
 export const assignProposition = ({
   companyAuthor,
@@ -205,9 +205,6 @@ export const assignProposition = ({
   objPermlink,
   appName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  dispatch({
-    type: SET_PENDING_RESERVATION.ACTION,
-  });
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -231,18 +228,19 @@ export const assignProposition = ({
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      // .then(() => dispatch({
-      //   type: SET_PENDING_RESERVATION.ACTION,
-      // }))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
 
-export const pendingReservation = () => dispatch => {
+export const pendingUpdateSuccess = () => dispatch =>
   dispatch({
-    type: SET_PENDING_RESERVATION.ACTION,
+    type: SET_PENDING_UPDATE.SUCCESS,
   });
-};
 
 export const declineProposition = ({
   companyAuthor,
@@ -273,6 +271,11 @@ export const declineProposition = ({
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };

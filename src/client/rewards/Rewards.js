@@ -15,6 +15,7 @@ import {
   getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
+  getPendingUpdate,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -25,6 +26,7 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
+  pendingUpdateSuccess,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -36,7 +38,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
-// import { delay } from './rewardsHelpers';
+import { delay } from './rewardsHelpers';
 
 @withRouter
 @injectIntl
@@ -48,6 +50,7 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
     wobjects: getFilteredObjectsMap(state),
+    pendingUpdate: getPendingUpdate(state),
   }),
   {
     assignProposition,
@@ -55,7 +58,7 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     getCoordinates,
     activateCampaign,
     getObjectTypeMap,
-    // pendingReservation,
+    pendingUpdateSuccess,
   },
 )
 class Rewards extends React.Component {
@@ -73,6 +76,8 @@ class Rewards extends React.Component {
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
+    pendingUpdate: PropTypes.bool.isRequired,
+    // pendingUpdateSuccess: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -138,7 +143,7 @@ class Rewards extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { username, match } = this.props;
+    const { username, match, pendingUpdate } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
     if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
@@ -146,6 +151,12 @@ class Rewards extends React.Component {
     if (prevProps.username !== username && !username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       this.props.history.push(`/rewards/all`);
+    }
+    if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
+      pendingUpdateSuccess();
+      delay(10000).then(() => {
+        this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      });
     }
   }
 
@@ -247,41 +258,35 @@ class Rewards extends React.Component {
     objPermlink,
     companyId,
   }) => {
-    // const pendingReserv = useSelector(getPendingReservation);
-    // console.log(pendingReserv);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
-    return (
-      this.props
-        .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
-        // .then(() => delay(10000))
-        // .then(() => this.props.pendingReservation())
-        .then(() => {
-          // message.success(
-          //   this.props.intl.formatMessage({
-          //     id: 'assigned_successfully',
-          //     defaultMessage: 'Assigned successfully',
-          //   }),
-          // );
-          // eslint-disable-next-line no-unreachable
-          const updatedPropositions = this.updateProposition(
-            companyId,
-            true,
-            objPermlink,
-            companyAuthor,
-          );
-          this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-        })
-        .catch(() => {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'cannot_reserve_company',
-              defaultMessage: 'You cannot reserve the campaign at the moment',
-            }),
-          );
-          this.setState({ loadingAssignDiscard: false });
-        })
-    );
+    return this.props
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        // eslint-disable-next-line no-unreachable
+        const updatedPropositions = this.updateProposition(
+          companyId,
+          true,
+          objPermlink,
+          companyAuthor,
+        );
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+      })
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
+        this.setState({ loadingAssignDiscard: false });
+      });
   };
 
   // eslint-disable-next-line consistent-return
@@ -324,12 +329,6 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
-        // message.success(
-        //   this.props.intl.formatMessage({
-        //     id: 'discarded_successfully',
-        //     defaultMessage: 'Reservation released',
-        //   }),
-        // );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })

@@ -97,16 +97,7 @@ const Proposition = ({
         }),
       )
       .then(() => setReservation(true))
-      // .then(() => delay(5000))
       .then(() => setModalDetailsOpen(!isModalDetailsOpen))
-      .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
-      })
       .then(() => history.push(`/rewards/reserved`));
   };
 
