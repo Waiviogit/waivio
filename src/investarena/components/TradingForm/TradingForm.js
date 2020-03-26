@@ -12,11 +12,12 @@ const TradingForm = ({
   side,
   fees,
   quoteSettings,
+  isWalletsExist,
+  wallet,
   handleChangeInput,
   createMarketOrder,
 }) => {
   const { baseCurrency, termCurrency } = quoteSettings;
-  const amountAvailable = 100;
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
   const totalValue = PlatformHelper.exponentialToDecimal(0.0000515);
 
@@ -31,7 +32,7 @@ const TradingForm = ({
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
           <span className="fw5">
-            {amountAvailable}&nbsp;{termCurrency}
+            {`${wallet.balance} ${wallet.currency}`}
           </span>
         </div>
       </div>
@@ -40,7 +41,7 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className="trading_form_amount__input">
-          <input type="text" value={amount} onChange={handleChangeInput} />
+          <input type="text" value={amount} onChange={handleChangeInput} disabled={!isWalletsExist}/>
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -88,6 +89,16 @@ TradingForm.propTypes = {
   quoteSettings: PropTypes.shape({
     baseCurrency: PropTypes.string.isRequired,
     termCurrency: PropTypes.string.isRequired,
+  }).isRequired,
+  isWalletsExist: PropTypes.bool.isRequired,
+  wallet: PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.number,
+    name: PropTypes.string,
+    balance: PropTypes.number,
+    currency: PropTypes.string,
+    logoName: PropTypes.string,
+    logoUrl: PropTypes.string,
   }).isRequired,
   handleChangeInput: PropTypes.func.isRequired,
   createMarketOrder: PropTypes.func.isRequired,

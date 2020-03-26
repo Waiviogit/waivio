@@ -4,7 +4,11 @@ import React from 'react';
 import { get } from 'lodash';
 import { createMarketOrder } from '../../redux/actions/dealsActions';
 import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
-import { getPlatformNameState } from '../../redux/selectors/platformSelectors';
+import {
+  getPlatformNameState,
+  makeIsWalletsExistState,
+  makeUserWalletState
+} from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import { numberFormat } from '../../platform/numberFormat';
@@ -101,9 +105,13 @@ const withTrade = Component => {
   const mapState = () => {
     const getQuoteState = makeGetQuoteState();
     const getQuoteSettingsState = makeGetQuoteSettingsState();
+    const getUserWalletState = makeUserWalletState();
+    const getIsWalletsExistState = makeIsWalletsExistState();
     return (state, ownProps) => ({
       quote: getQuoteState(state, ownProps),
       quoteSettings: getQuoteSettingsState(state, ownProps),
+      wallet: getUserWalletState(state, ownProps),
+      isWalletsExist: getIsWalletsExistState(state, ownProps),
       platformName: getPlatformNameState(state),
       isSignIn: getIsAuthenticated(state),
       isOpen: getModalIsOpenState(state, 'openDeals'),
