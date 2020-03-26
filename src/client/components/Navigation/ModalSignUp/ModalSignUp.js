@@ -86,7 +86,7 @@ const ModalSignUp = ({ isButton }) => {
       {/* Waiting for Grampo agreement */}
       {/* <h2 className="ModalSignUp__title ModalSignUp__title--lined ModalSignUp__title ModalSignUp__title--lined--lined"> */}
       {/*  <span> */}
-      {/*    <FormattedMessage id="steemAccounts" defaultMessage="STEEM ACCOUNTS" /> */}
+      {/*    <FormattedMessage id="steemAccounts" defaultMessage="HIVE ACCOUNTS" /> */}
       {/*  </span> */}
       {/* </h2> */}
     </React.Fragment>

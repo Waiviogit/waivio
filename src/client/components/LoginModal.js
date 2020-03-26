@@ -160,7 +160,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
         </h2>
         <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
           <img
-            src="/images/icons/steemit.svg"
+            src="/images/icons/lo.svg"
             alt="steemit"
             className="ModalSignUp__icon-steemit"
           />

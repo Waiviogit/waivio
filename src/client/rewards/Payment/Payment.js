@@ -41,7 +41,7 @@ const Payment = ({ match, intl, userName }) => {
       <div className="Payment__title">
         <div className="Payment__title-payment">
           {titleName}
-          {` > @${userName} (${payable} SBD)`}
+          {` > @${userName} (${payable} HBD)`}
         </div>
         <div className="Payment__title-pay">
           <Link to={'/rewards/pay-now'}>

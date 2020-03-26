@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { openPowerUpOrDown, openTransfer } from '../../wallet/walletActions';
 import { getAuthenticatedUser, getCryptosPriceHistory, isGuestUser } from '../../reducers';
-import { SBD, STEEM } from '../../../common/constants/cryptos';
+import { HBD, HIVE } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
@@ -61,7 +61,7 @@ class WalletSidebar extends React.Component {
   render() {
     const { match, user, isCurrentUser, cryptosPriceHistory, isGuest } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
-    const cryptos = [STEEM.symbol, SBD.symbol];
+    const cryptos = [HIVE.symbol, HBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
     return (
       <div className="WalletSidebar">

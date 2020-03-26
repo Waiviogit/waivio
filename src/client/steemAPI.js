@@ -4,7 +4,7 @@ const options = {
   timeout: 15000,
 };
 
-const steemUrl = process.env.STEEMJS_URL || 'https://api.steemit.com';
+const steemUrl = process.env.STEEMJS_URL || 'https://anyx.io';
 
 const client = createClient(steemUrl, options);
 client.sendAsync = (message, params) =>

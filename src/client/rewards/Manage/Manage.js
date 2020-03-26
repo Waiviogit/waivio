@@ -123,7 +123,7 @@ class Manage extends React.Component {
           <div className="Manage__account-balance-wrap-title">
             {intl.formatMessage({
               id: 'rewardAccountBalance',
-              defaultMessage: `Account balance (SBD)`,
+              defaultMessage: `Account balance (HBD)`,
             })}
           </div>
           <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />

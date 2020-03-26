@@ -16,7 +16,7 @@ ShallowWrapper {
           "op": Array [
             "transfer_to_vesting",
             Object {
-              "amount": "100 STEEM",
+              "amount": "100 HIVE",
             },
           ],
           "timestamp": "0",
@@ -25,7 +25,7 @@ ShallowWrapper {
           "op": Array [
             "transfer",
             Object {
-              "amount": "100 STEEM",
+              "amount": "100 HIVE",
               "from": "hellosteem1",
               "memo": "transfer memo",
             },
@@ -82,7 +82,7 @@ ShallowWrapper {
               "op": Array [
                 "transfer_to_vesting",
                 Object {
-                  "amount": "100 STEEM",
+                  "amount": "100 HIVE",
                 },
               ],
               "timestamp": "0",
@@ -98,7 +98,7 @@ ShallowWrapper {
               "op": Array [
                 "transfer",
                 Object {
-                  "amount": "100 STEEM",
+                  "amount": "100 HIVE",
                   "from": "hellosteem1",
                   "memo": "transfer memo",
                 },
@@ -128,7 +128,7 @@ ShallowWrapper {
                   "op": Array [
                     "transfer_to_vesting",
                     Object {
-                      "amount": "100 STEEM",
+                      "amount": "100 HIVE",
                     },
                   ],
                   "timestamp": "0",
@@ -144,7 +144,7 @@ ShallowWrapper {
                   "op": Array [
                     "transfer",
                     Object {
-                      "amount": "100 STEEM",
+                      "amount": "100 HIVE",
                       "from": "hellosteem1",
                       "memo": "transfer memo",
                     },
@@ -197,7 +197,7 @@ ShallowWrapper {
               "op": Array [
                 "transfer_to_vesting",
                 Object {
-                  "amount": "100 STEEM",
+                  "amount": "100 HIVE",
                 },
               ],
               "timestamp": "0",
@@ -219,7 +219,7 @@ ShallowWrapper {
               "op": Array [
                 "transfer",
                 Object {
-                  "amount": "100 STEEM",
+                  "amount": "100 HIVE",
                   "from": "hellosteem1",
                   "memo": "transfer memo",
                 },
@@ -274,7 +274,7 @@ ShallowWrapper {
                 "op": Array [
                   "transfer_to_vesting",
                   Object {
-                    "amount": "100 STEEM",
+                    "amount": "100 HIVE",
                   },
                 ],
                 "timestamp": "0",
@@ -290,7 +290,7 @@ ShallowWrapper {
                 "op": Array [
                   "transfer",
                   Object {
-                    "amount": "100 STEEM",
+                    "amount": "100 HIVE",
                     "from": "hellosteem1",
                     "memo": "transfer memo",
                   },
@@ -320,7 +320,7 @@ ShallowWrapper {
                     "op": Array [
                       "transfer_to_vesting",
                       Object {
-                        "amount": "100 STEEM",
+                        "amount": "100 HIVE",
                       },
                     ],
                     "timestamp": "0",
@@ -336,7 +336,7 @@ ShallowWrapper {
                     "op": Array [
                       "transfer",
                       Object {
-                        "amount": "100 STEEM",
+                        "amount": "100 HIVE",
                         "from": "hellosteem1",
                         "memo": "transfer memo",
                       },
@@ -389,7 +389,7 @@ ShallowWrapper {
                 "op": Array [
                   "transfer_to_vesting",
                   Object {
-                    "amount": "100 STEEM",
+                    "amount": "100 HIVE",
                   },
                 ],
                 "timestamp": "0",
@@ -411,7 +411,7 @@ ShallowWrapper {
                 "op": Array [
                   "transfer",
                   Object {
-                    "amount": "100 STEEM",
+                    "amount": "100 HIVE",
                     "from": "hellosteem1",
                     "memo": "transfer memo",
                   },

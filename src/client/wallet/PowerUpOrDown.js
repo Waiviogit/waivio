@@ -90,7 +90,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${parseFloat(values.amount).toFixed(3)} STEEM`,
+              amount: `${parseFloat(values.amount).toFixed(3)} HIVE`,
               to: user.name,
             };
 
@@ -198,7 +198,7 @@ export default class PowerUpOrDown extends React.Component {
                       defaultMessage="{amount} {currency}"
                       values={{
                         amount: Math.floor(this.getAvailableBalance() * 1000) / 1000,
-                        currency: down ? 'SP' : 'STEEM',
+                        currency: down ? 'HP' : 'HIVE',
                       }}
                     />
                   </span>
@@ -209,7 +209,7 @@ export default class PowerUpOrDown extends React.Component {
         </Form>
         <FormattedMessage
           id="transfer_modal_info"
-          defaultMessage="Click the button below to be redirected to SteemConnect to complete your transaction."
+          defaultMessage="Click the button below to be redirected to Hivesigner to complete your transaction."
         />
       </Modal>
     );

@@ -7,12 +7,12 @@ const SteemSignUpCard = () => (
       <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
         <img
           alt="linkLogo"
-          src="https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png"
+          src="/images/icons/logo-hive-big.svg"
         />
       </a>
     </div>
     <div className="ModalSignUp__link mb3">
-      <FormattedMessage id="freeSteemAcc" defaultMessage="- get a free Steem account" />
+      <FormattedMessage id="freeSteemAcc" defaultMessage="- get a free Hive account" />
       <FormattedMessage id="emailAndPhoneReq" defaultMessage="- email & phone required" />
       <FormattedMessage id="longerWaiting" defaultMessage="- wait up to 2 weeks" />
     </div>
