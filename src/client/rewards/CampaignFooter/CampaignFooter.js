@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
@@ -172,17 +172,23 @@ class CampaignFooter extends React.Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  };
+  toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
     discardPr(proposedWobj)
+      .then(() => delay(5000))
       .then(() => {
         this.toggleModal();
       })
-      .then(() => delay(1500))
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Reservation released',
+          }),
+        );
+      })
       .then(() => this.props.history.push(`/rewards/active`));
   };
 

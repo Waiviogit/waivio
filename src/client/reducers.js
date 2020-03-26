@@ -125,6 +125,7 @@ export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdat
 export const getFollowingObjectsUpdatesByType = (state, objType) =>
   fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
 export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
+export const getPendingReservation = state => fromUser.getPendingReservation(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>

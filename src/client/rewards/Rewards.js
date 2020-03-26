@@ -25,6 +25,7 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
+  pendingReservation,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -36,6 +37,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import { delay } from './rewardsHelpers';
 
 @withRouter
 @injectIntl
@@ -48,7 +50,14 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     user: getAuthenticatedUser(state),
     wobjects: getFilteredObjectsMap(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
+  {
+    assignProposition,
+    declineProposition,
+    getCoordinates,
+    activateCampaign,
+    getObjectTypeMap,
+    pendingReservation,
+  },
 )
 class Rewards extends React.Component {
   static propTypes = {
@@ -239,17 +248,21 @@ class Rewards extends React.Component {
     objPermlink,
     companyId,
   }) => {
+    // const pendingReserv = useSelector(getPendingReservation);
+    // console.log(pendingReserv);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     return this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .then(() => delay(10000))
+      .pendingReservation()
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
+        // message.success(
+        //   this.props.intl.formatMessage({
+        //     id: 'assigned_successfully',
+        //     defaultMessage: 'Assigned successfully',
+        //   }),
+        // );
         // eslint-disable-next-line no-unreachable
         const updatedPropositions = this.updateProposition(
           companyId,
@@ -310,12 +323,12 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Reservation released',
-          }),
-        );
+        // message.success(
+        //   this.props.intl.formatMessage({
+        //     id: 'discarded_successfully',
+        //     defaultMessage: 'Reservation released',
+        //   }),
+        // );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })

@@ -196,6 +196,8 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
+export const SET_PENDING_RESERVATION = createAsyncActionType('@user/SET_PANDING_RESERVATION');
+
 export const assignProposition = ({
   companyAuthor,
   companyPermlink,
@@ -228,6 +230,12 @@ export const assignProposition = ({
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
+  });
+};
+
+export const pendingReservation = () => dispatch => {
+  dispatch({
+    type: SET_PENDING_RESERVATION.ACTION,
   });
 };
 
