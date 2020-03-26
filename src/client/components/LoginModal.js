@@ -160,11 +160,11 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
         </h2>
         <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
           <img
-            src="/images/icons/lo.svg"
-            alt="steemit"
+            src="/images/icons/logo-hive.svg"
+            alt="hive"
             className="ModalSignUp__icon-steemit"
           />
-          <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+          <FormattedMessage id="signin_with_steemIt" defaultMessage="HiveSigner" />
         </a>
         <div className="ModalSignUp__social">
           <GoogleLogin
