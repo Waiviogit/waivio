@@ -27,6 +27,17 @@ const propTypes = {
   quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isSignIn: PropTypes.bool.isRequired,
+  totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  isWalletsExist: PropTypes.bool.isRequired,
+  wallet: PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.number,
+    name: PropTypes.string,
+    balance: PropTypes.number,
+    currency: PropTypes.string,
+    logoName: PropTypes.string,
+    logoUrl: PropTypes.string,
+  }).isRequired,
   createOpenDeal: PropTypes.func.isRequired,
 };
 
