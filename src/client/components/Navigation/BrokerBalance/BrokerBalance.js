@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash';
+import { sortBy, find } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -11,8 +11,8 @@ import {
 } from '../../../../investarena/redux/selectors/platformSelectors';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
+import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import Loading from '../../Icon/Loading';
-import { logout } from '../../../auth/authActions';
 import './BrokerBalance.less';
 
 const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) => {
@@ -20,29 +20,33 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) 
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
   const storageFirstItem = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
+  const getCurrencyByName = name => find(beaxyBalance, { currency: name });
+
   useEffect(() => {
     if (beaxyBalance && !!beaxyBalance.length) {
       if (!storageFirstItem) {
         setInitFirstCurrency(beaxyBalance[0]);
+        store.set('firstCurrency', initFirstCurrency.currency);
       } else {
-        setInitFirstCurrency(storageFirstItem);
+        setInitFirstCurrency(getCurrencyByName(storageFirstItem));
       }
       if (!storageSecondCurrency) {
         setInitSecondCurrency(beaxyBalance[1] ? beaxyBalance[1] : {});
+        store.set('secondCurrency', initSecondCurrency.currency);
       } else {
-        setInitSecondCurrency(storageSecondCurrency);
+        setInitSecondCurrency(getCurrencyByName(storageSecondCurrency));
       }
     }
     if (platformName === 'beaxy' && !beaxyBalance.length) getStatistics();
   }, [beaxyBalance]);
 
   const setFirstCurrency = item => {
-    store.set('firstCurrency', item);
+    store.set('firstCurrency', item.currency);
     setInitFirstCurrency(item);
   };
 
   const setSecondCurrency = item => {
-    store.set('secondCurrency', item);
+    store.set('secondCurrency', item.currency);
     setInitSecondCurrency(item);
   };
 
@@ -123,7 +127,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getStatistics: () => dispatch(getUserStatistics()),
-  onLogout: () => dispatch(logout()),
+  onLogout: () => dispatch(disconnectBroker()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrokerBalance);
