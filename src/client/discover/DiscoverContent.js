@@ -85,6 +85,7 @@ class DiscoverContent extends React.Component {
       searchString,
       searchUsersList,
     } = this.props;
+    
     const mapSearchUsersList =
       !isEmpty(searchUsersList) &&
       searchUsersList.map(user => ({
