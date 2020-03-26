@@ -230,7 +230,9 @@ export default class Umarkets {
   createMarketOrder(deal, dataDealToApi, callerKey) {
     this.sendRequestToPlatform(
       CMD.createMarketOrder,
-      `["${deal.security}","${deal.side}","${Number(deal.amount)}", ${false}, "IMMEDIATE_OR_CANCEL", "OS: Linux,     App: crypto-investarena,     Caller: chart modal"]`
+      `["${deal.security}","${deal.side}","${Number(
+        deal.amount,
+      )}", ${false}, "IMMEDIATE_OR_CANCEL", "OS: Linux,     App: crypto-investarena,     Caller: chart modal"]`,
     );
   }
 

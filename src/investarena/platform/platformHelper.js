@@ -15,27 +15,37 @@ export class PlatformHelper {
         buyerMakerCommissionProgressive,
         sellerMakerCommissionProgressive,
       } = quoteSettings;
-      if (direction === 'buy' && !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))) {
-        const makerFeeValue = amountValue * buyerMakerCommissionProgressive / 100;
-        const takerFeeValue = amountValue * buyerTakerCommissionProgressive / 100;
+      if (
+        direction === 'buy' &&
+        !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))
+      ) {
+        const makerFeeValue = (amountValue * buyerMakerCommissionProgressive) / 100;
+        const takerFeeValue = (amountValue * buyerTakerCommissionProgressive) / 100;
         return {
           makerFee: round(makerFeeValue, 8),
           takerFee: round(takerFeeValue, 8),
-        }
+        };
       }
-      if (direction === 'sell' && !isNil(sellerTakerCommissionProgressive) && !isNil(sellerMakerCommissionProgressive) && quote.bidPrice) {
-        const makerFeeValue = amountValue * sellerMakerCommissionProgressive * quote.bidPrice / 100;
-        const takerFeeValue = amountValue * sellerTakerCommissionProgressive * quote.bidPrice / 100;
+      if (
+        direction === 'sell' &&
+        !isNil(sellerTakerCommissionProgressive) &&
+        !isNil(sellerMakerCommissionProgressive) &&
+        quote.bidPrice
+      ) {
+        const makerFeeValue =
+          (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
+        const takerFeeValue =
+          (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
         return {
           makerFee: round(makerFeeValue, 8),
           takerFee: round(takerFeeValue, 8),
-        }
+        };
       }
     }
     return {
       makerFee: '',
       takerFee: '',
-    }
+    };
   }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;

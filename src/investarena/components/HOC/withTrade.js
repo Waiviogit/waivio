@@ -40,18 +40,23 @@ const withTrade = Component => {
       const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
       this.state = {
         amount,
-        fees: PlatformHelper.calculateFees(amountValue, props.side, props.quoteSettings, props.quote),
+        fees: PlatformHelper.calculateFees(
+          amountValue,
+          props.side,
+          props.quoteSettings,
+          props.quote,
+        ),
       };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { quote, quoteSettings, side } = nextProps;
+      const { quote, quoteSettings, side } = nextProps;
       if (quote && quoteSettings) {
         if (prevState.amount === '') {
           const amountValue = quoteSettings.defaultQuantity;
           const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
           const fees = PlatformHelper.calculateFees(amountValue, side, quoteSettings);
-          return{ amount, fees };
+          return { amount, fees };
         }
       }
       return null;
@@ -112,14 +117,14 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createMarketOrder: (side, amount, caller = 'od-op') => {
-        if  (
+      createMarketOrder: (side, amount, caller) => {
+        if (
           platformName !== 'widgets' &&
           !isOpen &&
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -138,7 +143,7 @@ const withTrade = Component => {
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -164,15 +169,7 @@ const withTrade = Component => {
           (side === 'sell' || side === 'buy')
         ) {
           dispatch(
-            createMarketOrder(
-              quote,
-              quoteSettings,
-              side,
-              amount,
-              postId,
-              platformName,
-              caller,
-            ),
+            createMarketOrder(quote, quoteSettings, side, amount, postId, platformName, caller),
           );
         }
       },
