@@ -5,10 +5,18 @@ import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
+const getAmountValue = amount => {
+  if (typeof amount === 'string') {
+    return Number(amount.replace(/,/g, ''));
+  } else if (typeof amount === 'number') {
+    return amount;
+  }
+  return null;
+};
 export class PlatformHelper {
-  static calculateFees(amount, direction, quoteSettings, quote) {
+  static calculateFees(amount, side, quoteSettings, quote) {
     if (amount && !isEmpty(quoteSettings) && !isEmpty(quote)) {
-      const amountValue = typeof amount === 'string' ? Number(amount.replace(/,/g, '')) : amount;
+      const amountValue = getAmountValue(amount);
       const {
         buyerTakerCommissionProgressive,
         sellerTakerCommissionProgressive,
@@ -16,7 +24,7 @@ export class PlatformHelper {
         sellerMakerCommissionProgressive,
       } = quoteSettings;
       if (
-        direction === 'buy' &&
+        side === 'buy' &&
         !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))
       ) {
         const makerFeeValue = (amountValue * buyerMakerCommissionProgressive) / 100;
@@ -27,7 +35,7 @@ export class PlatformHelper {
         };
       }
       if (
-        direction === 'sell' &&
+        side === 'sell' &&
         !isNil(sellerTakerCommissionProgressive) &&
         !isNil(sellerMakerCommissionProgressive) &&
         quote.bidPrice
@@ -47,6 +55,11 @@ export class PlatformHelper {
       takerFee: '',
     };
   }
+  static calculateTotalPrice(amount, side, quote) {
+    const amountValue = getAmountValue(amount);
+    const price = side === 'buy' && quote.askPrice || side === 'sell' && quote.bidPrice || 0;
+    return round(amountValue * price, 8);
+  };
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -344,8 +357,7 @@ export class PlatformHelper {
     return ranges;
   }
   static validateOnBlur(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
+    const amountInt = getAmountValue(amount);
     if (amountInt < quoteSettings.minimumQuantity / 1000000) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);

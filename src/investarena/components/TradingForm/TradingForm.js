@@ -8,6 +8,7 @@ import './TradingForm.less';
 
 const TradingForm = ({
   amount,
+  totalPrice,
   caller,
   side,
   fees,
@@ -19,7 +20,6 @@ const TradingForm = ({
 }) => {
   const { baseCurrency, termCurrency } = quoteSettings;
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
-  const totalValue = PlatformHelper.exponentialToDecimal(0.0000515);
 
   const handleTradeButtonClick = () => {
     createMarketOrder(side, amount, caller);
@@ -58,7 +58,7 @@ const TradingForm = ({
           <FormattedMessage id="trading_form_total" defaultMessage="Total" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            {totalValue}&nbsp;{termCurrency}
+            {totalPrice}&nbsp;{termCurrency}
           </span>
         </div>
         <div className="flex-info-block">
@@ -86,6 +86,7 @@ TradingForm.propTypes = {
     makerFee: PropTypes.string,
     takerFee: PropTypes.string,
   }).isRequired,
+  totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   quoteSettings: PropTypes.shape({
     baseCurrency: PropTypes.string.isRequired,
     termCurrency: PropTypes.string.isRequired,

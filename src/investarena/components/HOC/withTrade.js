@@ -42,14 +42,17 @@ const withTrade = Component => {
 
       const amountValue = get(props, ['quoteSettings', 'defaultQuantity'], '');
       const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
+      const fees = PlatformHelper.calculateFees(
+        amountValue,
+        props.side,
+        props.quoteSettings,
+        props.quote,
+      );
+      const totalPrice = PlatformHelper.calculateTotalPrice(amountValue, props.side, props.quote);
       this.state = {
         amount,
-        fees: PlatformHelper.calculateFees(
-          amountValue,
-          props.side,
-          props.quoteSettings,
-          props.quote,
-        ),
+        fees,
+        totalPrice,
       };
     }
 
@@ -60,7 +63,12 @@ const withTrade = Component => {
           const amountValue = quoteSettings.defaultQuantity;
           const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
           const fees = PlatformHelper.calculateFees(amountValue, side, quoteSettings);
-          return { amount, fees };
+          const totalPrice = PlatformHelper.calculateTotalPrice(amountValue, side, quote);
+          return { amount, fees, totalPrice };
+        }
+        const nextTotalPrice = PlatformHelper.calculateTotalPrice(prevState.amount, side, quote);
+        if (nextTotalPrice !== prevState.totalPrice) {
+          return { totalPrice: nextTotalPrice };
         }
       }
       return null;
@@ -78,8 +86,9 @@ const withTrade = Component => {
       const position = e.target.selectionStart;
       const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
       const fees = PlatformHelper.calculateFees(e.target.value, side, quoteSettings, quote);
+      const totalPrice = PlatformHelper.calculateTotalPrice(e.target.value, side, quote);
       e.persist();
-      this.setState({ amount, fees }, () => {
+      this.setState({ amount, fees, totalPrice }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
       });
     };
