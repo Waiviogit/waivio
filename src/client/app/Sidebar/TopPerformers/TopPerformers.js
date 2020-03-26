@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import cn from 'classnames';
-import { size, omitBy, isNil } from 'lodash';
+import { size, isNil } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import TopInstrumentsLoading from '../TopInstrumentsLoading';
 import { getPerformersStatsMore } from '../../../../investarena/redux/actions/topPerformersActions';
