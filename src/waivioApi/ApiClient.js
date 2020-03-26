@@ -292,6 +292,7 @@ export const getUserAccount = (username, with_followings = false) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`, {
       headers: {
+        ...headers,
         following: username,
         follower: username,
       },
@@ -850,6 +851,7 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
     {
       headers: {
+        ...headers,
         following: username,
         follower: username,
       },
@@ -865,6 +867,7 @@ export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
     {
       headers: {
+        ...headers,
         following: username,
         follower: username,
       },
