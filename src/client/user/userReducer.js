@@ -69,15 +69,15 @@ export default function userReducer(state = initialState, action) {
 
     // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
-      const followingObject = {};
+      const following = {};
       action.payload.forEach(user => {
-        followingObject[user.name] = true;
+        following[user.name] = true;
       });
       return {
         ...state,
         following: {
           ...state.following,
-          list: followingObject,
+          list: following,
           isFetching: false,
           fetched: true,
         },
