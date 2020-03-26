@@ -487,19 +487,10 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {}) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
-  const headersObj = user
-    ? {
-        ...headers,
-        following: user,
-        follower: user,
-      }
-    : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.users}${queryString}`, {
-      headers: {
-        ...headersObj,
-      },
+      headers,
       method: 'GET',
     })
       .then(res => res.json())

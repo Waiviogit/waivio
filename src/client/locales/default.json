@@ -1060,5 +1060,6 @@
   "cookies_policy": "the Cookies Policy",
   "mutual_follow": "mutual following",
   "following_user": "following",
-  "receivables": "Receivables"
+  "receivables": "Receivables",
+  "no_user_message": "We have not users with this name, please try again."
 }
