@@ -30,9 +30,14 @@
     justify-content: flex-end;
   }
 
-  .trading_form_amount {
+  .st-trading-form-amount {
     &__input {
       border-bottom: 1px solid @color-light-gray;
+
+      &.danger, &.danger:focus-within {
+        border-color: @red-danger;
+        color: @red-danger;
+      }
 
       &:focus-within {
         border-bottom-color: @color-black;

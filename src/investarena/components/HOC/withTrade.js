@@ -12,7 +12,7 @@ import {
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import { numberFormat } from '../../platform/numberFormat';
-import { PlatformHelper } from '../../platform/platformHelper';
+import { getAmountChecker, PlatformHelper } from '../../platform/platformHelper';
 import { toggleModal } from '../../redux/actions/modalsActions';
 import { getIsAuthenticated } from '../../../client/reducers';
 
@@ -64,7 +64,9 @@ const withTrade = Component => {
         amount,
         fees,
         totalPrice,
+        isAmountValid: true,
       };
+      this.checkIsAmountValid = getAmountChecker(props.side);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -93,13 +95,14 @@ const withTrade = Component => {
       this.setState({ amount });
     };
     handleChangeInput = e => {
-      const { quote, quoteSettings, side } = this.props;
+      const { quote, quoteSettings, side, wallet } = this.props;
       const position = e.target.selectionStart;
       const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
       const fees = PlatformHelper.calculateFees(e.target.value, side, quoteSettings, quote);
       const totalPrice = PlatformHelper.calculateTotalPrice(e.target.value, side, quote);
+      const isAmountValid = this.checkIsAmountValid(amount, wallet.balance, totalPrice);
       e.persist();
-      this.setState({ amount, fees, totalPrice }, () => {
+      this.setState({ amount, fees, totalPrice, isAmountValid }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
       });
     };

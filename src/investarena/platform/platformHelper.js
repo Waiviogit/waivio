@@ -372,17 +372,21 @@ export class PlatformHelper {
     return numberFormat(resultNumber, decimals);
   }
   static validateOnChange(amount, quoteSettings) {
-    if (amount.toString().match(/[1-9]+?/)) {
-      const amountValue = getAmountValue(amount);
-      if (amountValue > quoteSettings.maximumQuantity ) {
-        const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
-        return numberFormat(quoteSettings.maximumQuantity, decimals);
-      } else if (amountValue === null) {
-        const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
-        return numberFormat(quoteSettings.minimumQuantity, decimals);
-      }
-      const decimals = PlatformHelper.countDecimals(amountValue);
-      return numberFormat(amountValue, decimals);
+    const amountParseString = amount.replace(/,/g, '');
+    const amountInt = +amountParseString;
+    if (
+      amountParseString.length > quoteSettings.maximumQuantity.toString().length ||
+      amountInt > quoteSettings.maximumQuantity
+    ) {
+      const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
+      return numberFormat(quoteSettings.maximumQuantity, decimals);
+    } else if (amountParseString.length === 0) {
+      const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
+      return numberFormat(quoteSettings.minimumQuantity, decimals);
+    }
+    if (amountParseString.match(/[1-9]+?/)) {
+      const decimals = PlatformHelper.countDecimals(amountInt);
+      return numberFormat(amountInt, decimals);
     }
     return amount.replace(/^,/, '');
   }
@@ -533,3 +537,15 @@ export const getHoldingsByAccounts = (
       currenciesDescriptions,
     ),
   );
+
+export const getAmountChecker = side => (amount, walletBalance, totalPrice) => {
+  const amountValue = getAmountValue(amount);
+  switch (side) {
+    case 'buy':
+      return totalPrice <= walletBalance;
+    case 'sell':
+      return amountValue <= walletBalance;
+    default:
+      return false;
+  }
+};

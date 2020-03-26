@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import TradeButton from '../TradeButton';
-import { PlatformHelper } from '../../platform/platformHelper';
 import withTrade from '../HOC/withTrade';
 import './TradingForm.less';
 
 const TradingForm = ({
   amount,
   totalPrice,
+  isAmountValid,
   caller,
   side,
   fees,
@@ -22,7 +24,11 @@ const TradingForm = ({
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
 
   const handleTradeButtonClick = () => {
-    createMarketOrder(side, amount, caller);
+    if (isAmountValid) {
+      createMarketOrder(side, amount, caller);
+    } else {
+      message.error('Available balance is insufficient'); // todo: add locales
+    }
   };
   return (
     <div className={`st-trading-form ${side}`}>
@@ -37,10 +43,10 @@ const TradingForm = ({
         </div>
       </div>
 
-      <div className="flex-info-block justify-content-center">
+      <div className="st-trading-form-amount flex-info-block justify-content-center">
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
-        <div className="trading_form_amount__input">
+        <div className={classNames("st-trading-form-amount__input", { danger: !isAmountValid})}>
           <input type="text" value={amount} onChange={handleChangeInput} disabled={!isWalletsExist}/>
         </div>
         <span>{baseCurrency}</span>
@@ -92,6 +98,7 @@ TradingForm.propTypes = {
     termCurrency: PropTypes.string.isRequired,
   }).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
+  isAmountValid: PropTypes.bool.isRequired,
   wallet: PropTypes.shape({
     id: PropTypes.string,
     value: PropTypes.number,
