@@ -344,7 +344,7 @@ class DiscoverObjectsContent extends Component {
                 return (
                   <Campaign
                     proposition={wObj}
-                    filterKey={'active'}
+                    filterKey={'all'}
                     key={wObj.id}
                     userName={userName}
                   />

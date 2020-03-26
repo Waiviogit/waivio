@@ -146,6 +146,7 @@ class WobjHistory extends React.Component {
     } = this.state;
     const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
     const commentIds = getFeedFromState('comments', object.author, feed);
+
     const content = getFilteredContent(
       Object.values(comments).filter(comment => commentIds.includes(comment.id)),
       ['appendObject'],

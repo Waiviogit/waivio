@@ -77,7 +77,7 @@ export default function userReducer(state = initialState, action) {
         ...state,
         following: {
           ...state.following,
-          list: followingObject,
+          list: action.payload,
           isFetching: false,
           fetched: true,
         },
