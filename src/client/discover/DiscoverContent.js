@@ -64,6 +64,8 @@ class DiscoverContent extends React.Component {
     if (searchString) {
       this.props.searchUsersAutoCompete(searchString, 100);
     }
+
+    this.props.getTopExperts(20, 0);
     if (isEmpty(typesList)) this.props.getObjectTypes();
   }
 
@@ -81,14 +83,6 @@ class DiscoverContent extends React.Component {
       searchString,
       searchUsersList,
     } = this.props;
-    const mapSearchUsersList =
-      !isEmpty(searchUsersList) &&
-      searchUsersList.map(user => ({
-        name: user.account,
-        wobjects_weight: user.wobjects_weight,
-        followers_count: user.followers_count,
-      }));
-    const renderedList = searchString ? mapSearchUsersList : topExperts;
     const noUserError = (
       <div className="Discover__message">
         <FormattedMessage
@@ -97,23 +91,33 @@ class DiscoverContent extends React.Component {
         />
       </div>
     );
+    const mapSearchUsersList = searchUsersList.map(user => ({
+      name: user.account,
+      wobjects_weight: user.wobjects_weight,
+      followers_count: user.followers_count,
+    }));
+
+    const searchUsres = mapSearchUsersList.length
+      ? mapSearchUsersList.map(expert => (
+          <DiscoverUser user={expert} key={expert.name} isReblogged />
+        ))
+      : noUserError;
 
     return (
       <div>
-        {isEmpty(renderedList) ? (
-          noUserError
+        {searchString ? (
+          searchUsres
         ) : (
           <ReduxInfiniteScroll
-            hasMore={!searchString && hasMoreExperts}
+            hasMore={hasMoreExperts}
             loadMore={this.handleLoadMore}
             elementIsScrollable={false}
             loadingMore={topExpertsLoading}
             loader={<Loading />}
           >
-            {renderedList &&
-              renderedList.map(expert => (
-                <DiscoverUser user={expert} key={expert.name} isReblogged />
-              ))}
+            {topExperts.map(expert => (
+              <DiscoverUser user={expert} key={expert.name} isReblogged />
+            ))}
           </ReduxInfiniteScroll>
         )}
       </div>
