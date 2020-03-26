@@ -45,8 +45,10 @@ const TradingForm = ({
         <span>{baseCurrency}</span>
       </div>
 
-      <div>
-        <TradeButton type={side} onClick={handleTradeButtonClick} />
+      <div className="st-trading-form__button-wrap">
+        <TradeButton size="large" type={side} onClick={handleTradeButtonClick}>
+          {`${amount} ${baseCurrency} ${side}`}
+        </TradeButton>
       </div>
 
       <div className="st-trading-form-footer">
