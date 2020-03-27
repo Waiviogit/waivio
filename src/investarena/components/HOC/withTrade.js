@@ -98,9 +98,9 @@ const withTrade = Component => {
       const { quote, quoteSettings, side, wallet } = this.props;
       const position = e.target.selectionStart;
       const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
-      const fees = PlatformHelper.calculateFees(e.target.value, side, quoteSettings, quote);
-      const totalPrice = PlatformHelper.calculateTotalPrice(e.target.value, side, quote);
-      const isAmountValid = this.checkIsAmountValid(amount, wallet.balance, totalPrice);
+      const fees = PlatformHelper.calculateFees(amount, side, quoteSettings, quote);
+      const totalPrice = PlatformHelper.calculateTotalPrice(amount, side, quote);
+      const isAmountValid = this.checkIsAmountValid(amount, wallet.balance, totalPrice, quoteSettings);
       e.persist();
       this.setState({ amount, fees, totalPrice, isAmountValid }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
