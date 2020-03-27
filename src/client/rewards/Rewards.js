@@ -8,6 +8,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -432,8 +433,11 @@ class Rewards extends React.Component {
     const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';
     const currentSteemPrice =
-      cryptosPriceHistory && cryptosPriceHistory.HIVE && cryptosPriceHistory.HIVE.priceDetails
-        ? cryptosPriceHistory.HIVE.priceDetails.currentUSDPrice
+      cryptosPriceHistory &&
+      cryptosPriceHistory[HBD.coinGeckoId] &&
+      cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory &&
+      cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
+        ? cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {
