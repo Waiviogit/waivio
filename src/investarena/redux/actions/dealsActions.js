@@ -12,18 +12,17 @@ export const CREATE_POST_OPEN_DEAL_SUCCESS = 'CREATE_POST_OPEN_DEAL_SUCCESS';
 export const CHANGE_OPEN_DEAL_SUCCESS = 'CHANGE_OPEN_DEAL_SUCCESS';
 export const CLOSE_OPEN_DEAL_SUCCESS = 'CLOSE_OPEN_DEAL_SUCCESS';
 
-export function createOpenDealPlatform(
+export function createMarketOrder(
   quote,
   quoteSettings,
   side,
   amount,
-  margin,
   postId = '',
   platform,
   caller,
 ) {
   return () => {
-    const validAmount = parseFloat(amount.replace(/,/g, '')) * 1000000;
+    const validAmount = parseFloat(amount.replace(/,/g, ''));
     if (
       validAmount > quoteSettings.maximumQuantity ||
       validAmount < quoteSettings.minimumQuantity
@@ -34,17 +33,16 @@ export function createOpenDealPlatform(
       const dataDealToApi = {
         security: quote.security,
         post_id: postId,
-        amount: validAmount / 1000000,
+        amount: validAmount,
         bid_price: quote.bidPrice,
         ask_price: quote.askPrice,
         leverage: quoteSettings.leverage,
-        margin_profit: parseFloat(margin),
         action: side,
         market: quoteSettings.market,
         platform,
         deal_id: null,
       };
-      singleton.platform.createOpenDeal(deal, dataDealToApi, caller);
+      singleton.platform.createMarketOrder(deal, dataDealToApi, caller);
     }
   };
 }

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import _ from 'lodash';
 import React from 'react';
-import PostQuotation from '../../PostQuotation';
 import TchChart from '../../TchChart/TchChart';
 import TradingForm from '../../TradingForm';
 import './ModalDealConfirmation.less';
@@ -43,18 +42,7 @@ const ModalDealConfirmation = props => {
                 period={'60'}
               />
             </div>
-            <TradingForm
-              quoteSecurity={props.modalInfo.quote.security}
-            />
-            {/* {props.platformName !== 'widgets' && ( */}
-            {/*  <PostQuotation */}
-            {/*    quoteSecurity={props.modalInfo.quote.security} */}
-            {/*    amountModal={props.modalInfo.amount} */}
-            {/*    postId={props.modalInfo.postId} */}
-            {/*    toggleConfirmationModal={props.toggleModal} */}
-            {/*    caller={props.modalInfo.caller || 'od-pm'} */}
-            {/*  /> */}
-            {/* )} */}
+            <TradingForm caller="od-pm" quoteSecurity={props.modalInfo.quote.security} />
           </div>
         </Modal>
       )}

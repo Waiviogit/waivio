@@ -1,7 +1,8 @@
-import { sortBy } from 'lodash';
+import { sortBy, find } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Dropdown, Icon, Menu } from 'antd';
 import store from 'store';
 import {
@@ -10,37 +11,42 @@ import {
 } from '../../../../investarena/redux/selectors/platformSelectors';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
+import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import Loading from '../../Icon/Loading';
 import './BrokerBalance.less';
 
-const BrokerBalance = ({ beaxyBalance, platformName, getStatistics }) => {
+const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
-  const storageFirstItem = store.get('firstCurrency');
+  const storageFirstCurrency = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
+  const getCurrencyByName = name => find(beaxyBalance, { currency: name });
+
   useEffect(() => {
     if (beaxyBalance && !!beaxyBalance.length) {
-      if (!storageFirstItem) {
+      if (!storageFirstCurrency) {
         setInitFirstCurrency(beaxyBalance[0]);
+        store.set('firstCurrency', beaxyBalance[0].currency);
       } else {
-        setInitFirstCurrency(storageFirstItem);
+        setInitFirstCurrency(getCurrencyByName(storageFirstCurrency));
       }
-      if (!storageSecondCurrency) {
-        setInitSecondCurrency(beaxyBalance[1] ? beaxyBalance[1] : {});
+      if (!storageSecondCurrency && beaxyBalance[1]) {
+        setInitSecondCurrency(beaxyBalance[1]);
+        store.set('secondCurrency', beaxyBalance[1].currency);
       } else {
-        setInitSecondCurrency(storageSecondCurrency);
+        setInitSecondCurrency(getCurrencyByName(storageSecondCurrency));
       }
     }
     if (platformName === 'beaxy' && !beaxyBalance.length) getStatistics();
   }, [beaxyBalance]);
 
   const setFirstCurrency = item => {
-    store.set('firstCurrency', item);
+    store.set('firstCurrency', item.currency);
     setInitFirstCurrency(item);
   };
 
   const setSecondCurrency = item => {
-    store.set('secondCurrency', item);
+    store.set('secondCurrency', item.currency);
     setInitSecondCurrency(item);
   };
 
@@ -50,14 +56,24 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics }) => {
         item.currency !== initFirstCurrency.currency &&
         item.currency !== initSecondCurrency.currency,
     );
+
     const sortedBalance = sortBy(filteredBalance, 'value').reverse();
     return (
       <Menu>
-        {sortedBalance.map(item => (
-          <Menu.Item key={`${item.id}`} onClick={() => setCurrency(item)}>
-            <CurrencyItem item={item} isSmall />
+        {!!sortedBalance.length ? (
+          sortedBalance.map(item => (
+            <Menu.Item key={`${item.id}`} onClick={() => setCurrency(item)}>
+              <CurrencyItem item={item} isSmall />
+            </Menu.Item>
+          ))
+        ) : (
+          <Menu.Item>
+            <FormattedMessage
+              id="no_more_cryptocurrencies"
+              defaultMessage="No more cryptocurrencies"
+            />
           </Menu.Item>
-        ))}
+        )}
       </Menu>
     );
   }
@@ -88,6 +104,7 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics }) => {
               <Icon type="down" />
             </div>
           </Dropdown>
+          <Icon type="export" onClick={onLogout} />
         </React.Fragment>
       ) : (
         <Loading />
@@ -100,6 +117,7 @@ BrokerBalance.propTypes = {
   beaxyBalance: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -109,6 +127,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getStatistics: () => dispatch(getUserStatistics()),
+  onLogout: () => dispatch(disconnectBroker()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrokerBalance);

@@ -2,23 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TradingForm from './TradingForm';
 
-const TradingFormWrapper = ({ quoteSecurity }) => {
-  return (
-    <div className="st-trading-form-wrapper">
-      <TradingForm
-        direction="buy"
-        quoteSecurity={quoteSecurity}
-      />
-      <hr/>
-      <TradingForm
-        direction="sell"
-        quoteSecurity={quoteSecurity}
-      />
-    </div>
-  );
-};
+const TradingFormWrapper = ({ caller, quoteSecurity }) => (
+  <div className="st-trading-form-wrapper">
+    <TradingForm caller={caller} quoteSecurity={quoteSecurity} side="buy" />
+    <hr />
+    <TradingForm caller={caller} quoteSecurity={quoteSecurity} side="sell" />
+  </div>
+);
 
 TradingFormWrapper.propTypes = {
+  caller: PropTypes.string.isRequired,
   quoteSecurity: PropTypes.string.isRequired,
 };
 

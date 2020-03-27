@@ -159,11 +159,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
           <FormattedMessage id="login" defaultMessage="Log in" />
         </h2>
         <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
-          <img
-            src="/images/icons/logo-hive.svg"
-            alt="hive"
-            className="ModalSignUp__icon-steemit"
-          />
+          <img src="/images/icons/logo-hive.svg" alt="hive" className="ModalSignUp__icon-steemit" />
           <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
         </a>
         <div className="ModalSignUp__social">

@@ -994,7 +994,6 @@ class Topnav extends React.Component {
                         id: 'headerAuthorized.connectToBeaxy',
                         defaultMessage: 'Connect to beaxy',
                       })}
-                      <i className="Topnav__beaxy-icon" />
                     </Button>
                   </div>
                 ) : (
