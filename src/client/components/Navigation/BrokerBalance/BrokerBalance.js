@@ -9,17 +9,20 @@ import {
   getPlatformNameState,
   getUserWalletState,
 } from '../../../../investarena/redux/selectors/platformSelectors';
+import { getAuthenticatedUserName } from '../../../reducers';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import Loading from '../../Icon/Loading';
 import './BrokerBalance.less';
 
-const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) => {
+const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout, userName }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
   const storageFirstCurrency = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
+  const isBeaxyUser = userName.split('_')[0] === 'bxy';
+
   const getCurrencyByName = name => find(beaxyBalance, { currency: name });
 
   useEffect(() => {
@@ -104,7 +107,7 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout }) 
               <Icon type="down" />
             </div>
           </Dropdown>
-          <Icon type="export" onClick={onLogout} />
+          {!isBeaxyUser && <Icon type="export" onClick={onLogout} />}
         </React.Fragment>
       ) : (
         <Loading />
@@ -118,11 +121,13 @@ BrokerBalance.propTypes = {
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  userName: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   platformName: getPlatformNameState(state),
   beaxyBalance: getUserWalletState(state),
+  userName: getAuthenticatedUserName(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -257,7 +257,7 @@ export default class Umarkets {
   }
 
   getChartData(active, interval) {
-    if (active && interval) {
+    if (this.websocket.readyState === 1 && active && interval) {
       if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
         let chartsArr = [[active, interval]];
         chartsArr = JSON.stringify(chartsArr);

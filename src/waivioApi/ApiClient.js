@@ -1032,7 +1032,10 @@ export const bxyKeepAlive = (sessionId, umSession) =>
     method: 'GET',
   })
     .then(handleErrors)
-    .then(res => res.json());
+    .then(res => res.json())
+    .catch(error => {
+      throw error;
+    });
 
 //endregion
 
