@@ -12,8 +12,12 @@ const PostQuotationContainer = props => <PostQuotation {...props} />;
 
 PostQuotationContainer.propTypes = {
   /* passed props */
-  quoteSecurity: PropTypes.string.isRequired,
   caller: PropTypes.string.isRequired,
+  quoteSecurity: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};
+PostQuotationContainer.defaultProps = {
+  className: '',
 };
 
 function mapStateToProps() {

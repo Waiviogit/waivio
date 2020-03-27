@@ -538,13 +538,26 @@ export const getHoldingsByAccounts = (
     ),
   );
 
-export const getAmountChecker = side => (amount, walletBalance, totalPrice, { minimumQuantity, maximumQuantity }) => {
+export const getAmountChecker = side => (
+  amount,
+  walletBalance,
+  totalPrice,
+  { minimumQuantity, maximumQuantity },
+) => {
   const amountValue = getAmountValue(amount);
   switch (side) {
     case 'buy':
-      return totalPrice <= walletBalance && amountValue <= maximumQuantity && amountValue >= minimumQuantity;
+      return (
+        totalPrice <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
     case 'sell':
-      return amountValue <= walletBalance && amountValue <= maximumQuantity && amountValue >= minimumQuantity;
+      return (
+        amountValue <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
     default:
       return false;
   }

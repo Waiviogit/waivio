@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
 import withTrade from '../HOC/withTrade';
-import { getAmountValue } from "../../platform/platformHelper";
+import { getAmountValue } from '../../platform/platformHelper';
 import './TradingForm.less';
 
 const TradingForm = ({

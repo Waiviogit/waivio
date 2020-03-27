@@ -634,14 +634,19 @@ export default class Umarkets {
   parseNewOrder({ content }) {
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
-    message.info(`Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`);
+    message.info(
+      `Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`,
+    );
   }
   parseMarketOrderFilled({ content }) {
     const { amount, averagePrice, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
     const price = PlatformHelper.exponentialToDecimal(averagePrice);
-    message.success(`Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`, 4);
+    message.success(
+      `Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`,
+      4,
+    );
   }
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
