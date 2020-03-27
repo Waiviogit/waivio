@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
 import withTrade from '../HOC/withTrade';
+import { getAmountValue } from "../../platform/platformHelper";
 import './TradingForm.less';
 
 const TradingForm = ({
@@ -24,10 +25,17 @@ const TradingForm = ({
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
 
   const handleTradeButtonClick = () => {
-    if (isAmountValid) {
+    if (isAmountValid && isWalletsExist) {
       createMarketOrder(side, amount, caller);
+    } else if (!isAmountValid) {
+      const amountValue = getAmountValue(amount);
+      if (amountValue < quoteSettings.minimumQuantity) {
+        message.error(`Minimum ${quoteSettings.minimumQuantity} ${baseCurrency}`);
+      } else {
+        message.error('Available balance is insufficient');
+      }
     } else {
-      message.error('Available balance is insufficient'); // todo: add locales
+      message.error(`You don't have a ${baseCurrency} wallet`);
     }
   };
   return (
@@ -96,6 +104,8 @@ TradingForm.propTypes = {
   quoteSettings: PropTypes.shape({
     baseCurrency: PropTypes.string.isRequired,
     termCurrency: PropTypes.string.isRequired,
+    minimumQuantity: PropTypes.number,
+    maximumQuantity: PropTypes.number,
   }).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
   isAmountValid: PropTypes.bool.isRequired,

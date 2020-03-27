@@ -37,7 +37,7 @@ export const CMD = {
   // sendCloseMarketOrder: 'send_close_market_order',
   changeAccount: 'change_account',
   duplicateOpenDeal: 'duplicate_open_deal',
-  changeOpenDeal: 'change_open_deal',
+  // changeOpenDeal: 'change_open_deal',
   getLimitStopOrders: 'get_limit_stop_orders',
   getChartData: 'get_chart_data',
   openMarketOrderRejected: 'open_market_order_rejected',
