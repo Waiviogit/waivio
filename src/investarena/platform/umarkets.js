@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { get, filter, size, some, sortBy } from 'lodash';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -335,7 +335,10 @@ export default class Umarkets {
     } else if (result.type === 'event') {
       switch (result.name) {
         case 'order_new':
-          // this.parseNewOrder(result);
+          this.parseNewOrder(result);
+          break;
+        case 'order_completely_filled':
+          this.parseMarketOrderFilled(result);
           break;
         case 'order_rejected':
           this.parseOrderRejected(result);
@@ -374,7 +377,7 @@ export default class Umarkets {
     const rates = content.rates;
     const data = {};
     rates.forEach(q => {
-      if (_.size(this.quotes) !== 0 && q.security in this.quotes) {
+      if (size(this.quotes) !== 0 && q.security in this.quotes) {
         this.fixChange(q.security, q, this.quotes[q.security]);
       }
       this.quotes[q.security] = {
@@ -436,7 +439,7 @@ export default class Umarkets {
             sortedQuotesSettings[key] = {
               ...quotesSettings[key],
               keyName: key,
-              isSession: _.some(
+              isSession: some(
                 tradingSessions[quotesSettings[key].calendarCodeId],
                 item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
               ),
@@ -458,7 +461,7 @@ export default class Umarkets {
           accounts: content.accounts,
         }),
       );
-      const currentAccount = _.filter(
+      const currentAccount = filter(
         content.accounts,
         option => option.name === content.currentAccountName,
       );
@@ -487,7 +490,7 @@ export default class Umarkets {
   }
 
   parseOpenDeals(result) {
-    const content = _.sortBy(result.content, 'dealSequenceNumber').reverse();
+    const content = sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
     const data = { open_deals: [] };
     content.map(openDeal => {
@@ -510,7 +513,7 @@ export default class Umarkets {
 
   parseClosedDeals(result) {
     if (!this.getClosedDealsForStatistics) {
-      const content = _.sortBy(result.content.closedDeals, 'closeTime').reverse();
+      const content = sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
       content.map(closeDeal => {
         closeDeal.amount /= multiplier;
@@ -522,7 +525,7 @@ export default class Umarkets {
       this.dispatch(getCloseDealsSuccess(closedDeals));
     } else {
       this.getClosedDealsForStatistics = false;
-      const content = _.sortBy(result.content.closedDeals, 'closeTime');
+      const content = sortBy(result.content.closedDeals, 'closeTime');
       const contentFilter = content.filter(
         closedDeal => closedDeal.closeTime > this.lastClosedDealTime,
       );
@@ -611,12 +614,9 @@ export default class Umarkets {
 
   // bxy
   parseCreateMarketOrder({ response, content, msg, code }) {
-    const { amount, security, side } = content;
-    const qSettings = this.quotesSettings[security] || {};
-    const baseCurrency = qSettings.baseCurrency || '';
-    if (response === 'SUCCESS') {
-      message.info(`Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`);
-    } else {
+    const { security } = content;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    if (response !== 'SUCCESS') {
       switch (code) {
         case 306:
           message.error(`You don't have a ${baseCurrency} wallet`);
@@ -631,9 +631,18 @@ export default class Umarkets {
     }
   }
 
-  // parseNewOrder(result) {
-  //   console.log('\tparseNewOrder > ', result);
-  // }
+  parseNewOrder({ content }) {
+    const { amount, security, side } = content.order;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    message.info(`Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`);
+  }
+  parseMarketOrderFilled({ content }) {
+    const { amount, averagePrice, security, side } = content.order;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
+    const price = PlatformHelper.exponentialToDecimal(averagePrice);
+    message.success(`Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`, 4);
+  }
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }
