@@ -5,7 +5,7 @@ import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
-const getAmountValue = amount => {
+export const getAmountValue = amount => {
   if (typeof amount === 'string') {
     return Number(amount.replace(/,/g, ''));
   } else if (typeof amount === 'number') {
