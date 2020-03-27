@@ -27,9 +27,10 @@ export function createMarketOrder(
       validAmount > quoteSettings.maximumQuantity ||
       validAmount < quoteSettings.minimumQuantity
     ) {
-      const limitValue = validAmount < quoteSettings.minimumQuantity
-        ? `minimum ${quoteSettings.minimumQuantity}`
-        : `maximum ${quoteSettings.maximumQuantity}`;
+      const limitValue =
+        validAmount < quoteSettings.minimumQuantity
+          ? `minimum ${quoteSettings.minimumQuantity}`
+          : `maximum ${quoteSettings.maximumQuantity}`;
       message.error(`Invalid amount (${limitValue} ${quoteSettings.baseCurrency})`);
     } else {
       const deal = { security: quote.security, side, amount: validAmount };

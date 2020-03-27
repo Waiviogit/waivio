@@ -39,27 +39,29 @@ export const getUserWalletState = createSelector(
   [getPlatformState],
   platform => platform.userWallet,
 );
-export const makeUserWalletState = () => createSelector(
-  makeGetQuoteSettingsState(),
-  getUserWalletState,
-  (state, props) => props.side,
-  (quoteSetting, wallet, side) => {
-    if (quoteSetting && !isEmpty(wallet) && (side === 'buy' || side === 'sell')) {
-      const walletCurrency = side === 'buy' ? quoteSetting.termCurrency : quoteSetting.baseCurrency;
-      const userWallet = wallet.find(w => w.currency === walletCurrency);
-      return userWallet || { balance: 0, currency: walletCurrency };
-    }
-    return null;
-  },
-);
-export const makeIsWalletsExistState = () => createSelector(
-  makeGetQuoteSettingsState(),
-  getUserWalletState,
-  (quoteSetting, wallet) => {
+export const makeUserWalletState = () =>
+  createSelector(
+    makeGetQuoteSettingsState(),
+    getUserWalletState,
+    (state, props) => props.side,
+    (quoteSetting, wallet, side) => {
+      if (quoteSetting && !isEmpty(wallet) && (side === 'buy' || side === 'sell')) {
+        const walletCurrency =
+          side === 'buy' ? quoteSetting.termCurrency : quoteSetting.baseCurrency;
+        const userWallet = wallet.find(w => w.currency === walletCurrency);
+        return userWallet || { balance: 0, currency: walletCurrency };
+      }
+      return null;
+    },
+  );
+export const makeIsWalletsExistState = () =>
+  createSelector(makeGetQuoteSettingsState(), getUserWalletState, (quoteSetting, wallet) => {
     if (quoteSetting && !isEmpty(wallet)) {
       const { baseCurrency, termCurrency } = quoteSetting;
-      return Boolean(wallet.find(w => w.currency === baseCurrency) && wallet.find(w => w.currency === termCurrency));
+      return Boolean(
+        wallet.find(w => w.currency === baseCurrency) &&
+          wallet.find(w => w.currency === termCurrency),
+      );
     }
     return false;
-  },
-);
+  });

@@ -7,7 +7,7 @@ import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
 import {
   getPlatformNameState,
   makeIsWalletsExistState,
-  makeUserWalletState
+  makeUserWalletState,
 } from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
@@ -100,7 +100,12 @@ const withTrade = Component => {
       const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
       const fees = PlatformHelper.calculateFees(amount, side, quoteSettings, quote);
       const totalPrice = PlatformHelper.calculateTotalPrice(amount, side, quote);
-      const isAmountValid = this.checkIsAmountValid(amount, wallet.balance, totalPrice, quoteSettings);
+      const isAmountValid = this.checkIsAmountValid(
+        amount,
+        wallet.balance,
+        totalPrice,
+        quoteSettings,
+      );
       e.persist();
       this.setState({ amount, fees, totalPrice, isAmountValid }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
