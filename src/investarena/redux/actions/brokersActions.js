@@ -139,7 +139,6 @@ export function disconnectBroker(isReconnect = false) {
     // if (singleton.platform && singleton.platform.platformName)
     //   message.success('Broker successfully disconnected');
     singleton.closeWebSocketConnection();
-    singleton.platform = 'widgets';
     singleton.createWebSocketConnection();
     if (!isReconnect) {
       //   dispatch(toggleModal('broker'));

@@ -98,7 +98,7 @@ export default class Widgets {
     );
   }
   getChartData(security, interval) {
-    if (security && interval) {
+    if (this.websocket.readyState === 1 && security && interval) {
       interval = interval.charAt(0) + interval.slice(1).toLowerCase();
       this.websocket.send(
         JSON.stringify({
