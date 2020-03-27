@@ -35,7 +35,6 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
-import { getHoldingsWithLogo } from './usersHelper';
 
 @withRouter
 @connect(
@@ -93,9 +92,7 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
-    platformName: PropTypes.string,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
-    currenciesDescriptions: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -172,15 +169,12 @@ class Wallet extends Component {
     const actions = get(usersAccountHistory, userKey, []);
     const currentSteemRate = get(
       cryptosPriceHistory,
-      `${HIVE.symbol}.priceDetails.currentUSDPrice`,
+      `${HIVE.coinGeckoId}.usdPriceHistory.usd`,
       null,
     );
     const beaxyBalance = this.getBeaxyBalance();
-    const currentSBDRate = get(
-      cryptosPriceHistory,
-      `${HBD.symbol}.priceDetails.currentUSDPrice`,
-      null,
-    );
+    const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
+
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';

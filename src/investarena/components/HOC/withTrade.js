@@ -7,7 +7,7 @@ import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
 import {
   getPlatformNameState,
   makeIsWalletsExistState,
-  makeUserWalletState
+  makeUserWalletState,
 } from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';

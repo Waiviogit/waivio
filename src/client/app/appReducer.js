@@ -1,8 +1,6 @@
-import _ from 'lodash';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
-import { getCryptoPriceIncreaseDetails } from '../helpers/cryptosHelper';
 import { GET_USER_METADATA } from '../user/usersActions';
 
 const initialState = {
@@ -102,25 +100,13 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
-      const { symbol, usdPriceHistory, btcPriceHistory } = action.payload;
-      const usdPriceHistoryByClose = _.map(usdPriceHistory.Data, data => data.close);
-      const btcPriceHistoryByClose = _.map(btcPriceHistory.Data, data => data.close);
-      const priceDetails = getCryptoPriceIncreaseDetails(
-        usdPriceHistoryByClose,
-        btcPriceHistoryByClose,
-      );
-      const btcAPIError = btcPriceHistory.Response === 'Error';
-      const usdAPIError = usdPriceHistory.Response === 'Error';
-
+      const { symbol, usdPriceHistory } = action.payload;
       return {
         ...state,
         cryptosPriceHistory: {
           ...state.cryptosPriceHistory,
           [symbol]: {
-            usdPriceHistory: usdPriceHistoryByClose,
-            priceDetails,
-            btcAPIError,
-            usdAPIError,
+            usdPriceHistory,
           },
         },
       };
