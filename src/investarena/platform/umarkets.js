@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { get, filter, size, some, sortBy } from 'lodash';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -30,7 +30,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
-import { mutateObject, getOS, exponentialToDecimal } from './platformHelper';
+import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
 
 const multiplier = 1000000;
@@ -210,20 +210,29 @@ export default class Umarkets {
     });
   }
 
-  createOpenDeal(deal, dataDealToApi, callerKey) {
-    this.dataDealToApi = dataDealToApi;
-    this.sendRequestToPlatform(
-      CMD.sendOpenMarketOrder,
-      `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey),
-    );
-  }
+  // createOpenDeal(deal, dataDealToApi, callerKey) {
+  //   this.dataDealToApi = dataDealToApi;
+  //   this.sendRequestToPlatform(
+  //     CMD.sendOpenMarketOrder,
+  //     `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
+  //     this.getAppIdentity(callerKey),
+  //   );
+  // }
+  //
+  // closeOpenDeal(dealId, callerKey) {
+  //   this.sendRequestToPlatform(
+  //     CMD.sendCloseMarketOrder,
+  //     `["${dealId}","${config.appVersion}"]`,
+  //     this.getAppIdentity(callerKey),
+  //   );
+  // }
 
-  closeOpenDeal(dealId, callerKey) {
+  createMarketOrder(deal, dataDealToApi, callerKey) {
     this.sendRequestToPlatform(
-      CMD.sendCloseMarketOrder,
-      `["${dealId}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey),
+      CMD.createMarketOrder,
+      `["${deal.security}","${deal.side}","${Number(
+        deal.amount,
+      )}", ${false}, "IMMEDIATE_OR_CANCEL", "OS: Linux,     App: crypto-investarena,     Caller: chart modal"]`,
     );
   }
 
@@ -308,13 +317,16 @@ export default class Umarkets {
         case CMD.getChartData:
           this.parseChartData(result);
           break;
-        case CMD.sendCloseMarketOrder:
-          Umarkets.parseCloseMarketOrderResult(result);
+        // case CMD.sendCloseMarketOrder:
+        //   Umarkets.parseCloseMarketOrderResult(result);
+        //   break;
+        case CMD.createMarketOrder:
+          this.parseCreateMarketOrder(result);
           break;
         case CMD.changeOpenDeal:
           Umarkets.parseChangeMarketOrderResult(result);
           break;
-        case CMD.sendOpenMarketOrder:
+        // case CMD.sendOpenMarketOrder:
         case CMD.openMarketOrderRejected:
         case CMD.duplicateOpenDeal:
           this.parseOpenMarketOrderResult(result);
@@ -322,6 +334,15 @@ export default class Umarkets {
       }
     } else if (result.type === 'event') {
       switch (result.name) {
+        case 'order_new':
+          this.parseNewOrder(result);
+          break;
+        case 'order_completely_filled':
+          this.parseMarketOrderFilled(result);
+          break;
+        case 'order_rejected':
+          this.parseOrderRejected(result);
+          break;
         case 'deal_opened_by_market_order':
           this.parseOpenByMarketOrder(result);
           break;
@@ -356,21 +377,21 @@ export default class Umarkets {
     const rates = content.rates;
     const data = {};
     rates.forEach(q => {
-      if (_.size(this.quotes) !== 0 && q.security in this.quotes) {
+      if (size(this.quotes) !== 0 && q.security in this.quotes) {
         this.fixChange(q.security, q, this.quotes[q.security]);
       }
       this.quotes[q.security] = {
         security: q.security,
-        bidPrice: exponentialToDecimal(q.bidPrice),
-        askPrice: exponentialToDecimal(q.askPrice),
+        bidPrice: PlatformHelper.exponentialToDecimal(q.bidPrice),
+        askPrice: PlatformHelper.exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
       };
       data[q.security] = {
         security: q.security,
-        bidPrice: exponentialToDecimal(q.bidPrice),
-        askPrice: exponentialToDecimal(q.askPrice),
+        bidPrice: PlatformHelper.exponentialToDecimal(q.bidPrice),
+        askPrice: PlatformHelper.exponentialToDecimal(q.askPrice),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
@@ -418,7 +439,7 @@ export default class Umarkets {
             sortedQuotesSettings[key] = {
               ...quotesSettings[key],
               keyName: key,
-              isSession: _.some(
+              isSession: some(
                 tradingSessions[quotesSettings[key].calendarCodeId],
                 item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
               ),
@@ -440,7 +461,7 @@ export default class Umarkets {
           accounts: content.accounts,
         }),
       );
-      const currentAccount = _.filter(
+      const currentAccount = filter(
         content.accounts,
         option => option.name === content.currentAccountName,
       );
@@ -469,7 +490,7 @@ export default class Umarkets {
   }
 
   parseOpenDeals(result) {
-    const content = _.sortBy(result.content, 'dealSequenceNumber').reverse();
+    const content = sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
     const data = { open_deals: [] };
     content.map(openDeal => {
@@ -492,7 +513,7 @@ export default class Umarkets {
 
   parseClosedDeals(result) {
     if (!this.getClosedDealsForStatistics) {
-      const content = _.sortBy(result.content.closedDeals, 'closeTime').reverse();
+      const content = sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
       content.map(closeDeal => {
         closeDeal.amount /= multiplier;
@@ -504,7 +525,7 @@ export default class Umarkets {
       this.dispatch(getCloseDealsSuccess(closedDeals));
     } else {
       this.getClosedDealsForStatistics = false;
-      const content = _.sortBy(result.content.closedDeals, 'closeTime');
+      const content = sortBy(result.content.closedDeals, 'closeTime');
       const contentFilter = content.filter(
         closedDeal => closedDeal.closeTime > this.lastClosedDealTime,
       );
@@ -589,5 +610,45 @@ export default class Umarkets {
     }
     message.success('Deal successfully updated');
     this.dispatch(changeOpenDealPlatformSuccess(content));
+  }
+
+  // bxy
+  parseCreateMarketOrder({ response, content, msg, code }) {
+    const { security } = content;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    if (response !== 'SUCCESS') {
+      switch (code) {
+        case 306:
+          message.error(`You don't have a ${baseCurrency} wallet`);
+          break;
+        case 316: // INVALID_ORDER_QUANTITY - handles in event message
+          break;
+        case 326:
+        default:
+          message.error(msg || response);
+          break;
+      }
+    }
+  }
+
+  parseNewOrder({ content }) {
+    const { amount, security, side } = content.order;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    message.info(
+      `Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`,
+    );
+  }
+  parseMarketOrderFilled({ content }) {
+    const { amount, averagePrice, security, side } = content.order;
+    const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
+    const price = PlatformHelper.exponentialToDecimal(averagePrice);
+    message.success(
+      `Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`,
+      4,
+    );
+  }
+  parseOrderRejected({ content }) {
+    message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }
 }

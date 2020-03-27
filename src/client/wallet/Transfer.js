@@ -105,11 +105,11 @@ export default class Transfer extends React.Component {
     const currentSBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
 
     if (isNull(currentSteemRate)) {
-      this.props.getCryptoPriceHistory(HIVE.symbol);
+      this.props.getCryptoPriceHistory(HIVE.coinGeckoId);
     }
 
     if (isNull(currentSBDRate)) {
-      this.props.getCryptoPriceHistory(HBD.symbol);
+      this.props.getCryptoPriceHistory(HBD.coinGeckoId);
     }
   }
 

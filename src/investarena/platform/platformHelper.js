@@ -1,10 +1,65 @@
-import _ from 'lodash';
+import { isEmpty, isNil, map } from 'lodash';
 import { numberFormat } from './numberFormat';
+import { round } from '../helpers/calculationsHelper';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
+export const getAmountValue = amount => {
+  if (typeof amount === 'string') {
+    return Number(amount.replace(/,/g, ''));
+  } else if (typeof amount === 'number') {
+    return amount;
+  }
+  return null;
+};
 export class PlatformHelper {
+  static calculateFees(amount, side, quoteSettings, quote) {
+    if (amount && !isEmpty(quoteSettings) && !isEmpty(quote)) {
+      const amountValue = getAmountValue(amount);
+      const {
+        buyerTakerCommissionProgressive,
+        sellerTakerCommissionProgressive,
+        buyerMakerCommissionProgressive,
+        sellerMakerCommissionProgressive,
+      } = quoteSettings;
+      if (
+        side === 'buy' &&
+        !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))
+      ) {
+        const makerFeeValue = (amountValue * buyerMakerCommissionProgressive) / 100;
+        const takerFeeValue = (amountValue * buyerTakerCommissionProgressive) / 100;
+        return {
+          makerFee: round(makerFeeValue, 8),
+          takerFee: round(takerFeeValue, 8),
+        };
+      }
+      if (
+        side === 'sell' &&
+        !isNil(sellerTakerCommissionProgressive) &&
+        !isNil(sellerMakerCommissionProgressive) &&
+        quote.bidPrice
+      ) {
+        const makerFeeValue =
+          (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
+        const takerFeeValue =
+          (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
+        return {
+          makerFee: round(makerFeeValue, 8),
+          takerFee: round(takerFeeValue, 8),
+        };
+      }
+    }
+    return {
+      makerFee: '',
+      takerFee: '',
+    };
+  }
+  static calculateTotalPrice(amount, side, quote) {
+    const amountValue = getAmountValue(amount);
+    const price = (side === 'buy' && quote.askPrice) || (side === 'sell' && quote.bidPrice) || 0;
+    return round(amountValue * price, 8);
+  }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -212,7 +267,7 @@ export class PlatformHelper {
     const rangesPrice = {};
     const tempDealForMin = {};
     const tempDealForMax = {};
-    _.map(deal, (item, key) => {
+    map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
     });
@@ -254,7 +309,7 @@ export class PlatformHelper {
     const rangesPrice = {};
     const tempDealForMin = {};
     const tempDealForMax = {};
-    _.map(deal, (item, key) => {
+    map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
     });
@@ -266,6 +321,8 @@ export class PlatformHelper {
       case 'LONG':
         takeProfitMin = (dealParams.price * (100 + minPercent / 1000000)) / 100;
         takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
+        break;
+      default:
         break;
     }
     tempDealForMin.currentValue = takeProfitMin;
@@ -300,8 +357,7 @@ export class PlatformHelper {
     return ranges;
   }
   static validateOnBlur(amount, quoteSettings) {
-    const amountParseString = amount.replace(/,/g, '');
-    const amountInt = +amountParseString;
+    const amountInt = getAmountValue(amount);
     if (amountInt < quoteSettings.minimumQuantity / 1000000) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
@@ -341,8 +397,8 @@ export class PlatformHelper {
   }
   static validateChangeProfitLossText(input, rangeMin, rangeMax) {
     const completeRegex = /^\d+\.\d+$|^\d+$/i;
-    rangeMin = parseFloat(rangeMin);
-    rangeMax = parseFloat(rangeMax);
+    const minRange = parseFloat(rangeMin);
+    const maxRange = parseFloat(rangeMax);
     const digitRegex = /^\d+\.\d+$|^\d+$|^\d+\.$/i;
     const softDigitRegex = /\d+\.\d*|\d+\.|\d*/i;
     if (!digitRegex.test(input.value)) {
@@ -352,18 +408,26 @@ export class PlatformHelper {
       return true;
     } else if (
       completeRegex.test(input.value) &&
-      parseFloat(input.value) > rangeMin &&
-      parseFloat(input.value) < rangeMax
+      parseFloat(input.value) > minRange &&
+      parseFloat(input.value) < maxRange
     ) {
       return true;
     }
     return false;
   }
-
   static countDecimals(value) {
-    const parsedValue = exponentialToDecimal(value);
+    const parsedValue = this.exponentialToDecimal(value);
     if (Math.floor(parsedValue) === Number(parsedValue)) return 0;
     return parsedValue.toString().split('.')[1].length || 0;
+  }
+  static exponentialToDecimal(exponentialNumber) {
+    // sanity check - is it exponential number
+    const str = exponentialNumber.toString();
+    if (str.indexOf('e') !== -1) {
+      const exponent = parseInt(str.split('-')[1], 10);
+      return exponentialNumber.toFixed(exponent);
+    }
+    return exponentialNumber.toString();
   }
 }
 
@@ -384,16 +448,6 @@ export const getOS = () => {
   if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX';
   if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
   return OSName;
-};
-
-export const exponentialToDecimal = exponentialNumber => {
-  // sanity check - is it exponential number
-  const str = exponentialNumber.toString();
-  if (str.indexOf('e') !== -1) {
-    const exponent = parseInt(str.split('-')[1], 10);
-    return exponentialNumber.toFixed(exponent);
-  }
-  return exponentialNumber.toString();
 };
 
 export function fillUserStatistics(userStats, userStatistics) {
@@ -483,3 +537,28 @@ export const getHoldingsByAccounts = (
       currenciesDescriptions,
     ),
   );
+
+export const getAmountChecker = side => (
+  amount,
+  walletBalance,
+  totalPrice,
+  { minimumQuantity, maximumQuantity },
+) => {
+  const amountValue = getAmountValue(amount);
+  switch (side) {
+    case 'buy':
+      return (
+        totalPrice <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
+    case 'sell':
+      return (
+        amountValue <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
+    default:
+      return false;
+  }
+};
