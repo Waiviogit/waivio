@@ -59,25 +59,18 @@ const Proposition = ({
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
-    return rejectReservationCampaign(rejectData)
-      .then(() =>
-        discardProposition({
-          companyAuthor: proposition.guide.name,
-          companyPermlink: proposition.activation_permlink,
-          objPermlink: obj.author_permlink,
-          reservationPermlink: rejectData.reservation_permlink,
-          unreservationPermlink,
-        }),
-      )
-      .catch(() =>
-        message.error(
-          intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        ),
-      );
+    return rejectReservationCampaign(rejectData).then(() =>
+      discardProposition({
+        companyAuthor: proposition.guide.name,
+        companyPermlink: proposition.activation_permlink,
+        objPermlink: obj.author_permlink,
+        reservationPermlink: rejectData.reservation_permlink,
+        unreservationPermlink,
+      }),
+    );
   };
+
+  console.log('isReserved', isReserved);
 
   const reserveOnClickHandler = () => {
     const reserveData = {
@@ -96,7 +89,7 @@ const Proposition = ({
           companyId: proposition._id,
         }),
       )
-      .then(() => setReservation(true))
+      .then(() => setReservation(!isReserved))
       .then(() => setModalDetailsOpen(!isModalDetailsOpen))
       .then(() => history.push(`/rewards/reserved`));
   };
@@ -128,6 +121,7 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
+            isReserved={isReserved}
           />
         ) : (
           <React.Fragment>
@@ -167,13 +161,13 @@ const Proposition = ({
         )}
       </div>
       <Details
+        isReserved={isReserved}
         isModalDetailsOpen={isModalDetailsOpen}
         objectDetails={proposition}
         toggleModal={toggleModalDetails}
         reserveOnClickHandler={reserveOnClickHandler}
         loading={loading}
         assigned={assigned}
-        isReserved={isReserved}
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}

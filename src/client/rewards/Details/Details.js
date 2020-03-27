@@ -35,17 +35,6 @@ const Details = ({
     objectDetails.requirement_filters.posts &&
     objectDetails.requirement_filters.not_blacklisted;
 
-  // const [spinner, setSpinner] = useState(null);
-  //
-  // useEffect(() => {
-  //   if(loading) {
-  //     setSpinner(true);
-  //     return
-  //   }
-  //   delay(5000)
-  //     .then(() => setSpinner(!loading))
-  // }, [loading]);
-
   let indexItem = 1;
 
   return (

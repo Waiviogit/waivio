@@ -279,13 +279,8 @@ class Rewards extends React.Component {
         );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
+      .catch(e => {
+        message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -335,12 +330,7 @@ class Rewards extends React.Component {
       })
       .catch(e => {
         console.log(e.toString());
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
+        message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false });
       });
   };

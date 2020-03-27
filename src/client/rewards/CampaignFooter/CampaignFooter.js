@@ -51,6 +51,7 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    isReserved: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -174,18 +175,19 @@ class CampaignFooter extends React.Component {
   toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
-    const { proposedWobj, discardPr } = this.props;
+    const { proposedWobj, discardPr, isReserved } = this.props;
     discardPr(proposedWobj)
       .then(() => {
-        this.toggleModal();
+        if (isReserved) this.toggleModal();
       })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Reservation released. It will be available for reservation soon.',
-          }),
-        );
+        if (isReserved)
+          message.success(
+            this.props.intl.formatMessage({
+              id: 'discarded_successfully',
+              defaultMessage: 'Reservation released. It will be available for reservation soon.',
+            }),
+          );
       })
       .then(() => this.props.history.push(`/rewards/active`));
   };
