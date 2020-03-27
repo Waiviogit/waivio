@@ -18,7 +18,7 @@ const TradeButton = ({ children, size, type, onClick }) => {
 TradeButton.propTypes = {
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   size: PropTypes.oneOf(['default', 'large']),
-  type: PropTypes.oneOf(['buy', 'sell']).isRequired,
+  type: PropTypes.oneOf(['buy', 'sell', 'broker']).isRequired,
   onClick: PropTypes.func,
 };
 
