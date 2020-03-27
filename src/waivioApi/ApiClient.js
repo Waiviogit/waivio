@@ -1032,13 +1032,16 @@ export const bxyKeepAlive = (sessionId, umSession) =>
     method: 'GET',
   })
     .then(handleErrors)
-    .then(res => res.json());
+    .then(res => res.json())
+    .catch(error => {
+      throw error;
+    });
 
 //endregion
 
 const singleton = Symbol();
 const singletonEnforcer = Symbol();
-const keepAliveDelay = 30000;
+const keepAliveDelay = 20000;
 class WaivioApiClient {
   constructor(enforcer) {
     if (enforcer !== singletonEnforcer) {
