@@ -317,13 +317,16 @@ export default class Umarkets {
         case CMD.getChartData:
           this.parseChartData(result);
           break;
-        case CMD.sendCloseMarketOrder:
-          Umarkets.parseCloseMarketOrderResult(result);
+        // case CMD.sendCloseMarketOrder:
+        //   Umarkets.parseCloseMarketOrderResult(result);
+        //   break;
+        case CMD.createMarketOrder:
+          this.parseCreateMarketOrder(result);
           break;
         case CMD.changeOpenDeal:
           Umarkets.parseChangeMarketOrderResult(result);
           break;
-        case CMD.sendOpenMarketOrder:
+        // case CMD.sendOpenMarketOrder:
         case CMD.openMarketOrderRejected:
         case CMD.duplicateOpenDeal:
           this.parseOpenMarketOrderResult(result);
@@ -331,6 +334,12 @@ export default class Umarkets {
       }
     } else if (result.type === 'event') {
       switch (result.name) {
+        case 'order_new':
+          // this.parseNewOrder(result);
+          break;
+        case 'order_rejected':
+          this.parseOrderRejected(result);
+          break;
         case 'deal_opened_by_market_order':
           this.parseOpenByMarketOrder(result);
           break;
@@ -598,5 +607,34 @@ export default class Umarkets {
     }
     message.success('Deal successfully updated');
     this.dispatch(changeOpenDealPlatformSuccess(content));
+  }
+
+  // bxy
+  parseCreateMarketOrder({ response, content, msg, code }) {
+    const { amount, security, side } = content;
+    const qSettings = this.quotesSettings[security] || {};
+    const baseCurrency = qSettings.baseCurrency || '';
+    if (response === 'SUCCESS') {
+      message.info(`Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`);
+    } else {
+      switch (code) {
+        case 306:
+          message.error(`You don't have a ${baseCurrency} wallet`);
+          break;
+        case 316: // INVALID_ORDER_QUANTITY - handles in event message
+          break;
+        case 326:
+        default:
+          message.error(msg || response);
+          break;
+      }
+    }
+  }
+
+  // parseNewOrder(result) {
+  //   console.log('\tparseNewOrder > ', result);
+  // }
+  parseOrderRejected({ content }) {
+    message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }
 }

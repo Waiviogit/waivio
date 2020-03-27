@@ -1,7 +1,7 @@
 {
-  "appVersion": "ST Investarena v.2.0.0",
-  "app": "Investarena.com",
-  "version": "2.0.0",
+  "appVersion": "Crypto Investarena v.1.0.0",
+  "app": "cypto-investarena.com",
+  "version": "1.0.0",
   "production": {
     "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
