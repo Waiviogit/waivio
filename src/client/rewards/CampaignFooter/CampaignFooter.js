@@ -183,7 +183,7 @@ class CampaignFooter extends React.Component {
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
-            defaultMessage: 'Reservation released',
+            defaultMessage: 'Reservation released. It will be available for reservation soon.',
           }),
         );
       })

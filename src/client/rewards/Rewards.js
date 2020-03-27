@@ -154,7 +154,7 @@ class Rewards extends React.Component {
     }
     if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
       pendingUpdateSuccess();
-      delay(10000).then(() => {
+      delay(5000).then(() => {
         this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       });
     }
@@ -265,8 +265,8 @@ class Rewards extends React.Component {
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
+            id: 'assigned_successfully_update',
+            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
           }),
         );
         // eslint-disable-next-line no-unreachable
