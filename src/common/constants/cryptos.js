@@ -8,12 +8,14 @@ export const HIVE = {
   id: 'hive',
   name: 'Hive',
   symbol: 'HIVE',
+  coinGeckoId: 'hive',
 };
 
 export const HBD = {
   id: 'hive-dollars',
   name: 'Hive Dollars',
   symbol: 'HBD',
+  coinGeckoId: 'hive_dollar',
 };
 
 export const ETH = {

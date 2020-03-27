@@ -1,16 +1,19 @@
+/* eslint-disable no-underscore-dangle */
+import { message } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { message } from 'antd';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
+  getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
 } from '../reducers';
@@ -31,10 +34,9 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import * as apiConfig from '../../waivioApi/config.json';
+// eslint-disable-next-line import/extensions
+import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
-
-import './Rewards.less';
 
 @withRouter
 @injectIntl
@@ -45,6 +47,7 @@ import './Rewards.less';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
+    wobjects: getFilteredObjectsMap(state),
   }),
   { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
 )
@@ -239,7 +242,7 @@ class Rewards extends React.Component {
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
-    this.props
+    return this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
       .then(() => {
         message.success(
@@ -248,6 +251,7 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
+        // eslint-disable-next-line no-unreachable
         const updatedPropositions = this.updateProposition(
           companyId,
           true,
@@ -268,9 +272,8 @@ class Rewards extends React.Component {
   };
 
   // eslint-disable-next-line consistent-return
-  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
-    const newPropos = this.state.propositions.map(proposition => {
-      // eslint-disable-next-line no-underscore-dangle
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
+    this.state.propositions.map(proposition => {
       if (proposition._id === propsId) {
         proposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
@@ -282,15 +285,12 @@ class Rewards extends React.Component {
           }
         });
       }
-      // eslint-disable-next-line no-underscore-dangle
       if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
         // eslint-disable-next-line no-param-reassign
         proposition.isReservedSiblingObj = true;
       }
       return proposition;
     });
-    return newPropos;
-  };
 
   discardProposition = ({
     companyAuthor,
@@ -301,7 +301,7 @@ class Rewards extends React.Component {
     reservationPermlink,
   }) => {
     this.setState({ loadingAssignDiscard: true });
-    this.props
+    return this.props
       .declineProposition({
         companyAuthor,
         companyPermlink,
@@ -318,7 +318,6 @@ class Rewards extends React.Component {
           }),
         );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
@@ -371,6 +370,7 @@ class Rewards extends React.Component {
                 loading={loadingAssignDiscard}
                 key={`${wobj.object.author_permlink}`}
                 assigned={wobj.assigned}
+                history={this.props.history}
               />
             ),
         ),
@@ -382,8 +382,8 @@ class Rewards extends React.Component {
     })}`;
   };
 
-  goToCampaign = WobjPermlink => {
-    this.props.history.push(`/rewards/active/${WobjPermlink}`);
+  goToCampaign = wobjPermlink => {
+    this.props.history.push(`/object/${wobjPermlink.payload.author_permlink}`);
   };
 
   handleLoadMore = () => {
@@ -433,8 +433,11 @@ class Rewards extends React.Component {
     const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';
     const currentSteemPrice =
-      cryptosPriceHistory && cryptosPriceHistory.HIVE && cryptosPriceHistory.HIVE.priceDetails
-        ? cryptosPriceHistory.HIVE.priceDetails.currentUSDPrice
+      cryptosPriceHistory &&
+      cryptosPriceHistory[HBD.coinGeckoId] &&
+      cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory &&
+      cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
+        ? cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {

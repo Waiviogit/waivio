@@ -85,6 +85,7 @@ export default (state = initialState, action) => {
 
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
+
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,

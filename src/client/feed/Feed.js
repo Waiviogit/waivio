@@ -16,7 +16,12 @@ const Feed = ({ content, isFetching, hasMore, loadMoreContent, showPostModal }) 
     threshold={1500}
   >
     {content.map(id => (
-      <StoryContainer key={id} id={id} showPostModal={showPostModal} singlePostVew={false} />
+      <StoryContainer
+        key={id + Math.random()}
+        id={id}
+        showPostModal={showPostModal}
+        singlePostVew={false}
+      />
     ))}
   </ReduxInfiniteScroll>
 );

@@ -49,14 +49,12 @@ class CryptoTrendingCharts extends React.Component {
     const { cryptosPriceHistory, cryptos } = this.props;
     const apiErrors = [];
 
-    if (_.isEmpty(cryptosPriceHistory)) {
-      return false;
-    }
+    if (_.isEmpty(cryptosPriceHistory)) return false;
 
     _.each(cryptos, crypto => {
       const cryptoDetails = getCryptoDetails(crypto);
-      const cryptoSymbol = _.get(cryptoDetails, 'symbol', null);
-      const cryptoAPIDetails = _.get(cryptosPriceHistory, _.upperCase(cryptoSymbol), null);
+      const cryptoSymbol = _.get(cryptoDetails, 'coinGeckoId', null);
+      const cryptoAPIDetails = _.get(cryptosPriceHistory, cryptoSymbol, null);
       const hasAPIError =
         !(_.isUndefined(cryptoAPIDetails) || _.isNull(cryptoAPIDetails)) &&
         (cryptoAPIDetails.usdAPIError || _.isEmpty(cryptoAPIDetails.usdPriceHistory));

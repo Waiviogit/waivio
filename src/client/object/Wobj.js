@@ -180,6 +180,8 @@ export default class Wobj extends React.Component {
         albums.length - 1 + albums.reduce((acc, curr) => acc + curr.items.length, 0);
     }
 
+    const { history } = this.props;
+
     return (
       <div className="main-panel">
         <Helmet>
@@ -230,6 +232,7 @@ export default class Wobj extends React.Component {
                     isEditMode={isEditMode}
                     wobject={wobject}
                     userName={userName}
+                    history={history}
                   />
                 </div>
               </Affix>

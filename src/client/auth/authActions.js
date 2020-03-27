@@ -36,7 +36,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   { steemConnectAPI, waivioAPI },
 ) => {
   const state = getState();
-
   let promise = Promise.resolve(null);
   let isGuest = null;
 
