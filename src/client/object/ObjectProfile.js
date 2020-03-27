@@ -31,7 +31,7 @@ import PostChart from '../../investarena/components/PostChart';
 import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/platformSelectors';
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
-import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
+import PostQuotation from '../../investarena/components/PostQuotation';
 import TradeButton from '../../investarena/components/TradeButton';
 import './ObjectProfile.less';
 
@@ -190,10 +190,6 @@ class ObjectProfile extends React.Component {
                 expForecast={null}
                 isObjectProfile
               />
-              <div className="d-flex justify-content-around pb3 pt3">
-                <TradeButton type="buy" onClick={() => {}} />
-                <TradeButton type="sell" />
-              </div>
               <PostQuotation quoteSecurity={object.chartid} caller="od-op" />
             </div>
           )}

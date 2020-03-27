@@ -1,54 +1,92 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { createOpenDealPlatform } from '../../redux/actions/dealsActions';
-// import { getIsSignInState } from '../../redux/selectors/userSelectors';
+import { get } from 'lodash';
+import { createMarketOrder } from '../../redux/actions/dealsActions';
 import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
-import { getPlatformNameState } from '../../redux/selectors/platformSelectors';
+import {
+  getPlatformNameState,
+  makeIsWalletsExistState,
+  makeUserWalletState
+} from '../../redux/selectors/platformSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import { numberFormat } from '../../platform/numberFormat';
-import { PlatformHelper } from '../../platform/platformHelper';
+import { getAmountChecker, PlatformHelper } from '../../platform/platformHelper';
 import { toggleModal } from '../../redux/actions/modalsActions';
+import { getIsAuthenticated } from '../../../client/reducers';
 
 const propTypes = {
-  quoteSettings: PropTypes.shape(),
-  quote: PropTypes.shape(),
-  postId: PropTypes.string,
-  amountModal: PropTypes.string,
-  marginModal: PropTypes.string,
+  /* passed props */
+  side: PropTypes.oneOf(['buy', 'sell']).isRequired,
   quoteSecurity: PropTypes.string.isRequired,
+  // postId: PropTypes.string, // unused?
+
+  /* from connect */
+  quote: PropTypes.shape(),
+  quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isSignIn: PropTypes.bool.isRequired,
+  totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  isWalletsExist: PropTypes.bool.isRequired,
+  wallet: PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.number,
+    name: PropTypes.string,
+    balance: PropTypes.number,
+    currency: PropTypes.string,
+    logoName: PropTypes.string,
+    logoUrl: PropTypes.string,
+  }).isRequired,
   createOpenDeal: PropTypes.func.isRequired,
+};
+
+const defaultProps = {
+  quote: undefined,
+  quoteSettings: undefined,
 };
 
 const withTrade = Component => {
   class WithTrade extends React.Component {
     constructor(props) {
       super(props);
-      this.state = { amount: '' };
+
+      const amountValue = get(props, ['quoteSettings', 'defaultQuantity'], '');
+      const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
+      const fees = PlatformHelper.calculateFees(
+        amountValue,
+        props.side,
+        props.quoteSettings,
+        props.quote,
+      );
+      const totalPrice = PlatformHelper.calculateTotalPrice(amountValue, props.side, props.quote);
+      this.state = {
+        amount,
+        fees,
+        totalPrice,
+        isAmountValid: true,
+      };
+      this.checkIsAmountValid = getAmountChecker(props.side);
     }
-    componentDidMount() {
-      if (this.props.quote && this.props.quoteSettings) {
-        const amountValue = this.props.quoteSettings.defaultQuantity;
-        const amount =
-          this.props.amountModal ||
-          numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-        this.setState({ amount });
-      }
-    }
-    componentWillReceiveProps(nexProps) {
-      if (nexProps.quote && nexProps.quoteSettings) {
-        if (this.state.amount === '' || !this.props.quote || !this.props.quoteSettings) {
-          const amountValue = nexProps.quoteSettings.defaultQuantity;
-          const amount =
-            this.props.amountModal ||
-            numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
-          this.setState({ amount });
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+      const { quote, quoteSettings, side } = nextProps;
+      if (quote && quoteSettings) {
+        if (prevState.amount === '') {
+          const amountValue = quoteSettings.defaultQuantity;
+          const amount = numberFormat(amountValue, PlatformHelper.countDecimals(amountValue));
+          const fees = PlatformHelper.calculateFees(amountValue, side, quoteSettings);
+          const totalPrice = PlatformHelper.calculateTotalPrice(amountValue, side, quote);
+          return { amount, fees, totalPrice };
+        }
+        const nextTotalPrice = PlatformHelper.calculateTotalPrice(prevState.amount, side, quote);
+        if (nextTotalPrice !== prevState.totalPrice) {
+          return { totalPrice: nextTotalPrice };
         }
       }
+      return null;
     }
+
     handleClickOpenDeal = (side, caller) => {
       this.props.createOpenDeal(side, this.state.amount, 'margin[removed]', caller);
     };
@@ -57,16 +95,21 @@ const withTrade = Component => {
       this.setState({ amount });
     };
     handleChangeInput = e => {
+      const { quote, quoteSettings, side, wallet } = this.props;
       const position = e.target.selectionStart;
-      const amount = PlatformHelper.validateOnChange(e.target.value, this.props.quoteSettings);
+      const amount = PlatformHelper.validateOnChange(e.target.value, quoteSettings);
+      const fees = PlatformHelper.calculateFees(e.target.value, side, quoteSettings, quote);
+      const totalPrice = PlatformHelper.calculateTotalPrice(e.target.value, side, quote);
+      const isAmountValid = this.checkIsAmountValid(amount, wallet.balance, totalPrice);
       e.persist();
-      this.setState({ amount }, () => {
+      this.setState({ amount, fees, totalPrice, isAmountValid }, () => {
         e.target.selectionStart = e.target.selectionEnd = position;
       });
     };
     handleKeyPressInput = e => {
       PlatformHelper.validateOnKeyPress(e);
     };
+
     render() {
       return (
         <Component
@@ -81,14 +124,19 @@ const withTrade = Component => {
     }
   }
   WithTrade.propTypes = propTypes;
+  WithTrade.defaultProps = defaultProps;
   const mapState = () => {
     const getQuoteState = makeGetQuoteState();
     const getQuoteSettingsState = makeGetQuoteSettingsState();
+    const getUserWalletState = makeUserWalletState();
+    const getIsWalletsExistState = makeIsWalletsExistState();
     return (state, ownProps) => ({
       quote: getQuoteState(state, ownProps),
       quoteSettings: getQuoteSettingsState(state, ownProps),
+      wallet: getUserWalletState(state, ownProps),
+      isWalletsExist: getIsWalletsExistState(state, ownProps),
       platformName: getPlatformNameState(state),
-      isSignIn: true,
+      isSignIn: getIsAuthenticated(state),
       isOpen: getModalIsOpenState(state, 'openDeals'),
     });
   };
@@ -100,14 +148,14 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin, caller) => {
+      createMarketOrder: (side, amount, caller) => {
         if (
           platformName !== 'widgets' &&
           !isOpen &&
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -115,7 +163,6 @@ const withTrade = Component => {
               quoteSettings,
               side,
               amount,
-              margin,
               postId,
               platformName,
               caller,
@@ -127,7 +174,7 @@ const withTrade = Component => {
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
             toggleModal('openDeals', {
@@ -135,7 +182,6 @@ const withTrade = Component => {
               quoteSettings,
               side,
               amount,
-              margin,
               postId,
               platformName,
               caller,
@@ -151,19 +197,10 @@ const withTrade = Component => {
           isSignIn &&
           quote &&
           quoteSettings &&
-          (side === 'Sell' || side === 'Buy')
+          (side === 'sell' || side === 'buy')
         ) {
           dispatch(
-            createOpenDealPlatform(
-              quote,
-              quoteSettings,
-              side,
-              amount,
-              margin,
-              postId,
-              platformName,
-              caller,
-            ),
+            createMarketOrder(quote, quoteSettings, side, amount, postId, platformName, caller),
           );
         }
       },
