@@ -150,9 +150,10 @@ const posts = (state = initialState, action) => {
           [key]: {
             ...state.list[key],
             ...action.payload,
-            reblogged_by: state.list[key].reblogged_by.length
-              ? state.list[key].reblogged_by
-              : action.payload.reblogged_by,
+            reblogged_by:
+              state.list[key] && state.list[key].reblogged_by.length
+                ? state.list[key].reblogged_by
+                : action.payload.reblogged_by,
             author,
             id: key,
           },

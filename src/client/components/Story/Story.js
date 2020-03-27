@@ -339,7 +339,6 @@ class Story extends React.Component {
 
   handlePreviewClickPostModalDisplay(e) {
     e.preventDefault();
-
     const { post, history } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const elementNodeName = toLower(get(e, 'target.nodeName', ''));
