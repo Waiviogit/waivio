@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const GET_TRENDING_TOPICS = '@app/GET_TRENDING_TOPICS';
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
 export const GET_TRENDING_TOPICS_ERROR = '@app/GET_TRENDING_TOPICS_ERROR';
@@ -70,17 +69,19 @@ export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
     payload: {
       promise: Promise.all([
         fetch(
-          `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=6`,
+          // `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=6`,
+          `https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=USD&include_24hr_vol=true&include_24hr_change=true`,
         ).then(res => res.json()),
         fetch(
-          `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=BTC&limit=6`,
+          // `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=BTC&limit=6`,
+          `https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=BTC&include_24hr_vol=true&include_24hr_change=true`,
         ).then(res => res.json()),
       ]).then(response => {
         const usdPriceHistory = get(response, 0, {});
-        const btcPriceHistory = get(response, 1, {});
+        const btcPriceHistory = get(response, 0, {});
         return {
-          usdPriceHistory,
-          btcPriceHistory,
+          usdPriceHistory: usdPriceHistory[symbol],
+          btcPriceHistory: btcPriceHistory[symbol],
           symbol,
         };
       }),
