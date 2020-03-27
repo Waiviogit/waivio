@@ -10,7 +10,7 @@ import WeightTag from '../../../../../client/components/WeightTag';
 import { getFieldWithMaxWeight } from '../../../../../client/object/wObjectHelper';
 import DEFAULTS from '../../../../../client/object/const/defaultValues';
 import { objectFields as objectTypes } from '../../../../../common/constants/listOfFields';
-import TradeButtons from '../../TradeButtons/TradeButtons';
+import PostQuotation from "../../../PostQuotation";
 import './instrumentCardView.less';
 
 const InstrumentCardView = ({
@@ -95,12 +95,7 @@ const InstrumentCardView = ({
                 </span>
               )}
             </div>
-            {showTradeButtons && (
-              <TradeButtons
-                className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-                quoteSecurity={wObject.chartid}
-              />
-            )}
+             {showTradeButtons && <PostQuotation className="InstrumentCardView__buttons" caller="od-dp" quoteSecurity={wObject.chartid}/>}
           </div>
         </div>
       </div>
