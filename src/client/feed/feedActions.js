@@ -57,7 +57,7 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
 
   const doApiRequest = () => {
     if (category === 'wia_feed') {
-      return ApiClient.getFeedContentByObject('vmf-wtrade', limit, user_languages);
+      return ApiClient.getFeedContentByObject('xka-crypto-ia-wtrade', limit, user_languages);
     }
     return ApiClient.getFeedContent(sortBy, {
       category: sortBy,
@@ -90,7 +90,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const doApiRequest = () => {
     if (category === 'wia_feed') {
       return ApiClient.getMoreFeedContentByObject({
-        authorPermlink: 'vmf-wtrade',
+        authorPermlink: 'xka-crypto-ia-wtrade',
         skip: feedContent.length,
         limit,
         user_languages,

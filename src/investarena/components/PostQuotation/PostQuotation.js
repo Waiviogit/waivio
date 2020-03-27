@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import TradeButton from "../TradeButton";
+import TradeButton from '../TradeButton';
 import './PostQuotation.less';
 
 const propTypes = {
@@ -13,11 +13,13 @@ const propTypes = {
   toggleModal: PropTypes.func.isRequired,
 
   /* passed props */
+  className: PropTypes.string,
   caller: PropTypes.string.isRequired,
   // quoteSecurity: PropTypes.string.isRequired, // used in connect to get quote
 };
 
 const PostQuotation = ({
+  className,
   quote,
   quoteSettings,
   platformName,
@@ -33,15 +35,18 @@ const PostQuotation = ({
     }
   }, [platformName, quoteSettings]);
   return isAuthenticated && quoteSettings ? (
-    <div className="st-post-quotation-wrap">
+    <div className={`st-post-quotation-wrap ${className}`}>
       {platformName !== 'widgets' ? (
         <React.Fragment>
-          <TradeButton type="buy" onClick={handleButtonClick}/>
-          <TradeButton type="sell" onClick={handleButtonClick}/>
+          <TradeButton type="buy" onClick={handleButtonClick} />
+          <TradeButton type="sell" onClick={handleButtonClick} />
         </React.Fragment>
       ) : (
         <TradeButton type="broker" onClick={handleButtonClick}>
-          <FormattedMessage id="headerAuthorized.connectToBeaxy" defaultMessage="Connect to beaxy"/>
+          <FormattedMessage
+            id="headerAuthorized.connectToBeaxy"
+            defaultMessage="Connect to beaxy"
+          />
         </TradeButton>
       )}
     </div>
@@ -49,5 +54,8 @@ const PostQuotation = ({
 };
 
 PostQuotation.propTypes = propTypes;
+PostQuotation.defaultProps = {
+  className: '',
+};
 
 export default PostQuotation;

@@ -1,9 +1,7 @@
 import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const GET_TRENDING_TOPICS = '@app/GET_TRENDING_TOPICS';
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
 export const GET_TRENDING_TOPICS_ERROR = '@app/GET_TRENDING_TOPICS_ERROR';
@@ -48,19 +46,6 @@ export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
     payload: { promise: steemAPI.sendAsync('get_reward_fund', ['post']) },
   });
 
-// export const getTrendingTopics = () => (dispatch, getState, { steemAPI }) => {
-//   dispatch({
-//     type: GET_TRENDING_TOPICS,
-//     payload: {
-//       promise: steemAPI.sendAsync('get_trending_tags', [undefined, 50]).then(result =>
-//         Object.values(result)
-//           .map(tag => tag.name)
-//           .filter(tag => tag !== ''),
-//       ),
-//     },
-//   });
-// };
-
 export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
   if (refresh) {
     dispatch(refreshCryptoPriceHistory(symbol));
@@ -68,22 +53,16 @@ export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
   dispatch({
     type: GET_CRYPTO_PRICE_HISTORY.ACTION,
     payload: {
-      promise: Promise.all([
-        fetch(
-          `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=6`,
-        ).then(res => res.json()),
-        fetch(
-          `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=BTC&limit=6`,
-        ).then(res => res.json()),
-      ]).then(response => {
-        const usdPriceHistory = _.get(response, 0, {});
-        const btcPriceHistory = _.get(response, 1, {});
-        return {
-          usdPriceHistory,
-          btcPriceHistory,
-          symbol,
-        };
-      }),
+      promise: fetch(
+        `https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=USD&include_24hr_vol=true&include_24hr_change=true`,
+      )
+        .then(res => res.json())
+        .then(response => {
+          return {
+            usdPriceHistory: response[symbol],
+            symbol,
+          };
+        }),
     },
   });
 };

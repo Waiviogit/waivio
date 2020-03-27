@@ -5,7 +5,7 @@ import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
 
-const getAmountValue = amount => {
+export const getAmountValue = amount => {
   if (typeof amount === 'string') {
     return Number(amount.replace(/,/g, ''));
   } else if (typeof amount === 'number') {
@@ -57,9 +57,9 @@ export class PlatformHelper {
   }
   static calculateTotalPrice(amount, side, quote) {
     const amountValue = getAmountValue(amount);
-    const price = side === 'buy' && quote.askPrice || side === 'sell' && quote.bidPrice || 0;
+    const price = (side === 'buy' && quote.askPrice) || (side === 'sell' && quote.bidPrice) || 0;
     return round(amountValue * price, 8);
-  };
+  }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -428,7 +428,7 @@ export class PlatformHelper {
       return exponentialNumber.toFixed(exponent);
     }
     return exponentialNumber.toString();
-  };
+  }
 }
 
 export const mutateObject = wobjects =>
@@ -538,13 +538,26 @@ export const getHoldingsByAccounts = (
     ),
   );
 
-export const getAmountChecker = side => (amount, walletBalance, totalPrice) => {
+export const getAmountChecker = side => (
+  amount,
+  walletBalance,
+  totalPrice,
+  { minimumQuantity, maximumQuantity },
+) => {
   const amountValue = getAmountValue(amount);
   switch (side) {
     case 'buy':
-      return totalPrice <= walletBalance;
+      return (
+        totalPrice <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
     case 'sell':
-      return amountValue <= walletBalance;
+      return (
+        amountValue <= walletBalance &&
+        amountValue <= maximumQuantity &&
+        amountValue >= minimumQuantity
+      );
     default:
       return false;
   }
