@@ -1041,7 +1041,7 @@ export const bxyKeepAlive = (sessionId, umSession) =>
 
 const singleton = Symbol();
 const singletonEnforcer = Symbol();
-const keepAliveDelay = 20000;
+const keepAliveDelay = 30000;
 class WaivioApiClient {
   constructor(enforcer) {
     if (enforcer !== singletonEnforcer) {
