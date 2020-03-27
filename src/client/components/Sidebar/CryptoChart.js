@@ -41,8 +41,6 @@ class CryptoChart extends React.Component {
       currentCrypto,
       displayChart: false,
     };
-
-    this.toggleDisplayChart = this.toggleDisplayChart.bind(this);
   }
 
   componentDidMount() {
