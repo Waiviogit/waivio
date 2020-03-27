@@ -14,6 +14,7 @@ import './SidebarContentBlock.less';
   state => ({
     randomExperts: store.getRandomExperts(state),
     randomExpertsLoaded: store.getRandomExpertsLoaded(state),
+    isAuthenticated: store.getIsAuthenticated(state),
   }),
   { getRandomExperts },
 )
@@ -22,10 +23,20 @@ class InterestingPeople extends React.Component {
     randomExperts: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
     randomExpertsLoaded: PropTypes.bool.isRequired,
     getRandomExperts: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
     if (!this.props.randomExpertsLoaded) {
+      this.props.getRandomExperts();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      !this.props.randomExpertsLoaded &&
+      prevProps.isAuthenticated !== this.props.isAuthenticated
+    ) {
       this.props.getRandomExperts();
     }
   }
