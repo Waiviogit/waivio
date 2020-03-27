@@ -82,6 +82,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           userMetaData,
           socialNetwork: 'beaxy',
           isGuestUser: true,
+          isBeaxyUser: true,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));

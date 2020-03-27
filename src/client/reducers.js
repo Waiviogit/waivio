@@ -76,6 +76,7 @@ export const getAuthenticateduserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
+export const isBeaxyUser = state => fromAuth.isBeaxyUser(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
