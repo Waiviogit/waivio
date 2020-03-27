@@ -37,17 +37,20 @@ const TradingForm = ({
           <i className="iconfont icon-prompt info-icon" />
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
-          <span className="fw5">
-            {`${wallet.balance} ${wallet.currency}`}
-          </span>
+          <span className="fw5">{`${wallet.balance} ${wallet.currency}`}</span>
         </div>
       </div>
 
       <div className="st-trading-form-amount flex-info-block justify-content-center">
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
-        <div className={classNames("st-trading-form-amount__input", { danger: !isAmountValid})}>
-          <input type="text" value={amount} onChange={handleChangeInput} disabled={!isWalletsExist}/>
+        <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
+          <input
+            type="text"
+            value={amount}
+            onChange={handleChangeInput}
+            disabled={!isWalletsExist}
+          />
         </div>
         <span>{baseCurrency}</span>
       </div>

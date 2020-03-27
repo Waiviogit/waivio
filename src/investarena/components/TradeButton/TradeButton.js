@@ -7,7 +7,7 @@ const TradeButton = ({ children, size, type, onClick }) => {
   return (
     <div
       role="presentation"
-      className={ classNames(`st-trade-button ${type}`, { large: size === 'large' })}
+      className={classNames(`st-trade-button ${type}`, { large: size === 'large' })}
       onClick={onClick}
     >
       {children || type}

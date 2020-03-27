@@ -57,9 +57,9 @@ export class PlatformHelper {
   }
   static calculateTotalPrice(amount, side, quote) {
     const amountValue = getAmountValue(amount);
-    const price = side === 'buy' && quote.askPrice || side === 'sell' && quote.bidPrice || 0;
+    const price = (side === 'buy' && quote.askPrice) || (side === 'sell' && quote.bidPrice) || 0;
     return round(amountValue * price, 8);
-  };
+  }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
     const curr1 =
@@ -428,7 +428,7 @@ export class PlatformHelper {
       return exponentialNumber.toFixed(exponent);
     }
     return exponentialNumber.toString();
-  };
+  }
 }
 
 export const mutateObject = wobjects =>
