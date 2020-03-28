@@ -93,6 +93,19 @@ const Proposition = ({
           setModalDetailsOpen(!isModalDetailsOpen);
           history.push(`/rewards/reserved`);
         }
+      })
+      .catch(e => {
+        console.log(e.error_description);
+        if (e.error_description) {
+          message.error(e.error_description);
+        } else {
+          message.error(
+            intl.formatMessage({
+              id: 'something_went_wrong',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        }
       });
   };
 

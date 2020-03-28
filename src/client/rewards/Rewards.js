@@ -285,8 +285,8 @@ class Rewards extends React.Component {
         return { isAssign: true };
       })
       .catch(e => {
-        message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: false });
+        throw e;
       });
   };
 
