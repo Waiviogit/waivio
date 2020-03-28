@@ -51,7 +51,6 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
-    isReserved: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -175,21 +174,19 @@ class CampaignFooter extends React.Component {
   toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
-    const { proposedWobj, discardPr, isReserved } = this.props;
-    discardPr(proposedWobj)
-      .then(() => {
-        if (isReserved) this.toggleModal();
-      })
-      .then(() => {
-        if (isReserved)
-          message.success(
-            this.props.intl.formatMessage({
-              id: 'discarded_successfully',
-              defaultMessage: 'Reservation released. It will be available for reservation soon.',
-            }),
-          );
-      })
-      .then(() => this.props.history.push(`/rewards/active`));
+    const { proposedWobj, discardPr } = this.props;
+    discardPr(proposedWobj).then(({ isAssign }) => {
+      if (!isAssign) {
+        this.toggleModal();
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Reservation released. It will be available for reservation soon.',
+          }),
+          this.props.history.push(`/rewards/active`),
+        );
+      }
+    });
   };
 
   handlePostPopoverMenuClick(key) {
@@ -224,7 +221,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -243,10 +240,10 @@ class CampaignFooter extends React.Component {
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          {this.state.sliderVisible && (
+          {sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
-          {!this.state.sliderVisible && (
+          {!sliderVisible && (
             <CampaignButtons
               daysLeft={daysLeft}
               toggleModalDetails={toggleModalDetails}
@@ -266,7 +263,7 @@ class CampaignFooter extends React.Component {
             />
           )}
         </div>
-        {this.state.sliderVisible && (
+        {sliderVisible && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}

@@ -78,7 +78,6 @@ class Rewards extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
-    // pendingUpdateSuccess: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -101,6 +100,7 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
+    isAssign: false,
   };
 
   componentDidMount() {
@@ -277,11 +277,16 @@ class Rewards extends React.Component {
           objPermlink,
           companyAuthor,
         );
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: true,
+        });
+        return { isAssign: true };
       })
       .catch(e => {
         message.error(e.error_description);
-        this.setState({ loadingAssignDiscard: false });
+        this.setState({ loadingAssignDiscard: false, isAssign: false });
       });
   };
 
@@ -326,18 +331,23 @@ class Rewards extends React.Component {
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: false,
+        });
+        return { isAssign: false };
       })
       .catch(e => {
         console.log(e.toString());
         message.error(e.error_description);
-        this.setState({ loadingAssignDiscard: false });
+        this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
   };
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, loadingAssignDiscard } = this.state;
+    const { propositions, loadingAssignDiscard, isAssign } = this.state;
     const { intl } = this.props;
     if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -374,6 +384,7 @@ class Rewards extends React.Component {
                 key={`${wobj.object.author_permlink}`}
                 assigned={wobj.assigned}
                 history={this.props.history}
+                isAssign={isAssign}
               />
             ),
         ),

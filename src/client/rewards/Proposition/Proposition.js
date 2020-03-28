@@ -17,7 +17,6 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
@@ -33,6 +32,7 @@ const Proposition = ({
   getSingleComment,
   authorizedUserName,
   history,
+  isAssign,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
@@ -70,8 +70,6 @@ const Proposition = ({
     );
   };
 
-  console.log('isReserved', isReserved);
-
   const reserveOnClickHandler = () => {
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
@@ -89,9 +87,13 @@ const Proposition = ({
           companyId: proposition._id,
         }),
       )
-      .then(() => setReservation(!isReserved))
-      .then(() => setModalDetailsOpen(!isModalDetailsOpen))
-      .then(() => history.push(`/rewards/reserved`));
+      .then(({ isAssign }) => {
+        setReservation(true);
+        if (isAssign) {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          history.push(`/rewards/reserved`);
+        }
+      });
   };
 
   return (
@@ -104,7 +106,7 @@ const Proposition = ({
       </div>
       <div
         className={classNames('Proposition__footer', {
-          'justify-end': assigned === null || isReserved,
+          'justify-end': assigned === null || isAssign,
         })}
       >
         {/*Temporary fix until changes on backend will be made*/}
@@ -121,11 +123,11 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
-            isReserved={isReserved}
+            isAssign={isAssign}
           />
         ) : (
           <React.Fragment>
-            {assigned !== null && !assigned && !isReserved && (
+            {assigned !== null && !assigned && !isAssign && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
@@ -161,7 +163,6 @@ const Proposition = ({
         )}
       </div>
       <Details
-        isReserved={isReserved}
         isModalDetailsOpen={isModalDetailsOpen}
         objectDetails={proposition}
         toggleModal={toggleModalDetails}
@@ -171,6 +172,7 @@ const Proposition = ({
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
+        isAssign={isAssign}
       />
     </div>
   );
