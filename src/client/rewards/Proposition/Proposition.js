@@ -95,7 +95,6 @@ const Proposition = ({
         }
       })
       .catch(e => {
-        console.log(e.error_description);
         if (e.error_description) {
           message.error(e.error_description);
         } else {
