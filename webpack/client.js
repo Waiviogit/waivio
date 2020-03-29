@@ -8,7 +8,6 @@ const paths = require('../scripts/paths');
 const Uglifyjs = require('uglifyjs-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -38,7 +37,6 @@ module.exports = function createConfig(env = 'dev') {
     context: process.cwd(),
     plugins: [
       DEFINE_PLUGIN,
-      new UnusedFilesWebpackPlugin(),
       new AssetsPlugin({
         path: paths.build,
         filename: 'assets.json',

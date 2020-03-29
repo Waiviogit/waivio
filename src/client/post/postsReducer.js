@@ -142,7 +142,12 @@ const posts = (state = initialState, action) => {
         }
         pendingLikes = omit(state.pendingLikes, key);
       }
-
+      let rebloggedBy = '';
+      if (state.list[key] && state.list[key].reblogged_by) {
+        rebloggedBy = state.list[key].reblogged_by.length
+          ? state.list[key].reblogged_by
+          : action.payload.reblogged_by;
+      }
       return {
         ...state,
         list: {
@@ -150,9 +155,7 @@ const posts = (state = initialState, action) => {
           [key]: {
             ...state.list[key],
             ...action.payload,
-            reblogged_by: state.list[key].reblogged_by.length
-              ? state.list[key].reblogged_by
-              : action.payload.reblogged_by,
+            reblogged_by: rebloggedBy,
             author,
             id: key,
           },
