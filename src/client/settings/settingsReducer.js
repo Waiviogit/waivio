@@ -9,7 +9,7 @@ const initialState = {
   votingPower: false,
   votePercent: 10000,
   showNSFWPosts: false,
-  nightmode: false,
+  nightmode: true,
   rewriteLinks: false,
   loading: false,
   upvoteSetting: false,
