@@ -8,7 +8,6 @@ const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const Uglifyjs = require('uglifyjs-webpack-plugin');
-const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -75,7 +74,6 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new webpack.WatchIgnorePlugin([paths.assets]),
-      new UnusedFilesWebpackPlugin(),
       new HardSourceWebpackPlugin(),
       new StartServerPlugin({
         name: 'server.js',
