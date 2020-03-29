@@ -78,6 +78,7 @@ class Rewards extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
+    pendingUpdateSuccess: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -154,7 +155,7 @@ class Rewards extends React.Component {
       this.props.history.push(`/rewards/all`);
     }
     if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
-      pendingUpdateSuccess();
+      this.props.pendingUpdateSuccess();
       delay(5000).then(() => {
         this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       });
