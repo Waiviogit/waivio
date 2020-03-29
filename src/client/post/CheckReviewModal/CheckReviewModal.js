@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get, memoize } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import { getObjectUrl } from '../../helpers/postHelpers';
+import { Link } from 'react-router-dom';
 import './CheckReviewModal.less';
 
 const getReviewRequirements = memoize((campaign, authorName) => ({
@@ -39,7 +39,7 @@ const CheckReviewModal = ({
   onEdit,
   onSubmit,
 }) => {
-  const { postRequirements, authorRequirements } = getReviewRequirements(campaign, reviewer.name);
+  const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
   const secondaryObject = linkedObjects.find(obj => obj.id === postRequirements.secondaryObject);
   const primaryObject = linkedObjects.find(obj => obj.id === postRequirements.primaryObject);
   const hasMinPhotos =
@@ -106,22 +106,16 @@ const CheckReviewModal = ({
           ).
         </div>
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" onClick={onSubmit} size="large">
-            {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
-          </Button>
           <Button htmlType="button" onClick={onCancel} size="large">
             {intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+          </Button>
+          <Button htmlType="button" type="primary" onClick={onSubmit} size="large">
+            {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
           </Button>
         </div>
       </React.Fragment>
     ) : (
       <React.Fragment>
-        <div className="check-review-modal__paragraph fw5">
-          {intl.formatMessage({
-            id: `check_review_requirements_title`,
-            defaultMessage: 'This review does not meet some of the formal requirements.',
-          })}
-        </div>
         <div className="check-review-modal__list">
           <div className="check-review-modal__list-title fw5">
             {intl.formatMessage({
@@ -145,57 +139,37 @@ const CheckReviewModal = ({
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(secondaryObject && secondaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_secondaryObject`,
-                defaultMessage: 'Link to {secondaryObjectName}: {secondaryObjectUrl}',
-              },
-              {
-                secondaryObjectName: postRequirements.secondaryObject,
-                secondaryObjectUrl:
-                  getObjectUrl(secondaryObject && secondaryObject.id) || 'not found',
-              },
-            )}
+            {intl.formatMessage({
+              id: `check_review_secondaryObject_link`,
+              defaultMessage: 'Link to ',
+            })}
+            <Link className="ml1" to={`/object/${postRequirements.secondaryObject}`}>
+              {postRequirements.secondaryObject}
+            </Link>
+            :
+            <Link
+              to={`/object/${postRequirements.secondaryObject}`}
+            >{` www.waivio.com/object/${postRequirements.secondaryObject}`}</Link>
+            ;
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(primaryObject && primaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_primaryObject`,
-                defaultMessage: 'Link to {primaryObjectName}: {primaryObjectUrl}',
-              },
-              {
-                primaryObjectName: postRequirements.primaryObject,
-                primaryObjectUrl: getObjectUrl(primaryObject && primaryObject.id) || 'not found',
-              },
-            )}
-          </div>
-          <div className="check-review-modal__list">
-            <div className="check-review-modal__list-title fw5">
-              {intl.formatMessage({
-                id: `check_review_author_requirements`,
-                defaultMessage: 'Author requirements',
-              })}
-              :
-            </div>
-            {Object.keys(authorRequirements).map(optionName => (
-              <div className="check-review-modal__list-item" key={optionName}>
-                <Icon type="check-square" style={{ color: '#30b580' }} />
-                {intl.formatMessage(
-                  {
-                    id: `check_review_${optionName}`,
-                    defaultMessage: `${optionName} - ${authorRequirements[optionName]}`,
-                  },
-                  {
-                    [optionName]: authorRequirements[optionName],
-                  },
-                )}
-              </div>
-            ))}
+            {intl.formatMessage({
+              id: `check_review_primaryObject_link`,
+              defaultMessage: 'Link to ',
+            })}
+            <Link className="ml1" to={`/object/${postRequirements.primaryObject}`}>
+              {postRequirements.primaryObject}
+            </Link>
+            :
+            <Link
+              to={`/object/${postRequirements.primaryObject}`}
+            >{` www.waivio.com/object/${postRequirements.primaryObject}`}</Link>
+            ;
           </div>
         </div>
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" onClick={onEdit} size="large">
+          <Button htmlType="button" type="primary" onClick={onEdit} size="large">
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
           </Button>
         </div>

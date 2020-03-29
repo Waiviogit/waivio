@@ -26,7 +26,6 @@ export const GET_RANDOM_EXPERTS_ERROR = '@users/GET_RANDOM_EXPERTS_ERROR';
 
 export const getRandomExperts = () => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
-
   dispatch({
     type: GET_RANDOM_EXPERTS,
     payload: ApiClient.getTopUsers(user, { isRandom: true }),

@@ -141,14 +141,10 @@ class Wallet extends Component {
     const actions = get(usersAccountHistory, userKey, []);
     const currentSteemRate = get(
       cryptosPriceHistory,
-      `${HIVE.symbol}.priceDetails.currentUSDPrice`,
+      `${HIVE.coinGeckoId}.usdPriceHistory.usd`,
       null,
     );
-    const currentSBDRate = get(
-      cryptosPriceHistory,
-      `${HBD.symbol}.priceDetails.currentUSDPrice`,
-      null,
-    );
+    const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';

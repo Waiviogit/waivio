@@ -9,6 +9,7 @@
   .ant-modal {
     top: 24px;
   }
+
   .ant-modal-body {
     padding-top: 0.75rem;
     border: 1px solid @orange-hot;
@@ -66,6 +67,12 @@
 
   &__criteria-row {
     display: flex;
+
+    .ant-checkbox-inner::after {
+      border-color: @orange-hot !important;
+      -webkit-animation-name: none;
+      animation-name: none;
+    }
 
     .ant-checkbox-wrapper {
       font-size: 0.75rem;
