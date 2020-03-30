@@ -1061,5 +1061,6 @@
   "mutual_follow": "mutual following",
   "following_user": "following",
   "receivables": "Receivables",
-  "no_user_message": "We have not users with this name, please try again."
+  "no_user_message": "We have not users with this name, please try again.",
+  "reserve_period_thirty_days": "The reservation period must not exceed thirty days"
 }
