@@ -196,6 +196,8 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
+export const SET_PENDING_UPDATE = createAsyncActionType('@user/SET_PANDING_UPDATE');
+
 export const assignProposition = ({
   companyAuthor,
   companyPermlink,
@@ -222,14 +224,23 @@ export const assignProposition = ({
       }),
     },
   ];
-
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
+
+export const pendingUpdateSuccess = () => dispatch =>
+  dispatch({
+    type: SET_PENDING_UPDATE.SUCCESS,
+  });
 
 export const declineProposition = ({
   companyAuthor,
@@ -260,6 +271,11 @@ export const declineProposition = ({
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
