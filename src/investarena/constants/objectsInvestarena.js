@@ -7,6 +7,7 @@ export const supportedObjectTypes = [OBJ_TYPE.CRYPTOPAIRS];
 export const supportedObjectFields = [
   objectFields.button,
   objectFields.name,
+  objectFields.description,
   objectFields.newsFilter,
   objectFields.parent,
   objectFields.rating,

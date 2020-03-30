@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import iconsSvg from '../../../../common/constants/svgIcons';
 import './BeaxyAuthForm.less';
 
 const BeaxyAuthForm = ({
@@ -85,10 +86,8 @@ const BeaxyAuthForm = ({
   };
 
   return (
-    <React.Fragment>
-      <div className="bxy-sing-in-form__logo">
-        <img src="/images/investarena/beaxy-caption-logo.svg" alt="Beaxy" className="icon-beaxy" />
-      </div>
+    <div className="bxy-sing-in-form">
+      <div className="bxy-sing-in-form__logo">{iconsSvg.beaxy}</div>
       <div className="bxy-sing-in-form__error-msg">
         {Boolean(authError) && (
           <FormattedMessage id={`authForm_${authError}`} defaultMessage="Login error" />
@@ -182,7 +181,7 @@ const BeaxyAuthForm = ({
           </Button>
         </Form.Item>
       </Form>
-    </React.Fragment>
+    </div>
   );
 };
 

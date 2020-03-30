@@ -4,7 +4,7 @@
     "": "www.waivio.com",
     "host": "waiviodev.com",
     "": "localhost:8093",
-    "appName": "crypto-investarena"
+    "appName": "beaxy"
   },
   "test": {
     "protocol": "https://",
@@ -14,12 +14,12 @@
   "staging": {
     "protocol": "https://",
     "host": "waiviodev.com",
-    "appName": "crypto-investarena"
+    "appName": "beaxy"
   },
   "production": {
     "protocol": "https://",
     "host": "www.waivio.com",
-    "appName": "crypto-investarena"
+    "appName": "beaxy"
   },
   "apiPrefix": "/api",
   "bxyApiPrefix": "waivio-posts",
@@ -29,6 +29,7 @@
     "createObject": "/create-object",
     "appendObject": "/append-object"
   },
+  "hotNewsApp": "",
   "blog": "/blog",
   "createObject": "/create/object",
   "getObjects": "/wobject",

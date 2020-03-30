@@ -1,10 +1,10 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
+import 'beautiful-react-redux/patch';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
-
 import steemConnectAPI from '../../client/steemConnectAPI';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
