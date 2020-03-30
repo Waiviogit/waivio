@@ -817,7 +817,7 @@ export const getAccessToken = (token, social, regData) => {
 
   return fetch(`${config.baseUrl}${config.auth}/${social}`, {
     method: 'POST',
-    headers,
+    headers: { ...headers, nightmode: true },
     body: JSON.stringify(body),
   })
     .then(data => {
@@ -965,7 +965,7 @@ export const beaxyLogin = body => {
   const response = {};
   return fetch(`${config.baseUrl}${config.auth}/beaxy`, {
     method: 'POST',
-    headers,
+    headers: { ...headers, nightmode: true },
     body: JSON.stringify(body),
   })
     .then(data => {
