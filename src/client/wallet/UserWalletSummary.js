@@ -93,24 +93,31 @@ const UserWalletSummary = ({
   beaxyBalance,
   showMore,
   isShowMore,
+  hasZeroBalances,
 }) => (
   <React.Fragment>
     {!!beaxyBalance.length && (
       <React.Fragment>
-        <div className="UserWalletSummary">
+        <div className="UserWalletSummary mb1">
           {beaxyBalance.map(item => (
             <CurrencyItem item={item} />
           ))}
         </div>
-        <div className="UserWalletSummary__show-more">
-          <div className="UserWalletSummary__show-more-btn" onClick={showMore} role="presentation">
-            {!isShowMore ? (
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-            ) : (
-              <FormattedMessage id="show_less" defaultMessage="View less" />
-            )}
+        {!hasZeroBalances && (
+          <div className="UserWalletSummary__show-more mb1">
+            <div
+              className="UserWalletSummary__show-more-btn"
+              onClick={showMore}
+              role="presentation"
+            >
+              {!isShowMore ? (
+                <FormattedMessage id="show_more" defaultMessage="Show more" />
+              ) : (
+                <FormattedMessage id="show_less" defaultMessage="View less" />
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </React.Fragment>
     )}
     <div className="UserWalletSummary">
@@ -234,6 +241,8 @@ UserWalletSummary.propTypes = {
   isGuest: PropTypes.bool,
   beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
   showMore: PropTypes.func,
+  isShowMore: PropTypes.bool,
+  hasZeroBalances: PropTypes.bool,
 };
 
 UserWalletSummary.defaultProps = {
@@ -245,6 +254,7 @@ UserWalletSummary.defaultProps = {
   balance: 0,
   beaxyBalance: [],
   isShowMore: false,
+  hasZeroBalances: true,
   showMore: () => {},
 };
 
