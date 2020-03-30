@@ -25,7 +25,7 @@ const BeaxyAuthForm = ({
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
-  const handleAuthSuccess = (response) => {
+  const handleAuthSuccess = response => {
     const { payload, user, token, expiration, umSession } = response;
     if (get(user, ['user_metadata', 'new_user'], false)) {
       const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
@@ -37,9 +37,7 @@ const BeaxyAuthForm = ({
         displayName: user.alias,
       });
     } else {
-      dispatch(
-        onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
-      );
+      dispatch(onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }));
     }
   };
 
