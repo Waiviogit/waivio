@@ -87,9 +87,7 @@ const BeaxyAuthForm = ({
 
   return (
     <div className="bxy-sing-in-form">
-      <div className="bxy-sing-in-form__logo">
-        { iconsSvg.beaxy }
-      </div>
+      <div className="bxy-sing-in-form__logo">{iconsSvg.beaxy}</div>
       <div className="bxy-sing-in-form__error-msg">
         {Boolean(authError) && (
           <FormattedMessage id={`authForm_${authError}`} defaultMessage="Login error" />

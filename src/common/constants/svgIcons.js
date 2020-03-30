@@ -1,7 +1,14 @@
-import React from "react";
+import React from 'react';
 
 const bxyLogo = (
-  <svg className="beaxy-logo" width="150" height="38" viewBox="0 0 150 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    className="beaxy-logo"
+    width="150"
+    height="38"
+    viewBox="0 0 150 38"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       className="beaxy-logo__text"
       fillRule="evenodd"
@@ -23,5 +30,5 @@ const bxyLogo = (
 );
 
 export default {
-    beaxy: bxyLogo,
+  beaxy: bxyLogo,
 };
