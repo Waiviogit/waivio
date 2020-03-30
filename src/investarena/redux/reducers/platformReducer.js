@@ -105,6 +105,7 @@ export default function(state = initialState, action) {
         userStatistics: {},
         userWallet: {},
         walletMap: {},
+        accountsMap: {},
       };
     case AUTHORIZE_BROKER_REQUEST:
     case FORGOT_PASS_BROKER_REQUEST:
