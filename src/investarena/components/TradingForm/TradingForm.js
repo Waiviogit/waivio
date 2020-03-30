@@ -17,6 +17,7 @@ const TradingForm = ({
   fees,
   quoteSettings,
   isWalletsExist,
+  platformName,
   wallet,
   handleChangeInput,
   createMarketOrder,
@@ -38,7 +39,7 @@ const TradingForm = ({
       message.error(`You don't have a ${baseCurrency} wallet`);
     }
   };
-  return (
+  return platformName !== 'widgets' ? (
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
@@ -88,7 +89,7 @@ const TradingForm = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 TradingForm.propTypes = {
@@ -112,6 +113,7 @@ TradingForm.propTypes = {
   }).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
   isAmountValid: PropTypes.bool.isRequired,
+  platformName: PropTypes.string.isRequired,
   wallet: PropTypes.shape({
     id: PropTypes.string,
     value: PropTypes.number,
