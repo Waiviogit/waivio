@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../helpers/wObjectHelper';
 import './ObjectMenu.less';
@@ -72,7 +72,7 @@ class ObjectMenu extends React.Component {
             renderView={({ style, ...props }) => (
               <div style={{ ...style, marginBottom: '-20px' }} {...props} />
             )}
-            style={{ width: '100%', height: 46, overflowY: 'hidden' }}
+            style={{ width: '100%', height: 46 }}
           >
             <ul className="ObjectMenu__menu center">
               <li

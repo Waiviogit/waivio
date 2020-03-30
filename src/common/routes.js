@@ -288,10 +288,6 @@ const routes = [
         component: Post,
       },
       {
-        path: '/:category?/@:author/permlink/:original',
-        component: Post,
-      },
-      {
         path: '/search',
         component: Search,
       },

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
-import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { getAuthenticatedUser } from '../../reducers';
 import './TopNavigation.less';
 
@@ -45,7 +45,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
     <div className="TopNavigation">
       <div className="container menu-layout">
         <Scrollbars
-          style={{ width: '100%', height: 46, overflowY: 'hidden' }}
+          style={{ width: '100%', height: 46 }}
           universal
           autoHide
           renderView={({ style }) => <div style={{ ...style, marginBottom: '-20px' }} />}

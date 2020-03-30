@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import './UserMenu.less';
 
 class UserMenu extends React.Component {
@@ -54,7 +54,7 @@ class UserMenu extends React.Component {
             renderView={({ style, ...props }) => (
               <div style={{ ...style, marginBottom: '-20px' }} {...props} />
             )}
-            style={{ width: '100%', height: 46, overflowY: 'hidden' }}
+            style={{ width: '100%', height: 46 }}
           >
             <ul className="UserMenu__menu center">
               <li

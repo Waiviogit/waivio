@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
-import { HBD } from '../../common/constants/cryptos';
 
 export const displayLimit = 10;
 
@@ -156,9 +156,8 @@ export const getCurrentUSDPrice = () => {
   if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
   const currentUSDPrice =
     cryptosPriceHistory &&
-    cryptosPriceHistory[HBD.coinGeckoId] &&
-    cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory &&
-    cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd;
+    cryptosPriceHistory.HIVE &&
+    cryptosPriceHistory.HIVE.priceDetails.currentUSDPrice;
   return currentUSDPrice;
 };
 
