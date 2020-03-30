@@ -156,7 +156,7 @@ class Rewards extends React.Component {
     }
     if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
       this.props.pendingUpdateSuccess();
-      delay(5000).then(() => {
+      delay(6000).then(() => {
         this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       });
     }
