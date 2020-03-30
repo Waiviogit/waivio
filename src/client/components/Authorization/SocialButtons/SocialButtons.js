@@ -15,7 +15,7 @@ const SocialButtons = ({ responseSocial }) => (
       className="ModalSignUp__social-btn"
     />
     <FacebookLogin
-      appId="754038848413420"
+      appId="249047489455025"
       autoLoad={false}
       fields="name,email,picture"
       callback={response => responseSocial(response, 'facebook')}
