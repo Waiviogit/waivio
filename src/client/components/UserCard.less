@@ -6,7 +6,7 @@
   align-items: center;
   padding-bottom: 14px;
   padding-top: 14px;
-  border-top: @base-border;
+  border-bottom: @base-border;
 
   .Follow {
     margin-left: 8px;
@@ -14,11 +14,6 @@
 
   &:first-child {
     padding-top: 0;
-    border-top: none;
-  }
-
-  &:last-child {
-    border-bottom: none;
   }
 
   & > &__left {
@@ -49,13 +44,13 @@
 div[data-dir='rtl'] .UserCard {
   & > &__left {
     & > a:nth-child(2) {
-      margin-left: 0px;
+      margin-left: 0;
       margin-right: 8px;
     }
   }
 
   &__alt {
-    margin-left: 0px;
+    margin-left: 0;
     margin-right: 8px;
   }
 }
