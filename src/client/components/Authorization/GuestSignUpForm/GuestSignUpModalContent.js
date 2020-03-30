@@ -21,8 +21,6 @@ import './GuestSignUpForm.less';
 const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
   const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
 
-  console.log('\tGuestSignUpModalContent > ', userData);
-
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
 

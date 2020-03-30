@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import iconsSvg from '../../../../common/constants/svgIcons';
 import './BeaxyAuthForm.less';
 
 const BeaxyAuthForm = ({
@@ -25,6 +26,22 @@ const BeaxyAuthForm = ({
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
+  const handleAuthSuccess = response => {
+    const { payload, user, token, expiration, umSession } = response;
+    if (get(user, ['user_metadata', 'new_user'], false)) {
+      const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
+      firstLoginResponse({
+        userData: { user, token, expiration },
+        bxySessionData: { ...payload, umSession },
+        jsonMetadata: isError(userJsonMetadata) ? {} : userJsonMetadata,
+        userName: user.name,
+        displayName: user.alias,
+      });
+    } else {
+      dispatch(onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }));
+    }
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     validateFields((err, values) => {
@@ -33,22 +50,10 @@ const BeaxyAuthForm = ({
           setIsLoading(true);
           authRequest(values.email, values.password)
             .then(async res => {
-              const { code, status, payload, user, token, expiration, umSession } = res;
-              if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
-                setToken2FA(payload.token2fa);
-              } else if (get(user, ['user_metadata', 'new_user'], false)) {
-                const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
-                firstLoginResponse({
-                  userData: { user, token, expiration },
-                  bxySessionData: { ...payload, umSession },
-                  jsonMetadata: isError(userJsonMetadata) ? {} : userJsonMetadata,
-                  userName: user.name,
-                  displayName: user.alias,
-                });
+              if (res.code === 321 && res.status === 'TWO_FA_VERIFICATION_NEEDED') {
+                setToken2FA(res.payload.token2fa);
               } else {
-                dispatch(
-                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
-                );
+                handleAuthSuccess(res);
               }
               setAuthError(null);
             })
@@ -65,10 +70,7 @@ const BeaxyAuthForm = ({
           auth2FARequest(values.email, token2FA, values.authCode)
             .then(
               res => {
-                const { payload, user, token, expiration, umSession } = res;
-                dispatch(
-                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
-                );
+                handleAuthSuccess(res);
               },
               error => {
                 const errMessage =
@@ -84,10 +86,8 @@ const BeaxyAuthForm = ({
   };
 
   return (
-    <React.Fragment>
-      <div className="bxy-sing-in-form__logo">
-        <img src="/images/investarena/beaxy-caption-logo.svg" alt="Beaxy" className="icon-beaxy" />
-      </div>
+    <div className="bxy-sing-in-form">
+      <div className="bxy-sing-in-form__logo">{iconsSvg.beaxy}</div>
       <div className="bxy-sing-in-form__error-msg">
         {Boolean(authError) && (
           <FormattedMessage id={`authForm_${authError}`} defaultMessage="Login error" />
@@ -181,7 +181,7 @@ const BeaxyAuthForm = ({
           </Button>
         </Form.Item>
       </Form>
-    </React.Fragment>
+    </div>
   );
 };
 
