@@ -25,6 +25,22 @@ const BeaxyAuthForm = ({
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
+  const handleAuthSuccess = response => {
+    const { payload, user, token, expiration, umSession } = response;
+    if (get(user, ['user_metadata', 'new_user'], false)) {
+      const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
+      firstLoginResponse({
+        userData: { user, token, expiration },
+        bxySessionData: { ...payload, umSession },
+        jsonMetadata: isError(userJsonMetadata) ? {} : userJsonMetadata,
+        userName: user.name,
+        displayName: user.alias,
+      });
+    } else {
+      dispatch(onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }));
+    }
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     validateFields((err, values) => {
@@ -33,22 +49,10 @@ const BeaxyAuthForm = ({
           setIsLoading(true);
           authRequest(values.email, values.password)
             .then(async res => {
-              const { code, status, payload, user, token, expiration, umSession } = res;
-              if (code === 321 && status === 'TWO_FA_VERIFICATION_NEEDED') {
-                setToken2FA(payload.token2fa);
-              } else if (get(user, ['user_metadata', 'new_user'], false)) {
-                const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
-                firstLoginResponse({
-                  userData: { user, token, expiration },
-                  bxySessionData: { ...payload, umSession },
-                  jsonMetadata: isError(userJsonMetadata) ? {} : userJsonMetadata,
-                  userName: user.name,
-                  displayName: user.alias,
-                });
+              if (res.code === 321 && res.status === 'TWO_FA_VERIFICATION_NEEDED') {
+                setToken2FA(res.payload.token2fa);
               } else {
-                dispatch(
-                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
-                );
+                handleAuthSuccess(res);
               }
               setAuthError(null);
             })
@@ -65,10 +69,7 @@ const BeaxyAuthForm = ({
           auth2FARequest(values.email, token2FA, values.authCode)
             .then(
               res => {
-                const { payload, user, token, expiration, umSession } = res;
-                dispatch(
-                  onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }),
-                );
+                handleAuthSuccess(res);
               },
               error => {
                 const errMessage =
