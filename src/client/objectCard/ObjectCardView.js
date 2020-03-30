@@ -43,11 +43,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link
-              to={pathName}
-              title={goToObjTitle(objName)}
-              className="ObjectCardView__avatar"
-            >
+            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
               {avatarLayout(wObject.avatar)}
             </Link>
             <div className={`ObjectCardView__info${showSmallVersion ? ' small' : ''}`}>
@@ -68,7 +64,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 >
                   {objName}
                 </Link>
-                {wObject.weight && <WeightTag weight={wObject.weight} />}
+                {wObject.weight !== 0 ? <WeightTag weight={wObject.weight} /> : null}
               </div>
               {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
