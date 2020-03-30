@@ -34,6 +34,7 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
+  pendingUpdate: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -336,6 +337,17 @@ export default function userReducer(state = initialState, action) {
     case authActions.LOGOUT:
       return initialState;
 
+    case userActions.SET_PENDING_UPDATE.START:
+      return {
+        ...state,
+        pendingUpdate: true,
+      };
+    case userActions.SET_PENDING_UPDATE.SUCCESS:
+      return {
+        ...state,
+        pendingUpdate: false,
+      };
+
     default: {
       return state;
     }
@@ -359,3 +371,4 @@ export const getFollowingUsersUpdates = state => state.followingUpdates.usersUpd
 export const getFollowingObjectsUpdatesByType = (state, objType) =>
   get(state, ['followingUpdates', 'objectsUpdates', objType, 'related_wobjects'], []);
 export const getFollowingUpdatesFetched = state => state.followingUpdates.fetched;
+export const getPendingUpdate = state => state.pendingUpdate;

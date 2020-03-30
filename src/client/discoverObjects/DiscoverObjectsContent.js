@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _, { isEmpty, omit } from 'lodash';
 import { connect } from 'react-redux';
-import { Button, message, Modal, Tag } from 'antd';
+import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
@@ -32,8 +32,6 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
 import { assignProposition, declineProposition } from '../user/userActions';
-// eslint-disable-next-line import/extensions
-import * as apiConfig from '../../waivioApi/config';
 
 const modalName = {
   FILTERS: 'filters',
@@ -89,8 +87,6 @@ class DiscoverObjectsContent extends Component {
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
     userName: PropTypes.string.isRequired,
-    assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -182,70 +178,6 @@ class DiscoverObjectsContent extends Component {
   resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
-
-  assignPropositionHandler = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-    this.setState({ loadingAssign: true });
-    this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
-
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssign: true });
-    this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(e => {
-        console.log(e.toString());
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
 
   render() {
     const { isTypeHasFilters, isModalOpen, modalTitle, loadingAssign } = this.state;

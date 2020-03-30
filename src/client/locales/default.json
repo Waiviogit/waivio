@@ -1062,5 +1062,6 @@
   "following_user": "following",
   "receivables": "Receivables",
   "no_user_message": "We have not users with this name, please try again.",
-  "reserve_period_thirty_days": "The reservation period must not exceed thirty days"
+  "assigned_successfully_update": "Assigned successfully. Your new reservation will be available soon.",
+  "discarded_successfully": "Reservation released. Reward will be available for reservation soon."
 }
