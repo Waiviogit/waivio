@@ -287,41 +287,37 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        {isListObject && (
+        {isListObject && loading ? (
+          <Loading />
+        ) : (
           <React.Fragment>
             <div className="CatalogWrap__sort">{sortSelector}</div>
             <div className="CatalogWrap">
-              {loading ? (
-                <Loading />
-              ) : (
-                <div>
-                  {!isEmpty(listItems) ? (
-                    map(listItems, listItem => {
-                      const linkTo = getListItemLink(listItem, location);
-                      const isList = listItem.type === OBJ_TYPE.LIST;
-                      return (
-                        <div key={`category-${listItem.id}`}>
-                          {isList ? (
-                            <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
-                          ) : (
-                            <ObjectCardView
-                              wObject={listItem}
-                              options={{ pathNameAvatar: linkTo }}
-                            />
-                          )}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div>
-                      {intl.formatMessage({
-                        id: 'emptyList',
-                        defaultMessage: 'This list is empty',
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
+              <div>
+                {!isEmpty(listItems) &&
+                  map(listItems, listItem => {
+                    const linkTo = getListItemLink(listItem, location);
+                    const isList = listItem.type === OBJ_TYPE.LIST;
+
+                    return (
+                      <div key={`category-${listItem.id}`}>
+                        {isList ? (
+                          <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
+                        ) : (
+                          <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />
+                        )}
+                      </div>
+                    );
+                  })}
+                {isEmpty(listItems) && (
+                  <div>
+                    {intl.formatMessage({
+                      id: 'emptyList',
+                      defaultMessage: 'This list is empty',
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           </React.Fragment>
         )}
