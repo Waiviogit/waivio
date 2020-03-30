@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import store from 'store';
 import { message } from 'antd';
 import api from '../../configApi/apiResources';
-import { authorizeToken } from './platformActions';
+import { authorizeToken, cleanUserStatisticsData } from './platformActions';
 import { singleton } from '../../platform/singletonPlatform';
 import { toggleModal } from './modalsActions';
 
@@ -28,6 +28,8 @@ const localStorageKeys = [
   'token',
   'accounts',
   'email',
+  'firstCurrency',
+  'secondCurrency',
 ];
 const cookiesData = ['platformName'];
 
@@ -135,6 +137,7 @@ export function disconnectBroker(isReconnect = false) {
       Cookies.remove(data);
       localStorage.removeItem(data);
     });
+    dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
     // if (singleton.platform && singleton.platform.platformName)
     //   message.success('Broker successfully disconnected');
