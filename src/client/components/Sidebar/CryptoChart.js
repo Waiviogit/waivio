@@ -74,8 +74,9 @@ class CryptoChart extends React.Component {
     const cryptoPriceDetailsKey = `${currentCrypto.coinGeckoId}.usdPriceHistory`;
     const priceDetails = _.get(cryptosPriceHistory, cryptoPriceDetailsKey, {});
     const currentUSDPrice = _.get(priceDetails, 'usd', 0);
-    const usdIncrease = _.get(priceDetails, 'usd_24h_change', false);
-    let usdPriceDifferencePercent = _.get(priceDetails, 'usd_24h_change', 0);
+    const priceDifference = _.get(priceDetails, 'usd_24h_change', 0);
+    const usdIncrease = priceDifference ? priceDifference >= 0 : false;
+    let usdPriceDifferencePercent = priceDifference;
     if (usdPriceDifferencePercent) usdPriceDifferencePercent /= 100;
     return (
       <div className="CryptoTrendingCharts__chart-value">
