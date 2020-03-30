@@ -47,7 +47,6 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
               to={pathName}
               title={goToObjTitle(objName)}
               className="ObjectCardView__avatar"
-              target="_blank"
             >
               {avatarLayout(wObject.avatar)}
             </Link>
