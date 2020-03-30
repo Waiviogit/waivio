@@ -173,6 +173,9 @@ class Wallet extends Component {
       null,
     );
     const beaxyBalance = this.getBeaxyBalance();
+
+    const hasZeroBalances = this.props.beaxyBalance.every(item => item.balance > 0);
+
     const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
 
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
@@ -204,6 +207,7 @@ class Wallet extends Component {
           balance={isGuest ? guestBalance : user.balance}
           beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
+          hasZeroBalances={hasZeroBalances}
           showMore={this.showMoreToggler}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
