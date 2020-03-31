@@ -41,7 +41,7 @@ export default class PowerUpOrDown extends React.Component {
     down: PropTypes.bool.isRequired,
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,6}$/;
+  static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
   state = {
     oldAmount: undefined,

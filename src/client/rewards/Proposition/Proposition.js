@@ -17,7 +17,6 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
@@ -33,12 +32,12 @@ const Proposition = ({
   getSingleComment,
   authorizedUserName,
   history,
+  isAssign,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
@@ -59,24 +58,15 @@ const Proposition = ({
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
-    return rejectReservationCampaign(rejectData)
-      .then(() =>
-        discardProposition({
-          companyAuthor: proposition.guide.name,
-          companyPermlink: proposition.activation_permlink,
-          objPermlink: obj.author_permlink,
-          reservationPermlink: rejectData.reservation_permlink,
-          unreservationPermlink,
-        }),
-      )
-      .catch(() =>
-        message.error(
-          intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        ),
-      );
+    return rejectReservationCampaign(rejectData).then(() =>
+      discardProposition({
+        companyAuthor: proposition.guide.name,
+        companyPermlink: proposition.activation_permlink,
+        objPermlink: obj.author_permlink,
+        reservationPermlink: rejectData.reservation_permlink,
+        unreservationPermlink,
+      }),
+    );
   };
 
   const reserveOnClickHandler = () => {
@@ -96,10 +86,24 @@ const Proposition = ({
           companyId: proposition._id,
         }),
       )
-      .then(() => setReservation(true))
-      .then(() => setModalDetailsOpen(!isModalDetailsOpen))
-      .then(() => delay(1500))
-      .then(() => history.push(`/rewards/reserved`));
+      .then(({ isAssign }) => {
+        if (isAssign) {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          history.push(`/rewards/reserved`);
+        }
+      })
+      .catch(e => {
+        if (e.error_description) {
+          message.error(e.error_description);
+        } else {
+          message.error(
+            intl.formatMessage({
+              id: 'something_went_wrong',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        }
+      });
   };
 
   return (
@@ -112,7 +116,7 @@ const Proposition = ({
       </div>
       <div
         className={classNames('Proposition__footer', {
-          'justify-end': assigned === null || isReserved,
+          'justify-end': assigned === null || isAssign,
         })}
       >
         {/*Temporary fix until changes on backend will be made*/}
@@ -129,10 +133,11 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
+            isAssign={isAssign}
           />
         ) : (
           <React.Fragment>
-            {assigned !== null && !assigned && !isReserved && (
+            {assigned !== null && !assigned && !isAssign && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
@@ -174,10 +179,10 @@ const Proposition = ({
         reserveOnClickHandler={reserveOnClickHandler}
         loading={loading}
         assigned={assigned}
-        isReserved={isReserved}
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
+        isAssign={isAssign}
       />
     </div>
   );
