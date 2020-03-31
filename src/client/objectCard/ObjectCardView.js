@@ -43,7 +43,11 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
+            <Link
+              to={pathName}
+              title={goToObjTitle(objName)}
+              className="ObjectCardView__avatar"
+            >
               {avatarLayout(wObject.avatar)}
             </Link>
             <div className={`ObjectCardView__info${showSmallVersion ? ' small' : ''}`}>

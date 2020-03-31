@@ -391,7 +391,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {wobject[CHART_ID] && wobject.type === 'cryptopairs' && (
+            {wobject[CHART_ID] && wobject.type === "cryptopairs" && (
               <React.Fragment>
                 <LongTermStatistics
                   itemId={this.props.wobject.author_permlink}
