@@ -80,7 +80,7 @@ const InstrumentCardView = ({
                 >
                   {wObject.name}
                 </Link>
-                {wObject.weight && <WeightTag weight={wObject.weight} />}
+                {<WeightTag weight={wObject.weight} />}
               </div>
               {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
