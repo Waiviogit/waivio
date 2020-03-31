@@ -156,7 +156,7 @@ export default class Post extends React.Component {
   }
 
   render() {
-    const { content, fetching, loaded, failed, isAuthFetching, user } = this.props;
+    const { content, fetching, loaded, failed, isAuthFetching, user, match } = this.props;
 
     if (failed) return <Error404 />;
     if (fetching || !content) return <Loading />;
@@ -180,7 +180,11 @@ export default class Post extends React.Component {
             </Affix>
             {showPost ? (
               <div className="center" style={{ paddingBottom: '24px' }}>
-                <PostContent content={content} signature={signature} />
+                <PostContent
+                  content={content}
+                  signature={signature}
+                  isOriginalPost={match.params.original}
+                />
                 <VisibilitySensor onChange={this.handleCommentsVisibility}>
                   {!isBannedPost(content) && (
                     <div id="comments">
