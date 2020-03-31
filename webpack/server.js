@@ -7,7 +7,7 @@ const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const Uglifyjs = require('uglifyjs-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -75,9 +75,9 @@ module.exports = function createConfig(env = 'dev') {
       new StartServerPlugin({
         name: 'server.js',
       }),
-      new UglifyJsPlugin({
+      new Uglifyjs({
         cache: true,
-        parallel: true,
+        parallel: 4,
       }),
     ];
     config.resolve = {
