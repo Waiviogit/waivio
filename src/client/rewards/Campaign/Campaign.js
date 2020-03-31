@@ -63,7 +63,6 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
               </span>
               <span>
                 <span className="fw6 ml1">{`${rewardMax}`}</span>
-                {' USD '}
                 <Icon type="right" />
               </span>
             </React.Fragment>
