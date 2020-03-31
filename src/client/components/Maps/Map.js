@@ -177,6 +177,20 @@ class MapOS extends React.Component {
     </div>
   );
 
+  getAreaSearchData = () => {
+    const { zoom, center } = this.state;
+    const { getAreaSearchData } = this.props;
+    if (_.isEmpty(center)) {
+      getAreaSearchData({
+        radius: 500000000,
+        coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      });
+    } else {
+      getAreaSearchData({ radius: getRadius(zoom), coordinates: center });
+    }
+    this.toggleModal();
+  };
+
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, zoom, center } = this.state;
@@ -213,6 +227,16 @@ class MapOS extends React.Component {
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
+              <div
+                role="presentation"
+                className={'MapOS__fullscreenContent-btn'}
+                onClick={this.getAreaSearchData}
+              >
+                {this.props.intl.formatMessage({
+                  id: 'search_area',
+                  defaultMessage: 'Search area',
+                })}
+              </div>
               <Map
                 ref={this.mapRef}
                 onBoundsChanged={this.onBoundsChanged}
@@ -263,6 +287,8 @@ MapOS.propTypes = {
   setMapFullscreenMode: PropTypes.func,
   setMapArea: PropTypes.func.isRequired,
   onMarkerClick: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
+  getAreaSearchData: PropTypes.func,
 };
 
 MapOS.defaultProps = {
