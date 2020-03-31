@@ -141,7 +141,7 @@ export default class Widgets {
           state: this.statesQuotes[q.Name],
         };
         if (this.hasOwnProperty('publish')) {
-          this.publish(q.Name, this.quotes[q.Name]);
+          this.publish(q.Name, msg);
         }
       });
       this.dispatch(updateQuotes(data));

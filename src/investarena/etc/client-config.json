@@ -181,7 +181,7 @@
   },
 
   "charts": {
-    "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+    "getChartsData": "https://44.233.188.11/wss/quotation/getstatisticshistory"
   },
   "statistics": {
     "getUserStatistics": "/user-summary-statistics/",

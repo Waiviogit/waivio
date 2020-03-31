@@ -6,8 +6,8 @@ import './PostQuotation.less';
 
 const propTypes = {
   /* connect */
-  quote: PropTypes.string.isRequired,
-  quoteSettings: PropTypes.string.isRequired,
+  quote: PropTypes.shape(),
+  quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
@@ -56,6 +56,8 @@ const PostQuotation = ({
 PostQuotation.propTypes = propTypes;
 PostQuotation.defaultProps = {
   className: '',
+  quote: {},
+  quoteSettings: {},
 };
 
 export default PostQuotation;
