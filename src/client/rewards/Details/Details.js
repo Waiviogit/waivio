@@ -16,7 +16,6 @@ const Details = ({
   loading,
   reserveOnClickHandler,
   assigned,
-  isReserved,
   proposedWobj,
   isReviewDetails,
   requiredObjectName,
@@ -25,9 +24,7 @@ const Details = ({
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const isCamaignReserved =
-    !(assigned !== null && !assigned && !isReserved) ||
-    loading ||
-    objectDetails.isReservedSiblingObj;
+    !(assigned !== null && !assigned) || loading || objectDetails.isReservedSiblingObj;
 
   const isEligible =
     objectDetails.requirement_filters.expertise &&
@@ -226,7 +223,6 @@ Details.propTypes = {
   loading: PropTypes.bool.isRequired,
   reserveOnClickHandler: PropTypes.func.isRequired,
   assigned: PropTypes.bool.isRequired,
-  isReserved: PropTypes.bool.isRequired,
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
