@@ -103,7 +103,7 @@ const UserWalletSummary = ({
             <CurrencyItem item={item} />
           ))}
         </div>
-        {!hasZeroBalances && (
+        {hasZeroBalances && (
           <div className="UserWalletSummary__show-more mb1">
             <div
               className="UserWalletSummary__show-more-btn"
@@ -254,7 +254,7 @@ UserWalletSummary.defaultProps = {
   balance: 0,
   beaxyBalance: [],
   isShowMore: false,
-  hasZeroBalances: true,
+  hasZeroBalances: false,
   showMore: () => {},
 };
 
