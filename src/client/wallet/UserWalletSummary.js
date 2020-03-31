@@ -100,7 +100,7 @@ const UserWalletSummary = ({
       <React.Fragment>
         <div className="UserWalletSummary mb1">
           {beaxyBalance.map(item => (
-            <CurrencyItem item={item} />
+            <CurrencyItem key={item.id} item={item} />
           ))}
         </div>
         {!hasZeroBalances && (
