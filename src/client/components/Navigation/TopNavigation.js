@@ -37,7 +37,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS,
 ];
 
-const TopNavigation = ({ authenticated, location: { pathname } }) => {
+const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
@@ -64,7 +64,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
             </li>
             <li className="TopNavigation__item">
               <Link
-                to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
+                to={`${LINKS.REWARDS}/all`}
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
                 })}
@@ -115,7 +115,6 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
 };
 
 TopNavigation.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
 };
 
