@@ -325,8 +325,8 @@ export default class AppendForm extends Component {
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
-
       data.title = '';
+
       let fieldsObject = {
         name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
