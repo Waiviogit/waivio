@@ -1,6 +1,7 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
+import { get } from 'lodash';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
@@ -104,12 +105,20 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   { steemConnectAPI, waivioAPI },
 ) => {
   // todo: call beaxy login
-  if (socialNetwork === 'beaxy')
+
+  if (socialNetwork === 'beaxy') {
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
+  }
   const state = getState();
   let promise = Promise.resolve(null);
 
   const isGuest = waivioAPI.isGuest;
+
+  const platformName = get(state, ['platform', 'platformName'], '');
+  const userName = get(state, ['auth', 'user', 'name'], '');
+
+  const isBeaxyUser = userName.split('_')[0] === 'bxy';
+  if (isBeaxyUser && platformName && platformName !== 'beaxy') return dispatch(logout());
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
