@@ -256,7 +256,6 @@ class StoryFull extends React.Component {
         </div>
       ) : null;
     }
-
     let popoverMenu = [];
 
     if (ownPost) {
