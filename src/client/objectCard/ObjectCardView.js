@@ -65,9 +65,9 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = isEmpty(passedParent)
+  const parentName = !isEmpty(wObject.parent)
     ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
-    : passedParent.name || passedParent.default_name;
+    : null;
 
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
@@ -85,11 +85,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${
-                    isEmpty(passedParent)
-                      ? wObject.parent.author_permlink
-                      : passedParent.author_permlink
-                  }`}
+                  to={`/object/${!isEmpty(wObject.parent) ? wObject.parent.author_permlink : null}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
