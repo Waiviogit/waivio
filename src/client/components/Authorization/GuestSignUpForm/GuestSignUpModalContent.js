@@ -28,12 +28,12 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
 
   useEffect(() => {
     switch (userData.socialNetwork) {
-      case 'google':
+      case 'facebook':
         setFieldsValue({
           username: getSlug(userData.name).slice(0, 16),
         });
         break;
-      case 'facebook':
+      case 'google':
         setFieldsValue({
           username: getSlug(
             `${userData.profileObj.givenName} ${userData.profileObj.familyName}`,
