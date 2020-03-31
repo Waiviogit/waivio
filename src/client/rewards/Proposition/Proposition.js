@@ -38,7 +38,6 @@ const Proposition = ({
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
@@ -88,7 +87,6 @@ const Proposition = ({
         }),
       )
       .then(({ isAssign }) => {
-        setReservation(true);
         if (isAssign) {
           setModalDetailsOpen(!isModalDetailsOpen);
           history.push(`/rewards/reserved`);
