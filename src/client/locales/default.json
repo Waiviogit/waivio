@@ -1063,5 +1063,7 @@
   "receivables": "Receivables",
   "no_user_message": "We have not users with this name, please try again.",
   "assigned_successfully_update": "Assigned successfully. Your new reservation will be available soon.",
-  "discarded_successfully": "Reservation released. Reward will be available for reservation soon."
+  "discarded_successfully": "Reservation released. Reward will be available for reservation soon.",
+  "rewards_details_usersLegalNotice": "Legal notice"
+
 }
