@@ -30,11 +30,10 @@ class TchChart extends Component {
       currentValue: '0.00000',
       connectorOptions: {
         url: '//44.233.188.11/wss/api/quotation/',
-        wsUrl: '',
+        wsUrl: '//44.233.188.11/wss/Server.ashx',
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
       },
-      settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
       lang: 'ru',
       isHeaderHidden: false,
       isSidebarHidden: false,

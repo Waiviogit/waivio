@@ -191,9 +191,10 @@ export default class Widgets {
       });
       bars = _.sortBy(bars, 'time');
       this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
-      if (this.hasOwnProperty('publish')) {
-        this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
-      }
+      // get chart data for tech chart via http
+      // if (this.hasOwnProperty('publish')) {
+      //   this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
+      // }
     }
   }
   fixChange(security, quote, oldQuote) {

@@ -397,7 +397,16 @@ export default class Umarkets {
         state: this.statesQuotes[q.security],
       };
       if (this.hasOwnProperty('publish')) {
-        this.publish(q.security, this.quotes[q.security]);
+        this.publish(q.security, {
+          module: 'rates',
+          args: [
+            {
+              Name: q.security,
+              Bid: q.bidPrice.toString(),
+              Ask: q.askPrice.toString(),
+            },
+          ],
+        });
       }
     });
     this.dispatch(updateQuotes(data));
@@ -484,9 +493,10 @@ export default class Umarkets {
     const timeScale = chart.barType;
     const bars = chart.bars;
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
-    if (this.hasOwnProperty('publish')) {
-      this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
-    }
+    // get chart data for tech chart via http
+    // if (this.hasOwnProperty('publish')) {
+    //   this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
+    // }
   }
 
   parseOpenDeals(result) {
