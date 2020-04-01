@@ -3,6 +3,7 @@ import humanize from 'string-humanize';
 import React, { Component } from 'react';
 import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publishSubscribe';
 import { singleton } from '../../platform/singletonPlatform';
+import { quoteIdForWidget } from '../../constants/constantsWidgets';
 import './TchChart.less';
 
 class TchChart extends Component {
@@ -11,32 +12,28 @@ class TchChart extends Component {
   }
   componentDidMount = () => {
     publishSubscribe(singleton.platform);
-    let source = 'fes.investarena';
-    let name = this.props.quoteSecurity;
-    let fullName = singleton.platform.quotesSettings[name]
+    let source = 'crypto-investarena';
+    const quoteId = quoteIdForWidget[this.props.quoteSecurity];
+    const name = this.props.quoteSecurity;
+    const fullName = singleton.platform.quotesSettings[name]
       ? singleton.platform.quotesSettings[name].name
       : name;
-    let market = 'crypto';
-    let period = humanize(this.props.period);
+    const market = 'crypto';
+    const period = humanize(this.props.period);
     let params = {
-      pair: { Name: name, FullName: fullName, Category: market },
+      pair: { ID: quoteId, Name: name, FullName: fullName, Category: market },
       period: period,
       timeMode: 'global',
       chartType: 'candle',
-      state: 'default',
+      state: false,
       indicators: [],
       currentValue: '0.00000',
       connectorOptions: {
+        url: '//44.233.188.11/wss/api/quotation/',
+        wsUrl: '//44.233.188.11/wss/Server.ashx',
+        settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
-        platform: singleton.platform,
-        wsUrl: '',
-        url: '',
-        sid: '',
-        authData: {},
-        um_session: '',
-        sockjspath: '',
       },
-      settingsUrl: '//44.233.188.11/wss/quotation/getsettings?tch=true',
       lang: 'ru',
       isHeaderHidden: false,
       isSidebarHidden: false,
@@ -45,25 +42,17 @@ class TchChart extends Component {
       isOtherParams: false,
       isAutoRestore: false,
       rowsid: [],
-      typeTheme: 'black',
+      typeThemes: this.props.isNightMode ? 'black' : 'default',
       typeData: this.props.typeData === 'Sell' ? 'bid' : 'ask',
       modules: {
         isShowNews: false,
         isHeaderCreate: true,
         isShowEvents: false,
         signals: false,
-        chartElements: {},
       },
     };
-    configuration.settingsUrl = '//44.233.188.11/wss/quotation/getsettings?tch=true';
-    configuration.lang = 'en';
-    configuration.modules.isShowNews = false;
-    configuration.modules.isHeaderCreate = true;
-    configuration.modules.isSidebarHidden = false;
-    configuration.modules.isHeaderHidden = false;
-    configuration.modules.isShowEvents = false;
-    configuration.modules.signals = false;
-    this.createTch(params, 'default');
+    this.createTch(params);
+    this.tch.initialization();
     document.querySelector('.tch-data-panel').classList.add('invisible');
     document.querySelector('.tch-search-container').classList.add('invisible');
     document.querySelector('.tch-chart-layouts-container').classList.add('invisible');
@@ -80,9 +69,43 @@ class TchChart extends Component {
   }
   createTch(params) {
     let tchParent = document.querySelector('.tch-assets-page');
+    const { connectorOptions, ...config } = params;
     if (TechnicalChart) {
-      this.tch = new TechnicalChart(tchParent, params);
-      this.tch.init(params);
+      this.tch = new TechnicalChart(
+        {
+          container: tchParent,
+          connectorOptions,
+          config,
+          id: 'TCHART',
+        },
+        null,
+      );
+
+      this.tch.connector.getConnectionSettings = () => {};
+
+      this.tch.connector.createWebSocketConn = () => {
+        const _this = this.tch.connector;
+        _this.client = singleton.platform;
+        _this.client.connected = true;
+        _this.client.onWebsocketMessage = msg => {
+          const data = _this.processRatesData(msg);
+          _this.listeners[0].onConnectorMessage(data, _this.listeners[0]);
+        };
+
+        if (_this.listeners && _this.listeners.length) {
+          _this.listeners[0].onConnect();
+          _this.client.subscribe(this.props.quoteSecurity, _this.client.onWebsocketMessage);
+        }
+      };
+
+      this.tch.connector.onReconnect = () => {};
+      this.tch.connector.subscribe = () => {};
+
+      this.tch.connector.close = () => {
+        const _this = this.tch.connector;
+        _this.client.unsubscribe(this.props.quoteSecurity, _this.client.onWebsocketMessage);
+        _this.client = null;
+      };
     }
   }
   render() {
