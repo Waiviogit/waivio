@@ -27,7 +27,6 @@ const propTypes = {
   quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isSignIn: PropTypes.bool.isRequired,
-  totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
   wallet: PropTypes.shape({
     id: PropTypes.string,
@@ -38,7 +37,7 @@ const propTypes = {
     logoName: PropTypes.string,
     logoUrl: PropTypes.string,
   }).isRequired,
-  createOpenDeal: PropTypes.func.isRequired,
+  createMarketOrder: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -88,7 +87,7 @@ const withTrade = Component => {
     }
 
     handleClickOpenDeal = (side, caller) => {
-      this.props.createOpenDeal(side, this.state.amount, 'margin[removed]', caller);
+      this.props.createMarketOrder(side, this.state.amount, 'margin[removed]', caller);
     };
     handleBlurInput = e => {
       const amount = PlatformHelper.validateOnBlur(e.target.value, this.props.quoteSettings);

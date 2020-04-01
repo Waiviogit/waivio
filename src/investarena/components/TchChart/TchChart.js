@@ -104,8 +104,10 @@ class TchChart extends Component {
 
       this.tch.connector.close = () => {
         const _this = this.tch.connector;
-        _this.client.unsubscribe(this.props.quoteSecurity, _this.client.onWebsocketMessage);
-        _this.client = null;
+        if (_this && _this.client) {
+          _this.client.unsubscribe(this.props.quoteSecurity, _this.client.onWebsocketMessage);
+          _this.client = null;
+        }
       };
     }
   }

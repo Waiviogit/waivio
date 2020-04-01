@@ -96,8 +96,8 @@ TradingForm.propTypes = {
   /* withTrade */
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   fees: PropTypes.shape({
-    makerFee: PropTypes.string,
-    takerFee: PropTypes.string,
+    makerFee: PropTypes.number,
+    takerFee: PropTypes.number,
   }).isRequired,
   totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   quoteSettings: PropTypes.shape({
