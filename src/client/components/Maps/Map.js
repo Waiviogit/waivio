@@ -200,7 +200,7 @@ class MapOS extends React.Component {
     } else {
       getAreaSearchData({ radius: getRadius(zoom), coordinates: center });
     }
-    this.toggleModal();
+    this.getMapArea();
   };
 
   render() {
@@ -233,7 +233,7 @@ class MapOS extends React.Component {
             title={null}
             footer={null}
             visible={isFullscreenMode}
-            onCancel={this.toggleModal}
+            onCancel={this.getMapArea}
             width={'100%'}
             wrapClassName={classNames('MapModal')}
             destroyOnClose
