@@ -30,7 +30,8 @@ class TchChart extends Component {
       indicators: [],
       currentValue: '0.00000',
       connectorOptions: {
-        url: '//44.233.188.11/wss/api/quotation/',
+        // url: '//44.233.188.11/wss/api/quotation/', // url for development
+        url: '//informer.beaxy.com/wss/api/quotation/',
         wsUrl: wsChartUrl,
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
