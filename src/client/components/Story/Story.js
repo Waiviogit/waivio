@@ -433,6 +433,7 @@ class Story extends React.Component {
       profitability,
       isForecastValid,
     } = getForecastData(post);
+
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
 

@@ -121,7 +121,7 @@ BrokerBalance.propTypes = {
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  userName: PropTypes.bool.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
