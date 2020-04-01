@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
 import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
@@ -6,6 +7,7 @@ import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
+import { sendCommentAppend } from '../object/wobjActions';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -100,32 +102,34 @@ const getCommentsChildrenLists = apiRes => {
  * preventing loading icon to be dispalyed
  */
 export const getComments = postId => (dispatch, getState) => {
-  const { posts, comments } = getState();
+  const { posts, comments, object } = getState();
+  const listFields = get(object, ['wobject', 'fields'], null);
+  const matchPost = listFields && listFields.find(field => field.permlink === postId);
+  const content = posts.list[postId] || comments.comments[postId] || matchPost;
+  if (content) {
+    // eslint-disable-next-line camelcase
+    const { category, permlink } = content;
+    let author;
+    if (content.guestInfo && content.root_author !== POST_AUTHOR_FOR_REWARDS_COMMENTS) {
+      author = content.root_author;
+    } else {
+      author = content.author;
+    }
 
-  const content = posts.list[postId] || comments.comments[postId];
-
-  // eslint-disable-next-line camelcase
-  const { category, permlink } = content;
-  let author;
-  if (content.guestInfo && content.root_author !== POST_AUTHOR_FOR_REWARDS_COMMENTS) {
-    author = content.root_author;
-  } else {
-    author = content.author;
+    dispatch({
+      type: GET_COMMENTS,
+      payload: {
+        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        })),
+      },
+      meta: {
+        id: postId,
+      },
+    });
   }
-
-  dispatch({
-    type: GET_COMMENTS,
-    payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-        rootCommentsList: getRootCommentsList(apiRes),
-        commentsChildrenList: getCommentsChildrenLists(apiRes),
-        content: apiRes.content,
-      })),
-    },
-    meta: {
-      id: postId,
-    },
-  });
 };
 
 export const sendComment = (parentPost, body, isUpdating = false, originalComment) => (
@@ -134,7 +138,6 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   { steemConnectAPI },
 ) => {
   const { category, id, permlink: parentPermlink } = parentPost;
-
   let parentAuthor;
 
   if (isUpdating) {
@@ -205,6 +208,9 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               !isUpdating,
             ),
           );
+          if (parentPost.append_field_name) {
+            dispatch(sendCommentAppend(parentPost.permlink));
+          }
           setTimeout(
             () => dispatch(getSingleComment(author, permlink, !isUpdating)),
             auth.isGuestUser ? 6000 : 2000,
@@ -219,6 +225,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           }
         })
         .catch(err => {
+          console.log(err);
           dispatch(notify(err.error.message, 'error'));
         }),
     },

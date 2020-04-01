@@ -202,6 +202,7 @@ class CatalogWrap extends React.Component {
     ]);
     const isListObject =
       hasType(currWobject, OBJ_TYPE.LIST) || (!wobjNested && has(wobject, 'menuItems'));
+    const actualeListItems = listItems && listItems.filter(list => list.status);
 
     const sortSelector =
       currWobject &&
@@ -295,8 +296,8 @@ class CatalogWrap extends React.Component {
                 <Loading />
               ) : (
                 <div>
-                  {!isEmpty(listItems) ? (
-                    map(listItems, listItem => {
+                  {!isEmpty(actualeListItems) ? (
+                    map(actualeListItems, listItem => {
                       const linkTo = getListItemLink(listItem, location);
                       const isList = listItem.type === OBJ_TYPE.LIST;
                       return (

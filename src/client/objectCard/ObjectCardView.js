@@ -21,7 +21,6 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
       const currentTags = wObject.tagCategories
@@ -66,7 +65,7 @@ const ObjectCardView = ({
   };
   const objName = wObject.name || wObject.default_name;
   const parentName = isEmpty(passedParent)
-    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
+    ? getFieldWithMaxWeight(wObject, objectTypes.name, '')
     : passedParent.name || passedParent.default_name;
 
   const goToObjTitle = wobjName =>
@@ -86,9 +85,7 @@ const ObjectCardView = ({
               {parentName && (
                 <Link
                   to={`/object/${
-                    isEmpty(passedParent)
-                      ? wObject.parent.author_permlink
-                      : passedParent.author_permlink
+                    isEmpty(passedParent) ? wObject.author_permlink : passedParent.author_permlink
                   }`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"

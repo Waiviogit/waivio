@@ -107,6 +107,10 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
 
 export const calculateApprovePercent = votes => {
   if (!_.isEmpty(votes)) {
+    if (getAppendDownvotes(votes).length && !getAppendUpvotes(votes).length) {
+      return 0;
+    }
+
     const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
     const approveRshares = getAppendUpvotes(votes).reduce(
       (acc, vote) => acc + vote.rshares_weight,
@@ -125,6 +129,20 @@ export const calculateApprovePercent = votes => {
   }
 
   return 100;
+};
+
+export const getApprovedField = (wobj, name) => {
+  if (!wobj || !wobj.field || !name) return null;
+
+  let field = _.get(wobj, 'fields').filter(
+    item => item.name === name && calculateApprovePercent(item.active_votes) >= 70,
+  );
+
+  if (!field.length) return null;
+
+  field = field.sort((a, b) => b.weight - a.weight)[0];
+
+  return JSON.parse(field.body);
 };
 
 /* eslint-enable no-underscore-dangle */

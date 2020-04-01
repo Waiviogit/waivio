@@ -4,13 +4,13 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
+import OBJECT_TYPES from '../object/const/objectTypes';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -35,9 +35,7 @@ const WobjHeader = ({
   const parentName = wobject.parent
     ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
-  const path =
-    wobject.object_type === 'list' || wobject.object_type === 'page' ? wobject.object_type : '';
-  const editLink = `/object/${wobject.author_permlink}/${isMobile ? 'about' : path}`;
+
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -46,6 +44,15 @@ const WobjHeader = ({
       )}
     </div>
   );
+
+  const getLink = () => {
+    const link = `/object/${wobject.author_permlink}`;
+    if (isEditMode) return null;
+    if (isMobile) return `${link}/about`;
+    if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
+      return `${link}/${wobject.object_type}`;
+    return `${link}/reviews`;
+  };
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -72,7 +79,7 @@ const WobjHeader = ({
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Link to={editLink}>
+                  <Link to={getLink()}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })

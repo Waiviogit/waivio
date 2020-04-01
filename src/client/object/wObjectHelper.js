@@ -50,15 +50,18 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
     return defaultValue;
+  let fieldValues;
+  if (wObject.fields) {
+    fieldValues = wObject.fields.filter(
+      field => field.name === currentField && calculateApprovePercent(field.active_votes) >= 70,
+    );
+  }
 
-  const fieldValues = wObject.fields.filter(
-    field => field.name === currentField && calculateApprovePercent(field.active_votes) >= 70,
-  );
-  if (!fieldValues.length) return defaultValue;
+  if (!fieldValues) return defaultValue;
 
   const orderedValues = orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (!isEmpty(orderedValues[0].body)) {
+  if (orderedValues[0] && !isEmpty(orderedValues[0].body)) {
     const upvotedByModerator = orderedValues.find(field => field.upvotedByModerator);
     return upvotedByModerator ? upvotedByModerator.body : orderedValues[0].body;
   }

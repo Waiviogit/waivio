@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
+import { RADIUS, ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
@@ -37,10 +38,10 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: 8,
+      zoom: ZOOM,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: 90000,
+      radius: RADIUS,
     };
 
     this.mapRef = createRef();
@@ -80,28 +81,31 @@ class MapOS extends React.Component {
     return radius;
   };
 
-  getMarkers = props => {
-    const { wobjects } = this.props;
-    return !_.isEmpty(wobjects)
-      ? _.map(wobjects, wobject => {
-          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-          const isMarked = Boolean(wobject && wobject.campaigns);
-          return lat && lng ? (
-            <CustomMarker
-              key={`obj${wobject.author_permlink}`}
-              isMarked={isMarked}
-              anchor={[+lat, +lng]}
-              payload={wobject}
-              onMouseOver={this.handleMarkerClick}
-              onClick={() => {
-                props.onMarkerClick(wobject.author_permlink);
-              }}
-              onMouseOut={this.closeInfobox}
-            />
-          ) : null;
-        })
-      : null;
+  getMarkers = () => {
+    const { wobjects, onMarkerClick } = this.props;
+    return (
+      !_.isEmpty(wobjects) &&
+      _.map(wobjects, wobject => {
+        const lat =
+          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude) ||
+          _.get(wobject, 'map.coordinates[1]');
+        const lng =
+          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
+          _.get(wobject, 'map.coordinates[0]');
+        const isMarked = Boolean(wobject && wobject.campaigns);
+        return lat && lng ? (
+          <CustomMarker
+            key={`obj${wobject.author_permlink}`}
+            isMarked={isMarked}
+            anchor={[+lat, +lng]}
+            payload={wobject}
+            onMouseOver={this.handleMarkerClick}
+            onClick={onMarkerClick}
+            onMouseOut={this.closeInfobox}
+          />
+        ) : null;
+      })
+    );
   };
 
   getOverlayLayout = () => {
@@ -247,7 +251,7 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
-  wobjects: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   width: PropTypes.number,
@@ -258,6 +262,7 @@ MapOS.propTypes = {
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,
   setMapArea: PropTypes.func.isRequired,
+  onMarkerClick: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

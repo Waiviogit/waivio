@@ -70,45 +70,42 @@ class RateInfo extends React.Component {
   render() {
     const { ratingFields, username } = this.props;
     const rankingList = _.sortBy(ratingFields, ['body']);
+    const actualRankingList = rankingList.filter(
+      rate => calculateApprovePercent(rate.active_votes) >= 70,
+    );
 
     return (
       <React.Fragment>
-        {rankingList &&
-          rankingList.map(field => {
-            if (calculateApprovePercent(field.active_votes) >= 70) {
-              return (
-                <div className="RateInfo__header" key={field.permlink}>
-                  <div>{field.body}</div>
-                  <div className="RateInfo__stars">
-                    {this.rateDescription(field) ? (
-                      <BTooltip title={this.rateDescription(field)}>
-                        <div
-                          className="RateInfo__stars-container"
-                          role="presentation"
-                          data-field={JSON.stringify(field)}
-                          onClick={this.handleOnClick(field)}
-                        >
-                          <Rate allowHalf disabled value={+averageRate(field)} />
-                        </div>
-                      </BTooltip>
-                    ) : (
-                      <div
-                        className="RateInfo__stars-container"
-                        role="presentation"
-                        data-field={JSON.stringify(field)}
-                        onClick={this.handleOnClick(field)}
-                      >
-                        <Rate allowHalf disabled value={+averageRate(field)} />
-                      </div>
-                    )}
-                    <div>({rateCount(field)})</div>
+        {actualRankingList &&
+          actualRankingList.map(field => (
+            <div className="RateInfo__header" key={field.permlink}>
+              <div>{field.body}</div>
+              <div className="RateInfo__stars">
+                {this.rateDescription(field) ? (
+                  <BTooltip title={this.rateDescription(field)}>
+                    <div
+                      className="RateInfo__stars-container"
+                      role="presentation"
+                      data-field={JSON.stringify(field)}
+                      onClick={this.handleOnClick(field)}
+                    >
+                      <Rate allowHalf disabled value={+averageRate(field)} />
+                    </div>
+                  </BTooltip>
+                ) : (
+                  <div
+                    className="RateInfo__stars-container"
+                    role="presentation"
+                    data-field={JSON.stringify(field)}
+                    onClick={this.handleOnClick(field)}
+                  >
+                    <Rate allowHalf disabled value={+averageRate(field)} />
                   </div>
-                </div>
-              );
-            }
-
-            return null;
-          })}
+                )}
+                <div>({rateCount(field)})</div>
+              </div>
+            </div>
+          ))}
         {this.state.showModal && (
           <RateObjectModal
             isVisible={this.state.showModal}

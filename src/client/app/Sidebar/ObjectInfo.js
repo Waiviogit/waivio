@@ -11,6 +11,7 @@ import {
   hasType,
   accessTypesArr,
   calculateApprovePercent,
+  getApprovedField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -60,6 +61,13 @@ class ObjectInfo extends React.Component {
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     usedLocale: PropTypes.string.isRequired,
+    history: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    getAreaSearchData: () => {},
+    userLocation: {},
+    center: [],
   };
 
   state = {
@@ -140,7 +148,7 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { button, status, website, newsFilter } = wobject;
+    const { status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
@@ -148,7 +156,6 @@ class ObjectInfo extends React.Component {
     let names = [];
     let addressArr = [];
     let address = '';
-    let map = '';
     let description = '';
     let price = '';
     let workTime = '';
@@ -162,6 +169,8 @@ class ObjectInfo extends React.Component {
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
+    const button = getApprovedField(wobject, renderFields.button);
+    const map = getApprovedField(wobject, renderFields.map);
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -180,10 +189,7 @@ class ObjectInfo extends React.Component {
         : [];
       address = _.compact(addressArr).join(', ');
 
-      map = getInnerFieldWithMaxWeight(wobject, objectFields.map);
-
       description = getFieldWithMaxWeight(wobject, objectFields.description);
-
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
       background = getFieldWithMaxWeight(wobject, objectFields.background);
 
@@ -196,14 +202,21 @@ class ObjectInfo extends React.Component {
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
       menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
+
+      menuItems = menuItems.map(item => {
+        const matchField = _.get(wobject, 'fields', []).find(field => field.alias === item.alias);
+        const activeVotes = matchField ? matchField.active_votes : [];
+
+        return {
+          ...item,
+          active_votes: [...activeVotes],
+        };
+      });
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(
-              item =>
-                item.object_type === OBJECT_TYPE.LIST &&
-                calculateApprovePercent(item.active_votes) >= 70,
-            )
+          ? menuItems.filter(item => calculateApprovePercent(item.active_votes) >= 70)
           : null;
+
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
           ? menuItems.filter(
@@ -357,9 +370,10 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           )}
           {!isEditMode &&
+            menuLists &&
             sortListItemsBy(
               combineObjectMenu(
-                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                menuLists.map(menuItem => getClientWObj(menuItem, usedLocale)),
                 {
                   button,
                   news: Boolean(newsFilter),
@@ -368,7 +382,7 @@ class ObjectInfo extends React.Component {
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
-          {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
+          {!_.isEmpty(menuLists) && listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );
@@ -526,6 +540,9 @@ class ObjectInfo extends React.Component {
                 <MapObjectInfo
                   mapHeigth={200}
                   center={[Number(map.latitude), Number(map.longitude)]}
+                  width={270}
+                  wobject={wobject}
+                  history={this.props.history}
                 />
               ),
             )}

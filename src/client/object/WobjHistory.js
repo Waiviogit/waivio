@@ -3,27 +3,18 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
 
 import {
   getPosts,
-  getFeed,
   getObject,
   getReadLanguages,
   getIsAuthenticated,
   getObjectAlbums,
 } from '../reducers';
-import Feed from '../feed/Feed';
-import {
-  getFeedFromState,
-  getFeedLoadingFromState,
-  getFilteredContent,
-} from '../helpers/stateHelpers';
-import { getObjectComments } from '../feed/feedActions';
 import {
   objectFields,
   getAllowedFieldsByObjType,
-  TYPES_OF_MENU_ITEM,
+  sortingMenuName,
 } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -36,12 +27,14 @@ import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
 import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
+import { getObjectAppends } from './wobjActions';
+import AppendCard from './AppendCard';
+import Loading from '../components/Icon/Loading';
 
 import './WobjHistory.less';
 
 @connect(
   state => ({
-    feed: getFeed(state),
     comments: getPosts(state),
     object: getObject(state),
     readLanguages: getReadLanguages(state),
@@ -49,18 +42,16 @@ import './WobjHistory.less';
     albums: getObjectAlbums(state),
   }),
   {
-    getObjectComments,
+    getObjectAppends,
   },
 )
 class WobjHistory extends React.Component {
   static propTypes = {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
-    comments: PropTypes.shape(),
+    getObjectAppends: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
-    getObjectComments: PropTypes.func,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
   };
@@ -96,9 +87,8 @@ class WobjHistory extends React.Component {
 
   componentDidMount() {
     const { object } = this.props;
-
     if (object && object.author && object.author_permlink) {
-      this.props.getObjectComments(object.author, object.author_permlink);
+      this.props.getObjectAppends(object.author, object.author_permlink);
     }
   }
 
@@ -137,23 +127,27 @@ class WobjHistory extends React.Component {
   render() {
     const {
       field,
-      locale,
       showModal,
       showModalGalleryItem,
       showModalGalleryAlbum,
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
-    const commentIds = getFeedFromState('comments', object.author, feed);
-    const content = getFilteredContent(
-      Object.values(comments).filter(comment => commentIds.includes(comment.id)),
-      ['appendObject'],
-      _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
-      locale,
-      sort,
-    );
-    const isFetching = getFeedLoadingFromState('comments', object.author, feed);
+    const { object, readLanguages, isAuthenticated } = this.props;
+    const { params } = this.props.match;
+    const sortedList = wobj => {
+      if (sort !== 'recency') {
+        return wobj.fields.sort(
+          (before, after) => after.append_field_weight - before.append_field_weight,
+        );
+      }
+
+      return wobj.fields.sort(
+        (before, after) => Date.parse(after.created) - Date.parse(before.created),
+      );
+    };
+    let content = object && object.fields && sortedList(object);
+    const isFetching = content && content.length && content[0].append_field_name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
@@ -163,7 +157,33 @@ class WobjHistory extends React.Component {
       return true;
     });
 
+    if (params[1] && content && content[0].append_field_name) {
+      content = content.filter(
+        f =>
+          sortingMenuName[params[1]] === f.append_field_name || f.append_field_name === params[1],
+      );
+    }
+
     const objName = getFieldWithMaxWeight(object, objectFields.name);
+    const renderFields = () => {
+      if (content && content.length) {
+        if (content[0].append_field_name) {
+          return content.map(post => <AppendCard post={post} />);
+        }
+
+        return <Loading />;
+      }
+
+      return (
+        <div className="object-feed__row justify-center">
+          <FormattedMessage
+            id="empty_object_profile"
+            defaultMessage="This object doesn't have any"
+          />
+        </div>
+      );
+    };
+
     return (
       <React.Fragment>
         <div className="wobj-history__filters">
@@ -218,7 +238,7 @@ class WobjHistory extends React.Component {
             </React.Fragment>
           )}
         </div>
-        {!isFetching && (
+        {isFetching && (
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
               <SortSelector.Item key="rank">
@@ -234,7 +254,7 @@ class WobjHistory extends React.Component {
             </SortSelector>
           </div>
         )}
-        <Feed content={content} isFetching={isFetching} />
+        {renderFields()}
       </React.Fragment>
     );
   }
