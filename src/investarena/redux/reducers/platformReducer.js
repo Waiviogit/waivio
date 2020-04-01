@@ -103,7 +103,7 @@ export default function(state = initialState, action) {
         ...state,
         accountCurrency: {},
         userStatistics: {},
-        userWallet: {},
+        userWallet: [],
         walletMap: {},
         accountsMap: {},
       };

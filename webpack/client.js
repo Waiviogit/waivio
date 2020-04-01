@@ -5,7 +5,7 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const Uglifyjs = require('uglifyjs-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
@@ -92,9 +92,9 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new HardSourceWebpackPlugin(),
-      new UglifyJsPlugin({
+      new Uglifyjs({
         cache: true,
-        parallel: true,
+        parallel: 4,
       }),
     ];
     config.resolve = {

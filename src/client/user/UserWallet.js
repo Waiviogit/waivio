@@ -174,7 +174,7 @@ class Wallet extends Component {
     );
     const beaxyBalance = this.getBeaxyBalance();
 
-    const hasZeroBalances = this.props.beaxyBalance.every(item => item.balance > 0);
+    const hasZeroBalances = this.props.beaxyBalance.some(item => item.balance === 0);
 
     const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
 
