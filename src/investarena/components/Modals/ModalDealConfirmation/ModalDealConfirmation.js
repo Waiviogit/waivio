@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import _ from 'lodash';
 import React from 'react';
-import TchChart from '../../TchChart/TchChart';
+import TchChart from '../../TchChart';
 import TradingForm from '../../TradingForm';
 import './ModalDealConfirmation.less';
 

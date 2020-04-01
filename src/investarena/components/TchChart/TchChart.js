@@ -23,7 +23,7 @@ class TchChart extends Component {
     let params = {
       pair: { ID: quoteId, Name: name, FullName: fullName, Category: market },
       period: period,
-      // timeMode: 'global',
+      timeMode: 'global',
       chartType: 'candle',
       state: false,
       indicators: [],
@@ -42,7 +42,7 @@ class TchChart extends Component {
       isOtherParams: false,
       isAutoRestore: false,
       rowsid: [],
-      typeThemes: 'black',
+      typeThemes: this.props.isNightMode ? 'black' : 'default',
       typeData: this.props.typeData === 'Sell' ? 'bid' : 'ask',
       modules: {
         isShowNews: false,
