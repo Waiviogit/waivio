@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import withTrade from '../../../HOC/withTrade';
 import RatingsWrap from '../../../../../client/objectCard/RatingsWrap/RatingsWrap';
 import WeightTag from '../../../../../client/components/WeightTag';
 import { getFieldWithMaxWeight } from '../../../../../client/object/wObjectHelper';
@@ -18,8 +17,6 @@ const InstrumentCardView = ({
   showSmallVersion,
   pathNameAvatar,
   intl,
-  quote,
-  quoteSettings,
 }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
@@ -46,9 +43,6 @@ const InstrumentCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
-
-  const showTradeButtons =
-    !_.isEmpty(quoteSettings) && !_.isEmpty(quote) && quote.bidPrice !== 0 && quote.askPrice !== 0;
 
   return (
     <React.Fragment>
@@ -95,13 +89,11 @@ const InstrumentCardView = ({
                 </span>
               )}
             </div>
-            {showTradeButtons && (
-              <PostQuotation
-                className="InstrumentCardView__buttons"
-                caller="od-dp"
-                quoteSecurity={wObject.chartid}
-              />
-            )}
+            <PostQuotation
+              className="InstrumentCardView__buttons"
+              caller="od-dp"
+              quoteSecurity={wObject.chartid}
+            />
           </div>
         </div>
       </div>
@@ -114,15 +106,11 @@ InstrumentCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
-  quote: PropTypes.shape(),
-  quoteSettings: PropTypes.shape(),
 };
 
 InstrumentCardView.defaultProps = {
   showSmallVersion: false,
   pathNameAvatar: '',
-  quote: {},
-  quoteSettings: {},
 };
 
-export default injectIntl(withTrade(InstrumentCardView));
+export default injectIntl(InstrumentCardView);
