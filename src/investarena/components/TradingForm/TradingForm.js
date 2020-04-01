@@ -58,7 +58,6 @@ const TradingForm = ({
             type="text"
             value={amount}
             onChange={handleChangeInput}
-            disabled={!isWalletsExist}
           />
         </div>
         <span>{baseCurrency}</span>
