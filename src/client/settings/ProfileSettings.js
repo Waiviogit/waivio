@@ -190,7 +190,7 @@ export default class ProfileSettings extends React.Component {
             { callback: window.location.href },
           );
           const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
+            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
             '_blank',
           );
           win.focus();
