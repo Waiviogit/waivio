@@ -12,9 +12,7 @@ const Uglifyjs = require('uglifyjs-webpack-plugin');
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
 
-  const smp = new SpeedMeasurePlugin();
-
-  const config = smp.wrap({
+  let config = {
     mode: IS_DEV ? 'development' : 'production',
     target: 'node',
     entry: [paths.server],
@@ -56,16 +54,18 @@ module.exports = function createConfig(env = 'dev') {
       DEFINE_PLUGIN,
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1,
+        maxChunks: 4,
       }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
       }),
     ],
-  });
+  };
 
   if (IS_DEV) {
+    const smp = new SpeedMeasurePlugin();
+    config = smp.wrap(config);
     config.entry = ['webpack/hot/poll?300', ...config.entry];
     config.plugins = [
       ...config.plugins,

@@ -20,7 +20,7 @@ export const isValidForecast = forecast => {
 };
 
 export const getForecastData = post => {
-  const forecast = (post && post.forecast) || get(jsonParse(post.json_metadata), 'wia', null);
+  const forecast = post && post.forecast;
   if (forecast) {
     const { quoteSecurity, postPrice, recommend, createdAt, tpPrice, slPrice } = forecast;
     const predictedEndDate = forecast.expiredAt;
