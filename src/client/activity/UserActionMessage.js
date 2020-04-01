@@ -132,9 +132,7 @@ class UserActionMessage extends React.Component {
               ),
               postLink: (
                 <Link
-                  to={`/p/@${actionDetails.comment_author}/${actionDetails.comment_permlink}#@${
-                    actionDetails.comment_author
-                  }/${actionDetails.comment_permlink}`}
+                  to={`/p/@${actionDetails.comment_author}/${actionDetails.comment_permlink}#@${actionDetails.comment_author}/${actionDetails.comment_permlink}`}
                 >
                   {actionDetails.comment_permlink}
                 </Link>
