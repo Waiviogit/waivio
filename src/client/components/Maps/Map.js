@@ -164,7 +164,19 @@ class MapOS extends React.Component {
     this.setState({ zoom, radius });
   };
 
-  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  toggleModal = async () => {
+    const { zoom } = this.state;
+    await this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+    await this.setState({ radius: this.calculateRadius(zoom) });
+  };
+
+  getMapArea = () => {
+    this.toggleModal().then(() => {
+      const { setMapArea } = this.props;
+      const { radius, center } = this.state;
+      setMapArea({ radius, coordinates: center });
+    });
+  };
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -212,7 +224,7 @@ class MapOS extends React.Component {
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
         {isFullscreenMode && (
@@ -252,7 +264,7 @@ class MapOS extends React.Component {
               <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+              <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
               {customControl && typeof onCustomControlClick === 'function' ? (
