@@ -13,6 +13,7 @@ import { getAuthenticatedUserName } from '../../../reducers';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
+import { getIsBeaxyUser } from '../../../user/usersHelper';
 import Loading from '../../Icon/Loading';
 import './BrokerBalance.less';
 
@@ -21,7 +22,7 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout, us
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
   const storageFirstCurrency = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
-  const isBeaxyUser = userName.split('_')[0] === 'bxy';
+  const isBeaxyUser = getIsBeaxyUser(userName);
 
   const getCurrencyByName = name => find(beaxyBalance, { currency: name });
 
@@ -121,7 +122,7 @@ BrokerBalance.propTypes = {
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  userName: PropTypes.bool.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({

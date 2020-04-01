@@ -13,3 +13,5 @@ export const prepareInstrumentsData = (quotes, statData) =>
     wobjData: quotes[instrument.quote].wobjData,
     market: quotes[instrument.quote].market,
   }));
+
+export const getIsBeaxyUser = userName => userName.split('_')[0] === 'bxy';
