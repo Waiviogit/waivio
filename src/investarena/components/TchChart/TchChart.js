@@ -12,7 +12,7 @@ class TchChart extends Component {
   }
   componentDidMount = () => {
     publishSubscribe(singleton.platform);
-    let source = 'fes.investarena';
+    let source = 'crypto-investarena';
     const quoteId = quoteIdForWidget[this.props.quoteSecurity];
     const name = this.props.quoteSecurity;
     const fullName = singleton.platform.quotesSettings[name]
@@ -29,15 +29,10 @@ class TchChart extends Component {
       indicators: [],
       currentValue: '0.00000',
       connectorOptions: {
-        url: "//44.233.188.11/wss/api/quotation/",
-        wsUrl: "",
-        settingsUrl: "https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true",
+        url: '//44.233.188.11/wss/api/quotation/',
+        wsUrl: '',
+        settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
-        platform: singleton.platform,
-        sid: '',
-        authData: {},
-        um_session: '',
-        sockjspath: '',
       },
       settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
       lang: 'ru',
@@ -77,22 +72,25 @@ class TchChart extends Component {
     let tchParent = document.querySelector('.tch-assets-page');
     const { connectorOptions, ...config } = params;
     if (TechnicalChart) {
-      this.tch = new TechnicalChart({
-        container: tchParent,
-        connectorOptions,
-        config,
-        id: 'TCHART'
-      }, null);
+      this.tch = new TechnicalChart(
+        {
+          container: tchParent,
+          connectorOptions,
+          config,
+          id: 'TCHART',
+        },
+        null,
+      );
 
-      this.tch.connector.getConnectionSettings = () => { };
+      this.tch.connector.getConnectionSettings = () => {};
 
       this.tch.connector.createWebSocketConn = () => {
         const _this = this.tch.connector;
-        _this.client = singleton.platform;//.websocket;
+        _this.client = singleton.platform;
         _this.client.connected = true;
-        _this.client.onWebsocketMessage = (msg) => {
-          const data = _this.processRatesData(msg) ;
-          _this.listeners[0].onConnectorMessage(data, _this.listeners[0])
+        _this.client.onWebsocketMessage = msg => {
+          const data = _this.processRatesData(msg);
+          _this.listeners[0].onConnectorMessage(data, _this.listeners[0]);
         };
 
         if (_this.listeners && _this.listeners.length) {
@@ -101,7 +99,8 @@ class TchChart extends Component {
         }
       };
 
-      this.tch.connector.onReconnect = () => { };
+      this.tch.connector.onReconnect = () => {};
+      this.tch.connector.subscribe = () => {};
 
       this.tch.connector.close = () => {
         const _this = this.tch.connector;
