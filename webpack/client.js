@@ -135,6 +135,9 @@ module.exports = function createConfig(env = 'dev') {
           vendor: {
             name: 'vendor',
             test: /[\\/]node_modules[\\/]/,
+            chunks: 'all',
+            reuseExistingChunk: true,
+            enforce: true
           },
           main: {
             name: 'main',

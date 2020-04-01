@@ -54,7 +54,7 @@ module.exports = function createConfig(env = 'dev') {
       DEFINE_PLUGIN,
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
       new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 4,
+        maxChunks: 1,
       }),
       new WebpackBar({
         name: 'server',
