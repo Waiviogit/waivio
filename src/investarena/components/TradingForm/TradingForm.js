@@ -54,12 +54,7 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
-          <input
-            type="text"
-            value={amount}
-            onChange={handleChangeInput}
-            disabled={!isWalletsExist}
-          />
+          <input type="text" value={amount} onChange={handleChangeInput} />
         </div>
         <span>{baseCurrency}</span>
       </div>

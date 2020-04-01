@@ -6,8 +6,8 @@ import './PostQuotation.less';
 
 const propTypes = {
   /* connect */
-  quote: PropTypes.string.isRequired,
-  quoteSettings: PropTypes.string.isRequired,
+  quote: PropTypes.shape().isRequired,
+  quoteSettings: PropTypes.shape().isRequired,
   platformName: PropTypes.string.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
