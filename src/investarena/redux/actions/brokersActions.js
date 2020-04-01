@@ -130,13 +130,15 @@ export function registerBroker(registrationData) {
 }
 export function disconnectBroker(isReconnect = false) {
   return dispatch => {
-    localStorageKeys.forEach(data => {
-      localStorage.removeItem(data);
-    });
-    cookiesData.forEach(data => {
-      Cookies.remove(data);
-      localStorage.removeItem(data);
-    });
+    if (typeof localStorage !== 'undefined') {
+      localStorageKeys.forEach(data => {
+        localStorage.removeItem(data);
+      });
+      cookiesData.forEach(data => {
+        Cookies.remove(data);
+        localStorage.removeItem(data);
+      });
+    }
     dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
     // if (singleton.platform && singleton.platform.platformName)

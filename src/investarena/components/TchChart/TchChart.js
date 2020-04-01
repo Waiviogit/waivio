@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publishSubscribe';
 import { singleton } from '../../platform/singletonPlatform';
 import { quoteIdForWidget } from '../../constants/constantsWidgets';
+import { wsChartUrl } from '../../../waivioApi/routes';
 import './TchChart.less';
 
 class TchChart extends Component {
@@ -30,7 +31,7 @@ class TchChart extends Component {
       currentValue: '0.00000',
       connectorOptions: {
         url: '//44.233.188.11/wss/api/quotation/',
-        wsUrl: '//44.233.188.11/wss/Server.ashx',
+        wsUrl: wsChartUrl,
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
       },
