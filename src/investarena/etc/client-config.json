@@ -84,7 +84,9 @@
       "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "webSocketTChUrl": "//44.233.188.11/wss/Server.ashx"
+
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx",
+    "": "//44.233.188.11/wss/Server.ashx"
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",
