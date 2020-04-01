@@ -14,6 +14,7 @@ import {
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
+import { getIsBeaxyUser } from '../user/usersHelper';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -115,8 +116,8 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   const platformName = get(state, ['platform', 'platformName'], '');
   const userName = get(state, ['auth', 'user', 'name'], '');
 
-  const isBeaxyUser = userName.split('_')[0] === 'bxy';
-  if (isBeaxyUser && platformName && platformName !== 'beaxy') return dispatch(logout());
+  if (getIsBeaxyUser(userName) && platformName && platformName !== 'beaxy')
+    return dispatch(logout());
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
