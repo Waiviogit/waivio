@@ -153,6 +153,7 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
+    console.log(postData);
     this.setState({ loading: true });
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
@@ -625,7 +626,19 @@ export default class AppendForm extends Component {
   };
 
   handleChangeSorting = sortedList => {
-    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('sortCustom');
+    const sorted =
+      sortedList.map(item => ({
+        id: item,
+      })) || [];
+    console.log('currentField', currentField);
+    console.log('sortedList', sortedList);
+    console.log('sorted', sorted);
+    const list = this.props.form.setFieldsValue({
+      [objectFields.sorting]: sorted.map(item => item.id),
+    });
+    console.log(list);
   };
 
   onLoadingImage = value => this.setState({ isLoadingImage: value });
@@ -1288,6 +1301,7 @@ export default class AppendForm extends Component {
             id: item.id,
             content: <DnDListItem name={item.name} type={item.type} />,
           })) || [];
+        console.log('listItems', listItems);
         const button = getInnerFieldWithMaxWeight(wObject, objectFields.button);
         if (button) {
           listItems.push({
