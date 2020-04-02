@@ -73,9 +73,10 @@ const Details = ({
                       to={`/@${objectDetails.guide.name}`}
                     >{` @${objectDetails.guide.name} `}</Link>
                     {messageData.forReviewing}
-                    <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
-                      {` ${requiredObjectName} `}
-                    </Link>
+                    <Link
+                      className="nowrap"
+                      to={`/object/${objectDetails.requiredObject}`}
+                    >{` ${objectDetails.name} `}</Link>
                     {messageData.inTheLast}
                   </div>
                 </div>
@@ -116,28 +117,14 @@ const Details = ({
             <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
               {proposedWobj.name}
             </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${proposedWobj.author_permlink}`}
-              >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
-            </span>
             ;
           </div>
           <div className="Details__criteria-row nowrap">
             {/* eslint-disable-next-line no-plusplus */}
             {`${indexItem++}. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-              {requiredObjectName}
+              {objectDetails.name}
             </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${objectDetails.requiredObject}`}
-              >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
-            </span>
             ;
           </div>
           <div className="Details__criteria-row">
@@ -152,13 +139,13 @@ const Details = ({
             <div className="Details__text fw6 mv3">{messageData.reward}:</div>
             <span>
               {messageData.amountRewardDetermined}(
-              <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
+              <Link to={`/object/${objectDetails.guide.name}`}>{objectDetails.guide.name}</Link>
               {!isEmpty(objectDetails.match_bots) &&
                 objectDetails.match_bots.map(bot => (
                   <React.Fragment>
                     ,
-                    <Link className="ml1" to={`/@${bot}`}>
-                      {`@${bot}`}
+                    <Link className="ml1" to={`/object/${bot}`}>
+                      {`www.waivio.com/object/${bot}`}
                     </Link>
                   </React.Fragment>
                 ))}
@@ -179,6 +166,12 @@ const Details = ({
                   </Link>
                 ))}
             </span>
+            {objectDetails.usersLegalNotice && (
+              <div>
+                <div className="Details__text fw6 mv3">{messageData.usersLegalNotice}:</div>
+                <span>{objectDetails.usersLegalNotice}</span>
+              </div>
+            )}
           </React.Fragment>
         )}
       </div>

@@ -12,6 +12,7 @@ import {
   getActiveFilters,
   getUserLocation,
   getHasMap,
+  getIsMapModalOpen,
 } from '../../reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
@@ -28,6 +29,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const filters = useSelector(getAvailableFilters);
   const activeFilters = useSelector(getActiveFilters);
   const hasMap = useSelector(getHasMap);
+  const isFullscreenMode = useSelector(getIsMapModalOpen);
 
   if (isEmpty(userLocation)) {
     dispatch(getCoordinates());
@@ -36,16 +38,14 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const objectType = match.params.typeName;
 
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
-  const setMapArea = map => dispatch(getObjectTypeMap(map));
+  const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
     dispatch(setMapFullscreenMode(false));
   };
 
-  const handleMapMarkerClick = permlink => {
-    history.push(`/object/${permlink.payload.id}`);
-  };
+  const handleMapMarkerClick = permlink => history.push(`/object/${permlink}`);
 
   const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
 

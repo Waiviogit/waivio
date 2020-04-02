@@ -6,7 +6,13 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
-import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
+import {
+  haveAccess,
+  hasType,
+  accessTypesArr,
+  calculateApprovePercent,
+  getApprovedField,
+} from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
@@ -121,13 +127,19 @@ class ObjectInfo extends React.Component {
 
   renderTagCategories = tagCategories => {
     if (tagCategories) {
-      return tagCategories.map(item => (
-        <div key={item.id}>
-          {`${item.body}:`}
-          <br />
-          {this.renderCategoryItems(item.categoryItems)}
-        </div>
-      ));
+      return tagCategories.map(item => {
+        if (calculateApprovePercent(item.active_votes) >= 70) {
+          return (
+            <div key={item.id}>
+              {`${item.body}:`}
+              <br />
+              {this.renderCategoryItems(item.categoryItems)}
+            </div>
+          );
+        }
+
+        return null;
+      });
     }
     return null;
   };
@@ -136,7 +148,7 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { button, status, website, newsFilter } = wobject;
+    const { status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
@@ -144,7 +156,6 @@ class ObjectInfo extends React.Component {
     let names = [];
     let addressArr = [];
     let address = '';
-    let map = '';
     let description = '';
     let price = '';
     let workTime = '';
@@ -158,10 +169,15 @@ class ObjectInfo extends React.Component {
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
+    const button = getApprovedField(wobject, 'button');
+    const map = getApprovedField(wobject, 'map');
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
-        .filter(nameFld => nameFld.body !== wobject.name)
+        .filter(
+          nameFld =>
+            nameFld.body !== wobject.name && calculateApprovePercent(nameFld.active_votes) >= 70,
+        )
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
@@ -170,10 +186,7 @@ class ObjectInfo extends React.Component {
         : [];
       address = _.compact(addressArr).join(', ');
 
-      map = getInnerFieldWithMaxWeight(wobject, objectFields.map);
-
       description = getFieldWithMaxWeight(wobject, objectFields.description);
-
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
       background = getFieldWithMaxWeight(wobject, objectFields.background);
 
@@ -186,20 +199,38 @@ class ObjectInfo extends React.Component {
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
       menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
+
+      menuItems = menuItems.map(item => {
+        const matchField = _.get(wobject, 'fields', []).find(field => field.alias === item.alias);
+        const activeVotes = matchField ? matchField.active_votes : [];
+
+        return {
+          ...item,
+          active_votes: [...activeVotes],
+        };
+      });
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
+          ? menuItems.filter(item => calculateApprovePercent(item.active_votes) >= 70)
           : null;
+
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
-          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
+          ? menuItems.filter(
+              item =>
+                item.object_type === OBJECT_TYPE.PAGE &&
+                calculateApprovePercent(item.active_votes) >= 70,
+            )
           : null;
 
       photosCount = wobject.photos_count;
 
       tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
 
-      const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
+      const filteredPhones = wobject.fields.filter(
+        field =>
+          field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
+      );
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
@@ -336,9 +367,10 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           )}
           {!isEditMode &&
+            menuLists &&
             sortListItemsBy(
               combineObjectMenu(
-                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                menuLists.map(menuItem => getClientWObj(menuItem, usedLocale)),
                 {
                   button,
                   news: Boolean(newsFilter),
@@ -347,7 +379,7 @@ class ObjectInfo extends React.Component {
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
-          {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
+          {!_.isEmpty(menuLists) && listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );

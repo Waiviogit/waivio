@@ -54,12 +54,17 @@ export const getObjectType = (
   });
 };
 
-export const getObjectTypeMap = (map = {}) => dispatch => {
+export const getObjectTypeMap = (map = {}, isFullscreenMode) => dispatch => {
   const filters = { rating: [], map };
   const typeName = 'restaurant';
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
+  const getLimit = () => {
+    let limit = 50;
+    if (isFullscreenMode) limit = 200;
+    return limit;
+  };
   return dispatch(
-    getObjectType(typeName, actionType, filters, { limit: 50, skip: 0, simplified: true }),
+    getObjectType(typeName, actionType, filters, { limit: getLimit(), skip: 0, simplified: true }),
   );
 };
 
