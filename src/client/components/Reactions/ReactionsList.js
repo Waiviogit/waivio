@@ -27,6 +27,10 @@ export default class UserList extends React.Component {
     const { votes, ratio } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
+    const voteValue = vote =>
+      isNaN((vote.rshares_weight || vote.rshares) * ratio)
+        ? 0
+        : (vote.rshares_weight || vote.rshares) * ratio;
 
     return (
       <Scrollbars autoHide style={{ height: '400px' }}>
@@ -43,7 +47,7 @@ export default class UserList extends React.Component {
                 user={{ name: vote.voter }}
                 alt={
                   <span>
-                    <USDDisplay value={(vote.rshares_weight || vote.rshares) * ratio} />
+                    <USDDisplay value={voteValue(vote)} />
                     <span className="ReactionsList__bullet" />
                     <FormattedNumber
                       style="percent" // eslint-disable-line react/style-prop-object
