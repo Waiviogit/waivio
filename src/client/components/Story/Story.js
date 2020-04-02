@@ -267,7 +267,7 @@ class Story extends React.Component {
     const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
+    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -291,7 +291,7 @@ class Story extends React.Component {
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
+    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
     if (isReplyPreview) {
       history.push(postURL);
@@ -318,7 +318,7 @@ class Story extends React.Component {
 
     return showStoryPreview ? (
       <a
-        href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+        href={replaceBotWithGuestName(`/@${post.id}`, post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
