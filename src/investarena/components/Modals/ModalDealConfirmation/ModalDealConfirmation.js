@@ -35,7 +35,7 @@ const ModalDealConfirmation = props => {
           width={'90vw'}
         >
           <div className="modal-open-deals">
-            <div style={{ width: '100%', height: '50vh' }}>
+            <div style={{ width: '100%', height: '70vh' }}>
               <TchChart
                 quoteSecurity={props.modalInfo.quote.security}
                 market={props.modalInfo.quote.market}

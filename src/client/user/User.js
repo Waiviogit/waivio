@@ -174,7 +174,7 @@ export default class User extends React.Component {
     const image = getAvatarURL(username) || '/images/logo.png';
     const canonicalUrl = `${waivioHost}/@${username}`;
     const url = `${waivioHost}/@${username}`;
-    const title = `${displayedUsername} - Waivio`;
+    const title = `${displayedUsername} - InvestArena`;
 
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';
