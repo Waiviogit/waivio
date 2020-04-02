@@ -169,7 +169,7 @@ export default (messageFactory, validators) => ({
   },
   minExpertise: {
     name: 'minExpertise',
-    label: messageFactory('minimum_waivio_expertise', 'Minimum Waivio expertise (optional)'),
+    label: messageFactory('minimum_waivio_expertise', 'Minimum InvestArena expertise (optional)'),
     rules: [
       {
         validator: validators.checkMinExpertise,
@@ -204,7 +204,7 @@ export default (messageFactory, validators) => ({
     header: messageFactory('legal', 'Legal'),
     p_1: messageFactory(
       'reward_payments_made_directly_waivio_provide_information',
-      'All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only. ',
+      'All reward payments are made directly to users by the campaign creator. InvestArena and other partners provide information and discovery services only. ',
     ),
     p_2: messageFactory(
       'can_add_link_agreement_govern_relationships',
