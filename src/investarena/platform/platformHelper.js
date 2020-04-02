@@ -374,15 +374,15 @@ export class PlatformHelper {
   static validateOnChange(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
-    if (
-      amountParseString.length > quoteSettings.maximumQuantity.toString().length ||
-      amountInt > quoteSettings.maximumQuantity
-    ) {
+    if (amountInt && amountInt > quoteSettings.maximumQuantity) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
       return numberFormat(quoteSettings.maximumQuantity, decimals);
-    } else if (amountParseString.length === 0) {
+    } else if (!amountInt || amountInt < quoteSettings.minimumQuantity) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity, decimals);
+    }
+    if (amountParseString.match(/\d*\.$/)) {
+      return amount;
     }
     if (amountParseString.match(/[1-9]+?/)) {
       const decimals = PlatformHelper.countDecimals(amountInt);
@@ -391,7 +391,7 @@ export class PlatformHelper {
     return amount.replace(/^,/, '');
   }
   static validateOnKeyPress(e) {
-    if (e && e.key && !e.key.match(/[0-9]/) && e.key.length === 1) {
+    if (e && e.key && !e.key.match(/[0-9.]/) && e.key.length === 1) {
       e.preventDefault();
     }
   }

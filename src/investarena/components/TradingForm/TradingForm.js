@@ -19,6 +19,7 @@ const TradingForm = ({
   isWalletsExist,
   platformName,
   wallet,
+  handleKeyPressInput,
   handleChangeInput,
   createMarketOrder,
 }) => {
@@ -55,7 +56,7 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
-          <input type="text" value={amount} onChange={handleChangeInput} />
+          <input type="text" value={amount} onChange={handleChangeInput} onKeyPress={handleKeyPressInput} />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -121,6 +122,7 @@ TradingForm.propTypes = {
     logoName: PropTypes.string,
     logoUrl: PropTypes.string,
   }).isRequired,
+  handleKeyPressInput: PropTypes.func.isRequired,
   handleChangeInput: PropTypes.func.isRequired,
   createMarketOrder: PropTypes.func.isRequired,
 };
