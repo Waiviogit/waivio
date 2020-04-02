@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { message } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { message, Tooltip } from 'antd';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
 import withTrade from '../HOC/withTrade';
@@ -19,6 +19,7 @@ const TradingForm = ({
   isWalletsExist,
   platformName,
   wallet,
+  handleKeyPressInput,
   handleChangeInput,
   createMarketOrder,
 }) => {
@@ -43,10 +44,14 @@ const TradingForm = ({
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          {/* <Tooltip title={}> */}
+          {/*  <i className="iconfont icon-prompt info-icon" /> */}
+          {/* </Tooltip> */}
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
-          <span className="fw5">{`${wallet.balance} ${wallet.currency}`}</span>
+          <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
+          &nbsp;
+          {wallet.currency}
         </div>
       </div>
 
@@ -54,7 +59,12 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
-          <input type="text" value={amount} onChange={handleChangeInput} />
+          <input
+            type="text"
+            value={amount}
+            onChange={handleChangeInput}
+            onKeyPress={handleKeyPressInput}
+          />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -67,19 +77,41 @@ const TradingForm = ({
 
       <div className="st-trading-form-footer">
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          <Tooltip
+            title={`Approximate amount you will ${
+              side === 'sell' ? 'receive' : 'pay'
+            } in quoted currency. Price is estimated based on current order book. Actual price may differ slightly.`}
+            overlayClassName="st-trading-form__tooltip"
+          >
+            <i className="iconfont icon-prompt info-icon" />
+          </Tooltip>
           <FormattedMessage id="trading_form_total" defaultMessage="Total" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            {totalPrice}&nbsp;{termCurrency}
+            <FormattedNumber value={totalPrice} maximumSignificantDigits={totalPrice > 1 ? 7 : 4} />
+            {` ${termCurrency}`}
           </span>
         </div>
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          <Tooltip
+            title={
+              <div>
+                <div>Maker fee - {quoteSettings.buyerMakerCommissionProgressive}%</div>
+                <div>Taker fee - {quoteSettings.buyerTakerCommissionProgressive}%</div>
+              </div>
+            }
+            overlayClassName="st-trading-form__tooltip"
+          >
+            <i className="iconfont icon-prompt info-icon" />
+          </Tooltip>
           <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            {fees.takerFee}&nbsp;{feeCurrency}
+            <FormattedNumber
+              value={fees.takerFee}
+              maximumSignificantDigits={fees.takerFee > 1 ? 5 : 4}
+            />
+            {` ${feeCurrency}`}
           </span>
         </div>
       </div>
@@ -105,6 +137,8 @@ TradingForm.propTypes = {
     termCurrency: PropTypes.string.isRequired,
     minimumQuantity: PropTypes.number,
     maximumQuantity: PropTypes.number,
+    buyerMakerCommissionProgressive: PropTypes.number,
+    buyerTakerCommissionProgressive: PropTypes.number,
   }).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
   isAmountValid: PropTypes.bool.isRequired,
@@ -118,6 +152,7 @@ TradingForm.propTypes = {
     logoName: PropTypes.string,
     logoUrl: PropTypes.string,
   }).isRequired,
+  handleKeyPressInput: PropTypes.func.isRequired,
   handleChangeInput: PropTypes.func.isRequired,
   createMarketOrder: PropTypes.func.isRequired,
 };
