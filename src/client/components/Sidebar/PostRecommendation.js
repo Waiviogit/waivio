@@ -8,6 +8,7 @@ import formatter from '../../helpers/steemitFormatter';
 import Loading from '../../components/Icon/Loading';
 import steemAPI from '../../steemAPI';
 import PostRecommendationLink from './PostRecommendationLink';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 
@@ -54,6 +55,16 @@ class PostRecommendation extends Component {
     this.getPostsByAuthor(author);
   }
 
+  getGuestUserPosts = currentAuthor =>
+    getUserProfileBlog(currentAuthor, { limit: 4 }).then(result => {
+      const recommendedPosts = result || [];
+      this.setState({
+        recommendedPosts,
+        loading: false,
+        currentAuthor,
+      });
+    });
+
   getPostsByAuthor = author => {
     steemAPI
       .sendAsync('get_discussions_by_blog', [
@@ -69,7 +80,8 @@ class PostRecommendation extends Component {
           loading: false,
           currentAuthor: author,
         });
-      });
+      })
+      .catch(() => this.getGuestUserPosts(author));
   };
 
   getFilteredPosts = () => {
