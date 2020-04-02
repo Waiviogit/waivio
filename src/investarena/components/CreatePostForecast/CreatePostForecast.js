@@ -31,7 +31,7 @@ import './CreatePostForecast.less';
 }))
 class CreatePostForecast extends Component {
   static propTypes = {
-    /* infectIntl */
+    /* injectIntl */
     intl: PropTypes.shape().isRequired,
     /* connect */
     quotesSettings: PropTypes.shape(),
