@@ -1,6 +1,5 @@
 import { isEmpty, isNil, map } from 'lodash';
 import { numberFormat } from './numberFormat';
-import { round } from '../helpers/calculationsHelper';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
@@ -28,11 +27,11 @@ export class PlatformHelper {
         side === 'buy' &&
         !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))
       ) {
-        const makerFeeValue = (amountValue * buyerMakerCommissionProgressive) / 100;
-        const takerFeeValue = (amountValue * buyerTakerCommissionProgressive) / 100;
+        const makerFee = (amountValue * buyerMakerCommissionProgressive) / 100;
+        const takerFee = (amountValue * buyerTakerCommissionProgressive) / 100;
         return {
-          makerFee: round(makerFeeValue, 8),
-          takerFee: round(takerFeeValue, 8),
+          makerFee,
+          takerFee,
         };
       }
       if (
@@ -41,13 +40,11 @@ export class PlatformHelper {
         !isNil(sellerMakerCommissionProgressive) &&
         quote.bidPrice
       ) {
-        const makerFeeValue =
-          (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
-        const takerFeeValue =
-          (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
+        const makerFee = (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
+        const takerFee = (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
         return {
-          makerFee: round(makerFeeValue, 8),
-          takerFee: round(takerFeeValue, 8),
+          makerFee,
+          takerFee,
         };
       }
     }
@@ -59,7 +56,7 @@ export class PlatformHelper {
   static calculateTotalPrice(amount, side, quote) {
     const amountValue = getAmountValue(amount);
     const price = (side === 'buy' && quote.askPrice) || (side === 'sell' && quote.bidPrice) || 0;
-    return round(amountValue * price, 8);
+    return amountValue * price;
   }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
@@ -375,15 +372,15 @@ export class PlatformHelper {
   static validateOnChange(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
     const amountInt = +amountParseString;
-    if (
-      amountParseString.length > quoteSettings.maximumQuantity.toString().length ||
-      amountInt > quoteSettings.maximumQuantity
-    ) {
+    if (amountInt && amountInt > quoteSettings.maximumQuantity) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
       return numberFormat(quoteSettings.maximumQuantity, decimals);
-    } else if (amountParseString.length === 0) {
+    } else if (!amountInt || amountInt < quoteSettings.minimumQuantity) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity, decimals);
+    }
+    if (amountParseString.match(/\d*\.$/)) {
+      return amount;
     }
     if (amountParseString.match(/[1-9]+?/)) {
       const decimals = PlatformHelper.countDecimals(amountInt);
@@ -392,7 +389,7 @@ export class PlatformHelper {
     return amount.replace(/^,/, '');
   }
   static validateOnKeyPress(e) {
-    if (e && e.key && !e.key.match(/[0-9]/) && e.key.length === 1) {
+    if (e && e.key && !e.key.match(/[0-9.]/) && e.key.length === 1) {
       e.preventDefault();
     }
   }
