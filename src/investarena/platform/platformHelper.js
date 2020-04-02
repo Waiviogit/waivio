@@ -4,6 +4,7 @@ import { round } from '../helpers/calculationsHelper';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
+import { exponentNumberRegex } from '../../client/helpers/regexHelpers';
 
 export const getAmountValue = amount => {
   if (typeof amount === 'string') {
@@ -423,9 +424,10 @@ export class PlatformHelper {
   static exponentialToDecimal(exponentialNumber) {
     // sanity check - is it exponential number
     const str = exponentialNumber.toString();
-    if (str.indexOf('e') !== -1) {
-      const exponent = parseInt(str.split('-')[1], 10);
-      return exponentialNumber.toFixed(exponent);
+    if (exponentNumberRegex.test(str)) {
+      const [testedString, mantissa, exponent] = str.match(exponentNumberRegex);
+      const digits = parseInt(exponent, 10) + mantissa.match(/^\d\.?(\d*)$/)[1].length;
+      return exponentialNumber.toFixed(digits);
     }
     return exponentialNumber.toString();
   }

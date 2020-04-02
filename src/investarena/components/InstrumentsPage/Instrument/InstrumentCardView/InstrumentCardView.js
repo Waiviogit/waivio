@@ -12,12 +12,7 @@ import { objectFields as objectTypes } from '../../../../../common/constants/lis
 import PostQuotation from '../../../PostQuotation';
 import './instrumentCardView.less';
 
-const InstrumentCardView = ({
-  wObject,
-  showSmallVersion,
-  pathNameAvatar,
-  intl,
-}) => {
+const InstrumentCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();

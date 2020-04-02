@@ -361,7 +361,10 @@ class CreatePostForecast extends Component {
                       <Input
                         className="st-create-post-quotation"
                         type="text"
-                        value={quotePrice && intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })}
+                        value={
+                          quotePrice &&
+                          intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
+                        }
                         disabled
                       />
                     </div>
