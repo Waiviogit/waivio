@@ -31,14 +31,17 @@ import './CreatePostForecast.less';
 }))
 class CreatePostForecast extends Component {
   static propTypes = {
+    /* infectIntl */
     intl: PropTypes.shape().isRequired,
+    /* connect */
     quotesSettings: PropTypes.shape(),
+    optionsQuote: PropTypes.arrayOf(PropTypes.shape()),
     quoteSelected: PropTypes.shape(),
+    /* passed props */
     isPosted: PropTypes.bool,
     isUpdating: PropTypes.bool,
     forecastValues: PropTypes.shape(),
     onChange: PropTypes.func,
-    optionsQuote: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
