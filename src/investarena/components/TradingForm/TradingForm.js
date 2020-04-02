@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
 import withTrade from '../HOC/withTrade';
@@ -46,7 +46,8 @@ const TradingForm = ({
           <i className="iconfont icon-prompt info-icon" />
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
-          <span className="fw5">{`${wallet.balance} ${wallet.currency}`}</span>
+          <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
+          {` ${wallet.currency}`}
         </div>
       </div>
 
@@ -71,7 +72,8 @@ const TradingForm = ({
           <FormattedMessage id="trading_form_total" defaultMessage="Total" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            {totalPrice}&nbsp;{termCurrency}
+            <FormattedNumber value={totalPrice} maximumSignificantDigits={ totalPrice > 1 ? 7 : 4 } />
+            {` ${termCurrency}`}
           </span>
         </div>
         <div className="flex-info-block">
@@ -79,7 +81,8 @@ const TradingForm = ({
           <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            {fees.takerFee}&nbsp;{feeCurrency}
+            <FormattedNumber value={fees.takerFee} maximumSignificantDigits={ fees.takerFee > 1 ? 5 : 4 } />
+            {` ${feeCurrency}`}
           </span>
         </div>
       </div>

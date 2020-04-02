@@ -1,6 +1,5 @@
 import { isEmpty, isNil, map } from 'lodash';
 import { numberFormat } from './numberFormat';
-import { round } from '../helpers/calculationsHelper';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
 import { CHART_ID } from '../constants/objectsInvestarena';
@@ -28,11 +27,11 @@ export class PlatformHelper {
         side === 'buy' &&
         !isNil(buyerMakerCommissionProgressive && !isNil(buyerTakerCommissionProgressive))
       ) {
-        const makerFeeValue = (amountValue * buyerMakerCommissionProgressive) / 100;
-        const takerFeeValue = (amountValue * buyerTakerCommissionProgressive) / 100;
+        const makerFee = (amountValue * buyerMakerCommissionProgressive) / 100;
+        const takerFee = (amountValue * buyerTakerCommissionProgressive) / 100;
         return {
-          makerFee: round(makerFeeValue, 8),
-          takerFee: round(takerFeeValue, 8),
+          makerFee,
+          takerFee,
         };
       }
       if (
@@ -41,13 +40,13 @@ export class PlatformHelper {
         !isNil(sellerMakerCommissionProgressive) &&
         quote.bidPrice
       ) {
-        const makerFeeValue =
+        const makerFee =
           (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
-        const takerFeeValue =
+        const takerFee =
           (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
         return {
-          makerFee: round(makerFeeValue, 8),
-          takerFee: round(takerFeeValue, 8),
+          makerFee,
+          takerFee,
         };
       }
     }
@@ -59,7 +58,7 @@ export class PlatformHelper {
   static calculateTotalPrice(amount, side, quote) {
     const amountValue = getAmountValue(amount);
     const price = (side === 'buy' && quote.askPrice) || (side === 'sell' && quote.bidPrice) || 0;
-    return round(amountValue * price, 8);
+    return amountValue * price;
   }
   static getCrossUSD(quote, quoteSettings) {
     let crossUSD = 1;
