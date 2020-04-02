@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { get } from 'lodash';
+import { get, truncate } from 'lodash';
 import urlParse from 'url-parse';
 import { getUser, getRewardFund, getRate, isGuestUser } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
@@ -107,7 +107,7 @@ class UserInfo extends React.Component {
               )}
               {website && (
                 <div>
-                  <i className="iconfont icon-link text-icon" />
+                  <i className="iconfont icon-link text-icon link" />
                   <a target="_blank" rel="noopener noreferrer" href={website}>
                     {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
                   </a>
@@ -115,15 +115,18 @@ class UserInfo extends React.Component {
               )}
               {email && (
                 <div>
-                  <i className="iconfont icon-link text-icon" />
+                  <Icon type="mail" className="text-icon medium" />
                   <a target="_blank" rel="noopener noreferrer" href={`mailto:${email}`}>
-                    {email}
+                    {truncate(email, {
+                      length: 21,
+                      omission: '...',
+                    })}
                   </a>
                 </div>
               )}
               <div className="UserInfo__list">
                 <div>
-                  <Icon type="calendar" className="text-icon" />
+                  <Icon type="calendar" className="text-icon medium" />
                   <FormattedMessage
                     id="joined_date"
                     defaultMessage="Joined: {date}"
@@ -148,7 +151,7 @@ class UserInfo extends React.Component {
                 {!user.name.startsWith(GUEST_PREFIX) && (
                   <React.Fragment>
                     <div>
-                      <i className="iconfont icon-praise Comment__icon_dislike" />
+                      <i className="iconfont icon-praise text-icon" />
                       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
                       <FormattedNumber
                         style="percent" // eslint-disable-line react/style-prop-object
@@ -157,7 +160,7 @@ class UserInfo extends React.Component {
                       />
                     </div>
                     <div>
-                      <i className="iconfont icon-praise Comment__icon_dislike" />
+                      <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
                       <FormattedMessage
                         id="downvoting_mana"
                         defaultMessage="Downvoting mana"

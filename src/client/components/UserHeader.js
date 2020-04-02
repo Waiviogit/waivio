@@ -18,7 +18,6 @@ const UserHeader = ({
   username,
   user,
   handle,
-  wobjWeight,
   vestingShares,
   isSameUser,
   coverImage,
@@ -80,7 +79,7 @@ const UserHeader = ({
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
               {username}
-              <WeightTag weight={wobjWeight} />
+              <WeightTag weight={user.wobjects_weight} />
             </h2>
             <div className="UserHeader__user__buttons">
               <div
@@ -169,7 +168,6 @@ UserHeader.propTypes = {
   rate: PropTypes.number.isRequired,
   handle: PropTypes.string,
   username: PropTypes.string,
-  wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
@@ -187,7 +185,6 @@ UserHeader.defaultProps = {
   user: {},
   username: '',
   handle: '',
-  wobjWeight: '0',
   vestingShares: 0,
   isSameUser: false,
   coverImage: '',

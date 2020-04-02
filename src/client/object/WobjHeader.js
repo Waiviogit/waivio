@@ -11,10 +11,11 @@ import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import { accessTypesArr, getApprovedField, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
+
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({
@@ -53,6 +54,7 @@ const WobjHeader = ({
       return `${link}/${wobject.object_type}`;
     return `${link}/reviews`;
   };
+  const name = getApprovedField(wobject, 'name') || wobject.default_name;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -74,7 +76,7 @@ const WobjHeader = ({
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
               <div className="ObjectHeader__text" title={wobject.name || wobject.default_name}>
-                {wobject.name || wobject.default_name}
+                {name}
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />

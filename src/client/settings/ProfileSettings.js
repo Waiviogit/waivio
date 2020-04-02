@@ -116,7 +116,8 @@ export default class ProfileSettings extends React.Component {
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
-
+    console.log(form);
+    console.log(form.isFieldsTouched());
     if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
 
     form.validateFields((err, values) => {
@@ -159,7 +160,7 @@ export default class ProfileSettings extends React.Component {
             { callback: window.location.href },
           );
           const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
+            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
             '_blank',
           );
           win.focus();
@@ -345,6 +346,24 @@ export default class ProfileSettings extends React.Component {
                           placeholder={intl.formatMessage({
                             id: 'profile_location_placeholder',
                             defaultMessage: 'Your location',
+                          })}
+                        />,
+                      )}
+                    </FormItem>
+                  </div>
+                </div>
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage id="profile_email" defaultMessage="Email" />
+                  </h3>
+                  <div className="Settings__section__inputs">
+                    <FormItem>
+                      {getFieldDecorator('email')(
+                        <Input
+                          size="large"
+                          placeholder={intl.formatMessage({
+                            id: 'profile_email_placeholder',
+                            defaultMessage: 'Your email',
                           })}
                         />,
                       )}
