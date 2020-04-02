@@ -30,7 +30,6 @@ const Avatar = ({ username, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const url = getAvatarURL(username, size, authenticatedUser);
 

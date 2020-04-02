@@ -37,6 +37,12 @@ export const TYPES_OF_MENU_ITEM = {
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
+export const sortingMenuName = {
+  menuList: objectFields.listItem,
+  menuPage: objectFields.pageContent,
+  menuButton: objectFields.button,
+};
+
 export const objectFieldsWithInnerData = [
   'newsFilter',
   'address',

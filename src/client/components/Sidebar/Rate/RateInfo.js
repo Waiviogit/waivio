@@ -10,6 +10,7 @@ import { getRatingFields } from '../../../reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
 import './RateInfo.less';
+import { calculateApprovePercent } from '../../../helpers/wObjectHelper';
 
 @injectIntl
 @connect(state => ({
@@ -69,11 +70,14 @@ class RateInfo extends React.Component {
   render() {
     const { ratingFields, username } = this.props;
     const rankingList = _.sortBy(ratingFields, ['body']);
+    const actualRankingList = rankingList.filter(
+      rate => calculateApprovePercent(rate.active_votes) >= 70,
+    );
 
     return (
       <React.Fragment>
-        {rankingList &&
-          rankingList.map(field => (
+        {actualRankingList &&
+          actualRankingList.map(field => (
             <div className="RateInfo__header" key={field.permlink}>
               <div>{field.body}</div>
               <div className="RateInfo__stars">

@@ -90,4 +90,5 @@ export default (localizer, objectData) => ({
   reserved: localizer('rewards_details_reserved', 'Reserved'),
   forDays: localizer('for_days', 'for'),
   days: localizer('days', 'days'),
+  usersLegalNotice: localizer('rewards_details_usersLegalNotice', 'Legal notice'),
 });

@@ -85,6 +85,7 @@ class PostContent extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    isOriginalPost: PropTypes.string,
   };
 
   static defaultProps = {
@@ -103,6 +104,7 @@ class PostContent extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
+    isOriginalPost: '',
   };
 
   constructor(props) {
@@ -172,6 +174,7 @@ class PostContent extends React.Component {
       rewardFund,
       defaultVotePercent,
       appUrl,
+      isOriginalPost,
     } = this.props;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -262,6 +265,7 @@ class PostContent extends React.Component {
           onSaveClick={this.handleSaveClick}
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
+          isOriginalPost={isOriginalPost}
         />
       </div>
     );
