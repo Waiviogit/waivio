@@ -17,6 +17,7 @@ import {
   getIsLoaded,
   getUserLocation,
   getPendingUpdate,
+  getIsMapModalOpen,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -52,6 +53,7 @@ import { delay } from './rewardsHelpers';
     user: getAuthenticatedUser(state),
     wobjects: getFilteredObjectsMap(state),
     pendingUpdate: getPendingUpdate(state),
+    isFullscreenMode: getIsMapModalOpen(state),
   }),
   {
     assignProposition,
@@ -162,7 +164,7 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
+  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
 
   getRequiredObjects = () =>
     this.state.propositions
@@ -340,6 +342,7 @@ class Rewards extends React.Component {
         return { isAssign: false };
       })
       .catch(e => {
+        console.log(e.toString());
         message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
@@ -559,6 +562,11 @@ class Rewards extends React.Component {
 
 Rewards.propTypes = {
   route: PropTypes.shape().isRequired,
+  isFullscreenMode: PropTypes.bool,
+};
+
+Rewards.defaultProps = {
+  isFullscreenMode: false,
 };
 
 export default Rewards;

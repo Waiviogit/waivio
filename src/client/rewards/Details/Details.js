@@ -117,13 +117,6 @@ const Details = ({
             <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
               {proposedWobj.name}
             </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${proposedWobj.author_permlink}`}
-              >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
-            </span>
             ;
           </div>
           <div className="Details__criteria-row nowrap">
@@ -132,13 +125,6 @@ const Details = ({
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
               {objectDetails.name}
             </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${objectDetails.requiredObject}`}
-              >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
-            </span>
             ;
           </div>
           <div className="Details__criteria-row">
@@ -180,6 +166,12 @@ const Details = ({
                   </Link>
                 ))}
             </span>
+            {objectDetails.usersLegalNotice && (
+              <div>
+                <div className="Details__text fw6 mv3">{messageData.usersLegalNotice}:</div>
+                <span>{objectDetails.usersLegalNotice}</span>
+              </div>
+            )}
           </React.Fragment>
         )}
       </div>

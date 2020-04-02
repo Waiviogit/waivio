@@ -192,6 +192,36 @@ class CatalogWrap extends React.Component {
     this.setState({ sort, listItems });
   };
 
+  getListRow = listItem => {
+    const linkTo = getListItemLink(listItem, this.props.location);
+    const isList = listItem.type === OBJ_TYPE.LIST;
+    return (
+      <div key={`category-${listItem.id}`}>
+        {isList ? (
+          <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
+        ) : (
+          <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />
+        )}
+      </div>
+    );
+  };
+
+  getMenuList = () => {
+    const { listItems, breadcrumb } = this.state;
+    if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
+      return (
+        <div>
+          {this.props.intl.formatMessage({
+            id: 'emptyList',
+            defaultMessage: 'This list is empty',
+          })}
+        </div>
+      );
+    }
+
+    return map(listItems, listItem => this.getListRow(listItem));
+  };
+
   render() {
     const { sort, wobjNested, listItems, breadcrumb, loading } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
@@ -243,6 +273,7 @@ class CatalogWrap extends React.Component {
           </SortSelector.Item>
         </SortSelector>
       );
+
     return (
       <div>
         <div className="CatalogWrap__breadcrumb">
@@ -288,41 +319,13 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        {isListObject && (
+        {isListObject && loading ? (
+          <Loading />
+        ) : (
           <React.Fragment>
             <div className="CatalogWrap__sort">{sortSelector}</div>
             <div className="CatalogWrap">
-              {loading ? (
-                <Loading />
-              ) : (
-                <div>
-                  {!isEmpty(actualeListItems) ? (
-                    map(actualeListItems, listItem => {
-                      const linkTo = getListItemLink(listItem, location);
-                      const isList = listItem.type === OBJ_TYPE.LIST;
-                      return (
-                        <div key={`category-${listItem.id}`}>
-                          {isList ? (
-                            <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
-                          ) : (
-                            <ObjectCardView
-                              wObject={listItem}
-                              options={{ pathNameAvatar: linkTo }}
-                            />
-                          )}
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div>
-                      {intl.formatMessage({
-                        id: 'emptyList',
-                        defaultMessage: 'This list is empty',
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
+              <div>{this.getMenuList(actualeListItems)}</div>
             </div>
           </React.Fragment>
         )}

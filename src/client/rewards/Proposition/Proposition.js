@@ -17,7 +17,6 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
@@ -39,7 +38,6 @@ const Proposition = ({
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
@@ -71,6 +69,8 @@ const Proposition = ({
     );
   };
 
+  const [isReserved, setReservation] = useState(false);
+
   const reserveOnClickHandler = () => {
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
@@ -91,6 +91,7 @@ const Proposition = ({
       .then(({ isAssign }) => {
         if (isAssign) {
           setModalDetailsOpen(!isModalDetailsOpen);
+          setReservation(true);
           history.push(`/rewards/reserved`);
         }
       })
@@ -118,7 +119,7 @@ const Proposition = ({
       </div>
       <div
         className={classNames('Proposition__footer', {
-          'justify-end': assigned === null || isAssign,
+          'justify-end': assigned === null || isReserved,
         })}
       >
         {/*Temporary fix until changes on backend will be made*/}
@@ -135,11 +136,10 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
-            isAssign={isAssign}
           />
         ) : (
           <React.Fragment>
-            {assigned !== null && !assigned && !isAssign && (
+            {assigned !== null && !assigned && !isReserved && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
@@ -181,6 +181,7 @@ const Proposition = ({
         reserveOnClickHandler={reserveOnClickHandler}
         loading={loading}
         assigned={assigned}
+        isReserved={isReserved}
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}

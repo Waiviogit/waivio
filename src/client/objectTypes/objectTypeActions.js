@@ -30,7 +30,7 @@ export const getObjectType = (
   objectTypeName,
   actionType,
   filters,
-  { limit = 30, skip = 0 } = {},
+  { limit = 30, skip = 0, simplified = false } = {},
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
@@ -39,6 +39,7 @@ export const getObjectType = (
 
   const preparedData = {
     wobjects_count: limit,
+    simplified,
     wobjects_skip: skip,
     filter: filters,
     sort,
@@ -53,17 +54,24 @@ export const getObjectType = (
   });
 };
 
-export const getObjectTypeMap = (map = {}) => dispatch => {
+export const getObjectTypeMap = (map = {}, isFullscreenMode) => dispatch => {
   const filters = { rating: [], map };
   const typeName = 'restaurant';
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
-  return dispatch(getObjectType(typeName, actionType, filters, { limit: 50, skip: 0 }));
+  const getLimit = () => {
+    let limit = 50;
+    if (isFullscreenMode) limit = 200;
+    return limit;
+  };
+  return dispatch(
+    getObjectType(typeName, actionType, filters, { limit: getLimit(), skip: 0, simplified: true }),
+  );
 };
 
-export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } = {}) => (
-  dispatch,
-  getState,
-) => {
+export const getObjectTypeByStateFilters = (
+  typeName,
+  { skip = 0, limit = 15, simplified = false } = {},
+) => (dispatch, getState) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
@@ -81,7 +89,7 @@ export const getObjectTypeByStateFilters = (typeName, { skip = 0, limit = 15 } =
     activeFilters.searchString = searchString;
   }
   const actionType = GET_OBJECT_TYPE.ACTION;
-  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip }));
+  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }));
 };
 
 export const clearType = () => dispatch => {

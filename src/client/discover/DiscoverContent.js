@@ -66,12 +66,6 @@ class DiscoverContent extends React.Component {
     if (isEmpty(typesList)) this.props.getObjectTypes();
   }
 
-  componentDidUpdate() {
-    if (!this.props.searchString && isEmpty(this.props.topExperts)) {
-      this.props.getObjectTypes();
-    }
-  }
-
   handleLoadMore = () => {
     if (!this.props.topExpertsLoading) {
       this.props.getTopExperts(displayLimit, this.props.topExperts.length);
