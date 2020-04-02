@@ -1,6 +1,12 @@
 @import (reference) '../../Common.less';
+@import (reference) '../../../../client/styles/modules/variables.less';
 
 .modal-open-deals {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
+
+  @media @large {
+    flex-direction: row;
+  }
 }
