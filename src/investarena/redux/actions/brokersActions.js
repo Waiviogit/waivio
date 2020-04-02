@@ -1,10 +1,13 @@
 import Cookies from 'js-cookie';
 import store from 'store';
 import { message } from 'antd';
+import { get } from 'lodash';
 import api from '../../configApi/apiResources';
 import { authorizeToken, cleanUserStatisticsData } from './platformActions';
 import { singleton } from '../../platform/singletonPlatform';
 import { toggleModal } from './modalsActions';
+import { getIsBeaxyUser } from '../../../client/user/usersHelper';
+import { logoutWithoutBroker } from '../../../client/auth/authActions';
 
 export const AUTHORIZE_BROKER_REQUEST = 'AUTHORIZE_BROKER_REQUEST';
 export const AUTHORIZE_BROKER_SUCCESS = 'AUTHORIZE_BROKER_SUCCESS';
@@ -128,29 +131,31 @@ export function registerBroker(registrationData) {
     });
   };
 }
-export function disconnectBroker(isReconnect = false) {
-  return dispatch => {
-    if (typeof localStorage !== 'undefined') {
-      localStorageKeys.forEach(data => {
-        localStorage.removeItem(data);
-      });
-      cookiesData.forEach(data => {
-        Cookies.remove(data);
-        localStorage.removeItem(data);
-      });
-    }
-    dispatch(cleanUserStatisticsData());
-    dispatch(disconnectTokenSuccess());
-    // if (singleton.platform && singleton.platform.platformName)
-    //   message.success('Broker successfully disconnected');
-    singleton.closeWebSocketConnection();
-    singleton.createWebSocketConnection();
-    if (!isReconnect) {
-      //   dispatch(toggleModal('broker'));
-    }
-    return { type: DISCONNECT_BROKER_SUCCESS };
-  };
-}
+export const disconnectBroker = (isReconnect = false) => (dispatch, getState) => {
+  const state = getState();
+  if (typeof localStorage !== 'undefined') {
+    localStorageKeys.forEach(data => {
+      localStorage.removeItem(data);
+    });
+    cookiesData.forEach(data => {
+      Cookies.remove(data);
+      localStorage.removeItem(data);
+    });
+  }
+  const userName = get(state, ['auth', 'user', 'name'], '');
+  if (getIsBeaxyUser(userName)) return dispatch(logoutWithoutBroker());
+  dispatch(cleanUserStatisticsData());
+  dispatch(disconnectTokenSuccess());
+  // if (singleton.platform && singleton.platform.platformName)
+  //   message.success('Broker successfully disconnected');
+  singleton.closeWebSocketConnection();
+  singleton.createWebSocketConnection();
+  if (!isReconnect) {
+    //   dispatch(toggleModal('broker'));
+  }
+
+  return { type: DISCONNECT_BROKER_SUCCESS };
+};
 export function reconnectBroker(data) {
   const token = store.get('token');
   return dispatch => {

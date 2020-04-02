@@ -5,7 +5,7 @@
   "production": {
     "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
+      "beaxy": "https://exchange.beaxy.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -34,7 +34,7 @@
   "staging": {
     "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
+      "beaxy": "https://exchange.beaxy.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -62,7 +62,7 @@
     "": "http://localhost:8095/",
     "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
+      "beaxy": "https://exchange.beaxy.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -171,7 +171,7 @@
   },
 
   "logonWithToken": {
-    "beaxy": "https://test-api.tokenexus.com/Account/logonWithToken?token=",
+    "beaxy": "https://api.beaxy.com/Account/logonWithToken?token=",
     "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
     "umarkets": "https://api.umarkets.com/account/logonWithToken?token=",
     "maxitrade": "https://api.maxitrade.com/account/logonWithToken?token=",
