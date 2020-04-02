@@ -197,7 +197,6 @@ export function createPost(postData) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
-
   return (dispatch, getState, { steemConnectAPI }) => {
     const {
       parentAuthor,

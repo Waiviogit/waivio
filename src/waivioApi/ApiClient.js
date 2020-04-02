@@ -12,7 +12,7 @@ import { supportedObjectTypes } from '../investarena/constants/objectsInvestaren
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 import { logout } from '../client/auth/authActions';
 
-const filterKey = 'investarena';
+const filterKey = 'crypto.investarena';
 
 let headers = {
   app: filterKey,
