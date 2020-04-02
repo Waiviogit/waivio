@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getIsAuthenticated } from '../../../reducers';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import './MobileNavigation.less';
 
@@ -11,15 +13,17 @@ const MobileNavigation = ({ location, match }) => {
   useEffect(() => {
     setModalVisibility(false);
   }, [match]);
+  const authenticated = useSelector(getIsAuthenticated);
 
   const pages = {
-    steem: {
+    hive: {
+      trending: 'trending',
       regExp: /(^\/)(created|hot|trending)$/,
-      id: 'steem',
+      id: 'hive',
     },
     personal: {
       myFeed: 'my_feed',
-      regExp: /(^\/)(notifications|updates)$|(^\/)$/,
+      regExp: /(^\/)(notifications-list|updates)$/,
       id: 'personal',
     },
     people: {
@@ -49,9 +53,9 @@ const MobileNavigation = ({ location, match }) => {
 
   const { url } = match;
   switch (url) {
-    case (url.match(pages.steem.regExp) || {}).input:
-      pageName = pages.steem.id;
-      filterName = url.match(pages.steem.regExp)[2];
+    case (url.match(pages.hive.regExp) || {}).input:
+      pageName = pages.hive.id;
+      filterName = url.match(pages.hive.regExp)[2];
       break;
     case (url.match(pages.personal.regExp) || {}).input:
       pageName = pages.personal.id;
@@ -132,6 +136,15 @@ const MobileNavigation = ({ location, match }) => {
     case '/invite':
       pageName = 'tools';
       filterName = 'invite';
+      break;
+    case '/':
+      if (!authenticated) {
+        pageName = pages.hive.id;
+        filterName = pages.hive.trending;
+      } else {
+        pageName = pages.personal.id;
+        filterName = pages.personal.myFeed;
+      }
       break;
     default:
       break;
