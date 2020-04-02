@@ -65,7 +65,7 @@ const ObjectCardView = ({
   };
   const objName = wObject.name || wObject.default_name;
   const parentName = isEmpty(passedParent)
-    ? getFieldWithMaxWeight(wObject, objectTypes.name, '')
+    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
     : passedParent.name || passedParent.default_name;
 
   const goToObjTitle = wobjName =>

@@ -13,9 +13,9 @@ import BTooltip from '../BTooltip';
 import { getAuthenticatedUserName } from '../../reducers';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
+import withAuthActions from '../../auth/withAuthActions';
 
 import './Buttons.less';
-import withAuthActions from '../../auth/withAuthActions';
 
 const AppendObjButtons = ({
   post,
@@ -139,7 +139,7 @@ const AppendObjButtons = ({
                 title={
                   <span>
                     {intl.formatMessage(
-                      post.isReported
+                      isReject
                         ? { id: 'unvote', defaultMessage: 'Unvote' }
                         : { id: 'vote', defaultMessage: 'Vote' },
                     )}

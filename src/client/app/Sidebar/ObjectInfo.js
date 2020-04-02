@@ -174,14 +174,11 @@ class ObjectInfo extends React.Component {
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
-        .filter(nameFld => nameFld.body !== wobject.name)
-        .map(nameFld => {
-          if (calculateApprovePercent(nameFld.active_votes) >= 70) {
-            return <div key={nameFld.permlink}>{nameFld.body}</div>;
-          }
-
-          return null;
-        });
+        .filter(
+          nameFld =>
+            nameFld.body !== wobject.name && calculateApprovePercent(nameFld.active_votes) >= 70,
+        )
+        .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields

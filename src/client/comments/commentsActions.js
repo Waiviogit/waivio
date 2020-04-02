@@ -225,7 +225,6 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           }
         })
         .catch(err => {
-          console.log(err);
           dispatch(notify(err.error.message, 'error'));
         }),
     },

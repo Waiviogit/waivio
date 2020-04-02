@@ -1,4 +1,4 @@
-import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil } from 'lodash';
+import { isEqual, filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -27,7 +27,6 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 import './Story.less';
 
@@ -108,37 +107,6 @@ class Story extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
-
-  getApprovalTagLayoyt = () => {
-    const percent = calculateApprovePercent(this.props.post.active_votes);
-    const { formatMessage } = this.props.intl;
-
-    return (
-      <React.Fragment>
-        <Tag>
-          <span>
-            Approval:{' '}
-            <span
-              className={`CalculatedPercent-${
-                percent >= 70 || this.props.post.upvotedByModerator ? 'green' : 'red'
-              }`}
-            >
-              {this.props.post.upvotedByModerator ? 100 : percent.toFixed(2)}%
-            </span>
-          </span>
-        </Tag>
-        {this.props.post.upvotedByModerator ? (
-          <span className="Story__approvedByAdmin">
-            {formatMessage({ id: 'approved_by_admin', defaultMessage: 'Approved by admin' })}
-          </span>
-        ) : (
-          <span className="MinPercent">
-            {formatMessage({ id: 'min_70_is_required', defaultMessage: 'Min 70% is required' })}
-          </span>
-        )}
-      </React.Fragment>
-    );
-  };
 
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
@@ -460,20 +428,8 @@ class Story extends React.Component {
               className="Story__content__title"
             >
               <h2>
-                {post.append_field_name ? (
-                  <React.Fragment>
-                    <FormattedMessage
-                      id={`object_field_${post.append_field_name}`}
-                      defaultMessage={post.append_field_name}
-                    />
-                    {!isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                    {post.title || post.root_title}
-                  </React.Fragment>
-                )}
+                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                {post.title || post.root_title}
               </h2>
             </a>
             {this.renderStoryPreview()}

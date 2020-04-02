@@ -150,7 +150,7 @@ export default function wobjectReducer(state = initialState, action) {
         promoted: '0.000 HBD',
         total_payout_value: '0.000 HBD',
         upvotedByModerator: false,
-        url: `/waivio-object-type/@et42k/iqx-hashtag#@w7ngc/${payload.permlink}`,
+        url: `/waivio-object-type/@et42k/iqx-hashtag#@${payload.author_original}/${payload.permlink}`,
         weight: 1,
       };
       // check menu item appending; type uses for menuItems only. (type values: 'menuList' or 'menuPage')
