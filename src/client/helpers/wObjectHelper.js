@@ -132,7 +132,7 @@ export const calculateApprovePercent = votes => {
 };
 
 export const getApprovedField = (wobj, name) => {
-  if (!wobj || !wobj.field || !name) return null;
+  if (!wobj || !wobj.fields || !name) return null;
 
   let field = _.get(wobj, 'fields').filter(
     item => item.name === name && calculateApprovePercent(item.active_votes) >= 70,
@@ -141,7 +141,6 @@ export const getApprovedField = (wobj, name) => {
   if (!field.length) return null;
 
   field = field.sort((a, b) => b.weight - a.weight)[0];
-
   return JSON.parse(field.body);
 };
 

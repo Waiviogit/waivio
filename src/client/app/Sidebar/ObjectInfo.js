@@ -169,8 +169,8 @@ class ObjectInfo extends React.Component {
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
-    const button = getApprovedField(wobject, renderFields.button);
-    const map = getApprovedField(wobject, renderFields.map);
+    const button = getApprovedField(wobject, 'button');
+    const map = getApprovedField(wobject, 'map');
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
