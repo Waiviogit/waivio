@@ -73,8 +73,8 @@ const WobjHeader = ({
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={wobject.name}>
-                {wobject.name}
+              <div className="ObjectHeader__text" title={wobject.name || wobject.default_name}>
+                {wobject.name || wobject.default_name}
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />

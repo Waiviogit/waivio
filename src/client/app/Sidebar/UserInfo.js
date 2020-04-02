@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { get } from 'lodash';
 import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate } from '../../reducers';
+import { getUser, getRewardFund, getRate, isGuestUser } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import {
   calculateDownVote,
@@ -22,6 +22,7 @@ import { GUEST_PREFIX } from '../../../common/constants/waivio';
   user: getUser(state, ownProps.match.params.name),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
+  isGuest: isGuestUser(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -29,19 +30,21 @@ class UserInfo extends React.Component {
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
+    isGuest: PropTypes.bool.isRequired,
   };
   state = {
     rc_percentage: 0,
   };
 
   render() {
-    const { intl, user, rewardFund, rate } = this.props;
+    const { intl, user, rewardFund, rate, isGuest } = this.props;
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
     let lastActive;
+    let email;
 
     if (user && user.json_metadata && user.json_metadata !== '') {
       lastActive = intl.formatRelative(Date.parse(user.updatedAt));
@@ -51,6 +54,7 @@ class UserInfo extends React.Component {
         profile = user.json_metadata.profile || {};
         website = user.json_metadata.profile.website;
         about = user.json_metadata.profile.about;
+        email = user.json_metadata.profile.email;
       } else {
         try {
           metadata = JSON.parse(user.json_metadata);
@@ -58,13 +62,14 @@ class UserInfo extends React.Component {
           profile = (metadata && get(metadata, 'profile')) || {};
           website = metadata && get(metadata, 'profile.website');
           about = metadata && get(metadata, 'profile.about');
+          email = metadata && get(metadata, 'profile.email');
         } catch (e) {
           // do nothing
         }
       }
     }
 
-    if (user.name && !this.state.rc_percentage) {
+    if (user.name && !this.state.rc_percentage && !isGuest) {
       dSteem.rc.getRCMana(user.name).then(res => {
         this.setState({
           rc_percentage: res.percentage,
@@ -86,7 +91,7 @@ class UserInfo extends React.Component {
       user && rewardFund.recent_claims && rewardFund.reward_balance && rate
         ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
         : 0;
-    const rc = this.state.rc_percentage / 100;
+    const rc = this.state.rc_percentage ? this.state.rc_percentage / 100 : 0;
 
     return (
       <div className="UserInfo">
@@ -108,6 +113,14 @@ class UserInfo extends React.Component {
                   </a>
                 </div>
               )}
+              {email && (
+                <div>
+                  <i className="iconfont icon-link text-icon" />
+                  <a target="_blank" rel="noopener noreferrer" href={`mailto:${email}`}>
+                    {email}
+                  </a>
+                </div>
+              )}
               <div className="UserInfo__list">
                 <div>
                   <Icon type="calendar" className="text-icon" />
@@ -123,15 +136,19 @@ class UserInfo extends React.Component {
                     }}
                   />
                 </div>
-                <div>
-                  <i className="hashtag text-icon">#</i>
-                  <FormattedMessage id="steem_reputation" defaultMessage="Hive reputation" />:{' '}
-                  {calcReputation(user.reputation)}
-                </div>
+                {user.reputation && (
+                  <div>
+                    <i className="hashtag text-icon">#</i>
+                    <FormattedMessage
+                      id="steem_reputation"
+                      defaultMessage="Hive reputation"
+                    />: {calcReputation(user.reputation)}
+                  </div>
+                )}
                 {!user.name.startsWith(GUEST_PREFIX) && (
                   <React.Fragment>
                     <div>
-                      <Icon type="like-o" className="text-icon" />
+                      <i className="iconfont icon-praise Comment__icon_dislike" />
                       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
                       <FormattedNumber
                         style="percent" // eslint-disable-line react/style-prop-object
@@ -140,7 +157,7 @@ class UserInfo extends React.Component {
                       />
                     </div>
                     <div>
-                      <Icon type="dislike-o" className="text-icon" />
+                      <i className="iconfont icon-praise Comment__icon_dislike" />
                       <FormattedMessage
                         id="downvoting_mana"
                         defaultMessage="Downvoting mana"

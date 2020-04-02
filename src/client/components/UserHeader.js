@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { Icon } from 'antd';
 import urlParse from 'url-parse';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
@@ -142,11 +141,7 @@ const UserHeader = ({
             <div>
               <i className="iconfont icon-dollar text-icon" />
               <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-              {isNaN(voteWorth) ? (
-                <Icon type="loading" className="text-icon-right" />
-              ) : (
-                <USDDisplay value={voteWorth} />
-              )}
+              {isNaN(voteWorth) ? <USDDisplay value={0} /> : <USDDisplay value={voteWorth} />}
             </div>
           </div>
           <div className="UserHeader__info-fields">

@@ -35,6 +35,7 @@
     "heroku"
   ],
   "dependencies": {
+    "@hivechain/dsteem": "^0.12.14",
     "@hot-loader/react-dom": "^16.8.6",
     "@textlint/markdown-to-ast": "^6.1.2",
     "antd": "^3.4.4",
