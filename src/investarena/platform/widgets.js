@@ -141,7 +141,7 @@ export default class Widgets {
           state: this.statesQuotes[q.Name],
         };
         if (this.hasOwnProperty('publish')) {
-          this.publish(q.Name, this.quotes[q.Name]);
+          this.publish(q.Name, msg);
         }
       });
       this.dispatch(updateQuotes(data));
@@ -191,9 +191,10 @@ export default class Widgets {
       });
       bars = _.sortBy(bars, 'time');
       this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
-      if (this.hasOwnProperty('publish')) {
-        this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
-      }
+      // get chart data for tech chart via http
+      // if (this.hasOwnProperty('publish')) {
+      //   this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
+      // }
     }
   }
   fixChange(security, quote, oldQuote) {
