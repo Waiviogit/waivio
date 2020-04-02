@@ -200,7 +200,6 @@ export default class AppendForm extends Component {
             }),
           );
 
-          this.props.hideModal();
           this.setState({ loading: false });
         });
     }

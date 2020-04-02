@@ -232,6 +232,7 @@ class CatalogWrap extends React.Component {
     ]);
     const isListObject =
       hasType(currWobject, OBJ_TYPE.LIST) || (!wobjNested && has(wobject, 'menuItems'));
+    const actualeListItems = listItems && listItems.filter(list => list.status);
 
     const sortSelector =
       currWobject &&
@@ -324,7 +325,7 @@ class CatalogWrap extends React.Component {
           <React.Fragment>
             <div className="CatalogWrap__sort">{sortSelector}</div>
             <div className="CatalogWrap">
-              <div>{this.getMenuList()}</div>
+              <div>{this.getMenuList(actualeListItems)}</div>
             </div>
           </React.Fragment>
         )}

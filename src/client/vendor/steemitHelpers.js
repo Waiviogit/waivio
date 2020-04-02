@@ -65,7 +65,9 @@ export const calculatePayout = post => {
   // there is a valid cashout_time AND it's NOT a comment with 0 votes.
   const cashout_active =
     pending_payout > 0 ||
-    (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
+    (cashout_time &&
+      cashout_time.indexOf('1969') !== 0 &&
+      !(is_comment && active_votes.length === 0));
 
   if (cashout_active) {
     // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).

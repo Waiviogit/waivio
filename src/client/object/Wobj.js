@@ -98,7 +98,7 @@ export default class Wobj extends React.Component {
 
   componentDidMount() {
     const { match, wobject } = this.props;
-    if (isEmpty(wobject)) {
+    if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObjectInfo(match.params.name, ['tagCategory', 'categoryItem']);
     }
   }

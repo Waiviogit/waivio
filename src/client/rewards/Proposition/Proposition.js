@@ -136,7 +136,6 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
-            isAssign={isAssign}
           />
         ) : (
           <React.Fragment>

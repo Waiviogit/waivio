@@ -21,7 +21,6 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
       const currentTags = wObject.tagCategories
