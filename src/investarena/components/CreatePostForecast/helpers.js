@@ -133,7 +133,7 @@ export const getEditorForecast = (forecast, quotesSettings) => {
   return forecastObject;
 };
 
-export const toolParser = (tool, currencySettings) => {
+export const toolLabelParser = (tool, currencySettings) => {
   const currentTool = Object.keys(currencySettings).find(
     currency => tool.split(currency).length === 2 && tool.split(currency)[0] === '',
   );

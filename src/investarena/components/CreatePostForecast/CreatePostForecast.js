@@ -12,7 +12,7 @@ import {
   isStopLossTakeProfitValid,
   getForecastState,
   getEditorForecast,
-  toolParser,
+  toolLabelParser,
 } from './helpers';
 import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { ceil10, floor10 } from '../../helpers/calculationsHelper';
@@ -326,7 +326,7 @@ class CreatePostForecast extends Component {
                       {optionsQuote.map(option => {
                         const label =
                           platformName === 'beaxy'
-                            ? toolParser(option.label, currencySettings)
+                            ? toolLabelParser(option.label, currencySettings)
                             : option.label;
                         return (
                           <Select.Option key={option.value} value={option.value} title={label}>
