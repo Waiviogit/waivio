@@ -121,7 +121,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
+        {proposition.activation_permlink && assigned === true ? (
           <CampaignFooter
             post={post}
             loading={loading}
