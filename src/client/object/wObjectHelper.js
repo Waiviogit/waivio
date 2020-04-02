@@ -20,6 +20,7 @@ import {
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
+import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
@@ -49,13 +50,18 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
     return defaultValue;
+  let fieldValues;
+  if (wObject.fields) {
+    fieldValues = wObject.fields.filter(
+      field => field.name === currentField && calculateApprovePercent(field.active_votes) >= 70,
+    );
+  }
 
-  const fieldValues = filter(wObject.fields, ['name', currentField]);
-  if (!fieldValues.length) return defaultValue;
+  if (!fieldValues) return defaultValue;
 
   const orderedValues = orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (!isEmpty(orderedValues[0].body)) {
+  if (orderedValues[0] && !isEmpty(orderedValues[0].body)) {
     const upvotedByModerator = orderedValues.find(field => field.upvotedByModerator);
     return upvotedByModerator ? upvotedByModerator.body : orderedValues[0].body;
   }
@@ -87,7 +93,6 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
     [LOCALES.DEFAULT]: [],
     [LOCALES.OTHER]: [],
   };
-
   wObj.fields
     .filter(f => !Object.keys(wObj).includes(f.name)) // skip fields which already exist as wObj properties
     .forEach(field => {
@@ -113,7 +118,11 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
   );
   localesToFilter.forEach(locale => {
     fieldsByLocale[locale]
-      .filter(field => !Object.keys(maxWeightedFields).includes(field.name))
+      .filter(
+        field =>
+          !Object.keys(maxWeightedFields).includes(field.name) &&
+          calculateApprovePercent(field.active_votes) >= 70,
+      )
       .reduce((acc, curr) => {
         if (acc[curr.name]) {
           if (curr.weight > acc[curr.name].weight) {

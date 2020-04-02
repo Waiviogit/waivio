@@ -25,7 +25,6 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
 
             return { ...res, ...postData.field, creator: postData.author, weight: 1 };
           }
-
           return res;
         })
         .catch(e => e),

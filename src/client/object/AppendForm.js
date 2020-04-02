@@ -200,7 +200,6 @@ export default class AppendForm extends Component {
             }),
           );
 
-          this.props.hideModal();
           this.setState({ loading: false });
         });
     }
@@ -247,7 +246,8 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.sorting: {
-        fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
+        const sortingData = JSON.stringify(rest[objectFields.sorting].split(','));
+        fieldBody.push(sortingData);
         break;
       }
       case objectFields.hashtag: {

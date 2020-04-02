@@ -746,7 +746,6 @@ export const updateUserMetadata = async (userName, data) => {
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
-
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers,
     method: 'PUT',
