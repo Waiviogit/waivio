@@ -41,10 +41,6 @@ const Proposition = ({
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
-  useEffect(() => {
-    getSingleComment(authorizedUserName, assignCommentPermlink);
-  }, []);
-
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
     setModalDetailsOpen(!isModalDetailsOpen);
