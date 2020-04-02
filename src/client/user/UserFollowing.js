@@ -43,7 +43,7 @@ export default class UserFollowing extends React.Component {
       this.limit,
       this.skip,
     );
-    const users = response.users.map(user => ({ name: user }));
+    const users = response.users;
     this.skip += this.limit;
     return { users, hasMore: response.hasMore };
   }

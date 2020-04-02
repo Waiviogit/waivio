@@ -139,7 +139,7 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
               <li key="all-types" className="ttc">
                 <NavLink
                   to={`/discover`}
-                  isActive={() => pathname === '/discover'}
+                  isActive={() => pathname === '/discover' || pathname.includes('/discover/')}
                   className="sidenav-discover-objects__item"
                   activeClassName="Sidenav__item--active"
                 >
