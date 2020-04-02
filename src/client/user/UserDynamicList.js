@@ -55,7 +55,6 @@ export default class UserDynamicList extends React.Component {
 
   render() {
     const { loading, hasMore, users } = this.state;
-
     const empty = !hasMore && users.length === 0;
 
     return (

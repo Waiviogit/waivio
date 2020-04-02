@@ -19,9 +19,13 @@ export const validatorMessagesCreator = messageFactory => ({
     'reward_not_exceed_budget',
     'The reward should not exceed the budget',
   ),
-  reservationPeriod: messageFactory(
+  minReservationPeriod: messageFactory(
     'reserve_period_one_day',
     'The reservation period must be at least one day',
+  ),
+  maxReservationPeriod: messageFactory(
+    'reserve_period_thirty_days',
+    'The reservation period must not exceed thirty days',
   ),
   photosQuality: messageFactory('not_less_zero_photos', 'Should not be less than zero photos'),
   commission: messageFactory(
@@ -76,8 +80,13 @@ export const validatorsCreator = (
   },
 
   checkReservationPeriod: (rule, value, callback) => {
-    // eslint-disable-next-line no-unused-expressions
-    value < 1 && value !== '' ? callback(messages.reservationPeriod) : callback();
+    if (value < 1 && value !== '') {
+      callback(messages.minReservationPeriod);
+    } else if (value > 30) {
+      callback(messages.maxReservationPeriod);
+    } else {
+      callback();
+    }
   },
 
   checkPhotosQuantity: (rule, value, callback) => {

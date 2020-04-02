@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
@@ -49,6 +49,8 @@ class CampaignFooter extends React.Component {
     discardPr: PropTypes.func,
     toggleModalDetails: PropTypes.func,
     requiredObjectName: PropTypes.string.isRequired,
+    loading: PropTypes.bool.isRequired,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -80,6 +82,7 @@ class CampaignFooter extends React.Component {
       modalVisible: false,
       reservedUser: {},
       daysLeft: 0,
+      loading: false,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -168,14 +171,22 @@ class CampaignFooter extends React.Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  };
+  toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    this.toggleModal();
-    discardPr(proposedWobj);
+    discardPr(proposedWobj).then(({ isAssign }) => {
+      if (!isAssign) {
+        this.toggleModal();
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Reservation released. It will be available for reservation soon.',
+          }),
+          this.props.history.push(`/rewards/active`),
+        );
+      }
+    });
   };
 
   handlePostPopoverMenuClick(key) {
@@ -210,7 +221,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -224,14 +235,15 @@ class CampaignFooter extends React.Component {
       intl,
       toggleModalDetails,
       requiredObjectName,
+      loading,
     } = this.props;
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          {this.state.sliderVisible && (
+          {sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
-          {!this.state.sliderVisible && (
+          {!sliderVisible && (
             <CampaignButtons
               daysLeft={daysLeft}
               toggleModalDetails={toggleModalDetails}
@@ -251,7 +263,7 @@ class CampaignFooter extends React.Component {
             />
           )}
         </div>
-        {this.state.sliderVisible && (
+        {sliderVisible && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
@@ -271,6 +283,7 @@ class CampaignFooter extends React.Component {
           visible={modalVisible}
           onOk={this.modalOnOklHandler}
           onCancel={this.toggleModal}
+          confirmLoading={loading}
         >
           {intl.formatMessage({
             id: 'reject_campaign_accept',
