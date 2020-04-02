@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { message } from 'antd';
+import { message, Tooltip } from 'antd';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
@@ -44,11 +44,14 @@ const TradingForm = ({
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          {/* <Tooltip title={}> */}
+          {/*  <i className="iconfont icon-prompt info-icon" /> */}
+          {/* </Tooltip> */}
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
           <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
-          {` ${wallet.currency}`}
+          &nbsp;
+          {wallet.currency}
         </div>
       </div>
 
@@ -56,7 +59,12 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
-          <input type="text" value={amount} onChange={handleChangeInput} onKeyPress={handleKeyPressInput} />
+          <input
+            type="text"
+            value={amount}
+            onChange={handleChangeInput}
+            onKeyPress={handleKeyPressInput}
+          />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -69,20 +77,40 @@ const TradingForm = ({
 
       <div className="st-trading-form-footer">
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          <Tooltip
+            title={`Approximate amount you will ${
+              side === 'sell' ? 'receive' : 'pay'
+            } in quoted currency. Price is estimated based on current order book. Actual price may differ slightly.`}
+            overlayClassName="st-trading-form__tooltip"
+          >
+            <i className="iconfont icon-prompt info-icon" />
+          </Tooltip>
           <FormattedMessage id="trading_form_total" defaultMessage="Total" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            <FormattedNumber value={totalPrice} maximumSignificantDigits={ totalPrice > 1 ? 7 : 4 } />
+            <FormattedNumber value={totalPrice} maximumSignificantDigits={totalPrice > 1 ? 7 : 4} />
             {` ${termCurrency}`}
           </span>
         </div>
         <div className="flex-info-block">
-          <i className="iconfont icon-prompt info-icon" />
+          <Tooltip
+            title={
+              <div>
+                <div>Maker fee - {quoteSettings.buyerMakerCommissionProgressive}%</div>
+                <div>Taker fee - {quoteSettings.buyerTakerCommissionProgressive}%</div>
+              </div>
+            }
+            overlayClassName="st-trading-form__tooltip"
+          >
+            <i className="iconfont icon-prompt info-icon" />
+          </Tooltip>
           <FormattedMessage id="trading_form_fee" defaultMessage="Fee" />
           &nbsp;≈&nbsp;
           <span className="fw5">
-            <FormattedNumber value={fees.takerFee} maximumSignificantDigits={ fees.takerFee > 1 ? 5 : 4 } />
+            <FormattedNumber
+              value={fees.takerFee}
+              maximumSignificantDigits={fees.takerFee > 1 ? 5 : 4}
+            />
             {` ${feeCurrency}`}
           </span>
         </div>
@@ -109,6 +137,8 @@ TradingForm.propTypes = {
     termCurrency: PropTypes.string.isRequired,
     minimumQuantity: PropTypes.number,
     maximumQuantity: PropTypes.number,
+    buyerMakerCommissionProgressive: PropTypes.number,
+    buyerTakerCommissionProgressive: PropTypes.number,
   }).isRequired,
   isWalletsExist: PropTypes.bool.isRequired,
   isAmountValid: PropTypes.bool.isRequired,

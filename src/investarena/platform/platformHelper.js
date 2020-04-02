@@ -40,10 +40,8 @@ export class PlatformHelper {
         !isNil(sellerMakerCommissionProgressive) &&
         quote.bidPrice
       ) {
-        const makerFee =
-          (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
-        const takerFee =
-          (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
+        const makerFee = (amountValue * sellerMakerCommissionProgressive * quote.bidPrice) / 100;
+        const takerFee = (amountValue * sellerTakerCommissionProgressive * quote.bidPrice) / 100;
         return {
           makerFee,
           takerFee,
