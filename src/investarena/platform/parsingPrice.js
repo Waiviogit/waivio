@@ -1,4 +1,5 @@
 import React from 'react';
+import { PlatformHelper } from './platformHelper';
 
 export function ParsingPriceHelper() {}
 
@@ -24,14 +25,12 @@ export function quoteFormat(price, quoteSettings) {
 }
 
 ParsingPriceHelper.parseRate = function(val, tick, rounding) {
-  if (typeof val === 'string') {
-    try {
-      val = parseFloat(val);
-    } catch (e) {
-      return {
-        result: '-',
-      };
-    }
+  try {
+    val = PlatformHelper.exponentialToDecimal(parseFloat(val));
+  } catch (e) {
+    return {
+      result: '-',
+    };
   }
   const temp = getTrimmedPrice(val, rounding, tick);
   if (!isNaN(temp)) {
