@@ -1,7 +1,6 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
-import { get } from 'lodash';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
@@ -14,7 +13,6 @@ import {
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
-import { getIsBeaxyUser } from '../user/usersHelper';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -37,7 +35,11 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+export const logoutWithoutBroker = () => (
+  dispatch,
+  getState,
+  { busyAPI, steemConnectAPI, waivioAPI },
+) => {
   if (waivioAPI.isGuest) {
     waivioAPI.clearGuestData();
     if (typeof window !== 'undefined') {
@@ -52,11 +54,15 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, wai
     Cookie.remove('access_token');
   }
   busyAPI.close();
-  dispatch(disconnectBroker());
   dispatch({
     type: LOGOUT,
   });
   dispatch(push('/'));
+};
+
+export const logout = () => dispatch => {
+  dispatch(disconnectBroker());
+  dispatch(logoutWithoutBroker());
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
@@ -112,12 +118,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   let promise = Promise.resolve(null);
 
   const isGuest = waivioAPI.isGuest;
-
-  const platformName = get(state, ['platform', 'platformName'], '');
-  const userName = get(state, ['auth', 'user', 'name'], '');
-
-  if (getIsBeaxyUser(userName) && platformName && platformName !== 'beaxy')
-    return dispatch(logout());
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
