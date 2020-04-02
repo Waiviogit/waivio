@@ -2,6 +2,7 @@ import config from './config.json';
 import iaConfig from '../investarena/etc/client-config.json';
 
 export const baseUrl = config[process.env.NODE_ENV].protocol + config[process.env.NODE_ENV].host;
+export const wsChartUrl = iaConfig[process.env.NODE_ENV].webSocketTChUrl;
 const cryptoArenaBaseUrl = iaConfig[process.env.NODE_ENV].apiPrefix;
 
 const routes = {

@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
 export function publishSubscribe(target) {
   const topics = {};
-  target.publish = (topic, args) => {
+  target.publish = (topic, wsMsg) => {
     if (topics[topic]) {
       const thisTopic = topics[topic];
-      const thisArgs = args || [];
-      thisTopic.forEach(listener => listener(thisArgs));
+      thisTopic.forEach(listener => listener(wsMsg));
     }
   };
   target.subscribe = (topic, callback) => {

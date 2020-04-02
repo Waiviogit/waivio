@@ -28,7 +28,8 @@
       "limefx": "https://myaccount.limefx.com/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx"
   },
   "staging": {
     "apiPrefix": "https://crypto.investarena.com/",
@@ -54,7 +55,8 @@
       "dowmarkets": "https://myaccount.dowmarkets.com/",
       "limefx": "https://myaccount.limefx.com/"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx"
   },
   "development": {
     "": "http://localhost:8095/",
@@ -81,7 +83,10 @@
       "dowmarkets": "https://myaccount.dowmarkets.com/",
       "limefx": "https://myaccount.limefx.com/"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx",
+    "": "//44.233.188.11/wss/Server.ashx"
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",
@@ -181,7 +186,7 @@
   },
 
   "charts": {
-    "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+    "getChartsData": "http://44.233.188.11/wss/quotation/getstatisticshistory"
   },
   "statistics": {
     "getUserStatistics": "/user-summary-statistics/",

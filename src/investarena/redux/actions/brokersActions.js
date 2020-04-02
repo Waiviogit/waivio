@@ -133,13 +133,15 @@ export function registerBroker(registrationData) {
 }
 export const disconnectBroker = (isReconnect = false) => (dispatch, getState) => {
   const state = getState();
-  localStorageKeys.forEach(data => {
-    localStorage.removeItem(data);
-  });
-  cookiesData.forEach(data => {
-    Cookies.remove(data);
-    localStorage.removeItem(data);
-  });
+  if (typeof localStorage !== 'undefined') {
+    localStorageKeys.forEach(data => {
+      localStorage.removeItem(data);
+    });
+    cookiesData.forEach(data => {
+      Cookies.remove(data);
+      localStorage.removeItem(data);
+    });
+  }
   const userName = get(state, ['auth', 'user', 'name'], '');
   if (getIsBeaxyUser(userName)) return dispatch(logoutWithoutBroker());
   dispatch(cleanUserStatisticsData());

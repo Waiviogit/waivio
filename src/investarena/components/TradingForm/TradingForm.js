@@ -54,12 +54,7 @@ const TradingForm = ({
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
-          <input
-            type="text"
-            value={amount}
-            onChange={handleChangeInput}
-            disabled={!isWalletsExist}
-          />
+          <input type="text" value={amount} onChange={handleChangeInput} />
         </div>
         <span>{baseCurrency}</span>
       </div>
@@ -101,8 +96,8 @@ TradingForm.propTypes = {
   /* withTrade */
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   fees: PropTypes.shape({
-    makerFee: PropTypes.string,
-    takerFee: PropTypes.string,
+    makerFee: PropTypes.number,
+    takerFee: PropTypes.number,
   }).isRequired,
   totalPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   quoteSettings: PropTypes.shape({
