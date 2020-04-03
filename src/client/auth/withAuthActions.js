@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getIsAuthenticated, getIsLoaded } from '../reducers';
-import LoginModal from '../components/LoginModal';
+import ModalSignIn from '../components/Authorization/ModalSignIn/ModalSignIn';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -40,10 +40,11 @@ export default function withAuthActions(WrappedComponent) {
       });
     }
 
-    hideLoginModal() {
+    hideLoginModal(callback) {
       this.setState({
         displayLoginModal: false,
       });
+      if (callback) callback();
     }
 
     handleActionInit(callback) {
@@ -56,12 +57,13 @@ export default function withAuthActions(WrappedComponent) {
 
     render() {
       return [
-        <LoginModal
-          key="login-modal"
+        <ModalSignIn
+          key="modal-signin"
           visible={this.state.displayLoginModal}
-          handleLoginModalCancel={this.hideLoginModal}
           isAuth={this.props.authenticated}
           isLoaded={this.props.loaded}
+          hideModal={this.hideLoginModal}
+          isAuthAction
         />,
         <WrappedComponent
           key="wrapped-component"
