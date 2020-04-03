@@ -1,4 +1,4 @@
-import { getAuthenticatedUserName, getIsAuthenticated, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
