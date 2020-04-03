@@ -15,4 +15,6 @@ export const linkRegex = /((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-
 
 export const exponentNumberRegex = /[-+]?([0-9]*\.?[0-9]+)[eE][-+]?([0-9]+)/;
 
+export const guestUserRegex = /(waivio_|bxy_)([\w-.]+)/;
+
 export default null;
