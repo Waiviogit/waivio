@@ -159,9 +159,14 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
 export function reconnectBroker(data) {
   const token = store.get('token');
   return dispatch => {
-    dispatch(authorizeToken(token));
-    singleton.platform = data.platform;
-    singleton.createWebSocketConnection();
+    if (token) {
+      dispatch(authorizeToken(token));
+      singleton.platform = data.platform;
+      singleton.createWebSocketConnection();
+    } else {
+      dispatch(disconnectBroker());
+      message.info('Beaxy is disconnected');
+    }
   };
 }
 // export function reconnectBroker(data) {
