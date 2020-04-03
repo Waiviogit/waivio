@@ -28,7 +28,7 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
           <span>
             <FormattedMessage
               id="steem_power_delegated_to_account_tooltip"
-              defaultMessage="Steem Power delegated to this account"
+              defaultMessage="Hive Power delegated to this account"
             />
           </span>
         }
@@ -124,7 +124,7 @@ const UserWalletSummary = ({
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-steem UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
-          <FormattedMessage id="steem" defaultMessage="Steem" />
+          <FormattedMessage id="hive" defaultMessage="Hive" />
         </div>
         <div className="UserWalletSummary__value">
           {loading ? (
@@ -142,7 +142,7 @@ const UserWalletSummary = ({
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
             <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_power" defaultMessage="Steem Power" />
+              <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
             </div>
             <div className="UserWalletSummary__value">
               {loading || loadingGlobalProperties ? (
@@ -168,7 +168,7 @@ const UserWalletSummary = ({
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-Dollar UserWalletSummary__icon" />
             <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar" />
+              <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
             </div>
             <div className="UserWalletSummary__value">
               {loading ? (

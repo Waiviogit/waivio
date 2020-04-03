@@ -6,12 +6,12 @@ import BrokerAuthorization from './BrokerAuthorization';
 import './ModalBroker.less';
 
 const propTypes = {
-  authorizeBroker: PropTypes.func.isRequired,
+  // authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  platformName: PropTypes.string.isRequired,
+  // isLoading: PropTypes.bool.isRequired,
+  // platformName: PropTypes.string.isRequired,
 };
 
 const ModalBroker = props => (
@@ -22,6 +22,7 @@ const ModalBroker = props => (
     onCancel={props.toggleModal}
     width={416}
     destroyOnClose
+    zIndex={1261} // @ant-modal-z-index + 1 ( custom.less )
   >
     <BrokerAuthorization
       // platformName={props.platformName}

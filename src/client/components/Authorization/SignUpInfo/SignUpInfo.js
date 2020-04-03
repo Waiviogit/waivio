@@ -7,7 +7,7 @@ const SignUpInfo = () => (
       <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)" />
       <FormattedMessage
         id="getSteemAccountNow"
-        defaultMessage="to get a Steem account now using:"
+        defaultMessage="to get a Hive account now using:"
       />
     </div>
     <div className="mb3">

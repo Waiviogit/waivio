@@ -607,7 +607,7 @@ class Editor extends React.Component {
           {getFieldDecorator('reward')(
             <Select onChange={this.onUpdate} disabled={isUpdating}>
               <Select.Option value={rewardsValues.all}>
-                <FormattedMessage id="reward_option_100" defaultMessage="100% Steem Power" />
+                <FormattedMessage id="reward_option_100" defaultMessage="100% Hive Power" />
               </Select.Option>
               <Select.Option value={rewardsValues.half}>
                 <FormattedMessage id="reward_option_50" defaultMessage="50% HBD and 50% HP" />

@@ -15,7 +15,7 @@ const ObjectExpertise = ({ username, wobject }) => {
   const isUserInTopFive = users.find(u => u.name === username);
 
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
+    if(wobject.author_permlink && username) getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
       .then(data => {
         setExperts({ ...data, loading: false });
       })
