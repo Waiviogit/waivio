@@ -4,7 +4,7 @@ import SidebarMenu from './SidebarMenu';
 // todo: sync with dev branch
 
 const menuSections = {
-  HIVE: 'Steem',
+  HIVE: 'Hive',
   PERSONAL: 'Personal',
 };
 const menuConfig = {
