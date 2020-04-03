@@ -15,6 +15,7 @@ import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
+
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({
@@ -53,6 +54,7 @@ const WobjHeader = ({
       return `${link}/${wobject.object_type}`;
     return `${link}/reviews`;
   };
+  const name = wobject.name || wobject.default_name;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -73,8 +75,8 @@ const WobjHeader = ({
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={wobject.name}>
-                {wobject.name}
+              <div className="ObjectHeader__text" title={name}>
+                {name}
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />

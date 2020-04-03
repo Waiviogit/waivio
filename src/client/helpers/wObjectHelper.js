@@ -141,6 +141,10 @@ export const getApprovedField = (wobj, name) => {
   if (!field.length) return null;
 
   field = field.sort((a, b) => b.weight - a.weight)[0];
+
+  if (name === 'name') {
+    return field.body;
+  }
   return JSON.parse(field.body);
 };
 

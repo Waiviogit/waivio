@@ -206,8 +206,8 @@ class CatalogWrap extends React.Component {
     );
   };
 
-  getMenuList = () => {
-    const { listItems, breadcrumb } = this.state;
+  getMenuList = listItems => {
+    const { breadcrumb } = this.state;
     if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
       return (
         <div>
