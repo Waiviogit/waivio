@@ -12,7 +12,6 @@ import {
   isStopLossTakeProfitValid,
   getForecastState,
   getEditorForecast,
-  toolLabelParser,
 } from './helpers';
 import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { ceil10, floor10 } from '../../helpers/calculationsHelper';
@@ -21,7 +20,6 @@ import {
   makeGetQuoteState,
   makeGetInstrumentsDropdownOptions,
 } from '../../../investarena/redux/selectors/quotesSelectors';
-import { getCurrencySettings, getPlatformName } from '../../../client/reducers';
 import './CreatePostForecast.less';
 
 @injectIntl
@@ -29,8 +27,6 @@ import './CreatePostForecast.less';
   quotesSettings: getQuotesSettingsState(state),
   optionsQuote: makeGetInstrumentsDropdownOptions()(state),
   quoteSelected: makeGetQuoteState()(state, ownProps.forecastValues),
-  currencySettings: getCurrencySettings(state),
-  platformName: getPlatformName(state),
 }))
 class CreatePostForecast extends Component {
   static propTypes = {
@@ -45,8 +41,6 @@ class CreatePostForecast extends Component {
     isUpdating: PropTypes.bool,
     forecastValues: PropTypes.shape(),
     onChange: PropTypes.func,
-    currencySettings: PropTypes.shape(),
-    platformName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -57,8 +51,6 @@ class CreatePostForecast extends Component {
     forecastValues: {},
     onChange: () => {},
     optionsQuote: [],
-    currencySettings: {},
-    platformName: '',
   };
 
   constructor(props) {
@@ -279,7 +271,7 @@ class CreatePostForecast extends Component {
       isValid,
       quotePrice,
     } = this.state;
-    const { intl, isPosted, isUpdating, optionsQuote, currencySettings, platformName } = this.props;
+    const { intl, isPosted, isUpdating, optionsQuote } = this.props;
     return (
       <div className="st-create-post-optional">
         <Collapse defaultActiveKey={['1']} bordered>
@@ -323,17 +315,11 @@ class CreatePostForecast extends Component {
                       dropdownClassName="st-create-post-select__dropDown"
                       showSearch
                     >
-                      {optionsQuote.map(option => {
-                        const label =
-                          platformName === 'beaxy'
-                            ? toolLabelParser(option.label, currencySettings)
-                            : option.label;
-                        return (
-                          <Select.Option key={option.value} value={option.value} title={label}>
-                            {label}
-                          </Select.Option>
-                        );
-                      })}
+                      {optionsQuote.map(option => (
+                        <Select.Option key={option.value} value={option.value} title={option.label}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
                     </Select>
                   </div>
                   <div className="st-create-post-select-wrap-mobile">
