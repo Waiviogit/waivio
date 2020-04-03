@@ -9,6 +9,7 @@ const routes = {
   apiPrefix: baseUrl + config.apiPrefix,
   objectsBotApiPrefix: baseUrl + config.objectsBotApiPrefix,
   campaignApiPrefix: baseUrl + config.campaignApiPrefix,
+  currenciesApiPrefix: baseUrl + config.currenciesApiPrefix,
 };
 
 export default routes;
