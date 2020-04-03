@@ -5,10 +5,7 @@ const SignUpInfo = () => (
   <React.Fragment>
     <div className="ModalSignUp__subtitle">
       <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)" />
-      <FormattedMessage
-        id="getSteemAccountNow"
-        defaultMessage="to get a Hive account now using:"
-      />
+      <FormattedMessage id="getSteemAccountNow" defaultMessage="to get a Hive account now using:" />
     </div>
     <div className="mb3">
       <a

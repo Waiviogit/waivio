@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Resizable } from 're-resizable';
 import { getChatConnectionCondition, getPostMessageData, getPostMessageType } from '../../reducers';
 import { setDefaultCondition, setSessionId } from './chatActions';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 import './Chat.less';
 
@@ -24,7 +24,7 @@ const Chat = ({
   const [isCloseButton, setCloseButton] = useState(false);
   const chatUrl = 'https://staging.stchat.cf';
   const ifr = useRef();
-  const isGuest = userName.startsWith(GUEST_PREFIX);
+  const isGuest = guestUserRegex.test(userName);
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
