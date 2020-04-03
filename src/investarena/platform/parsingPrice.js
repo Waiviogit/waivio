@@ -7,7 +7,7 @@ export function quoteFormat(price, quoteSettings) {
   if (price === '-' || !quoteSettings) {
     return <span>&ndash;</span>;
   }
-  return <span className="st-second-number-favorites">{PlatformHelper.exponentialToDecimal(parseFloat(price))}</span>;
+  return <span className="st-first-number-favorites">{PlatformHelper.exponentialToDecimal(parseFloat(price))}</span>;
   // const rate = ParsingPriceHelper.parseRate(
   //   price,
   //   quoteSettings.tickSize,
