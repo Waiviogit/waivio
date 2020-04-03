@@ -116,8 +116,7 @@ export default class ProfileSettings extends React.Component {
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
-    console.log(form);
-    console.log(form.isFieldsTouched());
+
     if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
 
     form.validateFields((err, values) => {
