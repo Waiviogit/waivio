@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getApprovedField } from '../../helpers/wObjectHelper';
 
 import './ObjectCard.less';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
-  const name = getApprovedField(wobject, 'name') || wobject.default_name;
+  const name = wobject.name || wobject.default_name;
   const pathname = `/object/${wobject.author_permlink}`;
 
   return (
