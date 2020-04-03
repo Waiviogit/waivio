@@ -1,15 +1,10 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getIsLoaded,
-  getNotifications,
-} from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
-import { getFollowing } from '../user/userActions';
+import { getFollowing, getNotifications } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import {
   initBrokerConnection,
