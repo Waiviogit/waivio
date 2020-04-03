@@ -1006,6 +1006,16 @@ export const setUserStatus = user => {
   }).then(res => res.json());
 };
 
+export const getWalletCryptoPriceHistory = symbol => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

@@ -46,8 +46,7 @@ class CryptoChart extends React.Component {
   componentDidMount() {
     const { currentCrypto } = this.state;
     if (!_.isEmpty(currentCrypto)) {
-      this.props.getCryptoPriceHistory(currentCrypto.symbol);
-      // this.props.getCryptoPriceHistory(currentCrypto.symbol);
+      this.props.getCryptoPriceHistory(currentCrypto.coinGeckoId);
     }
   }
 
@@ -59,7 +58,7 @@ class CryptoChart extends React.Component {
         {
           currentCrypto,
         },
-        () => this.props.getCryptoPriceHistory(currentCrypto.symbol, true),
+        () => this.props.getCryptoPriceHistory(currentCrypto.coinGeckoId, true),
       );
     } else {
       this.setState({
@@ -110,45 +109,48 @@ class CryptoChart extends React.Component {
     );
   }
 
-  // renderBTCPrice() {
-  //   const { cryptosPriceHistory } = this.props;
-  //   const { currentCrypto } = this.state;
-  //   const cryptoPriceDetailsKey = `${currentCrypto.coinGeckoId}.btcPriceHistory`;
-  //   const priceDetails = _.get(cryptosPriceHistory, cryptoPriceDetailsKey, {});
-  //
-  //   const currentBTCPrice = _.get(priceDetails, 'usd', 0);
-  //   const btcIncrease = _.get(priceDetails, 'usd_24h_change', false);
-  //   // const btcPriceDifferencePercent = _.get(priceDetails, 'usd_24h_change', 0);
-  //   return (
-  //     <div className="CryptoTrendingCharts__chart-value">
-  //       <span className="CryptoTrendingCharts__btc-price">
-  //         <FormattedNumber value={currentBTCPrice} minimumFractionDigits={7} />
-  //         {' BTC'}
-  //       </span>
-  //       <span
-  //         className={classNames('CryptoTrendingCharts__chart-percent', {
-  //           'CryptoTrendingCharts__chart-price-up': btcIncrease,
-  //           'CryptoTrendingCharts__chart-price-down': !btcIncrease,
-  //         })}
-  //       >
-  //         {/* (<FormattedNumber */}
-  //         {/*  style="percent" // eslint-disable-line react/style-prop-object */}
-  //         {/*  value={btcPriceDifferencePercent} */}
-  //         {/*  minimumFractionDigits={2} */}
-  //         {/*  maximumFractionDigits={2} */}
-  //         {/* />) */}
-  //       </span>
-  //       <i
-  //         className={classNames('iconfont CryptoTrendingCharts__chart-caret', {
-  //           'icon-caret-up': btcIncrease,
-  //           'icon-caretbottom': !btcIncrease,
-  //           'CryptoTrendingCharts__chart-price-up': btcIncrease,
-  //           'CryptoTrendingCharts__chart-price-down': !btcIncrease,
-  //         })}
-  //       />
-  //     </div>
-  //   );
-  // }
+  renderBTCPrice() {
+    const { cryptosPriceHistory } = this.props;
+    const { currentCrypto } = this.state;
+    const cryptoPriceDetailsKey = `${currentCrypto.coinGeckoId}.btcPriceHistory`;
+    const priceDetails = _.get(cryptosPriceHistory, cryptoPriceDetailsKey, {});
+    const currentBTCPrice = _.get(priceDetails, 'btc', 0);
+    const priceDifference = _.get(priceDetails, 'btc_24h_change', 0);
+    const btcIncrease = priceDifference >= 0;
+    let btcPriceDifferencePercent = priceDifference;
+    if (btcPriceDifferencePercent) btcPriceDifferencePercent /= 100;
+    return (
+      <div className="CryptoTrendingCharts__chart-value">
+        <span className="CryptoTrendingCharts__btc-price">
+          <FormattedNumber value={currentBTCPrice} minimumFractionDigits={7} />
+          {' BTC'}
+        </span>
+        <span
+          className={classNames('CryptoTrendingCharts__chart-percent', {
+            'CryptoTrendingCharts__chart-price-up': btcIncrease,
+            'CryptoTrendingCharts__chart-price-down': !btcIncrease,
+          })}
+        >
+          (
+          <FormattedNumber
+            style="percent" // eslint-disable-line react/style-prop-object
+            value={btcPriceDifferencePercent}
+            minimumFractionDigits={2}
+            maximumFractionDigits={2}
+          />
+          )
+        </span>
+        <i
+          className={classNames('iconfont CryptoTrendingCharts__chart-caret', {
+            'icon-caret-up': btcIncrease,
+            'icon-caretbottom': !btcIncrease,
+            'CryptoTrendingCharts__chart-price-up': btcIncrease,
+            'CryptoTrendingCharts__chart-price-down': !btcIncrease,
+          })}
+        />
+      </div>
+    );
+  }
 
   render() {
     const { cryptosPriceHistory } = this.props;
@@ -172,7 +174,7 @@ class CryptoChart extends React.Component {
           <div className="CryptoTrendingCharts__chart-header">
             <div className="CryptoTrendingCharts__crypto-name">{currentCrypto.name}</div>
             {this.renderUSDPrice()}
-            {/* {this.renderBTCPrice()} */}
+            {this.renderBTCPrice()}
           </div>
         </div>
       </div>
