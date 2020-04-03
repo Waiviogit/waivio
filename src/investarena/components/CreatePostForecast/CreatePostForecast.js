@@ -20,7 +20,6 @@ import {
   makeGetQuoteState,
   makeGetInstrumentsDropdownOptions,
 } from '../../../investarena/redux/selectors/quotesSelectors';
-
 import './CreatePostForecast.less';
 
 @injectIntl

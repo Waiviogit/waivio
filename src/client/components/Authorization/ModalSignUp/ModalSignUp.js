@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form } from 'antd';
-import { batch, useDispatch } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { busyLogin, login } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
+import { getNightmode } from '../../../reducers';
 import GuestSignUpModalContent from '../GuestSignUpForm/GuestSignUpModalContent';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import Spinner from '../../Icon/Loading';
@@ -18,7 +19,7 @@ import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton }) => {
   const dispatch = useDispatch();
-
+  const nightmode = useSelector(getNightmode);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -78,7 +79,7 @@ const ModalSignUp = ({ isButton }) => {
         <Spinner />
       ) : (
         <React.Fragment>
-          <SteemSignUpCard />
+          <SteemSignUpCard isNightmode={nightmode} />
           <SignUpInfo />
           <SocialButtons responseSocial={responseSocial} />
         </React.Fragment>

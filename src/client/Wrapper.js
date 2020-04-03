@@ -41,8 +41,8 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
 import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
-import Chat from './components/Chat/Chat';
-import ChatButton from './components/ChatButton/ChatButton';
+// import Chat from './components/Chat/Chat';
+// import ChatButton from './components/ChatButton/ChatButton';
 
 export const UsedLocaleContext = React.createContext('en-US');
 
@@ -101,10 +101,10 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
-    isAuthenticated: PropTypes.bool.isRequired,
+    // isAuthenticated: PropTypes.bool.isRequired,
     isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
-    screenSize: PropTypes.string.isRequired,
+    // screenSize: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -273,9 +273,9 @@ export default class Wrapper extends React.PureComponent {
       usedLocale,
       translations,
       platformName,
-      username,
-      isChat,
-      isAuthenticated,
+      // username,
+      // isChat,
+      // isAuthenticated,
     } = this.props;
     const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
@@ -299,19 +299,19 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                <ChatButton
-                  openChat={this.props.changeChatCondition}
-                  isChat={isChat}
-                  messagesCount={messagesCount}
-                  authentication={isAuthenticated}
-                />
-                {isAuthenticated ? (
-                  <Chat
-                    visibility={isChat}
-                    openChat={this.props.changeChatCondition}
-                    userName={username}
-                  />
-                ) : null}
+                {/* <ChatButton */}
+                {/*  openChat={this.props.changeChatCondition} */}
+                {/*  isChat={isChat} */}
+                {/*  messagesCount={messagesCount} */}
+                {/*  authentication={isAuthenticated} */}
+                {/* /> */}
+                {/* {isAuthenticated ? ( */}
+                {/*  <Chat */}
+                {/*    visibility={isChat} */}
+                {/*    openChat={this.props.changeChatCondition} */}
+                {/*    userName={username} */}
+                {/*  /> */}
+                {/* ) : null} */}
               </div>
             </Layout>
           </UsedLocaleContext.Provider>
