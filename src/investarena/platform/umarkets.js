@@ -88,19 +88,21 @@ export default class Umarkets {
     this.sid = store.get('sid');
     this.um_session = store.get('um_session');
     this.platformName = Cookies.get('platformName');
-    this.websocket = this.createSockJS();
-    this.stompClient = Stomp.over(this.websocket);
-    this.stompClient.debug = () => {};
-    this.stompClient.heartbeat.outgoing = 2000;
-    this.stompClient.heartbeat.incoming = 0;
-    this.stompClient.connect(
-      this.stompUser,
-      this.stompPassword,
-      this.onConnect.bind(this),
-      this.onError.bind(this),
-      this.onError.bind(this),
-      'trading',
-    );
+    if (this.platformName) {
+      this.websocket = this.createSockJS();
+      this.stompClient = Stomp.over(this.websocket);
+      this.stompClient.debug = (msg) => { console.log('\tstomp debug > ', msg)};
+      this.stompClient.heartbeat.outgoing = 2000;
+      this.stompClient.heartbeat.incoming = 0;
+      this.stompClient.connect(
+        this.stompUser,
+        this.stompPassword,
+        this.onConnect.bind(this),
+        this.onError.bind(this),
+        this.onError.bind(this),
+        'trading',
+      );
+    }
   }
 
   createSockJS() {
