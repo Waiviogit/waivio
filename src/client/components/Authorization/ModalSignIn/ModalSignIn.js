@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import { batch, useDispatch } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { get } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
@@ -20,15 +20,16 @@ import SocialButtons from '../SocialButtons/SocialButtons';
 import BeaxySignInButton from '../SocialButtons/BeaxySignInButton';
 import BeaxyAuthForm from '../BeaxyAuthForm/BeaxyAuthForm';
 import '../ModalSignUp/ModalSignUp.less';
+import { getIsAuthenticated } from '../../../reducers';
 
-const ModalSignIn = ({ next }) => {
+const ModalSignIn = ({ visible, next, isAuth, isLoaded, isAuthAction, hideModal }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoginForm, setIsLoginForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const isAuthenticated = useSelector(getIsAuthenticated);
   const socialLoginResponse = async (response, socialNetwork) => {
     if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
@@ -109,6 +110,8 @@ const ModalSignIn = ({ next }) => {
       </React.Fragment>
     );
 
+  const showModal = visible || (!isAuth && isLoaded);
+
   const onModalClose = () => {
     setIsModalOpen(false);
     setIsFormVisible(false);
@@ -121,34 +124,47 @@ const ModalSignIn = ({ next }) => {
 
   return (
     <React.Fragment>
-      <a role="presentation" onClick={() => setIsModalOpen(true)}>
-        <FormattedMessage id="signin" defaultMessage="Log in" />
-      </a>
-      <Modal
-        width={416}
-        title=""
-        visible={isModalOpen}
-        onCancel={memoizedOnModalClose}
-        footer={null}
-        destroyOnClose
-      >
-        <div className="ModalSignUp">
-          {isFormVisible ? (
-            <GuestSignUpModalContent userData={userData} isModalOpen={isModalOpen} />
-          ) : (
-            renderSignIn(isLoginForm)
+      {!isAuthenticated && (
+        <React.Fragment>
+          {!isAuthAction && (
+            <a role="presentation" onClick={() => setIsModalOpen(true)}>
+              <FormattedMessage id="signin" defaultMessage="Log in" />
+            </a>
           )}
-        </div>
-      </Modal>
+          <Modal
+            width={416}
+            title=""
+            visible={isAuthAction ? showModal : isModalOpen}
+            onCancel={isAuthAction ? () => hideModal(memoizedOnModalClose) : memoizedOnModalClose}
+            footer={null}
+            destroyOnClose
+          >
+            <div className="ModalSignUp">
+              {isFormVisible ? (
+                <GuestSignUpModalContent userData={userData} isModalOpen={isModalOpen} />
+              ) : (
+                renderSignIn(isLoginForm)
+              )}
+            </div>
+          </Modal>
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 };
 
 ModalSignIn.propTypes = {
   next: PropTypes.string,
+  visible: PropTypes.bool,
+  isLoaded: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+  hideModal: PropTypes.func,
+  isAuthAction: PropTypes.bool.isRequired,
 };
 
 ModalSignIn.defaultProps = {
+  visible: false,
+  hideModal: () => {},
   next: '',
 };
 
