@@ -93,7 +93,7 @@ const UserWalletSummary = ({
   beaxyBalance,
   showMore,
   isShowMore,
-  hasZeroBalances,
+  hasMoreBalances,
 }) => (
   <React.Fragment>
     {!!beaxyBalance.length && (
@@ -103,7 +103,7 @@ const UserWalletSummary = ({
             <CurrencyItem key={item.id} item={item} />
           ))}
         </div>
-        {hasZeroBalances && (
+        {hasMoreBalances && (
           <div className="UserWalletSummary__show-more mb1">
             <div
               className="UserWalletSummary__show-more-btn"
@@ -242,7 +242,7 @@ UserWalletSummary.propTypes = {
   beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
   showMore: PropTypes.func,
   isShowMore: PropTypes.bool,
-  hasZeroBalances: PropTypes.bool,
+  hasMoreBalances: PropTypes.bool,
 };
 
 UserWalletSummary.defaultProps = {
@@ -254,7 +254,7 @@ UserWalletSummary.defaultProps = {
   balance: 0,
   beaxyBalance: [],
   isShowMore: false,
-  hasZeroBalances: false,
+  hasMoreBalances: false,
   showMore: () => {},
 };
 

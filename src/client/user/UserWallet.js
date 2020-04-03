@@ -36,6 +36,8 @@ import {
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 
+const initWalletsQuantity = 5;
+
 @withRouter
 @connect(
   (state, ownProps) => ({
@@ -139,7 +141,10 @@ class Wallet extends Component {
     const { isShowMoreBeaxy } = this.state;
     const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
     if (!isShowMoreBeaxy) {
-      return sortedBalance.filter(item => item.balance > 0);
+      const positiveBalances = sortedBalance.filter(item => item.balance > 0);
+      return positiveBalances.length
+        ? positiveBalances
+        : sortedBalance.slice(0, initWalletsQuantity);
     }
     return sortedBalance;
   };
@@ -174,7 +179,7 @@ class Wallet extends Component {
     );
     const beaxyBalance = this.getBeaxyBalance();
 
-    const hasZeroBalances = this.props.beaxyBalance.some(item => item.balance === 0);
+    const isZeroBalancesOnly = this.props.beaxyBalance.every(item => item.balance === 0);
 
     const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
 
@@ -207,7 +212,9 @@ class Wallet extends Component {
           balance={isGuest ? guestBalance : user.balance}
           beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
-          hasZeroBalances={hasZeroBalances}
+          hasMoreBalances={
+            !isZeroBalancesOnly || this.props.beaxyBalance.length > initWalletsQuantity
+          }
           showMore={this.showMoreToggler}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
