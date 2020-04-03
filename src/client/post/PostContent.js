@@ -225,7 +225,7 @@ class PostContent extends React.Component {
       content.guestInfo,
     )}`;
     const ampUrl = `${url}/amp`;
-    const metaTitle = `${title} - InvertArena`;
+    const metaTitle = `${title} - InvestArena`;
 
     return (
       <div>
