@@ -4,9 +4,10 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
+import { LineChart } from 'react-easy-chart';
 import { getCryptosPriceHistory, getLocale } from '../../reducers';
 import { getCryptoPriceHistory } from '../../app/appActions';
-import { getCryptoDetails } from '../../helpers/cryptosHelper';
+import { getCryptoDetails, getCurrentDaysOfTheWeek } from '../../helpers/cryptosHelper';
 import USDDisplay from '../Utils/USDDisplay';
 import Loading from '../Icon/Loading';
 
@@ -25,6 +26,7 @@ class CryptoChart extends React.Component {
     getCryptoPriceHistory: PropTypes.func.isRequired,
     refreshCharts: PropTypes.bool,
     crypto: PropTypes.string,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -65,6 +67,13 @@ class CryptoChart extends React.Component {
         currentCrypto,
       });
     }
+  }
+
+  toggleDisplayChart() {
+    const { displayChart } = this.state;
+    this.setState({
+      displayChart: !displayChart,
+    });
   }
 
   renderUSDPrice() {
@@ -152,9 +161,43 @@ class CryptoChart extends React.Component {
     );
   }
 
+  renderChart() {
+    const { cryptosPriceHistory, locale } = this.props;
+    const { currentCrypto } = this.state;
+    const cryptoUSDPriceHistoryKey = `${currentCrypto.coinGeckoId}.usdPriceHistory`;
+    const chartData = _.get(cryptosPriceHistory, cryptoUSDPriceHistoryKey, []);
+    const daysOfTheWeek = getCurrentDaysOfTheWeek(locale);
+
+    console.log('chartData', chartData);
+    console.log('daysOfTheWeek', daysOfTheWeek);
+
+    const config = {
+      width: 270,
+      height: 500,
+      axes: true,
+      xType: 'text',
+      yTicks: 0,
+      data: [
+        [
+          { x: 0, y: 10 },
+          { x: 1, y: 0 },
+          { x: 2, y: 20 },
+          { x: 3, y: 30 },
+          { x: 4, y: 40 },
+          { x: 5, y: 50 },
+          { x: 6, y: 60 },
+          { x: 7, y: 70 },
+        ],
+      ],
+      dataPoints: true,
+    };
+
+    return <LineChart {...config} />;
+  }
+
   render() {
     const { cryptosPriceHistory } = this.props;
-    const { currentCrypto } = this.state;
+    const { currentCrypto, displayChart } = this.state;
     const cryptoUSDPriceHistoryKey = `${currentCrypto.coinGeckoId}.usdPriceHistory`;
     const usdPriceHistory = _.get(cryptosPriceHistory, cryptoUSDPriceHistoryKey, null);
     const loading = _.isNull(usdPriceHistory);
@@ -168,15 +211,27 @@ class CryptoChart extends React.Component {
         </div>
       );
     }
+
     return (
       <div>
         <div className="SidebarContentBlock__content">
           <div className="CryptoTrendingCharts__chart-header">
-            <div className="CryptoTrendingCharts__crypto-name">{currentCrypto.name}</div>
+            <div className="CryptoTrendingCharts__crypto-name">
+              {currentCrypto.name}
+              <i
+                role="presentation"
+                onClick={() => this.toggleDisplayChart()}
+                className={classNames('iconfont CryptoTrendingCharts__display-icon', {
+                  'icon-unfold': !displayChart,
+                  'icon-packup': displayChart,
+                })}
+              />
+            </div>
             {this.renderUSDPrice()}
             {this.renderBTCPrice()}
           </div>
         </div>
+        {displayChart && this.renderChart()}
       </div>
     );
   }
