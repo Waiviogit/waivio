@@ -3,7 +3,7 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
-import * as dsteem from 'dsteem';
+import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
@@ -276,6 +276,6 @@ export const roundNumberToThousands = number => {
   return number;
 };
 
-export const dSteem = new dsteem.Client('https://api.steemit.com');
+export const dSteem = new dsteem.Client('https://anyx.io');
 
 export const calcReputation = rep => steem.formatter.reputation(rep);
