@@ -96,6 +96,7 @@ class CatalogWrap extends React.Component {
     propositions: [],
     sort: 'reward',
     isAssign: false,
+    loadingPropositions: false,
   };
 
   componentDidMount() {
@@ -109,7 +110,6 @@ class CatalogWrap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match } = nextProps;
     const newPath = nextProps.location.hash.slice(1);
     const currPath = this.props.location.hash.slice(1);
     const isReloadingPage = nextProps.match.params.name !== this.props.match.params.name;
@@ -125,22 +125,6 @@ class CatalogWrap extends React.Component {
     }
     if (!isEqual(this.props.wobject.author_permlink, nextProps.wobject.author_permlink)) {
       this.setState(this.getNextStateFromProps(nextProps));
-    }
-    if (
-      match.params.filterKey !== this.props.match.params.filterKey ||
-      nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
-    ) {
-      const { radius, coordinates, sort, activeFilters } = this.state;
-      this.setState({ loadingCampaigns: true }, () => {
-        this.getPropositions({
-          username: nextProps.username,
-          match,
-          coordinates,
-          radius,
-          sort,
-          activeFilters,
-        });
-      });
     }
   }
 
@@ -253,6 +237,7 @@ class CatalogWrap extends React.Component {
   };
 
   getPropositions = ({ username, match, requiredObject, sort }) => {
+    this.setState({ loadingPropositions: true });
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -267,7 +252,7 @@ class CatalogWrap extends React.Component {
         sponsors: data.sponsors,
         sort,
         loadingCampaigns: false,
-        loading: false,
+        loadingPropositions: false,
       });
     });
   };
@@ -278,32 +263,29 @@ class CatalogWrap extends React.Component {
         proposition.objects,
         wobj =>
           wobj.object &&
-          wobj.object.author_permlink &&
-          this.getListPropositionRow(proposition, wobj),
+          wobj.object.author_permlink && (
+            <Proposition
+              proposition={proposition}
+              wobj={wobj.object}
+              assignCommentPermlink={wobj.permlink}
+              assignProposition={this.assignPropositionHandler}
+              discardProposition={this.discardProposition}
+              authorizedUserName={this.props.username}
+              loading={this.state.loadingAssignDiscard}
+              key={`${wobj.object.author_permlink}`}
+              assigned={wobj.assigned}
+              history={this.props.history}
+              isAssign={this.state.isAssign}
+            />
+          ),
       ),
     );
 
-  getListPropositionRow = (proposition, wobj) => (
-    <Proposition
-      proposition={proposition}
-      wobj={wobj.object}
-      assignCommentPermlink={wobj.permlink}
-      assignProposition={this.assignPropositionHandler}
-      discardProposition={this.discardProposition}
-      authorizedUserName={this.props.username}
-      loading={this.state.loadingAssignDiscard}
-      key={`${wobj.object.author_permlink}`}
-      assigned={wobj.assigned}
-      history={this.props.history}
-      isAssign={this.state.isAssign}
-    />
-  );
-
-  getListRow = listItem => {
+  getListRow = (listItem, campaignObjects) => {
     const { propositions } = this.state;
+    console.log(propositions);
     const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.type === OBJ_TYPE.LIST;
-    const campaignObjects = map(propositions, item => item.objects[0].object.author_permlink);
     let item;
     if (isList) {
       item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
@@ -316,7 +298,7 @@ class CatalogWrap extends React.Component {
   };
 
   getMenuList = () => {
-    const { listItems, breadcrumb } = this.state;
+    const { listItems, breadcrumb, propositions } = this.state;
     if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
       return (
         <div>
@@ -327,7 +309,11 @@ class CatalogWrap extends React.Component {
         </div>
       );
     }
-    return map(listItems, listItem => this.getListRow(listItem));
+    const campaignObjects = map(propositions, item =>
+      get(item, 'objects[0].object.author_permlink'),
+    );
+
+    return map(listItems, listItem => this.getListRow(listItem, campaignObjects));
   };
 
   // Propositions
@@ -427,7 +413,7 @@ class CatalogWrap extends React.Component {
   // END Propositions
 
   render() {
-    const { sort, wobjNested, listItems, breadcrumb, loading } = this.state;
+    const { sort, wobjNested, listItems, breadcrumb, loading, loadingPropositions } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
     const currWobject = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
@@ -523,7 +509,7 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        {isListObject && loading ? (
+        {(isListObject && loading) || loadingPropositions ? (
           <Loading />
         ) : (
           <React.Fragment>
