@@ -283,7 +283,6 @@ class CatalogWrap extends React.Component {
 
   getListRow = (listItem, campaignObjects) => {
     const { propositions } = this.state;
-    console.log(propositions);
     const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.type === OBJ_TYPE.LIST;
     let item;
