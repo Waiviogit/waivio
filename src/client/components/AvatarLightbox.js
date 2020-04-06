@@ -28,9 +28,20 @@ export default class AvatarLightbox extends React.Component {
     const { username, size, isActive } = this.props;
 
     return (
-      <div className="UserHeader__container--wrap" role="presentation" onClick={this.handleAvatarClick}>
-          <Avatar username={username} size={size} />
-          {isActive && <img src="/images/icons/online.png" alt="hive" className="UserHeader__container--active" title="Active now"/>}
+      <div
+        className="UserHeader__container--wrap"
+        role="presentation"
+        onClick={this.handleAvatarClick}
+      >
+        <Avatar username={username} size={size} />
+        {isActive && (
+          <img
+            src="/images/icons/online.png"
+            alt="hive"
+            className="UserHeader__container--active"
+            title="Active now"
+          />
+        )}
         {this.state.open && (
           <Lightbox
             mainSrc={`https://steemitimages.com/u/${username}/avatar/large`}

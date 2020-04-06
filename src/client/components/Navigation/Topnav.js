@@ -51,6 +51,7 @@ import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
 import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
+import MobileMenu from './MobileMenu/MobileMenu';
 
 @injectIntl
 @withRouter
@@ -159,6 +160,7 @@ class Topnav extends React.Component {
       weeklyChosenPost: '',
       scrolling: false,
       visible: false,
+      isMobileMenu: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -848,17 +850,22 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
+  mobileMenuToggler = () => this.setState({ isMobileMenu: !this.state.isMobileMenu });
+
   render() {
     const {
       intl,
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      openChat,
-      messagesCount,
+      // openChat,
+      // messagesCount,
       platformName,
+      username,
+      notifications,
+      userMetaData,
     } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { searchBarActive, dropdownOpen, searchBarValue, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
@@ -880,130 +887,149 @@ class Topnav extends React.Component {
     //   : dropdownOptions.concat([downBar]);
 
     return (
-      <div
-        className={classNames('Topnav', {
-          'top-hidden': this.state.visible && isMobile,
-        })}
-      >
-        <ModalDealConfirmation />
-        <div className="topnav-layout">
-          <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
-            <Link to="/" className="Topnav__brand">
-              <span className="Topnav__brand-icon-mobile">investarena</span>
-              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
-            </Link>
-          </div>
-          <div
-            className={classNames(
-              'center',
-              'center-menu',
-              { mobileVisible: searchBarActive },
-              { 'center-menu--logedout': !isAuthenticated },
-            )}
-          >
-            <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
-              <i className="iconfont icon-search" />
-              <AutoComplete
-                dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={dropdownOptions}
-                onSearch={this.handleAutoCompleteSearch}
-                onSelect={this.handleSelectOnAutoCompleteDropdown}
-                onChange={this.handleOnChangeForAutoComplete}
-                defaultActiveFirstOption={false}
-                dropdownMatchSelectWidth={false}
-                optionLabelProp="value"
-                dropdownStyle={{ color: 'red' }}
-                value={this.state.searchBarValue}
-                open={dropdownOpen}
-                onFocus={this.handleOnFocus}
-              >
-                <Input
-                  ref={ref => {
-                    this.searchInputRef = ref;
-                  }}
-                  onPressEnter={this.handleSearchForInput}
-                  placeholder={intl.formatMessage({
-                    id: 'search_placeholder',
-                    defaultMessage: 'What are you looking for?',
-                  })}
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                />
-              </AutoComplete>
-              {!!this.state.searchBarValue.length && (
-                <Icon
-                  type="close-circle"
-                  style={{ fontSize: '12px' }}
-                  theme="filled"
-                  onClick={this.handleClearSearchData}
-                />
-              )}
+      <React.Fragment>
+        <div className="Topnav">
+          <ModalDealConfirmation />
+          <div className="topnav-layout">
+            <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
+              <Link to="/" className="Topnav__brand">
+                <span className="Topnav__brand-icon-mobile">investarena</span>
+                <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
+              </Link>
             </div>
-            <div className="Topnav__horizontal-menu">
-              {!isMobile && (
-                <TopNavigation
-                  authenticated={isAuthenticated}
-                  location={this.props.history.location}
-                  isMobile={isMobile || screenSize === 'medium'}
-                />
+            <div
+              className={classNames(
+                'center',
+                'center-menu',
+                { mobileVisible: searchBarActive },
+                { 'center-menu--logedout': !isAuthenticated },
               )}
-            </div>
-          </div>
-          <div
-            className={classNames('Topnav__right-top', {
-              'Topnav__right-top--logedout': !isAuthenticated,
-            })}
-          >
-            <button
-              className={classNames('Topnav__mobile-search', {
-                'Topnav__mobile-search-close': searchBarActive,
-              })}
-              onClick={this.handleMobileSearchButtonClick}
             >
-              <i
-                className={classNames('iconfont', {
-                  'icon-close': searchBarActive,
-                  'icon-search': !searchBarActive,
-                })}
-              />
-            </button>
-            {/* {this.props.username && ( */}
-            {/*  <div className="Topnav__chat" key="more"> */}
-            {/*    {!messagesCount ? ( */}
-            {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
-            {/*    ) : ( */}
-            {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
-            {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
-            {/*      </div> */}
-            {/*    )} */}
-            {/*  </div> */}
-            {/* )} */}
-          </div>
-          <div className="Topnav__right-bottom">
-            {this.content()}
-            {isAuthenticated && (
-              <div
-                className={classNames('Topnav__broker', {
-                  'justify-end': platformName === 'widgets',
-                })}
-              >
-                {platformName === 'widgets' ? (
-                  <div className="st-header-broker-balance-pl-wrap">
-                    <Button type="primary" onClick={this.toggleModalBroker}>
-                      {intl.formatMessage({
-                        id: 'headerAuthorized.connectToBeaxy',
-                        defaultMessage: 'Connect to beaxy',
+              {!isMobile && (
+                <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
+                  <i className="iconfont icon-search" />
+                  <AutoComplete
+                    dropdownClassName="Topnav__search-dropdown-container"
+                    dataSource={dropdownOptions}
+                    onSearch={this.handleAutoCompleteSearch}
+                    onSelect={this.handleSelectOnAutoCompleteDropdown}
+                    onChange={this.handleOnChangeForAutoComplete}
+                    defaultActiveFirstOption={false}
+                    dropdownMatchSelectWidth={false}
+                    optionLabelProp="value"
+                    dropdownStyle={{ color: 'red' }}
+                    value={this.state.searchBarValue}
+                    open={dropdownOpen}
+                    onFocus={this.handleOnFocus}
+                  >
+                    <Input
+                      ref={ref => {
+                        this.searchInputRef = ref;
+                      }}
+                      onPressEnter={this.handleSearchForInput}
+                      placeholder={intl.formatMessage({
+                        id: 'search_placeholder',
+                        defaultMessage: 'What are you looking for?',
                       })}
-                    </Button>
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                    />
+                  </AutoComplete>
+                  {!!this.state.searchBarValue.length && (
+                    <Icon
+                      type="close-circle"
+                      style={{ fontSize: '12px' }}
+                      theme="filled"
+                      onClick={this.handleClearSearchData}
+                    />
+                  )}
+                </div>
+              )}
+              <div className="Topnav__horizontal-menu">
+                {!isMobile && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    location={this.props.history.location}
+                    isMobile={isMobile || screenSize === 'medium'}
+                  />
+                )}
+              </div>
+            </div>
+            <div
+              className={classNames('Topnav__right-top', {
+                'Topnav__right-top--logedout': !isAuthenticated,
+              })}
+            >
+              <Icon type="menu" className="iconfont icon-menu" onClick={this.mobileMenuToggler} />
+              {/* <button */}
+              {/*  className={classNames('Topnav__mobile-search', { */}
+              {/*    'Topnav__mobile-search-close': searchBarActive, */}
+              {/*  })} */}
+              {/*  onClick={this.handleMobileSearchButtonClick} */}
+              {/* > */}
+              {/*  <i */}
+              {/*    className={classNames('iconfont', { */}
+              {/*      'icon-close': searchBarActive, */}
+              {/*      'icon-search': !searchBarActive, */}
+              {/*    })}* /}
+              {/*  /> */}
+              {/* </button> */}
+              {/* {this.props.username && ( */}
+              {/*  <div className="Topnav__chat" key="more"> */}
+              {/*    {!messagesCount ? ( */}
+              {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
+              {/*    ) : ( */}
+              {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
+              {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
+              {/*      </div> */}
+              {/*    )} */}
+              {/*  </div> */}
+              {/* )} */}
+            </div>
+            {!isMobile && (
+              <div className="Topnav__right-bottom">
+                {this.content()}
+                {isAuthenticated && (
+                  <div
+                    className={classNames('Topnav__broker', {
+                      'justify-end': platformName === 'widgets',
+                    })}
+                  >
+                    {platformName === 'widgets' ? (
+                      <div className="st-header-broker-balance-pl-wrap">
+                        <Button type="primary" onClick={this.toggleModalBroker}>
+                          {intl.formatMessage({
+                            id: 'headerAuthorized.connectToBeaxy',
+                            defaultMessage: 'Connect to beaxy',
+                          })}
+                        </Button>
+                      </div>
+                    ) : (
+                      <BrokerBalance />
+                    )}
                   </div>
-                ) : (
-                  <BrokerBalance />
                 )}
               </div>
             )}
           </div>
         </div>
-      </div>
+        {isMobile && isMobileMenu && (
+          <MobileMenu
+            searchOptions={this.prepareOptions(autoCompleteSearchResults)}
+            onSearch={this.handleAutoCompleteSearch}
+            onSelect={this.handleSelectOnAutoCompleteDropdown}
+            onChange={this.handleOnChangeForAutoComplete}
+            onFocus={this.handleOnFocus}
+            onBlur={this.handleOnBlur}
+            {...this.props}
+            {...this.state}
+            onSearchPressEnter={this.handleSearchForInput}
+            hotNews={this.hotNews}
+            handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
+            handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
+          />
+        )}
+      </React.Fragment>
     );
   }
 }

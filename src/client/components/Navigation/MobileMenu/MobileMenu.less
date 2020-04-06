@@ -1,0 +1,157 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+@import (reference) '../../../../investarena/components/Common.less';
+
+.MobileMenu {
+  position: absolute;
+  right: 0;
+  background: #3a79ee;
+  color: @white;
+  height: 100vh;
+
+  .BrokerBalance {
+    .ant-dropdown-trigger {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 2rem;
+    }
+  }
+
+  &__wrapper {
+    margin: 1rem;
+  }
+
+  &__input-container {
+    position: relative;
+    display: flex;
+    margin: 1rem 0;
+
+    input {
+      height: 38px !important;
+      padding: 0 0 0 43px !important;
+      border: 0 !important;
+      background-color: @white !important;
+      caret-color: @grey-nero;
+      color: @grey-nero !important;
+
+      &:hover,
+      &:focus {
+        box-shadow: none !important;
+      }
+    }
+
+    i {
+      left: 16px;
+      position: absolute;
+      color: @blue-baliHai;
+      font-size: 20px;
+      z-index: @backtop-z-index;
+      line-height: 38px !important;
+    }
+
+    .ant-select-selection__rendered {
+      line-height: 38px !important;
+    }
+  }
+
+  .ant-input {
+    border: 0 !important;
+  }
+
+  .ant-menu-item > a {
+    border-color: @white;
+    background-color: @white;
+  }
+}
+
+.MobileMenu__search-dropdown-container.ant-select-dropdown {
+  top: 150px !important;
+  position: fixed;
+  border-radius: 0;
+  border-bottom-left-radius: @border-radius-base;
+  border-bottom-right-radius: @border-radius-base;
+  border-right: @base-border;
+  border-left: @base-border;
+  border-bottom: @base-border;
+  box-shadow: none;
+  padding-top: 5px;
+  width: calc(100% - 145px);
+
+  @media @small {
+    max-width: 270px;
+  }
+
+  @media @medium {
+    max-width: 480px;
+  }
+
+  @media @large {
+    max-width: 450px;
+  }
+}
+
+.MobileMenu__search-dropdown-container .ant-select-dropdown-menu {
+  .ant-select-dropdown-menu-item-group:first-child {
+    padding-bottom: 10px;
+
+    .ant-select-dropdown-menu-item-group-title {
+      display: none;
+    }
+
+    ul {
+      @media @xsmall {
+        max-width: 240px;
+      }
+
+      @media @small {
+        max-width: 265px;
+      }
+
+      @media @medium {
+        max-width: 420px;
+      }
+
+      @media @large {
+        max-width: 495px;
+      }
+
+      display: flex;
+      flex-wrap: wrap;
+      margin-left: 5px;
+      text-transform: capitalize;
+    }
+
+    li {
+      margin-top: 5px;
+      margin-left: 5px;
+      padding: 5px 10px;
+      border-radius: 4px !important;
+      border: 1px solid @white-gainsboro;
+      background: @white-smoke;
+      overflow: visible;
+    }
+  }
+}
+
+.MobileMenu__search-dropdown-container {
+  .ant-select-dropdown-menu-item-active {
+    &:hover {
+      border-color: @white-smoke;
+      background-color: @white;
+    }
+  }
+}
+
+.MenuContainer {
+  display: flex;
+  flex-direction: column;
+
+  &__link {
+    color: @white;
+    height: 2rem;
+    text-align: end;
+    font-weight: 500;
+  }
+}
