@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input, Menu } from 'antd';
@@ -13,6 +14,7 @@ import { disconnectBroker } from '../../../../investarena/redux/actions/brokersA
 import { logout } from '../../../auth/authActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
 import BrokerBalance from '../BrokerBalance/BrokerBalance';
+import Avatar from '../../Avatar';
 import './MobileMenu.less';
 
 const MobileMenu = props => {
@@ -27,7 +29,7 @@ const MobileMenu = props => {
     searchBarValue,
     onSearchPressEnter,
     onBlur,
-
+    handleScrollToTop,
     username,
     notifications,
     userMetaData,
@@ -39,7 +41,6 @@ const MobileMenu = props => {
     handleNotificationsPopoverVisibleChange,
     onLogout,
     disconnectPlatform,
-
     platformName,
   } = props;
 
@@ -155,7 +156,14 @@ const MobileMenu = props => {
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="UserData">
-            <BrokerBalance isMobile />
+            <span className="UserData__broker-balance">
+              <BrokerBalance isMobile />
+            </span>
+            <span className="UserData__user">
+              <Link to={`/@${username}`} onClick={handleScrollToTop}>
+                <Avatar username={username} size={50} />
+              </Link>
+            </span>
           </div>
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>
@@ -190,17 +198,51 @@ const MobileMenu = props => {
           {menuContainer()}
         </div>
         {!isBeaxyUser && platformName === 'beaxy' && (
-          <Button onClick={disconnectPlatform}>
-            <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
-          </Button>
+          <div className="MobileMenu__disconnect-broker">
+            <Button onClick={disconnectPlatform}>
+              <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
+            </Button>
+          </div>
         )}
       </div>
     </div>
   );
 };
-MobileMenu.propTypes = {};
+
+MobileMenu.propTypes = {
+  searchOptions: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  dropdownOpen: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
+  searchBarValue: PropTypes.string,
+  onSearchPressEnter: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  handleScrollToTop: PropTypes.func.isRequired,
+  username: PropTypes.string,
+  notifications: PropTypes.arrayOf(PropTypes.shape()),
+  userMetaData: PropTypes.shape(),
+  loadingNotifications: PropTypes.bool,
+  hotNews: PropTypes.func.isRequired,
+  notificationsPopoverVisible: PropTypes.bool,
+  handleCloseNotificationsPopover: PropTypes.func.isRequired,
+  getUserMetadata: PropTypes.func.isRequired,
+  handleNotificationsPopoverVisibleChange: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
+  disconnectPlatform: PropTypes.func.isRequired,
+  platformName: PropTypes.string.isRequired,
+};
+
 MobileMenu.defaultProps = {
   username: '',
+  dropdownOpen: false,
+  searchBarValue: '',
+  notifications: [],
+  userMetaData: {},
+  loadingNotifications: false,
+  notificationsPopoverVisible: false,
 };
 
 const mapDispatchToProps = dispatch => ({

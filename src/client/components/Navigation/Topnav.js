@@ -867,7 +867,7 @@ class Topnav extends React.Component {
     } = this.props;
     const { searchBarActive, dropdownOpen, searchBarValue, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
+    const brandLogoPath = isMobile ? '/images/icons/ia-logo.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     // const downBar = (
     //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -893,7 +893,6 @@ class Topnav extends React.Component {
           <div className="topnav-layout">
             <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
               <Link to="/" className="Topnav__brand">
-                <span className="Topnav__brand-icon-mobile">investarena</span>
                 <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
               </Link>
             </div>
@@ -1027,6 +1026,7 @@ class Topnav extends React.Component {
             hotNews={this.hotNews}
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
+            handleScrollToTop={this.handleScrollToTop}
           />
         )}
       </React.Fragment>

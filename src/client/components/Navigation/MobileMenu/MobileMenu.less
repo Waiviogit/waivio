@@ -10,13 +10,26 @@
   color: @white;
   height: 100vh;
 
+  .UserData {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .BrokerBalance {
+    align-items: baseline;
+    color: @white-smoke !important;
+
     .ant-dropdown-trigger {
       display: flex;
       flex-direction: row;
-      align-items: center;
       height: 2rem;
     }
+  }
+
+  &__disconnect-broker {
+    display: flex;
+    margin-top: 50px;
+    justify-content: flex-end;
   }
 
   &__wrapper {
