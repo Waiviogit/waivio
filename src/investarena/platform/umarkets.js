@@ -88,7 +88,7 @@ export default class Umarkets {
     this.sid = store.get('sid');
     this.um_session = store.get('um_session');
     this.platformName = Cookies.get('platformName');
-    if (this.platformName) {
+    if (this.platformName && this.platformName !== 'undefined') {
       this.websocket = this.createSockJS();
       this.stompClient = Stomp.over(this.websocket);
       this.stompClient.debug = () => {};
