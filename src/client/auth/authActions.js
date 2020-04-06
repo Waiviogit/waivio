@@ -80,10 +80,8 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           userData.user.name,
           'beaxy',
           bxySessionData,
+          () => dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true })),
         );
-        if (typeof localStorage !== 'undefined') {
-          dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true }));
-        }
         dispatch(getNotifications(userData.user.name));
         resolve({
           account: userData.user,
@@ -111,7 +109,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   getState,
   { steemConnectAPI, waivioAPI },
 ) => {
-  // todo: call beaxy login
   if (socialNetwork === 'beaxy')
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();
