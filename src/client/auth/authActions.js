@@ -8,6 +8,7 @@ import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
+import history from '../history';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -103,16 +104,23 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     localStorage.removeItem('socialName');
     localStorage.removeItem('guestName');
     if (window) {
-      // eslint-disable-next-line no-unused-expressions
-      window.FB && window.FB.logout();
-      // eslint-disable-next-line no-unused-expressions
-      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
+      if (window.FB) {
+        window.FB.getLoginStatus(res => {
+          if (res.status === 'connected') window.FB.logout();
+        });
+      }
+
+      if (window.gapi && window.gapi.auth2) {
+        const authInstance = window.gapi.auth2.getAuthInstance();
+        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
+      }
     }
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
   }
   busyAPI.close();
+  history.push('/');
 
   dispatch({
     type: LOGOUT,

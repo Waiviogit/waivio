@@ -1,4 +1,4 @@
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -18,12 +18,27 @@ import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage } from '../../reducers';
+import {
+  getSuitableLanguage,
+  getAuthenticatedUserName,
+  getPendingUpdate,
+  getIsLoaded,
+  getFilteredObjectsMap,
+} from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { hasType } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
+import * as apiConfig from '../../../waivioApi/config.json';
+import {
+  assignProposition,
+  declineProposition,
+  pendingUpdateSuccess,
+} from '../../user/userActions';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { preparePropositionReqData } from '../../rewards/rewardsHelper';
+import Proposition from '../../rewards/Proposition/Proposition';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
@@ -37,9 +52,16 @@ const getListSorting = wobj => {
 @connect(
   state => ({
     locale: getSuitableLanguage(state),
+    loaded: getIsLoaded(state),
+    username: getAuthenticatedUserName(state),
+    wobjects: getFilteredObjectsMap(state),
+    pendingUpdate: getPendingUpdate(state),
   }),
   {
     addItemToWobjStore: wobjectActions.addListItem,
+    assignProposition,
+    declineProposition,
+    pendingUpdateSuccess,
   },
 )
 class CatalogWrap extends React.Component {
@@ -53,7 +75,11 @@ class CatalogWrap extends React.Component {
     addItemToWobjStore: PropTypes.func.isRequired,
     /* passed props */
     wobject: PropTypes.shape(),
+    history: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
+    username: PropTypes.string.isRequired,
+    assignProposition: PropTypes.func.isRequired,
+    declineProposition: PropTypes.func.isRequired,
   };
   static defaultProps = {
     wobject: {},
@@ -63,6 +89,21 @@ class CatalogWrap extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.getNextStateFromProps(props, true);
+  }
+
+  state = {
+    loadingAssignDiscard: false,
+    propositions: [],
+    sort: 'reward',
+    isAssign: false,
+    loadingPropositions: false,
+  };
+
+  componentDidMount() {
+    const { username, match } = this.props;
+    const { sort } = this.state;
+    const requiredObject = match.params.name;
+    this.getPropositions({ username, match, requiredObject, sort });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -192,22 +233,68 @@ class CatalogWrap extends React.Component {
     this.setState({ sort, listItems });
   };
 
-  getListRow = listItem => {
+  getPropositions = ({ username, match, requiredObject, sort }) => {
+    this.setState({ loadingPropositions: true });
+    ApiClient.getPropositions(
+      preparePropositionReqData({
+        username,
+        match,
+        requiredObject,
+        sort,
+      }),
+    ).then(data => {
+      this.setState({
+        propositions: data.campaigns,
+        hasMore: data.hasMore,
+        sponsors: data.sponsors,
+        sort,
+        loadingCampaigns: false,
+        loadingPropositions: false,
+      });
+    });
+  };
+
+  renderProposition = propositions =>
+    map(propositions, proposition =>
+      map(
+        proposition.objects,
+        wobj =>
+          wobj.object &&
+          wobj.object.author_permlink && (
+            <Proposition
+              proposition={proposition}
+              wobj={wobj.object}
+              assignCommentPermlink={wobj.permlink}
+              assignProposition={this.assignPropositionHandler}
+              discardProposition={this.discardProposition}
+              authorizedUserName={this.props.username}
+              loading={this.state.loadingAssignDiscard}
+              key={`${wobj.object.author_permlink}`}
+              assigned={wobj.assigned}
+              history={this.props.history}
+              isAssign={this.state.isAssign}
+            />
+          ),
+      ),
+    );
+
+  getListRow = (listItem, campaignObjects) => {
+    const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.type === OBJ_TYPE.LIST;
-    return (
-      <div key={`category-${listItem.id}`}>
-        {isList ? (
-          <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
-        ) : (
-          <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />
-        )}
-      </div>
-    );
+    let item;
+    if (isList) {
+      item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
+    } else if (campaignObjects.includes(listItem.id)) {
+      item = this.renderProposition(propositions);
+    } else {
+      item = <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />;
+    }
+    return <div key={`category-${listItem.id}`}>{item}</div>;
   };
 
   getMenuList = () => {
-    const { listItems, breadcrumb } = this.state;
+    const { listItems, breadcrumb, propositions } = this.state;
     if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
       return (
         <div>
@@ -218,12 +305,111 @@ class CatalogWrap extends React.Component {
         </div>
       );
     }
+    const campaignObjects = map(propositions, item =>
+      get(item, 'objects[0].object.author_permlink'),
+    );
 
-    return map(listItems, listItem => this.getListRow(listItem));
+    return map(listItems, listItem => this.getListRow(listItem, campaignObjects));
   };
 
+  // Propositions
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+  }) => {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    this.setState({ loadingAssignDiscard: true });
+    return this.props
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully_update',
+            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
+          }),
+        );
+        // eslint-disable-next-line no-unreachable
+        const updatedPropositions = this.updateProposition(
+          companyId,
+          true,
+          objPermlink,
+          companyAuthor,
+        );
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: true,
+        });
+        return { isAssign: true };
+      })
+      .catch(e => {
+        this.setState({ loadingAssignDiscard: false, isAssign: false });
+        throw e;
+      });
+  };
+
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
+    this.state.propositions.map(proposition => {
+      // eslint-disable-next-line no-underscore-dangle
+      if (proposition._id === propsId) {
+        proposition.objects.forEach((object, index) => {
+          if (object.object.author_permlink === objPermlink) {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = isAssign;
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = null;
+          }
+        });
+      }
+      // eslint-disable-next-line no-underscore-dangle
+      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
+        // eslint-disable-next-line no-param-reassign
+        proposition.isReservedSiblingObj = true;
+      }
+      return proposition;
+    });
+
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
+    this.setState({ loadingAssignDiscard: true });
+    return this.props
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
+      .then(() => {
+        const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: false,
+        });
+        return { isAssign: false };
+      })
+      .catch(e => {
+        console.log(e.toString());
+        message.error(e.error_description);
+        this.setState({ loadingAssignDiscard: false, isAssign: true });
+      });
+  };
+  // END Propositions
+
   render() {
-    const { sort, wobjNested, listItems, breadcrumb, loading } = this.state;
+    const { sort, wobjNested, listItems, breadcrumb, loading, loadingPropositions } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
     const currWobject = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
@@ -319,7 +505,7 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        {isListObject && loading ? (
+        {(isListObject && loading) || loadingPropositions ? (
           <Loading />
         ) : (
           <React.Fragment>
