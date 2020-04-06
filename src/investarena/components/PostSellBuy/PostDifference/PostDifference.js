@@ -48,11 +48,11 @@ class PostDifference extends Component {
     if (quote.askPrice !== '-' && quote.bidPrice !== '-') {
       if (this.props.recommend.toLowerCase() === 'buy') {
         return Math.trunc(
-          (quote.askPrice * 1000000 - this.props.postPrice * 1000000) / quoteSettings.tickSize,
+          (quote.askPrice - this.props.postPrice) / quoteSettings.tickSize,
         );
       }
       return Math.trunc(
-        (this.props.postPrice * 1000000 - quote.bidPrice * 1000000) / quoteSettings.tickSize,
+        (this.props.postPrice - quote.bidPrice) / quoteSettings.tickSize,
       );
     }
     return '-';

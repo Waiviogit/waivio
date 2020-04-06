@@ -75,26 +75,6 @@ export const getFollowing = username => (dispatch, getState) => {
 export const UPDATE_RECOMMENDATIONS = '@wobj/UPDATE_RECOMMENDATIONS';
 export const updateRecommendations = createAction(UPDATE_RECOMMENDATIONS);
 
-export const GET_NOTIFICATIONS = createAsyncActionType('@wobj/GET_NOTIFICATIONS');
-
-export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
-  const state = getState();
-
-  if (!username && !getIsAuthenticated(state)) {
-    return dispatch({ type: GET_NOTIFICATIONS.ERROR });
-  }
-
-  const targetUsername = username || getAuthenticatedUserName(state);
-
-  return dispatch({
-    type: GET_NOTIFICATIONS.ACTION,
-    meta: targetUsername,
-    payload: {
-      promise: busyAPI.sendAsync('get_notifications', [targetUsername]),
-    },
-  });
-};
-
 export const LIKE_OBJECT = '@wobj/LIKE_OBJECT';
 
 export const voteObject = (objCreator, objPermlink, weight = 10000) => (

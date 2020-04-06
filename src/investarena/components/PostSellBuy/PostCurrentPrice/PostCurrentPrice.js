@@ -9,9 +9,9 @@ import { quoteFormat } from '../../../platform/parsingPrice';
 import quoteSettingsData from '../../../default/quoteSettingsData';
 
 const propTypes = {
-  quoteSettings: PropTypes.object,
-  quote: PropTypes.object,
-  finalQuote: PropTypes.object,
+  quoteSettings: PropTypes.shape(),
+  quote: PropTypes.shape(),
+  finalQuote: PropTypes.shape(),
   isExpired: PropTypes.bool,
   forecast: PropTypes.string,
   recommend: PropTypes.string.isRequired,

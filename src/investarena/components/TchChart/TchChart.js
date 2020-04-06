@@ -44,7 +44,7 @@ class TchChart extends Component {
       isOtherParams: false,
       isAutoRestore: false,
       rowsid: [],
-      typeThemes: this.props.isNightMode ? 'black' : 'default',
+      typeThemes: 'default',
       typeData: this.props.typeData === 'Sell' ? 'bid' : 'ask',
       modules: {
         isShowNews: false,
