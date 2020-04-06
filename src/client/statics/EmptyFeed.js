@@ -12,7 +12,7 @@ const EmptyFeed = ({ intl }) => {
         })}
       </div>
       <div className="text-center">
-        <Link to="/discover-objects/show_all">
+        <Link to="/discover-objects/crypto">
           {intl.formatMessage({
             id: 'objects_title',
             defaultMessage: 'Discover topics',
