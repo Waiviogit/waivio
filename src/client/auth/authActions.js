@@ -40,6 +40,8 @@ export const logoutWithoutBroker = () => (
   getState,
   { busyAPI, steemConnectAPI, waivioAPI },
 ) => {
+  const isAuthenticated = getIsAuthenticated(getState());
+  if (!isAuthenticated) return;
   if (waivioAPI.isGuest) {
     waivioAPI.clearGuestData();
     if (typeof window !== 'undefined') {
@@ -48,7 +50,7 @@ export const logoutWithoutBroker = () => (
       // eslint-disable-next-line no-unused-expressions
       window.gapi && window.gapi.auth2.getAuthInstance().signOut();
     }
-  } else {
+  } else if (steemConnectAPI.options.accessToken) {
     steemConnectAPI.revokeToken();
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
