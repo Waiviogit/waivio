@@ -292,8 +292,8 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
-      title: 'activate object for rewards',
-      body: `Campaign ${company.name} was activated by ${username} `,
+      title: 'Activate rewards campaign',
+      body: `${username} (@${username}) activated rewards campaign for ${company.name} `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
