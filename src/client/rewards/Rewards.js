@@ -261,11 +261,27 @@ class Rewards extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    proposition,
+    proposedWobj,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     return this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
+        proposition,
+        proposedWobj,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({

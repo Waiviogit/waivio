@@ -204,6 +204,11 @@ export const assignProposition = ({
   resPermlink,
   objPermlink,
   appName,
+  primaryObjectName,
+  secondaryObjectName,
+  amount,
+  proposition,
+  proposedWobj,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -213,13 +218,18 @@ export const assignProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: resPermlink,
-      title: 'reserve object for rewards',
-      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      primaryObjectName,
+      secondaryObjectName,
+      amount,
+      title: 'Rewards reservations',
+      body: `User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of 7 days to write a review of ${secondaryObjectName}, ${primaryObjectName} `,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
           app: appName,
+          proposition,
+          proposedWobj,
         },
       }),
     },
