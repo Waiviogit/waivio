@@ -30,7 +30,7 @@ class SingletonPlatform {
     this._platform.initialize(store);
   }
   setPlatformInstance(platform) {
-    if (platform) {
+    if (platform !== 'widgets') {
       this._platform = new Umarkets();
     } else {
       this._platform = new Widgets();
