@@ -162,7 +162,7 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
 };
 export function reconnectBroker(data) {
   const token = store.get('token');
-  if (token && data.platform) {
+  if (token && data.platform && data.platform !== 'undefined') {
     return dispatch => {
       dispatch(authorizeToken(token));
       singleton.platform = data.platform;
