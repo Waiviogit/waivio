@@ -38,8 +38,8 @@ import {
 } from '../../user/userActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { preparePropositionReqData } from '../../rewards/rewardsHelper';
-import './CatalogWrap.less';
 import Proposition from '../../rewards/Proposition/Proposition';
+import './CatalogWrap.less';
 
 const getListSorting = wobj => {
   const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
