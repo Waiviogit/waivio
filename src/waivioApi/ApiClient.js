@@ -1073,17 +1073,22 @@ class WaivioApiClient {
       const sid = store.get('sid');
       const umSession = store.get('um_session');
       try {
-        const res = await bxyKeepAlive(sid, umSession);
-        bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
+        if (sid && umSession) {
+          await bxyKeepAlive(sid, umSession);
+          bxyKeepAliveTimer = setTimeout(keepAliveRequest, keepAliveDelay);
+        } else {
+          throw new Error('keep alive failed');
+        }
       } catch (e) {
         clearTimeout(bxyKeepAliveTimer);
         const waivioApi = WaivioApiClient.instance;
         waivioApi.dispatch(logout());
+        console.warn(e && e.message);
       }
     }, keepAliveDelay);
   }
 
-  saveGuestData(accessToken, expiration, userName, social, bxySession = null) {
+  saveGuestData(accessToken, expiration, userName, social, bxySession = null, callback) {
     Cookie.set(GUEST_COOKIES.TOKEN, accessToken, {
       expires: new Date((expiration + 86400 * 7) * 1000),
     }); // there are 86400 sec in one day
@@ -1100,6 +1105,9 @@ class WaivioApiClient {
         stompPassword: bxySession.stompPassword,
       });
       this.setBxyKeepAliveTimer();
+    }
+    if (callback && typeof callback === 'function') {
+      callback();
     }
   }
   clearGuestData() {
