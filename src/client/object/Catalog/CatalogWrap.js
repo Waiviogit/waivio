@@ -102,11 +102,8 @@ class CatalogWrap extends React.Component {
   componentDidMount() {
     const { username, match } = this.props;
     const { sort } = this.state;
-
-    if (username) {
-      const requiredObject = match.params.name;
-      this.getPropositions({ username, match, requiredObject, sort });
-    }
+    const requiredObject = match.params.name;
+    this.getPropositions({ username, match, requiredObject, sort });
   }
 
   componentWillReceiveProps(nextProps) {
