@@ -584,7 +584,6 @@
   "menu_item_placeholder": "Menu item name",
   "newSteemAcc": "Account with Hive wallet",
   "instAccountCreation": "Instant Account Creation",
-  "longerWaiting": "- wait up to 2 weeks",
   "bonusDelegation": "BONUS: 15 SP delegation (for 90 days)",
   "emailAndPhoneReq": "- email & phone required",
   "freeSteemAcc": "- get a free Hive account",
@@ -1064,6 +1063,6 @@
   "no_user_message": "We have not users with this name, please try again.",
   "assigned_successfully_update": "Assigned successfully. Your new reservation will be available soon.",
   "discarded_successfully": "Reservation released. Reward will be available for reservation soon.",
-  "rewards_details_usersLegalNotice": "Legal notice"
-
+  "rewards_details_usersLegalNotice": "Legal notice",
+  "cryptos_sing_up": "- CRYPTOS"
 }
