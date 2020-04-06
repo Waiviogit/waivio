@@ -15,12 +15,13 @@ const ObjectExpertise = ({ username, wobject }) => {
   const isUserInTopFive = users.find(u => u.name === username);
 
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
-      .then(data => {
-        setExperts({ ...data, loading: false });
-      })
-      // eslint-disable-next-line no-unused-vars
-      .catch(err => setExperts({ user: {}, users: [], loading: false }));
+    if (wobject.author_permlink && username)
+      getWobjectsExpertise(username, wobject.author_permlink, 0, 5)
+        .then(data => {
+          setExperts({ ...data, loading: false });
+        })
+        // eslint-disable-next-line no-unused-vars
+        .catch(err => setExperts({ user: {}, users: [], loading: false }));
   }, [wobject.author_permlink]);
 
   let renderExperts = null;

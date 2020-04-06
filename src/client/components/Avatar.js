@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
+import { guestUserRegex } from '../helpers/regexHelpers';
 import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
@@ -10,7 +11,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   const lastAccountUpdate = !isEmpty(authenticatedUser)
     ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
-  if (username && username.match(/(waivio_|bxy_)([\w-.]+)/)) {
+  if (guestUserRegex.test(username)) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
 

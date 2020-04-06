@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
-import { getFollowing } from '../user/userActions';
+import { getFollowing, getNotifications } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import {
   initBrokerConnection,
@@ -84,7 +84,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
         if (typeof localStorage !== 'undefined') {
           dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true }));
         }
-
+        dispatch(getNotifications(userData.user.name));
         resolve({
           account: userData.user,
           userMetaData,
@@ -127,6 +127,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
         const tokenData = await setToken(oAuthToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+        dispatch(getNotifications(tokenData.userData.name));
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
         reject(e);

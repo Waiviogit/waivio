@@ -160,7 +160,7 @@ export function reconnectBroker(data) {
   const token = store.get('token');
   return dispatch => {
     dispatch(authorizeToken(token));
-    singleton.platform = data.platform;
+    singleton.platform = token && data.platform;
     singleton.createWebSocketConnection();
   };
 }

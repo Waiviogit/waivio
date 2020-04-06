@@ -26,7 +26,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   steemReputation: messageFactory(
     'steem_reputation_from_100_to_100',
-    'The Steem reputation must be from -100 to 100',
+    'The Hive reputation must be from -100 to 100',
   ),
   followersQuality: messageFactory(
     'not_less_zero_followers',
