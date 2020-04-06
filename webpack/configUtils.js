@@ -13,7 +13,7 @@ switch (process.env.NODE_ENV) {
     CALLBACK_HOST_URL = 'localhost:3000';
     break;
   case 'staging':
-    CALLBACK_HOST_URL = 'crypto.investarena.com';
+    CALLBACK_HOST_URL = 'uat-crypto.investarena.com';
     break;
   default:
     break;
@@ -38,7 +38,7 @@ const POSTCSS_LOADER = {
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
-    process.env.STEEMCONNECT_CLIENT_ID || 'waiviodev.com',
+    process.env.STEEMCONNECT_CLIENT_ID || 'investarena',
   ),
   'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(
     process.env.STEEMCONNECT_REDIRECT_URL || `http://${CALLBACK_HOST_URL}/callback`,
@@ -48,7 +48,7 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   ),
   'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://anyx.io'),
   'process.env.SIGNUP_URL': JSON.stringify(
-    process.env.SIGNUP_URL || 'https://signup.hive.io/?ref=waiviodev',
+    process.env.SIGNUP_URL || 'https://signup.hive.io/?ref=investarena',
   ),
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
