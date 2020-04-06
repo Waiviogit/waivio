@@ -198,9 +198,9 @@ export default class AppendForm extends Component {
                   },
                 ),
               );
+              this.props.hideModal();
             }
 
-            this.props.hideModal();
             this.setState({ loading: false });
           })
           .catch(() => {
