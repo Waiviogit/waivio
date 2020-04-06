@@ -42,6 +42,11 @@ class SingletonPlatform {
   closeWebSocketConnection() {
     this._platform.closeWebSocketConnection();
   }
+  getUserStatistics () {
+    if (typeof this._platform.getUserStatistics === 'function') {
+      this._platform.getUserStatistics();
+    }
+  }
 }
 
 export const singleton = new SingletonPlatform();
