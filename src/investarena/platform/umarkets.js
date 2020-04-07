@@ -144,7 +144,7 @@ export default class Umarkets {
       };
       this.dispatch(reconnectBroker(data));
     } else {
-      this.dispatch(disconnectBroker());
+      this.dispatch(disconnectBroker(true));
     }
   }
 
