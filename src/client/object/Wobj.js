@@ -14,6 +14,7 @@ import {
   getObject as getObjectState,
   getObjectAlbums,
   getScreenSize,
+  getObjectFetchingState,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
@@ -27,6 +28,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
+import NotFound from '../statics/NotFound';
 
 @withRouter
 @connect(
@@ -39,6 +41,7 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
     wobject: getObjectState(state),
     screenSize: getScreenSize(state),
     albums: getObjectAlbums(state),
+    isFetching: getObjectFetchingState(state),
   }),
   {
     clearObjectFromStore,
@@ -60,6 +63,7 @@ export default class Wobj extends React.Component {
     screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    isFetching: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -70,6 +74,7 @@ export default class Wobj extends React.Component {
     wobject: {},
     screenSize: 'large',
     clearObjectFromStore: () => {},
+    isFetching: false,
   };
 
   static fetchData({ store, match }) {
@@ -143,10 +148,22 @@ export default class Wobj extends React.Component {
       match,
       wobject,
       albums,
+      isFetching,
     } = this.props;
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
+    if (!objectName && !isFetching) {
+      return (
+        <div className="main-panel">
+          <NotFound
+            item={match.params.name}
+            title={'there_are_not_object_with_name'}
+            titleDefault={'Sorry! There are no object with name {item} on InvestArena'}
+          />
+        </div>
+      );
+    }
     const waivioHost = global.postOrigin || 'https://investarena.waiviodev.com';
     const desc = `${objectName || ''}`;
     const image = wobject.avatar;
