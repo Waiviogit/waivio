@@ -8,9 +8,9 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import { resetSearchUsersForDiscoverPage } from '../search/searchActions';
 
 import './Discover.less';
-import { resetSearchUsersForDiscoverPage } from '../search/searchActions';
 
 const Discover = ({ intl, match, history }) => {
   const dispatch = useDispatch();
