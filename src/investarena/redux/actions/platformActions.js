@@ -61,7 +61,7 @@ export function getUserUpdatedStatistics() {
 
 export function getUserStatistics() {
   return dispatch => {
-    singleton._platform.getUserStatistics();
+    singleton.getUserStatistics();
     dispatch(getUserUpdatedStatistics());
   };
 }

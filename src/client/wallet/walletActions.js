@@ -9,7 +9,7 @@ import {
   isWalletTransaction,
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -143,7 +143,7 @@ export const getUserAccountHistory = username => dispatch => {
 };
 
 export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
+  const isGuest = guestUserRegex.test(username);
   dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {

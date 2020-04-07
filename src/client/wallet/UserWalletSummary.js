@@ -28,7 +28,7 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
           <span>
             <FormattedMessage
               id="steem_power_delegated_to_account_tooltip"
-              defaultMessage="Steem Power delegated to this account"
+              defaultMessage="Hive Power delegated to this account"
             />
           </span>
         }
@@ -93,7 +93,7 @@ const UserWalletSummary = ({
   beaxyBalance,
   showMore,
   isShowMore,
-  hasZeroBalances,
+  hasMoreBalances,
 }) => (
   <React.Fragment>
     {!!beaxyBalance.length && (
@@ -103,7 +103,7 @@ const UserWalletSummary = ({
             <CurrencyItem key={item.id} item={item} />
           ))}
         </div>
-        {hasZeroBalances && (
+        {hasMoreBalances && (
           <div className="UserWalletSummary__show-more mb1">
             <div
               className="UserWalletSummary__show-more-btn"
@@ -124,7 +124,7 @@ const UserWalletSummary = ({
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-steem UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
-          <FormattedMessage id="steem" defaultMessage="Steem" />
+          <FormattedMessage id="hive" defaultMessage="Hive" />
         </div>
         <div className="UserWalletSummary__value">
           {loading ? (
@@ -142,7 +142,7 @@ const UserWalletSummary = ({
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
             <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_power" defaultMessage="Steem Power" />
+              <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
             </div>
             <div className="UserWalletSummary__value">
               {loading || loadingGlobalProperties ? (
@@ -168,7 +168,7 @@ const UserWalletSummary = ({
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-Dollar UserWalletSummary__icon" />
             <div className="UserWalletSummary__label">
-              <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar" />
+              <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
             </div>
             <div className="UserWalletSummary__value">
               {loading ? (
@@ -242,7 +242,7 @@ UserWalletSummary.propTypes = {
   beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
   showMore: PropTypes.func,
   isShowMore: PropTypes.bool,
-  hasZeroBalances: PropTypes.bool,
+  hasMoreBalances: PropTypes.bool,
 };
 
 UserWalletSummary.defaultProps = {
@@ -254,7 +254,7 @@ UserWalletSummary.defaultProps = {
   balance: 0,
   beaxyBalance: [],
   isShowMore: false,
-  hasZeroBalances: false,
+  hasMoreBalances: false,
   showMore: () => {},
 };
 

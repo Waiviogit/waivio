@@ -44,7 +44,7 @@ class Chart {
     this.gridCellHeight = 30;
     this.canvasWork = {
       height: this.canvas.height - 80,
-      width: this.canvas.width - 80,
+      width: this.canvas.width - 85,
     };
     this.centerHeight = this.canvas.height / 2 - 10;
     this.lineWidth = {
@@ -483,8 +483,8 @@ class Chart {
       let countAfter = quotationMark.toString().split('.')[1]
         ? quotationMark.toString().split('.')[1].length
         : countBefore;
-      if (countBefore + countAfter > 6) {
-        countAfter -= countAfter + countBefore - 6;
+      if (countBefore + countAfter > 9) {
+        countAfter -= countAfter + countBefore - 9;
       }
       this.drawText(
         this.canvasWork.width + 10,

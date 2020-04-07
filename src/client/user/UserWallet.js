@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get, isEmpty, isNull, sortBy } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
@@ -35,6 +35,8 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+
+const initWalletsQuantity = 5;
 
 @withRouter
 @connect(
@@ -139,7 +141,10 @@ class Wallet extends Component {
     const { isShowMoreBeaxy } = this.state;
     const sortedBalance = sortBy(beaxyBalance, 'value').reverse();
     if (!isShowMoreBeaxy) {
-      return sortedBalance.filter(item => item.balance > 0);
+      const positiveBalances = sortedBalance.filter(item => item.balance > 0);
+      return positiveBalances.length
+        ? positiveBalances
+        : sortedBalance.slice(0, initWalletsQuantity);
     }
     return sortedBalance;
   };
@@ -174,7 +179,7 @@ class Wallet extends Component {
     );
     const beaxyBalance = this.getBeaxyBalance();
 
-    const hasZeroBalances = this.props.beaxyBalance.some(item => item.balance === 0);
+    const isZeroBalancesOnly = this.props.beaxyBalance.every(item => item.balance === 0);
 
     const currentSBDRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
 
@@ -182,7 +187,7 @@ class Wallet extends Component {
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
-    const isGuest = user.name.startsWith(GUEST_PREFIX);
+    const isGuest = guestUserRegex.test(user && user.name);
 
     const walletTransactions =
       transactions.length === 0 && usersAccountHistoryLoading ? (
@@ -207,7 +212,9 @@ class Wallet extends Component {
           balance={isGuest ? guestBalance : user.balance}
           beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
-          hasZeroBalances={hasZeroBalances}
+          hasMoreBalances={
+            !isZeroBalancesOnly || this.props.beaxyBalance.length > initWalletsQuantity
+          }
           showMore={this.showMoreToggler}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}

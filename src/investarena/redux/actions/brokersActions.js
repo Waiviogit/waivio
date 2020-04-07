@@ -8,6 +8,7 @@ import { singleton } from '../../platform/singletonPlatform';
 import { toggleModal } from './modalsActions';
 import { getIsBeaxyUser } from '../../../client/user/usersHelper';
 import { logoutWithoutBroker } from '../../../client/auth/authActions';
+import { getPlatformNameState } from '../selectors/platformSelectors';
 
 export const AUTHORIZE_BROKER_REQUEST = 'AUTHORIZE_BROKER_REQUEST';
 export const AUTHORIZE_BROKER_SUCCESS = 'AUTHORIZE_BROKER_SUCCESS';
@@ -20,6 +21,7 @@ export const FORGOT_PASS_BROKER_SUCCESS = 'FORGOT_PASS_BROKER_SUCCESS';
 export const FORGOT_PASS_BROKER_ERROR = 'FORGOT_PASS_BROKER_ERROR';
 export const DISCONNECT_BROKER_SUCCESS = 'DISCONNECT_BROKER_SUCCESS';
 export const DISCONNECT_TOKEN_SUCCESS = 'DISCONNECT_BROKER_SUCCESS';
+export const RECONNECT_BROKER_ERROR = 'RECONNECT_BROKER_ERROR';
 
 const localStorageKeys = [
   'sid',
@@ -133,36 +135,41 @@ export function registerBroker(registrationData) {
 }
 export const disconnectBroker = (isReconnect = false) => (dispatch, getState) => {
   const state = getState();
-  if (typeof localStorage !== 'undefined') {
-    localStorageKeys.forEach(data => {
-      localStorage.removeItem(data);
-    });
+  const platform = getPlatformNameState(state);
+  if (platform !== 'widgets') {
+    if (typeof localStorage !== 'undefined') {
+      localStorageKeys.forEach(data => {
+        localStorage.removeItem(data);
+      });
+    }
     cookiesData.forEach(data => {
       Cookies.remove(data);
-      localStorage.removeItem(data);
     });
+    const userName = get(state, ['auth', 'user', 'name'], '');
+    if (getIsBeaxyUser(userName)) dispatch(logoutWithoutBroker());
+    dispatch(cleanUserStatisticsData());
+    dispatch(disconnectTokenSuccess());
+    // if (singleton.platform && singleton.platform.platformName)
+    //   message.success('Broker successfully disconnected');
+    singleton.closeWebSocketConnection();
+    singleton.platform = 'widgets';
+    singleton.createWebSocketConnection();
+    if (!isReconnect) {
+      //   dispatch(toggleModal('broker'));
+    }
   }
-  const userName = get(state, ['auth', 'user', 'name'], '');
-  if (getIsBeaxyUser(userName)) return dispatch(logoutWithoutBroker());
-  dispatch(cleanUserStatisticsData());
-  dispatch(disconnectTokenSuccess());
-  // if (singleton.platform && singleton.platform.platformName)
-  //   message.success('Broker successfully disconnected');
-  singleton.closeWebSocketConnection();
-  singleton.createWebSocketConnection();
-  if (!isReconnect) {
-    //   dispatch(toggleModal('broker'));
-  }
-
   return { type: DISCONNECT_BROKER_SUCCESS };
 };
 export function reconnectBroker(data) {
   const token = store.get('token');
-  return dispatch => {
-    dispatch(authorizeToken(token));
-    singleton.platform = data.platform;
-    singleton.createWebSocketConnection();
-  };
+  if (token && data.platform && data.platform !== 'undefined') {
+    return dispatch => {
+      dispatch(authorizeToken(token));
+      singleton.platform = data.platform;
+      singleton.createWebSocketConnection();
+    };
+  }
+  return { type: RECONNECT_BROKER_ERROR };
 }
 // export function reconnectBroker(data) {
 //   return dispatch =>

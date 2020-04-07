@@ -2,15 +2,29 @@
 @import (reference) '../../../client/styles/modules/variables.less';
 
 .st-trading-form-wrapper {
-  width: 375px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   background-color: transparent;
-  border: 1px solid @color-darkest-gray;
+  border: 1px solid @color-alto-gray;
 
-  @media @xsmall {
-    width: 400px;
-  }
   @media @small {
+    flex-direction: row;
+  }
+  @media @large {
+    flex-direction: column;
     width: 450px;
+  }
+
+  .st-trading-form {
+    border: 1px solid @color-alto-gray;
+
+    @media @large {
+      border: none;
+      &:first-child {
+        border-bottom: 1px solid @color-alto-gray;
+      }
+    }
   }
 }
 
@@ -19,10 +33,22 @@
   flex-direction: column;
   justify-content: space-between;
   height: 50%;
+  min-height: 225px;
+  width: 100%;
   padding: 10px;
+
+  @media @large {
+    min-height: 50%;
+  }
 
   &__button-wrap {
     padding: 0 60px;
+  }
+
+  &__tooltip.ant-tooltip {
+    z-index: 1300 !important;
+    font-size: 14px;
+    line-height: 1.2;
   }
 
   .st-trading-form-header {
@@ -32,7 +58,7 @@
 
   .st-trading-form-amount {
     &__input {
-      border-bottom: 1px solid @color-light-gray;
+      border-bottom: 1px solid @color-gray;
 
       &.danger,
       &.danger:focus-within {

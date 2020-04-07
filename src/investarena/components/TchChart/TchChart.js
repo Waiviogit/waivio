@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publishSubscribe';
 import { singleton } from '../../platform/singletonPlatform';
 import { quoteIdForWidget } from '../../constants/constantsWidgets';
-import { wsChartUrl } from '../../../waivioApi/routes';
+import { invArena } from '../../configApi/apiResources';
 import './TchChart.less';
 
 class TchChart extends Component {
@@ -32,7 +32,7 @@ class TchChart extends Component {
       connectorOptions: {
         // url: '//44.233.188.11/wss/api/quotation/', // url for development
         url: '//informer.beaxy.com/wss/api/quotation/',
-        wsUrl: wsChartUrl,
+        wsUrl: invArena.wsChartUrl,
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
       },
@@ -44,7 +44,7 @@ class TchChart extends Component {
       isOtherParams: false,
       isAutoRestore: false,
       rowsid: [],
-      typeThemes: this.props.isNightMode ? 'black' : 'default',
+      typeThemes: 'default',
       typeData: this.props.typeData === 'Sell' ? 'bid' : 'ask',
       modules: {
         isShowNews: false,

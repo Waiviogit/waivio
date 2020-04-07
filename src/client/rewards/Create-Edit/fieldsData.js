@@ -156,7 +156,7 @@ export default (messageFactory, validators) => ({
   },
   minSteemReputation: {
     name: 'minSteemReputation',
-    label: messageFactory('min_steem_reputation', 'Minimum Steem reputation (optional)'),
+    label: messageFactory('min_steem_reputation', 'Minimum Hive reputation (optional)'),
     rules: [
       {
         validator: validators.checkSteemReputation,
@@ -164,12 +164,12 @@ export default (messageFactory, validators) => ({
     ],
     caption: messageFactory(
       'users_steem_start_reputation',
-      'New users on Steem start with reputation of 25',
+      'New users on Hive start with reputation of 25',
     ),
   },
   minExpertise: {
     name: 'minExpertise',
-    label: messageFactory('minimum_waivio_expertise', 'Minimum Waivio expertise (optional)'),
+    label: messageFactory('minimum_waivio_expertise', 'Minimum InvestArena expertise (optional)'),
     rules: [
       {
         validator: validators.checkMinExpertise,
@@ -204,7 +204,7 @@ export default (messageFactory, validators) => ({
     header: messageFactory('legal', 'Legal'),
     p_1: messageFactory(
       'reward_payments_made_directly_waivio_provide_information',
-      'All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only. ',
+      'All reward payments are made directly to users by the campaign creator. InvestArena and other partners provide information and discovery services only. ',
     ),
     p_2: messageFactory(
       'can_add_link_agreement_govern_relationships',

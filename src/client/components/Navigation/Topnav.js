@@ -967,17 +967,17 @@ class Topnav extends React.Component {
                 })}
               />
             </button>
-            {this.props.username && (
-              <div className="Topnav__chat" key="more">
-                {!messagesCount ? (
-                  <Icon type="message" className="icon-chat" onClick={openChat} />
-                ) : (
-                  <div className="Topnav__chat-button" onClick={openChat} role="presentation">
-                    {messagesCount > 99 ? '99+' : messagesCount}
-                  </div>
-                )}
-              </div>
-            )}
+            {/* {this.props.username && ( */}
+            {/*  <div className="Topnav__chat" key="more"> */}
+            {/*    {!messagesCount ? ( */}
+            {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
+            {/*    ) : ( */}
+            {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
+            {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
+            {/*      </div> */}
+            {/*    )} */}
+            {/*  </div> */}
+            {/* )} */}
           </div>
           <div className="Topnav__right-bottom">
             {this.content()}

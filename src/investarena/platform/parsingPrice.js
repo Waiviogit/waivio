@@ -1,4 +1,5 @@
 import React from 'react';
+import { PlatformHelper } from './platformHelper';
 
 export function ParsingPriceHelper() {}
 
@@ -6,32 +7,35 @@ export function quoteFormat(price, quoteSettings) {
   if (price === '-' || !quoteSettings) {
     return <span>&ndash;</span>;
   }
-  const rate = ParsingPriceHelper.parseRate(
-    price,
-    quoteSettings.tickSize,
-    quoteSettings.priceRounding / 1000000,
+  return (
+    <span className="st-first-number-favorites">
+      {PlatformHelper.exponentialToDecimal(parseFloat(price))}
+    </span>
   );
-  if (rate) {
-    const dot = rate.dot === 0 ? '' : '.';
-    return (
-      <span>
-        <span className="st-first-number-favorites">{rate.small}</span>
-        <span className="st-second-number-favorites">{dot + rate.big}</span>
-        <span className="st-third-number-favorites">{rate.mid}</span>
-      </span>
-    );
-  }
+  // const rate = ParsingPriceHelper.parseRate(
+  //   price,
+  //   quoteSettings.tickSize,
+  //   quoteSettings.priceRounding / 1000000,
+  // );
+  // if (rate) {
+  //   const dot = rate.dot === 0 ? '' : '.';
+  //   return (
+  //     <span>
+  //       <span className="st-first-number-favorites">{rate.small}</span>
+  //       <span className="st-second-number-favorites">{dot + rate.big}</span>
+  //       <span className="st-third-number-favorites">{rate.mid}</span>
+  //     </span>
+  //   );
+  // }
 }
 
 ParsingPriceHelper.parseRate = function(val, tick, rounding) {
-  if (typeof val === 'string') {
-    try {
-      val = parseFloat(val);
-    } catch (e) {
-      return {
-        result: '-',
-      };
-    }
+  try {
+    val = PlatformHelper.exponentialToDecimal(parseFloat(val));
+  } catch (e) {
+    return {
+      result: '-',
+    };
   }
   const temp = getTrimmedPrice(val, rounding, tick);
   if (!isNaN(temp)) {
