@@ -222,7 +222,7 @@ export const assignProposition = ({
       secondaryObjectName,
       amount,
       title: 'Rewards reservations',
-      body: `User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of 7 days to write a review of ${secondaryObjectName}, ${primaryObjectName} `,
+      body: `User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of ${secondaryObjectName}, ${primaryObjectName} `,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',

@@ -5,8 +5,9 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import './Details.less';
 import DetailsBody from './DetailsBody';
+import DetailsPostRequirments from './DetailsPostRequirments';
+import './Details.less';
 
 const Details = ({
   intl,
@@ -44,12 +45,21 @@ const Details = ({
       width={768}
     >
       <CampaignCardHeader campaignData={objectDetails} isDetails />
-      <DetailsBody
-        objectDetails={objectDetails}
-        intl={intl}
-        proposedWobj={proposedWobj}
-        requiredObjectName={requiredObjectName}
-      />
+      {!isReviewDetails ? (
+        <DetailsBody
+          objectDetails={objectDetails}
+          intl={intl}
+          proposedWobj={proposedWobj}
+          requiredObjectName={requiredObjectName}
+        />
+      ) : (
+        <DetailsPostRequirments
+          proposedWobj={proposedWobj}
+          requiredObjectName={requiredObjectName}
+          intl={intl}
+          objectDetails={objectDetails}
+        />
+      )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={toggleModal}>{messageData.cancel}</Button>

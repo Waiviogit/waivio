@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
+import DetailsPostRequirments from './DetailsPostRequirments';
 import './Details.less';
 
 const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
-  let indexItem = 1;
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -52,46 +52,12 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
           </div>
         </div>
       </div>
-      <div className="Details__text fw6 mv3">{messageData.postRequirements}:</div>
-      <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
-      <div className="Details__criteria-wrap">
-        <div className="Details__criteria-row Details__criteria-row--mobile">
-          {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
-          <Link className="ml1" to={`/object/${proposedWobj.name}`}>
-            {proposedWobj.name}
-          </Link>
-          ;
-        </div>
-        {objectDetails.requirements.receiptPhoto && (
-          /* eslint-disable-next-line no-plusplus */
-          <div className="Details__criteria-row">{`${indexItem++}. ${
-            messageData.photoReceipt
-          }`}</div>
-        )}
-        <div className="Details__criteria-row nowrap">
-          {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
-            {proposedWobj.name}
-          </Link>
-          ;
-        </div>
-        <div className="Details__criteria-row nowrap">
-          {/* eslint-disable-next-line no-plusplus */}
-          {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-            {requiredObjectName}
-          </Link>
-          ;
-        </div>
-        <div className="Details__criteria-row">
-          {objectDetails.description &&
-            /* eslint-disable-next-line no-plusplus */
-            `${indexItem++}. ${messageData.additionalRequirements}: ${objectDetails.description}`}
-        </div>
-      </div>
-      <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
+      <DetailsPostRequirments
+        proposedWobj={proposedWobj}
+        requiredObjectName={requiredObjectName}
+        intl={intl}
+        objectDetails={objectDetails}
+      />
       <div className="Details__text fw6 mv3">{messageData.reward}:</div>
       <span>
         {messageData.amountRewardDetermined}(
