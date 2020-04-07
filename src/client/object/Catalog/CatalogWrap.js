@@ -323,7 +323,13 @@ class CatalogWrap extends React.Component {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     return this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({

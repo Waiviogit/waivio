@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
@@ -15,12 +15,16 @@ import SocialButtons from '../SocialButtons/SocialButtons';
 
 import './ModalSignIn.less';
 
-const ModalSignIn = ({ next, intl }) => {
+const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (showModal) setIsModalOpen(true);
+  }, [showModal]);
 
   const responseSocial = async (response, socialNetwork) => {
     if (response) {
@@ -153,6 +157,7 @@ const ModalSignIn = ({ next, intl }) => {
   const onModalClose = () => {
     setIsModalOpen(false);
     setIsFormVisible(false);
+    handleLoginModalCancel();
   };
 
   const memoizedOnModalClose = useCallback(() => {
@@ -161,12 +166,14 @@ const ModalSignIn = ({ next, intl }) => {
 
   return (
     <React.Fragment>
-      <a role="presentation" onClick={() => setIsModalOpen(true)}>
-        {intl.formatMessage({
-          id: 'signin',
-          defaultMessage: 'Log in',
-        })}
-      </a>
+      {!hideLink && (
+        <a role="presentation" onClick={() => setIsModalOpen(true)}>
+          {intl.formatMessage({
+            id: 'signin',
+            defaultMessage: 'Log in',
+          })}
+        </a>
+      )}
       <Modal width={480} visible={isModalOpen} onCancel={memoizedOnModalClose} footer={null}>
         <div className="ModalSignIn">
           {isFormVisible ? (
@@ -185,10 +192,16 @@ ModalSignIn.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  showModal: PropTypes.bool,
+  handleLoginModalCancel: PropTypes.func,
+  hideLink: PropTypes.bool,
 };
 
 ModalSignIn.defaultProps = {
   next: '',
+  showModal: false,
+  handleLoginModalCancel: () => {},
+  hideLink: false,
 };
 
 export default injectIntl(ModalSignIn);
