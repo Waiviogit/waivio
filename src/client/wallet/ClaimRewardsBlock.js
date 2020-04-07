@@ -53,15 +53,14 @@ class ClaimRewardsBlock extends Component {
     });
 
     SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
-      .then(
-        () => {
-          this.setState({
-            loading: false,
-            rewardClaimed: true,
-          });
+      .then(() => {
+        this.setState({
+          loading: false,
+          rewardClaimed: true,
+        });
 
-          this.props.getUserAccountHistory(name).then(() => this.props.reload());
-        })
+        this.props.getUserAccountHistory(name).then(() => this.props.reload());
+      })
       .catch(e => {
         this.setState({
           loading: false,
@@ -96,13 +95,13 @@ class ClaimRewardsBlock extends Component {
 
     const buttonText = rewardClaimed
       ? intl.formatMessage({
-        id: 'reward_claimed',
-        defaultMessage: 'Reward Claimed',
-      })
+          id: 'reward_claimed',
+          defaultMessage: 'Reward Claimed',
+        })
       : intl.formatMessage({
-        id: 'claim_rewards',
-        defaultMessage: 'Claim Rewards',
-      });
+          id: 'claim_rewards',
+          defaultMessage: 'Claim Rewards',
+        });
 
     if (!userHasRewards || rewardClaimed) return null;
 
