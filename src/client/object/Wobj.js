@@ -50,6 +50,10 @@ import NotFound from '../statics/NotFound';
   },
 )
 export default class Wobj extends React.Component {
+  static fetchData({ store, match }) {
+    return store.dispatch(getObject(match.params.name));
+  }
+
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string.isRequired,
@@ -76,10 +80,6 @@ export default class Wobj extends React.Component {
     clearObjectFromStore: () => {},
     isFetching: false,
   };
-
-  static fetchData({ store, match }) {
-    return store.dispatch(getObject(match.params.name));
-  }
 
   constructor(props) {
     super(props);
@@ -153,7 +153,7 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
-    if (!objectName && !isFetching) {
+    if (!objectName && !isFetching)
       return (
         <div className="main-panel">
           <NotFound
@@ -163,7 +163,6 @@ export default class Wobj extends React.Component {
           />
         </div>
       );
-    }
     const waivioHost = global.postOrigin || 'https://investarena.waiviodev.com';
     const desc = `${objectName || ''}`;
     const image = wobject.avatar;
