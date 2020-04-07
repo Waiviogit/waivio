@@ -136,7 +136,7 @@ export function registerBroker(registrationData) {
 export const disconnectBroker = (isReconnect = false) => (dispatch, getState) => {
   const state = getState();
   const platform = getPlatformNameState(state);
-  if (platform !== 'widgets') {
+  if (platform !== 'widgets' || isReconnect) {
     if (typeof localStorage !== 'undefined') {
       localStorageKeys.forEach(data => {
         localStorage.removeItem(data);
