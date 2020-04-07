@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
+import { isGuestUser } from '../../reducers';
 import './AdvanceSettings.less';
 
 @injectIntl
+@connect(state => ({
+  isGuest: isGuestUser(state),
+}))
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -21,6 +26,7 @@ class AdvanceSettings extends Component {
     isUpdating: PropTypes.bool,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     intl: {},
@@ -28,6 +34,7 @@ class AdvanceSettings extends Component {
     linkedObjects: [],
     objPercentage: {},
     weightBuffer: 0,
+    isGuest: false,
   };
 
   handleRewardChange = reward => this.props.onSettingsChange({ reward });
@@ -47,6 +54,7 @@ class AdvanceSettings extends Component {
       linkedObjects,
       objPercentage,
       settings: { reward, beneficiary, upvote },
+      isGuest,
     } = this.props;
     return (
       <Collapse>
@@ -103,7 +111,11 @@ class AdvanceSettings extends Component {
             </div>
           )}
           <div className="upvote-settings">
-            <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
+            <Checkbox
+              checked={upvote}
+              onChange={this.handleUpvoteChange}
+              disabled={isGuest || isUpdating}
+            >
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
