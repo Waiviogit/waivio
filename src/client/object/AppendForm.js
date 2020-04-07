@@ -153,56 +153,67 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
-    this.setState({ loading: true });
+    const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
+      item => item.id,
+    );
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      this.props
-        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
-        .then(res => {
-          if (res.value.message) {
-            message.error(res.value.message);
-          } else {
-            if (data.votePower !== null) {
-              if (objectFields.rating === formValues.currentField && formValues.rate) {
-                const { author, permlink } = res.value;
+      let equalBody;
 
-                this.props.rateObject(
-                  author,
-                  permlink,
-                  wObject.author_permlink,
-                  ratePercent[formValues.rate - 1],
-                );
+      if (data.field.name === objectFields.sorting) {
+        equalBody = isEqual(listItem, JSON.parse(data.field.body));
+      }
+
+      if (data.field.name !== objectFields.sorting || !equalBody) {
+        this.setState({ loading: true });
+
+        this.props
+          .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+          .then(res => {
+            if (res.value.message) {
+              message.error(res.value.message);
+            } else {
+              if (data.votePower !== null) {
+                if (objectFields.rating === formValues.currentField && formValues.rate) {
+                  const { author, permlink } = res.value;
+
+                  this.props.rateObject(
+                    author,
+                    permlink,
+                    wObject.author_permlink,
+                    ratePercent[formValues.rate - 1],
+                  );
+                }
               }
+
+              message.success(
+                this.props.intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: form.getFieldValue('currentField'),
+                    wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                  },
+                ),
+              );
+              this.props.hideModal();
             }
 
-            message.success(
-              this.props.intl.formatMessage(
-                {
-                  id: 'added_field_to_wobject',
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                },
-                {
-                  field: form.getFieldValue('currentField'),
-                  wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-                },
-              ),
+            this.setState({ loading: false });
+          })
+          .catch(() => {
+            message.error(
+              this.props.intl.formatMessage({
+                id: 'couldnt_append',
+                defaultMessage: "Couldn't add the field to object.",
+              }),
             );
 
-            this.props.hideModal();
-          }
-
-          this.setState({ loading: false });
-        })
-        .catch(() => {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'couldnt_append',
-              defaultMessage: "Couldn't add the field to object.",
-            }),
-          );
-
-          this.setState({ loading: false });
-        });
+            this.setState({ loading: false });
+          });
+      }
     }
   };
 
@@ -455,6 +466,7 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
+
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
@@ -626,7 +638,7 @@ export default class AppendForm extends Component {
   };
 
   handleChangeSorting = sortedList => {
-    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
+    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList.join(',') });
   };
 
   onLoadingImage = value => this.setState({ isLoadingImage: value });
@@ -1311,7 +1323,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
-                initialValue: listItems.map(item => item.id),
+                initialValue: listItems.map(item => item.id).join(','),
               })(
                 <Select
                   className="AppendForm__hidden"
