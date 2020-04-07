@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { get, isUndefined, size, filter, includes } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input, Menu } from 'antd';
 import ModalBroker from '../../../../investarena/components/Modals/ModalBroker';
@@ -47,15 +47,15 @@ const MobileMenu = props => {
   const isBeaxyUser = getIsBeaxyUser(username);
 
   const buttonsMenuContainer = () => {
-    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
-    const notificationsCount = _.isUndefined(lastSeenTimestamp)
-      ? _.size(notifications)
-      : _.size(
-          _.filter(
+    const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
+    const notificationsCount = isUndefined(lastSeenTimestamp)
+      ? size(notifications)
+      : size(
+          filter(
             notifications,
             notification =>
               lastSeenTimestamp < notification.timestamp &&
-              _.includes(PARSED_NOTIFICATIONS, notification.type),
+              includes(PARSED_NOTIFICATIONS, notification.type),
           ),
         );
     const displayBadge = notificationsCount > 0;

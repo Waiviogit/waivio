@@ -861,13 +861,10 @@ class Topnav extends React.Component {
       // openChat,
       // messagesCount,
       platformName,
-      username,
-      notifications,
-      userMetaData,
     } = this.props;
-    const { searchBarActive, dropdownOpen, searchBarValue, isMobileMenu } = this.state;
+    const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    const brandLogoPath = isMobile ? '/images/icons/ia-logo.png' : '/images/logo-brand.png';
+    const brandLogoPath = isMobile ? '/images/ia-logo-removebg.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     // const downBar = (
     //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -1014,14 +1011,14 @@ class Topnav extends React.Component {
         </div>
         {isMobile && isMobileMenu && (
           <MobileMenu
+            {...this.props}
+            {...this.state}
             searchOptions={this.prepareOptions(autoCompleteSearchResults)}
             onSearch={this.handleAutoCompleteSearch}
             onSelect={this.handleSelectOnAutoCompleteDropdown}
             onChange={this.handleOnChangeForAutoComplete}
             onFocus={this.handleOnFocus}
             onBlur={this.handleOnBlur}
-            {...this.props}
-            {...this.state}
             onSearchPressEnter={this.handleSearchForInput}
             hotNews={this.hotNews}
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
