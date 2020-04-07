@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import _, { get, isUndefined, size, filter, includes } from 'lodash';
+import { get, isUndefined, size, filter, includes } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input, Menu } from 'antd';
 import ModalBroker from '../../../../investarena/components/Modals/ModalBroker';
@@ -168,7 +168,7 @@ const MobileMenu = props => {
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>
           <AutoComplete
-            dropdownClassName="MobileMenu__search-dropdown-container"
+            dropdownClassName="Topnav__search-dropdown-container"
             dataSource={searchOptions}
             onSearch={onSearch}
             onSelect={onSelect}
