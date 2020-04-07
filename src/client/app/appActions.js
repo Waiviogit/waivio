@@ -71,9 +71,14 @@ export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
         ];
         const usdPriceHistory = { usd, usd_24h_change: usdChange };
         const btcPriceHistory = { btc, btc_24h_change: btcChange };
+        const priceDetails = response.weekly
+          .map(elem => ({ usd: elem[symbol].usd, createdAt: elem.createdAt }))
+          .reverse();
+
         return {
           usdPriceHistory,
           btcPriceHistory,
+          priceDetails,
           symbol,
         };
       }),
@@ -89,3 +94,6 @@ export const HIDE_POST_MODAL = '@app/HIDE_POST_MODAL';
 
 export const showPostModal = createAction(SHOW_POST_MODAL);
 export const hidePostModal = createAction(HIDE_POST_MODAL);
+
+export const SET_IS_MOBILE = '@app/SET_IS_MOBILE';
+export const setIsMobile = createAction(SET_IS_MOBILE);
