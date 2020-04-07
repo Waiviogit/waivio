@@ -92,6 +92,7 @@ export const getTranslations = state => fromApp.getTranslations(state.app);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
+export const getIsMobile = state => fromApp.getIsMobile(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -125,6 +126,7 @@ export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdat
 export const getFollowingObjectsUpdatesByType = (state, objType) =>
   fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
 export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
+export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>
@@ -192,6 +194,8 @@ export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
 export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(state.search);
+export const getSearchUsersResultsForDiscoverPage = state =>
+  fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);

@@ -3,7 +3,7 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
-import * as dsteem from 'dsteem';
+import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
@@ -65,7 +65,9 @@ export const calculatePayout = post => {
   // there is a valid cashout_time AND it's NOT a comment with 0 votes.
   const cashout_active =
     pending_payout > 0 ||
-    (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
+    (cashout_time &&
+      cashout_time.indexOf('1969') !== 0 &&
+      !(is_comment && active_votes.length === 0));
 
   if (cashout_active) {
     // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
@@ -274,6 +276,6 @@ export const roundNumberToThousands = number => {
   return number;
 };
 
-export const dSteem = new dsteem.Client('https://api.steemit.com');
+export const dSteem = new dsteem.Client('https://anyx.io');
 
 export const calcReputation = rep => steem.formatter.reputation(rep);

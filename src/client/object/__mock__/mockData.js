@@ -395,18 +395,3 @@ export const wObjectMoreTwoObjNotInRowDataWithDifferentWeigth = {
     },
   ],
 };
-
-export const initialState = [
-  {
-    author: 'sor31',
-    body: 'Молоко2',
-    locale: 'en-US',
-    name: 'name',
-  },
-  {
-    author: 'sor31',
-    body: '2',
-    locale: 'en-US',
-    name: 'rating',
-  },
-];

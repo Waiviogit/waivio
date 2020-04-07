@@ -132,6 +132,22 @@
         }
       }
     }
+
+    &__for-mobile {
+      display: inline;
+
+      @media @small {
+        display: none;
+      }
+    }
+
+    &__for-desktop {
+      display: none;
+
+      @media @small {
+        display: inline;
+      }
+    }
   }
 
   .image-upload {

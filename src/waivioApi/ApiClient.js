@@ -746,7 +746,6 @@ export const updateUserMetadata = async (userName, data) => {
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
-
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers,
     method: 'PUT',
@@ -1005,6 +1004,16 @@ export const setUserStatus = user => {
     headers,
     method: 'GET',
   }).then(res => res.json());
+};
+
+export const getWalletCryptoPriceHistory = symbol => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

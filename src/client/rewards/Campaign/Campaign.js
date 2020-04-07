@@ -34,7 +34,6 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   };
-
   return (
     <div className="Campaign">
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
@@ -63,7 +62,6 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
               </span>
               <span>
                 <span className="fw6 ml1">{`${rewardMax}`}</span>
-                {' USD '}
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -78,6 +76,7 @@ Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
+  // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
 };
 

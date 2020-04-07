@@ -17,34 +17,27 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { delay } from '../rewardsHelpers';
 import './Proposition.less';
 
 const Proposition = ({
   intl,
   proposition,
   assignProposition,
-  assignCommentPermlink,
   discardProposition,
   loading,
   wobj,
   assigned,
   post,
-  getSingleComment,
   authorizedUserName,
   history,
+  isAssign,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const [isReserved, setReservation] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-
-  useEffect(() => {
-    getSingleComment(authorizedUserName, assignCommentPermlink);
-  }, []);
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -59,25 +52,18 @@ const Proposition = ({
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
-    return rejectReservationCampaign(rejectData)
-      .then(() =>
-        discardProposition({
-          companyAuthor: proposition.guide.name,
-          companyPermlink: proposition.activation_permlink,
-          objPermlink: obj.author_permlink,
-          reservationPermlink: rejectData.reservation_permlink,
-          unreservationPermlink,
-        }),
-      )
-      .catch(() =>
-        message.error(
-          intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        ),
-      );
+    return rejectReservationCampaign(rejectData).then(() =>
+      discardProposition({
+        companyAuthor: proposition.guide.name,
+        companyPermlink: proposition.activation_permlink,
+        objPermlink: obj.author_permlink,
+        reservationPermlink: rejectData.reservation_permlink,
+        unreservationPermlink,
+      }),
+    );
   };
+
+  const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
     const reserveData = {
@@ -96,10 +82,25 @@ const Proposition = ({
           companyId: proposition._id,
         }),
       )
-      .then(() => setReservation(true))
-      .then(() => setModalDetailsOpen(!isModalDetailsOpen))
-      .then(() => delay(1500))
-      .then(() => history.push(`/rewards/reserved`));
+      .then(({ isAssign }) => {
+        if (isAssign) {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          setReservation(true);
+          history.push(`/rewards/reserved`);
+        }
+      })
+      .catch(e => {
+        if (e.error_description) {
+          message.error(e.error_description);
+        } else {
+          message.error(
+            intl.formatMessage({
+              id: 'something_went_wrong',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        }
+      });
   };
 
   return (
@@ -118,7 +119,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
+        {proposition.activation_permlink && assigned === true ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -178,6 +179,7 @@ const Proposition = ({
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
+        isAssign={isAssign}
       />
     </div>
   );

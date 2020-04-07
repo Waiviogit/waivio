@@ -11,11 +11,14 @@ import {
   getTopExpertsLoading,
   getTopExpertsHasMore,
   getObjectTypesList,
-  getSearchUsersResults,
+  getSearchUsersResultsForDiscoverPage,
 } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
-import { searchUsersAutoCompete } from '../search/searchActions';
+import {
+  resetSearchUsersForDiscoverPage,
+  searchUsersForDiscoverPage,
+} from '../search/searchActions';
 
 const displayLimit = 20;
 
@@ -25,12 +28,13 @@ const displayLimit = 20;
     topExpertsLoading: getTopExpertsLoading(state),
     hasMoreExperts: getTopExpertsHasMore(state),
     typesList: getObjectTypesList(state),
-    searchUsersList: getSearchUsersResults(state),
+    searchUsersList: getSearchUsersResultsForDiscoverPage(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
     getObjectTypes,
-    searchUsersAutoCompete,
+    searchUsersForDiscoverPage,
+    resetSearchUsersForDiscoverPage,
   },
 )
 class DiscoverContent extends React.Component {
@@ -47,23 +51,37 @@ class DiscoverContent extends React.Component {
     hasMoreExperts: PropTypes.bool.isRequired,
     typesList: PropTypes.shape().isRequired,
     getObjectTypes: PropTypes.func.isRequired,
-    searchUsersAutoCompete: PropTypes.func.isRequired,
+    searchUsersForDiscoverPage: PropTypes.func.isRequired,
     searchString: PropTypes.string,
     searchUsersList: PropTypes.arrayOf(PropTypes.shape()),
+    resetSearchUsersForDiscoverPage: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     searchString: '',
-    searchUsersList: [],
+    searchUsersList: {
+      result: [],
+      loading: true,
+    },
   };
 
   componentDidMount() {
     const { typesList, searchString } = this.props;
     if (searchString) {
-      this.props.searchUsersAutoCompete(searchString, 100);
+      this.props.searchUsersForDiscoverPage(searchString, 100);
     }
 
     if (isEmpty(typesList)) this.props.getObjectTypes();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.searchString && prevProps.searchString !== this.props.searchString) {
+      this.props.searchUsersForDiscoverPage(this.props.searchString, 100);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.resetSearchUsersForDiscoverPage();
   }
 
   handleLoadMore = () => {
@@ -88,22 +106,29 @@ class DiscoverContent extends React.Component {
         />
       </div>
     );
-    const mapSearchUsersList = searchUsersList.map(user => ({
-      name: user.account,
-      wobjects_weight: user.wobjects_weight,
-      followers_count: user.followers_count,
-    }));
 
-    const searchUsers = mapSearchUsersList.length
-      ? mapSearchUsersList.map(expert => (
-          <DiscoverUser user={expert} key={expert.name} isReblogged />
-        ))
-      : noUserError;
+    const mapSearchUsersList =
+      searchUsersList &&
+      searchUsersList.result &&
+      searchUsersList.result.map(user => ({
+        name: user.account,
+        wobjects_weight: user.wobjects_weight,
+        followers_count: user.followers_count,
+      }));
+
+    const searchUsers =
+      mapSearchUsersList && mapSearchUsersList.length
+        ? mapSearchUsersList.map(expert => (
+            <DiscoverUser user={expert} key={expert.name} isReblogged />
+          ))
+        : noUserError;
+
+    const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
 
     return (
       <div>
         {searchString ? (
-          searchUsers
+          renderItem
         ) : (
           <ReduxInfiniteScroll
             hasMore={hasMoreExperts}

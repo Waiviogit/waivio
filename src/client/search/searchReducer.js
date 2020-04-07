@@ -9,6 +9,10 @@ const initialState = {
   searchResults: [],
   autoCompleteSearchResults: [],
   searchObjectsResults: [],
+  usersForDiscoverPage: {
+    result: [],
+    loading: false,
+  },
 };
 
 export default (state = initialState, action) => {
@@ -91,6 +95,34 @@ export default (state = initialState, action) => {
         searchUsersResults: isEmpty(search) ? [] : result,
       };
     }
+
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.START: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [],
+          loading: true,
+        },
+      };
+    }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.SUCCESS: {
+      const { result } = action.payload;
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result,
+          loading: false,
+        },
+      };
+    }
+
+    case searchActions.RESET_SEARCH_USERS_FOR_DISCOVER_PAGE: {
+      return {
+        ...state,
+        usersForDiscoverPage: [],
+      };
+    }
+
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
@@ -107,4 +139,5 @@ export const getSearchResults = state => state.searchResults;
 export const getAutoCompleteSearchResults = state => state.autoCompleteSearchResults;
 export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
+export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
