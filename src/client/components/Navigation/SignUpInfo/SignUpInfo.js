@@ -12,7 +12,7 @@ const SignUpInfo = () => (
     </div>
     <div className="mb3">
       <a
-        href="https://hivewallet.app/ "
+        href="https://hivewallet.app/"
         className="ModalSignUp__link"
         rel="noopener noreferrer"
         target="_blank"
