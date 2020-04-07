@@ -30,7 +30,7 @@ class SingletonPlatform {
     this._platform.initialize(store);
   }
   setPlatformInstance(platform) {
-    if (platform) {
+    if (platform && platform !== 'widgets') {
       this._platform = new Umarkets();
     } else {
       this._platform = new Widgets();
@@ -41,6 +41,11 @@ class SingletonPlatform {
   }
   closeWebSocketConnection() {
     this._platform.closeWebSocketConnection();
+  }
+  getUserStatistics() {
+    if (typeof this._platform.getUserStatistics === 'function') {
+      this._platform.getUserStatistics();
+    }
   }
 }
 

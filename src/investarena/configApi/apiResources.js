@@ -5,6 +5,7 @@ export const baseUrl = config[process.env.NODE_ENV].apiPrefix + config.versionAp
 
 export const invArena = {
   baseUrl: config[process.env.NODE_ENV].apiPrefix,
+  wsChartUrl: config[process.env.NODE_ENV].webSocketTChUrl,
 };
 
 export default apiFactory({

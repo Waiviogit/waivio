@@ -7,21 +7,26 @@ export function quoteFormat(price, quoteSettings) {
   if (price === '-' || !quoteSettings) {
     return <span>&ndash;</span>;
   }
-  const rate = ParsingPriceHelper.parseRate(
-    price,
-    quoteSettings.tickSize,
-    quoteSettings.priceRounding / 1000000,
+  return (
+    <span className="st-first-number-favorites">
+      {PlatformHelper.exponentialToDecimal(parseFloat(price))}
+    </span>
   );
-  if (rate) {
-    const dot = rate.dot === 0 ? '' : '.';
-    return (
-      <span>
-        <span className="st-first-number-favorites">{rate.small}</span>
-        <span className="st-second-number-favorites">{dot + rate.big}</span>
-        <span className="st-third-number-favorites">{rate.mid}</span>
-      </span>
-    );
-  }
+  // const rate = ParsingPriceHelper.parseRate(
+  //   price,
+  //   quoteSettings.tickSize,
+  //   quoteSettings.priceRounding / 1000000,
+  // );
+  // if (rate) {
+  //   const dot = rate.dot === 0 ? '' : '.';
+  //   return (
+  //     <span>
+  //       <span className="st-first-number-favorites">{rate.small}</span>
+  //       <span className="st-second-number-favorites">{dot + rate.big}</span>
+  //       <span className="st-third-number-favorites">{rate.mid}</span>
+  //     </span>
+  //   );
+  // }
 }
 
 ParsingPriceHelper.parseRate = function(val, tick, rounding) {
