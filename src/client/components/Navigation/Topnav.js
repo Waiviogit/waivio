@@ -831,6 +831,7 @@ class Topnav extends React.Component {
     this.setState({
       dropdownOpen: false,
     });
+    console.log('sadf');
   };
 
   handleClearSearchData = () =>
@@ -850,7 +851,9 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
-  mobileMenuToggler = () => this.setState({ isMobileMenu: !this.state.isMobileMenu });
+  mobileMenuToggler = () => {
+    this.setState({ isMobileMenu: !this.state.isMobileMenu });
+  };
 
   render() {
     const {
@@ -1024,6 +1027,7 @@ class Topnav extends React.Component {
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
             handleScrollToTop={this.handleScrollToTop}
+            mobileMenuToggler={this.mobileMenuToggler}
           />
         )}
       </React.Fragment>

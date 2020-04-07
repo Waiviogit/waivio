@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -43,7 +43,21 @@ const MobileMenu = props => {
     onLogout,
     disconnectPlatform,
     platformName,
+    mobileMenuToggler,
   } = props;
+
+  const mobileRef = useRef(null);
+
+  const handleHideMenu = event => {
+    if (mobileRef.current && !mobileRef.current.contains(event.target)) {
+      mobileMenuToggler();
+      document.removeEventListener('click', handleHideMenu, true);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleHideMenu, true);
+  }, []);
 
   const isBeaxyUser = getIsBeaxyUser(username);
 
@@ -52,18 +66,18 @@ const MobileMenu = props => {
     const notificationsCount = isUndefined(lastSeenTimestamp)
       ? size(notifications)
       : size(
-          filter(
-            notifications,
-            notification =>
-              lastSeenTimestamp < notification.timestamp &&
-              includes(PARSED_NOTIFICATIONS, notification.type),
-          ),
-        );
+        filter(
+          notifications,
+          notification =>
+            lastSeenTimestamp < notification.timestamp &&
+            includes(PARSED_NOTIFICATIONS, notification.type),
+        ),
+      );
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
     return (
       <div className="Topnav__menu-container">
-        <ModalBroker />
+        <ModalBroker/>
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item" key="write">
             <BTooltip
@@ -73,7 +87,7 @@ const MobileMenu = props => {
               mouseEnterDelay={1}
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
+                <i className="iconfont icon-write"/>
               </Link>
             </BTooltip>
           </Menu.Item>
@@ -110,7 +124,7 @@ const MobileMenu = props => {
                   {displayBadge ? (
                     <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
                   ) : (
-                    <i className="iconfont icon-remind" />
+                    <i className="iconfont icon-remind"/>
                   )}
                 </a>
               </PopoverContainer>
@@ -121,48 +135,46 @@ const MobileMenu = props => {
     );
   };
 
-  const menuContainer = () => {
-    return (
-      <div className="MenuContainer">
-        <Link to="/my_feed" className="MenuContainer__link">
-          <FormattedMessage id="my_feed" defaultMessage="My feed" />
-        </Link>
-        <Link to="/discover" className="MenuContainer__link">
-          <FormattedMessage id="discover" defaultMessage="Discover" />
-        </Link>
-        <Link to="/drafts" className="MenuContainer__link">
-          <FormattedMessage id="drafts" defaultMessage="Drafts" />
-        </Link>
-        <Link to="/settings" className="MenuContainer__link">
-          <FormattedMessage id="settings" defaultMessage="Settings" />
-        </Link>
-        <Link to="/replies" className="MenuContainer__link">
-          <FormattedMessage id="replies" defaultMessage="Replies" />
-        </Link>
-        <Link to="/wallet" className="MenuContainer__link">
-          <FormattedMessage id="wallet" defaultMessage="Wallet" />
-        </Link>
-        <Link to="/about" className="MenuContainer__link">
-          <FormattedMessage id="about" defaultMessage="About" />
-        </Link>
-        <div className="MenuContainer__link" onClick={onLogout} role="presentation">
-          <FormattedMessage id="logout" defaultMessage="Logout" />
-        </div>
+  const menuContainer = () => (
+    <div className="MenuContainer">
+      <Link to="/my_feed" className="MenuContainer__link">
+        <FormattedMessage id="my_feed" defaultMessage="My feed"/>
+      </Link>
+      <Link to="/discover" className="MenuContainer__link">
+        <FormattedMessage id="discover" defaultMessage="Discover"/>
+      </Link>
+      <Link to="/drafts" className="MenuContainer__link">
+        <FormattedMessage id="drafts" defaultMessage="Drafts"/>
+      </Link>
+      <Link to="/settings" className="MenuContainer__link">
+        <FormattedMessage id="settings" defaultMessage="Settings"/>
+      </Link>
+      <Link to="/replies" className="MenuContainer__link">
+        <FormattedMessage id="replies" defaultMessage="Replies"/>
+      </Link>
+      <Link to="/wallet" className="MenuContainer__link">
+        <FormattedMessage id="wallet" defaultMessage="Wallet"/>
+      </Link>
+      <Link to="/about" className="MenuContainer__link">
+        <FormattedMessage id="about" defaultMessage="About"/>
+      </Link>
+      <div className="MenuContainer__link" onClick={onLogout} role="presentation">
+        <FormattedMessage id="logout" defaultMessage="Logout"/>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
-    <div className="MobileMenu">
+    <div className="MobileMenu" ref={mobileRef}>
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="UserData">
             <span className="UserData__broker-balance">
-              <BrokerBalance isMobile />
+              <BrokerBalance isMobile/>
             </span>
             <span className="UserData__user">
               <Link to={`/@${username}`} onClick={handleScrollToTop}>
-                <Avatar username={username} size={50} />
+                <Avatar username={username} size={50}/>
               </Link>
             </span>
           </div>
@@ -194,7 +206,7 @@ const MobileMenu = props => {
               autoCorrect="off"
             />
           </AutoComplete>
-          <i className="iconfont icon-search" />
+          <i className="iconfont icon-search"/>
         </div>
         <div>
           {buttonsMenuContainer()}
@@ -203,7 +215,7 @@ const MobileMenu = props => {
         {!isBeaxyUser && platformName === 'beaxy' && (
           <div className="MobileMenu__disconnect-broker">
             <Button onClick={disconnectPlatform}>
-              <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
+              <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker"/>
             </Button>
           </div>
         )}
@@ -236,6 +248,7 @@ MobileMenu.propTypes = {
   onLogout: PropTypes.func.isRequired,
   disconnectPlatform: PropTypes.func.isRequired,
   platformName: PropTypes.string.isRequired,
+  mobileMenuToggler: PropTypes.func.isRequired,
 };
 
 MobileMenu.defaultProps = {
