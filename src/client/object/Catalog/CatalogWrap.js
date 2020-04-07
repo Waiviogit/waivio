@@ -319,8 +319,6 @@ class CatalogWrap extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
-    proposition,
-    proposedWobj,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
@@ -331,8 +329,6 @@ class CatalogWrap extends React.Component {
         objPermlink,
         resPermlink,
         appName,
-        proposition,
-        proposedWobj,
       })
       .then(() => {
         message.success(
