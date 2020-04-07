@@ -1,4 +1,5 @@
 import {injectIntl, FormattedMessage} from 'react-intl';
+import {isEmpty} from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Link} from 'react-router-dom';
@@ -63,7 +64,7 @@ const PostSellBuy = ({
   }
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
-  const priceDirection = () => <div className={`st-post-sell-buy-block st-post-recommend-${recommendPost}`}>
+  const priceDirection = () => <div className={`st-post-sell-buy-block st-post-recommend-${recommendPost} ${isMobile ? 'm-0': ''}`}>
     <div
       title={intl.formatMessage({
         id: 'tips.recommendationType',
@@ -97,7 +98,7 @@ const PostSellBuy = ({
 
   return (
     <React.Fragment>
-      {finalQuote || (quoteSettings && quoteSettings.leverage && wobj && wobj.author_permlink) ? (
+      {!isEmpty(finalQuote) || (quoteSettings && quoteSettings.defaultQuantity && wobj && wobj.author_permlink) ? (
         <React.Fragment>
           <div className="st-post-sell-buy-wrap">
             <div className="d-flex align-items-center">
