@@ -32,7 +32,7 @@
     "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx"
   },
   "staging": {
-    "apiPrefix": "https://crypto.investarena.com/",
+    "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://exchange.beaxy.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
@@ -60,7 +60,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://crypto.investarena.com/",
+    "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://exchange.beaxy.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
