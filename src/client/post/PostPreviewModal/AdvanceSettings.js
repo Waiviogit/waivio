@@ -116,6 +116,11 @@ class AdvanceSettings extends Component {
                 {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
               </Checkbox>
             )}
+            {isGuest && (
+              <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled>
+                {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
+              </Checkbox>
+            )}
           </div>
           {linkedObjects.length > 1 && (
             <ObjectWeights
