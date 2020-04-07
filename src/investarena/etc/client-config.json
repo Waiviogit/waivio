@@ -35,7 +35,7 @@
   "staging": {
     "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://exchange.beaxy.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -64,7 +64,7 @@
     "": "http://localhost:8095/",
     "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://exchange.beaxy.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
