@@ -12,7 +12,7 @@ const SignUpInfo = () => (
     </div>
     <div className="mb3">
       <a
-        href="https://steemwallet.app/widget/widget.html"
+        href="https://hivewallet.app/"
         className="ModalSignUp__link"
         rel="noopener noreferrer"
         target="_blank"
@@ -20,12 +20,12 @@ const SignUpInfo = () => (
         <FormattedMessage id="creditCards" defaultMessage="- credit cards" />
       </a>
       <a
-        href="https://blocktrades.us/create-steem-account"
+        href="https://blocktrades.us/en/create-hive-account"
         className="ModalSignUp__link"
         rel="noopener noreferrer"
         target="_blank"
       >
-        <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH" />
+        <FormattedMessage id="cryptos_sing_up" defaultMessage="- CRYPTOS" />
       </a>
     </div>
     <h2 className="ModalSignUp__title ModalSignUp__title--lined">

@@ -1,16 +1,15 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
-import UserMenu from '../UserMenu';
+import BBackTop from '../BBackTop';
 
-describe('<UserMenu />', () => {
+describe('<BBackTop />', () => {
   it('renders without exploding', () => {
     const props = {
-      defaultKey: 'comments',
-      followers: 42,
-      following: 21,
+      className: 'comments',
+      isModal: 42,
     };
-    const wrapper = shallow(<UserMenu {...props} />);
+    const wrapper = shallow(<BBackTop {...props} />);
     act(() => {
       wrapper.update();
     });

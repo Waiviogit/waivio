@@ -12,6 +12,10 @@ export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
 export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
+export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
+  '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
+);
+export const RESET_SEARCH_USERS_FOR_DISCOVER_PAGE = '@search/RESET_SEARCH_USERS_FOR_DISCOVER_PAGE';
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -99,6 +103,27 @@ export const searchUsersAutoCompete = (userName, limit) => (dispatch, getState) 
     },
   });
 };
+export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
+  const search = replacer(userName, '@');
+  const user = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: SEARCH_USERS_FOR_DISCOVER_PAGE.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(search, user, limit)
+        .then(result => ({
+          result,
+          search,
+        }))
+        .catch(console.log),
+    },
+  });
+};
+
+export const resetSearchUsersForDiscoverPage = () => dispatch =>
+  dispatch({
+    type: RESET_SEARCH_USERS_FOR_DISCOVER_PAGE,
+  });
 
 export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch => {
   const search = replacer(searchString, '@');
