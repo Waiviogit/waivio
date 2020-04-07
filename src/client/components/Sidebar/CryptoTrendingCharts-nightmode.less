@@ -14,12 +14,26 @@
       color: @blue-botticelli;
     }
 
-    path.highcharts-graph {
+    path.line {
       stroke: @primary-color !important;
     }
 
-    rect.highcharts-background {
+    g.lineChart {
       background: @grey-nero !important;
+    }
+
+    circle.data-point {
+      fill: @primary-color !important;
+      stroke: lighten(@primary-color, 40%) !important;
+    }
+
+    g.tick text {
+      fill: @blue-botticelli;
+    }
+
+    .linechart-tooltip {
+      background-color: @grey-nero;
+      border-color: @blue-botticelli;
     }
   }
 }
