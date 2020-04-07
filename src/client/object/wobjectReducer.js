@@ -88,9 +88,12 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
     case GET_OBJECT_APPENDS.SUCCESS: {
-      let listFields = state.wobject.fields.filter(field =>
-        action.payload.find(f => f.permlink === field.permlink),
-      );
+      let listFields =
+        state.wobject &&
+        state.wobject.fields &&
+        state.wobject.fields.filter(field =>
+          action.payload.find(f => f.permlink === field.permlink),
+        );
       listFields = listFields.map(field => {
         const matchPost = action.payload.find(f => f.permlink === field.permlink);
         return {

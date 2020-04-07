@@ -20,10 +20,11 @@ export const preparePropositionReqData = ({
 }) => {
   const reqData = {
     limit: displayLimit,
-    requiredObject: match.params.campaignParent,
+    requiredObject: match.params.campaignParent || match.params.name,
     currentUserName: username,
     sort,
   };
+  console.log(reqData.requiredObject);
   if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;

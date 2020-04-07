@@ -194,6 +194,8 @@ export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
 export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(state.search);
+export const getSearchUsersResultsForDiscoverPage = state =>
+  fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
