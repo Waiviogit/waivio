@@ -45,7 +45,6 @@
     input {
       height: 38px !important;
       padding: 0 0 0 43px !important;
-      border: 0 !important;
       background-color: @white !important;
       caret-color: @grey-nero;
       color: @grey-nero !important;
@@ -70,10 +69,6 @@
     }
   }
 
-  .ant-input {
-    border: 0 !important;
-  }
-
   .ant-menu-item > a {
     border-color: @white;
     background-color: @white;
@@ -81,8 +76,15 @@
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 182px !important;
+  top: 180px !important;
   width: calc(100% - 145px);
+  border-right: 1px solid @baby-blue;
+  border-left: 1px solid @baby-blue;
+  border-bottom: 1px solid @baby-blue;
+
+  &.logged-out {
+    top: 100px !important;
+  }
 }
 
 .MenuContainer {

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { get, isUndefined, size, filter, includes } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input, Menu } from 'antd';
+import classNames from 'classnames';
 import ModalBroker from '../../../../investarena/components/Modals/ModalBroker';
 import BTooltip from '../../BTooltip';
 import PopoverContainer from '../../Popover';
@@ -168,7 +169,9 @@ const MobileMenu = props => {
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>
           <AutoComplete
-            dropdownClassName="Topnav__search-dropdown-container"
+            dropdownClassName={classNames('Topnav__search-dropdown-container', {
+              'logged-out': !username,
+            })}
             dataSource={searchOptions}
             onSearch={onSearch}
             onSelect={onSelect}
