@@ -20,6 +20,7 @@
     "build": "node --max-old-space-size=6144 ./scripts/build.js",
     "start": "node ./build/server.js",
     "test": "jest --config jest.config.json --coverage",
+    "test-one": "jest --config jest.config.json",
     "test:watch": "jest --config jest.config.json --watch",
     "eslint-autofix": "eslint --fix \"src/**/*.js\"",
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
