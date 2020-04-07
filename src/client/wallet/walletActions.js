@@ -125,7 +125,7 @@ export const getGlobalProperties = () => dispatch =>
 
 export const getUserAccountHistory = username => dispatch => {
   const isGuest = username.startsWith(GUEST_PREFIX);
-  dispatch({
+  return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
       promise: getAccountHistory(username, { isGuest }).then(userActions => {
