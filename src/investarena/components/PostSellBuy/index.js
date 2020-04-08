@@ -3,7 +3,7 @@ import React from 'react';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import PostSellBuy from './PostSellBuy';
-import {getScreenSize} from "../../../client/reducers";
+import { getScreenSize } from '../../../client/reducers';
 
 const PostSellBuyContainer = props => <PostSellBuy {...props} />;
 
@@ -14,7 +14,7 @@ const mapState = () => {
     quote: getQuoteState(state, ownProps),
     quoteSettings: getQuoteSettingsState(state, ownProps),
     isSignIn: false,
-    screenSize: getScreenSize(state)
+    screenSize: getScreenSize(state),
   });
 };
 
