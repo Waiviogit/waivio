@@ -88,10 +88,10 @@ class ChartData {
     if (quote) {
       if (priceType === 'Buy') {
         askBid = 'closeAsk';
-        price = Math.round(quote.askPrice * 1000000);
+        price = quote.askPrice * 1000000;
       } else if (priceType === 'Sell') {
         askBid = 'closeBid';
-        price = Math.round(quote.bidPrice * 1000000);
+        price = quote.bidPrice * 1000000;
       }
       if (this.isExpired) {
         price = _.last(this.shortBars)[askBid];
