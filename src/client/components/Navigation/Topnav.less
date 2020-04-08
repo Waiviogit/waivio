@@ -8,8 +8,8 @@
 .Topnav {
   position: relative;
   top: 0;
-  background-color: @white-ghostWhite;
-  height: 102px;
+  background-color: @grey-nero;
+  height: 52px;
   line-height: 52px;
   border-bottom: none;
   padding: 0 10px;
@@ -27,12 +27,12 @@
 
   &__brand {
     &-icon {
-      max-width: 36px;
-      width: 36px;
-      height: 36px;
+      max-width: 70px;
+      width: 70px;
+      height: 72px;
       vertical-align: super;
-      margin-top: 10px;
-      display: none;
+      margin-top: -10px;
+      display: inline;
 
       @media @small, @medium, @large {
         max-width: 90%;
@@ -256,6 +256,14 @@
     box-sizing: border-box;
     font-size: 26px !important;
     border-bottom: none !important;
+
+    .feed {
+      width: 1.2rem;
+    }
+
+    .fire-img {
+      width: 1rem;
+    }
 
     @media @small {
       width: 26px;
@@ -682,6 +690,12 @@ div[data-dir='rtl'] .Topnav {
       display: none;
     }
   }
+}
+
+.anticon-fire {
+  min-width: 22px !important;
+  margin-right: 0 !important;
+  font-size: 22px !important;
 }
 
 .Topnav__search-content-list.ant-select-dropdown-menu-item-group-list {
