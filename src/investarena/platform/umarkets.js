@@ -496,17 +496,9 @@ export default class Umarkets {
     const bars =
       chart.bars &&
       chart.bars
-        .map(b => ({
-          closeAsk: b.closeAsk,
-          closeBid: b.closeBid,
-          highAsk: b.highAsk,
-          highBid: b.highBid,
-          lowAsk: b.lowAsk,
-          lowBid: b.lowBid,
-          openAsk: b.openAsk,
-          openBid: b.openBid,
-          time: b.time,
-        }));
+        .filter(bar => bar.closeAsk > 0 && bar.closeBid > 0)
+        .sort((a, b) => a.time - b.time)
+        .slice(-250);
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
     // get chart data for tech chart via http
     // if (this.hasOwnProperty('publish')) {

@@ -135,28 +135,22 @@ class ChartData {
     barsData = barsData.slice(barsData.length - this.chartInfo.barsAll);
     return this.correctBars(barsData);
   }
-  getScaleY() {
-    const { shortBars, quote } = this;
-    const maxY = Math.abs(this.getMax(shortBars, quote.askBid) - quote.beforeStart);
-    const minY = Math.abs(this.getMin(shortBars, quote.askBid) - quote.beforeStart);
-    const maxYDeviation = Math.max(maxY, minY);
-    return this.canvasWork.height / (maxYDeviation || 1000) / 2;
-  }
   getMax(bars, askBid) {
     const upperLine = this.stopPrices.upperLine;
     let max = null;
     if (bars) {
       if (askBid === 'closeAsk') {
         max = upperLine
-          ? Math.max(_.get(_.maxBy(bars, 'highAsk'), 'highAsk', 0), upperLine)
-          : _.get(_.maxBy(bars, 'highAsk'), 'highAsk', 0);
+          ? Math.max(_.get(_.maxBy(bars, 'highAsk'), ['highAsk'], 0), upperLine)
+          : _.get(_.maxBy(bars, 'highAsk'), ['highAsk'], 0);
       } else if (askBid === 'closeBid') {
         max = upperLine
-          ? Math.max(_.get(_.maxBy(bars, 'highBid'), 'highBid', 0), upperLine)
-          : _.get(_.maxBy(bars, 'highBid'), 'highBid', 0);
+          ? Math.max(_.get(_.maxBy(bars, 'highBid'), ['highBid'], 0), upperLine)
+          : _.get(_.maxBy(bars, 'highBid'), ['highBid'], 0);
       }
       return max;
     }
+    return null;
   }
   getMin(bars, askBid) {
     const lowerLine = this.stopPrices.lowerLine;
@@ -164,15 +158,23 @@ class ChartData {
     if (bars) {
       if (askBid === 'closeAsk') {
         min = lowerLine
-          ? Math.min(_.get(_.minBy(bars, 'lowAsk'), 'lowAsk', 0), lowerLine)
-          : _.get(_.minBy(bars, 'lowAsk'), 'lowAsk', 0);
+          ? Math.min(_.get(_.minBy(bars, 'lowAsk'), ['lowAsk'], 0), lowerLine)
+          : _.get(_.minBy(bars, 'lowAsk'), ['lowAsk'], 0);
       } else if (askBid === 'closeBid') {
         min = lowerLine
-          ? Math.min(_.get(_.minBy(bars, 'lowBid'), 'lowBid', 0), lowerLine)
-          : _.get(_.minBy(bars, 'lowBid'), 'lowBid', 0);
+          ? Math.min(_.get(_.minBy(bars, 'lowBid'), ['lowBid'], 0), lowerLine)
+          : _.get(_.minBy(bars, 'lowBid'), ['lowBid'], 0);
       }
       return min;
     }
+    return null;
+  }
+  getScaleY() {
+    const { shortBars, quote } = this;
+    const maxY = Math.abs(this.getMax(shortBars, quote.askBid) - quote.beforeStart);
+    const minY = Math.abs(this.getMin(shortBars, quote.askBid) - quote.beforeStart);
+    const maxYDeviation = Math.max(maxY, minY);
+    return this.canvasWork.height / (maxYDeviation || 1000) / 2;
   }
   onUpdate(catchUpdate) {
     this.update = catchUpdate;
