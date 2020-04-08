@@ -11,6 +11,7 @@ const routes = {
   bxyApiPrefix: invArena.baseUrl + config.bxyApiPrefix,
   objectsBotApiPrefix: baseUrl + config.objectsBotApiPrefix,
   campaignApiPrefix: baseUrl + config.campaignApiPrefix,
+  currenciesApiPrefix: baseUrl + config.currenciesApiPrefix,
 };
 
 export default routes;

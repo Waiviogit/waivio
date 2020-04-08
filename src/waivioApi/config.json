@@ -25,6 +25,7 @@
   "bxyApiPrefix": "waivio-posts",
   "objectsBotApiPrefix": "/objects-bot",
   "campaignApiPrefix": "/campaigns-api",
+  "currenciesApiPrefix": "/currencies-api",
   "objectsBot": {
     "createObject": "/create-object",
     "appendObject": "/append-object"
@@ -80,5 +81,6 @@
   "matchBots": "/match_bots",
   "followingUpdates": "/following_updates",
   "followingObjectsUpdates": "/following_wobjects_updates",
-  "followingUsersUpdates": "/following_users_updates"
+  "followingUsersUpdates": "/following_users_updates",
+  "market": "/marketInfo"
 }
