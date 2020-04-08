@@ -67,6 +67,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
+    showMore: false,
   };
 
   getLink = link => {
@@ -103,7 +104,12 @@ class ObjectInfo extends React.Component {
   renderCategoryItems = categoryItems => {
     if (!_.isEmpty(categoryItems)) {
       const elements = [];
-      const len = categoryItems.length < 5 ? categoryItems.length : 5;
+      let len = null;
+      if (this.state.showMore) {
+        len = categoryItems.length;
+      } else {
+        len = categoryItems.length < 5 ? categoryItems.length : 5;
+      }
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < len; i++) {
         elements.push(
@@ -112,8 +118,14 @@ class ObjectInfo extends React.Component {
           </Tag>,
         );
       }
-      // eslint-disable-next-line no-unused-expressions
-      categoryItems.length > 5 && elements.push(<span>Show more...</span>);
+      // eslint-disable-next-line no-unused-expressions,jsx-a11y/no-static-element-interactions
+      categoryItems.length > 5 &&
+        elements.push(
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+          <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
+            {!this.state.showMore ? 'more...' : null}
+          </span>,
+        );
       return elements;
     }
     return null;
@@ -122,11 +134,15 @@ class ObjectInfo extends React.Component {
   renderTagCategories = tagCategories => {
     if (tagCategories) {
       return tagCategories.map(item => (
-        <div key={item.id}>
-          {`${item.body}:`}
-          <br />
-          {this.renderCategoryItems(item.categoryItems)}
-        </div>
+        <React.Fragment>
+          {item.categoryItems.length > 0 && (
+            <div key={item.id}>
+              {`${item.body}:`}
+              <br />
+              {this.renderCategoryItems(item.categoryItems)}
+            </div>
+          )}
+        </React.Fragment>
       ));
     }
     return null;
