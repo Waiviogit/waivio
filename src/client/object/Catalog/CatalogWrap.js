@@ -295,9 +295,9 @@ class CatalogWrap extends React.Component {
 
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
-    const actualeListItems = listItems && listItems.filter(list => list.status);
+    const actualListItems = listItems && listItems.filter(list => list.status);
 
-    if (isEmpty(actualeListItems) && !isEmpty(breadcrumb)) {
+    if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
       return (
         <div>
           {this.props.intl.formatMessage({
@@ -311,7 +311,7 @@ class CatalogWrap extends React.Component {
       get(item, 'objects[0].object.author_permlink'),
     );
 
-    return map(actualeListItems, listItem => this.getListRow(listItem, campaignObjects));
+    return map(actualListItems, listItem => this.getListRow(listItem, campaignObjects));
   };
 
   // Propositions
