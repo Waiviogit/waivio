@@ -17,6 +17,13 @@ import { getIsBeaxyUser } from '../../../user/usersHelper';
 import BrokerBalance from '../BrokerBalance/BrokerBalance';
 import Avatar from '../../Avatar';
 import './MobileMenu.less';
+import SignUp from '../../Sidebar/SignUp';
+import HotNews from '../HotNews';
+import { getModalIsOpenState } from '../../../../investarena/redux/selectors/modalsSelectors';
+import {
+  getIsLoadingPlatformState,
+  getPlatformNameState,
+} from '../../../../investarena/redux/selectors/platformSelectors';
 
 const MobileMenu = props => {
   const {
@@ -35,7 +42,7 @@ const MobileMenu = props => {
     notifications,
     userMetaData,
     loadingNotifications,
-    hotNews,
+    isBrokerModalOpen,
     notificationsPopoverVisible,
     handleCloseNotificationsPopover,
     getUserMetadata,
@@ -44,22 +51,29 @@ const MobileMenu = props => {
     disconnectPlatform,
     platformName,
     mobileMenuToggler,
+    toggleModal,
   } = props;
 
   const mobileRef = useRef(null);
 
-  const handleHideMenu = event => {
-    if (mobileRef.current && !mobileRef.current.contains(event.target)) {
-      mobileMenuToggler();
-      document.removeEventListener('click', handleHideMenu, true);
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener('click', handleHideMenu, true);
+    handleCloseNotificationsPopover();
   }, []);
 
   const isBeaxyUser = getIsBeaxyUser(username);
+
+  const onLogoutHandler = () => {
+    onLogout();
+    mobileMenuToggler();
+  };
+
+  const handleMenuItemHide = () => {
+    mobileMenuToggler();
+  };
+
+  const toggleModalBroker = () => {
+    toggleModal('broker');
+  };
 
   const buttonsMenuContainer = () => {
     const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
@@ -77,9 +91,8 @@ const MobileMenu = props => {
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
     return (
       <div className="Topnav__menu-container">
-        <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item" key="write">
+          <Menu.Item className="Topnav__menu-item" key="write" onClick={handleMenuItemHide}>
             <BTooltip
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
@@ -91,8 +104,13 @@ const MobileMenu = props => {
               </Link>
             </BTooltip>
           </Menu.Item>
+          <Menu.Item className="Topnav__menu-item" onClick={handleMenuItemHide}>
+            <Link to="/" className="Topnav__link Topnav__link--light Topnav__link--action">
+              <img className="feed" alt="feed" src={'/images/icons/ia-icon-feed.svg'} />
+            </Link>
+          </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="hot">
-            <a>{hotNews()}</a>
+            <HotNews />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="notifications">
             <BTooltip
@@ -124,7 +142,7 @@ const MobileMenu = props => {
                   {displayBadge ? (
                     <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
                   ) : (
-                    <i className="iconfont icon-remind" />
+                    <img alt="notifications" src={'/images/icons/ia-icon-bell.svg'} />
                   )}
                 </a>
               </PopoverContainer>
@@ -137,28 +155,28 @@ const MobileMenu = props => {
 
   const loggedInMenuContainer = (
     <React.Fragment>
-      <Link to="/my_feed" className="MenuContainer__link">
+      <Link to="/my_feed" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="my_feed" defaultMessage="My feed" />
       </Link>
-      <Link to="/discover" className="MenuContainer__link">
+      <Link to="/discover" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
-      <Link to="/drafts" className="MenuContainer__link">
+      <Link to="/drafts" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="drafts" defaultMessage="Drafts" />
       </Link>
-      <Link to="/settings" className="MenuContainer__link">
+      <Link to="/settings" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </Link>
-      <Link to="/replies" className="MenuContainer__link">
+      <Link to="/replies" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="replies" defaultMessage="Replies" />
       </Link>
-      <Link to="/wallet" className="MenuContainer__link">
+      <Link to="/wallet" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="wallet" defaultMessage="Wallet" />
       </Link>
-      <Link to="/about" className="MenuContainer__link">
+      <Link to="/about" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="about" defaultMessage="About" />
       </Link>
-      <div className="MenuContainer__link" onClick={onLogout} role="presentation">
+      <div className="MenuContainer__link" onClick={onLogoutHandler} role="presentation">
         <FormattedMessage id="logout" defaultMessage="Logout" />
       </div>
     </React.Fragment>
@@ -166,13 +184,13 @@ const MobileMenu = props => {
 
   const loggedOutMenuContainer = (
     <React.Fragment>
-      <Link to="/" className="MenuContainer__link">
+      <Link to="/" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="home" defaultMessage="Home" />
       </Link>
-      <Link to="/discover" className="MenuContainer__link">
+      <Link to="/discover" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
-      <Link to="/about" className="MenuContainer__link">
+      <Link to="/about" className="MenuContainer__link" onClick={mobileMenuToggler}>
         <FormattedMessage id="about" defaultMessage="About" />
       </Link>
     </React.Fragment>
@@ -180,11 +198,13 @@ const MobileMenu = props => {
 
   return (
     <div className="MobileMenu" ref={mobileRef}>
+      <i className="MobileMenu__mask" onClick={mobileMenuToggler} role="presentation" />
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="UserData">
+            <ModalBroker />
             <span className="UserData__broker-balance">
-              <BrokerBalance isMobile />
+              {platformName === 'beaxy' && <BrokerBalance isMobile />}
             </span>
             <span className="UserData__user">
               <Link to={`/@${username}`} onClick={handleScrollToTop}>
@@ -222,11 +242,20 @@ const MobileMenu = props => {
           </AutoComplete>
           <i className="iconfont icon-search" />
         </div>
-        <div>{buttonsMenuContainer()}</div>
+        {username ? buttonsMenuContainer() : <SignUp />}
         <div className="MenuContainer">
           {username ? loggedInMenuContainer : loggedOutMenuContainer}
         </div>
-        {!isBeaxyUser && platformName === 'beaxy' && (
+        {!isBeaxyUser && platformName === 'widgets' ? (
+          <div className="MobileMenu__disconnect-broker">
+            <Button type="primary" onClick={toggleModalBroker}>
+              {intl.formatMessage({
+                id: 'headerAuthorized.connectToBeaxy',
+                defaultMessage: 'Connect to beaxy',
+              })}
+            </Button>
+          </div>
+        ) : (
           <div className="MobileMenu__disconnect-broker">
             <Button onClick={disconnectPlatform}>
               <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
@@ -254,7 +283,6 @@ MobileMenu.propTypes = {
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,
-  hotNews: PropTypes.func.isRequired,
   notificationsPopoverVisible: PropTypes.bool,
   handleCloseNotificationsPopover: PropTypes.func.isRequired,
   getUserMetadata: PropTypes.func.isRequired,
@@ -263,6 +291,7 @@ MobileMenu.propTypes = {
   disconnectPlatform: PropTypes.func.isRequired,
   platformName: PropTypes.string.isRequired,
   mobileMenuToggler: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 MobileMenu.defaultProps = {
@@ -275,9 +304,13 @@ MobileMenu.defaultProps = {
   notificationsPopoverVisible: false,
 };
 
+const mapStateToProps = state => ({
+  isBrokerModalOpen: getModalIsOpenState(state, 'broker'),
+});
+
 const mapDispatchToProps = dispatch => ({
   onLogout: () => dispatch(logout()),
   disconnectPlatform: () => dispatch(disconnectBroker()),
 });
 
-export default injectIntl(connect(null, mapDispatchToProps)(MobileMenu));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(MobileMenu));

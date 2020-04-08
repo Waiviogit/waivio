@@ -52,6 +52,7 @@ import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
+import HotNews from './HotNews';
 
 @injectIntl
 @withRouter
@@ -276,6 +277,7 @@ class Topnav extends React.Component {
   }
 
   handleHotNewsPopoverVisibleChange = async () => {
+    console.log('log');
     this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
     if (_.isEmpty(this.state.dailyChosenPost)) {
       getTopPosts()
@@ -408,58 +410,59 @@ class Topnav extends React.Component {
     );
   };
 
-  hotNews = () => {
-    const { intl } = this.props;
-    const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
-    return (
-      <BTooltip
-        placement="bottom"
-        title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        overlayClassName="Topnav__notifications-tooltip"
-        mouseEnterDelay={1}
-      >
-        <PopoverContainer
-          placement="bottomRight"
-          trigger="click"
-          content={
-            <div className="Topnav__hot-news">
-              {!_.isEmpty(dailyChosenPost) && (
-                <Link
-                  to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {dailyChosenPost.title}
-                </Link>
-              )}
-              {!_.isEmpty(weeklyChosenPost) && (
-                <Link
-                  to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {weeklyChosenPost.title}
-                </Link>
-              )}
-              <Link
-                to="/economical-calendar"
-                className="Topnav__hot-news-item"
-                onClick={this.handleHotNewsPopoverVisibleChange}
-              >
-                Economical calendar
-              </Link>
-            </div>
-          }
-          visible={hotNewsPopoverVisible}
-          onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-          overlayClassName="Notifications__popover-overlay"
-          title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        >
-          <Icon type="fire" className="iconfont fire-icon" />
-        </PopoverContainer>
-      </BTooltip>
-    );
-  };
+  // hotNews = () => {
+  //   const { intl, screenSize } = this.props;
+  //   const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
+  //   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+  //   return (
+  //     <BTooltip
+  //       placement="bottom"
+  //       title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+  //       overlayClassName="Topnav__notifications-tooltip"
+  //       mouseEnterDelay={1}
+  //     >
+  //       <PopoverContainer
+  //         placement="bottomRight"
+  //         trigger="click"
+  //         content={
+  //           <div className="Topnav__hot-news">
+  //             {!_.isEmpty(dailyChosenPost) && (
+  //               <Link
+  //                 to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+  //                 className="Topnav__hot-news-item"
+  //                 onClick={this.handleHotNewsPopoverVisibleChange}
+  //               >
+  //                 {dailyChosenPost.title}
+  //               </Link>
+  //             )}
+  //             {!_.isEmpty(weeklyChosenPost) && (
+  //               <Link
+  //                 to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+  //                 className="Topnav__hot-news-item"
+  //                 onClick={this.handleHotNewsPopoverVisibleChange}
+  //               >
+  //                 {weeklyChosenPost.title}
+  //               </Link>
+  //             )}
+  //             <Link
+  //               to="/economical-calendar"
+  //               className="Topnav__hot-news-item"
+  //               onClick={this.handleHotNewsPopoverVisibleChange}
+  //             >
+  //               Economical calendar
+  //             </Link>
+  //           </div>
+  //         }
+  //         visible={hotNewsPopoverVisible}
+  //         onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+  //         overlayClassName="Notifications__popover-overlay"
+  //         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+  //       >
+  //         {!isMobile ? <Icon type="fire" className="iconfont fire-icon" /> : <img className="fire-img" alt="news" src="/images/icons/ia-icon-fire.svg"/>}
+  //       </PopoverContainer>
+  //     </BTooltip>
+  //   );
+  // };
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
@@ -486,7 +489,7 @@ class Topnav extends React.Component {
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item" key="hot">
-            {this.hotNews()}
+            <HotNews />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="write">
             <BTooltip
@@ -864,6 +867,7 @@ class Topnav extends React.Component {
       // openChat,
       // messagesCount,
       platformName,
+      username,
     } = this.props;
     const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -880,7 +884,8 @@ class Topnav extends React.Component {
     //         { search: this.state.searchBarValue },
     //       )}
     //     </div>
-    //   </AutoComplete.Option>
+    //   </AutoComplete.Option>              <CloseOutlined />
+
     // );
     // const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
     //   ? dropdownOptions
@@ -959,7 +964,13 @@ class Topnav extends React.Component {
                 'Topnav__right-top--logedout': !isAuthenticated,
               })}
             >
-              <Icon type="menu" className="iconfont icon-menu" onClick={this.mobileMenuToggler} />
+              {isMobile && !username && <div className="mr2">{this.menuForLoggedOut()}</div>}
+              {!isMobileMenu ? (
+                <Icon type="menu" className="iconfont icon-menu" onClick={this.mobileMenuToggler} />
+              ) : (
+                <Icon type="close" theme="outlined" onClick={this.mobileMenuToggler} />
+              )}
+
               {/* <button */}
               {/*  className={classNames('Topnav__mobile-search', { */}
               {/*    'Topnav__mobile-search-close': searchBarActive, */}
@@ -1028,6 +1039,7 @@ class Topnav extends React.Component {
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
             handleScrollToTop={this.handleScrollToTop}
             mobileMenuToggler={this.mobileMenuToggler}
+            handleHotNewsPopoverVisibleChange={this.handleHotNewsPopoverVisibleChange}
           />
         )}
       </React.Fragment>
