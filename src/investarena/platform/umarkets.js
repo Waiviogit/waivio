@@ -497,15 +497,15 @@ export default class Umarkets {
       chart.bars &&
       chart.bars
         .map(b => ({
-          ...b,
-          closeAsk: b.closeAsk * 1000000,
-          closeBid: b.closeBid * 1000000,
-          highAsk: b.highAsk * 1000000,
-          highBid: b.highBid * 1000000,
-          lowAsk: b.lowAsk * 1000000,
-          lowBid: b.lowBid * 1000000,
-          openAsk: b.openAsk * 1000000,
-          openBid: b.openBid * 1000000,
+          closeAsk: b.closeAsk,
+          closeBid: b.closeBid,
+          highAsk: b.highAsk,
+          highBid: b.highBid,
+          lowAsk: b.lowAsk,
+          lowBid: b.lowBid,
+          openAsk: b.openAsk,
+          openBid: b.openBid,
+          time: b.time,
         }));
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
     // get chart data for tech chart via http
@@ -518,7 +518,7 @@ export default class Umarkets {
     const content = sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
     const data = { open_deals: [] };
-    content.map(openDeal => {
+    content.forEach(openDeal => {
       openDeal.openPrice /= multiplier;
       openDeal.amount /= multiplier;
       openDeals[openDeal.dealId] = openDeal;
@@ -540,7 +540,7 @@ export default class Umarkets {
     if (!this.getClosedDealsForStatistics) {
       const content = sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
-      content.map(closeDeal => {
+      content.forEach(closeDeal => {
         closeDeal.amount /= multiplier;
         closeDeal.pnl /= multiplier;
         closeDeal.openPrice /= multiplier;

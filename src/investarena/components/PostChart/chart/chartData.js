@@ -35,8 +35,19 @@ class ChartData {
     isNightMode,
   }) {
     this.timeScale = timeScale;
-    const barsData = (data && data[this.timeScale]) || data;
+    let barsData = (data && data[this.timeScale]) || data;
     if (barsData && barsData.length > 1) {
+      barsData = barsData.map(bar => ({
+        closeAsk: bar.closeAsk * 1000000,
+        closeBid: bar.closeBid * 1000000,
+        highAsk: bar.highAsk * 1000000,
+        highBid: bar.highBid * 1000000,
+        lowAsk: bar.lowAsk * 1000000,
+        lowBid: bar.lowBid * 1000000,
+        openAsk: bar.openAsk * 1000000,
+        openBid: bar.openBid * 1000000,
+        time: bar.time,
+      }));
       this.isExpired = isExpired;
       this.expiredByTime = expiredByTime !== false;
       if (!this.expiredByTime && expiredAt && isScaleChanged) {
