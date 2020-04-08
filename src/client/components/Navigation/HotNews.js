@@ -76,7 +76,7 @@ const HotNews = props => {
           <Icon type="fire" className="iconfont fire-icon" />
         ) : (
           <a className="Topnav__link Topnav__link--light Topnav__link--action">
-            ><img className="fire-img" alt="news" src="/images/icons/ia-icon-fire.svg" />
+            <img className="fire-img" alt="news" src="/images/icons/ia-icon-fire.svg" />
           </a>
         )}
       </PopoverContainer>

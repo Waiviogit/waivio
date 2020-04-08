@@ -110,7 +110,7 @@ const MobileMenu = props => {
             </Link>
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="hot">
-            <HotNews />
+            <HotNews isMobile />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="notifications">
             <BTooltip
