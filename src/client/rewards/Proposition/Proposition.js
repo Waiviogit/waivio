@@ -80,6 +80,11 @@ const Proposition = ({
           resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
           companyId: proposition._id,
+          primaryObjectName: requiredObjectName,
+          secondaryObjectName: proposedWobj.name,
+          amount: proposition.reward,
+          proposition,
+          proposedWobj,
         }),
       )
       .then(({ isAssign }) => {
