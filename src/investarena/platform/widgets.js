@@ -178,14 +178,14 @@ export default class Widgets {
       let bars = [];
       msg.args.bars.forEach(e => {
         bars.push({
-          closeAsk: e.closeAsk * 1000000,
-          closeBid: e.closeBid * 1000000,
-          highAsk: e.highAsk * 1000000,
-          highBid: e.highBid * 1000000,
-          lowAsk: e.lowAsk * 1000000,
-          lowBid: e.lowBid * 1000000,
-          openAsk: e.openAsk * 1000000,
-          openBid: e.openBid * 1000000,
+          closeAsk: e.closeAsk,
+          closeBid: e.closeBid,
+          highAsk: e.highAsk,
+          highBid: e.highBid,
+          lowAsk: e.lowAsk,
+          lowBid: e.lowBid,
+          openAsk: e.openAsk,
+          openBid: e.openBid,
           time: e.time * 1000,
         });
       });
