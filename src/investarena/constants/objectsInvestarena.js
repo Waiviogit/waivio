@@ -18,29 +18,9 @@ export const typesWithChartId = ['crypto', 'currencies', 'commodity', 'stock', '
 
 export const marketNames = [
   {
-    name: 'Crypto',
-    names: ['cryptocurrency', 'crypto'],
+    name: 'crypto',
+    names: ['crypto'],
     intl: { id: 'wia.cryptos', defaultMessage: 'Cryptos' },
-  },
-  {
-    name: 'Currencies',
-    names: ['currencies'],
-    intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
-  },
-  {
-    name: 'Commodity',
-    names: ['commodity'],
-    intl: { id: 'wia.commodities', defaultMessage: 'Commodities' },
-  },
-  {
-    name: 'Stock',
-    names: ['stock'],
-    intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' },
-  },
-  {
-    name: 'Index',
-    names: ['index'],
-    intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
   },
 ];
 

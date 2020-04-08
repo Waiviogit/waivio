@@ -13,7 +13,7 @@ switch (process.env.NODE_ENV) {
     CALLBACK_HOST_URL = 'localhost:3000';
     break;
   case 'staging':
-    CALLBACK_HOST_URL = 'crypto.investarena.com';
+    CALLBACK_HOST_URL = 'uat-crypto.investarena.com';
     break;
   default:
     break;

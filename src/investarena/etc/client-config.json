@@ -29,12 +29,13 @@
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx"
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx",
+    "logonWithToken": "https://api.beaxy.com/Account/logonWithToken?token="
   },
   "staging": {
-    "apiPrefix": "https://crypto.investarena.com/",
+    "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://exchange.beaxy.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -56,13 +57,14 @@
       "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx"
+    "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx",
+    "logonWithToken": "https://test-api.tokenexus.com/Account/logonWithToken?token="
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://crypto.investarena.com/",
+    "apiPrefix": "https://uat-crypto.investarena.com/",
     "brokerWSUrl": {
-      "beaxy": "https://exchange.beaxy.com/stomp/",
+      "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
       "maxitrade": "https://trading.maxitrade.com/stomp/",
@@ -86,7 +88,8 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
 
     "webSocketTChUrl": "//informer.beaxy.com/wss/Server.ashx",
-    "": "//44.233.188.11/wss/Server.ashx"
+    "": "//44.233.188.11/wss/Server.ashx",
+    "logonWithToken": "https://test-api.tokenexus.com/Account/logonWithToken?token="
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",
@@ -170,17 +173,6 @@
     "favorites": "/favorites/"
   },
 
-  "logonWithToken": {
-    "beaxy": "https://api.beaxy.com/Account/logonWithToken?token=",
-    "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
-    "umarkets": "https://api.umarkets.com/account/logonWithToken?token=",
-    "maxitrade": "https://api.maxitrade.com/account/logonWithToken?token=",
-    "tradeallcrypto": "https://api.tradeallcrypto.com/account/logonWithToken?token=",
-    "tradiva": "https://api.tradiva.com/account/logonWithToken?token=",
-    "770capital": "https://api.770capital.com/account/logonWithToken?token=",
-    "dowmarkets": "https://api.dowmarkets.com/account/logonWithToken?token=",
-    "limefx": "https://api.limefx.com/account/logonWithToken?token="
-  },
   "signals": {
     "getSignals": "https://informer.maximarkets.org/wss/signals"
   },

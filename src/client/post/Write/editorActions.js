@@ -266,8 +266,8 @@ export function createPost(postData) {
                   if (upvote) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
-                  dispatch(push('/'));
                   dispatch(notify('Your post will be posted soon', 'success'));
+                  dispatch(push(`/@${authUser.name}`));
 
                   if (window.analytics) {
                     window.analytics.track('Post', {

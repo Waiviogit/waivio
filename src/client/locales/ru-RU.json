@@ -1059,7 +1059,7 @@
   "imageSetter_cannot ": "Вы не можете загрузить более 25 изображений",
   "iAgreePostMyData": "Я даю согласие на запись мои публичных данных в блокчейн",
   "transferThroughBank": "Транзакция Ваших средств осуществляется через WaivioBank сервис, WaivioBank не взимает комиссию за переводы.",
-  "there_are_not user with name": "Извините! Нет пользователя {item} на Waivio",
+  "there_are_not user with name": "Извините! Нет пользователя {item} на InvestArena",
   "not_to_worry": "Не переживайте. Вы можете вернуться на {link}",
   "signUp": "Регистрируйтесь!",
   "payOneTimeFee": "или оплатите разовый взнос (около $3)",
@@ -1098,5 +1098,6 @@
   "trading_form_available": "Доступно",
   "trading_form_amount": "Сумма",
   "trading_form_total": "Всего",
-  "trading_form_fee": "Коммисия"
+  "trading_form_fee": "Коммисия",
+  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena"
 }

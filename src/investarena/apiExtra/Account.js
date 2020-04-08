@@ -1,12 +1,11 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import config from '../configApi/config';
+import { invArena } from '../configApi/apiResources';
 
 class Account {
   logonWithToken(token) {
     return axios({
       method: 'POST',
-      url: `${config.logonWithToken[Cookies.get('platformName')]}${token}`,
+      url: `${invArena.logonWithToken}${token}`,
       withCredentials: true,
       cache: false,
       dataType: 'json',

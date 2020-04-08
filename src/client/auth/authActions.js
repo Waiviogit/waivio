@@ -40,6 +40,8 @@ export const logoutWithoutBroker = () => (
   getState,
   { busyAPI, steemConnectAPI, waivioAPI },
 ) => {
+  const isAuthenticated = getIsAuthenticated(getState());
+  if (!isAuthenticated) return;
   if (waivioAPI.isGuest) {
     waivioAPI.clearGuestData();
     if (typeof window !== 'undefined') {
@@ -48,7 +50,7 @@ export const logoutWithoutBroker = () => (
       // eslint-disable-next-line no-unused-expressions
       window.gapi && window.gapi.auth2.getAuthInstance().signOut();
     }
-  } else {
+  } else if (steemConnectAPI.options.accessToken) {
     steemConnectAPI.revokeToken();
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
@@ -80,10 +82,8 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           userData.user.name,
           'beaxy',
           bxySessionData,
+          () => dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true })),
         );
-        if (typeof localStorage !== 'undefined') {
-          dispatch(initBrokerConnection({ platform: 'beaxy', isBeaxyAuth: true }));
-        }
         dispatch(getNotifications(userData.user.name));
         resolve({
           account: userData.user,
@@ -111,7 +111,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   getState,
   { steemConnectAPI, waivioAPI },
 ) => {
-  // todo: call beaxy login
   if (socialNetwork === 'beaxy')
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();

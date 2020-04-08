@@ -88,7 +88,7 @@ export default class Umarkets {
     this.sid = store.get('sid');
     this.um_session = store.get('um_session');
     this.platformName = Cookies.get('platformName');
-    if (this.platformName) {
+    if (this.platformName && this.platformName !== 'undefined') {
       this.websocket = this.createSockJS();
       this.stompClient = Stomp.over(this.websocket);
       this.stompClient.debug = () => {};
@@ -144,7 +144,7 @@ export default class Umarkets {
       };
       this.dispatch(reconnectBroker(data));
     } else {
-      this.dispatch(disconnectBroker());
+      this.dispatch(disconnectBroker(true));
     }
   }
 
@@ -493,7 +493,12 @@ export default class Umarkets {
     const chart = result.content;
     const quoteSecurity = chart.security;
     const timeScale = chart.barType;
-    const bars = chart.bars;
+    const bars =
+      chart.bars &&
+      chart.bars
+        .filter(bar => bar.closeAsk > 0 && bar.closeBid > 0)
+        .sort((a, b) => a.time - b.time)
+        .slice(-250);
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
     // get chart data for tech chart via http
     // if (this.hasOwnProperty('publish')) {
@@ -505,7 +510,7 @@ export default class Umarkets {
     const content = sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
     const data = { open_deals: [] };
-    content.map(openDeal => {
+    content.forEach(openDeal => {
       openDeal.openPrice /= multiplier;
       openDeal.amount /= multiplier;
       openDeals[openDeal.dealId] = openDeal;
@@ -527,7 +532,7 @@ export default class Umarkets {
     if (!this.getClosedDealsForStatistics) {
       const content = sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
-      content.map(closeDeal => {
+      content.forEach(closeDeal => {
         closeDeal.amount /= multiplier;
         closeDeal.pnl /= multiplier;
         closeDeal.openPrice /= multiplier;

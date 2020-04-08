@@ -1094,7 +1094,7 @@
   "imageSetter_cannot ": "You cannot upload more then 25 images",
   "transfer_through_bank": "Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees.",
   "not_to_worry": "Please don't worry. You can head back to {link}",
-  "there_are_not_object_with_name": "Sorry! There are no user with name {item} on Waivio",
+  "there_are_not_object_with_name": "Sorry! There are no object with name {item} on InvestArena",
   "signUp": "Sign up!",
   "payOneTimeFee": "or pay a one-time fee (about $3)",
   "getSteemAccountNow": "to get a Hive account now using:",
@@ -1128,5 +1128,6 @@
   "trading_form_available": "Available",
   "trading_form_amount": "Amount",
   "trading_form_total": "Total",
-  "trading_form_fee": "Fee"
+  "trading_form_fee": "Fee",
+  "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena"
 }

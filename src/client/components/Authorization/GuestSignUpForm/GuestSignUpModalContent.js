@@ -119,8 +119,9 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
           })
           .then(async () => {
             if (userData.socialNetwork === 'beaxy') {
+              setUserStatus(userData.userName);
               const { image } = await getGuestAvatarUrl(userData.userName, userAvatar);
-              const response = await updateGuestProfile(userData.userName, {
+              await updateGuestProfile(userData.userName, {
                 ...userData.jsonMetadata,
                 profile: {
                   ...userData.jsonMetadata.profile,
@@ -128,9 +129,6 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
                   name: userAlias,
                 },
               });
-              if (response.ok) {
-                setUserStatus(userData.userName);
-              }
             }
           });
       } else {
