@@ -51,6 +51,8 @@ import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
 import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
+import MobileMenu from './MobileMenu/MobileMenu';
+import HotNews from './HotNews';
 
 @injectIntl
 @withRouter
@@ -159,6 +161,7 @@ class Topnav extends React.Component {
       weeklyChosenPost: '',
       scrolling: false,
       visible: false,
+      isMobileMenu: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -274,6 +277,7 @@ class Topnav extends React.Component {
   }
 
   handleHotNewsPopoverVisibleChange = async () => {
+    console.log('log');
     this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
     if (_.isEmpty(this.state.dailyChosenPost)) {
       getTopPosts()
@@ -406,58 +410,59 @@ class Topnav extends React.Component {
     );
   };
 
-  hotNews = () => {
-    const { intl } = this.props;
-    const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
-    return (
-      <BTooltip
-        placement="bottom"
-        title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        overlayClassName="Topnav__notifications-tooltip"
-        mouseEnterDelay={1}
-      >
-        <PopoverContainer
-          placement="bottomRight"
-          trigger="click"
-          content={
-            <div className="Topnav__hot-news">
-              {!_.isEmpty(dailyChosenPost) && (
-                <Link
-                  to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {dailyChosenPost.title}
-                </Link>
-              )}
-              {!_.isEmpty(weeklyChosenPost) && (
-                <Link
-                  to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {weeklyChosenPost.title}
-                </Link>
-              )}
-              <Link
-                to="/economical-calendar"
-                className="Topnav__hot-news-item"
-                onClick={this.handleHotNewsPopoverVisibleChange}
-              >
-                Economical calendar
-              </Link>
-            </div>
-          }
-          visible={hotNewsPopoverVisible}
-          onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-          overlayClassName="Notifications__popover-overlay"
-          title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        >
-          <Icon type="fire" className="iconfont fire-icon" />
-        </PopoverContainer>
-      </BTooltip>
-    );
-  };
+  // hotNews = () => {
+  //   const { intl, screenSize } = this.props;
+  //   const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
+  //   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+  //   return (
+  //     <BTooltip
+  //       placement="bottom"
+  //       title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+  //       overlayClassName="Topnav__notifications-tooltip"
+  //       mouseEnterDelay={1}
+  //     >
+  //       <PopoverContainer
+  //         placement="bottomRight"
+  //         trigger="click"
+  //         content={
+  //           <div className="Topnav__hot-news">
+  //             {!_.isEmpty(dailyChosenPost) && (
+  //               <Link
+  //                 to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+  //                 className="Topnav__hot-news-item"
+  //                 onClick={this.handleHotNewsPopoverVisibleChange}
+  //               >
+  //                 {dailyChosenPost.title}
+  //               </Link>
+  //             )}
+  //             {!_.isEmpty(weeklyChosenPost) && (
+  //               <Link
+  //                 to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+  //                 className="Topnav__hot-news-item"
+  //                 onClick={this.handleHotNewsPopoverVisibleChange}
+  //               >
+  //                 {weeklyChosenPost.title}
+  //               </Link>
+  //             )}
+  //             <Link
+  //               to="/economical-calendar"
+  //               className="Topnav__hot-news-item"
+  //               onClick={this.handleHotNewsPopoverVisibleChange}
+  //             >
+  //               Economical calendar
+  //             </Link>
+  //           </div>
+  //         }
+  //         visible={hotNewsPopoverVisible}
+  //         onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+  //         overlayClassName="Notifications__popover-overlay"
+  //         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+  //       >
+  //         {!isMobile ? <Icon type="fire" className="iconfont fire-icon" /> : <img className="fire-img" alt="news" src="/images/icons/ia-icon-fire.svg"/>}
+  //       </PopoverContainer>
+  //     </BTooltip>
+  //   );
+  // };
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
@@ -484,7 +489,7 @@ class Topnav extends React.Component {
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item" key="hot">
-            {this.hotNews()}
+            <HotNews />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="write">
             <BTooltip
@@ -829,6 +834,7 @@ class Topnav extends React.Component {
     this.setState({
       dropdownOpen: false,
     });
+    console.log('sadf');
   };
 
   handleClearSearchData = () =>
@@ -848,19 +854,24 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
+  mobileMenuToggler = () => {
+    this.setState({ isMobileMenu: !this.state.isMobileMenu });
+  };
+
   render() {
     const {
       intl,
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      openChat,
-      messagesCount,
+      // openChat,
+      // messagesCount,
       platformName,
+      username,
     } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
+    const brandLogoPath = isMobile ? '/images/ia-logo-removebg.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     // const downBar = (
     //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -873,137 +884,165 @@ class Topnav extends React.Component {
     //         { search: this.state.searchBarValue },
     //       )}
     //     </div>
-    //   </AutoComplete.Option>
+    //   </AutoComplete.Option>              <CloseOutlined />
+
     // );
     // const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
     //   ? dropdownOptions
     //   : dropdownOptions.concat([downBar]);
 
     return (
-      <div
-        className={classNames('Topnav', {
-          'top-hidden': this.state.visible && isMobile,
-        })}
-      >
-        <ModalDealConfirmation />
-        <div className="topnav-layout">
-          <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
-            <Link to="/" className="Topnav__brand">
-              <span className="Topnav__brand-icon-mobile">investarena</span>
-              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
-            </Link>
-          </div>
-          <div
-            className={classNames(
-              'center',
-              'center-menu',
-              { mobileVisible: searchBarActive },
-              { 'center-menu--logedout': !isAuthenticated },
-            )}
-          >
-            <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
-              <i className="iconfont icon-search" />
-              <AutoComplete
-                dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={dropdownOptions}
-                onSearch={this.handleAutoCompleteSearch}
-                onSelect={this.handleSelectOnAutoCompleteDropdown}
-                onChange={this.handleOnChangeForAutoComplete}
-                defaultActiveFirstOption={false}
-                dropdownMatchSelectWidth={false}
-                optionLabelProp="value"
-                dropdownStyle={{ color: 'red' }}
-                value={this.state.searchBarValue}
-                open={dropdownOpen}
-                onFocus={this.handleOnFocus}
-              >
-                <Input
-                  ref={ref => {
-                    this.searchInputRef = ref;
-                  }}
-                  onPressEnter={this.handleSearchForInput}
-                  placeholder={intl.formatMessage({
-                    id: 'search_placeholder',
-                    defaultMessage: 'What are you looking for?',
-                  })}
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                />
-              </AutoComplete>
-              {!!this.state.searchBarValue.length && (
-                <Icon
-                  type="close-circle"
-                  style={{ fontSize: '12px' }}
-                  theme="filled"
-                  onClick={this.handleClearSearchData}
-                />
-              )}
+      <React.Fragment>
+        <div className="Topnav">
+          <ModalDealConfirmation />
+          <div className="topnav-layout">
+            <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
+              <Link to="/" className="Topnav__brand">
+                <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
+              </Link>
             </div>
-            <div className="Topnav__horizontal-menu">
-              {!isMobile && (
-                <TopNavigation
-                  authenticated={isAuthenticated}
-                  location={this.props.history.location}
-                  isMobile={isMobile || screenSize === 'medium'}
-                />
+            <div
+              className={classNames(
+                'center',
+                'center-menu',
+                { mobileVisible: searchBarActive },
+                { 'center-menu--logedout': !isAuthenticated },
               )}
-            </div>
-          </div>
-          <div
-            className={classNames('Topnav__right-top', {
-              'Topnav__right-top--logedout': !isAuthenticated,
-            })}
-          >
-            <button
-              className={classNames('Topnav__mobile-search', {
-                'Topnav__mobile-search-close': searchBarActive,
-              })}
-              onClick={this.handleMobileSearchButtonClick}
             >
-              <i
-                className={classNames('iconfont', {
-                  'icon-close': searchBarActive,
-                  'icon-search': !searchBarActive,
-                })}
-              />
-            </button>
-            {/* {this.props.username && ( */}
-            {/*  <div className="Topnav__chat" key="more"> */}
-            {/*    {!messagesCount ? ( */}
-            {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
-            {/*    ) : ( */}
-            {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
-            {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
-            {/*      </div> */}
-            {/*    )} */}
-            {/*  </div> */}
-            {/* )} */}
-          </div>
-          <div className="Topnav__right-bottom">
-            {this.content()}
-            {isAuthenticated && (
-              <div
-                className={classNames('Topnav__broker', {
-                  'justify-end': platformName === 'widgets',
-                })}
-              >
-                {platformName === 'widgets' ? (
-                  <div className="st-header-broker-balance-pl-wrap">
-                    <Button type="primary" onClick={this.toggleModalBroker}>
-                      {intl.formatMessage({
-                        id: 'headerAuthorized.connectToBeaxy',
-                        defaultMessage: 'Connect to beaxy',
+              {!isMobile && (
+                <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
+                  <i className="iconfont icon-search" />
+                  <AutoComplete
+                    dropdownClassName="Topnav__search-dropdown-container"
+                    dataSource={dropdownOptions}
+                    onSearch={this.handleAutoCompleteSearch}
+                    onSelect={this.handleSelectOnAutoCompleteDropdown}
+                    onChange={this.handleOnChangeForAutoComplete}
+                    defaultActiveFirstOption={false}
+                    dropdownMatchSelectWidth={false}
+                    optionLabelProp="value"
+                    dropdownStyle={{ color: 'red' }}
+                    value={this.state.searchBarValue}
+                    open={dropdownOpen}
+                    onFocus={this.handleOnFocus}
+                  >
+                    <Input
+                      ref={ref => {
+                        this.searchInputRef = ref;
+                      }}
+                      onPressEnter={this.handleSearchForInput}
+                      placeholder={intl.formatMessage({
+                        id: 'search_placeholder',
+                        defaultMessage: 'What are you looking for?',
                       })}
-                    </Button>
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                    />
+                  </AutoComplete>
+                  {!!this.state.searchBarValue.length && (
+                    <Icon
+                      type="close-circle"
+                      style={{ fontSize: '12px' }}
+                      theme="filled"
+                      onClick={this.handleClearSearchData}
+                    />
+                  )}
+                </div>
+              )}
+              <div className="Topnav__horizontal-menu">
+                {!isMobile && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    location={this.props.history.location}
+                    isMobile={isMobile || screenSize === 'medium'}
+                  />
+                )}
+              </div>
+            </div>
+            <div
+              className={classNames('Topnav__right-top', {
+                'Topnav__right-top--logedout': !isAuthenticated,
+              })}
+            >
+              {isMobile && !username && <div className="mr2">{this.menuForLoggedOut()}</div>}
+              {!isMobileMenu ? (
+                <Icon type="menu" className="iconfont icon-menu" onClick={this.mobileMenuToggler} />
+              ) : (
+                <Icon type="close" theme="outlined" onClick={this.mobileMenuToggler} />
+              )}
+
+              {/* <button */}
+              {/*  className={classNames('Topnav__mobile-search', { */}
+              {/*    'Topnav__mobile-search-close': searchBarActive, */}
+              {/*  })} */}
+              {/*  onClick={this.handleMobileSearchButtonClick} */}
+              {/* > */}
+              {/*  <i */}
+              {/*    className={classNames('iconfont', { */}
+              {/*      'icon-close': searchBarActive, */}
+              {/*      'icon-search': !searchBarActive, */}
+              {/*    })}* /}
+              {/*  /> */}
+              {/* </button> */}
+              {/* {this.props.username && ( */}
+              {/*  <div className="Topnav__chat" key="more"> */}
+              {/*    {!messagesCount ? ( */}
+              {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
+              {/*    ) : ( */}
+              {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
+              {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
+              {/*      </div> */}
+              {/*    )} */}
+              {/*  </div> */}
+              {/* )} */}
+            </div>
+            {!isMobile && (
+              <div className="Topnav__right-bottom">
+                {this.content()}
+                {isAuthenticated && (
+                  <div
+                    className={classNames('Topnav__broker', {
+                      'justify-end': platformName === 'widgets',
+                    })}
+                  >
+                    {platformName === 'widgets' ? (
+                      <div className="st-header-broker-balance-pl-wrap">
+                        <Button type="primary" onClick={this.toggleModalBroker}>
+                          {intl.formatMessage({
+                            id: 'headerAuthorized.connectToBeaxy',
+                            defaultMessage: 'Connect to beaxy',
+                          })}
+                        </Button>
+                      </div>
+                    ) : (
+                      <BrokerBalance />
+                    )}
                   </div>
-                ) : (
-                  <BrokerBalance />
                 )}
               </div>
             )}
           </div>
         </div>
-      </div>
+        {isMobile && isMobileMenu && (
+          <MobileMenu
+            {...this.props}
+            {...this.state}
+            searchOptions={this.prepareOptions(autoCompleteSearchResults)}
+            onSearch={this.handleAutoCompleteSearch}
+            onSelect={this.handleSelectOnAutoCompleteDropdown}
+            onChange={this.handleOnChangeForAutoComplete}
+            onFocus={this.handleOnFocus}
+            onBlur={this.handleOnBlur}
+            onSearchPressEnter={this.handleSearchForInput}
+            hotNews={this.hotNews}
+            handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
+            handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
+            handleScrollToTop={this.handleScrollToTop}
+            mobileMenuToggler={this.mobileMenuToggler}
+            handleHotNewsPopoverVisibleChange={this.handleHotNewsPopoverVisibleChange}
+          />
+        )}
+      </React.Fragment>
     );
   }
 }
