@@ -32,7 +32,6 @@ import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/pla
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
 import PostQuotation from '../../investarena/components/PostQuotation';
-import TradeButton from '../../investarena/components/TradeButton';
 import './ObjectProfile.less';
 
 @withRouter
@@ -193,6 +192,7 @@ class ObjectProfile extends React.Component {
               <PostQuotation quoteSecurity={object.chartid} caller="od-op" />
             </div>
           )}
+          <hr style={{display: "none"}}/>
           {isAuthenticated && (
             <div className="object-profile__row justify-end">
               <IconButton
