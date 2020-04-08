@@ -40,7 +40,11 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
         <div className="Details__criteria-row nowrap">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
+          <Link
+            className="ml1"
+            to={`/object/${objectDetails.requiredObject ||
+              objectDetails.requiredObject.author_permlink}`}
+          >
             {requiredObjectName}
           </Link>
           ;

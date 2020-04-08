@@ -120,6 +120,16 @@ const getProposedWobj = metaData => {
   }
 };
 
+// const getCompany = metaData => {
+//   try {
+//     if (!metaData) return {};
+//     const parsedJsonMetadata = jsonParse(metaData) || {};
+//     return get(parsedJsonMetadata, ['waivioRewards', 'company']) || {};
+//   } catch (e) {
+//     return {};
+//   }
+// };
+
 const Body = props => {
   const options = {
     appUrl: props.appUrl,
@@ -130,6 +140,7 @@ const Body = props => {
   const objectDetails = getObjectDetails(props.json_metadata);
   const proposedWobj = getProposedWobj(props.json_metadata);
   const requiredObjectName = getFieldWithMaxWeight(objectDetails.required_object, 'name');
+  // const company = getCompany(props.json_metadata);
 
   return (
     <div className={classNames('Body', { 'Body--full': props.full })}>
@@ -142,6 +153,14 @@ const Body = props => {
           requiredObjectName={requiredObjectName}
         />
       )}
+      {/* {!isEmpty(company) && ( */}
+      {/*  <DetailsBody */}
+      {/*    objectDetails={company} */}
+      {/*    intl={props.intl} */}
+      {/*    proposedWobj={company.name} */}
+      {/*    requiredObjectName={company} */}
+      {/*  /> */}
+      {/* )} */}
     </div>
   );
 };
