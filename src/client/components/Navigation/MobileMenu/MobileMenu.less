@@ -26,9 +26,10 @@
     line-height: 30px;
   }
 
-  .UserData {
+  .userData {
     display: flex;
     justify-content: space-between;
+    height: 3.5rem;
   }
 
   .BrokerBalance {
@@ -43,6 +44,14 @@
     }
   }
 
+  .CurrencyItem {
+    height: 2rem;
+    &__value {
+      height: 2rem;
+      color: @white-smoke;
+    }
+  }
+
   &__disconnect-broker {
     display: flex;
     margin-top: 50px;
@@ -52,6 +61,7 @@
   &__input-container {
     position: relative;
     display: flex;
+    width: 15rem;
     margin: 1rem 0;
 
     input {
@@ -85,17 +95,11 @@
     border-color: @white;
     background-color: @white;
   }
-
-  .Icon {
-    &-notification {
-      background-image: '../';
-    }
-  }
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 180px !important;
-  width: calc(100% - 145px);
+  top: 175px !important;
+  width: calc(100% - 15rem);
   border-right: 1px solid @baby-blue;
   border-left: 1px solid @baby-blue;
   border-bottom: 1px solid @baby-blue;

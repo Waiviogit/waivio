@@ -152,13 +152,10 @@ class Topnav extends React.Component {
       searchBarValue: '',
       notificationsPopoverVisible: false,
       selectedPage: '',
-      hotNewsPopoverVisible: false,
       searchData: '',
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
-      dailyChosenPost: '',
-      weeklyChosenPost: '',
       scrolling: false,
       visible: false,
       isMobileMenu: false,
@@ -276,23 +273,6 @@ class Topnav extends React.Component {
     this.setState({ popoverBrokerVisible: visible });
   }
 
-  handleHotNewsPopoverVisibleChange = async () => {
-    console.log('log');
-    this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
-    if (_.isEmpty(this.state.dailyChosenPost)) {
-      getTopPosts()
-        .then(data => {
-          if (!_.isEmpty(data.daily_chosen_post) && !_.isEmpty(data.weekly_chosen_post)) {
-            this.setState({
-              dailyChosenPost: data.daily_chosen_post,
-              weeklyChosenPost: data.weekly_chosen_post,
-            });
-          }
-        })
-        .catch(error => console.error(error));
-    }
-  };
-
   handleNotificationsPopoverVisibleChange(visible) {
     if (visible) {
       this.setState({ notificationsPopoverVisible: visible });
@@ -409,60 +389,6 @@ class Topnav extends React.Component {
       </PopoverContainer>
     );
   };
-
-  // hotNews = () => {
-  //   const { intl, screenSize } = this.props;
-  //   const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
-  //   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-  //   return (
-  //     <BTooltip
-  //       placement="bottom"
-  //       title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-  //       overlayClassName="Topnav__notifications-tooltip"
-  //       mouseEnterDelay={1}
-  //     >
-  //       <PopoverContainer
-  //         placement="bottomRight"
-  //         trigger="click"
-  //         content={
-  //           <div className="Topnav__hot-news">
-  //             {!_.isEmpty(dailyChosenPost) && (
-  //               <Link
-  //                 to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-  //                 className="Topnav__hot-news-item"
-  //                 onClick={this.handleHotNewsPopoverVisibleChange}
-  //               >
-  //                 {dailyChosenPost.title}
-  //               </Link>
-  //             )}
-  //             {!_.isEmpty(weeklyChosenPost) && (
-  //               <Link
-  //                 to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-  //                 className="Topnav__hot-news-item"
-  //                 onClick={this.handleHotNewsPopoverVisibleChange}
-  //               >
-  //                 {weeklyChosenPost.title}
-  //               </Link>
-  //             )}
-  //             <Link
-  //               to="/economical-calendar"
-  //               className="Topnav__hot-news-item"
-  //               onClick={this.handleHotNewsPopoverVisibleChange}
-  //             >
-  //               Economical calendar
-  //             </Link>
-  //           </div>
-  //         }
-  //         visible={hotNewsPopoverVisible}
-  //         onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-  //         overlayClassName="Notifications__popover-overlay"
-  //         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-  //       >
-  //         {!isMobile ? <Icon type="fire" className="iconfont fire-icon" /> : <img className="fire-img" alt="news" src="/images/icons/ia-icon-fire.svg"/>}
-  //       </PopoverContainer>
-  //     </BTooltip>
-  //   );
-  // };
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
@@ -834,7 +760,6 @@ class Topnav extends React.Component {
     this.setState({
       dropdownOpen: false,
     });
-    console.log('sadf');
   };
 
   handleClearSearchData = () =>
@@ -1039,7 +964,6 @@ class Topnav extends React.Component {
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
             handleScrollToTop={this.handleScrollToTop}
             mobileMenuToggler={this.mobileMenuToggler}
-            handleHotNewsPopoverVisibleChange={this.handleHotNewsPopoverVisibleChange}
           />
         )}
       </React.Fragment>
