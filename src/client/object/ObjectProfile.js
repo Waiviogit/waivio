@@ -192,7 +192,7 @@ class ObjectProfile extends React.Component {
               <PostQuotation quoteSecurity={object.chartid} caller="od-op" />
             </div>
           )}
-          <hr style={{display: "none"}}/>
+          <hr style={{ display: 'none' }} />
           {isAuthenticated && (
             <div className="object-profile__row justify-end">
               <IconButton

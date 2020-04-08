@@ -1,6 +1,42 @@
 @import (reference) '../../../client/styles/custom';
 
 .nightmode {
+  .ant-calendar-input {
+    color: @white-smoke;
+  }
+
+  .ant-calendar-date {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-date:hover {
+    color: @black !important;
+  }
+
+  .ant-calendar-disabled-cell .ant-calendar-date {
+    color: @normal-grey !important;
+    background: @grey-nero;
+  }
+
+  .ant-calendar-time .ant-calendar-day-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-time-picker-select li:hover {
+    color: @white-smoke !important;
+    background: @normal-grey;
+  }
+
+  .ant-calendar-time-picker-column-2 .ant-calendar-time-picker-select {
+    color: @white-smoke !important;
+    background: @grey-nero !important;
+  }
+
+  li.ant-calendar-time-picker-select-option-selected {
+    color: @white-smoke;
+    background: @grey-nero;
+  }
+
   .st-create-post-optional {
     .ant-collapse {
       background-color: @grey-nero;
