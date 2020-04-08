@@ -15,11 +15,7 @@ import { getFollowingObjectsList, getIsAuthenticated } from '../../reducers';
 import TopInstrumentsItem from './TopInstrumentsItem';
 
 const instrumentsDefault = {
-  Index: ['DOWUSD', 'DAXEUR'],
-  Crypto: ['Bitcoin', 'Etherium'],
-  Currency: ['AUDCAD', 'EURUSD'],
-  Commodity: ['XPTUSD', 'UKOUSD'],
-  Stock: ['Gazprom', 'Adidas'],
+  crypto: ['Bitcoin', 'Etherium'],
 };
 
 @injectIntl
@@ -52,7 +48,7 @@ class TopInstruments extends React.Component {
   };
 
   state = {
-    instrumentsToShow: { Crypto: [], Currency: [], Commodity: [], Stock: [], Index: [] },
+    instrumentsToShow: { crypto: [] },
     isLoading: true,
     instrumentsCount: 0,
   };
@@ -83,7 +79,7 @@ class TopInstruments extends React.Component {
 
   sortSidebarItems(quotesSettings) {
     const { followingObjects } = this.props;
-    const instrumentsToShow = { Crypto: [], Currency: [], Commodity: [], Stock: [], Index: [] };
+    const instrumentsToShow = { crypto: [] };
     let instrumentsCount = 0;
     _.forEach(quotesSettings, quoteSettings => {
       if (
@@ -124,12 +120,6 @@ class TopInstruments extends React.Component {
               market =>
                 !_.isEmpty(instrumentsToShow[market.name]) && (
                   <div className="SidebarContentBlock top-instruments" key={market.name}>
-                    <div className="SidebarContentBlock__title">
-                      <Link to={`/markets/${market.name.toLowerCase()}`}>
-                        {intl.formatMessage(market.intl).toUpperCase()}
-                      </Link>
-                      {/* {isAuthenticated && <div className="SidebarContentBlock__amount">{instrumentsToShow[market.name].length}</div>} */}
-                    </div>
                     <div className="SidebarContentBlock__content">
                       {instrumentsToShow[market.name].map(
                         instrumentName =>

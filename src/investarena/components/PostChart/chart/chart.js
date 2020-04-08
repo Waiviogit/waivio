@@ -545,27 +545,35 @@ class Chart {
       ],
     ];
     this.drawPolygon(arrayDot, color);
-    let rate;
-    if (quoteSettings) {
-      rate = ParsingPriceHelper.parseRate(
-        quote.price / 1000000,
-        quoteSettings.tickSize,
-        quoteSettings.priceRounding / 1000000,
-      );
-    }
-    if (rate) {
-      const dot = rate.dot === 0 ? '' : '.';
-      const priceArray = [rate.small, dot + rate.big, rate.mid];
-      let textPosition = this.canvasWork.width + 10;
-      this.drawText(textPosition, heightCoord + 5, priceArray[0], '13px sans-serif', 'white');
-      textPosition += this.ctx.measureText(priceArray[0]).width;
-      this.drawText(textPosition, heightCoord + 5, priceArray[1], '16px sans-serif', 'white');
-      textPosition += this.ctx.measureText(priceArray[1]).width;
-      this.drawText(textPosition, heightCoord + 2, priceArray[2], '13px sans-serif', 'white');
-    } else {
-      const textPosition = this.canvasWork.width + 10;
-      this.drawText(textPosition, heightCoord + 5, '-', '13px sans-serif', 'white');
-    }
+    // let rate;
+    // if (quoteSettings) {
+    //   rate = ParsingPriceHelper.parseRate(
+    //     quote.price / 1000000,
+    //     quoteSettings.tickSize,
+    //     quoteSettings.priceRounding / 1000000,
+    //   );
+    // }
+    // if (rate) {
+    //   const dot = rate.dot === 0 ? '' : '.';
+    //   const priceArray = [rate.small, dot + rate.big, rate.mid];
+    //   let textPosition = this.canvasWork.width + 10;
+    //   this.drawText(textPosition, heightCoord + 5, priceArray[0], '13px sans-serif', 'white');
+    //   textPosition += this.ctx.measureText(priceArray[0]).width;
+    //   this.drawText(textPosition, heightCoord + 5, priceArray[1], '16px sans-serif', 'white');
+    //   textPosition += this.ctx.measureText(priceArray[1]).width;
+    //   this.drawText(textPosition, heightCoord + 2, priceArray[2], '13px sans-serif', 'white');
+    // } else {
+    //   const textPosition = this.canvasWork.width + 10;
+    //   this.drawText(textPosition, heightCoord + 5, '-', '13px sans-serif', 'white');
+    // }
+    const textPosition = this.canvasWork.width + 10;
+    this.drawText(
+      textPosition,
+      heightCoord + 5,
+      quote.price ? quote.price / 1000000 : '-',
+      '14px sans-serif',
+      'white',
+    );
   }
   drawTimeMark(shortBars, times) {
     const startDate = this.firstBarTime;

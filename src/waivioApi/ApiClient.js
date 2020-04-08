@@ -12,7 +12,7 @@ import { supportedObjectTypes } from '../investarena/constants/objectsInvestaren
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 import { logout } from '../client/auth/authActions';
 
-const filterKey = 'investarena';
+const filterKey = 'beaxy';
 
 let headers = {
   app: filterKey,
@@ -244,7 +244,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
   });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, limit, sortByApp: 'investarena' };
+  const requestBody = { search_string: searchString, limit, sortByApp: 'beaxy' };
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
@@ -1136,6 +1136,16 @@ class WaivioApiClient {
     return Boolean(this._authToken);
   }
 }
+
+export const getWalletCryptoPriceHistory = symbol => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = WaivioApiClient.instance;

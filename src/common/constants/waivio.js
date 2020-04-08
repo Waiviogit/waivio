@@ -24,5 +24,4 @@ export const GUEST_COOKIES = {
 
 export const BANK_ACCOUNT = 'waiviobank';
 
-export const DEFAULT_OBJECT_AVATAR_URL =
-  'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+export const DEFAULT_OBJECT_AVATAR_URL = '/images/icons/icon-72x72.png';

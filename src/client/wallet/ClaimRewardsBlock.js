@@ -53,15 +53,14 @@ class ClaimRewardsBlock extends Component {
     });
 
     SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
-      .then(
-        () =>
-          this.setState({
-            loading: false,
-            rewardClaimed: true,
-          }),
+      .then(() => {
+        this.setState({
+          loading: false,
+          rewardClaimed: true,
+        });
 
-        this.props.getUserAccountHistory(name).then(() => this.props.reload()),
-      )
+        this.props.getUserAccountHistory(name).then(() => this.props.reload());
+      })
       .catch(e => {
         this.setState({
           loading: false,

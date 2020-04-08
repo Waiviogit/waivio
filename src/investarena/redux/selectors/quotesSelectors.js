@@ -24,7 +24,7 @@ export const makeGetInstrumentsDropdownOptions = () =>
     if (size(quotesSettings) !== 0) {
       map(quotesSettings, (item, key) => {
         if (quotes[key] && Number(quotes[key].askPrice) !== 0 && !blackListQuotes.includes(key)) {
-          optionsQuote.push({ value: key, label: `${item.baseCurrency}/${item.termCurrency}` });
+          optionsQuote.push({ value: key, label: item.name });
         }
       });
     }

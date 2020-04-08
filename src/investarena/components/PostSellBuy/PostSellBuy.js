@@ -1,4 +1,5 @@
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -20,12 +21,14 @@ const propTypes = {
   isExpired: PropTypes.bool.isRequired,
   postPrice: PropTypes.string.isRequired,
   recommend: PropTypes.string.isRequired,
+  screenSize: PropTypes.string,
 };
 const defaultProps = {
   quoteSettings: quoteSettingsData,
   quote: quoteData,
   profitability: 0,
   finalQuote: {},
+  screenSize: 'large',
 };
 
 const PostSellBuy = ({
@@ -38,6 +41,7 @@ const PostSellBuy = ({
   isExpired,
   forecast,
   finalQuote,
+  screenSize,
 }) => {
   let profitabilityIcon;
   const wobj = (quoteSettings && quoteSettings.wobjData) || {};
@@ -58,82 +62,107 @@ const PostSellBuy = ({
       </div>
     );
   }
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+
+  const priceDirection = () => (
+    <div
+      className={`st-post-sell-buy-block st-post-recommend-${recommendPost} ${
+        isMobile ? 'm-0' : ''
+      }`}
+    >
+      <div
+        title={intl.formatMessage({
+          id: 'tips.recommendationType',
+          defaultMessage: 'Forecast type',
+        })}
+        className={`st-post-sell-buy-icon-${recommendPost}`}
+      >
+        <FormattedMessage
+          id={`postQuotation.recommend.${recommendPost}`}
+          defaultMessage={recommendPost.toUpperCase()}
+        />
+      </div>
+      <div
+        title={intl.formatMessage({
+          id: 'tips.recommendationPrice',
+          defaultMessage: 'Price at the beginning of the forecast',
+        })}
+      >
+        {quoteFormat(postPrice, quoteSettings)}
+      </div>
+    </div>
+  );
+
+  const priceCurrent = () => (
+    <PostCurrentPrice
+      quoteSettings={quoteSettings}
+      quote={quote}
+      finalQuote={finalQuote}
+      isExpired={isExpired}
+      recommend={recommendPost}
+      forecast={forecast}
+    />
+  );
+
   return (
     <React.Fragment>
-      {finalQuote || (quoteSettings && quoteSettings.leverage && wobj && wobj.author_permlink) ? (
-        <div className="st-post-sell-buy-wrap">
-          <div className="d-flex align-items-center">
-            <InstrumentAvatar
-              avatarlink={wobj.avatarlink}
-              market={quoteSettings.market}
-              permlink={wobj.author_permlink}
-            />
-            <div className="st-margin-left-small">
-              {wobj.author_permlink ? (
-                <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
-                  {quoteSettings.name}
-                </Link>
-              ) : (
-                finalQuote && <span className="fw7">{finalQuote.security}</span>
-              )}
+      {!isEmpty(finalQuote) ||
+      (quoteSettings && quoteSettings.defaultQuantity && wobj && wobj.author_permlink) ? (
+        <React.Fragment>
+          <div className="st-post-sell-buy-wrap">
+            <div className="d-flex align-items-center">
+              <InstrumentAvatar
+                avatarlink={wobj.avatarlink}
+                market={quoteSettings.market}
+                permlink={wobj.author_permlink}
+              />
+              <div className="st-margin-left-small">
+                {wobj.author_permlink ? (
+                  <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
+                    {quoteSettings.name}
+                  </Link>
+                ) : (
+                  finalQuote && <span className="fw7">{finalQuote.security}</span>
+                )}
+              </div>
+              {!isMobile && priceDirection()}
             </div>
-            <div className={`st-post-sell-buy-block st-post-recommend-${recommendPost}`}>
-              <div
-                title={intl.formatMessage({
-                  id: 'tips.recommendationType',
-                  defaultMessage: 'Forecast type',
-                })}
-                className={`st-post-sell-buy-icon-${recommendPost}`}
-              >
-                <FormattedMessage
-                  id={`postQuotation.recommend.${recommendPost}`}
-                  defaultMessage={recommendPost.toUpperCase()}
+            <div className="d-flex align-items-center">
+              {!isMobile && priceCurrent()}
+              <div className="d-flex st-margin-left-large">
+                <span
+                  className="st-post-sell-buy-profitability"
+                  title={intl.formatMessage({
+                    id: 'tips.profitabilityTitle',
+                    defaultMessage:
+                      'The difference between the price at the time of publication of the post and the current price in pips',
+                  })}
+                >
+                  <FormattedMessage id="postSellBuy.profitability" defaultMessage="Profitability" />
+                </span>
+                <PostDifference
+                  quoteSettings={quoteSettings}
+                  isExpired={isExpired}
+                  profitability={profitability}
+                  quote={quote}
+                  forecast={forecast}
+                  postPrice={postPrice}
+                  recommend={recommend}
                 />
               </div>
-              <div
-                title={intl.formatMessage({
-                  id: 'tips.recommendationPrice',
-                  defaultMessage: 'Price at the beginning of the forecast',
-                })}
-              >
-                {quoteFormat(postPrice, quoteSettings)}
-              </div>
+              {profitabilityIcon}
             </div>
           </div>
-          <div className="d-flex align-items-center">
-            <PostCurrentPrice
-              quoteSettings={quoteSettings}
-              quote={quote}
-              finalQuote={finalQuote}
-              isExpired={isExpired}
-              recommend={recommendPost}
-              forecast={forecast}
-            />
-            <div className="d-flex st-margin-left-large">
-              <span
-                className="st-post-sell-buy-profitability"
-                title={intl.formatMessage({
-                  id: 'tips.profitabilityTitle',
-                  defaultMessage:
-                    'The difference between the price at the time of publication of the post and the current price in pips',
-                })}
-              >
-                <FormattedMessage id="postSellBuy.profitability" defaultMessage="Profitability" />
-              </span>
-              <PostDifference
-                quoteSettings={quoteSettings}
-                isExpired={isExpired}
-                profitability={profitability}
-                quote={quote}
-                forecast={forecast}
-                postPrice={postPrice}
-                recommend={recommend}
-              />
+          {isMobile && (
+            <div className="st-post-sell-buy-wrap">
+              {priceDirection()}
+              {priceCurrent()}
             </div>
-            {profitabilityIcon}
-          </div>
-        </div>
-      ) : null}
+          )}
+        </React.Fragment>
+      ) : (
+        <div />
+      )}
     </React.Fragment>
   );
 };

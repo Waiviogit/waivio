@@ -5,8 +5,13 @@ const initialState = {};
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case UPDATE_QUOTES_SETTINGS:
-      return { ...state, ...action.payload };
+    case UPDATE_QUOTES_SETTINGS: {
+      const quotesSettings = Object.values(action.payload).reduce((acc, curr) => {
+        acc[curr.keyName] = { ...curr, name: `${curr.baseCurrency}/${curr.termCurrency}` };
+        return acc;
+      }, {});
+      return { ...state, ...quotesSettings };
+    }
     case AUTHORIZE_BROKER_SUCCESS:
     case DISCONNECT_BROKER_SUCCESS:
       return initialState;
