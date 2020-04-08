@@ -110,7 +110,7 @@ const MobileMenu = props => {
             </Link>
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="hot">
-            <HotNews />
+            <HotNews isMobile />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item" key="notifications">
             <BTooltip
@@ -201,12 +201,12 @@ const MobileMenu = props => {
       <i className="MobileMenu__mask" onClick={mobileMenuToggler} role="presentation" />
       <div className="MobileMenu__wrapper">
         {username && (
-          <div className="UserData">
+          <div className="userData">
             <ModalBroker />
-            <span className="UserData__broker-balance">
+            <span className="userData__broker-balance">
               {platformName === 'beaxy' && <BrokerBalance isMobile />}
             </span>
-            <span className="UserData__user">
+            <span className="userData__user">
               <Link to={`/@${username}`} onClick={handleScrollToTop}>
                 <Avatar username={username} size={50} />
               </Link>
