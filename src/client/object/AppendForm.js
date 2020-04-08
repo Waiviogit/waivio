@@ -468,50 +468,49 @@ export default class AppendForm extends Component {
     if (event) event.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log(values);
-      // const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
-      //   if (field.body === values.rating) {
-      //     return field.locale === values.currentLocale ? [...acc, field] : acc;
-      //   }
-      //
-      //   return acc;
-      // }, []);
-      //
-      // if (!identicalNameFields.length) {
-      //   const { form, intl } = this.props;
-      //   const currentField = form.getFieldValue('currentField');
-      //   if (objectFields.newsFilter === currentField) {
-      //     const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
-      //       sub => sub.length,
-      //     );
-      //     const ignoreList = map(this.state.ignoreList, o => o.id);
-      //     if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
-      //     else {
-      //       message.error(
-      //         intl.formatMessage({
-      //           id: 'at_least_one',
-      //           defaultMessage: 'You should add at least one object',
-      //         }),
-      //       );
-      //     }
-      //   } else if (err || this.checkRequiredField(form, currentField)) {
-      //     message.error(
-      //       this.props.intl.formatMessage({
-      //         id: 'append_validate_common_message',
-      //         defaultMessage: 'The value is already exist',
-      //       }),
-      //     );
-      //   } else {
-      //     this.onSubmit(values);
-      //   }
-      // } else {
-      //   message.error(
-      //     this.props.intl.formatMessage({
-      //       id: 'append_validate_message',
-      //       defaultMessage: 'The rating with such name already exist in this locale',
-      //     }),
-      //   );
-      // }
+      const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
+        if (field.body === values.rating) {
+          return field.locale === values.currentLocale ? [...acc, field] : acc;
+        }
+
+        return acc;
+      }, []);
+
+      if (!identicalNameFields.length) {
+        const { form, intl } = this.props;
+        const currentField = form.getFieldValue('currentField');
+        if (objectFields.newsFilter === currentField) {
+          const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
+            sub => sub.length,
+          );
+          const ignoreList = map(this.state.ignoreList, o => o.id);
+          if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
+          else {
+            message.error(
+              intl.formatMessage({
+                id: 'at_least_one',
+                defaultMessage: 'You should add at least one object',
+              }),
+            );
+          }
+        } else if (err || this.checkRequiredField(form, currentField)) {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'append_validate_common_message',
+              defaultMessage: 'The value is already exist',
+            }),
+          );
+        } else {
+          this.onSubmit(values);
+        }
+      } else {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'append_validate_message',
+            defaultMessage: 'The rating with such name already exist in this locale',
+          }),
+        );
+      }
     });
   };
 
@@ -550,22 +549,29 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+
     if (
-      currentField === objectFields.phone ||
       currentField === objectFields.website ||
       currentField === objectFields.address ||
       currentField === objectFields.map ||
       currentField === objectFields.status ||
-      currentField === objectFields.button
+      currentField === objectFields.button ||
+      currentField === objectFields.link
     ) {
-      console.log(this.getCurrentObjectBody(currentField));
-      console.log(filtered[0].body);
       return filtered.some(
         f =>
           isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)) &&
           f.locale === currentLocale,
       );
     }
+
+    if (currentField === objectFields.phone) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).number === f.number && f.locale === currentLocale,
+      );
+    }
+
     const currentValue = form.getFieldValue(currentField);
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };

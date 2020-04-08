@@ -295,7 +295,9 @@ class CatalogWrap extends React.Component {
 
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
-    if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
+    const actualeListItems = listItems && listItems.filter(list => list.status);
+
+    if (isEmpty(actualeListItems) && !isEmpty(breadcrumb)) {
       return (
         <div>
           {this.props.intl.formatMessage({
@@ -309,7 +311,7 @@ class CatalogWrap extends React.Component {
       get(item, 'objects[0].object.author_permlink'),
     );
 
-    return map(listItems, listItem => this.getListRow(listItem, campaignObjects));
+    return map(actualeListItems, listItem => this.getListRow(listItem, campaignObjects));
   };
 
   // Propositions
@@ -424,7 +426,6 @@ class CatalogWrap extends React.Component {
     ]);
     const isListObject =
       hasType(currWobject, OBJ_TYPE.LIST) || (!wobjNested && has(wobject, 'menuItems'));
-    const actualeListItems = listItems && listItems.filter(list => list.status);
 
     const sortSelector =
       currWobject &&
@@ -517,7 +518,7 @@ class CatalogWrap extends React.Component {
           <React.Fragment>
             <div className="CatalogWrap__sort">{sortSelector}</div>
             <div className="CatalogWrap">
-              <div>{this.getMenuList(actualeListItems)}</div>
+              <div>{this.getMenuList()}</div>
             </div>
           </React.Fragment>
         )}
