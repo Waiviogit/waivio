@@ -18,6 +18,7 @@ const initialState = {
   showPostModal: false,
   currentShownPost: {},
   screenSize: 'large',
+  isMobile: false,
 };
 
 export default (state = initialState, action) => {
@@ -100,13 +101,15 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
-      const { symbol, usdPriceHistory } = action.payload;
+      const { symbol, usdPriceHistory, btcPriceHistory, priceDetails } = action.payload;
       return {
         ...state,
         cryptosPriceHistory: {
           ...state.cryptosPriceHistory,
           [symbol]: {
             usdPriceHistory,
+            btcPriceHistory,
+            priceDetails,
           },
         },
       };
@@ -122,6 +125,14 @@ export default (state = initialState, action) => {
       return {
         ...state,
         showPostModal: false,
+      };
+    // eslint-disable-next-line no-case-declarations
+    case appTypes.SET_IS_MOBILE:
+      const agents = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i;
+      const isMobile = agents.test(navigator.userAgent);
+      return {
+        ...state,
+        isMobile,
       };
     default:
       return state;
@@ -141,3 +152,4 @@ export const getTranslations = state => state.translations;
 export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
 export const getShowPostModal = state => state.showPostModal;
 export const getCurrentShownPost = state => state.currentShownPost;
+export const getIsMobile = state => state.isMobile;

@@ -495,18 +495,17 @@ export default class Umarkets {
     const timeScale = chart.barType;
     const bars =
       chart.bars &&
-      chart.bars
-        .map(b => ({
-          ...b,
-          closeAsk: b.closeAsk * 1000000,
-          closeBid: b.closeBid * 1000000,
-          highAsk: b.highAsk * 1000000,
-          highBid: b.highBid * 1000000,
-          lowAsk: b.lowAsk * 1000000,
-          lowBid: b.lowBid * 1000000,
-          openAsk: b.openAsk * 1000000,
-          openBid: b.openBid * 1000000,
-        }));
+      chart.bars.map(b => ({
+        ...b,
+        closeAsk: b.closeAsk * 1000000,
+        closeBid: b.closeBid * 1000000,
+        highAsk: b.highAsk * 1000000,
+        highBid: b.highBid * 1000000,
+        lowAsk: b.lowAsk * 1000000,
+        lowBid: b.lowBid * 1000000,
+        openAsk: b.openAsk * 1000000,
+        openBid: b.openBid * 1000000,
+      }));
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
     // get chart data for tech chart via http
     // if (this.hasOwnProperty('publish')) {
