@@ -14,8 +14,8 @@ import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
 import DetailsBody from '../../rewards/Details/DetailsBody';
-import './Body.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import './Body.less';
 
 export const remarkable = new Remarkable({
   html: true,
@@ -104,7 +104,7 @@ const getObjectDetails = metaData => {
   try {
     if (!metaData) return {};
     const parsedJsonMetadata = jsonParse(metaData) || {};
-    return get(parsedJsonMetadata, 'waivioRewards.proposition') || {};
+    return get(parsedJsonMetadata, ['waivioRewards', 'proposition']) || {};
   } catch (e) {
     return {};
   }
@@ -114,7 +114,7 @@ const getProposedWobj = metaData => {
   try {
     if (!metaData) return {};
     const parsedJsonMetadata = jsonParse(metaData) || {};
-    return get(parsedJsonMetadata, 'waivioRewards.proposedWobj') || {};
+    return get(parsedJsonMetadata, ['waivioRewards', 'proposition']) || {};
   } catch (e) {
     return {};
   }
