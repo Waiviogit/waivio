@@ -549,13 +549,14 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+
     if (
-      currentField === objectFields.phone ||
       currentField === objectFields.website ||
       currentField === objectFields.address ||
       currentField === objectFields.map ||
       currentField === objectFields.status ||
-      currentField === objectFields.button
+      currentField === objectFields.button ||
+      currentField === objectFields.link
     ) {
       return filtered.some(
         f =>
@@ -563,6 +564,14 @@ export default class AppendForm extends Component {
           f.locale === currentLocale,
       );
     }
+
+    if (currentField === objectFields.phone) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).number === f.number && f.locale === currentLocale,
+      );
+    }
+
     const currentValue = form.getFieldValue(currentField);
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };

@@ -67,6 +67,12 @@
   &__criteria-row {
     display: flex;
 
+    .ant-checkbox-inner::after {
+      border-color: @orange-hot !important;
+      -webkit-animation-name: none;
+      animation-name: none;
+    }
+
     .ant-checkbox-wrapper {
       font-size: 0.75rem;
       margin-right: 0.5rem;
