@@ -127,12 +127,14 @@ class ObjectInfo extends React.Component {
       // eslint-disable-next-line no-unused-expressions,jsx-a11y/no-static-element-interactions
       categoryItems.length > 5 &&
         elements.push(
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-          <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
+          <React.Fragment>
             {!this.state.showMore ? (
-              <FormattedMessage id="objectinfo_more" defaultMessage="more..." />
+              // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+              <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
+                <FormattedMessage id="objectinfo_more" defaultMessage="more..." />
+              </span>
             ) : null}
-          </span>,
+          </React.Fragment>,
         );
       return elements;
     }
