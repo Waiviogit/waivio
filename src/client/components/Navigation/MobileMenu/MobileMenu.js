@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -37,8 +37,6 @@ const MobileMenu = props => {
     toggleModal,
   } = props;
 
-  const mobileRef = useRef(null);
-
   const isBeaxyUser = getIsBeaxyUser(username);
 
   const onLogoutHandler = () => {
@@ -46,12 +44,11 @@ const MobileMenu = props => {
     mobileMenuToggler();
   };
 
-  const toggleModalBroker = () => {
-    toggleModal('broker');
-  };
+  const memoLogoutHandler = () => useCallback(() => onLogoutHandler(), []);
+  const memoToggleModalBroker = useCallback(() => toggleModal('broker'), []);
 
   return (
-    <div className="MobileMenu" ref={mobileRef}>
+    <div className="MobileMenu">
       <i className="MobileMenu__mask" onClick={mobileMenuToggler} role="presentation" />
       <div className="MobileMenu__wrapper">
         {username && (
@@ -98,14 +95,14 @@ const MobileMenu = props => {
         </div>
         {username ? <MenuButtons {...props} toggleMenu={mobileMenuToggler} /> : <SignUp />}
         <LoggedMenuMobile
-          onLogout={onLogoutHandler}
+          onLogout={memoLogoutHandler}
           toggleMenu={mobileMenuToggler}
           username={username}
         />
         {username && !isBeaxyUser && (
           <div className="MobileMenu__connect-broker">
             {platformName === 'widgets' ? (
-              <Button onClick={toggleModalBroker}>
+              <Button onClick={memoToggleModalBroker}>
                 {intl.formatMessage({
                   id: 'headerAuthorized.connectToBeaxy',
                   defaultMessage: 'Connect to beaxy',
