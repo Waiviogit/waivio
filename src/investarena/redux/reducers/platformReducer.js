@@ -7,6 +7,7 @@ import {
   FORGOT_PASS_BROKER_REQUEST,
   FORGOT_PASS_BROKER_SUCCESS,
   FORGOT_PASS_BROKER_ERROR,
+  DISCONNECT_BROKER_SUCCESS,
 } from '../actions/brokersActions';
 import {
   CONNECT_PLATFORM_REQUEST,
@@ -37,6 +38,7 @@ const initialState = {
   currencySettings: {},
   currenciesDescriptions: {},
   isLoading: false,
+  isBrokerConnected: false,
   accountCurrency: 'USD',
   currentAccountName: '',
   accounts: [],
@@ -112,6 +114,16 @@ export default function(state = initialState, action) {
     case REGISTER_BROKER_REQUEST:
       return { ...state, isLoading: true };
     case AUTHORIZE_BROKER_SUCCESS:
+      return {
+        ...state,
+        isBrokerConnected: true,
+        isLoading: false,
+      };
+    case DISCONNECT_BROKER_SUCCESS:
+      return {
+        ...state,
+        isBrokerConnected: false,
+      };
     case AUTHORIZE_BROKER_ERROR:
     case REGISTER_BROKER_ERROR:
     case FORGOT_PASS_BROKER_SUCCESS:
@@ -130,3 +142,4 @@ export const getCurrencySettings = state => state.currencySettings;
 export const getUserStatistics = state => state.userStatistics;
 export const getBeaxyWallet = state => state.userWallet;
 export const getCurrenciesDescriptions = state => state.currenciesDescriptions;
+export const getIsBrokerConnected = state => state.isBrokerConnected;
