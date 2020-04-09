@@ -2,6 +2,7 @@ import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { GET_USER_METADATA } from '../user/usersActions';
+import { mobileUserAgents } from '../helpers/regexHelpers';
 
 const initialState = {
   isFetching: false,
@@ -135,13 +136,10 @@ export default (state = initialState, action) => {
         ...state,
         showPostModal: false,
       };
-    // eslint-disable-next-line no-case-declarations
     case appTypes.SET_IS_MOBILE:
-      const agents = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i;
-      const isMobile = agents.test(navigator.userAgent);
       return {
         ...state,
-        isMobile,
+        isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     default:
       return state;

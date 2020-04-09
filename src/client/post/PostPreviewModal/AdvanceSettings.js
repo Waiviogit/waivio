@@ -21,12 +21,14 @@ class AdvanceSettings extends Component {
     isUpdating: PropTypes.bool,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     intl: {},
     isUpdating: false,
     linkedObjects: [],
     objPercentage: {},
+    isGuest: false,
   };
 
   handleRewardChange = reward => this.props.onSettingsChange({ reward });
@@ -46,6 +48,7 @@ class AdvanceSettings extends Component {
       linkedObjects,
       objPercentage,
       settings: { reward, beneficiary, upvote },
+      isGuest,
     } = this.props;
     return (
       <Collapse>
@@ -102,7 +105,11 @@ class AdvanceSettings extends Component {
             </div>
           )}
           <div className="upvote-settings">
-            <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
+            <Checkbox
+              checked={upvote}
+              onChange={this.handleUpvoteChange}
+              disabled={isUpdating || isGuest}
+            >
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>

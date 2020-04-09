@@ -237,7 +237,6 @@ class Comment extends React.Component {
     const editable = isGuest ? comment.authorGuest === user.name : comment.author === user.name;
     const commentAuthorReputation = isGuest ? 0 : formatter.reputation(comment.author_reputation);
     const showCommentContent = commentAuthorReputation >= 0 || showHiddenComment;
-
     let content = null;
 
     const commentEditor = props => {
