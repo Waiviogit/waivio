@@ -129,7 +129,9 @@ class ObjectInfo extends React.Component {
         elements.push(
           // eslint-disable-next-line jsx-a11y/no-static-element-interactions
           <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
-            {!this.state.showMore ? 'more...' : null}
+            {!this.state.showMore ? (
+              <FormattedMessage id="objectinfo_more" defaultMessage="more..." />
+            ) : null}
           </span>,
         );
       return elements;
