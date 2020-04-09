@@ -1068,5 +1068,6 @@
   "discarded_successfully": "Резервация отменена. Вознаграждение будет доступно для резервации через несколько секунд.",
   "rewards_details_usersLegalNotice": "Oфициальное уведомление",
   "cryptos_sing_up": "- Криптовалюта",
-  "there_are_not_object_with_name": "Извините! Нет объекта {item} на Waivio"
+  "there_are_not_object_with_name": "Извините! Нет объекта {item} на Waivio",
+  "objectinfo_more": "еще..."
 }
