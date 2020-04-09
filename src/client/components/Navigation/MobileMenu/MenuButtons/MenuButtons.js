@@ -36,6 +36,10 @@ const MenuButtons = ({
       );
   const displayBadge = notificationsCount > 0;
   const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
+  const handleOnNotificationClick = () => {
+    handleCloseNotificationsPopover();
+    toggleMenu();
+  };
   return (
     <div className="MenuButtons">
       <Menu className="MenuButtons__wrap" mode="horizontal">
@@ -57,7 +61,7 @@ const MenuButtons = ({
           </Link>
         </Menu.Item>
         <Menu.Item className="MenuButtons__item" key="hot">
-          <HotNews isMobile />
+          <HotNews isMobile toggleMobileMenu={toggleMenu} />
         </Menu.Item>
         <Menu.Item className="MenuButtons__item" key="notifications">
           <BTooltip
@@ -72,7 +76,7 @@ const MenuButtons = ({
               content={
                 <Notifications
                   notifications={notifications}
-                  onNotificationClick={handleCloseNotificationsPopover}
+                  onNotificationClick={handleOnNotificationClick}
                   st-card__chart
                   currentAuthUsername={username}
                   lastSeenTimestamp={lastSeenTimestamp}

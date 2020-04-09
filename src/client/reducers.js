@@ -268,3 +268,4 @@ export const getUserStatistics = state => fromPlatformReducer.getUserStatistics(
 export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.platform);
 export const getCurrenciesDescriptions = state =>
   fromPlatformReducer.getCurrenciesDescriptions(state.platform);
+export const getIsBrokerConnected = state => fromPlatformReducer.getPlatformName(state.platform);

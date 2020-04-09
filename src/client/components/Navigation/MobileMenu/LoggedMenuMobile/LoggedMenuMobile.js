@@ -46,7 +46,11 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout }) => {
       <Link to="/discover" className="LoggedMenu__link" onClick={toggleMenu}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
-      <Link to="/about" className="LoggedMenu__link" onClick={toggleMenu}>
+      <Link
+        to="/object/qjr-investarena-q-and-a/list"
+        className="LoggedMenu__link"
+        onClick={toggleMenu}
+      >
         <FormattedMessage id="about" defaultMessage="About" />
       </Link>
     </React.Fragment>

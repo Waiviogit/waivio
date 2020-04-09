@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Icon, Menu } from 'antd';
+import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import BTooltip from '../BTooltip';
@@ -9,7 +9,7 @@ import PopoverContainer from '../Popover';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
 
 const HotNews = props => {
-  const { intl, isMobile } = props;
+  const { intl, isMobile, toggleMobileMenu } = props;
   const [hotNewsVisible, setHotNewsVisible] = useState(false);
   const [dailyChosenPost, setDailyChosenPost] = useState('');
   const [weeklyChosenPost, setWeeklyChosenPost] = useState('');
@@ -26,6 +26,7 @@ const HotNews = props => {
         })
         .catch(error => console.error(error));
     }
+    if (isMobile) toggleMobileMenu();
   };
 
   return (
@@ -87,10 +88,12 @@ const HotNews = props => {
 HotNews.propTypes = {
   intl: PropTypes.shape().isRequired,
   isMobile: PropTypes.bool,
+  toggleMobileMenu: PropTypes.func,
 };
 
 HotNews.defaultProps = {
   isMobile: false,
+  toggleMobileMenu: () => {},
 };
 
 export default injectIntl(HotNews);
