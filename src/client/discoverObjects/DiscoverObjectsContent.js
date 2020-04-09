@@ -14,12 +14,14 @@ import {
   getAvailableFilters,
   getHasMap,
   getAuthenticatedUserName,
+  getIsMapModalOpen,
 } from '../reducers';
 import {
   getObjectTypeByStateFilters,
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
+  getObjectTypeMap,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -31,9 +33,10 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition } from '../user/userActions';
+import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
+import { RADIUS, ZOOM } from '../../common/constants/map';
 
 const modalName = {
   FILTERS: 'filters',
@@ -56,6 +59,7 @@ const SORT_OPTIONS = {
     hasMoreObjects: getHasMoreRelatedObjects(state),
     searchString: new URLSearchParams(props.history.location.search).get('search'),
     userName: getAuthenticatedUserName(state),
+    isFullscreenMode: getIsMapModalOpen(state),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -65,6 +69,8 @@ const SORT_OPTIONS = {
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
     assignProposition,
     declineProposition,
+    getObjectTypeMap,
+    getCoordinates,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -84,6 +90,7 @@ class DiscoverObjectsContent extends Component {
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
+    getCoordinates: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -91,11 +98,15 @@ class DiscoverObjectsContent extends Component {
     userName: PropTypes.string.isRequired,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
+    isFullscreenMode: PropTypes.bool.isRequired,
+    getObjectTypeMap: PropTypes.func.isRequired,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     searchString: '',
     typeName: '',
+    userLocation: {},
   };
 
   constructor(props) {
@@ -106,17 +117,34 @@ class DiscoverObjectsContent extends Component {
       isModalOpen: false,
       modalTitle: '',
       loadingAssign: false,
+      infoboxData: false,
+      zoom: ZOOM,
+      center: [],
+      isInitial: true,
+      radius: RADIUS,
     };
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, typeName } = this.props;
-    dispatchGetObjectType(typeName, { skip: 0 });
+    const { dispatchGetObjectType, typeName, match } = this.props;
+    if (match.params.typeName !== 'restaurant') dispatchGetObjectType(typeName, { skip: 0 });
+    this.getCoordinates().then(() => {
+      const { radius, center } = this.state;
+      this.setMapArea({ radius, coordinates: center });
+    });
   }
 
   componentWillUnmount() {
     this.props.dispatchClearObjectTypeStore();
   }
+
+  getCoordinates = async () => {
+    const coord = await this.props.getCoordinates();
+    // todo: oksanana::Remove await. Cast to number with Number(). Check if coord has value property before use it
+    await this.setState({ center: [+coord.value.lat, +coord.value.lon] });
+  };
+
+  setMapArea = map => this.props.getObjectTypeMap(map, this.props.isFullscreenMode);
 
   getCommonFiltersLayout = () => (
     <React.Fragment>
@@ -282,9 +310,6 @@ class DiscoverObjectsContent extends Component {
         <div className="discover-objects-header__selection-block">
           <MobileNavigation />
           {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
-        </div>
-        <div className="discover-objects-header__tags-block common">
-          {this.getCommonFiltersLayout()}
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
