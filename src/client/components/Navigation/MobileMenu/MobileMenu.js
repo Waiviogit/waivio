@@ -44,8 +44,14 @@ const MobileMenu = props => {
     toggleMobileMenu();
   };
 
+  const onAvatarClick = () => {
+    handleScrollToTop();
+    toggleMobileMenu();
+  };
+
   const memoLogoutHandler = useCallback(() => onLogoutHandler(), []);
   const memoToggleModalBroker = useCallback(() => toggleModal('broker'), []);
+  const memoAvatarClick = useCallback(() => onAvatarClick(), []);
 
   return (
     <div className="MobileMenu">
@@ -58,7 +64,7 @@ const MobileMenu = props => {
               {platformName === 'beaxy' && <BrokerBalance isMobile />}
             </span>
             <span className="userData__user">
-              <Link to={`/@${username}`} onClick={handleScrollToTop}>
+              <Link to={`/@${username}`} onClick={memoAvatarClick}>
                 <Avatar username={username} size={50} />
               </Link>
             </span>
