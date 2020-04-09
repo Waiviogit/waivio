@@ -167,9 +167,6 @@ export default class AddButton extends React.Component {
                 return (
                   <CSSTransition
                     key={button.title}
-                    Add
-                    an
-                    image
                     classNames="md-add-btn-anim"
                     appear
                     timeout={{
