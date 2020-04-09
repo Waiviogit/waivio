@@ -1,11 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input } from 'antd';
 import classNames from 'classnames';
-import ModalBroker from '../../../../investarena/components/Modals/ModalBroker';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import { logout } from '../../../auth/authActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
@@ -15,6 +14,7 @@ import SignUp from '../../Sidebar/SignUp';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
 import MenuButtons from './MenuButtons/MenuButtons';
 import './MobileMenu.less';
+import { getIsBrokerConnected } from '../../../reducers';
 
 const MobileMenu = props => {
   const {
@@ -35,13 +35,25 @@ const MobileMenu = props => {
     platformName,
     toggleMobileMenu,
     toggleModal,
+    isBrokerConnected,
   } = props;
 
   const isBeaxyUser = getIsBeaxyUser(username);
 
+  const [isBrokerActions, setIsBrokerActions] = useState(false);
+
+  useEffect(() => {
+    if (isBrokerActions && isBrokerConnected) toggleMobileMenu();
+  }, [isBrokerConnected]);
+
   const onLogoutHandler = () => {
     onLogout();
     toggleMobileMenu();
+  };
+
+  const onBrokerConnectClick = () => {
+    toggleModal('broker');
+    setIsBrokerActions(true);
   };
 
   const onAvatarClick = () => {
@@ -49,8 +61,13 @@ const MobileMenu = props => {
     toggleMobileMenu();
   };
 
+  const onDisconnectPlatform = () => {
+    disconnectPlatform();
+    toggleMobileMenu();
+  };
+
   const memoLogoutHandler = useCallback(() => onLogoutHandler(), []);
-  const memoToggleModalBroker = useCallback(() => toggleModal('broker'), []);
+  const memoToggleModalBroker = useCallback(() => onBrokerConnectClick(), []);
   const memoAvatarClick = useCallback(() => onAvatarClick(), []);
 
   return (
@@ -59,7 +76,6 @@ const MobileMenu = props => {
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="userData">
-            <ModalBroker />
             <span className="userData__broker-balance">
               {platformName === 'beaxy' && <BrokerBalance isMobile />}
             </span>
@@ -115,7 +131,7 @@ const MobileMenu = props => {
                 })}
               </Button>
             ) : (
-              <Button onClick={disconnectPlatform}>
+              <Button onClick={onDisconnectPlatform}>
                 <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
               </Button>
             )}
@@ -144,6 +160,7 @@ MobileMenu.propTypes = {
   platformName: PropTypes.string.isRequired,
   toggleMobileMenu: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  isBrokerConnected: PropTypes.bool.isRequired,
 };
 
 MobileMenu.defaultProps = {
@@ -152,9 +169,13 @@ MobileMenu.defaultProps = {
   searchBarValue: '',
 };
 
+const mapStateToProps = state => ({
+  isBrokerConnected: getIsBrokerConnected(state),
+});
+
 const mapDispatchToProps = dispatch => ({
   onLogout: () => dispatch(logout()),
   disconnectPlatform: () => dispatch(disconnectBroker()),
 });
 
-export default injectIntl(connect(null, mapDispatchToProps)(MobileMenu));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(MobileMenu));
