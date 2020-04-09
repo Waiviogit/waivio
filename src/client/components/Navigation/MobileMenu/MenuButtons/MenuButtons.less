@@ -1,0 +1,65 @@
+@import (reference) '../../../../styles/custom.less';
+
+.MenuButtons {
+  &__wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 !important;
+    border: 0 !important;
+    color: @blue-vivid !important;
+    line-height: 48px !important;
+    height: 48px !important;
+  }
+
+  &__item {
+    padding: 0 !important;
+    color: inherit !important;
+    width: 36px;
+    height: 36px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 26px !important;
+    border-bottom: none !important;
+
+    &-link {
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+      color: inherit !important;
+      width: inherit;
+      height: inherit;
+      margin-right: 0;
+      border: 2px solid @blue-vivid;
+      border-radius: 50%;
+      font-weight: 600;
+
+      .feed {
+        width: 1.2rem;
+      }
+
+      .fire-img {
+        width: 1rem;
+      }
+    }
+  }
+
+  &__notifications-count {
+    height: 36px;
+    min-width: 36px;
+    border: 1px solid @white;
+    border-radius: 50%;
+    background-color: @primary-color;
+    color: @white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  &__notifications-tooltip.ant-tooltip.ant-tooltip-placement-bottom {
+    position: fixed;
+  }
+}

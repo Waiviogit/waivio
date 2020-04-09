@@ -9,6 +9,7 @@ import BTooltip from '../../../BTooltip';
 import HotNews from '../../HotNews';
 import PopoverContainer from '../../../Popover';
 import Notifications from '../../Notifications/Notifications';
+import './MenuButtons.less';
 
 const MenuButtons = ({
   intl,
@@ -36,33 +37,33 @@ const MenuButtons = ({
   const displayBadge = notificationsCount > 0;
   const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
   return (
-    <div className="Topnav__menu-container">
-      <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-        <Menu.Item className="Topnav__menu-item" key="write" onClick={toggleMenu}>
+    <div className="MenuButtons">
+      <Menu className="MenuButtons__wrap" mode="horizontal">
+        <Menu.Item className="MenuButtons__item" key="write" onClick={toggleMenu}>
           <BTooltip
             placement="bottom"
             title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-            overlayClassName="Topnav__notifications-tooltip"
+            overlayClassName="MenuButtons__notifications-tooltip"
             mouseEnterDelay={1}
           >
-            <Link to="/editor" className="Topnav__link Topnav__link--action">
+            <Link to="/editor" className="MenuButtons__item-link">
               <i className="iconfont icon-write" />
             </Link>
           </BTooltip>
         </Menu.Item>
-        <Menu.Item className="Topnav__menu-item" onClick={toggleMenu}>
-          <Link to="/" className="Topnav__link Topnav__link--light Topnav__link--action">
+        <Menu.Item className="MenuButtons__item" onClick={toggleMenu}>
+          <Link to="/" className="MenuButtons__item-link">
             <img className="feed" alt="feed" src={'/images/icons/ia-icon-feed.svg'} />
           </Link>
         </Menu.Item>
-        <Menu.Item className="Topnav__menu-item" key="hot">
+        <Menu.Item className="MenuButtons__item" key="hot">
           <HotNews isMobile />
         </Menu.Item>
-        <Menu.Item className="Topnav__menu-item" key="notifications">
+        <Menu.Item className="MenuButtons__item" key="notifications">
           <BTooltip
             placement="bottom"
             title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-            overlayClassName="Topnav__notifications-tooltip"
+            overlayClassName="MenuButtons__notifications-tooltip"
             mouseEnterDelay={1}
           >
             <PopoverContainer
@@ -84,9 +85,11 @@ const MenuButtons = ({
               overlayClassName="Notifications__popover-overlay"
               title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
             >
-              <a className="Topnav__link Topnav__link--light Topnav__link--action">
+              <a className="MenuButtons__item-link">
                 {displayBadge ? (
-                  <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
+                  <div className="MenuButtons__notifications-count">
+                    {notificationsCountDisplay}
+                  </div>
                 ) : (
                   <img alt="notifications" src={'/images/icons/ia-icon-bell.svg'} />
                 )}
