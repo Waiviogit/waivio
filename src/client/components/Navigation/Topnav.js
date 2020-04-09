@@ -796,7 +796,6 @@ class Topnav extends React.Component {
     } = this.props;
     const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    console.log('isMobile', isMobile);
     const brandLogoPath = '/images/logo-brand.png';
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
@@ -928,31 +927,29 @@ class Topnav extends React.Component {
               {/*  </div> */}
               {/* )} */}
             </div>
-            {!isMobile && (
-              <div className="Topnav__right-bottom">
-                {this.content()}
-                {isAuthenticated && (
-                  <div
-                    className={classNames('Topnav__broker', {
-                      'justify-end': platformName === 'widgets',
-                    })}
-                  >
-                    {platformName === 'widgets' ? (
-                      <div className="st-header-broker-balance-pl-wrap">
-                        <Button type="primary" onClick={this.toggleModalBroker}>
-                          {intl.formatMessage({
-                            id: 'headerAuthorized.connectToBeaxy',
-                            defaultMessage: 'Connect to beaxy',
-                          })}
-                        </Button>
-                      </div>
-                    ) : (
-                      <BrokerBalance />
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="Topnav__right-bottom">
+              {this.content()}
+              {isAuthenticated && (
+                <div
+                  className={classNames('Topnav__broker', {
+                    'justify-end': platformName === 'widgets',
+                  })}
+                >
+                  {platformName === 'widgets' ? (
+                    <div className="st-header-broker-balance-pl-wrap">
+                      <Button type="primary" onClick={this.toggleModalBroker}>
+                        {intl.formatMessage({
+                          id: 'headerAuthorized.connectToBeaxy',
+                          defaultMessage: 'Connect to beaxy',
+                        })}
+                      </Button>
+                    </div>
+                  ) : (
+                    <BrokerBalance />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {isMobile && isMobileMenu && (

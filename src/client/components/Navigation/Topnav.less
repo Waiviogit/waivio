@@ -498,11 +498,10 @@
   }
 
   &__right-bottom {
-    position: absolute;
-    top: 48px;
-    width: 100%;
-
+    display: none;
     @media @small {
+      display: block;
+      position: absolute;
       top: 0;
       right: 0;
       width: min-content;
