@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './DnDList.less';
 
-const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
+export const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
   boxShadow: isDragging ? `0 0 5px ${accentColor}, 0 0 10px ${accentColor}` : 'none',
   opacity: isDraggingOver && !isDragging ? '.65' : 1,
   ...draggableStyle,
 });
 
-const reorder = (list, startIndex, endIndex) => {
+export const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
