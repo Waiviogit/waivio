@@ -33,7 +33,7 @@ const MobileMenu = props => {
     onLogout,
     disconnectPlatform,
     platformName,
-    mobileMenuToggler,
+    toggleMobileMenu,
     toggleModal,
   } = props;
 
@@ -41,15 +41,15 @@ const MobileMenu = props => {
 
   const onLogoutHandler = () => {
     onLogout();
-    mobileMenuToggler();
+    toggleMobileMenu();
   };
 
-  const memoLogoutHandler = () => useCallback(() => onLogoutHandler(), []);
+  const memoLogoutHandler = useCallback(() => onLogoutHandler(), []);
   const memoToggleModalBroker = useCallback(() => toggleModal('broker'), []);
 
   return (
     <div className="MobileMenu">
-      <i className="MobileMenu__mask" onClick={mobileMenuToggler} role="presentation" />
+      <i className="MobileMenu__mask" onClick={toggleMobileMenu} role="presentation" />
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="userData">
@@ -93,10 +93,10 @@ const MobileMenu = props => {
           </AutoComplete>
           <i className="iconfont icon-search" />
         </div>
-        {username ? <MenuButtons {...props} toggleMenu={mobileMenuToggler} /> : <SignUp />}
+        {username ? <MenuButtons {...props} toggleMenu={toggleMobileMenu} /> : <SignUp />}
         <LoggedMenuMobile
           onLogout={memoLogoutHandler}
-          toggleMenu={mobileMenuToggler}
+          toggleMenu={toggleMobileMenu}
           username={username}
         />
         {username && !isBeaxyUser && (
@@ -136,7 +136,7 @@ MobileMenu.propTypes = {
   onLogout: PropTypes.func.isRequired,
   disconnectPlatform: PropTypes.func.isRequired,
   platformName: PropTypes.string.isRequired,
-  mobileMenuToggler: PropTypes.func.isRequired,
+  toggleMobileMenu: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
 

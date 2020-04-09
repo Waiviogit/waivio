@@ -779,7 +779,7 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
-  mobileMenuToggler = () => {
+  toggleMobileMenu = () => {
     this.setState({ isMobileMenu: !this.state.isMobileMenu });
   };
 
@@ -796,7 +796,9 @@ class Topnav extends React.Component {
     } = this.props;
     const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    const brandLogoPath = isMobile ? '/images/ia-logo-removebg.png' : '/images/logo-brand.png';
+    console.log('isMobile', isMobile);
+    const brandLogoPath = '/images/logo-brand.png';
+    const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     // const downBar = (
     //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -823,6 +825,11 @@ class Topnav extends React.Component {
           <div className="topnav-layout">
             <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
               <Link to="/" className="Topnav__brand">
+                <img
+                  alt="InvestArena"
+                  src={brandLogoPathMobile}
+                  className="Topnav__brand-icon mobile"
+                />
                 <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
               </Link>
             </div>
@@ -891,9 +898,9 @@ class Topnav extends React.Component {
             >
               {isMobile && !username && <div className="mr2">{this.menuForLoggedOut()}</div>}
               {!isMobileMenu ? (
-                <Icon type="menu" className="iconfont icon-menu" onClick={this.mobileMenuToggler} />
+                <Icon type="menu" className="iconfont icon-menu" onClick={this.toggleMobileMenu} />
               ) : (
-                <Icon type="close" theme="outlined" onClick={this.mobileMenuToggler} />
+                <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
               )}
 
               {/* <button */}
@@ -963,7 +970,7 @@ class Topnav extends React.Component {
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
             handleScrollToTop={this.handleScrollToTop}
-            mobileMenuToggler={this.mobileMenuToggler}
+            toggleMobileMenu={this.toggleMobileMenu}
           />
         )}
       </React.Fragment>

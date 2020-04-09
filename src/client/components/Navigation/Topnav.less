@@ -27,12 +27,7 @@
 
   &__brand {
     &-icon {
-      max-width: 70px;
-      width: 70px;
-      height: 72px;
-      vertical-align: super;
-      margin-top: -10px;
-      display: inline;
+      display: none;
 
       @media @small, @medium, @large {
         max-width: 90%;
@@ -40,10 +35,19 @@
         height: unset;
         vertical-align: text-top;
         margin: 0;
+        display: inline-block;
       }
 
-      @media @small {
-        display: inline-block;
+      &.mobile {
+        max-width: 70px;
+        width: 70px;
+        height: 72px;
+        vertical-align: super;
+        margin-top: -10px;
+        display: inline;
+        @media @small {
+          display: none;
+        }
       }
     }
   }
@@ -755,6 +759,7 @@ div[data-dir='rtl'] .Topnav {
     align-items: center;
     height: 38px;
   }
+
   &:hover {
     cursor: pointer;
     transition: box-shadow 0.5s ease 0s;
