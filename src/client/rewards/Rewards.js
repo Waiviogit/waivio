@@ -510,7 +510,7 @@ class Rewards extends React.Component {
             <meta
               property="og:image"
               content={
-                'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+                'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
               }
             />
             <meta property="og:site_name" content="Waivio" />

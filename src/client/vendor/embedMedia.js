@@ -62,7 +62,7 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: 'DTube',
-      thumbnail: 'https://steemitimages.com/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
+      thumbnail: 'https://images.hive.blog/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
       id: dTubeId,
       embed: this.dTube(url, dTubeId, options),
     };
