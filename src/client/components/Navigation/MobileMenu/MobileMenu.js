@@ -13,8 +13,8 @@ import BrokerBalance from '../BrokerBalance/BrokerBalance';
 import Avatar from '../../Avatar';
 import SignUp from '../../Sidebar/SignUp';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
-import './MobileMenu.less';
 import MenuButtons from './MenuButtons/MenuButtons';
+import './MobileMenu.less';
 
 const MobileMenu = props => {
   const {
@@ -102,20 +102,20 @@ const MobileMenu = props => {
           toggleMenu={mobileMenuToggler}
           username={username}
         />
-        {!isBeaxyUser && platformName === 'widgets' ? (
+        {username && (
           <div className="MobileMenu__connect-broker">
-            <Button onClick={toggleModalBroker}>
-              {intl.formatMessage({
-                id: 'headerAuthorized.connectToBeaxy',
-                defaultMessage: 'Connect to beaxy',
-              })}
-            </Button>
-          </div>
-        ) : (
-          <div className="MobileMenu__connect-broker">
-            <Button onClick={disconnectPlatform}>
-              <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
-            </Button>
+            {!isBeaxyUser && platformName === 'widgets' ? (
+              <Button onClick={toggleModalBroker}>
+                {intl.formatMessage({
+                  id: 'headerAuthorized.connectToBeaxy',
+                  defaultMessage: 'Connect to beaxy',
+                })}
+              </Button>
+            ) : (
+              <Button onClick={disconnectPlatform}>
+                <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
+              </Button>
+            )}
           </div>
         )}
       </div>
