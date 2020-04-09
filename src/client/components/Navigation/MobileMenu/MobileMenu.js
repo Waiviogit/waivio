@@ -102,9 +102,9 @@ const MobileMenu = props => {
           toggleMenu={mobileMenuToggler}
           username={username}
         />
-        {username && (
+        {username && !isBeaxyUser && (
           <div className="MobileMenu__connect-broker">
-            {!isBeaxyUser && platformName === 'widgets' ? (
+            {platformName === 'widgets' ? (
               <Button onClick={toggleModalBroker}>
                 {intl.formatMessage({
                   id: 'headerAuthorized.connectToBeaxy',
