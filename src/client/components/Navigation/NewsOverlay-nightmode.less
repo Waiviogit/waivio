@@ -1,0 +1,26 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  div > .NewsOverlay {
+    &__popover-overlay {
+      .ant-popover-inner {
+        background-color: #3a79ee;
+        border: 1px solid @white;
+        @media @small {
+          border: 1px solid @normal-grey;
+          background-color: @grey-nero;
+        }
+      }
+
+      .ant-popover-title {
+        color: @white !important;
+        border-bottom: 1px solid white;
+        @media @small {
+          border-bottom: @normal-grey;
+          color: @blue-baliHai;
+        }
+      }
+    }
+  }
+}
