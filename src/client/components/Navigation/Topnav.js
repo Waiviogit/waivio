@@ -149,7 +149,7 @@ class Topnav extends React.Component {
       selectColor: false,
       scrolling: false,
       visible: false,
-      isMobileMenu: false,
+      isMobileMenuOpen: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -606,12 +606,12 @@ class Topnav extends React.Component {
   renderTitle = title => <span>{title}</span>;
 
   toggleMobileMenu = () => {
-    this.setState({ isMobileMenu: !this.state.isMobileMenu });
+    this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen });
   };
 
   onMobileAvatarClick = () => {
-    const { isMobileMenu } = this.state;
-    if (isMobileMenu) this.toggleMobileMenu();
+    const { isMobileMenuOpen } = this.state;
+    if (isMobileMenuOpen) this.toggleMobileMenu();
   };
 
   render() {
@@ -625,7 +625,7 @@ class Topnav extends React.Component {
       platformName,
       username,
     } = this.props;
-    const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
+    const { searchBarActive, dropdownOpen, isMobileMenuOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = '/images/logo-brand.png';
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
@@ -740,7 +740,7 @@ class Topnav extends React.Component {
                 </Link>
               )}
               <div className="Topnav__right-top__icon">
-                {!isMobileMenu ? (
+                {!isMobileMenuOpen ? (
                   <Icon
                     type="menu"
                     className="iconfont icon-menu"
@@ -800,7 +800,7 @@ class Topnav extends React.Component {
             </div>
           </div>
         </div>
-        {isMobile && isMobileMenu && (
+        {isMobile && isMobileMenuOpen && (
           <MobileMenu
             {...this.props}
             {...this.state}
