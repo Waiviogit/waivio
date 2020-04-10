@@ -27,7 +27,7 @@ const TradingForm = ({
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
 
   const handleTradeButtonClick = () => {
-    if (isAmountValid && isWalletsExist) {
+    if (isAmountValid && isWalletsExist.both) {
       createMarketOrder(side, amount, caller);
     } else if (!isAmountValid) {
       const amountValue = getAmountValue(amount);
@@ -37,16 +37,14 @@ const TradingForm = ({
         message.error('Available balance is insufficient');
       }
     } else {
-      message.error(`You don't have a ${baseCurrency} wallet`);
+      const absentWallet = !isWalletsExist[baseCurrency] ? baseCurrency : termCurrency;
+      message.error(`You don't have a ${absentWallet} wallet`);
     }
   };
   return platformName !== 'widgets' ? (
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
-          {/* <Tooltip title={}> */}
-          {/*  <i className="iconfont icon-prompt info-icon" /> */}
-          {/* </Tooltip> */}
           <FormattedMessage id="trading_form_available" defaultMessage="Available" />
           :&nbsp;&nbsp;
           <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
@@ -140,7 +138,11 @@ TradingForm.propTypes = {
     buyerMakerCommissionProgressive: PropTypes.number,
     buyerTakerCommissionProgressive: PropTypes.number,
   }).isRequired,
-  isWalletsExist: PropTypes.bool.isRequired,
+  isWalletsExist: PropTypes.shape({
+    baseCurrencyName: PropTypes.bool,
+    termCurrencyName: PropTypes.bool,
+    both: PropTypes.bool.isRequired,
+  }).isRequired,
   isAmountValid: PropTypes.bool.isRequired,
   platformName: PropTypes.string.isRequired,
   wallet: PropTypes.shape({
