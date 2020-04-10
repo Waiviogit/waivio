@@ -29,7 +29,7 @@ const UserHeader = ({
   rate,
 }) => {
   const style = hasCover
-    ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
+    ? { backgroundImage: `url("https://images.hive.blog/2048x512/${coverImage}")` }
     : {};
   let metadata = {};
   let location = null;

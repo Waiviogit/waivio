@@ -20,6 +20,7 @@ const CreateRule = ({
   intl,
   modalVisible,
   setEditRule,
+  isEnabledRule,
 }) => {
   const [expiredAt, setExpired] = useState('');
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
@@ -83,7 +84,7 @@ const CreateRule = ({
       sponsor: !isEdit ? sponsor.account : editRule.sponsor,
       voting_percent: sliderValue / 100,
     };
-    if (!isEdit) prepareObjData.enabled = true;
+    if (!isEdit || isEnabledRule) prepareObjData.enabled = true;
     if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
     if (values.noticeField) prepareObjData.note = values.noticeField;
     dispatch(setMatchBotRules(prepareObjData))
@@ -377,6 +378,7 @@ CreateRule.propTypes = {
   editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
   setEditRule: PropTypes.func.isRequired,
+  isEnabledRule: PropTypes.bool.isRequired,
 };
 CreateRule.defaultProps = {
   editRule: {},

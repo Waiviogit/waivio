@@ -86,9 +86,11 @@ const ImageSetter = ({
       };
       const img = new Image();
       img.src = newImage.src;
-      img.onload = () => checkIsImage(true, newImage);
+      img.onload = () => {
+        imageLinkInput.current.value = '';
+        return checkIsImage(true, newImage);
+      };
       img.onerror = () => checkIsImage(false, newImage);
-      imageLinkInput.current.value = '';
     }
   };
 
@@ -246,14 +248,11 @@ const ImageSetter = ({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
+              onInput={() => {
+                handleOnUploadImageByLink();
+              }}
             />
-            <button
-              className="input-upload__btn"
-              type="button"
-              onClick={() => handleOnUploadImageByLink()}
-            >
-              <Icon type="upload" />
-            </button>
+            <Icon type="upload" className="input-upload__btn" />
           </div>
         </div>
       )}
