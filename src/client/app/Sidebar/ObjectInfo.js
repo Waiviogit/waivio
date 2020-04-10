@@ -73,7 +73,8 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: {},
+    showMore: false,
+    showMoreTag: {},
   };
 
   getLink = link => {
@@ -241,7 +242,7 @@ class ObjectInfo extends React.Component {
       photosCount = wobject.photos_count;
 
       tagCategories = wobject.tagCategories;
-      // console.log(tagCategories);
+
       const filteredPhones = wobject.fields.filter(
         field =>
           field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
