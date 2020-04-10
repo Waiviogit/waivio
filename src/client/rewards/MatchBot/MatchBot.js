@@ -8,7 +8,6 @@ import { setMatchBotVotingPower } from '../rewardsActions';
 import { getAuthenticatedUser } from '../../reducers';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
-import { baseUrl } from '../../../waivioApi/routes';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import getMatchBotMessageData from './matchBotMessageData';
@@ -22,6 +21,7 @@ const MatchBot = ({ intl, userName }) => {
   const [rules, setRules] = useState({ results: [] });
   const [sliderValue, setSliderValue] = useState(100);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
+  const [isEnabledRule, setIsEnabledRule] = useState(false);
 
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const authority = 'waiviocampaigns';
@@ -32,10 +32,11 @@ const MatchBot = ({ intl, userName }) => {
       .map(auth => auth[0])
       .some(authName => authName === authority);
   const handleSwitcher = () => {
+    const path = window.location.href;
     if (!isAuthority) {
-      window.location = `https://beta.steemconnect.com/authorize/waiviocampaigns?auto_return=true&redirect_uri=${baseUrl}/rewards/match-bot`;
+      window.location = `https://hivesigner.com/authorize/waiviocampaigns?redirect_uri=${path}&callback`;
     } else {
-      window.location = `https://beta.steemconnect.com/revoke/waiviocampaigns?auto_return=true&redirect_uri=${baseUrl}/rewards/match-bot`;
+      window.location = `https://hivesigner.com/revoke/waiviocampaigns?redirect_uri=${path}&callback`;
     }
   };
   const maxRulesLimit = 25;
@@ -145,6 +146,7 @@ const MatchBot = ({ intl, userName }) => {
               messageData={messageData}
               isAuthority={isAuthority}
               rules={rules.results}
+              setIsEnabledRule={setIsEnabledRule}
             />
           )}
           <div className="MatchBot__button">
@@ -158,6 +160,7 @@ const MatchBot = ({ intl, userName }) => {
               handleChangeModalVisible={handleChangeModalVisible}
               modalVisible={modalVisible}
               setEditRule={setEditRule}
+              isEnabledRule={isEnabledRule}
             />
           )}
         </React.Fragment>
