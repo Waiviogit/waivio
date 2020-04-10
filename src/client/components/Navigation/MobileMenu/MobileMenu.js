@@ -115,7 +115,7 @@ const MobileMenu = props => {
           </AutoComplete>
           <i className="iconfont icon-search" />
         </div>
-        {username ? <MenuButtons {...props} toggleMenu={toggleMobileMenu} /> : <SignUp />}
+        {username && <MenuButtons {...props} toggleMenu={toggleMobileMenu} />}
         <LoggedMenuMobile
           onLogout={memoLogoutHandler}
           toggleMenu={toggleMobileMenu}
