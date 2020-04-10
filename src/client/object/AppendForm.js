@@ -1,4 +1,4 @@
-import _, { compact, flatten, keyBy, union, isEqual } from 'lodash';
+import _, { compact, flatten, keyBy, union } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
