@@ -46,10 +46,10 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
-import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
 import HotNews from './HotNews';
 import LoggedOutMenu from './LoggedOutMenu';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
