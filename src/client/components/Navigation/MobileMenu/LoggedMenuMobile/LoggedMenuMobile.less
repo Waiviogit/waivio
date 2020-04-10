@@ -3,14 +3,28 @@
 .LoggedMenu {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 
-  &__link {
+  &__item {
+    padding-bottom: 0.3rem;
     color: @white;
     height: 2rem;
     line-height: 2rem;
     text-align: end;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     width: fit-content;
+
+    &.logPanel {
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid @white;
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+
+  .Topnav__menu {
+    color: @white !important;
   }
 }

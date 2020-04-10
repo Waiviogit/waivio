@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash';
 import BTooltip from '../BTooltip';
 import PopoverContainer from '../Popover';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
+import './NewsOverlay.less';
 
 const HotNews = props => {
   const { intl, isMobile, toggleMobileMenu } = props;
@@ -16,6 +17,7 @@ const HotNews = props => {
 
   const handleVisibleChange = async () => {
     setHotNewsVisible(!hotNewsVisible);
+
     if (isEmpty(dailyChosenPost)) {
       getTopPosts()
         .then(data => {
@@ -26,7 +28,7 @@ const HotNews = props => {
         })
         .catch(error => console.error(error));
     }
-    if (isMobile) toggleMobileMenu();
+    if (isMobile && hotNewsVisible) toggleMobileMenu();
   };
 
   return (
@@ -70,7 +72,7 @@ const HotNews = props => {
         }
         visible={hotNewsVisible}
         onVisibleChange={handleVisibleChange}
-        overlayClassName="Notifications__popover-overlay"
+        overlayClassName="NewsOverlay__popover-overlay"
         title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
       >
         {!isMobile ? (

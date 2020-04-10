@@ -37,7 +37,6 @@ import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
-import LanguageSettings from './LanguageSettings';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
@@ -46,13 +45,11 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
-import { getTopPosts } from '../../../waivioApi/ApiClient';
-import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
-import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
-import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
 import HotNews from './HotNews';
+import LoggedOutMenu from './LoggedOutMenu';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -300,39 +297,6 @@ class Topnav extends React.Component {
     }
   };
 
-  menuForLoggedOut = () => {
-    const { location } = this.props;
-    const { searchBarActive } = this.state;
-    const next = location.pathname.length > 1 ? location.pathname : '';
-
-    return (
-      <div
-        className={classNames('Topnav__menu-container Topnav__menu-logedout', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <Menu className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <ModalSignUp isButton={false} />
-          </Menu.Item>
-          <Menu.Item
-            className="Topnav__menu-item Topnav__menu-item--logedout"
-            key="divider"
-            disabled
-          >
-            |
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <ModalSignIn next={next} />
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
-            <LanguageSettings />
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
   burgerMenu = logStatus => {
     const isLoggedOut = logStatus === 'loggedOut';
     const { isGuest } = this.props;
@@ -479,7 +443,12 @@ class Topnav extends React.Component {
     );
   };
 
-  content = () => (this.props.username ? this.menuForLoggedIn() : this.menuForLoggedOut());
+  content = () =>
+    this.props.username ? (
+      this.menuForLoggedIn()
+    ) : (
+      <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+    );
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
@@ -783,6 +752,11 @@ class Topnav extends React.Component {
     this.setState({ isMobileMenu: !this.state.isMobileMenu });
   };
 
+  onMobileAvatarClick = () => {
+    const { isMobileMenu } = this.state;
+    if (isMobileMenu) this.toggleMobileMenu();
+  };
+
   render() {
     const {
       intl,
@@ -895,13 +869,30 @@ class Topnav extends React.Component {
                 'Topnav__right-top--logedout': !isAuthenticated,
               })}
             >
-              {isMobile && !username && <div className="mr2">{this.menuForLoggedOut()}</div>}
-              {!isMobileMenu ? (
-                <Icon type="menu" className="iconfont icon-menu" onClick={this.toggleMobileMenu} />
+              {!username ? (
+                <div className="mr2">
+                  <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+                </div>
               ) : (
-                <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
+                <Link
+                  to={`/@${username}`}
+                  className="Topnav__right-top__avatar"
+                  onClick={this.onMobileAvatarClick}
+                >
+                  <Avatar username={username} size={40} />
+                </Link>
               )}
-
+              <div className="Topnav__right-top__icon">
+                {!isMobileMenu ? (
+                  <Icon
+                    type="menu"
+                    className="iconfont icon-menu"
+                    onClick={this.toggleMobileMenu}
+                  />
+                ) : (
+                  <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
+                )}
+              </div>
               {/* <button */}
               {/*  className={classNames('Topnav__mobile-search', { */}
               {/*    'Topnav__mobile-search-close': searchBarActive, */}
@@ -966,7 +957,6 @@ class Topnav extends React.Component {
             hotNews={this.hotNews}
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
-            handleScrollToTop={this.handleScrollToTop}
             toggleMobileMenu={this.toggleMobileMenu}
           />
         )}

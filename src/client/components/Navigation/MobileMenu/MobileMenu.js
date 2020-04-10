@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { AutoComplete, Button, Input } from 'antd';
@@ -9,12 +8,10 @@ import { disconnectBroker } from '../../../../investarena/redux/actions/brokersA
 import { logout } from '../../../auth/authActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
 import BrokerBalance from '../BrokerBalance/BrokerBalance';
-import Avatar from '../../Avatar';
-import SignUp from '../../Sidebar/SignUp';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
 import MenuButtons from './MenuButtons/MenuButtons';
-import './MobileMenu.less';
 import { getIsBrokerConnected } from '../../../reducers';
+import './MobileMenu.less';
 
 const MobileMenu = props => {
   const {
@@ -28,7 +25,6 @@ const MobileMenu = props => {
     searchBarValue,
     onSearchPressEnter,
     onBlur,
-    handleScrollToTop,
     username,
     onLogout,
     disconnectPlatform,
@@ -36,6 +32,8 @@ const MobileMenu = props => {
     toggleMobileMenu,
     toggleModal,
     isBrokerConnected,
+    location,
+    searchBarActive,
   } = props;
 
   const isBeaxyUser = getIsBeaxyUser(username);
@@ -56,11 +54,6 @@ const MobileMenu = props => {
     setIsBrokerActions(true);
   };
 
-  const onAvatarClick = () => {
-    handleScrollToTop();
-    toggleMobileMenu();
-  };
-
   const onDisconnectPlatform = () => {
     disconnectPlatform();
     toggleMobileMenu();
@@ -68,28 +61,22 @@ const MobileMenu = props => {
 
   const memoLogoutHandler = useCallback(() => onLogoutHandler(), []);
   const memoToggleModalBroker = useCallback(() => onBrokerConnectClick(), []);
-  const memoAvatarClick = useCallback(() => onAvatarClick(), []);
 
   return (
     <div className="MobileMenu">
       <i className="MobileMenu__mask" onClick={toggleMobileMenu} role="presentation" />
       <div className="MobileMenu__wrapper">
-        {username && (
+        {platformName === 'beaxy' && (
           <div className="userData">
-            <span className="userData__broker-balance">
-              {platformName === 'beaxy' && <BrokerBalance isMobile />}
-            </span>
-            <span className="userData__user">
-              <Link to={`/@${username}`} onClick={memoAvatarClick}>
-                <Avatar username={username} size={50} />
-              </Link>
-            </span>
+            <div className="userData__broker-balance">
+              <BrokerBalance isMobile />
+            </div>
           </div>
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>
           <AutoComplete
             dropdownClassName={classNames('Topnav__search-dropdown-container', {
-              'logged-out': !username,
+              'logged-out': !username || platformName !== 'beaxy',
             })}
             dataSource={searchOptions}
             onSearch={onSearch}
@@ -115,11 +102,13 @@ const MobileMenu = props => {
           </AutoComplete>
           <i className="iconfont icon-search" />
         </div>
-        {username ? <MenuButtons {...props} toggleMenu={toggleMobileMenu} /> : <SignUp />}
+        {username && <MenuButtons {...props} toggleMenu={toggleMobileMenu} />}
         <LoggedMenuMobile
           onLogout={memoLogoutHandler}
           toggleMenu={toggleMobileMenu}
           username={username}
+          location={location}
+          searchBarActive={searchBarActive}
         />
         {username && !isBeaxyUser && (
           <div className="MobileMenu__connect-broker">
@@ -153,7 +142,6 @@ MobileMenu.propTypes = {
   searchBarValue: PropTypes.string,
   onSearchPressEnter: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
-  handleScrollToTop: PropTypes.func.isRequired,
   username: PropTypes.string,
   onLogout: PropTypes.func.isRequired,
   disconnectPlatform: PropTypes.func.isRequired,
@@ -161,6 +149,8 @@ MobileMenu.propTypes = {
   toggleMobileMenu: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   isBrokerConnected: PropTypes.bool.isRequired,
+  location: PropTypes.shape().isRequired,
+  searchBarActive: PropTypes.bool.isRequired,
 };
 
 MobileMenu.defaultProps = {

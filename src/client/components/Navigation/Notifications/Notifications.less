@@ -25,10 +25,17 @@
     text-align: center;
     height: 35px;
     line-height: 35px;
-    border-top: @base-border;
+    border-top: @border-width-base @border-style-base @normal-grey;
+    @media @small {
+      border-top: @base-border;
+    }
 
     & > a {
       font-weight: 500;
+      color: @white;
+      @media @small {
+        color: @blue-dodgerBlue;
+      }
     }
   }
 }
