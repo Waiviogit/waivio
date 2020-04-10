@@ -284,7 +284,7 @@ export const postAppendWaivioObject = postData =>
     body: JSON.stringify(postData),
   })
     .then(res => res.json())
-    .catch(error => reject(error));
+    .catch(error => error);
 
 export const getAllFollowingObjects = (username, skip, limit) =>
   new Promise((resolve, reject) => {
