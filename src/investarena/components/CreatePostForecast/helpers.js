@@ -22,16 +22,10 @@ export const isStopLossTakeProfitValid = (value, input, recommend, quotePrice) =
   let isError = false;
   switch (recommend) {
     case 'Buy':
-      isError =
-        input === 'takeProfitValue'
-          ? Number(value) <= price
-          : Number(value) >= price;
+      isError = input === 'takeProfitValue' ? Number(value) <= price : Number(value) >= price;
       break;
     case 'Sell':
-      isError =
-        input === 'takeProfitValue'
-          ? Number(value) >= price
-          : Number(value) <= price;
+      isError = input === 'takeProfitValue' ? Number(value) >= price : Number(value) <= price;
       break;
     default:
       break;
