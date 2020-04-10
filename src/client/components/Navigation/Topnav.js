@@ -40,10 +40,11 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
-import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
 import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
+import './Topnav.less';
+
 
 @injectIntl
 @withRouter
@@ -442,7 +443,7 @@ class Topnav extends React.Component {
           <AutoComplete.Option
             marker={Topnav.markers.USER}
             key={`user${option.account}`}
-            value={`user${option.account}`}
+            value={`user${optioimport LoggedInMenu from './LoggedInMenu';n.account}`}
             className="Topnav__search-autocomplete"
           >
             <div className="Topnav__search-content-wrap">

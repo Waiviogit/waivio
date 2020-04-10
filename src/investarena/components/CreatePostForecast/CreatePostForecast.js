@@ -170,47 +170,6 @@ class CreatePostForecast extends Component {
     }
   };
 
-  handleFocusTakeProfitStopLostInputs = input => {
-    if (this.state[input]) return;
-    const { selectRecommend } = this.state;
-    let initialValue = getQuotePrice(selectRecommend, this.props.quoteSelected);
-
-    switch (selectRecommend) {
-      case 'Buy':
-        initialValue =
-          input === 'takeProfitValue' ? ceil10(initialValue, -1) : floor10(initialValue, -1);
-        break;
-      case 'Sell':
-        initialValue =
-          input === 'takeProfitValue' ? floor10(initialValue, -1) : ceil10(initialValue, -1);
-        break;
-      default:
-        break;
-    }
-
-    if (!isNaN(initialValue) && initialValue > 0) {
-      this.setState(
-        prevState => {
-          if (prevState[input] === '') {
-            return {
-              [`${input}Incorrect`]: false,
-            };
-          }
-          return prevState;
-        },
-        this.props.onChange(
-          getEditorForecast(
-            {
-              ...this.state,
-              [input]: initialValue,
-            },
-            this.props.quotesSettings,
-          ),
-        ),
-      );
-    }
-  };
-
   handleChangeDatetime = dateTimeValue => {
     this.setState({ dateTimeValue });
     this.props.onChange(
@@ -388,7 +347,6 @@ class CreatePostForecast extends Component {
                         onChange={e =>
                           this.handleChangeTakeProfitStopLostInputs(e, 'takeProfitValue')
                         }
-                        onFocus={() => this.handleFocusTakeProfitStopLostInputs('takeProfitValue')}
                       />
                     </div>
                     <div className="st-create-post-select-wrap">
@@ -408,7 +366,6 @@ class CreatePostForecast extends Component {
                         onChange={e =>
                           this.handleChangeTakeProfitStopLostInputs(e, 'stopLossValue')
                         }
-                        onFocus={() => this.handleFocusTakeProfitStopLostInputs('stopLossValue')}
                       />
                     </div>
                   </div>
