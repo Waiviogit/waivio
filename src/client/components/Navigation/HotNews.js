@@ -16,6 +16,7 @@ const HotNews = props => {
 
   const handleVisibleChange = async () => {
     setHotNewsVisible(!hotNewsVisible);
+
     if (isEmpty(dailyChosenPost)) {
       getTopPosts()
         .then(data => {
@@ -26,7 +27,7 @@ const HotNews = props => {
         })
         .catch(error => console.error(error));
     }
-    if (isMobile) toggleMobileMenu();
+    if (isMobile && hotNewsVisible) toggleMobileMenu();
   };
 
   return (
