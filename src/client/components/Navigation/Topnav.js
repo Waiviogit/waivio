@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu, Button } from 'antd';
+import { AutoComplete, Icon, Input, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -29,14 +29,8 @@ import {
   isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
-import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import PopoverContainer from '../Popover';
-import Notifications from './Notifications/Notifications';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
@@ -48,8 +42,8 @@ import TopNavigation from './TopNavigation';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
-import HotNews from './HotNews';
 import LoggedOutMenu from './LoggedOutMenu';
+import LoggedInMenu from './LoggedInMenu';
 
 @injectIntl
 @withRouter
@@ -297,158 +291,21 @@ class Topnav extends React.Component {
     }
   };
 
-  burgerMenu = logStatus => {
-    const isLoggedOut = logStatus === 'loggedOut';
-    const { isGuest } = this.props;
-    return (
-      <PopoverContainer
-        placement="bottom"
-        trigger="click"
-        visible={this.state.burgerMenuVisible}
-        onVisibleChange={this.handleBurgerMenuVisibleChange}
-        overlayStyle={{ position: 'fixed' }}
-        content={
-          <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
-            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
-              <FormattedMessage id="my_feed" defaultMessage="My feed" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="discover-objects" fullScreenHidden>
-              <FormattedMessage id="discover" defaultMessage="Discover" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="quick_forecast" fullScreenHidden>
-              <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
-            </PopoverMenuItem>
-            {!isGuest && (
-              <PopoverMenuItem key="activity" mobileScreenHidden>
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </PopoverMenuItem>
-            )}
-            <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="replies" fullScreenHidden>
-              <FormattedMessage id="replies" defaultMessage="Replies" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="wallet">
-              <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="about" fullScreenHidden>
-              <FormattedMessage id="about" defaultMessage="About" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="logout">
-              <FormattedMessage id="logout" defaultMessage="Logout" />
-            </PopoverMenuItem>
-          </PopoverMenu>
-        }
-      >
-        <a className="Topnav__link Topnav__link--menu">
-          <Icon type="menu" className="iconfont icon-menu" />
-        </a>
-      </PopoverContainer>
-    );
-  };
-
-  menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible } = this.state;
-    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
-    const notificationsCount = _.isUndefined(lastSeenTimestamp)
-      ? _.size(notifications)
-      : _.size(
-          _.filter(
-            notifications,
-            notification =>
-              lastSeenTimestamp < notification.timestamp &&
-              _.includes(PARSED_NOTIFICATIONS, notification.type),
-          ),
-        );
-    const displayBadge = notificationsCount > 0;
-    const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-    return (
-      <div
-        className={classNames('Topnav__menu-container', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <ModalBroker />
-        <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item" key="hot">
-            <HotNews />
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="write">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
-              </Link>
-            </BTooltip>
-          </Menu.Item>
-
-          <Menu.Item className="Topnav__menu-item" key="notifications">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <Notifications
-                    notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}
-                    st-card__chart
-                    currentAuthUsername={username}
-                    lastSeenTimestamp={lastSeenTimestamp}
-                    loadingNotifications={loadingNotifications}
-                    getUpdatedUserMetadata={this.props.getUserMetadata}
-                  />
-                }
-                visible={notificationsPopoverVisible}
-                onVisibleChange={this.handleNotificationsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              >
-                <a className="Topnav__link Topnav__link--light Topnav__link--action">
-                  {displayBadge ? (
-                    <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
-                  ) : (
-                    <i className="iconfont icon-remind" />
-                  )}
-                </a>
-              </PopoverContainer>
-            </BTooltip>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--burger" key="more">
-            {this.burgerMenu()}
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
-  content = () =>
-    this.props.username ? (
-      this.menuForLoggedIn()
+  content = () => {
+    const { username } = this.props;
+    return username ? (
+      <LoggedInMenu
+        {...this.state}
+        {...this.props}
+        handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
+        handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
+        handleBurgerMenuVisibleChange={this.handleBurgerMenuVisibleChange}
+        handleBurgerMenuSelect={this.handleBurgerMenuSelect}
+      />
     ) : (
       <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
     );
+  };
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
