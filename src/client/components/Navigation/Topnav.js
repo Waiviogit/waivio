@@ -53,6 +53,7 @@ import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
 import HotNews from './HotNews';
+import LoggedOutMenu from './LoggedOutMenu';
 
 @injectIntl
 @withRouter
@@ -300,39 +301,6 @@ class Topnav extends React.Component {
     }
   };
 
-  menuForLoggedOut = () => {
-    const { location } = this.props;
-    const { searchBarActive } = this.state;
-    const next = location.pathname.length > 1 ? location.pathname : '';
-
-    return (
-      <div
-        className={classNames('Topnav__menu-container Topnav__menu-logedout', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <Menu className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <ModalSignUp isButton={false} />
-          </Menu.Item>
-          <Menu.Item
-            className="Topnav__menu-item Topnav__menu-item--logedout"
-            key="divider"
-            disabled
-          >
-            |
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <ModalSignIn next={next} />
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
-            <LanguageSettings />
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
   burgerMenu = logStatus => {
     const isLoggedOut = logStatus === 'loggedOut';
     const { isGuest } = this.props;
@@ -479,7 +447,12 @@ class Topnav extends React.Component {
     );
   };
 
-  content = () => (this.props.username ? this.menuForLoggedIn() : this.menuForLoggedOut());
+  content = () =>
+    this.props.username ? (
+      this.menuForLoggedIn()
+    ) : (
+      <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+    );
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
@@ -895,7 +868,16 @@ class Topnav extends React.Component {
                 'Topnav__right-top--logedout': !isAuthenticated,
               })}
             >
-              {isMobile && !username && <div className="mr2">{this.menuForLoggedOut()}</div>}
+              {isMobile && !username && (
+                <div className="mr2">
+                  {
+                    <LoggedOutMenu
+                      location={location}
+                      searchBarActive={this.state.searchBarActive}
+                    />
+                  }
+                </div>
+              )}
               {!isMobileMenu ? (
                 <Icon type="menu" className="iconfont icon-menu" onClick={this.toggleMobileMenu} />
               ) : (

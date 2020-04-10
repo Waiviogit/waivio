@@ -10,7 +10,6 @@ import { logout } from '../../../auth/authActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
 import BrokerBalance from '../BrokerBalance/BrokerBalance';
 import Avatar from '../../Avatar';
-import SignUp from '../../Sidebar/SignUp';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
 import MenuButtons from './MenuButtons/MenuButtons';
 import { getIsBrokerConnected } from '../../../reducers';
