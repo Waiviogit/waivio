@@ -170,7 +170,6 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
 
@@ -244,6 +243,7 @@ export default class ProfileSettings extends React.Component {
       isAvatar,
       lastAccountUpdate,
       profilePicture,
+      coverPicture,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -423,7 +423,7 @@ export default class ProfileSettings extends React.Component {
                             size="large"
                             shape="square"
                             icon="picture"
-                            src={`${this.state.coverPicture}`}
+                            src={`https://images.hive.blog/0x0/${coverPicture}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({

@@ -261,11 +261,27 @@ class Rewards extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    proposition,
+    proposedWobj,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     return this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
+        proposition,
+        proposedWobj,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
@@ -494,7 +510,7 @@ class Rewards extends React.Component {
             <meta
               property="og:image"
               content={
-                'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+                'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
               }
             />
             <meta property="og:site_name" content="Waivio" />

@@ -59,7 +59,7 @@ export default class ObjectLightbox extends Component {
             </a>
             {this.state.open && (
               <Lightbox
-                mainSrc={imageUrl || 'https://steemitimages.com/u/waivio/avatar'}
+                mainSrc={imageUrl || 'https://images.hive.blog/u/waivio/avatar'}
                 onCloseRequest={this.handleCloseRequest}
               />
             )}

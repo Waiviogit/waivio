@@ -178,8 +178,8 @@ class LetsGetStarted extends React.Component {
                 })}
               >
                 <FormattedMessage
-                  id="follow_steemians"
-                  defaultMessage="Follow {amount} steemians"
+                  id="follow_users"
+                  defaultMessage="Follow {amount} users"
                   values={{ amount: 5 }}
                 />
               </span>

@@ -15,6 +15,7 @@ import {
   getIsImageUploading,
   getUpvoteSetting,
   getSuitableLanguage,
+  isGuestUser,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import {
@@ -59,6 +60,7 @@ const getLinkedObjects = contentStateRaw => {
     draftId: new URLSearchParams(props.location.search).get('draft'),
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
+    isGuest: isGuestUser(state),
   }),
   {
     createPost,
@@ -79,6 +81,7 @@ class EditPost extends Component {
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -89,6 +92,7 @@ class EditPost extends Component {
     imageLoading: false,
     createPost: () => {},
     saveDraft: () => {},
+    isGuest: false,
   };
 
   constructor(props) {
@@ -280,7 +284,7 @@ class EditPost extends Component {
       campaign,
       isUpdating,
     } = this.state;
-    const { saving, publishing, imageLoading, intl, locale, draftPosts } = this.props;
+    const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -318,6 +322,7 @@ class EditPost extends Component {
               onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}
               onTopicsChange={this.handleTopicsChange}
+              isGuest={isGuest}
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
