@@ -1064,5 +1064,6 @@
   "assigned_successfully_update": "Assigned successfully. Your new reservation will be available soon.",
   "discarded_successfully": "Reservation released. Reward will be available for reservation soon.",
   "rewards_details_usersLegalNotice": "Legal notice",
-  "cryptos_sing_up": "- CRYPTOS"
+  "cryptos_sing_up": "- CRYPTOS",
+  "popover_menu": "MENU"
 }

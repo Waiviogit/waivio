@@ -335,6 +335,12 @@ class Topnav extends React.Component {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
+                  <PopoverMenuItem key="close" fullScreenHidden>
+                    <span className="popover-menu-item__menu">
+                      <FormattedMessage id="popover_menu" defaultMessage="MENU" />
+                    </span>
+                    <Icon type="close" className="popover-menu-item__close" />
+                  </PopoverMenuItem>
                   <PopoverMenuItem key="my-profile" fullScreenHidden>
                     <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>
