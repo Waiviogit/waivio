@@ -32,7 +32,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         <meta
           property="og:image"
           content={
-            'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+            'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
           }
         />
       </Helmet>

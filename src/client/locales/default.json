@@ -1002,7 +1002,7 @@
   "transferThroughBank": "Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees.",
   "there_are_not user with name": "Sorry! There are no user with name {item} on Waivio",
   "not_to_worry": "Not to worry. You can head back to {link}",
-  "there_are_not_object_with_name": "Sorry! There are no user with name {item} on Waivio",
+  "there_are_not_object_with_name": "Sorry! There are no object with name {item} on Waivio",
   "signupForRewards": "Sign up for rewards!",
   "payOneTimeFee": "or pay a one-time fee (about $3)",
   "getSteemAccountNow": "to get a Hive account now using:",
@@ -1064,5 +1064,6 @@
   "assigned_successfully_update": "Assigned successfully. Your new reservation will be available soon.",
   "discarded_successfully": "Reservation released. Reward will be available for reservation soon.",
   "rewards_details_usersLegalNotice": "Legal notice",
-  "cryptos_sing_up": "- CRYPTOS"
+  "cryptos_sing_up": "- CRYPTOS",
+  "objectinfo_more": "more..."
 }
