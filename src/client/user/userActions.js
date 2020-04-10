@@ -2,7 +2,7 @@ import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
-import { rewardPostContainerData } from '../rewards/rewardsHelper';
+import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
 
 require('isomorphic-fetch');
@@ -221,15 +221,21 @@ export const assignProposition = ({
       primaryObjectName,
       secondaryObjectName,
       amount,
+      proposition,
+      proposedWobj,
       title: 'Rewards reservations',
-      body: `User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of ${secondaryObjectName}, ${primaryObjectName} `,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${
+        proposition.count_reservation_days
+      } days to write a review of ${secondaryObjectName}, ${primaryObjectName}</p>${getDetailsBody(
+        proposition,
+        proposedWobj,
+        primaryObjectName,
+      )}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
           app: appName,
-          proposition,
-          proposedWobj,
         },
       }),
     },

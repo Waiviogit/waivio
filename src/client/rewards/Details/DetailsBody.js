@@ -36,11 +36,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
               {messageData.forReviewing}
-              <Link
-                className="nowrap"
-                to={`/object/${objectDetails.requiredObject ||
-                  objectDetails.requiredObject.author_permlink}`}
-              >
+              <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
                 {` ${requiredObjectName} `}
               </Link>
               {messageData.inTheLast}
