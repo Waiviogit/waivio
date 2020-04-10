@@ -43,6 +43,7 @@ class PostPreviewModal extends Component {
     onPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     intl: {},
@@ -51,6 +52,7 @@ class PostPreviewModal extends Component {
     objPercentage: {},
     reviewData: null,
     isUpdating: false,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -150,6 +152,7 @@ class PostPreviewModal extends Component {
       reviewData,
       settings,
       topics,
+      isGuest,
     } = this.props;
     return (
       <React.Fragment>
@@ -205,6 +208,7 @@ class PostPreviewModal extends Component {
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}
+                isGuest={isGuest}
               />
             )}
             <div className="edit-post-controls">

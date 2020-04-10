@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { HBD } from '../../common/constants/cryptos';
 
 export const displayLimit = 10;
 
@@ -21,10 +20,11 @@ export const preparePropositionReqData = ({
 }) => {
   const reqData = {
     limit: displayLimit,
-    requiredObject: match.params.campaignParent,
+    requiredObject: match.params.campaignParent || match.params.name,
     currentUserName: username,
     sort,
   };
+  console.log(reqData.requiredObject);
   if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
@@ -153,12 +153,14 @@ export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
+
   if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
   const currentUSDPrice =
     cryptosPriceHistory &&
-    cryptosPriceHistory[HBD.coinGeckoId] &&
-    cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory &&
-    cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd;
+    cryptosPriceHistory.hive &&
+    cryptosPriceHistory.hive.usdPriceHistory &&
+    cryptosPriceHistory.hive.usdPriceHistory.usd;
+
   return currentUSDPrice;
 };
 

@@ -213,7 +213,7 @@ export default class User extends React.Component {
             property="twitter:image"
             content={
               image ||
-              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+              'https://cdn.images.hive.blog/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
             }
           />
         </Helmet>

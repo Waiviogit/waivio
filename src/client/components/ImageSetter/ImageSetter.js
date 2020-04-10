@@ -86,9 +86,11 @@ const ImageSetter = ({
       };
       const img = new Image();
       img.src = newImage.src;
-      img.onload = () => checkIsImage(true, newImage);
+      img.onload = () => {
+        imageLinkInput.current.value = '';
+        return checkIsImage(true, newImage);
+      };
       img.onerror = () => checkIsImage(false, newImage);
-      imageLinkInput.current.value = '';
     }
   };
 
@@ -218,10 +220,18 @@ const ImageSetter = ({
               <div className="button-upload__container">
                 <Icon className="button-upload__container-img" type="plus" />
                 <div className="button-upload__container-label">
-                  {intl.formatMessage({
-                    id: 'imageSetter_upload',
-                    defaultMessage: 'Upload',
-                  })}
+                  <span className="button-upload__for-desktop">
+                    {intl.formatMessage({
+                      id: 'imageSetter_upload',
+                      defaultMessage: 'Upload',
+                    })}
+                  </span>
+                  <span className="button-upload__for-mobile">
+                    {intl.formatMessage({
+                      id: 'imageSetter_upload_for_mobile',
+                      defaultMessage: 'Take or select photo',
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -238,14 +248,11 @@ const ImageSetter = ({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
+              onInput={() => {
+                handleOnUploadImageByLink();
+              }}
             />
-            <button
-              className="input-upload__btn"
-              type="button"
-              onClick={() => handleOnUploadImageByLink()}
-            >
-              <Icon type="upload" />
-            </button>
+            <Icon type="upload" className="input-upload__btn" />
           </div>
         </div>
       )}

@@ -8,6 +8,7 @@ import {
   getBookmarks,
   getPendingBookmarks,
   getPendingLikes,
+  getRebloggedList,
   getPendingReblogs,
   getFollowingList,
   getPendingFollows,
@@ -17,7 +18,7 @@ import {
   getVotePercent,
   getShowNSFWPosts,
 } from '../reducers';
-import { votePost, votePostUpdate } from '../post/postActions';
+import { votePost } from '../post/postActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
@@ -28,16 +29,15 @@ const mapStateToProps = (state, { id }) => {
   const post = getPosts(state)[id];
 
   const userVote = find(post.active_votes, { voter: user.name }) || {};
-  const isAppend = !!post.append_field_name;
   const bookmarks = getBookmarks(state);
   const postState = {
-    isReblogged: post.reblogged_users && post.reblogged_users.includes(user.name),
+    isReblogged: getRebloggedList(state).includes(post.id),
     isReblogging: getPendingReblogs(state).includes(post.id),
     isSaved: post.guestInfo
       ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
       : bookmarks.includes(post.id),
-    isLiked: isAppend ? userVote.percent % 10 === 0 && userVote.percent > 0 : userVote.percent > 0,
-    isReported: isAppend ? userVote.percent % 10 > 0 && userVote.percent > 0 : userVote.percent < 0,
+    isLiked: userVote.percent > 0,
+    isReported: userVote.percent < 0,
     userFollowed: getFollowingList(state).includes(post.author),
   };
 
@@ -67,7 +67,6 @@ const mapStateToProps = (state, { id }) => {
 
 export default connect(mapStateToProps, {
   votePost,
-  votePostUpdate,
   toggleBookmark,
   editPost,
   reblog,

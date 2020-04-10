@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
+import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -106,15 +107,45 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
 
 export const calculateApprovePercent = votes => {
   if (!_.isEmpty(votes)) {
-    const filteredByOriginalFlag = votes.filter(vote => vote.percent > 0);
-    if (!_.isEmpty(filteredByOriginalFlag)) {
-      const onlyApproved = filteredByOriginalFlag.filter(vote => vote.percent % 10 === 0);
-      if (!_.isEmpty(onlyApproved)) {
-        return (onlyApproved.length / filteredByOriginalFlag.length) * 100;
-      }
+    if (getAppendDownvotes(votes).length && !getAppendUpvotes(votes).length) {
+      return 0;
     }
+
+    const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
+    const approveRshares = getAppendUpvotes(votes).reduce(
+      (acc, vote) => acc + vote.rshares_weight,
+      0,
+    );
+    const rejectRshares = getAppendDownvotes(votes).reduce(
+      (acc, vote) => acc + Math.abs(vote.rshares_weight),
+      0,
+    );
+
+    if (rejectRshares) {
+      return summRshares ? (approveRshares * 100) / summRshares : 0;
+    }
+
+    return 100;
   }
-  return 0;
+
+  return 100;
+};
+
+export const getApprovedField = (wobj, name) => {
+  if (!wobj || !wobj.fields || !name) return null;
+
+  let field = _.get(wobj, 'fields').filter(
+    item => item.name === name && calculateApprovePercent(item.active_votes) >= 70,
+  );
+
+  if (!field.length) return null;
+
+  field = field.sort((a, b) => b.weight - a.weight)[0];
+
+  if (name === 'name') {
+    return field.body;
+  }
+  return JSON.parse(field.body);
 };
 
 /* eslint-enable no-underscore-dangle */

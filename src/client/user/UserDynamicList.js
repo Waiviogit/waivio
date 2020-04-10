@@ -71,7 +71,7 @@ export default class UserDynamicList extends React.Component {
                 <UserCard
                   key={user.name}
                   user={user}
-                  alt={<WeightTag weight={user.wobjects_weight} />}
+                  alt={<WeightTag weight={user.wobjects_weight || user.weight} />}
                 />
               );
             }

@@ -98,7 +98,7 @@ export default class Wobj extends React.Component {
 
   componentDidMount() {
     const { match, wobject } = this.props;
-    if (isEmpty(wobject)) {
+    if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObjectInfo(match.params.name, ['tagCategory', 'categoryItem']);
     }
   }
@@ -170,7 +170,7 @@ export default class Wobj extends React.Component {
     const desc = `${objectName || ''}`;
     const image =
       wobject.avatar ||
-      'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+      'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
     const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
@@ -204,7 +204,7 @@ export default class Wobj extends React.Component {
             property="twitter:image"
             content={
               image ||
-              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+              'https://cdn.images.hive.blog/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
             }
           />
         </Helmet>

@@ -24,6 +24,7 @@
   "apiPrefix": "/api",
   "campaignApiPrefix": "/campaigns-api",
   "objectsBotApiPrefix": "/objects-bot",
+  "currenciesApiPrefix": "/currencies-api",
   "objectsBot": {
     "appendObject": "/append-object",
     "createObject": "/create-object"
@@ -76,5 +77,6 @@
   "hasSocialAccount": "/has_social_account",
   "followingUsers": "/following_users",
   "comments": "/comments",
-  "postComments": "/post_comments"
+  "postComments": "/post_comments",
+  "market": "/marketInfo"
 }

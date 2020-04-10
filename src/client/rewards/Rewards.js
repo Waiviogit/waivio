@@ -16,6 +16,8 @@ import {
   getFilteredObjectsMap,
   getIsLoaded,
   getUserLocation,
+  getPendingUpdate,
+  getIsMapModalOpen,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -26,6 +28,7 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
+  pendingUpdateSuccess,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -37,6 +40,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import { delay } from './rewardsHelpers';
 
 @withRouter
 @injectIntl
@@ -48,8 +52,17 @@ import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
     wobjects: getFilteredObjectsMap(state),
+    pendingUpdate: getPendingUpdate(state),
+    isFullscreenMode: getIsMapModalOpen(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign, getObjectTypeMap },
+  {
+    assignProposition,
+    declineProposition,
+    getCoordinates,
+    activateCampaign,
+    getObjectTypeMap,
+    pendingUpdateSuccess,
+  },
 )
 class Rewards extends React.Component {
   static propTypes = {
@@ -66,6 +79,8 @@ class Rewards extends React.Component {
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getObjectTypeMap: PropTypes.func.isRequired,
+    pendingUpdate: PropTypes.bool.isRequired,
+    pendingUpdateSuccess: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -88,6 +103,7 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
+    isAssign: false,
   };
 
   componentDidMount() {
@@ -131,7 +147,7 @@ class Rewards extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { username, match } = this.props;
+    const { username, match, pendingUpdate } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
     if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
@@ -140,9 +156,15 @@ class Rewards extends React.Component {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       this.props.history.push(`/rewards/all`);
     }
+    if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
+      this.props.pendingUpdateSuccess();
+      delay(6000).then(() => {
+        this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      });
+    }
   }
 
-  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea);
+  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
 
   getRequiredObjects = () =>
     this.state.propositions
@@ -239,16 +261,32 @@ class Rewards extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    proposition,
+    proposedWobj,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     return this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
+        proposition,
+        proposedWobj,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
+            id: 'assigned_successfully_update',
+            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
           }),
         );
         // eslint-disable-next-line no-unreachable
@@ -258,16 +296,16 @@ class Rewards extends React.Component {
           objPermlink,
           companyAuthor,
         );
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: true,
+        });
+        return { isAssign: true };
       })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssignDiscard: false });
+      .catch(e => {
+        this.setState({ loadingAssignDiscard: false, isAssign: false });
+        throw e;
       });
   };
 
@@ -311,30 +349,24 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Reservation released',
-          }),
-        );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.setState({
+          propositions: updatedPropositions,
+          loadingAssignDiscard: false,
+          isAssign: false,
+        });
+        return { isAssign: false };
       })
       .catch(e => {
         console.log(e.toString());
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssignDiscard: false });
+        message.error(e.error_description);
+        this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
   };
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, loadingAssignDiscard } = this.state;
+    const { propositions, loadingAssignDiscard, isAssign } = this.state;
     const { intl } = this.props;
     if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -371,6 +403,7 @@ class Rewards extends React.Component {
                 key={`${wobj.object.author_permlink}`}
                 assigned={wobj.assigned}
                 history={this.props.history}
+                isAssign={isAssign}
               />
             ),
         ),
@@ -477,7 +510,7 @@ class Rewards extends React.Component {
             <meta
               property="og:image"
               content={
-                'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+                'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
               }
             />
             <meta property="og:site_name" content="Waivio" />
@@ -545,6 +578,11 @@ class Rewards extends React.Component {
 
 Rewards.propTypes = {
   route: PropTypes.shape().isRequired,
+  isFullscreenMode: PropTypes.bool,
+};
+
+Rewards.defaultProps = {
+  isFullscreenMode: false,
 };
 
 export default Rewards;

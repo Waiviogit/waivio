@@ -159,7 +159,7 @@ export default class ProfileSettings extends React.Component {
             { callback: window.location.href },
           );
           const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
+            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
             '_blank',
           );
           win.focus();
@@ -170,7 +170,6 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
 
@@ -244,6 +243,7 @@ export default class ProfileSettings extends React.Component {
       isAvatar,
       lastAccountUpdate,
       profilePicture,
+      coverPicture,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -353,6 +353,24 @@ export default class ProfileSettings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
+                    <FormattedMessage id="profile_email" defaultMessage="Email" />
+                  </h3>
+                  <div className="Settings__section__inputs">
+                    <FormItem>
+                      {getFieldDecorator('email')(
+                        <Input
+                          size="large"
+                          placeholder={intl.formatMessage({
+                            id: 'profile_email_placeholder',
+                            defaultMessage: 'Your email',
+                          })}
+                        />,
+                      )}
+                    </FormItem>
+                  </div>
+                </div>
+                <div className="Settings__section">
+                  <h3>
                     <FormattedMessage id="profile_website" defaultMessage="Website" />
                   </h3>
                   <div className="Settings__section__inputs">
@@ -405,7 +423,7 @@ export default class ProfileSettings extends React.Component {
                             size="large"
                             shape="square"
                             icon="picture"
-                            src={`${this.state.coverPicture}`}
+                            src={`https://images.hive.blog/0x0/${coverPicture}`}
                           />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({

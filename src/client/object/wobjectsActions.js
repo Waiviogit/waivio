@@ -12,6 +12,7 @@ export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
+export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
 export const getObject = (authorPermlink, requiredField) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
@@ -19,12 +20,13 @@ export const getObject = (authorPermlink, requiredField) => (dispatch, getState)
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, requiredField)
       .then(wobj => getClientWObj(wobj, usedLocale))
-      .catch(err => console.log(err)),
+      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
 };
+
 export const clearObjectFromStore = () => dispatch =>
   dispatch({
-    type: GET_OBJECT_SUCCESS,
+    type: CLEAR_OBJECT,
     payload: {},
   });
 
@@ -46,7 +48,6 @@ export const getFeedContentByObject = object => dispatch =>
   }).catch(() => {});
 
 export const getObjectInfo = (authorPermlink, username) => dispatch => {
-  dispatch(clearObjectFromStore());
   dispatch(getObject(authorPermlink, username));
   dispatch(getAlbums(authorPermlink));
 };

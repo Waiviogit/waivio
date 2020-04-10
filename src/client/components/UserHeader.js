@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { Icon } from 'antd';
 import urlParse from 'url-parse';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
@@ -19,7 +18,6 @@ const UserHeader = ({
   username,
   user,
   handle,
-  wobjWeight,
   vestingShares,
   isSameUser,
   coverImage,
@@ -31,7 +29,7 @@ const UserHeader = ({
   rate,
 }) => {
   const style = hasCover
-    ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
+    ? { backgroundImage: `url("https://images.hive.blog/2048x512/${coverImage}")` }
     : {};
   let metadata = {};
   let location = null;
@@ -81,7 +79,7 @@ const UserHeader = ({
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
               {username}
-              <WeightTag weight={wobjWeight} />
+              <WeightTag weight={user.wobjects_weight} />
             </h2>
             <div className="UserHeader__user__buttons">
               <div
@@ -142,11 +140,7 @@ const UserHeader = ({
             <div>
               <i className="iconfont icon-dollar text-icon" />
               <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-              {isNaN(voteWorth) ? (
-                <Icon type="loading" className="text-icon-right" />
-              ) : (
-                <USDDisplay value={voteWorth} />
-              )}
+              {isNaN(voteWorth) ? <USDDisplay value={0} /> : <USDDisplay value={voteWorth} />}
             </div>
           </div>
           <div className="UserHeader__info-fields">
@@ -174,7 +168,6 @@ UserHeader.propTypes = {
   rate: PropTypes.number.isRequired,
   handle: PropTypes.string,
   username: PropTypes.string,
-  wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
@@ -192,7 +185,6 @@ UserHeader.defaultProps = {
   user: {},
   username: '',
   handle: '',
-  wobjWeight: '0',
   vestingShares: 0,
   isSameUser: false,
   coverImage: '',

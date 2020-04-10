@@ -196,12 +196,19 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
+export const SET_PENDING_UPDATE = createAsyncActionType('@user/SET_PANDING_UPDATE');
+
 export const assignProposition = ({
   companyAuthor,
   companyPermlink,
   resPermlink,
   objPermlink,
   appName,
+  primaryObjectName,
+  secondaryObjectName,
+  amount,
+  proposition,
+  proposedWobj,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -211,25 +218,39 @@ export const assignProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: resPermlink,
-      title: 'reserve object for rewards',
-      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      primaryObjectName,
+      secondaryObjectName,
+      amount,
+      title: 'Rewards reservations',
+      body: `User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of ${secondaryObjectName}, ${primaryObjectName} `,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
           app: appName,
+          proposition,
+          proposedWobj,
         },
       }),
     },
   ];
-
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
+
+export const pendingUpdateSuccess = () => dispatch =>
+  dispatch({
+    type: SET_PENDING_UPDATE.SUCCESS,
+  });
 
 export const declineProposition = ({
   companyAuthor,
@@ -260,6 +281,11 @@ export const declineProposition = ({
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
@@ -276,8 +302,8 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
-      title: 'activate object for rewards',
-      body: `Campaign ${company.name} was activated by ${username} `,
+      title: 'Activate rewards campaign',
+      body: `${username} (@${username}) activated rewards campaign for ${company.name} `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },

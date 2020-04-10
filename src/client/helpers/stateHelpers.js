@@ -180,7 +180,6 @@ export const getPostKey = post => {
   if (post.guestInfo) {
     return `${post.guestInfo.userId}/${post.permlink}`;
   }
-
   return `${post.author}/${post.permlink}`;
 };
 

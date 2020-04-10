@@ -80,7 +80,7 @@ export function getContentImages(content, parsed = false) {
   const parsedBody = parsed ? content : getHtml(content, {}, 'text');
 
   return extractImageTags(parsedBody).map(tag =>
-    unescape(tag.src.replace('https://steemitimages.com/0x0/', '')),
+    unescape(tag.src.replace('https://images.hive.blog/0x0/', '')),
   );
 }
 

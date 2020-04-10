@@ -60,6 +60,7 @@ class StoryFull extends React.Component {
     onEditClick: PropTypes.func,
     /* from context */
     usedLocale: PropTypes.string.isRequired,
+    isOriginalPost: PropTypes.string,
   };
 
   static defaultProps = {
@@ -79,6 +80,7 @@ class StoryFull extends React.Component {
     onShareClick: () => {},
     onEditClick: () => {},
     postState: {},
+    isOriginalPost: '',
   };
 
   constructor(props) {
@@ -174,6 +176,7 @@ class StoryFull extends React.Component {
       onShareClick,
       onEditClick,
       usedLocale,
+      isOriginalPost,
     } = this.props;
 
     const taggedObjects = [];
@@ -223,7 +226,7 @@ class StoryFull extends React.Component {
     let replyUI = null;
 
     if (post.depth !== 0) {
-      replyUI = (
+      replyUI = !isOriginalPost ? (
         <div className="StoryFull__reply">
           <h3 className="StoryFull__reply__title">
             <FormattedMessage
@@ -251,7 +254,7 @@ class StoryFull extends React.Component {
             </h4>
           )}
         </div>
-      );
+      ) : null;
     }
 
     let popoverMenu = [];
@@ -325,23 +328,25 @@ class StoryFull extends React.Component {
       <div className="StoryFull">
         {replyUI}
         <h1 className="StoryFull__title">{post.title}</h1>
-        <h3 className="StoryFull__comments_title">
-          <a href="#comments">
-            {commentCount === 1 ? (
-              <FormattedMessage
-                id="comment_count"
-                values={{ count: <FormattedNumber value={commentCount} /> }}
-                defaultMessage="{count} comment"
-              />
-            ) : (
-              <FormattedMessage
-                id="comments_count"
-                values={{ count: <FormattedNumber value={commentCount} /> }}
-                defaultMessage="{count} comments"
-              />
-            )}
-          </a>
-        </h3>
+        {!isOriginalPost && (
+          <h3 className="StoryFull__comments_title">
+            <a href="#comments">
+              {commentCount === 1 ? (
+                <FormattedMessage
+                  id="comment_count"
+                  values={{ count: <FormattedNumber value={commentCount} /> }}
+                  defaultMessage="{count} comment"
+                />
+              ) : (
+                <FormattedMessage
+                  id="comments_count"
+                  values={{ count: <FormattedNumber value={commentCount} /> }}
+                  defaultMessage="{count} comments"
+                />
+              )}
+            </a>
+          </h3>
+        )}
         <div className="StoryFull__header">
           <Link to={`/@${post.author}`}>
             <Avatar username={post.author} size={60} />

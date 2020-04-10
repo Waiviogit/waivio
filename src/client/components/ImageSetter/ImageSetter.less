@@ -132,6 +132,22 @@
         }
       }
     }
+
+    &__for-mobile {
+      display: inline;
+
+      @media @small {
+        display: none;
+      }
+    }
+
+    &__for-desktop {
+      display: none;
+
+      @media @small {
+        display: inline;
+      }
+    }
   }
 
   .image-upload {
@@ -181,11 +197,9 @@
       width: 2rem;
       border: none;
       border-radius: 0 4px 4px 0;
-
-      &:hover {
-        background-color: @neon-carrot;
-        cursor: pointer;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

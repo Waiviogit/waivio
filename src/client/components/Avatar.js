@@ -16,12 +16,12 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
-    return `https://steemitimages.com/u/${username}/avatar/large?${lastAccountUpdate}`;
+    return `https://images.hive.blog/u/${username}/avatar/large?${lastAccountUpdate}`;
   }
 
   return size > 64
-    ? `https://steemitimages.com/u/${username}/avatar`
-    : `https://steemitimages.com/u/${username}/avatar/small`;
+    ? `https://images.hive.blog/u/${username}/avatar`
+    : `https://images.hive.blog/u/${username}/avatar/small`;
 }
 
 const Avatar = ({ username, size }) => {
@@ -30,7 +30,6 @@ const Avatar = ({ username, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const url = getAvatarURL(username, size, authenticatedUser);
 

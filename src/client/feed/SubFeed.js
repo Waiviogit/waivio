@@ -154,6 +154,7 @@ class SubFeed extends React.Component {
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
 
     const ready = loaded && fetched && !isFetching;
+
     return (
       <div>
         {isAuthHomeFeed && <LetsGetStarted />}
