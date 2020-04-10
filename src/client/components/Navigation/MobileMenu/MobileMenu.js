@@ -81,11 +81,11 @@ const MobileMenu = props => {
             <div className="userData__broker-balance">
               {platformName === 'beaxy' && <BrokerBalance isMobile />}
             </div>
-            <div className="userData__user">
-              <Link to={`/@${username}`} onClick={memoAvatarClick}>
-                <Avatar username={username} size={50} />
-              </Link>
-            </div>
+            {/*<div className="userData__user">*/}
+            {/*  <Link to={`/@${username}`} onClick={memoAvatarClick}>*/}
+            {/*    <Avatar username={username} size={50} />*/}
+            {/*  </Link>*/}
+            {/*</div>*/}
           </div>
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>

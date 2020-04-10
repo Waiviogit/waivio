@@ -37,7 +37,6 @@ import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
-import LanguageSettings from './LanguageSettings';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
@@ -46,9 +45,6 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
-import { getTopPosts } from '../../../waivioApi/ApiClient';
-import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
-import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import './Topnav.less';
 import MobileMenu from './MobileMenu/MobileMenu';
