@@ -106,7 +106,7 @@ class AdvanceSettings extends Component {
           )}
           <div className="upvote-settings">
             <Checkbox
-              checked={upvote}
+              checked={!isGuest ? upvote : false}
               onChange={this.handleUpvoteChange}
               disabled={isUpdating || isGuest}
             >
