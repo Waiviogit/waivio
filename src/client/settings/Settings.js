@@ -422,7 +422,7 @@ export default class Settings extends React.Component {
                       name="upvote_setting"
                       checked={!isGuest ? upvoteSetting : false}
                       onChange={this.handleUpvoteSettingChange}
-                      disabled={!!isGuest}
+                      disabled={isGuest}
                     >
                       <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                     </Checkbox>
