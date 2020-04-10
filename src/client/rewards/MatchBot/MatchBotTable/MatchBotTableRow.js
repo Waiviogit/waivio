@@ -90,7 +90,6 @@ const MatchBotTableRow = ({
           <Checkbox
             checked={isEnabled}
             onChange={isAuthority ? handleChangeModalVisible : handleChangeAuthModalVisible}
-            // onChange={handleChange}
           />
         </td>
         <td>{rule.sponsor}</td>
