@@ -752,6 +752,11 @@ class Topnav extends React.Component {
     this.setState({ isMobileMenu: !this.state.isMobileMenu });
   };
 
+  onMobileAvatarClick = () => {
+    const { isMobileMenu } = this.state;
+    if (isMobileMenu) this.toggleMobileMenu();
+  };
+
   render() {
     const {
       intl,
@@ -864,22 +869,30 @@ class Topnav extends React.Component {
                 'Topnav__right-top--logedout': !isAuthenticated,
               })}
             >
-              {isMobile && !username && (
+              {!username ? (
                 <div className="mr2">
-                  {
-                    <LoggedOutMenu
-                      location={location}
-                      searchBarActive={this.state.searchBarActive}
-                    />
-                  }
+                  <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
                 </div>
-              )}
-              {!isMobileMenu ? (
-                <Icon type="menu" className="iconfont icon-menu" onClick={this.toggleMobileMenu} />
               ) : (
-                <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
+                <Link
+                  to={`/@${username}`}
+                  className="Topnav__right-top__avatar"
+                  onClick={this.onMobileAvatarClick}
+                >
+                  <Avatar username={username} size={40} />
+                </Link>
               )}
-
+              <div className="Topnav__right-top__icon">
+                {!isMobileMenu ? (
+                  <Icon
+                    type="menu"
+                    className="iconfont icon-menu"
+                    onClick={this.toggleMobileMenu}
+                  />
+                ) : (
+                  <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
+                )}
+              </div>
               {/* <button */}
               {/*  className={classNames('Topnav__mobile-search', { */}
               {/*    'Topnav__mobile-search-close': searchBarActive, */}

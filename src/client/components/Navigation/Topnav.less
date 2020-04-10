@@ -487,7 +487,7 @@
 
   &__right-top {
     height: 48px;
-    width: 65px;
+    width: 80%;
     position: absolute;
     right: 0;
     top: 0;
@@ -497,14 +497,23 @@
     justify-content: flex-end;
     align-items: center;
     color: @blue-vivid;
-
     @media @small {
       display: none;
     }
 
     &--logedout {
       justify-content: flex-end;
-      width: 35px;
+    }
+
+    &__icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 2rem;
+    }
+
+    &__avatar {
+      padding-right: 1rem;
     }
   }
 
