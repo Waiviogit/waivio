@@ -5,7 +5,14 @@ import _ from 'lodash';
 import MatchBotTableRow from './MatchBotTableRow';
 import './MatchBotTable.less';
 
-const MatchBotTable = ({ handleEditRule, handleSwitcher, intl, isAuthority, rules }) => (
+const MatchBotTable = ({
+  handleEditRule,
+  handleSwitcher,
+  intl,
+  isAuthority,
+  rules,
+  setIsEnabledRule,
+}) => (
   <table className="MatchBotTable">
     <thead>
       <tr>
@@ -32,12 +39,12 @@ const MatchBotTable = ({ handleEditRule, handleSwitcher, intl, isAuthority, rule
     <tbody>
       {_.map(rules, rule => (
         <MatchBotTableRow
-          // eslint-disable-next-line no-underscore-dangle
-          key={rule._id}
+          key={rule.sponsor}
           handleEditRule={handleEditRule}
           handleSwitcher={handleSwitcher}
           isAuthority={isAuthority}
           rule={rule}
+          setIsEnabledRule={setIsEnabledRule}
         />
       ))}
     </tbody>
@@ -50,6 +57,7 @@ MatchBotTable.propTypes = {
   isAuthority: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   rules: PropTypes.arrayOf(PropTypes.shape()),
+  setIsEnabledRule: PropTypes.func.isRequired,
 };
 
 MatchBotTable.defaultProps = {

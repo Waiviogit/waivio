@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -8,14 +8,30 @@ import { setMatchBotRules } from '../../rewardsActions';
 import { formatDate } from '../../rewardsHelper';
 import getMatchBotMessageData from '../matchBotMessageData';
 
-const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, rule }) => {
+const MatchBotTableRow = ({
+  handleEditRule,
+  handleSwitcher,
+  isAuthority,
+  intl,
+  rule,
+  setIsEnabledRule,
+}) => {
   const [activationStatus, setActivationStatus] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAuthVisible, setModalAuthVisible] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
   const dispatch = useDispatch();
 
-  const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
+  useEffect(() => {
+    if (activationStatus) setIsEnabled(activationStatus === 'activated');
+    else setIsEnabled(rule.enabled);
+  }, [activationStatus]);
+
+  useEffect(() => {
+    setIsEnabledRule(isEnabled);
+  }, [isEnabled]);
+
   const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const messageData = getMatchBotMessageData(localizer);
 
@@ -74,6 +90,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
           <Checkbox
             checked={isEnabled}
             onChange={isAuthority ? handleChangeModalVisible : handleChangeAuthModalVisible}
+            // onChange={handleChange}
           />
         </td>
         <td>{rule.sponsor}</td>
@@ -107,6 +124,7 @@ MatchBotTableRow.propTypes = {
   isAuthority: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   rule: PropTypes.shape().isRequired,
+  setIsEnabledRule: PropTypes.func.isRequired,
 };
 
 export default injectIntl(MatchBotTableRow);
