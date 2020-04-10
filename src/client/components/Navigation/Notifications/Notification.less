@@ -3,8 +3,18 @@
 .Notification {
   display: flex;
   padding: 12px;
-  background-color: @notification-read-background-color;
+  background-color: #3a79ee;
   border-bottom: @base-border;
+  @media @small {
+    background-color: @notification-read-background-color;
+  }
+
+  .Avatar {
+    border: 1px solid @white;
+    @media @small {
+      border: 1px solid @blue-vivid;
+    }
+  }
 
   &:hover {
     cursor: pointer;
@@ -23,7 +33,10 @@
     text-align: left;
 
     &__message {
-      color: @grey-mortar;
+      color: @white;
+      @media @small {
+        color: @grey-mortar;
+      }
 
       & > a {
         font-weight: 700;
@@ -32,7 +45,10 @@
 
     &__date {
       font-size: 14px;
-      color: @grey-darkGrey;
+      color: @white;
+      @media @small {
+        color: @grey-darkGrey;
+      }
     }
   }
 
