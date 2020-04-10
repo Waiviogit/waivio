@@ -108,10 +108,10 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   renderCategoryItems = (categoryItems, category) => {
-    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
-    const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
+    if (!_.isEmpty(categoryItems)) {
+      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
-    if (!_.isEmpty(tagArray)) {
       return (
         <div>
           {tagArray.map(item => (
