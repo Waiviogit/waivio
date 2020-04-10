@@ -15,6 +15,7 @@ import MenuButtons from './MenuButtons/MenuButtons';
 import { getIsBrokerConnected } from '../../../reducers';
 import Topnav from '../Topnav';
 import './MobileMenu.less';
+import LoggedOutButtons from '../LoggedOutMenu';
 
 const MobileMenu = props => {
   const {
@@ -35,6 +36,8 @@ const MobileMenu = props => {
     toggleMobileMenu,
     toggleModal,
     isBrokerConnected,
+    location,
+    searchBarActive,
   } = props;
 
   const isBeaxyUser = getIsBeaxyUser(username);
@@ -119,6 +122,8 @@ const MobileMenu = props => {
           onLogout={memoLogoutHandler}
           toggleMenu={toggleMobileMenu}
           username={username}
+          location={location}
+          searchBarActive={searchBarActive}
         />
         {username && !isBeaxyUser && (
           <div className="MobileMenu__connect-broker">
@@ -159,6 +164,8 @@ MobileMenu.propTypes = {
   toggleMobileMenu: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   isBrokerConnected: PropTypes.bool.isRequired,
+  location: PropTypes.shape().isRequired,
+  searchBarActive: PropTypes.bool.isRequired,
 };
 
 MobileMenu.defaultProps = {

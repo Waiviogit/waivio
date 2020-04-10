@@ -7,7 +7,7 @@ import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import LanguageSettings from './LanguageSettings';
 
 const LoggedOutMenu = props => {
-  const { location, searchBarActive } = props;
+  const { location, searchBarActive, isMobile } = props;
   const next = location.pathname.length > 1 ? location.pathname : '';
   return (
     <div
@@ -25,9 +25,11 @@ const LoggedOutMenu = props => {
         <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
           <ModalSignIn next={next} />
         </Menu.Item>
-        <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
-          <LanguageSettings />
-        </Menu.Item>
+        {!isMobile && (
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
+            <LanguageSettings />
+          </Menu.Item>
+        )}
       </Menu>
     </div>
   );
@@ -36,6 +38,11 @@ const LoggedOutMenu = props => {
 LoggedOutMenu.propTypes = {
   location: PropTypes.shape().isRequired,
   searchBarActive: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool,
+};
+
+LoggedOutMenu.defaultProps = {
+  isMobile: false,
 };
 
 export default LoggedOutMenu;

@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import LoggedOutButtons from '../../LoggedOutMenu';
 import './LoggedMenuMobile.less';
 
-const LoggedMenuMobile = ({ username, toggleMenu, onLogout }) => {
+const LoggedMenuMobile = ({ username, toggleMenu, onLogout, location, searchBarActive }) => {
   const loggedInMenu = (
     <React.Fragment>
       <Link to="/my_feed" className="LoggedMenu__link" onClick={toggleMenu}>
@@ -50,6 +51,9 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout }) => {
       >
         <FormattedMessage id="about" defaultMessage="About" />
       </Link>
+      <div className="LoggedMenu__logPanel">
+        <LoggedOutButtons location={location} searchBarActive={searchBarActive} isMobile />
+      </div>
     </React.Fragment>
   );
   return <div className="LoggedMenu">{username ? loggedInMenu : loggedOutMenu}</div>;
@@ -59,6 +63,8 @@ LoggedMenuMobile.propTypes = {
   username: PropTypes.string.isRequired,
   toggleMenu: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  location: PropTypes.shape().isRequired,
+  searchBarActive: PropTypes.bool.isRequired,
 };
 
 export default LoggedMenuMobile;
