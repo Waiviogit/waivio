@@ -19,9 +19,6 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout }) => {
       <Link to="/settings" className="LoggedMenu__link" onClick={toggleMenu}>
         <FormattedMessage id="settings" defaultMessage="Settings" />
       </Link>
-      <Link to="/replies" className="LoggedMenu__link" onClick={toggleMenu}>
-        <FormattedMessage id="replies" defaultMessage="Replies" />
-      </Link>
       <Link to="/wallet" className="LoggedMenu__link" onClick={toggleMenu}>
         <FormattedMessage id="wallet" defaultMessage="Wallet" />
       </Link>
