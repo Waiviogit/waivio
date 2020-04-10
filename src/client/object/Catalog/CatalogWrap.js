@@ -2,7 +2,7 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import _, { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -299,7 +299,7 @@ class CatalogWrap extends React.Component {
     let actualListItems =
       listItems &&
       listItems.map(item => {
-        const matchField = _.get(this.props.wobject, 'fields', []).find(
+        const matchField = get(this.props.wobject, 'fields', []).find(
           field => field.body === item.id || field.alias === item.alias,
         );
         const activeVotes = matchField ? matchField.active_votes : [];

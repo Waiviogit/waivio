@@ -202,8 +202,7 @@ export default class AppendForm extends Component {
 
             this.setState({ loading: false });
           })
-          .catch(e => {
-            console.log(e);
+          .catch(() => {
             message.error(
               this.props.intl.formatMessage({
                 id: 'couldnt_append',

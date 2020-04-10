@@ -73,8 +73,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
-    showMoreTag: {},
+    showMore: {},
   };
 
   getLink = link => {
@@ -146,7 +145,10 @@ class ObjectInfo extends React.Component {
   renderTagCategories = tagCategories => {
     const filteredTagCategories =
       tagCategories &&
-      tagCategories.filter(category => calculateApprovePercent(category.active_votes) >= 70);
+      tagCategories.filter(
+        category =>
+          calculateApprovePercent(category.active_votes) >= 70 && category.categoryItems.length,
+      );
     if (filteredTagCategories) {
       return filteredTagCategories.map(item => (
         <div key={item.id}>
