@@ -966,7 +966,6 @@ class Topnav extends React.Component {
             hotNews={this.hotNews}
             handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
             handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
-            handleScrollToTop={this.handleScrollToTop}
             toggleMobileMenu={this.toggleMobileMenu}
           />
         )}

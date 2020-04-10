@@ -13,8 +13,9 @@ import Avatar from '../../Avatar';
 import SignUp from '../../Sidebar/SignUp';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
 import MenuButtons from './MenuButtons/MenuButtons';
-import './MobileMenu.less';
 import { getIsBrokerConnected } from '../../../reducers';
+import Topnav from '../Topnav';
+import './MobileMenu.less';
 
 const MobileMenu = props => {
   const {
@@ -28,7 +29,6 @@ const MobileMenu = props => {
     searchBarValue,
     onSearchPressEnter,
     onBlur,
-    handleScrollToTop,
     username,
     onLogout,
     disconnectPlatform,
@@ -57,7 +57,7 @@ const MobileMenu = props => {
   };
 
   const onAvatarClick = () => {
-    handleScrollToTop();
+    Topnav.handleScrollToTop();
     toggleMobileMenu();
   };
 
@@ -76,14 +76,14 @@ const MobileMenu = props => {
       <div className="MobileMenu__wrapper">
         {username && (
           <div className="userData">
-            <span className="userData__broker-balance">
+            <div className="userData__broker-balance">
               {platformName === 'beaxy' && <BrokerBalance isMobile />}
-            </span>
-            <span className="userData__user">
+            </div>
+            <div className="userData__user">
               <Link to={`/@${username}`} onClick={memoAvatarClick}>
                 <Avatar username={username} size={50} />
               </Link>
-            </span>
+            </div>
           </div>
         )}
         <div className="MobileMenu__input-container" onBlur={onBlur}>
@@ -153,7 +153,6 @@ MobileMenu.propTypes = {
   searchBarValue: PropTypes.string,
   onSearchPressEnter: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
-  handleScrollToTop: PropTypes.func.isRequired,
   username: PropTypes.string,
   onLogout: PropTypes.func.isRequired,
   disconnectPlatform: PropTypes.func.isRequired,
