@@ -131,7 +131,7 @@ describe('getAvatarURL', () => {
     );
   });
 
-  it('should return steemitimages link with lastAccountUpdate', () => {
+  it('should return images.hive.blog link with lastAccountUpdate', () => {
     const lastAccountUpdate = `${Date.now()}`.slice(0, 10);
     username = 'unsername';
     size = 50;
@@ -139,25 +139,25 @@ describe('getAvatarURL', () => {
       name: 'unsername',
     };
     expect(getAvatarURL(username, size, authenticatedUser)).toBe(
-      `https://steemitimages.com/u/${username}/avatar/large?${lastAccountUpdate}`,
+      `https://images.hive.blog/u/${username}/avatar/large?${lastAccountUpdate}`,
     );
   });
 
-  it('should return steemitimages link without lastAccountUpdate', () => {
+  it('should return images.hive.blog link without lastAccountUpdate', () => {
     username = 'unsername';
     size = 70;
     authenticatedUser = {};
     expect(getAvatarURL(username, size, authenticatedUser)).toBe(
-      `https://steemitimages.com/u/${username}/avatar`,
+      `https://images.hive.blog/u/${username}/avatar`,
     );
   });
 
-  it('should return steemitimages link without lastAccountUpdate and small', () => {
+  it('should return images.hive.blog link without lastAccountUpdate and small', () => {
     username = 'unsername';
     size = 50;
     authenticatedUser = {};
     expect(getAvatarURL(username, size, authenticatedUser)).toBe(
-      `https://steemitimages.com/u/${username}/avatar/small`,
+      `https://images.hive.blog/u/${username}/avatar/small`,
     );
   });
 });

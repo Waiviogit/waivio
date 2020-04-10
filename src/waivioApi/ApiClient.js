@@ -79,7 +79,9 @@ export const getObject = (authorPermlink, requiredField = []) => {
     headers: {
       app: config.appName,
     },
-  }).then(res => res.json());
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const getUsersByObject = object =>

@@ -236,7 +236,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={`${replaceBotWithGuestName(`/@${post.id}`, post.userInfo)}/original`}>
+            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.userInfo)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"

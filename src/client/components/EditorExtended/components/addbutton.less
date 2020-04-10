@@ -111,6 +111,7 @@
       border: none;
       border-radius: 0 4px 4px 0;
     }
+
     @media @small {
       padding: 4px;
     }
@@ -125,6 +126,7 @@
 
     & > .btn-icon {
       padding-left: 2px;
+      font-size: 15px;
       svg path {
         fill: @grey-empress;
       }
@@ -138,11 +140,22 @@
     }
 
     .action-btn__caption {
-      display: none;
-      font-size: 19px;
+      display: unset;
+      font-size: 15px;
       padding-left: 4px;
+
       @media @small {
-        display: unset;
+        font-size: 19px;
+      }
+    }
+
+    .action-btn__icon {
+      margin-top: 0;
+      width: 22px;
+      height: 17px;
+
+      &--cube {
+        height: 22px;
       }
     }
   }
