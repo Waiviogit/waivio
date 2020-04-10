@@ -443,7 +443,7 @@ class Topnav extends React.Component {
           <AutoComplete.Option
             marker={Topnav.markers.USER}
             key={`user${option.account}`}
-            value={`user${optioimport LoggedInMenu from './LoggedInMenu';n.account}`}
+            value={`user${option.account}`}
             className="Topnav__search-autocomplete"
           >
             <div className="Topnav__search-content-wrap">
@@ -801,7 +801,7 @@ class Topnav extends React.Component {
             </div>
           </div>
         </div>
-        {isMobile && isMobileMenuOpen && (
+        {isMobile && isMobileMenu && (
           <MobileMenu
             {...this.props}
             {...this.state}
