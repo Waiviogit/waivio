@@ -76,10 +76,10 @@ const MobileMenu = props => {
     <div className="MobileMenu">
       <i className="MobileMenu__mask" onClick={toggleMobileMenu} role="presentation" />
       <div className="MobileMenu__wrapper">
-        {username && (
+        {platformName === 'beaxy' && (
           <div className="userData">
             <div className="userData__broker-balance">
-              {platformName === 'beaxy' && <BrokerBalance isMobile />}
+              <BrokerBalance isMobile />
             </div>
             {/*<div className="userData__user">*/}
             {/*  <Link to={`/@${username}`} onClick={memoAvatarClick}>*/}
@@ -91,7 +91,7 @@ const MobileMenu = props => {
         <div className="MobileMenu__input-container" onBlur={onBlur}>
           <AutoComplete
             dropdownClassName={classNames('Topnav__search-dropdown-container', {
-              'logged-out': !username,
+              'logged-out': !username || platformName !== 'beaxy',
             })}
             dataSource={searchOptions}
             onSearch={onSearch}
