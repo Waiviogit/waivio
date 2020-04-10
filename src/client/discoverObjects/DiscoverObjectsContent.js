@@ -139,8 +139,9 @@ class DiscoverObjectsContent extends Component {
   }
 
   getCoordinates = async () => {
-    const coord = await this.props.getCoordinates();
-    await this.setState({ center: [+coord.value.lat, +coord.value.lon] });
+    const coordinates = await this.props.getCoordinates();
+    if (!isEmpty(coordinates))
+      this.setState({ center: [Number(coordinates.value.lat), Number(coordinates.value.lon)] });
   };
 
   setMapArea = map => this.props.getObjectTypeMap(map, this.props.isFullscreenMode);
