@@ -86,7 +86,7 @@ const MenuButtons = ({
               }
               visible={notificationsPopoverVisible}
               onVisibleChange={handleNotificationsPopoverVisibleChange}
-              overlayClassName="Notifications__popover-overlay"
+              overlayClassName="NewsOverlay__popover-overlay"
               title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
             >
               <a className="MenuButtons__item-link">

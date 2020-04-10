@@ -17,8 +17,12 @@
     background-color: @grey-nero;
 
     &__hot-news-item {
-      border-bottom: @border-width-base @border-style-base @normal-grey;
-      color: @grey-darkGrey;
+      border-bottom: @border-width-base @border-style-base @white;
+      color: @white;
+      @media @small {
+        border-bottom: @border-width-base @border-style-base @normal-grey;
+        color: @grey-darkGrey;
+      }
 
       &:last-child {
         border-bottom: none;
