@@ -166,7 +166,6 @@ export default class AppendForm extends Component {
 
       if (data.field.name !== objectFields.sorting || !equalBody) {
         this.setState({ loading: true });
-
         this.props
           .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
           .then(res => {
@@ -203,7 +202,8 @@ export default class AppendForm extends Component {
 
             this.setState({ loading: false });
           })
-          .catch(() => {
+          .catch(e => {
+            console.log(e);
             message.error(
               this.props.intl.formatMessage({
                 id: 'couldnt_append',

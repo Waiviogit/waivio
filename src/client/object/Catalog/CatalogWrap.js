@@ -2,7 +2,7 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import _, { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -27,7 +27,7 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { hasType } from '../../helpers/wObjectHelper';
+import { calculateApprovePercent, hasType } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -198,6 +198,7 @@ class CatalogWrap extends React.Component {
               name: obj.name,
               path: `${location.hash.split(obj.id)[0]}${obj.id}`,
             }));
+
             if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
             this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
           });
@@ -295,7 +296,25 @@ class CatalogWrap extends React.Component {
 
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
-    const actualListItems = listItems && listItems.filter(list => list.status);
+    let actualListItems =
+      listItems &&
+      listItems.map(item => {
+        const matchField = _.get(this.props.wobject, 'fields', []).find(
+          field => field.body === item.id || field.alias === item.alias,
+        );
+        const activeVotes = matchField ? matchField.active_votes : [];
+
+        return {
+          ...item,
+          active_votes: [...activeVotes],
+        };
+      });
+
+    actualListItems =
+      actualListItems &&
+      actualListItems.filter(
+        list => !list.status && calculateApprovePercent(list.active_votes) >= 70,
+      );
 
     if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
       return (
@@ -413,7 +432,6 @@ class CatalogWrap extends React.Component {
         return { isAssign: false };
       })
       .catch(e => {
-        console.log(e.toString());
         message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });

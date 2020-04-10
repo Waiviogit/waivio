@@ -117,7 +117,6 @@ export default function wobjectReducer(state = initialState, action) {
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       const { payload } = action;
       const date = new Date().toISOString().split('.')[0];
-
       const newField = {
         ...payload,
         active_votes: [
@@ -136,7 +135,6 @@ export default function wobjectReducer(state = initialState, action) {
         author_rank: 0,
         author_reputation: 1039122303835,
         body: payload.body,
-        fullBody: `@${payload.creator} added ${payload.name}(${payload.locale}): ${payload.body}`,
         category: 'waivio-object-type',
         children: 0,
         creator: payload.creator,
@@ -156,7 +154,7 @@ export default function wobjectReducer(state = initialState, action) {
         url: `/waivio-object-type/@et42k/iqx-hashtag#@${payload.author_original}/${payload.permlink}`,
         weight: 1,
       };
-      // check menu item appending; type uses for menuItems only. (type values: 'menuList' or 'menuPage')
+
       if (
         payload.name === 'listItem' &&
         [TYPES_OF_MENU_ITEM.LIST, TYPES_OF_MENU_ITEM.PAGE].includes(payload.type)
@@ -170,12 +168,48 @@ export default function wobjectReducer(state = initialState, action) {
         const menuItems = state.wobject.menuItems
           ? [...state.wobject.menuItems, menuItem]
           : [menuItem];
+
         return {
           ...state,
           wobject: {
             ...state.wobject,
             fields: [...state.wobject.fields, newField],
             menuItems,
+          },
+        };
+      }
+
+      if (payload.name === 'categoryItem') {
+        const parentCategoryIndex = state.wobject.tagCategories.findIndex(
+          field => field.body === payload.tagCategory,
+        );
+        const parentCategory = state.wobject.tagCategories[parentCategoryIndex];
+        const newTag = {
+          locale: payload.locale,
+          name: payload.body,
+          weight: payload.weight,
+        };
+        const categoryItems = parentCategory.categoryItems
+          ? [...parentCategory.categoryItems, newTag]
+          : [newTag];
+
+        state.wobject.tagCategories.splice(parentCategoryIndex, 1, {
+          ...parentCategory,
+          categoryItems,
+        });
+      }
+
+      if (payload.name === 'tagCategory') {
+        const tagCategories = state.wobject.tagCategories
+          ? [...state.wobject.tagCategories, newField]
+          : [newField];
+
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields, newField],
+            tagCategories,
           },
         };
       }

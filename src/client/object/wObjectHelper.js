@@ -1,4 +1,4 @@
-import {
+import _, {
   attempt,
   get,
   groupBy,
@@ -36,9 +36,29 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
       break;
     default:
       if (menuItems && menuItems.length) {
-        url = `${pathname}/menu#${(sortCustom &&
-          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-          menuItems[0].author_permlink}`;
+        const winnerItem =
+          menuItems &&
+          menuItems
+            .map(item => {
+              const matchField = _.get(wobj, 'fields', []).find(
+                field => field.body === item.id || field.alias === item.alias,
+              );
+              const activeVotes = matchField ? matchField.active_votes : [];
+
+              return {
+                ...item,
+                active_votes: [...activeVotes],
+              };
+            })
+            .filter(item => !item.status && calculateApprovePercent(item.active_votes) >= 70)
+            .sort((a, b) => b.weight - a.weight)[0];
+
+        url =
+          sortCustom && winnerItem
+            ? `${pathname}/menu#${(sortCustom &&
+                sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+                winnerItem.author_permlink}`
+            : pathname;
       } else if (screenSize !== 'large') {
         url = `${pathname}/about`;
       }

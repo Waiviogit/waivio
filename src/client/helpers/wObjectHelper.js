@@ -131,20 +131,25 @@ export const calculateApprovePercent = votes => {
   return 100;
 };
 
-export const getApprovedField = (wobj, name) => {
+export const getApprovedField = (wobj, name, locale = 'en-US') => {
+  const stringBodyFields = ['name', 'parent'];
   if (!wobj || !wobj.fields || !name) return null;
 
   let field = _.get(wobj, 'fields').filter(
-    item => item.name === name && calculateApprovePercent(item.active_votes) >= 70,
+    item =>
+      item.name === name &&
+      calculateApprovePercent(item.active_votes) >= 70 &&
+      item.locale === locale,
   );
 
   if (!field.length) return null;
 
   field = field.sort((a, b) => b.weight - a.weight)[0];
 
-  if (name === 'name') {
+  if (stringBodyFields.includes(name)) {
     return field.body;
   }
+
   return JSON.parse(field.body);
 };
 

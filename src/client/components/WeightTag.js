@@ -24,13 +24,14 @@ const WeightTag = ({ intl, weight }) => {
       rewardFund.reward_balance.replace(' HIVE', '') *
       rate *
       1000000;
+    const expertize = value > 0 ? value : 0;
     return (
       <span className="Weight" title={tagTitle}>
         {isNaN(value) ? (
           <Icon type="loading" className="text-icon-right" />
         ) : (
           <Tag>
-            <WeightDisplay value={value} />
+            <WeightDisplay value={expertize} />
           </Tag>
         )}
       </span>
