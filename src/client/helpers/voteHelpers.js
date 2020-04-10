@@ -6,7 +6,8 @@ export const getDownvotes = activeVotes => activeVotes.filter(vote => vote.perce
 
 export const getAppendUpvotes = activeVotes =>
   activeVotes.filter(
-    vote => (vote.percent > 100 && vote.percent % 10 === 0) || (vote.percent > 0 && vote.percent <= 100),
+    vote =>
+      (vote.percent > 100 && vote.percent % 10 === 0) || (vote.percent > 0 && vote.percent <= 100),
   );
 
 export const getAppendDownvotes = activeVotes =>

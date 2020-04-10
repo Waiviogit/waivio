@@ -41,8 +41,7 @@ describe('parseBlockChainError', () => {
     actual = parseBlockChainError(
       'info->abs_rshares > STEEM_VOTE_DUST_THRESHOLD || vote_weight == 0: Voting weight is too small, please accumulate more voting power or hive power.',
     );
-    expected =
-      'Your voting power is too small, please accumulate more voting power or hive power.';
+    expected = 'Your voting power is too small, please accumulate more voting power or hive power.';
     expect(actual).toEqual(expected);
 
     actual = parseBlockChainError('Cannot increase payout within last twelve hours before payout.');
