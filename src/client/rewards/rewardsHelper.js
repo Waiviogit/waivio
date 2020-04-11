@@ -203,7 +203,12 @@ export const getDescription = objectDetails =>
     ? `<p>Additional requirements/notes: ${objectDetails.description}</p>`
     : '';
 
-export const getDetailsBody = (proposition, proposedWobj, primaryObjectName) => {
+export const getDetailsBody = (
+  proposition,
+  proposedWobjName,
+  proposedAuthorPermlink,
+  primaryObjectName,
+) => {
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
@@ -211,16 +216,17 @@ export const getDetailsBody = (proposition, proposedWobj, primaryObjectName) => 
     <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
     <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
-</ul>
-
-  `;
+</ul>`;
   const frequencyAssign = getFrequencyAssign(proposition);
   const blacklist = `<ul><li>User account is not blacklisted by @${proposition.guide.name} or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
-<ul><li>Minimum ${proposition.requirements.minPhotos} original photos of <a href="/object/${proposedWobj.id}">${proposedWobj.name}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedWobj.author_permlink}'>${proposedWobj.name}</a></li>
-<li>Link to <a href="/object/${proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
+<ul><li>Minimum ${
+    proposition.requirements.minPhotos
+  } original photos of <a href="/object/${proposedWobjName}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>
+<li>Link to <a href="/object/${proposition.requiredObject ||
+    proposition.requiredObject.author_permlink}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);

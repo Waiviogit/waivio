@@ -3,6 +3,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
 
 require('isomorphic-fetch');
@@ -211,7 +212,14 @@ export const assignProposition = ({
   proposedWobj,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
-  const detailsBody = getDetailsBody(proposition, proposedWobj, primaryObjectName);
+  const proposedWobjName = proposedWobj.name;
+  const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
+  const detailsBody = getDetailsBody(
+    proposition,
+    proposedWobjName,
+    proposedWobjAuthorPermlink,
+    primaryObjectName,
+  );
   const commentOp = [
     'comment',
     {
@@ -296,6 +304,17 @@ export const activateCampaign = (company, campaignPermlink) => (
   { steemConnectAPI },
 ) => {
   const username = store.getAuthenticatedUserName(getState());
+  const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
+  const proposedAuthorPermlink = company.objects[0].author_permlink;
+  const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
+  const processingFees = company.commissionAgreement * 100;
+  const expiryDate = company.expired_at;
+  const detailsBody = getDetailsBody(
+    company,
+    proposedWobjName,
+    proposedAuthorPermlink,
+    primaryObjectName,
+  );
   const commentOp = [
     'comment',
     {
@@ -303,11 +322,12 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
+      company,
       title: 'Activate rewards campaign',
-      body: `${username} (@${username}) activated rewards campaign for ${company.name} (${company.requiredObject.object_type}) `,
+      body: `${username} (@${username}) activated rewards campaign for ${company.name} (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
-        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id, company },
+        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
       }),
     },
   ];
