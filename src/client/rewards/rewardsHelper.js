@@ -172,7 +172,7 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 
 export const getFrequencyAssign = objectDetails =>
   objectDetails.frequency_assign
-    ? `<p>Have not received a reward from @${objectDetails.guide.name} for reviewing @${objectDetails.requiredObject} in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</p>`
+    ? `<ul><li>Have not received a reward from @${objectDetails.guide.name} for reviewing @${objectDetails.requiredObject} in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 
 export const getAgreementObjects = objectDetails =>
@@ -207,17 +207,20 @@ export const getDetailsBody = (proposition, proposedWobj, primaryObjectName) => 
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
-<p>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</p>
-<p>Minimum number of followers: ${proposition.userRequirements.minFollowers}</p>
-<p>Minimum number of posts: ${proposition.userRequirements.minPosts}</p>
+<ul>
+    <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
+    <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
+    <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
+</ul>
+
   `;
   const frequencyAssign = getFrequencyAssign(proposition);
-  const blacklist = `<p>User account is not blacklisted by @${proposition.guide.name} or referenced accounts.</p>`;
+  const blacklist = `<ul><li>User account is not blacklisted by @${proposition.guide.name} or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
-<p>Minimum ${proposition.requirements.minPhotos} original photos of <a href="/object/${proposedWobj.id}">${proposedWobj.name}</a></p> ${receiptPhoto} <p>Link to <a href='/object/${proposedWobj.author_permlink}'>${proposedWobj.name}</a></p>
-<p>Link to <a href="/object/${proposition.requiredObject}">${primaryObjectName}</a></p> `;
+<ul><li>Minimum ${proposition.requirements.minPhotos} original photos of <a href="/object/${proposedWobj.id}">${proposedWobj.name}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedWobj.author_permlink}'>${proposedWobj.name}</a></li>
+<li>Link to <a href="/object/${proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);

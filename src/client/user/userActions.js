@@ -211,6 +211,7 @@ export const assignProposition = ({
   proposedWobj,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
+  const detailsBody = getDetailsBody(proposition, proposedWobj, primaryObjectName);
   const commentOp = [
     'comment',
     {
@@ -224,13 +225,7 @@ export const assignProposition = ({
       proposition,
       proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${
-        proposition.count_reservation_days
-      } days to write a review of ${secondaryObjectName}, ${primaryObjectName}</p>${getDetailsBody(
-        proposition,
-        proposedWobj,
-        primaryObjectName,
-      )}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of ${secondaryObjectName}, ${primaryObjectName}</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
