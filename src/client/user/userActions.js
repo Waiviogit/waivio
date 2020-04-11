@@ -1,3 +1,4 @@
+import moment from 'moment';
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -308,7 +309,7 @@ export const activateCampaign = (company, campaignPermlink) => (
   const proposedAuthorPermlink = company.objects[0].author_permlink;
   const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
   const processingFees = company.commissionAgreement * 100;
-  const expiryDate = company.expired_at;
+  const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
   const detailsBody = getDetailsBody(
     company,
     proposedWobjName,
