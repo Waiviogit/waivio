@@ -178,7 +178,7 @@ export const getFrequencyAssign = objectDetails =>
 export const getAgreementObjects = objectDetails =>
   !isEmpty(objectDetails.agreementObjects)
     ? `including the following: Legal highlights: ${objectDetails.agreementObjects.reduce(
-        (acc, obj) => ` ${acc}, <a href='/object/${obj}/page'}>${obj}</a>`,
+        (acc, obj) => ` ${acc} <a href='/object/${obj}/page'>${obj}</a> `,
         '',
       )}`
     : '';
