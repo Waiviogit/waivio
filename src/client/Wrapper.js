@@ -159,6 +159,7 @@ export default class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
     this.state = {
       messagesCount: 0,
+      isMobileMenuOpen: false,
     };
   }
 
@@ -267,6 +268,10 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  toggleMobileMenu = () => {
+    this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen });
+  };
+
   render() {
     const {
       user,
@@ -277,7 +282,7 @@ export default class Wrapper extends React.PureComponent {
       // isChat,
       // isAuthenticated,
     } = this.props;
-    const { messagesCount } = this.state;
+    const { messagesCount, isMobileMenuOpen } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -291,6 +296,8 @@ export default class Wrapper extends React.PureComponent {
                   openChat={this.props.changeChatCondition}
                   messagesCount={messagesCount}
                   onMenuItemClick={this.handleMenuItemClick}
+                  toggleMobileMenu={this.toggleMobileMenu}
+                  isMobileMenuOpen={isMobileMenuOpen}
                 />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
@@ -298,7 +305,7 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                <BBackTop className="primary-modal" />
+                {!isMobileMenuOpen && <BBackTop className="primary-modal" />}
                 {/* <ChatButton */}
                 {/*  openChat={this.props.changeChatCondition} */}
                 {/*  isChat={isChat} */}

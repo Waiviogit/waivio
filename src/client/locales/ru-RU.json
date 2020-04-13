@@ -621,7 +621,7 @@
   "instAccountCreation": "Мгновенное Создание Аккаунта",
   "longerWaiting": "Более длительное время ожидания (до 2 недель)",
   "bonusDelegation": "БОНУС: 15 HP делегирование (на 90 дней)",
-  "emailAndPhoneReq": "Требуется Email и Телефон",
+  "emailAndPhoneReq": "Требуется Email",
   "info": "Информация",
   "quick_forecast": "Прогнозы",
   "about": "О нас",
@@ -894,6 +894,7 @@
   "broker_modal_confirm_same_password": "Пароли должны быть идентичными",
   "broker_modal_valid_phone_number": "Пожалуйста, введите номер телефона",
   "broker_modal_valid_numbers_phone_number": "Номер должен состоять не менее чем из 8 цифр",
+  "broker_modal_broker_connected_successfully": "Брокер успешно подключен",
   "createPost.titleForecast": "Ваш прогноз (опционально)",
   "createPost.selectTitle.instrument": "Инструмент",
   "createPost.selectTitle.recommend": "Я рекомендую",
@@ -1099,5 +1100,7 @@
   "trading_form_amount": "Сумма",
   "trading_form_total": "Всего",
   "trading_form_fee": "Коммисия",
-  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena"
+  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
+  "signUp_cryptos": "- Криптовалюта",
+  "signUp_creditCards": "- кредитные карты"
 }

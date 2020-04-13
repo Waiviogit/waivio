@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu, Button } from 'antd';
+import { AutoComplete, Icon, Input, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -13,30 +13,20 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
-  getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
-  getIsLoadingNotifications,
   getNightmode,
-  getNotifications,
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
   isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
-import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import PopoverContainer from '../Popover';
-import Notifications from './Notifications/Notifications';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
@@ -47,8 +37,8 @@ import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
 import MobileMenu from './MobileMenu/MobileMenu';
-import HotNews from './HotNews';
 import LoggedOutMenu from './LoggedOutMenu';
+import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 
 @injectIntl
@@ -60,9 +50,6 @@ import './Topnav.less';
     searchByObject: getSearchObjectsResults(state),
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
-    notifications: getNotifications(state),
-    userMetaData: getAuthenticateduserMetaData(state),
-    loadingNotifications: getIsLoadingNotifications(state),
     screenSize: getScreenSize(state),
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
@@ -73,7 +60,6 @@ import './Topnav.less';
     disconnectBroker,
     searchObjectsAutoCompete,
     searchAutoComplete,
-    getUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
@@ -98,9 +84,6 @@ class Topnav extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     isAuthenticated: PropTypes.bool.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape()),
-    userMetaData: PropTypes.shape(),
-    loadingNotifications: PropTypes.bool,
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
@@ -120,6 +103,8 @@ class Topnav extends React.Component {
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
     isGuest: PropTypes.bool,
+    isMobileMenuOpen: PropTypes.bool.isRequired,
+    toggleMobileMenu: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -127,11 +112,8 @@ class Topnav extends React.Component {
     searchByObject: [],
     searchByUser: [],
     searchByObjectType: [],
-    notifications: [],
     username: undefined,
     onMenuItemClick: () => {},
-    userMetaData: {},
-    loadingNotifications: false,
     screenSize: 'medium',
     messagesCount: 0,
     isGuest: false,
@@ -142,12 +124,8 @@ class Topnav extends React.Component {
 
     this.state = {
       searchBarActive: false,
-      popoverMobileMenuVisible: false,
-      popoverProfileVisible: false,
       burgerMenuVisible: false,
-      popoverBrokerVisible: false,
       searchBarValue: '',
-      notificationsPopoverVisible: false,
       selectedPage: '',
       searchData: '',
       currentItem: 'All',
@@ -155,23 +133,8 @@ class Topnav extends React.Component {
       selectColor: false,
       scrolling: false,
       visible: false,
-      isMobileMenu: false,
+      isMobileMenuOpen: false,
     };
-    this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
-    this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
-    this.handleMobileMenuVisibleChange = this.handleMobileMenuVisibleChange.bind(this);
-    this.handleProfileMenuVisibleChange = this.handleProfileMenuVisibleChange.bind(this);
-    this.handleBrokerMenuVisibleChange = this.handleBrokerMenuVisibleChange.bind(this);
-    this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
-      this,
-    );
-    this.handleCloseNotificationsPopover = this.handleCloseNotificationsPopover.bind(this);
-    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
-    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
-    this.handleSearchForInput = this.handleSearchForInput.bind(this);
-    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
-    this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
-    this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
   componentDidMount() {
@@ -192,11 +155,15 @@ class Topnav extends React.Component {
   }
 
   componentWillUnmount() {
-    this.setState({ popoverBrokerVisible: false });
     if (window) {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
+
+  onMobileAvatarClick = () => {
+    const { isMobileMenuOpen, toggleMobileMenu } = this.props;
+    if (isMobileMenuOpen) toggleMobileMenu();
+  };
 
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
@@ -230,60 +197,6 @@ class Topnav extends React.Component {
     SELECT_BAR: 'searchSelectBar',
   };
 
-  handleMoreMenuSelect(key) {
-    this.setState({ popoverProfileVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-  }
-
-  handleBurgerMenuSelect = key =>
-    this.setState({ burgerMenuVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-
-  handleBrokerMenuSelect(key) {
-    switch (key) {
-      case 'deposit':
-        this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
-        break;
-      case 'broker-disconnect':
-        this.setState({ popoverBrokerVisible: false }, () => {
-          this.props.disconnectBroker('broker');
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  handleMobileMenuVisibleChange() {
-    this.setState({ popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible });
-  }
-
-  handleProfileMenuVisibleChange(visible) {
-    this.setState({ popoverProfileVisible: visible });
-  }
-
-  handleBurgerMenuVisibleChange = visible => this.setState({ burgerMenuVisible: visible });
-
-  handleBrokerMenuVisibleChange(visible) {
-    this.setState({ popoverBrokerVisible: visible });
-  }
-
-  handleNotificationsPopoverVisibleChange(visible) {
-    if (visible) {
-      this.setState({ notificationsPopoverVisible: visible });
-    } else {
-      this.handleCloseNotificationsPopover();
-    }
-  }
-
-  handleCloseNotificationsPopover() {
-    this.setState({
-      notificationsPopoverVisible: false,
-    });
-  }
-
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   handleScroll = () => {
@@ -297,158 +210,14 @@ class Topnav extends React.Component {
     }
   };
 
-  burgerMenu = logStatus => {
-    const isLoggedOut = logStatus === 'loggedOut';
-    const { isGuest } = this.props;
-    return (
-      <PopoverContainer
-        placement="bottom"
-        trigger="click"
-        visible={this.state.burgerMenuVisible}
-        onVisibleChange={this.handleBurgerMenuVisibleChange}
-        overlayStyle={{ position: 'fixed' }}
-        content={
-          <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
-            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
-              <FormattedMessage id="my_feed" defaultMessage="My feed" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="discover-objects" fullScreenHidden>
-              <FormattedMessage id="discover" defaultMessage="Discover" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="quick_forecast" fullScreenHidden>
-              <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
-            </PopoverMenuItem>
-            {!isGuest && (
-              <PopoverMenuItem key="activity" mobileScreenHidden>
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </PopoverMenuItem>
-            )}
-            <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="replies" fullScreenHidden>
-              <FormattedMessage id="replies" defaultMessage="Replies" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="wallet">
-              <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="about" fullScreenHidden>
-              <FormattedMessage id="about" defaultMessage="About" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="logout">
-              <FormattedMessage id="logout" defaultMessage="Logout" />
-            </PopoverMenuItem>
-          </PopoverMenu>
-        }
-      >
-        <a className="Topnav__link Topnav__link--menu">
-          <Icon type="menu" className="iconfont icon-menu" />
-        </a>
-      </PopoverContainer>
-    );
-  };
-
-  menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible } = this.state;
-    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
-    const notificationsCount = _.isUndefined(lastSeenTimestamp)
-      ? _.size(notifications)
-      : _.size(
-          _.filter(
-            notifications,
-            notification =>
-              lastSeenTimestamp < notification.timestamp &&
-              _.includes(PARSED_NOTIFICATIONS, notification.type),
-          ),
-        );
-    const displayBadge = notificationsCount > 0;
-    const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-    return (
-      <div
-        className={classNames('Topnav__menu-container', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <ModalBroker />
-        <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item" key="hot">
-            <HotNews />
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="write">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
-              </Link>
-            </BTooltip>
-          </Menu.Item>
-
-          <Menu.Item className="Topnav__menu-item" key="notifications">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <Notifications
-                    notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}
-                    st-card__chart
-                    currentAuthUsername={username}
-                    lastSeenTimestamp={lastSeenTimestamp}
-                    loadingNotifications={loadingNotifications}
-                    getUpdatedUserMetadata={this.props.getUserMetadata}
-                  />
-                }
-                visible={notificationsPopoverVisible}
-                onVisibleChange={this.handleNotificationsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              >
-                <a className="Topnav__link Topnav__link--light Topnav__link--action">
-                  {displayBadge ? (
-                    <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
-                  ) : (
-                    <i className="iconfont icon-remind" />
-                  )}
-                </a>
-              </PopoverContainer>
-            </BTooltip>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--burger" key="more">
-            {this.burgerMenu()}
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
-  content = () =>
-    this.props.username ? (
-      this.menuForLoggedIn()
+  content = () => {
+    const { username } = this.props;
+    return username ? (
+      <LoggedInMenu {...this.state} {...this.props} />
     ) : (
       <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
     );
+  };
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
@@ -457,11 +226,11 @@ class Topnav extends React.Component {
     });
   };
 
-  hideAutoCompleteDropdown() {
+  hideAutoCompleteDropdown = () => {
     this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
-  }
+  };
 
-  handleSearchForInput(event) {
+  handleSearchForInput = event => {
     const value = event.target.value;
     this.hideAutoCompleteDropdown();
     this.props.history.push({
@@ -471,7 +240,7 @@ class Topnav extends React.Component {
         query: value,
       },
     });
-  }
+  };
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
@@ -503,12 +272,12 @@ class Topnav extends React.Component {
     this.props.searchObjectTypesAutoCompete(searchString),
   );
 
-  handleAutoCompleteSearch(value) {
+  handleAutoCompleteSearch = value => {
     this.debouncedSearch(value);
     this.setState({ dropdownOpen: true });
-  }
+  };
 
-  handleSelectOnAutoCompleteDropdown(value, data) {
+  handleSelectOnAutoCompleteDropdown = (value, data) => {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
@@ -555,9 +324,9 @@ class Topnav extends React.Component {
     this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
-  }
+  };
 
-  handleOnChangeForAutoComplete(value, data) {
+  handleOnChangeForAutoComplete = (value, data) => {
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
@@ -567,7 +336,7 @@ class Topnav extends React.Component {
     else if (data.props.marker !== Topnav.markers.SELECT_BAR) {
       this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
-  }
+  };
 
   usersSearchLayout(accounts) {
     return (
@@ -716,10 +485,6 @@ class Topnav extends React.Component {
     this.props.toggleModal('broker');
   };
 
-  toggleModalDeposit = () => {
-    this.setState({ isModalDeposit: !this.state.isModalDeposit });
-  };
-
   changeItemClass = key =>
     classNames('ant-select-dropdown-menu-item', {
       'Topnav__search-selected-active': this.state.currentItem === key,
@@ -748,15 +513,6 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
-  toggleMobileMenu = () => {
-    this.setState({ isMobileMenu: !this.state.isMobileMenu });
-  };
-
-  onMobileAvatarClick = () => {
-    const { isMobileMenu } = this.state;
-    if (isMobileMenu) this.toggleMobileMenu();
-  };
-
   render() {
     const {
       intl,
@@ -767,8 +523,10 @@ class Topnav extends React.Component {
       // messagesCount,
       platformName,
       username,
+      toggleMobileMenu,
+      isMobileMenuOpen,
     } = this.props;
-    const { searchBarActive, dropdownOpen, isMobileMenu } = this.state;
+    const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = '/images/logo-brand.png';
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
@@ -883,14 +641,10 @@ class Topnav extends React.Component {
                 </Link>
               )}
               <div className="Topnav__right-top__icon">
-                {!isMobileMenu ? (
-                  <Icon
-                    type="menu"
-                    className="iconfont icon-menu"
-                    onClick={this.toggleMobileMenu}
-                  />
+                {!isMobileMenuOpen ? (
+                  <Icon type="menu" className="iconfont icon-menu" onClick={toggleMobileMenu} />
                 ) : (
-                  <Icon type="close" theme="outlined" onClick={this.toggleMobileMenu} />
+                  <Icon type="close" theme="outlined" onClick={toggleMobileMenu} />
                 )}
               </div>
               {/* <button */}
@@ -943,7 +697,7 @@ class Topnav extends React.Component {
             </div>
           </div>
         </div>
-        {isMobile && isMobileMenu && (
+        {isMobile && isMobileMenuOpen && (
           <MobileMenu
             {...this.props}
             {...this.state}
@@ -955,9 +709,7 @@ class Topnav extends React.Component {
             onBlur={this.handleOnBlur}
             onSearchPressEnter={this.handleSearchForInput}
             hotNews={this.hotNews}
-            handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
-            handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
-            toggleMobileMenu={this.toggleMobileMenu}
+            toggleMobileMenu={toggleMobileMenu}
           />
         )}
       </React.Fragment>
