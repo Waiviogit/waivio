@@ -13,15 +13,25 @@ const LoggedOutMenu = props => {
     <div
       className={classNames('Topnav__menu-container Topnav__menu-logedout', {
         'Topnav__mobile-hidden': searchBarActive,
+        mt2: isMobile,
       })}
     >
-      <Menu className="Topnav__menu" mode="horizontal">
+      <Menu
+        className={classNames('Topnav__menu', { 'flex-column': isMobile })}
+        mode={isMobile ? 'vertical' : 'horizontal'}
+      >
         <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
           <ModalSignUp isButton={false} />
         </Menu.Item>
-        <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="divider" disabled>
-          |
-        </Menu.Item>
+        {!isMobile && (
+          <Menu.Item
+            className="Topnav__menu-item Topnav__menu-item--logedout"
+            key="divider"
+            disabled
+          >
+            |
+          </Menu.Item>
+        )}
         <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
           <ModalSignIn next={next} />
         </Menu.Item>
