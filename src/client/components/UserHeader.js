@@ -28,25 +28,23 @@ const UserHeader = ({
   rewardFund,
   rate,
 }) => {
-  const style = hasCover
-    ? { backgroundImage: `url("https://images.hive.blog/2048x512/${coverImage}")` }
-    : {};
+  const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
   let location = null;
   let website = null;
   let about = null;
   let lastActive;
 
-  if (user && user.json_metadata && user.json_metadata !== '') {
+  if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
     lastActive = intl.formatRelative(Date.parse(user.updatedAt));
 
-    if (user.json_metadata.profile) {
-      location = user.json_metadata.profile.location;
-      website = user.json_metadata.profile.website;
-      about = user.json_metadata.profile.about;
+    if (user.posting_json_metadata.profile) {
+      location = user.posting_json_metadata.profile.location;
+      website = user.posting_json_metadata.profile.website;
+      about = user.posting_json_metadata.profile.about;
     } else {
       try {
-        metadata = JSON.parse(user.json_metadata);
+        metadata = JSON.parse(user.posting_json_metadata);
         location = metadata && get(metadata, 'profile.location');
         website = metadata && get(metadata, 'profile.website');
         about = metadata && get(metadata, 'profile.about');

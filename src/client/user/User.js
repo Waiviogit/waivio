@@ -163,11 +163,11 @@ export default class User extends React.Component {
       );
     let profile = {};
     try {
-      if (user.json_metadata) {
-        if (user.json_metadata.profile) {
-          profile = user.json_metadata.profile;
+      if (user.posting_json_metadata) {
+        if (user.posting_json_metadata.profile) {
+          profile = user.posting_json_metadata.profile;
         } else {
-          profile = JSON.parse(user.json_metadata).profile;
+          profile = JSON.parse(user.posting_json_metadata).profile;
         }
       }
     } catch (error) {
