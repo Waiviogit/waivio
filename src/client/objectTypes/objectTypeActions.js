@@ -105,10 +105,11 @@ export const setActiveFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-export const setFiltersAndLoad = filters => (dispatch, getState) => {
+export const setFiltersAndLoad = (objectType, filters) => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
-    const typeName = getTypeName(getState());
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    let typeName = getTypeName(getState());
+    if (!typeName) typeName = objectType;
+    dispatch(getObjectTypeByStateFilters(typeName));
   });
 };
 

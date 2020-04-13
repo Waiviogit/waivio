@@ -19,6 +19,7 @@ import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
+import { RADIUS } from '../../../common/constants/map';
 import '../../components/Sidebar/SidebarContentBlock.less';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
@@ -31,29 +32,29 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
 
-  const [coordinates, setCoordinates] = useState;
+  const [coordinates, setCoordinates] = useState([]);
 
   const getCoordinatesDiscover = async () => {
     const coordinatesDiscover = await dispatch(getCoordinates());
-    if (!isEmpty(coordinates))
-      setCoordinates([
-        Number(coordinatesDiscover.value.lat),
-        Number(coordinatesDiscover.value.lon),
-      ]);
+    const lat = Number(coordinatesDiscover.value.lat);
+    const lon = Number(coordinatesDiscover.value.lon);
+    const newCoordinates = [];
+    newCoordinates.push(lat, lon);
+    setCoordinates(newCoordinates);
   };
 
+  const objectType = match.params.typeName;
+  const setSearchArea = map => dispatch(setFiltersAndLoad(objectType, { ...activeFilters, map }));
+  const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
+
   useEffect(() => {
-    getCoordinatesDiscover().then(() => {});
+    getCoordinatesDiscover();
   }, []);
 
-  // if (isEmpty(userLocation)) {
-  //   dispatch(getCoordinates());
-  // }
-
-  const objectType = match.params.typeName;
-
-  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
-  const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
+  useEffect(() => {
+    if (match.params.typeName === 'restaurant' && !isEmpty(coordinates))
+      setSearchArea({ radius: RADIUS, coordinates });
+  }, [match.params.typeName, coordinates]);
 
   const handleMapSearchClick = map => {
     setSearchArea(map);
