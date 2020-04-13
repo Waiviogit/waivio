@@ -45,7 +45,6 @@ import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 
-
 @injectIntl
 @withRouter
 @connect(
@@ -137,12 +136,8 @@ class Topnav extends React.Component {
 
     this.state = {
       searchBarActive: false,
-      popoverMobileMenuVisible: false,
-      popoverProfileVisible: false,
       burgerMenuVisible: false,
-      popoverBrokerVisible: false,
       searchBarValue: '',
-      notificationsPopoverVisible: false,
       selectedPage: '',
       searchData: '',
       currentItem: 'All',
@@ -152,15 +147,6 @@ class Topnav extends React.Component {
       visible: false,
       isMobileMenuOpen: false,
     };
-    this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
-    this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
-    this.handleMobileMenuVisibleChange = this.handleMobileMenuVisibleChange.bind(this);
-    this.handleProfileMenuVisibleChange = this.handleProfileMenuVisibleChange.bind(this);
-    this.handleBrokerMenuVisibleChange = this.handleBrokerMenuVisibleChange.bind(this);
-    this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
-      this,
-    );
-    this.handleCloseNotificationsPopover = this.handleCloseNotificationsPopover.bind(this);
     this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
     this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
@@ -187,7 +173,6 @@ class Topnav extends React.Component {
   }
 
   componentWillUnmount() {
-    this.setState({ popoverBrokerVisible: false });
     if (window) {
       window.removeEventListener('scroll', this.handleScroll);
     }
@@ -225,60 +210,6 @@ class Topnav extends React.Component {
     SELECT_BAR: 'searchSelectBar',
   };
 
-  handleMoreMenuSelect(key) {
-    this.setState({ popoverProfileVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-  }
-
-  handleBurgerMenuSelect = key =>
-    this.setState({ burgerMenuVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-
-  handleBrokerMenuSelect(key) {
-    switch (key) {
-      case 'deposit':
-        this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
-        break;
-      case 'broker-disconnect':
-        this.setState({ popoverBrokerVisible: false }, () => {
-          this.props.disconnectBroker('broker');
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  handleMobileMenuVisibleChange() {
-    this.setState({ popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible });
-  }
-
-  handleProfileMenuVisibleChange(visible) {
-    this.setState({ popoverProfileVisible: visible });
-  }
-
-  handleBurgerMenuVisibleChange = visible => this.setState({ burgerMenuVisible: visible });
-
-  handleBrokerMenuVisibleChange(visible) {
-    this.setState({ popoverBrokerVisible: visible });
-  }
-
-  handleNotificationsPopoverVisibleChange(visible) {
-    if (visible) {
-      this.setState({ notificationsPopoverVisible: visible });
-    } else {
-      this.handleCloseNotificationsPopover();
-    }
-  }
-
-  handleCloseNotificationsPopover() {
-    this.setState({
-      notificationsPopoverVisible: false,
-    });
-  }
-
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   handleScroll = () => {
@@ -295,14 +226,7 @@ class Topnav extends React.Component {
   content = () => {
     const { username } = this.props;
     return username ? (
-      <LoggedInMenu
-        {...this.state}
-        {...this.props}
-        handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
-        handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
-        handleBurgerMenuVisibleChange={this.handleBurgerMenuVisibleChange}
-        handleBurgerMenuSelect={this.handleBurgerMenuSelect}
-      />
+      <LoggedInMenu {...this.state} {...this.props} />
     ) : (
       <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
     );
@@ -315,11 +239,11 @@ class Topnav extends React.Component {
     });
   };
 
-  hideAutoCompleteDropdown() {
+  hideAutoCompleteDropdown = () => {
     this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
-  }
+  };
 
-  handleSearchForInput(event) {
+  handleSearchForInput = event => {
     const value = event.target.value;
     this.hideAutoCompleteDropdown();
     this.props.history.push({
@@ -329,7 +253,7 @@ class Topnav extends React.Component {
         query: value,
       },
     });
-  }
+  };
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
@@ -361,12 +285,12 @@ class Topnav extends React.Component {
     this.props.searchObjectTypesAutoCompete(searchString),
   );
 
-  handleAutoCompleteSearch(value) {
+  handleAutoCompleteSearch = value => {
     this.debouncedSearch(value);
     this.setState({ dropdownOpen: true });
-  }
+  };
 
-  handleSelectOnAutoCompleteDropdown(value, data) {
+  handleSelectOnAutoCompleteDropdown = (value, data) => {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
@@ -413,9 +337,9 @@ class Topnav extends React.Component {
     this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
-  }
+  };
 
-  handleOnChangeForAutoComplete(value, data) {
+  handleOnChangeForAutoComplete = (value, data) => {
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
@@ -425,7 +349,7 @@ class Topnav extends React.Component {
     else if (data.props.marker !== Topnav.markers.SELECT_BAR) {
       this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
-  }
+  };
 
   usersSearchLayout(accounts) {
     return (
@@ -572,10 +496,6 @@ class Topnav extends React.Component {
 
   toggleModalBroker = () => {
     this.props.toggleModal('broker');
-  };
-
-  toggleModalDeposit = () => {
-    this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
 
   changeItemClass = key =>
@@ -801,7 +721,7 @@ class Topnav extends React.Component {
             </div>
           </div>
         </div>
-        {isMobile && isMobileMenu && (
+        {isMobile && isMobileMenuOpen && (
           <MobileMenu
             {...this.props}
             {...this.state}
@@ -813,8 +733,6 @@ class Topnav extends React.Component {
             onBlur={this.handleOnBlur}
             onSearchPressEnter={this.handleSearchForInput}
             hotNews={this.hotNews}
-            handleCloseNotificationsPopover={this.handleCloseNotificationsPopover}
-            handleNotificationsPopoverVisibleChange={this.handleNotificationsPopoverVisibleChange}
             toggleMobileMenu={this.toggleMobileMenu}
           />
         )}

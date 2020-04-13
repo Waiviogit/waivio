@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
@@ -6,12 +6,17 @@ import PopoverContainer from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 
 const BurgerMenu = props => {
-  const {
-    isGuest,
-    burgerMenuVisible,
-    handleBurgerMenuVisibleChange,
-    handleBurgerMenuSelect,
-  } = props;
+  const { isGuest, onMenuItemClick } = props;
+
+  const [burgerMenuVisible, setBurgerMenuVisible] = useState(false);
+
+  const handleBurgerMenuSelect = key => {
+    setBurgerMenuVisible(false);
+    onMenuItemClick(key);
+  };
+
+  const handleBurgerMenuVisibleChange = visible => setBurgerMenuVisible(visible);
+
   return (
     <PopoverContainer
       placement="bottom"
@@ -50,12 +55,9 @@ const BurgerMenu = props => {
     </PopoverContainer>
   );
 };
-
 BurgerMenu.propTypes = {
   isGuest: PropTypes.bool.isRequired,
-  burgerMenuVisible: PropTypes.bool.isRequired,
-  handleBurgerMenuVisibleChange: PropTypes.func.isRequired,
-  handleBurgerMenuSelect: PropTypes.func.isRequired,
+  onMenuItemClick: PropTypes.func.isRequired,
 };
 
 export default BurgerMenu;
