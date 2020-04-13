@@ -180,6 +180,9 @@ export const getPostKey = post => {
   if (post.guestInfo) {
     return `${post.guestInfo.userId}/${post.permlink}`;
   }
+  if (post.reblogged_by && post.reblogged_by.length) {
+    return `${post.author}/${post.permlink}/${post.reblogged_by}`;
+  }
   return `${post.author}/${post.permlink}`;
 };
 
