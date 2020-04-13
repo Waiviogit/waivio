@@ -127,7 +127,6 @@ class CreateTag extends React.Component {
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
-
         this.appendTag(categoryItem)
           .then(() => {
             hideModal();
@@ -181,7 +180,10 @@ class CreateTag extends React.Component {
     const postData = {
       ...data,
       permlink: `${data.author}-${generatePermlink()}`,
-      field: this.getWobjectField(categoryItem),
+      field: {
+        ...this.getWobjectField(categoryItem),
+        tagCategory: this.state.selectedCategory.body,
+      },
       body: this.getWobjectBody(),
     };
     await this.props.appendObject(postData);

@@ -27,7 +27,11 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { hasType } from '../../helpers/wObjectHelper';
+import {
+  addActiveVotesInField,
+  calculateApprovePercent,
+  hasType,
+} from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -295,7 +299,14 @@ class CatalogWrap extends React.Component {
 
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
-    const actualListItems = listItems && listItems.filter(list => !list.status);
+    let actualListItems =
+      listItems && listItems.map(item => addActiveVotesInField(this.props.wobject, item));
+
+    actualListItems =
+      actualListItems &&
+      actualListItems.filter(
+        list => !list.status && calculateApprovePercent(list.active_votes) >= 70,
+      );
 
     if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
       return (
@@ -413,7 +424,6 @@ class CatalogWrap extends React.Component {
         return { isAssign: false };
       })
       .catch(e => {
-        console.log(e.toString());
         message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
