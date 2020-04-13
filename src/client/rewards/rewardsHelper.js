@@ -24,7 +24,7 @@ export const preparePropositionReqData = ({
     currentUserName: username,
     sort,
   };
-  console.log(reqData.requiredObject);
+
   if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;

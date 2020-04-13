@@ -105,12 +105,15 @@ export default class Wobj extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { authenticated, history, screenSize, wobject } = this.props;
+
     if (nextProps.wobject.id !== wobject.id && !nextProps.match.params[0]) {
       const nextUrl = getInitialUrl(nextProps.wobject, screenSize, history.location);
       if (nextUrl !== history.location.pathname) history.replace(nextUrl);
     }
+
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
       const nextState = { hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE };
+
       if (
         nextProps.wobject.type === OBJECT_TYPE.PAGE &&
         authenticated &&
