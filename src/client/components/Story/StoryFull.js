@@ -327,7 +327,7 @@ class StoryFull extends React.Component {
     return (
       <div className="StoryFull">
         {replyUI}
-        <h1 className="StoryFull__title">lol</h1>
+        <h1 className="StoryFull__title">{post.title}</h1>
         {!isOriginalPost && (
           <h3 className="StoryFull__comments_title">
             <a href="#comments">
