@@ -66,7 +66,7 @@ class InstrumentCard extends React.Component {
             </div>
           </Link>
         </div>
-        <div className="st-card__content">
+        {quote.dailyChange !== 0 ? (<div className="st-card__content">
           <div className="st-card__daily-change-signal-info">
             <div
               title={intl.formatMessage({ id: 'tips.dailyChange', defaultMessage: 'Daily change' })}
@@ -74,7 +74,7 @@ class InstrumentCard extends React.Component {
                 quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
               }`}
             >
-              {isNumber(quote.dailyChange) ? `${quote.dailyChange.toFixed(2)}%` : '—'}
+              {quote.dailyChange.toFixed(2)}
             </div>
             <Signals signals={signals} />
           </div>
@@ -83,7 +83,7 @@ class InstrumentCard extends React.Component {
               chart={chart}
               height={chartHeight}
               width={chartWidth}
-              noDataMsg={intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
+              noDataMsg={null}
             />
           </div>
           {showTradeBtn && (
@@ -92,7 +92,7 @@ class InstrumentCard extends React.Component {
               quoteSecurity={quote.security}
             />
           )}
-        </div>
+        </div>) : null}
       </div>
     );
   }
