@@ -27,7 +27,11 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { calculateApprovePercent, hasType } from '../../helpers/wObjectHelper';
+import {
+  addActiveVotesInField,
+  calculateApprovePercent,
+  hasType,
+} from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -297,18 +301,7 @@ class CatalogWrap extends React.Component {
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
     let actualListItems =
-      listItems &&
-      listItems.map(item => {
-        const matchField = get(this.props.wobject, 'fields', []).find(
-          field => field.body === item.id || field.alias === item.alias,
-        );
-        const activeVotes = matchField ? matchField.active_votes : [];
-
-        return {
-          ...item,
-          active_votes: [...activeVotes],
-        };
-      });
+      listItems && listItems.map(item => addActiveVotesInField(this.props.wobject, item));
 
     actualListItems =
       actualListItems &&

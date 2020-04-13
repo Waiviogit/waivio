@@ -99,6 +99,7 @@ export default function wobjectReducer(state = initialState, action) {
         return {
           ...field,
           ...matchPost,
+          active_votes: field.active_votes,
           author: field.author,
           fullBody: matchPost.body,
           body: field.body,

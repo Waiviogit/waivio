@@ -1,4 +1,4 @@
-import _, {
+import {
   attempt,
   get,
   groupBy,
@@ -20,7 +20,7 @@ import {
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
-import { calculateApprovePercent } from '../helpers/wObjectHelper';
+import { addActiveVotesInField, calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
@@ -39,17 +39,7 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
         const winnerItem =
           menuItems &&
           menuItems
-            .map(item => {
-              const matchField = _.get(wobj, 'fields', []).find(
-                field => field.body === item.id || field.alias === item.alias,
-              );
-              const activeVotes = matchField ? matchField.active_votes : [];
-
-              return {
-                ...item,
-                active_votes: [...activeVotes],
-              };
-            })
+            .map(item => addActiveVotesInField(wobj, item))
             .filter(item => !item.status && calculateApprovePercent(item.active_votes) >= 70)
             .sort((a, b) => b.weight - a.weight)[0];
 

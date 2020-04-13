@@ -49,7 +49,6 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
 
   parsedBody.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
-
       parsedJsonMetadata.image.push(img);
     }
   });

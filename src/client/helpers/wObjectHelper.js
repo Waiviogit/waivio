@@ -131,26 +131,45 @@ export const calculateApprovePercent = votes => {
   return 100;
 };
 
-export const getApprovedField = (wobj, name, locale = 'en-US') => {
-  const stringBodyFields = ['name', 'parent'];
-  if (!wobj || !wobj.fields || !name) return null;
-
-  let field = _.get(wobj, 'fields').filter(
-    item =>
-      item.name === name &&
-      calculateApprovePercent(item.active_votes) >= 70 &&
-      item.locale === locale,
+export const addActiveVotesInField = (wobj, field) => {
+  const matchField = _.get(wobj, 'fields', []).find(
+    wobjField => field.id && wobjField.body === field.id,
   );
+  const activeVotes = matchField ? matchField.active_votes : [];
 
-  if (!field.length) return null;
+  return {
+    ...field,
+    active_votes: [...activeVotes],
+  };
+};
 
-  field = field.sort((a, b) => b.weight - a.weight)[0];
+export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
+  const stringBodyFields = ['name', 'parent'];
+  if (!wobj || !wobj.fields || !fieldName) return null;
 
-  if (stringBodyFields.includes(name)) {
-    return field.body;
+  let approvedField = _.get(wobj, 'fields').filter(field => {
+    let mapedField = field;
+
+    if (!field.active_votes || field.active_votes.length) {
+      mapedField = addActiveVotesInField(wobj, field);
+    }
+
+    return (
+      mapedField.name === fieldName &&
+      calculateApprovePercent(mapedField.active_votes) >= 70 &&
+      mapedField.locale === locale
+    );
+  });
+
+  if (!approvedField.length) return null;
+
+  approvedField = approvedField.sort((a, b) => b.weight - a.weight)[0];
+
+  if (stringBodyFields.includes(fieldName)) {
+    return approvedField.body;
   }
 
-  return JSON.parse(field.body);
+  return JSON.parse(approvedField.body);
 };
 
 /* eslint-enable no-underscore-dangle */
