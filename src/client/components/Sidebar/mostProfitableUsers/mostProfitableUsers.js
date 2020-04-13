@@ -39,12 +39,14 @@ const mostProfitableUsers = ({ chartid }) => {
           />
         ))}
       </div>
-      <h4 className="ObjectsRelated__more">
-        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-        <div onClick={() => setState({ ...state, isModalOpen: true })} id="show_more_div">
-          <FormattedMessage id="show_more" defaultMessage="Show more" />
-        </div>
-      </h4>
+      {performers.length > 5 && (
+        <h4 className="ObjectsRelated__more">
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onClick={() => setState({ ...state, isModalOpen: true })} id="show_more_div">
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          </div>
+        </h4>
+      )}
       <Modal
         title="Most profitable performers"
         visible={isModalOpen}

@@ -621,7 +621,7 @@
   "instAccountCreation": "Мгновенное Создание Аккаунта",
   "longerWaiting": "Более длительное время ожидания (до 2 недель)",
   "bonusDelegation": "БОНУС: 15 HP делегирование (на 90 дней)",
-  "emailAndPhoneReq": "Требуется Email и Телефон",
+  "emailAndPhoneReq": "Требуется Email",
   "info": "Информация",
   "quick_forecast": "Прогнозы",
   "about": "О нас",
@@ -1100,5 +1100,7 @@
   "trading_form_amount": "Сумма",
   "trading_form_total": "Всего",
   "trading_form_fee": "Коммисия",
-  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena"
+  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
+  "signUp_cryptos": "- Криптовалюта",
+  "signUp_creditCards": "- кредитные карты"
 }

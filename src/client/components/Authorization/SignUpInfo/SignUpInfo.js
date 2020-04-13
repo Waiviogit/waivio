@@ -9,28 +9,20 @@ const SignUpInfo = () => (
     </div>
     <div className="mb3">
       <a
-        href="https://steemwallet.app/widget/widget.html"
+        href="https://hivewallet.app/"
         className="ModalSignUp__link"
         rel="noopener noreferrer"
         target="_blank"
       >
-        <FormattedMessage id="creditCards" defaultMessage="- credit cards" />
+        <FormattedMessage id="signUp_creditCards" defaultMessage="- credit cards" />
       </a>
       <a
-        href="https://blocktrades.us/create-steem-account"
+        href="https://blocktrades.us/en/create-hive-account"
         className="ModalSignUp__link"
         rel="noopener noreferrer"
         target="_blank"
       >
-        <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH" />
-      </a>
-      <a
-        href="https://v2.steemconnect.com/accounts/create"
-        className="ModalSignUp__link"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
+        <FormattedMessage id="signUp_cryptos" defaultMessage="- CRYPTOS" />
       </a>
     </div>
     <h2 className="ModalSignUp__title ModalSignUp__title--lined mt3">
@@ -48,6 +40,18 @@ const SignUpInfo = () => (
         id="createSteemAccountLater"
         defaultMessage="create a Steem account later"
       />
+    </div>
+    <div>
+      <a href="https://beaxy.com/register/">
+        <div className="ModalSignUp__signin" role="presentation">
+          <img
+            src="/images/investarena/beaxy.png"
+            alt="Beaxy 2.0"
+            className="ModalSignUp__icon-beaxy"
+          />
+          <FormattedMessage id="signin_with_beaxy" defaultMessage="Beaxy" />
+        </div>
+      </a>
     </div>
   </React.Fragment>
 );
