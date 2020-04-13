@@ -117,7 +117,7 @@ const UserWalletSummary = ({
             {loading || loadingGlobalProperties ? (
               <Loading />
             ) : (
-              <span>
+              <span className={`${user.to_withdraw ? 'red' : ''}`}>
                 <FormattedNumber
                   value={parseFloat(
                     formatter.vestToSteem(

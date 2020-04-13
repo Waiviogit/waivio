@@ -73,7 +73,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
+    showMore: {},
   };
 
   getLink = link => {
@@ -107,56 +107,56 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
-  renderCategoryItems = categoryItems => {
+  renderCategoryItems = (categoryItems, category) => {
     if (!_.isEmpty(categoryItems)) {
-      const elements = [];
-      let len = null;
-      if (this.state.showMore) {
-        len = categoryItems.length;
-      } else {
-        len = categoryItems.length < 5 ? categoryItems.length : 5;
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < len; i++) {
-        elements.push(
-          <Tag color="orange">
-            <Link to={`/object/${categoryItems[i].name}`}>{categoryItems[i].name}</Link>
-          </Tag>,
-        );
-      }
-      // eslint-disable-next-line no-unused-expressions,jsx-a11y/no-static-element-interactions
-      categoryItems.length > 5 &&
-        !this.state.showMore &&
-        elements.push(
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-          <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
-            <FormattedMessage id="objectinfo_more" defaultMessage="more..." />
-          </span>,
-        );
-      return elements;
+      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
+
+      return (
+        <div>
+          {tagArray.map(item => (
+            <Tag color="orange">
+              <Link to={`/object/${item.name}`}>{item.name}</Link>
+            </Tag>
+          ))}
+          {categoryItems.length > 5 && !this.state.showMore[category] && (
+            <span
+              role="presentation"
+              className="show-more"
+              onClick={() =>
+                this.setState({
+                  showMore: {
+                    [category]: true,
+                  },
+                })
+              }
+            >
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+              ...
+            </span>
+          )}
+        </div>
+      );
     }
+
     return null;
   };
 
   renderTagCategories = tagCategories => {
-    if (tagCategories) {
-      return tagCategories.map(item => {
-        if (calculateApprovePercent(item.active_votes) >= 70) {
-          return (
-            <React.Fragment>
-              {item.categoryItems.length > 0 && (
-                <div key={item.id}>
-                  {`${item.body}:`}
-                  <br />
-                  {this.renderCategoryItems(item.categoryItems)}
-                </div>
-              )}
-            </React.Fragment>
-          );
-        }
-
-        return null;
-      });
+    const filteredTagCategories =
+      tagCategories &&
+      tagCategories.filter(
+        category =>
+          calculateApprovePercent(category.active_votes) >= 70 && category.categoryItems.length,
+      );
+    if (filteredTagCategories) {
+      return filteredTagCategories.map(item => (
+        <div key={item.id}>
+          {`${item.body}:`}
+          <br />
+          {this.renderCategoryItems(item.categoryItems, item.body)}
+        </div>
+      ));
     }
     return null;
   };
@@ -186,8 +186,9 @@ class ObjectInfo extends React.Component {
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
-    const button = getApprovedField(wobject, 'button');
-    const map = getApprovedField(wobject, 'map');
+    const button = getApprovedField(wobject, 'button', usedLocale);
+    const map = getApprovedField(wobject, 'map', usedLocale);
+    const parent = getApprovedField(wobject, 'parent', usedLocale);
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -242,7 +243,7 @@ class ObjectInfo extends React.Component {
 
       photosCount = wobject.photos_count;
 
-      tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
+      tagCategories = wobject.tagCategories;
 
       const filteredPhones = wobject.fields.filter(
         field =>
@@ -449,12 +450,8 @@ class ObjectInfo extends React.Component {
           <div className="object-sidebar">
             {listItem(
               objectFields.parent,
-              wobject.parent ? (
-                <ObjectCard
-                  key={wobject.parent.author_permlink}
-                  wobject={wobject.parent}
-                  showFollow={false}
-                />
+              parent ? (
+                <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ) : null,
             )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
