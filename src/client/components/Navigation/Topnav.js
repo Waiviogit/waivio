@@ -13,16 +13,12 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
-  getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
-  getIsLoadingNotifications,
   getNightmode,
-  getNotifications,
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
@@ -54,9 +50,6 @@ import './Topnav.less';
     searchByObject: getSearchObjectsResults(state),
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
-    notifications: getNotifications(state),
-    userMetaData: getAuthenticateduserMetaData(state),
-    loadingNotifications: getIsLoadingNotifications(state),
     screenSize: getScreenSize(state),
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
@@ -67,7 +60,6 @@ import './Topnav.less';
     disconnectBroker,
     searchObjectsAutoCompete,
     searchAutoComplete,
-    getUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
@@ -92,9 +84,6 @@ class Topnav extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     isAuthenticated: PropTypes.bool.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape()),
-    userMetaData: PropTypes.shape(),
-    loadingNotifications: PropTypes.bool,
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
@@ -121,11 +110,8 @@ class Topnav extends React.Component {
     searchByObject: [],
     searchByUser: [],
     searchByObjectType: [],
-    notifications: [],
     username: undefined,
     onMenuItemClick: () => {},
-    userMetaData: {},
-    loadingNotifications: false,
     screenSize: 'medium',
     messagesCount: 0,
     isGuest: false,
@@ -147,12 +133,6 @@ class Topnav extends React.Component {
       visible: false,
       isMobileMenuOpen: false,
     };
-    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
-    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
-    this.handleSearchForInput = this.handleSearchForInput.bind(this);
-    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
-    this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
-    this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
   componentDidMount() {
@@ -177,6 +157,11 @@ class Topnav extends React.Component {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
+
+  onMobileAvatarClick = () => {
+    const { isMobileMenuOpen } = this.state;
+    if (isMobileMenuOpen) this.toggleMobileMenu();
+  };
 
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
@@ -524,16 +509,11 @@ class Topnav extends React.Component {
     this.setState({ scrolling: !this.state.scrolling });
   };
 
-  renderTitle = title => <span>{title}</span>;
-
   toggleMobileMenu = () => {
     this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen });
   };
 
-  onMobileAvatarClick = () => {
-    const { isMobileMenuOpen } = this.state;
-    if (isMobileMenuOpen) this.toggleMobileMenu();
-  };
+  renderTitle = title => <span>{title}</span>;
 
   render() {
     const {
