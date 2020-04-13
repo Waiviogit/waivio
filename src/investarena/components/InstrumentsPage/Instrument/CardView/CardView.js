@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isNumber } from 'lodash';
 import { injectIntl } from 'react-intl';
-import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
+import InstrumentAvatar from '../../../InstrumentAvatar';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
 import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
@@ -84,7 +83,7 @@ class InstrumentCard extends React.Component {
             </div>
             <div role="presentation" onClick={this.toggleModalInstrumentsChart}>
               <InstrumentsChart
-                chart={chart.map(point => [Number(point.x), Number(point.y)])}
+                chart={chart}
                 height={chartHeight}
                 width={chartWidth}
                 noDataMsg={null}
