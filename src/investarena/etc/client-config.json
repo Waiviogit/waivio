@@ -178,7 +178,7 @@
   },
 
   "charts": {
-    "getChartsData": "http://44.233.188.11/wss/quotation/getstatisticshistory"
+    "getChartsData": "https://wgt-srv0.beaxy.com/wss/quotation/getstatisticshistory"
   },
   "statistics": {
     "getUserStatistics": "/user-summary-statistics/",
