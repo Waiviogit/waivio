@@ -17,7 +17,7 @@ const LoggedOutMenu = props => {
       })}
     >
       <Menu
-        className={classNames('Topnav__menu', { 'flex-column': isMobile })}
+        className={classNames('Topnav__menu', { 'flex-column mobile-height': isMobile })}
         mode={isMobile ? 'vertical' : 'horizontal'}
       >
         <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
