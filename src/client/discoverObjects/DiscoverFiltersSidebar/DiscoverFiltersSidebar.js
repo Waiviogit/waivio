@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -31,9 +31,24 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
 
-  if (isEmpty(userLocation)) {
-    dispatch(getCoordinates());
-  }
+  const [coordinates, setCoordinates] = useState;
+
+  const getCoordinatesDiscover = async () => {
+    const coordinatesDiscover = await dispatch(getCoordinates());
+    if (!isEmpty(coordinates))
+      setCoordinates([
+        Number(coordinatesDiscover.value.lat),
+        Number(coordinatesDiscover.value.lon),
+      ]);
+  };
+
+  useEffect(() => {
+    getCoordinatesDiscover().then(() => {});
+  }, []);
+
+  // if (isEmpty(userLocation)) {
+  //   dispatch(getCoordinates());
+  // }
 
   const objectType = match.params.typeName;
 
