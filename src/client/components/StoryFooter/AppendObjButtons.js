@@ -64,7 +64,7 @@ const AppendObjButtons = ({
   const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
   const upVotesMore = upVotesDiff > 0 && (
     <p>
-      <a role="presentation" onClick={this.handleShowReactions}>
+      <a role="presentation" onClick={handleShowReactions}>
         <FormattedMessage
           id="and_more_amount"
           defaultMessage="and {amount} more"

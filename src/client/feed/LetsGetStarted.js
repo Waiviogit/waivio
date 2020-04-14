@@ -55,7 +55,7 @@ class LetsGetStarted extends React.Component {
     const hasVoted = isGuest
       ? true
       : authenticatedUser.last_vote_time !== authenticatedUser.created;
-    const jsonMetadata = attempt(JSON.parse, authenticatedUser.json_metadata);
+    const jsonMetadata = attempt(JSON.parse, authenticatedUser.posting_json_metadata);
     const hasProfile =
       has(jsonMetadata, 'profile.name') &&
       has(jsonMetadata, 'profile.about') &&
