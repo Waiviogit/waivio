@@ -32,7 +32,7 @@ const BeaxyAuthForm = ({
     message.success(
       intl.formatMessage({
         id: 'broker_modal_broker_connected_successfully',
-        defaultMessage: 'Broker connected successfully',
+        defaultMessage: 'Beaxy connection established successfully',
       }),
     );
     if (get(user, ['user_metadata', 'new_user'], false)) {
