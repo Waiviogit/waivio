@@ -88,8 +88,8 @@ class ObjectInfo extends React.Component {
       case objectFields.phone:
         return (
           <div key={params.number} className="flex">
-            <div className="self-start pr1">
-              <Icon type="phone" />
+            <div className="self-start">
+              <Icon type="phone" className="text-icon tel" />
             </div>
             <div className="flex flex-column">
               {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
@@ -270,7 +270,6 @@ class ObjectInfo extends React.Component {
 
     const isRenderMap =
       map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
-
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
@@ -521,27 +520,36 @@ class ObjectInfo extends React.Component {
               price ? (
                 <React.Fragment>
                   {!isEditMode && <span className="field-icon">$</span>}
-                  <div className="price-value">{price}</div>
+                  <span className="price-value">{price}</span>
                 </React.Fragment>
               ) : null,
             )}
-            {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
+            {workTime &&
+              listItem(
+                objectFields.workTime,
+                <div className="field-work-time">
+                  <Icon type="clock-circle-o" className="text-icon text-icon--time" />
+                  {workTime}
+                </div>,
+              )}
             {listItem(
               objectFields.address,
               address && (
                 <React.Fragment>
-                  <i className="iconfont icon-coordinates text-icon" />
-                  {address}
-                  {isRenderMap && (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="address-link"
-                    >
-                      <i className="iconfont icon-send PostModal__icon" />
-                    </a>
-                  )}
+                  <span>
+                    <Icon type="environment-o" className="text-icon coordinates" />
+                    {address}
+                    {isRenderMap && (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="address-link"
+                      >
+                        <i className="iconfont icon-send PostModal__icon" />
+                      </a>
+                    )}
+                  </span>
                 </React.Fragment>
               ),
             )}
@@ -562,7 +570,7 @@ class ObjectInfo extends React.Component {
               website && website.title && website.link && (
                 <div className="field-website">
                   <span className="field-website__title">
-                    <i className="iconfont icon-link text-icon" />
+                    <i className="iconfont icon-link text-icon link" />
                     <a target="_blank" rel="noopener noreferrer" href={this.getLink(website.link)}>
                       {website.title}
                     </a>
@@ -616,11 +624,11 @@ class ObjectInfo extends React.Component {
                 <div className="field-info">
                   {accessExtend ? (
                     <div className="email">
-                      <Icon type="mail" /> {email}
+                      <Icon type="mail" className="text-icon email" /> {email}
                     </div>
                   ) : (
                     <React.Fragment>
-                      <Icon type="mail" />
+                      <Icon type="mail" className="text-icon email" />
                       <a href={`mailto:${email}`}> {email}</a>
                     </React.Fragment>
                   )}

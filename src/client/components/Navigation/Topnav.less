@@ -141,6 +141,12 @@
 
       .ant-select-search__field {
         background-color: @white !important;
+
+        &:hover,
+        &:focus {
+          border: 1px solid @grey-mortar !important;
+          border-radius: 4px;
+        }
       }
     }
 
@@ -329,12 +335,10 @@ div[data-dir='rtl'] .Topnav {
 .Topnav__search-dropdown-container.ant-select-dropdown {
   top: 40px !important;
   position: fixed;
-  border-radius: 0;
-  border-bottom-left-radius: @border-radius-base;
-  border-bottom-right-radius: @border-radius-base;
-  border-right: @base-border;
-  border-left: @base-border;
-  border-bottom: @base-border;
+  border-radius: 0 0 4px 4px;
+  border-right: @border-width-base @border-style-base @grey-mortar;
+  border-left: @border-width-base @border-style-base @grey-mortar;
+  border-bottom: @border-width-base @border-style-base @grey-mortar;
   box-shadow: none;
   padding-top: 5px;
   max-width: 250px;
@@ -349,6 +353,10 @@ div[data-dir='rtl'] .Topnav {
 
   @media @large {
     max-width: 520px;
+  }
+
+  & > div {
+    border-radius: 4px;
   }
 }
 
@@ -440,6 +448,10 @@ div[data-dir='rtl'] .Topnav {
 
 .Topnav__search-dropdown-container .ant-select-dropdown-menu {
   max-height: 300px;
+
+  @media @small {
+    max-height: 600px;
+  }
 }
 
 .ant-popover-title {

@@ -139,7 +139,7 @@ class UserInfo extends React.Component {
                     }}
                   />
                 </div>
-                {user.reputation && (
+                {!!user.reputation && (
                   <div>
                     <i className="hashtag text-icon">#</i>
                     <FormattedMessage
