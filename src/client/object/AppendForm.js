@@ -141,66 +141,57 @@ export default class AppendForm extends Component {
       this.setState({ restoring: true }, this.restoreNewsFilterObjects);
     }
   };
-  /* eslint-enable react/no-did-mount-set-state */
 
-  onSubmit = async formValues => {
-    this.setState({ loading: true });
-
-    const {
-      form: { getFieldValue },
-      wObject,
-    } = this.props;
-
+  onSubmit = formValues => {
+    const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
-
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      try {
-        /* eslint-disable no-await-in-loop */
-        const response = await this.props.appendObject(data);
+      this.props
+        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+        .then(res => {
+          if (res.value.message) {
+            message.error(res.value.message);
+          } else {
+            if (data.votePower !== null) {
+              if (objectFields.rating === formValues.currentField && formValues.rate) {
+                const { author, permlink } = res.value;
 
-        if (objectFields.rating === formValues.currentField && formValues.rate) {
-          const { author, permlink } = response.value;
-          await this.props.rateObject(
-            author,
-            permlink,
-            wObject.author_permlink,
-            ratePercent[formValues.rate - 1],
+                this.props.rateObject(
+                  author,
+                  permlink,
+                  wObject.author_permlink,
+                  ratePercent[formValues.rate - 1],
+                );
+              }
+            }
+            message.success(
+              this.props.intl.formatMessage(
+                {
+                  id: 'added_field_to_wobject',
+                  defaultMessage: `You successfully have added the {field} field to {wobject} topic`,
+                },
+                {
+                  field: form.getFieldValue('currentField'),
+                  wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                },
+              ),
+            );
+            this.props.hideModal();
+          }
+
+          this.setState({ loading: false });
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'couldnt_append',
+              defaultMessage: "Couldn't add the field to topic.",
+            }),
           );
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (e) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'couldnt_append',
-            defaultMessage: "Couldn't add the field to topic.",
-          }),
-        );
-        console.log(e);
-        this.setState({ loading: false });
-      }
+          this.setState({ loading: false });
+        });
     }
-
-    if (getFieldValue('follow')) {
-      await this.props.followObject(wObject.author_permlink);
-    }
-
-    this.setState({ loading: false });
-
-    this.props.hideModal();
-    message.success(
-      this.props.intl.formatMessage(
-        {
-          id: 'added_field_to_wobject',
-          defaultMessage: `You successfully have added the {field} field to {wobject} topic`,
-        },
-        {
-          field: getFieldValue('currentField'),
-          wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-        },
-      ),
-    );
   };
 
   onUpdateCoordinate = positionField => e => {
