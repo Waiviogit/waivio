@@ -278,6 +278,7 @@ class Topnav extends React.Component {
   };
 
   handleSelectOnAutoCompleteDropdown = (value, data) => {
+    const { isMobileMenuOpen, toggleMobileMenu } = this.props;
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
@@ -324,6 +325,7 @@ class Topnav extends React.Component {
     this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
+    if (isMobileMenuOpen) toggleMobileMenu();
   };
 
   handleOnChangeForAutoComplete = (value, data) => {
