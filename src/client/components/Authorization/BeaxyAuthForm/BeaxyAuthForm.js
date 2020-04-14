@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import iconsSvg from '../../../../common/constants/svgIcons';
 import './BeaxyAuthForm.less';
 
@@ -15,6 +15,7 @@ const BeaxyAuthForm = ({
   auth2FARequest,
   btnText,
   onAuthSuccessAction,
+  intl,
 }) => {
   const dispatch = useDispatch();
   const { getFieldDecorator, getFieldsError, validateFields } = form;
@@ -28,6 +29,12 @@ const BeaxyAuthForm = ({
 
   const handleAuthSuccess = response => {
     const { payload, user, token, expiration, umSession } = response;
+    message.success(
+      intl.formatMessage({
+        id: 'broker_modal_broker_connected_successfully',
+        defaultMessage: 'Beaxy connection established successfully',
+      }),
+    );
     if (get(user, ['user_metadata', 'new_user'], false)) {
       const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
       firstLoginResponse({
@@ -192,10 +199,11 @@ BeaxyAuthForm.propTypes = {
   firstLoginResponse: PropTypes.func.isRequired,
   form: PropTypes.shape().isRequired,
   btnText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  intl: PropTypes.shape().isRequired,
 };
 
 BeaxyAuthForm.defaultProps = {
   btnText: '',
 };
 
-export default Form.create({ name: 'username' })(BeaxyAuthForm);
+export default Form.create({ name: 'username' })(injectIntl(BeaxyAuthForm));
