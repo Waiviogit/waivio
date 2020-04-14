@@ -16,6 +16,7 @@ import {
   getRewriteLinks,
   getUpvoteSetting,
   getExitPageSetting,
+  isGuestUser,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -47,6 +48,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
     loading: getIsSettingsLoading(state),
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
+    isGuest: isGuestUser(state),
   }),
   { reload, saveSettings, notify },
 )
@@ -67,6 +69,7 @@ export default class Settings extends React.Component {
     notify: PropTypes.func,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -81,6 +84,7 @@ export default class Settings extends React.Component {
     rewriteLinks: false,
     upvoteSetting: true,
     exitPageSetting: true,
+    isGuest: false,
     reload: () => {},
     saveSettings: () => {},
     notify: () => {},
@@ -200,6 +204,7 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
       loading,
+      isGuest,
     } = this.props;
     const {
       votingPower,
@@ -415,8 +420,9 @@ export default class Settings extends React.Component {
                   <div className="Settings__section__checkbox">
                     <Checkbox
                       name="upvote_setting"
-                      checked={upvoteSetting}
+                      checked={!isGuest ? upvoteSetting : false}
                       onChange={this.handleUpvoteSettingChange}
+                      disabled={isGuest}
                     >
                       <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                     </Checkbox>

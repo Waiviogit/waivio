@@ -23,7 +23,13 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
               dispatch(followObject(postData.parentPermlink));
             }
 
-            return { ...res, ...postData.field, creator: postData.author, weight: 1 };
+            return {
+              ...res,
+              ...postData.field,
+              fullBody: postData.body,
+              creator: postData.author,
+              weight: 1,
+            };
           }
           return res;
         })

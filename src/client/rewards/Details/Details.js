@@ -33,6 +33,9 @@ const Details = ({
     objectDetails.requirement_filters.posts &&
     objectDetails.requirement_filters.not_blacklisted;
 
+  const isExpired = objectDetails.status === 'expired';
+  const isInActive = objectDetails.status === 'inactive';
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -67,7 +70,7 @@ const Details = ({
             <Button
               type="primary"
               loading={loading}
-              disabled={isCamaignReserved && !isEligible}
+              disabled={(isCamaignReserved && !isEligible) || isInActive || isExpired}
               onClick={reserveOnClickHandler}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}

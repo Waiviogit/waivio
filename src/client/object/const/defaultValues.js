@@ -1,8 +1,8 @@
 const avatarLink =
-  'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+  'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e';
 
 const bgLink =
-  'https://images.hive.blog/2048x512/https://cdn.images.hive.blog/DQmNWxmurvpAkBVDvLxRuBCC5c139iNKrzi59puThgQ5Exf/background_gen.png';
+  'https://waivio.nyc3.digitaloceanspaces.com/1586860135_4a4265af-2b53-4ed4-9e88-196bd32e77d9';
 
 export default {
   AVATAR: avatarLink,

@@ -20,7 +20,7 @@ import {
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
-import { calculateApprovePercent } from '../helpers/wObjectHelper';
+import { addActiveVotesInField, calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
@@ -36,9 +36,19 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
       break;
     default:
       if (menuItems && menuItems.length) {
-        url = `${pathname}/menu#${(sortCustom &&
-          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-          menuItems[0].author_permlink}`;
+        const winnerItem =
+          menuItems &&
+          menuItems
+            .map(item => addActiveVotesInField(wobj, item))
+            .filter(item => !item.status && calculateApprovePercent(item.active_votes) >= 70)
+            .sort((a, b) => b.weight - a.weight)[0];
+
+        url =
+          sortCustom && winnerItem
+            ? `${pathname}/menu#${(sortCustom &&
+                sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+                winnerItem.author_permlink}`
+            : pathname;
       } else if (screenSize !== 'large') {
         url = `${pathname}/about`;
       }

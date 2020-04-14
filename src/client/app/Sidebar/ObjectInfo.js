@@ -73,7 +73,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
+    showMore: {},
   };
 
   getLink = link => {
@@ -88,8 +88,8 @@ class ObjectInfo extends React.Component {
       case objectFields.phone:
         return (
           <div key={params.number} className="flex">
-            <div className="self-start pr1">
-              <Icon type="phone" />
+            <div className="self-start">
+              <Icon type="phone" className="text-icon tel" />
             </div>
             <div className="flex flex-column">
               {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
@@ -107,56 +107,56 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
-  renderCategoryItems = categoryItems => {
+  renderCategoryItems = (categoryItems, category) => {
     if (!_.isEmpty(categoryItems)) {
-      const elements = [];
-      let len = null;
-      if (this.state.showMore) {
-        len = categoryItems.length;
-      } else {
-        len = categoryItems.length < 5 ? categoryItems.length : 5;
-      }
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < len; i++) {
-        elements.push(
-          <Tag color="orange">
-            <Link to={`/object/${categoryItems[i].name}`}>{categoryItems[i].name}</Link>
-          </Tag>,
-        );
-      }
-      // eslint-disable-next-line no-unused-expressions,jsx-a11y/no-static-element-interactions
-      categoryItems.length > 5 &&
-        !this.state.showMore &&
-        elements.push(
-          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-          <span className="field-info__more" onClick={() => this.setState({ showMore: true })}>
-            <FormattedMessage id="objectinfo_more" defaultMessage="more..." />
-          </span>,
-        );
-      return elements;
+      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
+
+      return (
+        <div>
+          {tagArray.map(item => (
+            <Tag color="orange">
+              <Link to={`/object/${item.name}`}>{item.name}</Link>
+            </Tag>
+          ))}
+          {categoryItems.length > 5 && !this.state.showMore[category] && (
+            <span
+              role="presentation"
+              className="show-more"
+              onClick={() =>
+                this.setState({
+                  showMore: {
+                    [category]: true,
+                  },
+                })
+              }
+            >
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+              ...
+            </span>
+          )}
+        </div>
+      );
     }
+
     return null;
   };
 
   renderTagCategories = tagCategories => {
-    if (tagCategories) {
-      return tagCategories.map(item => {
-        if (calculateApprovePercent(item.active_votes) >= 70) {
-          return (
-            <React.Fragment>
-              {item.categoryItems.length > 0 && (
-                <div key={item.id}>
-                  {`${item.body}:`}
-                  <br />
-                  {this.renderCategoryItems(item.categoryItems)}
-                </div>
-              )}
-            </React.Fragment>
-          );
-        }
-
-        return null;
-      });
+    const filteredTagCategories =
+      tagCategories &&
+      tagCategories.filter(
+        category =>
+          calculateApprovePercent(category.active_votes) >= 70 && category.categoryItems.length,
+      );
+    if (filteredTagCategories) {
+      return filteredTagCategories.map(item => (
+        <div key={item.id}>
+          {`${item.body}:`}
+          <br />
+          {this.renderCategoryItems(item.categoryItems, item.body)}
+        </div>
+      ));
     }
     return null;
   };
@@ -186,8 +186,9 @@ class ObjectInfo extends React.Component {
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
-    const button = getApprovedField(wobject, 'button');
-    const map = getApprovedField(wobject, 'map');
+    const button = getApprovedField(wobject, 'button', usedLocale);
+    const map = getApprovedField(wobject, 'map', usedLocale);
+    const parent = getApprovedField(wobject, 'parent', usedLocale);
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -242,7 +243,7 @@ class ObjectInfo extends React.Component {
 
       photosCount = wobject.photos_count;
 
-      tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
+      tagCategories = wobject.tagCategories;
 
       const filteredPhones = wobject.fields.filter(
         field =>
@@ -269,7 +270,6 @@ class ObjectInfo extends React.Component {
 
     const isRenderMap =
       map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
-
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
@@ -449,12 +449,8 @@ class ObjectInfo extends React.Component {
           <div className="object-sidebar">
             {listItem(
               objectFields.parent,
-              wobject.parent ? (
-                <ObjectCard
-                  key={wobject.parent.author_permlink}
-                  wobject={wobject.parent}
-                  showFollow={false}
-                />
+              parent ? (
+                <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ) : null,
             )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
@@ -524,27 +520,36 @@ class ObjectInfo extends React.Component {
               price ? (
                 <React.Fragment>
                   {!isEditMode && <span className="field-icon">$</span>}
-                  <div className="price-value">{price}</div>
+                  <span className="price-value">{price}</span>
                 </React.Fragment>
               ) : null,
             )}
-            {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
+            {workTime &&
+              listItem(
+                objectFields.workTime,
+                <div className="field-work-time">
+                  <Icon type="clock-circle-o" className="text-icon text-icon--time" />
+                  {workTime}
+                </div>,
+              )}
             {listItem(
               objectFields.address,
               address && (
                 <React.Fragment>
-                  <i className="iconfont icon-coordinates text-icon" />
-                  {address}
-                  {isRenderMap && (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="address-link"
-                    >
-                      <i className="iconfont icon-send PostModal__icon" />
-                    </a>
-                  )}
+                  <span>
+                    <Icon type="environment-o" className="text-icon coordinates" />
+                    {address}
+                    {isRenderMap && (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="address-link"
+                      >
+                        <i className="iconfont icon-send PostModal__icon" />
+                      </a>
+                    )}
+                  </span>
                 </React.Fragment>
               ),
             )}
@@ -565,7 +570,7 @@ class ObjectInfo extends React.Component {
               website && website.title && website.link && (
                 <div className="field-website">
                   <span className="field-website__title">
-                    <i className="iconfont icon-link text-icon" />
+                    <i className="iconfont icon-link text-icon link" />
                     <a target="_blank" rel="noopener noreferrer" href={this.getLink(website.link)}>
                       {website.title}
                     </a>
@@ -619,11 +624,11 @@ class ObjectInfo extends React.Component {
                 <div className="field-info">
                   {accessExtend ? (
                     <div className="email">
-                      <Icon type="mail" /> {email}
+                      <Icon type="mail" className="text-icon email" /> {email}
                     </div>
                   ) : (
                     <React.Fragment>
-                      <Icon type="mail" />
+                      <Icon type="mail" className="text-icon email" />
                       <a href={`mailto:${email}`}> {email}</a>
                     </React.Fragment>
                   )}

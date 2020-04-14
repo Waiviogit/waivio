@@ -70,11 +70,9 @@ const AppendCard = props => {
 
     if (isLiked) {
       props.voteAppends(postId, author, props.post.permlink, 0, type);
+    } else if (sliderMode && !isLiked) {
+      props.voteAppends(postId, author, props.post.permlink, defaultVotePercent, type);
     } else {
-      if (sliderMode && !isLiked) {
-        props.voteAppends(postId, author, props.post.permlink, defaultVotePercent, type);
-      }
-
       props.voteAppends(postId, author, props.post.permlink, weight, type);
     }
   }

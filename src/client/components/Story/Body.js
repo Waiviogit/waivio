@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import { isUndefined, filter, isEmpty, get } from 'lodash';
+import { isUndefined, filter } from 'lodash';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import { injectIntl } from 'react-intl';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -13,8 +12,6 @@ import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHe
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
-import DetailsBody from '../../rewards/Details/DetailsBody';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -43,7 +40,7 @@ const getEmbed = link => {
 // Should return Object(React Compatible) if returnType is Object
 export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
-  parsedJsonMetadata.image = parsedJsonMetadata.image || [];
+  parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
@@ -100,50 +97,14 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   return <div dangerouslySetInnerHTML={{ __html: sections.join('') }} />;
 }
 
-const getObjectDetails = metaData => {
-  try {
-    if (!metaData) return {};
-    const parsedJsonMetadata = jsonParse(metaData) || {};
-    return get(parsedJsonMetadata, ['waivioRewards', 'proposition']) || {};
-  } catch (e) {
-    return {};
-  }
-};
-
-const getProposedWobj = metaData => {
-  try {
-    if (!metaData) return {};
-    const parsedJsonMetadata = jsonParse(metaData) || {};
-    return get(parsedJsonMetadata, ['waivioRewards', 'proposition']) || {};
-  } catch (e) {
-    return {};
-  }
-};
-
 const Body = props => {
   const options = {
     appUrl: props.appUrl,
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.json_metadata, 'Object', options);
-  const objectDetails = getObjectDetails(props.json_metadata);
-  const proposedWobj = getProposedWobj(props.json_metadata);
-  const requiredObjectName = getFieldWithMaxWeight(objectDetails.required_object, 'name');
-
-  return (
-    <div className={classNames('Body', { 'Body--full': props.full })}>
-      {htmlSections}{' '}
-      {!isEmpty(objectDetails) && (
-        <DetailsBody
-          objectDetails={objectDetails}
-          intl={props.intl}
-          proposedWobj={proposedWobj}
-          requiredObjectName={requiredObjectName}
-        />
-      )}
-    </div>
-  );
+  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options);
+  return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
 
 Body.propTypes = {
@@ -151,15 +112,14 @@ Body.propTypes = {
   rewriteLinks: PropTypes.bool.isRequired,
   exitPageSetting: PropTypes.bool.isRequired,
   body: PropTypes.string,
-  json_metadata: PropTypes.string,
+  jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
-  intl: PropTypes.shape().isRequired,
 };
 
 Body.defaultProps = {
   body: '',
-  json_metadata: '',
+  jsonMetadata: '',
   full: false,
 };
 
-export default injectIntl(Body);
+export default Body;

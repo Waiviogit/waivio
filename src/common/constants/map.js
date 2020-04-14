@@ -1,3 +1,3 @@
-export const RADIUS = 91287;
+export const RADIUS = 2994975;
 
-export const ZOOM = 8;
+export const ZOOM = 3;
