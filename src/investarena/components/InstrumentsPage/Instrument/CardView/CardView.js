@@ -66,33 +66,38 @@ class InstrumentCard extends React.Component {
             </div>
           </Link>
         </div>
-        {quote.dailyChange !== 0 ? (<div className="st-card__content">
-          <div className="st-card__daily-change-signal-info">
-            <div
-              title={intl.formatMessage({ id: 'tips.dailyChange', defaultMessage: 'Daily change' })}
-              className={`st-daily-change ${
-                quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
-              }`}
-            >
-              {quote.dailyChange.toFixed(2)}
+        {quote.dailyChange !== 0 ? (
+          <div className="st-card__content">
+            <div className="st-card__daily-change-signal-info">
+              <div
+                title={intl.formatMessage({
+                  id: 'tips.dailyChange',
+                  defaultMessage: 'Daily change',
+                })}
+                className={`st-daily-change ${
+                  quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
+                }`}
+              >
+                {quote.dailyChange.toFixed(2)}
+              </div>
+              <Signals signals={signals} />
             </div>
-            <Signals signals={signals} />
+            <div role="presentation" onClick={this.toggleModalInstrumentsChart}>
+              <InstrumentsChart
+                chart={chart}
+                height={chartHeight}
+                width={chartWidth}
+                noDataMsg={null}
+              />
+            </div>
+            {showTradeBtn && (
+              <TradeButtonsAssets
+                className="st-assets-buttons st-trade-buttons-asset-page-wrap"
+                quoteSecurity={quote.security}
+              />
+            )}
           </div>
-          <div role="presentation" onClick={this.toggleModalInstrumentsChart}>
-            <InstrumentsChart
-              chart={chart}
-              height={chartHeight}
-              width={chartWidth}
-              noDataMsg={null}
-            />
-          </div>
-          {showTradeBtn && (
-            <TradeButtonsAssets
-              className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-              quoteSecurity={quote.security}
-            />
-          )}
-        </div>) : null}
+        ) : null}
       </div>
     );
   }
