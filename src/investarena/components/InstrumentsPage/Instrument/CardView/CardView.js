@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isNumber } from 'lodash';
 import { injectIntl } from 'react-intl';
-import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
+import InstrumentAvatar from '../../../InstrumentAvatar';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
 import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
