@@ -49,10 +49,7 @@ class CryptoChart extends React.Component {
     this.state = {
       currentCrypto,
       displayChart: false,
-      isChartReady: false,
     };
-
-    this.setChartReadyState = this.setChartReadyState.bind(this);
   }
 
   componentDidMount() {
