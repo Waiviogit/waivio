@@ -36,7 +36,6 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   }
 
   const objectType = match.params.typeName;
-
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
 
