@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -19,7 +19,6 @@ import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
-import { RADIUS } from '../../../common/constants/map';
 import '../../components/Sidebar/SidebarContentBlock.less';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
@@ -32,29 +31,13 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
 
-  const [coordinates, setCoordinates] = useState([]);
-
-  const getCoordinatesDiscover = async () => {
-    const coordinatesDiscover = await dispatch(getCoordinates());
-    const lat = Number(coordinatesDiscover.value.lat);
-    const lon = Number(coordinatesDiscover.value.lon);
-    const newCoordinates = [];
-    newCoordinates.push(lat, lon);
-    setCoordinates(newCoordinates);
-  };
+  if (isEmpty(userLocation)) {
+    dispatch(getCoordinates());
+  }
 
   const objectType = match.params.typeName;
-  const setSearchArea = map => dispatch(setFiltersAndLoad(objectType, { ...activeFilters, map }));
+  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
-
-  useEffect(() => {
-    getCoordinatesDiscover();
-  }, []);
-
-  useEffect(() => {
-    if (match.params.typeName === 'restaurant' && !isEmpty(coordinates))
-      setSearchArea({ radius: RADIUS, coordinates });
-  }, [match.params.typeName, coordinates]);
 
   const handleMapSearchClick = map => {
     setSearchArea(map);

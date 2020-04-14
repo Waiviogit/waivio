@@ -190,7 +190,7 @@ class MapOS extends React.Component {
   );
 
   getAreaSearchData = () => {
-    const { zoom, center } = this.state;
+    const { center, radius } = this.state;
     const { getAreaSearchData } = this.props;
     if (_.isEmpty(center)) {
       getAreaSearchData({
@@ -198,7 +198,7 @@ class MapOS extends React.Component {
         coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     } else {
-      getAreaSearchData({ radius: getRadius(zoom), coordinates: center });
+      getAreaSearchData({ radius, coordinates: center });
     }
     this.getMapArea();
   };
