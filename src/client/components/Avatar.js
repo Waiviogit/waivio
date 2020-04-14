@@ -49,7 +49,6 @@ Avatar.propTypes = {
 
 Avatar.defaultProps = {
   size: 100,
-  handleChangeUrl: () => {},
 };
 
 export default Avatar;
