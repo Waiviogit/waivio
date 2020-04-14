@@ -1,6 +1,17 @@
 @import (reference) '../../styles/custom.less';
 
 .CryptoTrendingCharts {
+  &__chart-container {
+    max-height: 120px;
+    margin: 0 10px;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+
+    &.hidden {
+      max-height: 0;
+    }
+  }
+
   &__icon-refresh {
     font-size: 22px !important;
     margin-left: auto;
