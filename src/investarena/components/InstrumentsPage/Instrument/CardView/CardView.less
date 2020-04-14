@@ -15,7 +15,6 @@
     display: flex;
     align-items: center;
     padding-bottom: 5px;
-    border-bottom: 1px solid @color-gray;
     .st-instrument-name {
       .textStyle(@font-size-medium, @color-black-blue, bold);
       max-width: 340px;
@@ -38,11 +37,13 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid @color-gray;
     height: 100%;
     .st-card__daily-change-signal-info {
       display: flex;
       justify-content: space-between;
       width: 100%;
+      min-height: 10px;
       .st-daily-change {
         font-size: 20px;
         font-weight: bold;
@@ -56,6 +57,9 @@
     }
     .st-card__chart {
       min-height: 65px;
+      &:hover {
+        cursor: pointer;
+      }
       .st-assets-chart-no-data {
         text-align: center;
         font-size: 22px;

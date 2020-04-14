@@ -485,6 +485,7 @@ class Chart {
         : countBefore;
       if (countBefore + countAfter > 9) {
         countAfter -= countAfter + countBefore - 9;
+        countAfter = countAfter >= 0 ? countAfter : 0;
       }
       this.drawText(
         this.canvasWork.width + 10,
@@ -528,12 +529,12 @@ class Chart {
     }
     const arrayDot = [
       [
-        this.canvasWork.width - 0.5,
-        this.canvasWork.width + 10.5,
-        this.canvas.width - 1.5,
-        this.canvas.width - 1.5,
-        this.canvasWork.width + 10.5,
-        this.canvasWork.width - 0.5,
+        this.canvasWork.width - 3,
+        this.canvasWork.width + 7,
+        this.canvas.width - 2,
+        this.canvas.width - 2,
+        this.canvasWork.width + 7,
+        this.canvasWork.width - 3,
       ],
       [
         heightCoord,
@@ -566,11 +567,12 @@ class Chart {
     //   const textPosition = this.canvasWork.width + 10;
     //   this.drawText(textPosition, heightCoord + 5, '-', '13px sans-serif', 'white');
     // }
-    const textPosition = this.canvasWork.width + 10;
+    const price = quote.price ? `${quote.price / 1000000}` : '-';
+    const textPosition = this.canvasWork.width + 6;
     this.drawText(
-      textPosition,
+      textPosition + (10 - price.length) * 4,
       heightCoord + 5,
-      quote.price ? quote.price / 1000000 : '-',
+      price,
       '14px sans-serif',
       'white',
     );

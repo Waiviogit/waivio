@@ -3,11 +3,17 @@
 
 .BrokerBalance {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   width: 100%;
   cursor: pointer;
+
+  @media @small {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 
   &__dropdown {
     position: fixed !important;
@@ -33,3 +39,4 @@
 }
 
 @import 'BrokerBalance-nightmode.less';
+@import 'BrokerBalanceLoading.less';

@@ -14,10 +14,17 @@ import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
-import Loading from '../../Icon/Loading';
+import BrokerBalanceLoading from './BrokerBalanceLoading';
 import './BrokerBalance.less';
 
-const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout, userName }) => {
+const BrokerBalance = ({
+  beaxyBalance,
+  platformName,
+  getStatistics,
+  onLogout,
+  userName,
+  isMobile,
+}) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
   const storageFirstCurrency = store.get('firstCurrency');
@@ -108,10 +115,10 @@ const BrokerBalance = ({ beaxyBalance, platformName, getStatistics, onLogout, us
               <Icon type="down" />
             </div>
           </Dropdown>
-          {!isBeaxyUser && <Icon type="export" onClick={onLogout} />}
+          {!isBeaxyUser && !isMobile && <Icon type="export" onClick={onLogout} />}
         </React.Fragment>
       ) : (
-        <Loading />
+        <BrokerBalanceLoading />
       )}
     </div>
   );
@@ -122,7 +129,13 @@ BrokerBalance.propTypes = {
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
+  isMobile: PropTypes.bool,
+};
+
+BrokerBalance.defaultProps = {
+  userName: '',
+  isMobile: false,
 };
 
 const mapStateToProps = state => ({

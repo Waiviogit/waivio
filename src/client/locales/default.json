@@ -406,7 +406,7 @@
   "postQuotation.button.buy": "Buy",
   "tips.addToFavorites": "Add to favorites",
   "tips.removeFromFavorites": "Remove from favorites",
-  "tips.currentPrice": "Remove from favorites",
+  "tips.currentPrice": "Current price",
   "tips.currentPriceExpired": "Final price",
   "profit.isNeutral": "Final profitability is neutral",
   "profit.isNegative": "Final profitability is negative",
@@ -766,7 +766,7 @@
   "instAccountCreation": "Instant Account Creation",
   "longerWaiting": "- longer waiting time (up to 2 weeks)",
   "bonusDelegation": "BONUS: 15 HP delegation (for 90 days)",
-  "emailAndPhoneReq": "- email and phone required",
+  "emailAndPhoneReq": "- email required",
   "filterRule": "FilterRule",
   "info": "Information",
   "about": "About",
@@ -1031,6 +1031,7 @@
   "broker_modal_confirm_same_password": "Two passwords that you enter is inconsistent!",
   "broker_modal_valid_phone_number": "Please input your phone number!",
   "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers",
+  "broker_modal_broker_connected_successfully": "Beaxy connection established successfully",
   "performance": "Performance",
   "story_approval": "Approval:",
   "story_min_70_is_required": "Min 70% is required",
@@ -1129,5 +1130,7 @@
   "trading_form_amount": "Amount",
   "trading_form_total": "Total",
   "trading_form_fee": "Fee",
-  "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena"
+  "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
+  "signUp_cryptos": "- CRYPTOS",
+  "signUp_creditCards": "- credit cards"
 }

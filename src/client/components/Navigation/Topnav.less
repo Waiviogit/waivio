@@ -8,8 +8,8 @@
 .Topnav {
   position: relative;
   top: 0;
-  background-color: @white-ghostWhite;
-  height: 102px;
+  background-color: @grey-nero;
+  height: 52px;
   line-height: 52px;
   border-bottom: none;
   padding: 0 10px;
@@ -27,11 +27,6 @@
 
   &__brand {
     &-icon {
-      max-width: 36px;
-      width: 36px;
-      height: 36px;
-      vertical-align: super;
-      margin-top: 10px;
       display: none;
 
       @media @small, @medium, @large {
@@ -40,10 +35,18 @@
         height: unset;
         vertical-align: text-top;
         margin: 0;
+        display: inline-block;
       }
 
-      @media @small {
-        display: inline-block;
+      &.mobile {
+        max-width: 60px;
+        height: 62px;
+        vertical-align: super;
+        margin-top: -6px;
+        display: inline;
+        @media @small {
+          display: none;
+        }
       }
     }
   }
@@ -452,8 +455,12 @@
 
   &__hot-news-item {
     display: block;
-    padding: 12px 0 0 0;
-    color: @grey-mortar;
+    padding: 12px;
+    color: @white;
+    @media @small {
+      color: @grey-mortar;
+      padding: 12px 0 0 0;
+    }
 
     &:hover {
       color: @blue-vivid;
@@ -461,18 +468,26 @@
   }
 
   &__hot-news-item:not(:last-child) {
-    border-bottom: 1px solid @white-gainsboro;
-    padding: 12px 0;
+    border-bottom: 1px solid @normal-grey;
+    padding: 12px;
+    @media @small {
+      border-bottom: 1px solid @white-gainsboro;
+      padding: 12px 0;
+    }
   }
 
   &__hot-news-item:first-child {
-    border-bottom: 1px solid @white-gainsboro;
-    padding: 0 0 12px 0;
+    border-bottom: 1px solid @normal-grey;
+    padding: 12px;
+    @media @small {
+      border-bottom: 1px solid @white-gainsboro;
+      padding: 0 0 12px 0;
+    }
   }
 
   &__right-top {
     height: 48px;
-    width: 65px;
+    width: 80%;
     position: absolute;
     right: 0;
     top: 0;
@@ -482,23 +497,31 @@
     justify-content: flex-end;
     align-items: center;
     color: @blue-vivid;
-
     @media @small {
       display: none;
     }
 
     &--logedout {
       justify-content: flex-end;
-      width: 35px;
+    }
+
+    &__icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 2rem;
+    }
+
+    &__avatar {
+      padding-right: 1rem;
     }
   }
 
   &__right-bottom {
-    position: absolute;
-    top: 48px;
-    width: 100%;
-
+    display: none;
     @media @small {
+      display: block;
+      position: absolute;
       top: 0;
       right: 0;
       width: min-content;
@@ -537,7 +560,7 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 40px !important;
+  top: 172px !important;
   position: fixed;
   border-radius: 0;
   border-bottom-left-radius: @border-radius-base;
@@ -547,10 +570,12 @@ div[data-dir='rtl'] .Topnav {
   border-bottom: @base-border;
   box-shadow: none;
   padding-top: 5px;
-  width: calc(100% - 135px);
+  width: auto;
 
   @media @small {
+    width: calc(100% - 135px);
     max-width: 270px;
+    top: 40px !important;
   }
 
   @media @medium {
@@ -571,7 +596,9 @@ div[data-dir='rtl'] .Topnav {
     }
 
     ul {
-      @media @xsmall {
+      max-width: 220px;
+
+      @media @small {
         max-width: 240px;
       }
 
@@ -684,6 +711,12 @@ div[data-dir='rtl'] .Topnav {
   }
 }
 
+.anticon-fire {
+  min-width: 22px !important;
+  margin-right: 0 !important;
+  font-size: 22px !important;
+}
+
 .Topnav__search-content-list.ant-select-dropdown-menu-item-group-list {
   display: flex;
   flex-direction: row;
@@ -749,6 +782,7 @@ div[data-dir='rtl'] .Topnav {
     align-items: center;
     height: 38px;
   }
+
   &:hover {
     cursor: pointer;
     transition: box-shadow 0.5s ease 0s;

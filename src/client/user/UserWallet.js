@@ -63,7 +63,10 @@ const initWalletsQuantity = 5;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
     platformName: getPlatformName(state),
-    beaxyBalance: getBeaxyWallet(state),
+    beaxyBalance:
+      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state)
+        ? getBeaxyWallet(state)
+        : [],
     currenciesDescriptions: getCurrenciesDescriptions(state),
   }),
   {

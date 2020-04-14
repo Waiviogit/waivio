@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu, Button } from 'antd';
+import { AutoComplete, Icon, Input, Button } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -13,31 +13,20 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
-  getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
-  getIsLoadingNotifications,
   getNightmode,
-  getNotifications,
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
   isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
-import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import PopoverContainer from '../Popover';
-import Notifications from './Notifications/Notifications';
-import LanguageSettings from './LanguageSettings';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
@@ -46,10 +35,10 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import TopNavigation from './TopNavigation';
-import { getTopPosts } from '../../../waivioApi/ApiClient';
-import ModalSignUp from '../Authorization/ModalSignUp/ModalSignUp';
-import ModalSignIn from '../Authorization/ModalSignIn/ModalSignIn';
 import BrokerBalance from './BrokerBalance/BrokerBalance';
+import MobileMenu from './MobileMenu/MobileMenu';
+import LoggedOutMenu from './LoggedOutMenu';
+import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 
 @injectIntl
@@ -61,20 +50,17 @@ import './Topnav.less';
     searchByObject: getSearchObjectsResults(state),
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
-    notifications: getNotifications(state),
-    userMetaData: getAuthenticateduserMetaData(state),
-    loadingNotifications: getIsLoadingNotifications(state),
     screenSize: getScreenSize(state),
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
+    isPlatformConnected: getIsLoadingPlatformState(state)
   }),
   {
     disconnectBroker,
     searchObjectsAutoCompete,
     searchAutoComplete,
-    getUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
@@ -99,9 +85,7 @@ class Topnav extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     isAuthenticated: PropTypes.bool.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape()),
-    userMetaData: PropTypes.shape(),
-    loadingNotifications: PropTypes.bool,
+    isPlatformConnected: PropTypes.bool.isRequired,
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
@@ -121,6 +105,8 @@ class Topnav extends React.Component {
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
     isGuest: PropTypes.bool,
+    isMobileMenuOpen: PropTypes.bool.isRequired,
+    toggleMobileMenu: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -128,11 +114,8 @@ class Topnav extends React.Component {
     searchByObject: [],
     searchByUser: [],
     searchByObjectType: [],
-    notifications: [],
     username: undefined,
     onMenuItemClick: () => {},
-    userMetaData: {},
-    loadingNotifications: false,
     screenSize: 'medium',
     messagesCount: 0,
     isGuest: false,
@@ -143,38 +126,17 @@ class Topnav extends React.Component {
 
     this.state = {
       searchBarActive: false,
-      popoverMobileMenuVisible: false,
-      popoverProfileVisible: false,
       burgerMenuVisible: false,
-      popoverBrokerVisible: false,
       searchBarValue: '',
-      notificationsPopoverVisible: false,
       selectedPage: '',
-      hotNewsPopoverVisible: false,
       searchData: '',
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
-      dailyChosenPost: '',
-      weeklyChosenPost: '',
       scrolling: false,
       visible: false,
+      isMobileMenuOpen: false,
     };
-    this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
-    this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
-    this.handleMobileMenuVisibleChange = this.handleMobileMenuVisibleChange.bind(this);
-    this.handleProfileMenuVisibleChange = this.handleProfileMenuVisibleChange.bind(this);
-    this.handleBrokerMenuVisibleChange = this.handleBrokerMenuVisibleChange.bind(this);
-    this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
-      this,
-    );
-    this.handleCloseNotificationsPopover = this.handleCloseNotificationsPopover.bind(this);
-    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
-    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
-    this.handleSearchForInput = this.handleSearchForInput.bind(this);
-    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
-    this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
-    this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
   componentDidMount() {
@@ -195,11 +157,15 @@ class Topnav extends React.Component {
   }
 
   componentWillUnmount() {
-    this.setState({ popoverBrokerVisible: false });
     if (window) {
       window.removeEventListener('scroll', this.handleScroll);
     }
   }
+
+  onMobileAvatarClick = () => {
+    const { isMobileMenuOpen, toggleMobileMenu } = this.props;
+    if (isMobileMenuOpen) toggleMobileMenu();
+  };
 
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
@@ -233,76 +199,6 @@ class Topnav extends React.Component {
     SELECT_BAR: 'searchSelectBar',
   };
 
-  handleMoreMenuSelect(key) {
-    this.setState({ popoverProfileVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-  }
-
-  handleBurgerMenuSelect = key =>
-    this.setState({ burgerMenuVisible: false }, () => {
-      this.props.onMenuItemClick(key);
-    });
-
-  handleBrokerMenuSelect(key) {
-    switch (key) {
-      case 'deposit':
-        this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
-        break;
-      case 'broker-disconnect':
-        this.setState({ popoverBrokerVisible: false }, () => {
-          this.props.disconnectBroker('broker');
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  handleMobileMenuVisibleChange() {
-    this.setState({ popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible });
-  }
-
-  handleProfileMenuVisibleChange(visible) {
-    this.setState({ popoverProfileVisible: visible });
-  }
-
-  handleBurgerMenuVisibleChange = visible => this.setState({ burgerMenuVisible: visible });
-
-  handleBrokerMenuVisibleChange(visible) {
-    this.setState({ popoverBrokerVisible: visible });
-  }
-
-  handleHotNewsPopoverVisibleChange = async () => {
-    this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
-    if (_.isEmpty(this.state.dailyChosenPost)) {
-      getTopPosts()
-        .then(data => {
-          if (!_.isEmpty(data.daily_chosen_post) && !_.isEmpty(data.weekly_chosen_post)) {
-            this.setState({
-              dailyChosenPost: data.daily_chosen_post,
-              weeklyChosenPost: data.weekly_chosen_post,
-            });
-          }
-        })
-        .catch(error => console.error(error));
-    }
-  };
-
-  handleNotificationsPopoverVisibleChange(visible) {
-    if (visible) {
-      this.setState({ notificationsPopoverVisible: visible });
-    } else {
-      this.handleCloseNotificationsPopover();
-    }
-  }
-
-  handleCloseNotificationsPopover() {
-    this.setState({
-      notificationsPopoverVisible: false,
-    });
-  }
-
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   handleScroll = () => {
@@ -316,239 +212,14 @@ class Topnav extends React.Component {
     }
   };
 
-  menuForLoggedOut = () => {
-    const { location } = this.props;
-    const { searchBarActive } = this.state;
-    const next = location.pathname.length > 1 ? location.pathname : '';
-
-    return (
-      <div
-        className={classNames('Topnav__menu-container Topnav__menu-logedout', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <Menu className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <ModalSignUp isButton={false} />
-          </Menu.Item>
-          <Menu.Item
-            className="Topnav__menu-item Topnav__menu-item--logedout"
-            key="divider"
-            disabled
-          >
-            |
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <ModalSignIn next={next} />
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
-            <LanguageSettings />
-          </Menu.Item>
-        </Menu>
-      </div>
+  content = () => {
+    const { username } = this.props;
+    return username ? (
+      <LoggedInMenu {...this.state} {...this.props} />
+    ) : (
+      <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
     );
   };
-
-  burgerMenu = logStatus => {
-    const isLoggedOut = logStatus === 'loggedOut';
-    const { isGuest } = this.props;
-    return (
-      <PopoverContainer
-        placement="bottom"
-        trigger="click"
-        visible={this.state.burgerMenuVisible}
-        onVisibleChange={this.handleBurgerMenuVisibleChange}
-        overlayStyle={{ position: 'fixed' }}
-        content={
-          <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
-            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
-              <FormattedMessage id="my_feed" defaultMessage="My feed" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="discover-objects" fullScreenHidden>
-              <FormattedMessage id="discover" defaultMessage="Discover" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="quick_forecast" fullScreenHidden>
-              <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
-            </PopoverMenuItem>
-            {!isGuest && (
-              <PopoverMenuItem key="activity" mobileScreenHidden>
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </PopoverMenuItem>
-            )}
-            <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="replies" fullScreenHidden>
-              <FormattedMessage id="replies" defaultMessage="Replies" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="wallet">
-              <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="about" fullScreenHidden>
-              <FormattedMessage id="about" defaultMessage="About" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="logout">
-              <FormattedMessage id="logout" defaultMessage="Logout" />
-            </PopoverMenuItem>
-          </PopoverMenu>
-        }
-      >
-        <a className="Topnav__link Topnav__link--menu">
-          <Icon type="menu" className="iconfont icon-menu" />
-        </a>
-      </PopoverContainer>
-    );
-  };
-
-  hotNews = () => {
-    const { intl } = this.props;
-    const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
-    return (
-      <BTooltip
-        placement="bottom"
-        title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        overlayClassName="Topnav__notifications-tooltip"
-        mouseEnterDelay={1}
-      >
-        <PopoverContainer
-          placement="bottomRight"
-          trigger="click"
-          content={
-            <div className="Topnav__hot-news">
-              {!_.isEmpty(dailyChosenPost) && (
-                <Link
-                  to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {dailyChosenPost.title}
-                </Link>
-              )}
-              {!_.isEmpty(weeklyChosenPost) && (
-                <Link
-                  to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                  className="Topnav__hot-news-item"
-                  onClick={this.handleHotNewsPopoverVisibleChange}
-                >
-                  {weeklyChosenPost.title}
-                </Link>
-              )}
-              <Link
-                to="/economical-calendar"
-                className="Topnav__hot-news-item"
-                onClick={this.handleHotNewsPopoverVisibleChange}
-              >
-                Economical calendar
-              </Link>
-            </div>
-          }
-          visible={hotNewsPopoverVisible}
-          onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-          overlayClassName="Notifications__popover-overlay"
-          title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-        >
-          <Icon type="fire" className="iconfont fire-icon" />
-        </PopoverContainer>
-      </BTooltip>
-    );
-  };
-
-  menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible } = this.state;
-    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
-    const notificationsCount = _.isUndefined(lastSeenTimestamp)
-      ? _.size(notifications)
-      : _.size(
-          _.filter(
-            notifications,
-            notification =>
-              lastSeenTimestamp < notification.timestamp &&
-              _.includes(PARSED_NOTIFICATIONS, notification.type),
-          ),
-        );
-    const displayBadge = notificationsCount > 0;
-    const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-    return (
-      <div
-        className={classNames('Topnav__menu-container', {
-          'Topnav__mobile-hidden': searchBarActive,
-        })}
-      >
-        <ModalBroker />
-        <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          <Menu.Item className="Topnav__menu-item" key="hot">
-            {this.hotNews()}
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="write">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
-              </Link>
-            </BTooltip>
-          </Menu.Item>
-
-          <Menu.Item className="Topnav__menu-item" key="notifications">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              overlayClassName="Topnav__notifications-tooltip"
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <Notifications
-                    notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}
-                    st-card__chart
-                    currentAuthUsername={username}
-                    lastSeenTimestamp={lastSeenTimestamp}
-                    loadingNotifications={loadingNotifications}
-                    getUpdatedUserMetadata={this.props.getUserMetadata}
-                  />
-                }
-                visible={notificationsPopoverVisible}
-                onVisibleChange={this.handleNotificationsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-              >
-                <a className="Topnav__link Topnav__link--light Topnav__link--action">
-                  {displayBadge ? (
-                    <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
-                  ) : (
-                    <i className="iconfont icon-remind" />
-                  )}
-                </a>
-              </PopoverContainer>
-            </BTooltip>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item" key="user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
-          </Menu.Item>
-          <Menu.Item className="Topnav__menu-item Topnav__menu-item--burger" key="more">
-            {this.burgerMenu()}
-          </Menu.Item>
-        </Menu>
-      </div>
-    );
-  };
-
-  content = () => (this.props.username ? this.menuForLoggedIn() : this.menuForLoggedOut());
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
@@ -557,11 +228,11 @@ class Topnav extends React.Component {
     });
   };
 
-  hideAutoCompleteDropdown() {
+  hideAutoCompleteDropdown = () => {
     this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
-  }
+  };
 
-  handleSearchForInput(event) {
+  handleSearchForInput = event => {
     const value = event.target.value;
     this.hideAutoCompleteDropdown();
     this.props.history.push({
@@ -571,7 +242,7 @@ class Topnav extends React.Component {
         query: value,
       },
     });
-  }
+  };
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
@@ -603,12 +274,12 @@ class Topnav extends React.Component {
     this.props.searchObjectTypesAutoCompete(searchString),
   );
 
-  handleAutoCompleteSearch(value) {
+  handleAutoCompleteSearch = value => {
     this.debouncedSearch(value);
     this.setState({ dropdownOpen: true });
-  }
+  };
 
-  handleSelectOnAutoCompleteDropdown(value, data) {
+  handleSelectOnAutoCompleteDropdown = (value, data) => {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
@@ -655,9 +326,9 @@ class Topnav extends React.Component {
     this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
-  }
+  };
 
-  handleOnChangeForAutoComplete(value, data) {
+  handleOnChangeForAutoComplete = (value, data) => {
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
@@ -667,7 +338,7 @@ class Topnav extends React.Component {
     else if (data.props.marker !== Topnav.markers.SELECT_BAR) {
       this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
-  }
+  };
 
   usersSearchLayout(accounts) {
     return (
@@ -816,10 +487,6 @@ class Topnav extends React.Component {
     this.props.toggleModal('broker');
   };
 
-  toggleModalDeposit = () => {
-    this.setState({ isModalDeposit: !this.state.isModalDeposit });
-  };
-
   changeItemClass = key =>
     classNames('ant-select-dropdown-menu-item', {
       'Topnav__search-selected-active': this.state.currentItem === key,
@@ -854,156 +521,156 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      openChat,
-      messagesCount,
+      isPlatformConnected,
       platformName,
+      username,
+      toggleMobileMenu,
+      isMobileMenuOpen,
     } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-    const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
+    const brandLogoPath = '/images/logo-brand.png';
+    const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-    // const downBar = (
-    //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-    //     <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
-    //       {intl.formatMessage(
-    //         {
-    //           id: 'search_all_results_for',
-    //           defaultMessage: 'Search all results for {search}',
-    //         },
-    //         { search: this.state.searchBarValue },
-    //       )}
-    //     </div>
-    //   </AutoComplete.Option>
-    // );
-    // const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
-    //   ? dropdownOptions
-    //   : dropdownOptions.concat([downBar]);
-
     return (
-      <div
-        className={classNames('Topnav', {
-          'top-hidden': this.state.visible && isMobile,
-        })}
-      >
-        <ModalDealConfirmation />
-        <div className="topnav-layout">
-          <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
-            <Link to="/" className="Topnav__brand">
-              <span className="Topnav__brand-icon-mobile">investarena</span>
-              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
-            </Link>
-          </div>
-          <div
-            className={classNames(
-              'center',
-              'center-menu',
-              { mobileVisible: searchBarActive },
-              { 'center-menu--logedout': !isAuthenticated },
-            )}
-          >
-            <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
-              <i className="iconfont icon-search" />
-              <AutoComplete
-                dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={dropdownOptions}
-                onSearch={this.handleAutoCompleteSearch}
-                onSelect={this.handleSelectOnAutoCompleteDropdown}
-                onChange={this.handleOnChangeForAutoComplete}
-                defaultActiveFirstOption={false}
-                dropdownMatchSelectWidth={false}
-                optionLabelProp="value"
-                dropdownStyle={{ color: 'red' }}
-                value={this.state.searchBarValue}
-                open={dropdownOpen}
-                onFocus={this.handleOnFocus}
-              >
-                <Input
-                  ref={ref => {
-                    this.searchInputRef = ref;
-                  }}
-                  onPressEnter={this.handleSearchForInput}
-                  placeholder={intl.formatMessage({
-                    id: 'search_placeholder',
-                    defaultMessage: 'What are you looking for?',
-                  })}
-                  autoCapitalize="off"
-                  autoCorrect="off"
+      <React.Fragment>
+        <div className="Topnav">
+          <ModalDealConfirmation />
+          <div className="topnav-layout">
+            <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
+              <Link to="/" className="Topnav__brand">
+                <img
+                  alt="InvestArena"
+                  src={brandLogoPathMobile}
+                  className="Topnav__brand-icon mobile"
                 />
-              </AutoComplete>
-              {!!this.state.searchBarValue.length && (
-                <Icon
-                  type="close-circle"
-                  style={{ fontSize: '12px' }}
-                  theme="filled"
-                  onClick={this.handleClearSearchData}
-                />
-              )}
+                <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
+              </Link>
             </div>
-            <div className="Topnav__horizontal-menu">
-              {!isMobile && (
-                <TopNavigation
-                  authenticated={isAuthenticated}
-                  location={this.props.history.location}
-                  isMobile={isMobile || screenSize === 'medium'}
-                />
+            <div
+              className={classNames(
+                'center',
+                'center-menu',
+                { mobileVisible: searchBarActive },
+                { 'center-menu--logedout': !isAuthenticated },
               )}
-            </div>
-          </div>
-          <div
-            className={classNames('Topnav__right-top', {
-              'Topnav__right-top--logedout': !isAuthenticated,
-            })}
-          >
-            <button
-              className={classNames('Topnav__mobile-search', {
-                'Topnav__mobile-search-close': searchBarActive,
-              })}
-              onClick={this.handleMobileSearchButtonClick}
             >
-              <i
-                className={classNames('iconfont', {
-                  'icon-close': searchBarActive,
-                  'icon-search': !searchBarActive,
-                })}
-              />
-            </button>
-            {/* {this.props.username && ( */}
-            {/*  <div className="Topnav__chat" key="more"> */}
-            {/*    {!messagesCount ? ( */}
-            {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
-            {/*    ) : ( */}
-            {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
-            {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
-            {/*      </div> */}
-            {/*    )} */}
-            {/*  </div> */}
-            {/* )} */}
-          </div>
-          <div className="Topnav__right-bottom">
-            {this.content()}
-            {isAuthenticated && (
-              <div
-                className={classNames('Topnav__broker', {
-                  'justify-end': platformName === 'widgets',
-                })}
-              >
-                {platformName === 'widgets' ? (
-                  <div className="st-header-broker-balance-pl-wrap">
-                    <Button type="primary" onClick={this.toggleModalBroker}>
-                      {intl.formatMessage({
-                        id: 'headerAuthorized.connectToBeaxy',
-                        defaultMessage: 'Connect to beaxy',
+              {!isMobile && (
+                <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
+                  <i className="iconfont icon-search" />
+                  <AutoComplete
+                    dropdownClassName="Topnav__search-dropdown-container"
+                    dataSource={dropdownOptions}
+                    onSearch={this.handleAutoCompleteSearch}
+                    onSelect={this.handleSelectOnAutoCompleteDropdown}
+                    onChange={this.handleOnChangeForAutoComplete}
+                    defaultActiveFirstOption={false}
+                    dropdownMatchSelectWidth={false}
+                    optionLabelProp="value"
+                    value={this.state.searchBarValue}
+                    open={dropdownOpen}
+                    onFocus={this.handleOnFocus}
+                  >
+                    <Input
+                      ref={ref => {
+                        this.searchInputRef = ref;
+                      }}
+                      onPressEnter={this.handleSearchForInput}
+                      placeholder={intl.formatMessage({
+                        id: 'search_placeholder',
+                        defaultMessage: 'What are you looking for?',
                       })}
-                    </Button>
-                  </div>
-                ) : (
-                  <BrokerBalance />
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                    />
+                  </AutoComplete>
+                  {!!this.state.searchBarValue.length && (
+                    <Icon
+                      type="close-circle"
+                      style={{ fontSize: '12px' }}
+                      theme="filled"
+                      onClick={this.handleClearSearchData}
+                    />
+                  )}
+                </div>
+              )}
+              <div className="Topnav__horizontal-menu">
+                {!isMobile && (
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    location={this.props.history.location}
+                    isMobile={isMobile || screenSize === 'medium'}
+                  />
                 )}
               </div>
-            )}
+            </div>
+            <div
+              className={classNames('Topnav__right-top', {
+                'Topnav__right-top--logedout': !isAuthenticated,
+              })}
+            >
+              {!username ? (
+                <div className="mr2">
+                  <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+                </div>
+              ) : (
+                <Link
+                  to={`/@${username}`}
+                  className="Topnav__right-top__avatar"
+                  onClick={this.onMobileAvatarClick}
+                >
+                  <Avatar username={username} size={40} />
+                </Link>
+              )}
+              <div className="Topnav__right-top__icon">
+                {!isMobileMenuOpen ? (
+                  <Icon type="menu" className="iconfont icon-menu" onClick={toggleMobileMenu} />
+                ) : (
+                  <Icon type="close" theme="outlined" onClick={toggleMobileMenu} />
+                )}
+              </div>
+            </div>
+            <div className="Topnav__right-bottom">
+              {this.content()}
+              {isAuthenticated && (
+                <div
+                  className={classNames('Topnav__broker', {
+                    'justify-end': platformName === 'widgets',
+                  })}
+                >
+                  {platformName === 'widgets' ? (
+                    <div className="st-header-broker-balance-pl-wrap">
+                      {isPlatformConnected && <Button type="primary" onClick={this.toggleModalBroker}>
+                        {intl.formatMessage({
+                          id: 'headerAuthorized.connectToBeaxy',
+                          defaultMessage: 'Connect to beaxy',
+                        })}
+                      </Button>}
+                    </div>
+                  ) : (
+                    <BrokerBalance />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+        {isMobile && isMobileMenuOpen && (
+          <MobileMenu
+            {...this.props}
+            {...this.state}
+            searchOptions={this.prepareOptions(autoCompleteSearchResults)}
+            onSearch={this.handleAutoCompleteSearch}
+            onSelect={this.handleSelectOnAutoCompleteDropdown}
+            onChange={this.handleOnChangeForAutoComplete}
+            onFocus={this.handleOnFocus}
+            onBlur={this.handleOnBlur}
+            onSearchPressEnter={this.handleSearchForInput}
+            hotNews={this.hotNews}
+            toggleMobileMenu={toggleMobileMenu}
+          />
+        )}
+      </React.Fragment>
     );
   }
 }
