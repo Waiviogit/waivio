@@ -41,10 +41,12 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   }
 
   return (
-    <div className="PaymentCard">
+    <div className="PaymentCard" onClick={handleSetUser} role="presentation">
       <Link to={`/@${name}`}>
         <div className="PaymentCard__content">
-          <Avatar username={name} size={40} />
+          <a href={`/@${name}`}>
+            <Avatar username={name} size={40} />
+          </a>
           <div className="PaymentCard__content-name-wrap">
             <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
             <div className="PaymentCard__content-name-wrap-row">
@@ -68,7 +70,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
             >
               {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
               <img
-                src="/images/icons/PaymentHistory.svg"
+                src="/images/icons/arrowSmall.svg"
                 alt="Payments history"
                 onClick={handleSetUser}
               />
