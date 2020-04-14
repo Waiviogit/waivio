@@ -12,13 +12,13 @@
   height: 95vh;
 
   &__wrapper {
-    width: 70%;
+    width: 72%;
     padding: 1rem;
     background: @blue-dodgerBlue;
   }
 
   &__mask {
-    width: 30%;
+    width: 28%;
     background: rgba(0, 0, 0, 0.45);
   }
 
@@ -68,8 +68,10 @@
   &__input-container {
     position: relative;
     display: flex;
-    width: 15rem;
     margin: 1rem 0;
+    .ant-select {
+      width: 100%;
+    }
 
     input {
       height: 38px !important;
@@ -110,8 +112,6 @@
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 172px !important;
-  width: calc(100% - 15rem);
   border-right: 1px solid @baby-blue;
   border-left: 1px solid @baby-blue;
   border-bottom: 1px solid @baby-blue;

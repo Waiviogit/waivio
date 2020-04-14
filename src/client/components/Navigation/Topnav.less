@@ -560,7 +560,7 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 40px !important;
+  top: 172px !important;
   position: fixed;
   border-radius: 0;
   border-bottom-left-radius: @border-radius-base;
@@ -570,10 +570,12 @@ div[data-dir='rtl'] .Topnav {
   border-bottom: @base-border;
   box-shadow: none;
   padding-top: 5px;
-  width: calc(100% - 135px);
+  width: auto;
 
   @media @small {
+    width: calc(100% - 135px);
     max-width: 270px;
+    top: 40px !important;
   }
 
   @media @medium {
@@ -594,7 +596,9 @@ div[data-dir='rtl'] .Topnav {
     }
 
     ul {
-      @media @xsmall {
+      max-width: 220px;
+
+      @media @small {
         max-width: 240px;
       }
 

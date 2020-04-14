@@ -567,7 +567,6 @@ class Topnav extends React.Component {
                     defaultActiveFirstOption={false}
                     dropdownMatchSelectWidth={false}
                     optionLabelProp="value"
-                    dropdownStyle={{ color: 'red' }}
                     value={this.state.searchBarValue}
                     open={dropdownOpen}
                     onFocus={this.handleOnFocus}
