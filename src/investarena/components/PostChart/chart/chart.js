@@ -485,6 +485,7 @@ class Chart {
         : countBefore;
       if (countBefore + countAfter > 9) {
         countAfter -= countAfter + countBefore - 9;
+        countAfter = countAfter >= 0 ? countAfter : 0;
       }
       this.drawText(
         this.canvasWork.width + 10,
