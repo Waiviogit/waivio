@@ -65,7 +65,7 @@ class InstrumentCard extends React.Component {
             </div>
           </Link>
         </div>
-        {quote.dailyChange !== 0 ? (
+        {chart && chart.some(point => point.y !== chart[0].y) ? (
           <div className="st-card__content">
             <div className="st-card__daily-change-signal-info">
               <div
@@ -77,7 +77,7 @@ class InstrumentCard extends React.Component {
                   quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
                 }`}
               >
-                {quote.dailyChange.toFixed(2)}
+                {isNumber(quote.dailyChange) ? `${quote.dailyChange.toFixed(2)}%` : null}
               </div>
               <Signals signals={signals} />
             </div>
