@@ -202,7 +202,6 @@ class CatalogWrap extends React.Component {
               name: obj.name,
               path: `${location.hash.split(obj.id)[0]}${obj.id}`,
             }));
-
             if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
             this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
           });

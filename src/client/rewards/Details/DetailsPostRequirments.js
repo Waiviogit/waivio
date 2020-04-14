@@ -18,7 +18,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
         <div className="Details__criteria-row Details__criteria-row--mobile">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
-          <Link className="ml1" to={`/object/${proposedWobj.name}`}>
+          <Link className="ml1" to={`/object/${proposedWobj.id}`}>
             {proposedWobj.name}
           </Link>
           ;
