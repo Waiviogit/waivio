@@ -55,6 +55,7 @@ import './Topnav.less';
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
+    isPlatformConnected: getIsLoadingPlatformState(state)
   }),
   {
     disconnectBroker,
@@ -84,6 +85,7 @@ class Topnav extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     isAuthenticated: PropTypes.bool.isRequired,
+    isPlatformConnected: PropTypes.bool.isRequired,
     searchAutoComplete: PropTypes.func.isRequired,
     getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
@@ -519,8 +521,7 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      // openChat,
-      // messagesCount,
+      isPlatformConnected,
       platformName,
       username,
       toggleMobileMenu,
@@ -531,24 +532,6 @@ class Topnav extends React.Component {
     const brandLogoPath = '/images/logo-brand.png';
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-    // const downBar = (
-    //   <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-    //     <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
-    //       {intl.formatMessage(
-    //         {
-    //           id: 'search_all_results_for',
-    //           defaultMessage: 'Search all results for {search}',
-    //         },
-    //         { search: this.state.searchBarValue },
-    //       )}
-    //     </div>
-    //   </AutoComplete.Option>              <CloseOutlined />
-
-    // );
-    // const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
-    //   ? dropdownOptions
-    //   : dropdownOptions.concat([downBar]);
-
     return (
       <React.Fragment>
         <div className="Topnav">
@@ -647,30 +630,6 @@ class Topnav extends React.Component {
                   <Icon type="close" theme="outlined" onClick={toggleMobileMenu} />
                 )}
               </div>
-              {/* <button */}
-              {/*  className={classNames('Topnav__mobile-search', { */}
-              {/*    'Topnav__mobile-search-close': searchBarActive, */}
-              {/*  })} */}
-              {/*  onClick={this.handleMobileSearchButtonClick} */}
-              {/* > */}
-              {/*  <i */}
-              {/*    className={classNames('iconfont', { */}
-              {/*      'icon-close': searchBarActive, */}
-              {/*      'icon-search': !searchBarActive, */}
-              {/*    })}* /}
-              {/*  /> */}
-              {/* </button> */}
-              {/* {this.props.username && ( */}
-              {/*  <div className="Topnav__chat" key="more"> */}
-              {/*    {!messagesCount ? ( */}
-              {/*      <Icon type="message" className="icon-chat" onClick={openChat} /> */}
-              {/*    ) : ( */}
-              {/*      <div className="Topnav__chat-button" onClick={openChat} role="presentation"> */}
-              {/*        {messagesCount > 99 ? '99+' : messagesCount} */}
-              {/*      </div> */}
-              {/*    )} */}
-              {/*  </div> */}
-              {/* )} */}
             </div>
             <div className="Topnav__right-bottom">
               {this.content()}
@@ -682,12 +641,12 @@ class Topnav extends React.Component {
                 >
                   {platformName === 'widgets' ? (
                     <div className="st-header-broker-balance-pl-wrap">
-                      <Button type="primary" onClick={this.toggleModalBroker}>
+                      {isPlatformConnected && <Button type="primary" onClick={this.toggleModalBroker}>
                         {intl.formatMessage({
                           id: 'headerAuthorized.connectToBeaxy',
                           defaultMessage: 'Connect to beaxy',
                         })}
-                      </Button>
+                      </Button>}
                     </div>
                   ) : (
                     <BrokerBalance />
