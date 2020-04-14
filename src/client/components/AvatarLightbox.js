@@ -18,10 +18,7 @@ export default class AvatarLightbox extends React.Component {
 
   state = {
     open: false,
-    url: '',
   };
-
-  handleChangeUrl = value => this.setState({ url: value });
 
   handleAvatarClick = () => this.setState({ open: true });
 
@@ -29,7 +26,6 @@ export default class AvatarLightbox extends React.Component {
 
   render() {
     const { username, size, isActive } = this.props;
-    const { url } = this.state;
 
     return (
       <div
@@ -37,7 +33,7 @@ export default class AvatarLightbox extends React.Component {
         role="presentation"
         onClick={this.handleAvatarClick}
       >
-        <Avatar username={username} size={size} handleChangeUrl={this.handleChangeUrl} />
+        <Avatar username={username} size={size} />
         {isActive && (
           <img
             src="/images/icons/online.png"
@@ -46,7 +42,12 @@ export default class AvatarLightbox extends React.Component {
             title="Active now"
           />
         )}
-        {this.state.open && <Lightbox mainSrc={url} onCloseRequest={this.handleCloseRequest} />}
+        {this.state.open && (
+          <Lightbox
+            mainSrc={`https://images.hive.blog/u/${username}/avatar/large`}
+            onCloseRequest={this.handleCloseRequest}
+          />
+        )}
       </div>
     );
   }
