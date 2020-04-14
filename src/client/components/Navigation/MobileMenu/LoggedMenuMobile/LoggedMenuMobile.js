@@ -41,7 +41,7 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout, location, searchBarA
       <Link to="/" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="home" defaultMessage="Home" />
       </Link>
-      <Link to="/discover" className="LoggedMenu__item" onClick={toggleMenu}>
+      <Link to="/discover-objects/crypto" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
       <Link
