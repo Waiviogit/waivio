@@ -418,15 +418,15 @@ export class PlatformHelper {
     if (Math.floor(parsedValue) === Number(parsedValue)) return 0;
     return parsedValue.toString().split('.')[1].length || 0;
   }
-  static exponentialToDecimal(exponentialNumber) {
-    // sanity check - is it exponential number
+  static exponentialToDecimal(value) {
+    const exponentialNumber = parseFloat(value);
     const str = exponentialNumber.toString();
     if (exponentNumberRegex.test(str)) {
       const [testedString, mantissa, exponent] = str.match(exponentNumberRegex);
       const digits = parseInt(exponent, 10) + mantissa.match(/^\d\.?(\d*)$/)[1].length;
       return exponentialNumber.toFixed(digits);
     }
-    return exponentialNumber.toString();
+    return value;
   }
 }
 
