@@ -90,7 +90,6 @@ class DiscoverObjectsContent extends Component {
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
-    getCoordinates: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -98,9 +97,6 @@ class DiscoverObjectsContent extends Component {
     userName: PropTypes.string.isRequired,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
-    isFullscreenMode: PropTypes.bool.isRequired,
-    getObjectTypeMap: PropTypes.func.isRequired,
-    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -126,25 +122,13 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, typeName, match } = this.props;
-    if (match.params.typeName !== 'restaurant') dispatchGetObjectType(typeName, { skip: 0 });
-    this.getCoordinates().then(() => {
-      const { radius, center } = this.state;
-      this.setMapArea({ radius, coordinates: center });
-    });
+    const { dispatchGetObjectType, typeName } = this.props;
+    dispatchGetObjectType(typeName, { skip: 0 });
   }
 
   componentWillUnmount() {
     this.props.dispatchClearObjectTypeStore();
   }
-
-  getCoordinates = async () => {
-    const coordinates = await this.props.getCoordinates();
-    if (!isEmpty(coordinates))
-      this.setState({ center: [Number(coordinates.value.lat), Number(coordinates.value.lon)] });
-  };
-
-  setMapArea = map => this.props.getObjectTypeMap(map, this.props.isFullscreenMode);
 
   getCommonFiltersLayout = () => (
     <React.Fragment>
@@ -309,6 +293,9 @@ class DiscoverObjectsContent extends Component {
       <React.Fragment>
         <div className="discover-objects-header__selection-block">
           <MobileNavigation />
+          <div className="discover-objects-header__tags-block common">
+            {this.getCommonFiltersLayout()}
+          </div>
           {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
         </div>
         {isTypeHasFilters ? (

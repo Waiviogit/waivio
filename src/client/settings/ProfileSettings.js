@@ -27,7 +27,7 @@ import './Settings.less';
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
-  let metadata = attempt(JSON.parse, props.user.json_metadata);
+  let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
   if (isError(metadata)) metadata = {};
   const profile = metadata.profile || {};
 
@@ -82,7 +82,7 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    let metadata = attempt(JSON.parse, props.user.json_metadata);
+    let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
     if (isError(metadata)) metadata = {};
 
     this.state = {
@@ -149,11 +149,13 @@ export default class ProfileSettings extends React.Component {
         } else {
           const profileDateEncoded = encodeOp(
             [
-              'account_update',
+              'account_update2',
               {
                 account: userName,
                 memo_key: user.memo_key,
-                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
+                posting_json_metadata: JSON.stringify({
+                  profile: { ...profileData, ...cleanValues },
+                }),
               },
             ],
             { callback: window.location.href },
@@ -419,12 +421,7 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('cover_image')(
                         <div className="Settings__profile-image">
-                          <Avatar
-                            size="large"
-                            shape="square"
-                            icon="picture"
-                            src={`https://images.hive.blog/0x0/${coverPicture}`}
-                          />
+                          <Avatar size="large" shape="square" icon="picture" src={coverPicture} />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({
                               id: 'profile_change_cover',

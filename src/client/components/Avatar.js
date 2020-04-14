@@ -7,6 +7,7 @@ import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
+  const url = 'https://images.hive.blog/u';
   const lastAccountUpdate = !isEmpty(authenticatedUser)
     ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
@@ -16,12 +17,10 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
-    return `https://images.hive.blog/u/${username}/avatar/large?${lastAccountUpdate}`;
+    return `${url}/${username}/avatar/large?${lastAccountUpdate}`;
   }
 
-  return size > 64
-    ? `https://images.hive.blog/u/${username}/avatar`
-    : `https://images.hive.blog/u/${username}/avatar/small`;
+  return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
 const Avatar = ({ username, size }) => {
