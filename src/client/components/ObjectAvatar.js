@@ -2,9 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ObjectAvatar.less';
-
-const defaultUrl =
-  'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+import DEFAULTS from '../object/const/defaultValues';
 
 export const getObjectUrl = item => {
   const avatarFields = _.filter(item.fields, o => o.name === 'avatar');
@@ -29,7 +27,7 @@ const ObjectAvatar = ({ item, size }) => {
   } else {
     style = {
       ...style,
-      backgroundImage: `url(${defaultUrl})`,
+      backgroundImage: `url(${DEFAULTS.AVATAR})`,
     };
   }
 
