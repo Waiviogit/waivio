@@ -14,7 +14,7 @@ import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
 import { getIsBeaxyUser } from '../../../user/usersHelper';
-import Loading from '../../Icon/Loading';
+import BrokerBalanceLoading from './BrokerBalanceLoading';
 import './BrokerBalance.less';
 
 const BrokerBalance = ({
@@ -118,7 +118,7 @@ const BrokerBalance = ({
           {!isBeaxyUser && !isMobile && <Icon type="export" onClick={onLogout} />}
         </React.Fragment>
       ) : (
-        <Loading />
+        <BrokerBalanceLoading />
       )}
     </div>
   );
