@@ -234,7 +234,7 @@ export const assignProposition = ({
       proposition,
       proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of ${secondaryObjectName}, ${primaryObjectName}</p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${secondaryObjectName}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
@@ -325,7 +325,7 @@ export const activateCampaign = (company, campaignPermlink) => (
       permlink: campaignPermlink,
       company,
       title: 'Activate rewards campaign',
-      body: `${username} (@${username}) activated rewards campaign for ${primaryObjectName} (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
+      body: `${username} (@${username}) activated rewards campaign for <a href="/object/${primaryObjectName}">${primaryObjectName}</a> (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
