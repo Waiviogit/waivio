@@ -55,7 +55,6 @@ import './Topnav.less';
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
-    isPlatformConnected: getIsLoadingPlatformState(state),
   }),
   {
     disconnectBroker,
@@ -634,7 +633,7 @@ class Topnav extends React.Component {
             </div>
             <div className="Topnav__right-bottom">
               {this.content()}
-              {isAuthenticated && (
+              {isAuthenticated && platformName && (
                 <div
                   className={classNames('Topnav__broker', {
                     'justify-end': platformName === 'widgets',
@@ -642,14 +641,12 @@ class Topnav extends React.Component {
                 >
                   {platformName === 'widgets' ? (
                     <div className="st-header-broker-balance-pl-wrap">
-                      {isPlatformConnected && (
-                        <Button type="primary" onClick={this.toggleModalBroker}>
-                          {intl.formatMessage({
-                            id: 'headerAuthorized.connectToBeaxy',
-                            defaultMessage: 'Connect to beaxy',
-                          })}
-                        </Button>
-                      )}
+                      <Button type="primary" onClick={this.toggleModalBroker}>
+                        {intl.formatMessage({
+                          id: 'headerAuthorized.connectToBeaxy',
+                          defaultMessage: 'Connect to beaxy',
+                        })}
+                      </Button>
                     </div>
                   ) : (
                     <BrokerBalance />
