@@ -9,7 +9,7 @@ import {
   getPlatformNameState,
   getUserWalletState,
 } from '../../../../investarena/redux/selectors/platformSelectors';
-import { getAuthenticatedUserName } from '../../../reducers';
+import { getAuthenticatedUserName, getAuthenticatedUser, isGuestUser } from '../../../reducers';
 import CurrencyItem from '../../../wallet/CurrencyItem/CurrencyItem';
 import { getUserStatistics } from '../../../../investarena/redux/actions/platformActions';
 import { disconnectBroker } from '../../../../investarena/redux/actions/brokersActions';
@@ -22,15 +22,15 @@ const BrokerBalance = ({
   platformName,
   getStatistics,
   onLogout,
-  userName,
+  authUser,
   isMobile,
+  isGuest,
 }) => {
   const [initFirstCurrency, setInitFirstCurrency] = useState({});
   const [initSecondCurrency, setInitSecondCurrency] = useState({});
   const storageFirstCurrency = store.get('firstCurrency');
   const storageSecondCurrency = store.get('secondCurrency');
-  const isBeaxyUser = getIsBeaxyUser(userName);
-
+  const isBeaxyUser = getIsBeaxyUser(authUser, isGuest);
   const getCurrencyByName = name => find(beaxyBalance, { currency: name });
 
   useEffect(() => {
@@ -129,7 +129,8 @@ BrokerBalance.propTypes = {
   platformName: PropTypes.string.isRequired,
   getStatistics: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  userName: PropTypes.string,
+  isGuest: PropTypes.bool.isRequired,
+  authUser: PropTypes.shape().isRequired,
   isMobile: PropTypes.bool,
 };
 
@@ -142,6 +143,8 @@ const mapStateToProps = state => ({
   platformName: getPlatformNameState(state),
   beaxyBalance: getUserWalletState(state),
   userName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
+  authUser: getAuthenticatedUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({

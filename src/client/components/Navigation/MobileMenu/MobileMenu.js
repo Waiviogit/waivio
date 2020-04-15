@@ -10,7 +10,7 @@ import { getIsBeaxyUser } from '../../../user/usersHelper';
 import BrokerBalance from '../BrokerBalance/BrokerBalance';
 import LoggedMenuMobile from './LoggedMenuMobile/LoggedMenuMobile';
 import MenuButtons from './MenuButtons/MenuButtons';
-import { getIsBrokerConnected } from '../../../reducers';
+import { getAuthenticatedUser, getIsBrokerConnected } from '../../../reducers';
 import './MobileMenu.less';
 
 const MobileMenu = props => {
@@ -34,9 +34,11 @@ const MobileMenu = props => {
     isBrokerConnected,
     location,
     searchBarActive,
+    isGuest,
+    authUser,
   } = props;
 
-  const isBeaxyUser = getIsBeaxyUser(username);
+  const isBeaxyUser = getIsBeaxyUser(authUser, isGuest);
 
   const [isBrokerActions, setIsBrokerActions] = useState(false);
 
@@ -151,6 +153,8 @@ MobileMenu.propTypes = {
   isBrokerConnected: PropTypes.bool.isRequired,
   location: PropTypes.shape().isRequired,
   searchBarActive: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  authUser: PropTypes.shape().isRequired,
 };
 
 MobileMenu.defaultProps = {
@@ -161,6 +165,7 @@ MobileMenu.defaultProps = {
 
 const mapStateToProps = state => ({
   isBrokerConnected: getIsBrokerConnected(state),
+  authUser: getAuthenticatedUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
