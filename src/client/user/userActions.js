@@ -325,7 +325,7 @@ export const activateCampaign = (company, campaignPermlink) => (
       permlink: campaignPermlink,
       company,
       title: 'Activate rewards campaign',
-      body: `${username} (@${username}) activated rewards campaign for <a href="/object/${primaryObjectName}">${primaryObjectName}</a> (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
+      body: `${username} (@${username}) activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
