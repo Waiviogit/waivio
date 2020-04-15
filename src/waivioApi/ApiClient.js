@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
+import { ACCOUNT_UPDATE } from '../common/constants/accountHistory';
 import { message } from 'antd';
 
 let headers = {
@@ -911,9 +912,10 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'account_update2',
+            id: ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
+              json_metadata: '',
               posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },
