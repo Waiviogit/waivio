@@ -63,8 +63,8 @@ export const logoutWithoutBroker = () => (
 };
 
 export const logout = () => dispatch => {
-  dispatch(disconnectBroker());
   dispatch(logoutWithoutBroker());
+  dispatch(disconnectBroker());
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
