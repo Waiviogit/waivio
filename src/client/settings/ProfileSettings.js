@@ -9,6 +9,8 @@ import moment from 'moment';
 import { encodeOp } from 'steem-uri';
 import { updateProfile } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
+import postingMetadataHelper from '../helpers/postingMetadata';
+import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -67,14 +69,14 @@ export default class ProfileSettings extends React.Component {
     onImageInvalid: PropTypes.func,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
-    user: PropTypes.string,
+    user: PropTypes.shape(),
   };
 
   static defaultProps = {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     userName: '',
-    user: '',
+    user: {},
     isGuest: false,
     updateProfile: () => {},
   };
@@ -82,8 +84,12 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
-    if (isError(metadata)) metadata = {};
+    let jsonMetadata = attempt(JSON.parse, props.user.json_metadata);
+    if (isError(jsonMetadata)) jsonMetadata = {};
+    let postingJsonMetadata = attempt(JSON.parse, props.user.posting_json_metadata);
+    if (isError(postingJsonMetadata)) postingJsonMetadata = {};
+
+    const metadata = postingMetadataHelper(jsonMetadata, postingJsonMetadata);
 
     this.state = {
       bodyHTML: '',
@@ -149,10 +155,12 @@ export default class ProfileSettings extends React.Component {
         } else {
           const profileDateEncoded = encodeOp(
             [
-              'account_update2',
+              ACCOUNT_UPDATE,
               {
                 account: userName,
+                extensions: [],
                 memo_key: user.memo_key,
+                json_metadata: '',
                 posting_json_metadata: JSON.stringify({
                   profile: { ...profileData, ...cleanValues },
                 }),
@@ -246,6 +254,7 @@ export default class ProfileSettings extends React.Component {
       lastAccountUpdate,
       profilePicture,
       coverPicture,
+      profileData,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -305,7 +314,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('name')(
+                      {getFieldDecorator('name', { initialValue: profileData.name })(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -323,7 +332,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('about')(
+                      {getFieldDecorator('about', { initialValue: profileData.about })(
                         <Input.TextArea
                           autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
@@ -341,7 +350,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('location')(
+                      {getFieldDecorator('location', { initialValue: profileData.location })(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -359,7 +368,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('email')(
+                      {getFieldDecorator('email', { initialValue: profileData.email })(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -377,7 +386,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('website')(
+                      {getFieldDecorator('website', { initialValue: profileData.website })(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
