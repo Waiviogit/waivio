@@ -768,7 +768,7 @@ export default class AppendForm extends Component {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const fieldsTitle = this.props.form.getFieldValue(statusFields.title);
+    const statusTitle = this.props.form.getFieldValue(statusFields.title);
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -1174,7 +1174,7 @@ export default class AppendForm extends Component {
                 </Select>,
               )}
             </Form.Item>
-            {fieldsTitle === 'relisted' || fieldsTitle === 'nsfw' || fieldsTitle === 'flagged' ? (
+            {statusTitle === 'relisted' || statusTitle === 'nsfw' || statusTitle === 'flagged' ? (
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),
