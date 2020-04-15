@@ -3,6 +3,7 @@ import { PropTypes } from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 import { Tabs, Modal } from 'antd';
 import ReactionsList from './ReactionsList';
+import ApprovingCard from '../../object/ApprovingCard';
 
 class ReactionsModal extends React.Component {
   static propTypes = {
@@ -10,7 +11,10 @@ class ReactionsModal extends React.Component {
     upVotes: PropTypes.arrayOf(PropTypes.shape()),
     downVotes: PropTypes.arrayOf(PropTypes.shape()),
     ratio: PropTypes.number,
+    tab: PropTypes.string,
     onClose: PropTypes.func,
+    append: PropTypes.bool,
+    post: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -20,6 +24,9 @@ class ReactionsModal extends React.Component {
     ratio: 0,
     onOpen: () => {},
     onClose: () => {},
+    tab: '1',
+    append: false,
+    post: {},
   };
 
   state = {
@@ -27,8 +34,7 @@ class ReactionsModal extends React.Component {
   };
 
   render() {
-    const { upVotes, downVotes, ratio } = this.props;
-
+    const { upVotes, downVotes, ratio, tab } = this.props;
     const tabs = [];
 
     if (upVotes.length > 0) {
@@ -73,7 +79,8 @@ class ReactionsModal extends React.Component {
         footer={null}
         onCancel={this.props.onClose}
       >
-        <Tabs>{tabs}</Tabs>
+        {this.props.append && <ApprovingCard post={this.props.post} modal />}
+        <Tabs activeKey={tab}>{tabs}</Tabs>
       </Modal>
     );
   }

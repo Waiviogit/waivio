@@ -12,6 +12,7 @@ import {
   accessTypesArr,
   calculateApprovePercent,
   getApprovedField,
+  addActiveVotesInField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -109,7 +110,10 @@ class ObjectInfo extends React.Component {
 
   renderCategoryItems = (categoryItems, category) => {
     if (!_.isEmpty(categoryItems)) {
-      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+      const categoryItemsWithVotes = categoryItems
+        .map(item => addActiveVotesInField(this.props.wobject, item))
+        .filter(item => calculateApprovePercent(item.active_votes) >= 70);
+      const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
       const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
       return (
@@ -147,7 +151,12 @@ class ObjectInfo extends React.Component {
       tagCategories &&
       tagCategories.filter(
         category =>
-          calculateApprovePercent(category.active_votes) >= 70 && category.categoryItems.length,
+          calculateApprovePercent(category.active_votes) >= 70 &&
+          category.categoryItems &&
+          category.categoryItems.filter(item => {
+            const itemWithLike = addActiveVotesInField(this.props.wobject, item);
+            return calculateApprovePercent(itemWithLike.active_votes) >= 70;
+          }).length,
       );
     if (filteredTagCategories) {
       return filteredTagCategories.map(item => (

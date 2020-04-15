@@ -20,11 +20,19 @@ import {
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
-import { addActiveVotesInField, calculateApprovePercent } from '../helpers/wObjectHelper';
+import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
-  const { type, menuItems, sortCustom } = wobj;
+  const { type, sortCustom } = wobj;
+  const menuItems = get(wobj, 'fields', null).filter(
+    field =>
+      field.type === 'menuList' &&
+      calculateApprovePercent(field.active_votes) >= 70 &&
+      !field.status,
+  );
+
+  console.log(menuItems);
   switch (type && type.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
       url = `${pathname}/${OBJECT_TYPE.PAGE}`;
@@ -36,18 +44,12 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
       break;
     default:
       if (menuItems && menuItems.length) {
-        const winnerItem =
-          menuItems &&
-          menuItems
-            .map(item => addActiveVotesInField(wobj, item))
-            .filter(item => !item.status && calculateApprovePercent(item.active_votes) >= 70)
-            .sort((a, b) => b.weight - a.weight)[0];
-
+        const winnerItem = menuItems && menuItems.sort((a, b) => b.weight - a.weight)[0];
         url =
           sortCustom && winnerItem
             ? `${pathname}/menu#${(sortCustom &&
                 sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-                winnerItem.author_permlink}`
+                winnerItem.body}`
             : pathname;
       } else if (screenSize !== 'large') {
         url = `${pathname}/about`;
