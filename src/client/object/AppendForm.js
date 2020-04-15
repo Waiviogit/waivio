@@ -768,6 +768,7 @@ export default class AppendForm extends Component {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
+    const statusTitle = this.props.form.getFieldValue(statusFields.title);
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -1158,10 +1159,22 @@ export default class AppendForm extends Component {
                       defaultMessage: 'Relisted',
                     })}
                   </Select.Option>
+                  <Select.Option value="nsfw">
+                    {intl.formatMessage({
+                      id: 'append_form_NSFW',
+                      defaultMessage: 'NSFW (not safe for work)',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="flagged">
+                    {intl.formatMessage({
+                      id: 'append_form_flagged',
+                      defaultMessage: 'Flagged',
+                    })}
+                  </Select.Option>
                 </Select>,
               )}
             </Form.Item>
-            {this.props.form.getFieldValue(statusFields.title) === 'relisted' && (
+            {statusTitle === 'relisted' || statusTitle === 'nsfw' || statusTitle === 'flagged' ? (
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),
@@ -1178,7 +1191,7 @@ export default class AppendForm extends Component {
                   />,
                 )}
               </Form.Item>
-            )}
+            ) : null}
           </React.Fragment>
         );
       }
