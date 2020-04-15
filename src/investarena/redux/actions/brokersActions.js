@@ -146,8 +146,7 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
       Cookies.remove(data);
     });
     const authUser = get(state, ['auth', 'user'], {});
-    const isGuestUser = get(state, ['auth', 'isGuestUser'], false);
-    const isBeaxyUser = getIsBeaxyUser(authUser, isGuestUser);
+    const isBeaxyUser = getIsBeaxyUser(authUser);
 
     if (isBeaxyUser) dispatch(logoutWithoutBroker());
     dispatch(cleanUserStatisticsData());

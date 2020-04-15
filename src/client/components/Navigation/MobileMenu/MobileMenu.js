@@ -34,11 +34,10 @@ const MobileMenu = props => {
     isBrokerConnected,
     location,
     searchBarActive,
-    isGuest,
     authUser,
   } = props;
 
-  const isBeaxyUser = getIsBeaxyUser(authUser, isGuest);
+  const isBeaxyUser = getIsBeaxyUser(authUser);
 
   const [isBrokerActions, setIsBrokerActions] = useState(false);
 
@@ -153,7 +152,6 @@ MobileMenu.propTypes = {
   isBrokerConnected: PropTypes.bool.isRequired,
   location: PropTypes.shape().isRequired,
   searchBarActive: PropTypes.bool.isRequired,
-  isGuest: PropTypes.bool.isRequired,
   authUser: PropTypes.shape().isRequired,
 };
 

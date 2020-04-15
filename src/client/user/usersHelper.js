@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { get } from 'lodash';
 
 export const prepareData = forecasts => {
   const forecastData = [['', '']];
@@ -16,5 +16,4 @@ export const prepareInstrumentsData = (quotes, statData) =>
     market: quotes[instrument.quote].market,
   }));
 
-export const getIsBeaxyUser = (user, isGuest) =>
-  isGuest && !isEmpty(user) && user.provider === 'beaxy';
+export const getIsBeaxyUser = user => get(user, ['provider'], '') === 'beaxy';
