@@ -132,7 +132,6 @@ class Notifications extends React.Component {
       onNotificationClick,
       loadingNotifications,
     } = this.props;
-    console.log('this.props: ', this.props);
     const { displayedNotifications } = this.state;
     const displayEmptyNotifications = isEmpty(notifications) && !loadingNotifications;
 
