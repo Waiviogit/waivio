@@ -46,18 +46,18 @@ class UserInfo extends React.Component {
     let lastActive;
     let email;
 
-    if (user && user.json_metadata && user.json_metadata !== '') {
+    if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       lastActive = intl.formatRelative(Date.parse(user.updatedAt));
 
-      if (user.json_metadata.profile) {
-        location = user.json_metadata.profile.location;
-        profile = user.json_metadata.profile || {};
-        website = user.json_metadata.profile.website;
-        about = user.json_metadata.profile.about;
-        email = user.json_metadata.profile.email;
+      if (user.posting_json_metadata.profile) {
+        location = user.posting_json_metadata.profile.location;
+        profile = user.posting_json_metadata.profile || {};
+        website = user.posting_json_metadata.profile.website;
+        about = user.posting_json_metadata.profile.about;
+        email = user.posting_json_metadata.profile.email;
       } else {
         try {
-          metadata = JSON.parse(user.json_metadata);
+          metadata = JSON.parse(user.posting_json_metadata);
           location = metadata && get(metadata, 'profile.location');
           profile = (metadata && get(metadata, 'profile')) || {};
           website = metadata && get(metadata, 'profile.website');
@@ -139,13 +139,11 @@ class UserInfo extends React.Component {
                     }}
                   />
                 </div>
-                {user.reputation && (
+                {!!user.reputation && (
                   <div>
                     <i className="hashtag text-icon">#</i>
-                    <FormattedMessage
-                      id="steem_reputation"
-                      defaultMessage="Hive reputation"
-                    />: {calcReputation(user.reputation)}
+                    <FormattedMessage id="steem_reputation" defaultMessage="Hive reputation" />
+                    :&nbsp;{calcReputation(user.reputation)}
                   </div>
                 )}
                 {!user.name.startsWith(GUEST_PREFIX) && (

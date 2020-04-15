@@ -62,7 +62,7 @@ const objectType = (state = initialState, action) => {
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
       const { locale } = action.meta;
-      const { related_wobjects: relatedWobjects } = action.payload;
+      const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
       const filteredObjects = relatedWobjects
         .filter(
           wObj =>
@@ -72,7 +72,9 @@ const objectType = (state = initialState, action) => {
         .map(wObj => getClientWObj(wObj, locale));
       return {
         ...state,
+        data,
         mapWobjects: filteredObjects,
+        map: Boolean(filters && !isEmpty(filters.map)),
       };
     }
     case wobjTypeActions.UPDATE_ACTIVE_FILTERS:

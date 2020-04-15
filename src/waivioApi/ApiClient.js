@@ -79,7 +79,9 @@ export const getObject = (authorPermlink, requiredField = []) => {
     headers: {
       app: config.appName,
     },
-  }).then(res => res.json());
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const getUsersByObject = object =>
@@ -909,10 +911,10 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'account_update',
+            id: 'account_update2',
             json: JSON.stringify({
               account: username,
-              json_metadata: JSON.stringify(json_metadata),
+              posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },
         ],
@@ -1004,6 +1006,16 @@ export const setUserStatus = user => {
     headers,
     method: 'GET',
   }).then(res => res.json());
+};
+
+export const getWalletCryptoPriceHistory = symbol => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

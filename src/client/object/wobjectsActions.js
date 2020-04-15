@@ -20,9 +20,10 @@ export const getObject = (authorPermlink, requiredField) => (dispatch, getState)
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, requiredField)
       .then(wobj => getClientWObj(wobj, usedLocale))
-      .catch(err => console.log(err)),
+      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
 };
+
 export const clearObjectFromStore = () => dispatch =>
   dispatch({
     type: CLEAR_OBJECT,

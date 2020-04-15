@@ -1,7 +1,6 @@
-import fetch from 'isomorphic-fetch';
-import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -61,27 +60,25 @@ export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
 // };
 
 export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
-  if (refresh) {
-    dispatch(refreshCryptoPriceHistory(symbol));
-  }
+  if (refresh) dispatch(refreshCryptoPriceHistory(symbol));
+
   dispatch({
     type: GET_CRYPTO_PRICE_HISTORY.ACTION,
     payload: {
-      promise: Promise.all([
-        fetch(
-          // `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=6`,
-          `https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=USD&include_24hr_vol=true&include_24hr_change=true`,
-        ).then(res => res.json()),
-        fetch(
-          // `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=BTC&limit=6`,
-          `https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=BTC&include_24hr_vol=true&include_24hr_change=true`,
-        ).then(res => res.json()),
-      ]).then(response => {
-        const usdPriceHistory = get(response, 0, {});
-        const btcPriceHistory = get(response, 0, {});
+      promise: ApiClient.getWalletCryptoPriceHistory(symbol).then(response => {
+        const { usd, usd_24h_change: usdChange, btc, btc_24h_change: btcChange } = response.current[
+          symbol
+        ];
+        const usdPriceHistory = { usd, usd_24h_change: usdChange };
+        const btcPriceHistory = { btc, btc_24h_change: btcChange };
+        const priceDetails = response.weekly
+          .map(elem => ({ usd: elem[symbol].usd, createdAt: elem.createdAt }))
+          .reverse();
+
         return {
-          usdPriceHistory: usdPriceHistory[symbol],
-          btcPriceHistory: btcPriceHistory[symbol],
+          usdPriceHistory,
+          btcPriceHistory,
+          priceDetails,
           symbol,
         };
       }),
@@ -97,3 +94,6 @@ export const HIDE_POST_MODAL = '@app/HIDE_POST_MODAL';
 
 export const showPostModal = createAction(SHOW_POST_MODAL);
 export const hidePostModal = createAction(HIDE_POST_MODAL);
+
+export const SET_IS_MOBILE = '@app/SET_IS_MOBILE';
+export const setIsMobile = createAction(SET_IS_MOBILE);

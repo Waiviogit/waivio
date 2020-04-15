@@ -153,56 +153,79 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
-    this.setState({ loading: true });
+    const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
+      item => item.id,
+    );
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
-      this.props
-        .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
-        .then(res => {
-          if (res.value.message) {
-            message.error(res.value.message);
-          } else {
-            if (data.votePower !== null) {
-              if (objectFields.rating === formValues.currentField && formValues.rate) {
-                const { author, permlink } = res.value;
+      let equalBody;
 
-                this.props.rateObject(
-                  author,
-                  permlink,
-                  wObject.author_permlink,
-                  ratePercent[formValues.rate - 1],
-                );
+      if (data.field.name === objectFields.sorting) {
+        equalBody = isEqual(listItem, JSON.parse(data.field.body));
+        if (equalBody)
+          message.error(
+            this.props.intl.formatMessage(
+              {
+                id: 'no_changes',
+                defaultMessage: `There are no changes to save`,
+              },
+              {
+                field: form.getFieldValue('currentField'),
+                wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+              },
+            ),
+          );
+      }
+
+      if (data.field.name !== objectFields.sorting || !equalBody) {
+        this.setState({ loading: true });
+        this.props
+          .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+          .then(res => {
+            if (res.value.message) {
+              message.error(res.value.message);
+            } else {
+              if (data.votePower !== null) {
+                if (objectFields.rating === formValues.currentField && formValues.rate) {
+                  const { author, permlink } = res.value;
+
+                  this.props.rateObject(
+                    author,
+                    permlink,
+                    wObject.author_permlink,
+                    ratePercent[formValues.rate - 1],
+                  );
+                }
               }
+
+              message.success(
+                this.props.intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: form.getFieldValue('currentField'),
+                    wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                  },
+                ),
+              );
+              this.props.hideModal();
             }
 
-            message.success(
-              this.props.intl.formatMessage(
-                {
-                  id: 'added_field_to_wobject',
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                },
-                {
-                  field: form.getFieldValue('currentField'),
-                  wobject: getFieldWithMaxWeight(wObject, objectFields.name),
-                },
-              ),
+            this.setState({ loading: false });
+          })
+          .catch(() => {
+            message.error(
+              this.props.intl.formatMessage({
+                id: 'couldnt_append',
+                defaultMessage: "Couldn't add the field to object.",
+              }),
             );
 
-            this.props.hideModal();
-          }
-
-          this.setState({ loading: false });
-        })
-        .catch(() => {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'couldnt_append',
-              defaultMessage: "Couldn't add the field to object.",
-            }),
-          );
-
-          this.setState({ loading: false });
-        });
+            this.setState({ loading: false });
+          });
+      }
     }
   };
 
@@ -455,6 +478,7 @@ export default class AppendForm extends Component {
 
   handleSubmit = event => {
     if (event) event.preventDefault();
+
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
@@ -537,13 +561,14 @@ export default class AppendForm extends Component {
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
+
     if (
-      currentField === objectFields.phone ||
       currentField === objectFields.website ||
       currentField === objectFields.address ||
       currentField === objectFields.map ||
       currentField === objectFields.status ||
-      currentField === objectFields.button
+      currentField === objectFields.button ||
+      currentField === objectFields.link
     ) {
       return filtered.some(
         f =>
@@ -551,6 +576,14 @@ export default class AppendForm extends Component {
           f.locale === currentLocale,
       );
     }
+
+    if (currentField === objectFields.phone) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).number === f.number && f.locale === currentLocale,
+      );
+    }
+
     const currentValue = form.getFieldValue(currentField);
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
@@ -626,7 +659,7 @@ export default class AppendForm extends Component {
   };
 
   handleChangeSorting = sortedList => {
-    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
+    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList.join(',') });
   };
 
   onLoadingImage = value => this.setState({ isLoadingImage: value });
@@ -735,6 +768,7 @@ export default class AppendForm extends Component {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
+    const statusTitle = this.props.form.getFieldValue(statusFields.title);
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -1125,10 +1159,22 @@ export default class AppendForm extends Component {
                       defaultMessage: 'Relisted',
                     })}
                   </Select.Option>
+                  <Select.Option value="nsfw">
+                    {intl.formatMessage({
+                      id: 'append_form_NSFW',
+                      defaultMessage: 'NSFW (not safe for work)',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="flagged">
+                    {intl.formatMessage({
+                      id: 'append_form_flagged',
+                      defaultMessage: 'Flagged',
+                    })}
+                  </Select.Option>
                 </Select>,
               )}
             </Form.Item>
-            {this.props.form.getFieldValue(statusFields.title) === 'relisted' && (
+            {statusTitle === 'relisted' || statusTitle === 'nsfw' || statusTitle === 'flagged' ? (
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),
@@ -1145,7 +1191,7 @@ export default class AppendForm extends Component {
                   />,
                 )}
               </Form.Item>
-            )}
+            ) : null}
           </React.Fragment>
         );
       }
@@ -1311,7 +1357,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
-                initialValue: listItems.map(item => item.id),
+                initialValue: listItems.map(item => item.id).join(','),
               })(
                 <Select
                   className="AppendForm__hidden"

@@ -23,13 +23,11 @@ const Proposition = ({
   intl,
   proposition,
   assignProposition,
-  assignCommentPermlink,
   discardProposition,
   loading,
   wobj,
   assigned,
   post,
-  getSingleComment,
   authorizedUserName,
   history,
   isAssign,
@@ -40,10 +38,6 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-
-  useEffect(() => {
-    getSingleComment(authorizedUserName, assignCommentPermlink);
-  }, []);
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -86,6 +80,11 @@ const Proposition = ({
           resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
           companyId: proposition._id,
+          primaryObjectName: requiredObjectName,
+          secondaryObjectName: proposedWobj.name,
+          amount: proposition.reward,
+          proposition,
+          proposedWobj,
         }),
       )
       .then(({ isAssign }) => {
@@ -125,7 +124,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
+        {proposition.activation_permlink && assigned === true ? (
           <CampaignFooter
             post={post}
             loading={loading}

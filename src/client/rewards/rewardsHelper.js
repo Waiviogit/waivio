@@ -20,10 +20,11 @@ export const preparePropositionReqData = ({
 }) => {
   const reqData = {
     limit: displayLimit,
-    requiredObject: match.params.campaignParent,
+    requiredObject: match.params.campaignParent || match.params.name,
     currentUserName: username,
     sort,
   };
+
   if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
@@ -167,4 +168,74 @@ export const getDaysLeft = (reserveDate, daysCount) => {
   const currentTime = moment(Date.now()).unix();
   const reservationTime = moment(reserveDate).unix() + daysCount * 86400;
   return parseInt((reservationTime - currentTime) / 86400, 10);
+};
+
+export const getFrequencyAssign = objectDetails =>
+  objectDetails.frequency_assign
+    ? `<ul><li>Have not received a reward from @${objectDetails.guide.name} for reviewing @${objectDetails.requiredObject} in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+    : '';
+
+export const getAgreementObjects = objectDetails =>
+  !isEmpty(objectDetails.agreementObjects)
+    ? `including the following: Legal highlights: ${objectDetails.agreementObjects.reduce(
+        (acc, obj) => ` ${acc} <a href='/object/${obj}/page'>${obj}</a> `,
+        '',
+      )}`
+    : '';
+
+export const getMatchBots = objectDetails =>
+  !isEmpty(objectDetails.match_bots)
+    ? objectDetails.match_bots.reduce((acc, bot) => `${acc}, @${bot}`, '')
+    : '';
+
+export const getUsersLegalNotice = objectDetails =>
+  objectDetails.usersLegalNotice
+    ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}</p>`
+    : '';
+
+export const getReceiptPhoto = objectDetails =>
+  objectDetails.requirements.receiptPhoto
+    ? `<p>Photo of the receipt (without personal details);</p>`
+    : '';
+
+export const getDescription = objectDetails =>
+  objectDetails.description
+    ? `<p>Additional requirements/notes: ${objectDetails.description}</p>`
+    : '';
+
+export const getDetailsBody = (
+  proposition,
+  proposedWobjName,
+  proposedAuthorPermlink,
+  primaryObjectName,
+) => {
+  const eligibilityRequirements = `
+    <p><b>User eligibility requirements:</b></p>
+<p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
+<ul>
+    <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
+    <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
+    <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
+</ul>`;
+  const frequencyAssign = getFrequencyAssign(proposition);
+  const blacklist = `<ul><li>User account is not blacklisted by @${proposition.guide.name} or referenced accounts.</li></ul>`;
+  const receiptPhoto = getReceiptPhoto(proposition);
+  const postRequirements = `<p><b>Post requirements:</b></p>
+<p>For the review to be eligible for the award, all the following requirements must be met:</p>
+<ul><li>Minimum ${
+    proposition.requirements.minPhotos
+  } original photos of <a href="/object/${proposedWobjName}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>
+<li>Link to <a href="/object/${proposition.requiredObject ||
+    proposition.requiredObject.author_permlink}">${primaryObjectName}</a></li></ul> `;
+  const description = getDescription(proposition);
+  const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
+  const agreementObjects = getAgreementObjects(proposition);
+  const matchBots = getMatchBots(proposition);
+  const rewards = `<p><b>Reward:</b></p>
+<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (@${proposition.guide.name} ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
+  const legal = `<p><b>Legal:</b></p>
+<p>By making the reservation, you confirm that you have read and agree to the Terms and Conditions of the Service Agreement <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
+  const usersLegalNotice = getUsersLegalNotice(proposition);
+
+  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };

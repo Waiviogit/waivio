@@ -36,7 +36,6 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   }
 
   const objectType = match.params.typeName;
-
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = map => dispatch(getObjectTypeMap(map, isFullscreenMode));
 
@@ -45,7 +44,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     dispatch(setMapFullscreenMode(false));
   };
 
-  const handleMapMarkerClick = permlink => history.push(`/object/${permlink}`);
+  const handleMapMarkerClick = permlink => history.push(`/object/${permlink.payload.id}`);
 
   const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
 
