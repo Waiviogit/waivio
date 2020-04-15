@@ -1,6 +1,6 @@
-import _ from 'lodash';
 import moment from 'moment/moment';
-import { ParsingPriceHelper } from '../../../platform/parsingPrice';
+import { forEach, last, round } from 'lodash';
+import { PlatformHelper } from '../../../platform';
 
 const MINUTE_PER_DAY = 60 * 24;
 const lightMode = {
@@ -420,14 +420,14 @@ class Chart {
   }
   drawCandleChart(shortBars, askBid, isExpired) {
     let diff = 0;
-    _.forEach(shortBars, (bar, i) => {
+    forEach(shortBars, (bar, i) => {
       const startCandleX = Math.round(this.getXByBar(i) - (this.pxPerBar - 2) / 2) + 0.5;
       if (isExpired && startCandleX >= this.finishLineX) {
         diff++;
       }
     });
     const centerBar = shortBars[this.barsBeforeStart - 1];
-    _.forEach(shortBars, (bar, i) => {
+    forEach(shortBars, (bar, i) => {
       this.drawCandle(centerBar, bar, this.getXByBar(i - diff), askBid);
     });
   }
@@ -479,17 +479,11 @@ class Chart {
         Math.abs(
           (maxHeight - i - this.centerHeight - this.quoteBeforeStart * this.scaleY) / this.scaleY,
         ) / 1000000;
-      const countBefore = quotationMark.toString().split('.')[0].length;
-      let countAfter = quotationMark.toString().split('.')[1]
-        ? quotationMark.toString().split('.')[1].length
-        : countBefore;
-      if (countBefore + countAfter > 9) {
-        countAfter -= countAfter + countBefore - 9;
-      }
+
       this.drawText(
         this.canvasWork.width + 10,
         maxHeight - i + 3,
-        quotationMark.toFixed(countAfter),
+        `${PlatformHelper.exponentialToDecimal(round(quotationMark, 8))}`.slice(0, 10),
         '13px sans-serif',
         this.isNightMode ? 'white' : 'black',
       );
@@ -506,9 +500,8 @@ class Chart {
       }
       const topPositionCircle = Math.abs(heightCoord - this.animatedCircle.offsetHeight / 2);
       const leftPositionCircle =
-        Math.abs(
-          this.getXByTimestamp(_.last(shortBars).time) - this.animatedCircle.offsetWidth / 2,
-        ) + 1;
+        Math.abs(this.getXByTimestamp(last(shortBars).time) - this.animatedCircle.offsetWidth / 2) +
+        1;
       this.animatedCircle.style.top = `${topPositionCircle}px`;
       this.animatedCircle.style.left = `${leftPositionCircle}px`;
     } else if (chartType === 'Candle') {
@@ -545,28 +538,9 @@ class Chart {
       ],
     ];
     this.drawPolygon(arrayDot, color);
-    // let rate;
-    // if (quoteSettings) {
-    //   rate = ParsingPriceHelper.parseRate(
-    //     quote.price / 1000000,
-    //     quoteSettings.tickSize,
-    //     quoteSettings.priceRounding / 1000000,
-    //   );
-    // }
-    // if (rate) {
-    //   const dot = rate.dot === 0 ? '' : '.';
-    //   const priceArray = [rate.small, dot + rate.big, rate.mid];
-    //   let textPosition = this.canvasWork.width + 10;
-    //   this.drawText(textPosition, heightCoord + 5, priceArray[0], '13px sans-serif', 'white');
-    //   textPosition += this.ctx.measureText(priceArray[0]).width;
-    //   this.drawText(textPosition, heightCoord + 5, priceArray[1], '16px sans-serif', 'white');
-    //   textPosition += this.ctx.measureText(priceArray[1]).width;
-    //   this.drawText(textPosition, heightCoord + 2, priceArray[2], '13px sans-serif', 'white');
-    // } else {
-    //   const textPosition = this.canvasWork.width + 10;
-    //   this.drawText(textPosition, heightCoord + 5, '-', '13px sans-serif', 'white');
-    // }
-    const price = quote.price ? `${quote.price / 1000000}` : '-';
+    const price = quote.price
+      ? PlatformHelper.exponentialToDecimal(round(quote.price / 1000000, 8))
+      : '-';
     const textPosition = this.canvasWork.width + 6;
     this.drawText(
       textPosition + (10 - price.length) * 4,

@@ -20,20 +20,43 @@ export function getCryptoDetails(cryptoQuery) {
   return cryptoDetails || {};
 }
 
-export const getCurrentDaysOfTheWeek = currentLocale => {
-  const date = new Date();
-  date.setDate(date.getDate() - 7);
-  const daysOfTheWeek = [];
+export const getCryptoChartDataMapper = currentLocale => ({ createdAt, usd: price }) => {
   const locale = currentLocale === 'auto' ? window.navigator.language : currentLocale;
-
-  for (let i = 0; i < 7; i += 1) {
-    date.setDate(date.getDate() + 1);
-    const dateLocale = date.toLocaleString(locale, { weekday: 'short' });
-    daysOfTheWeek.push(dateLocale);
-  }
-
-  return daysOfTheWeek;
+  const date = new Date(createdAt);
+  const day = date.toLocaleString(locale, { weekday: 'short' });
+  const tooltipMsg = `${day}: $${price.toFixed(3)}`;
+  return [day, price, tooltipMsg];
 };
+
+export const getChartOptions = (chartData, isNightMode) => ({
+  backgroundColor: 'transparent',
+  colors: ['#3a79ee'],
+  chartArea: { left: 0, top: 0, width: '100%', height: '70%' },
+  enableInteractivity: true,
+  lineWidth: 2,
+  legend: 'none',
+  hAxis: {
+    baselineColor: 'transparent',
+    gridlines: {
+      color: 'transparent',
+      count: 4,
+      minSpacing: 50,
+    },
+    textStyle: {
+      color: isNightMode ? '#99aab5' : 'black',
+    },
+  },
+  vAxis: {
+    baselineColor: 'transparent',
+    gridlines: {
+      color: 'transparent',
+    },
+    viewWindow: {
+      max: _.ceil(_.maxBy(chartData, data => data.usd).usd, 3),
+      min: _.floor(_.minBy(chartData, data => data.usd).usd, 3),
+    },
+  },
+});
 
 function getPriceDifferencePercentage(currentCryptoPrice, previousCryptoPrice) {
   const priceDifference = currentCryptoPrice - previousCryptoPrice;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { get, last, isEmpty, throttle } from 'lodash';
+import { get, isEmpty, last, round, throttle } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import './PostChart.less';
+import { PlatformHelper } from '../../platform/platformHelper';
 import { optionsChartType, optionsPrice } from '../../constants/selectData';
 import { CanvasHelper } from '../../helpers/canvasHelper';
 import Chart from './chart/chart';
@@ -12,6 +12,7 @@ import { currentTime } from '../../helpers/currentTime';
 import TabSelect from './TabSelect';
 import quoteData from '../../default/quoteData';
 import quoteSettingsData from '../../default/quoteSettingsData';
+import './PostChart.less';
 
 const propTypes = {
   bars: PropTypes.shape(),
@@ -264,12 +265,12 @@ class PostChart extends Component {
           />
           {this.props.tpPrice && (
             <div className="st-post-price-select take-profit">
-              TP: {this.props.tpPrice.slice(0, 6)}
+              TP: {PlatformHelper.exponentialToDecimal(round(this.props.tpPrice, 8))}
             </div>
           )}
           {this.props.slPrice && (
             <div className="st-post-price-select stop-loss">
-              SL: {this.props.slPrice.slice(0, 6)}
+              SL: {PlatformHelper.exponentialToDecimal(round(this.props.slPrice, 8))}
             </div>
           )}
         </div>

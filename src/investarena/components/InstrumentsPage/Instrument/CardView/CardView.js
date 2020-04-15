@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isNumber } from 'lodash';
 import { injectIntl } from 'react-intl';
-import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
+import InstrumentAvatar from '../../../InstrumentAvatar';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
 import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
@@ -66,7 +66,7 @@ class InstrumentCard extends React.Component {
             </div>
           </Link>
         </div>
-        {quote.dailyChange !== 0 ? (
+        {chart && chart.some(point => point.y !== chart[0].y) ? (
           <div className="st-card__content">
             <div className="st-card__daily-change-signal-info">
               <div
@@ -78,7 +78,7 @@ class InstrumentCard extends React.Component {
                   quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
                 }`}
               >
-                {quote.dailyChange.toFixed(2)}
+                {isNumber(quote.dailyChange) ? `${quote.dailyChange.toFixed(2)}%` : null}
               </div>
               <Signals signals={signals} />
             </div>
