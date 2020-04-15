@@ -162,6 +162,19 @@ export default class AppendForm extends Component {
 
       if (data.field.name === objectFields.sorting) {
         equalBody = isEqual(listItem, JSON.parse(data.field.body));
+        if (equalBody)
+          message.error(
+            this.props.intl.formatMessage(
+              {
+                id: 'no_changes',
+                defaultMessage: `There are no changes to save`,
+              },
+              {
+                field: form.getFieldValue('currentField'),
+                wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+              },
+            ),
+          );
       }
 
       if (data.field.name !== objectFields.sorting || !equalBody) {
