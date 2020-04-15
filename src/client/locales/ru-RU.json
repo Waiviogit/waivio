@@ -1070,5 +1070,6 @@
   "cryptos_sing_up": "- Криптовалюта",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на Waivio",
   "objectinfo_more": "еще...",
-  "no_changes": "Нет изменений"
+  "no_changes": "Нет изменений",
+  "author_rewards": "Авторские награды"
 }

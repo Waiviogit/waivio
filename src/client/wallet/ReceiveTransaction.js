@@ -3,19 +3,18 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
-import Avatar from '../components/Avatar';
 
 const ReceiveTransaction = ({ from, memo, amount, timestamp }) => (
   <div className="UserWalletTransactions__transaction">
-    <div className="UserWalletTransactions__avatar">
-      <Avatar username={from} size={40} />
+    <div className="UserWalletTransactions__icon-container">
+      <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
         <div>
           <FormattedMessage
-            id="received_from"
-            defaultMessage="Received from {username}"
+            id="author_rewards"
+            defaultMessage="Author rewards"
             values={{
               username: (
                 <Link to={`/@${from}`}>
@@ -25,10 +24,7 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp }) => (
             }}
           />
         </div>
-        <div className="UserWalletTransactions__received">
-          {'+ '}
-          {amount}
-        </div>
+        <div className="UserWalletTransactions__received">{amount}</div>
       </div>
       <span className="UserWalletTransactions__timestamp">
         <BTooltip
