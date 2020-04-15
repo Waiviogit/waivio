@@ -1,13 +1,16 @@
 import { has, forOwn, isEmpty } from 'lodash';
 
 const postingMetadataHelper = (jsonMetadata, postingJsonMetadata) => {
-  if (!isEmpty(jsonMetadata) && isEmpty(postingJsonMetadata)) {
+  const isJsonMetadata = !isEmpty(jsonMetadata);
+  const isPostingMetadata = !isEmpty(postingJsonMetadata);
+
+  if (isJsonMetadata && !isPostingMetadata) {
     return jsonMetadata;
   }
 
   if (
-    !isEmpty(jsonMetadata) &&
-    !isEmpty(postingJsonMetadata) &&
+    isJsonMetadata &&
+    isPostingMetadata &&
     has(jsonMetadata, 'profile') &&
     has(postingJsonMetadata, 'profile')
   ) {
@@ -21,7 +24,7 @@ const postingMetadataHelper = (jsonMetadata, postingJsonMetadata) => {
     return postingJsonMetadata;
   }
 
-  if (isEmpty(jsonMetadata) && isEmpty(postingJsonMetadata)) return {};
+  if (!isJsonMetadata && !isPostingMetadata) return {};
 
   return postingJsonMetadata;
 };
