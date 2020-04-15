@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationReply = ({ notification, currentAuthUsername, read, onClick }) => {
-  const { permlink, parent_permlink: parentPermlink, author, timestamp } = notification;
+  const { permlink, parent_permlink: parentPermlink, author, timestamp, reply } = notification;
   const commentURL = `/@${currentAuthUsername}/${parentPermlink}/#@${author}/${permlink}`;
   return (
     <Link
@@ -21,13 +21,23 @@ const NotificationReply = ({ notification, currentAuthUsername, read, onClick })
       <Avatar username={author} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          <FormattedMessage
-            id="notification_reply_username_post"
-            defaultMessage="{username} commented on your post"
-            values={{
-              username: <span className="username">{author}</span>,
-            }}
-          />
+          {reply === false ? (
+            <FormattedMessage
+              id="notification_reply_username_post"
+              defaultMessage="{username} commented on your post"
+              values={{
+                username: <span className="username">{author}</span>,
+              }}
+            />
+          ) : (
+            <FormattedMessage
+              id="replied_to_your_comment"
+              defaultMessage="{username} replied to your comment"
+              values={{
+                username: <span className="username">{author}</span>,
+              }}
+            />
+          )}
         </div>
         <div className="Notification__text__date">
           <FormattedRelative value={epochToUTC(timestamp)} />
@@ -44,6 +54,7 @@ NotificationReply.propTypes = {
     permlink: PropTypes.string,
     parent_permlink: PropTypes.string,
     timestamp: PropTypes.number,
+    reply: PropTypes.bool,
   }),
   currentAuthUsername: PropTypes.string,
   onClick: PropTypes.func,

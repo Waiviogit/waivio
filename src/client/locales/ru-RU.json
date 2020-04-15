@@ -1072,5 +1072,6 @@
   "objectinfo_more": "еще...",
   "no_changes": "Нет изменений",
   "append_form_NSFW": "NSFW (небезопасно для работы)",
-  "append_form_flagged": "С пометкой"
+  "append_form_flagged": "С пометкой",
+  "replied_to_your_comment": "{username} ответил на ваш комментарий"
 }
