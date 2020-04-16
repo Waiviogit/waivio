@@ -10,6 +10,7 @@ import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
 import './PostSellBuy.less';
+import { Tooltip } from 'antd';
 
 const propTypes = {
   quoteSettings: PropTypes.shape(),
@@ -70,26 +71,27 @@ const PostSellBuy = ({
         isMobile ? 'm-0' : ''
       }`}
     >
-      <div
+      <Tooltip
         title={intl.formatMessage({
           id: 'tips.recommendationType',
           defaultMessage: 'Forecast type',
         })}
-        className={`st-post-sell-buy-icon-${recommendPost}`}
       >
-        <FormattedMessage
-          id={`postQuotation.recommend.${recommendPost}`}
-          defaultMessage={recommendPost.toUpperCase()}
-        />
-      </div>
-      <div
+        <div className={`st-post-sell-buy-icon-${recommendPost}`}>
+          <FormattedMessage
+            id={`postQuotation.recommend.${recommendPost}`}
+            defaultMessage={recommendPost.toUpperCase()}
+          />
+        </div>
+      </Tooltip>
+      <Tooltip
         title={intl.formatMessage({
           id: 'tips.recommendationPrice',
           defaultMessage: 'Price at the beginning of the forecast',
         })}
       >
         {quoteFormat(postPrice, quoteSettings)}
-      </div>
+      </Tooltip>
     </div>
   );
 
