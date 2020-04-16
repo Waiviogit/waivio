@@ -522,7 +522,6 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      isPlatformConnected,
       platformName,
       username,
       toggleMobileMenu,
