@@ -170,22 +170,26 @@ const UserWalletSummary = ({
         </div>
       </React.Fragment>
     )}
-    {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
+    {!(loading || loadingGlobalProperties || steemRateLoading) && (
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-people_fill UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
           <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
         </div>
         <div className="UserWalletSummary__value">
-          <USDDisplay
-            value={calculateEstAccountValue(
-              user,
-              totalVestingShares,
-              totalVestingFundSteem,
-              steemRate,
-              sbdRate,
-            )}
-          />
+          {isGuest ? (
+            <USDDisplay value={balance * steemRate} />
+          ) : (
+            <USDDisplay
+              value={calculateEstAccountValue(
+                user,
+                totalVestingShares,
+                totalVestingFundSteem,
+                steemRate,
+                sbdRate,
+              )}
+            />
+          )}
         </div>
       </div>
     )}
