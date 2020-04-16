@@ -21,18 +21,18 @@ const NotificationReply = ({ notification, currentAuthUsername, read, onClick })
       <Avatar username={author} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          {reply === false ? (
-            <FormattedMessage
-              id="notification_reply_username_post"
-              defaultMessage="{username} commented on your post"
+          {reply ? (
+           <FormattedMessage
+              id="replied_to_your_comment"
+              defaultMessage="{username} replied to your comment"
               values={{
                 username: <span className="username">{author}</span>,
               }}
             />
           ) : (
             <FormattedMessage
-              id="replied_to_your_comment"
-              defaultMessage="{username} replied to your comment"
+              id="notification_reply_username_post"
+              defaultMessage="{username} commented on your post"
               values={{
                 username: <span className="username">{author}</span>,
               }}
