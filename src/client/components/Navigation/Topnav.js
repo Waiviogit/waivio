@@ -55,7 +55,6 @@ import './Topnav.less';
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
-    isPlatformConnected: getIsLoadingPlatformState(state),
   }),
   {
     disconnectBroker,
@@ -280,6 +279,7 @@ class Topnav extends React.Component {
   };
 
   handleSelectOnAutoCompleteDropdown = (value, data) => {
+    const { isMobileMenuOpen, toggleMobileMenu } = this.props;
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
@@ -326,6 +326,7 @@ class Topnav extends React.Component {
     this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
+    if (isMobileMenuOpen) toggleMobileMenu();
   };
 
   handleOnChangeForAutoComplete = (value, data) => {
@@ -521,7 +522,6 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      isPlatformConnected,
       platformName,
       username,
       toggleMobileMenu,
@@ -632,7 +632,7 @@ class Topnav extends React.Component {
             </div>
             <div className="Topnav__right-bottom">
               {this.content()}
-              {isAuthenticated && (
+              {isAuthenticated && platformName && (
                 <div
                   className={classNames('Topnav__broker', {
                     'justify-end': platformName === 'widgets',
@@ -640,14 +640,12 @@ class Topnav extends React.Component {
                 >
                   {platformName === 'widgets' ? (
                     <div className="st-header-broker-balance-pl-wrap">
-                      {isPlatformConnected && (
-                        <Button type="primary" onClick={this.toggleModalBroker}>
-                          {intl.formatMessage({
-                            id: 'headerAuthorized.connectToBeaxy',
-                            defaultMessage: 'Connect to beaxy',
-                          })}
-                        </Button>
-                      )}
+                      <Button type="primary" onClick={this.toggleModalBroker}>
+                        {intl.formatMessage({
+                          id: 'headerAuthorized.connectToBeaxy',
+                          defaultMessage: 'Connect to beaxy',
+                        })}
+                      </Button>
                     </div>
                   ) : (
                     <BrokerBalance />

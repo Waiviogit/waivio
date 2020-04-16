@@ -63,8 +63,8 @@ export const logoutWithoutBroker = () => (
 };
 
 export const logout = () => dispatch => {
-  dispatch(disconnectBroker());
   dispatch(logoutWithoutBroker());
+  dispatch(disconnectBroker());
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
@@ -207,13 +207,12 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
-  // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.json_metadata);
-  json_metadata.profile = { ...json_metadata.profile, ...values };
+  const jsonMetadata = JSON.parse(state.auth.user.posting_json_metadata);
+  jsonMetadata.profile = { ...jsonMetadata.profile, ...values };
   return dispatch({
     type: UPDATE_PROFILE,
     payload: {
-      promise: updateGuestProfile(username, json_metadata).then(data => {
+      promise: updateGuestProfile(username, jsonMetadata).then(data => {
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
@@ -221,6 +220,6 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
         return { isProfileUpdated: true };
       }),
     },
-    meta: JSON.stringify(json_metadata),
+    meta: JSON.stringify(jsonMetadata),
   });
 };

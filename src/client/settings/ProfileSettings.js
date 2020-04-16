@@ -9,6 +9,8 @@ import { encodeOp } from 'steem-uri';
 import moment from 'moment';
 import { updateProfile } from '../auth/authActions';
 import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
+import postingMetadataHelper from '../helpers/postingMetadata';
+import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -26,9 +28,17 @@ import './Settings.less';
 
 const FormItem = Form.Item;
 
+const getMetadata = user => {
+  let jsonMetadata = attempt(JSON.parse, user.json_metadata);
+  if (isError(jsonMetadata)) jsonMetadata = {};
+  let postingJsonMetadata = attempt(JSON.parse, user.posting_json_metadata);
+  if (isError(postingJsonMetadata)) postingJsonMetadata = {};
+
+  return postingMetadataHelper(jsonMetadata, postingJsonMetadata);
+};
+
 function mapPropsToFields(props) {
-  let metadata = attempt(JSON.parse, props.user.json_metadata);
-  if (isError(metadata)) metadata = {};
+  const metadata = getMetadata(props.user);
 
   const profile = metadata.profile || {};
 
@@ -83,8 +93,7 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    let metadata = attempt(JSON.parse, props.user.json_metadata);
-    if (isError(metadata)) metadata = {};
+    const metadata = getMetadata(props.user);
 
     this.state = {
       bodyHTML: '',
@@ -180,11 +189,15 @@ export default class ProfileSettings extends React.Component {
         } else {
           const profileDateEncoded = encodeOp(
             [
-              'account_update',
+              ACCOUNT_UPDATE,
               {
                 account: userName,
+                extensions: [],
                 memo_key: user.memo_key,
-                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
+                json_metadata: '',
+                posting_json_metadata: JSON.stringify({
+                  profile: { ...profileData, ...cleanValues },
+                }),
               },
             ],
             { callback: window.location.href },

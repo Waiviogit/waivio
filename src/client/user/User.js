@@ -30,6 +30,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import { isGuestUserSelector } from '../../investarena/redux/selectors/userSelectors';
 import NotFound from '../statics/NotFound';
+import defaults from '../object/const/defaultValues';
 
 @connect(
   (state, ownProps) => ({
@@ -162,11 +163,11 @@ export default class User extends React.Component {
       );
     let profile = {};
     try {
-      if (user.json_metadata) {
-        if (user.json_metadata.profile) {
-          profile = user.json_metadata.profile;
+      if (user.posting_json_metadata) {
+        if (user.posting_json_metadata.profile) {
+          profile = user.posting_json_metadata.profile;
         } else {
-          profile = JSON.parse(user.json_metadata).profile;
+          profile = JSON.parse(user.posting_json_metadata).profile;
         }
       }
     } catch (error) {
@@ -182,7 +183,7 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const waivioHost = global.postOrigin || 'https://investarena.com';
-    const image = getAvatarURL(username) || '/images/logo.png';
+    const image = getAvatarURL(username) || '/images/icons/icon-128x128.png';
     const canonicalUrl = `${waivioHost}/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - InvestArena`;
@@ -208,13 +209,7 @@ export default class User extends React.Component {
           <meta property="twitter:site" content={'@steemit'} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={desc} />
-          <meta
-            property="twitter:image"
-            content={
-              image ||
-              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
-            }
-          />
+          <meta property="twitter:image" content={image || defaults.AVATAR} />
         </Helmet>
         <ScrollToTopOnMount />
         {user && (

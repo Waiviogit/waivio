@@ -8,8 +8,6 @@ export function quoteFormat(price, quoteSettings) {
     return <span>&ndash;</span>;
   }
   return (
-    <span className="st-first-number-favorites">
-      {PlatformHelper.exponentialToDecimal(price)}
-    </span>
+    <span className="st-first-number-favorites">{PlatformHelper.exponentialToDecimal(price)}</span>
   );
 }

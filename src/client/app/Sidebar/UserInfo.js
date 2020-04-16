@@ -50,17 +50,17 @@ class UserInfo extends React.Component {
     let profile = {};
     let website = null;
     let about = null;
-    if (user && user.json_metadata && user.json_metadata !== '') {
-      if (user.json_metadata.profile) {
-        location = user.json_metadata.profile.location;
-        profile = user.json_metadata.profile || {};
-        website = user.json_metadata.profile.website;
-        about = user.json_metadata.profile.about;
+    if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
+      if (user.posting_json_metadata.profile) {
+        profile = user.posting_json_metadata.profile || {};
+        location = user.posting_json_metadata.profile.location;
+        website = user.posting_json_metadata.profile.website;
+        about = user.posting_json_metadata.profile.about;
       } else {
         try {
-          metadata = JSON.parse(user.json_metadata);
-          location = metadata && get(metadata, 'profile.location');
+          metadata = JSON.parse(user.posting_json_metadata);
           profile = (metadata && get(metadata, 'profile')) || {};
+          location = metadata && get(metadata, 'profile.location');
           website = metadata && get(metadata, 'profile.website');
           about = metadata && get(metadata, 'profile.about');
         } catch (e) {

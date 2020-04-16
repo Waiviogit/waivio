@@ -24,7 +24,7 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout, location, searchBarA
         <FormattedMessage id="wallet" defaultMessage="Wallet" />
       </Link>
       <Link
-        to="/object/qjr-investarena-q-and-a/list"
+        to="/object/oul-investarena/menu#qjr-investarena-q-and-a"
         className="LoggedMenu__item"
         onClick={toggleMenu}
       >
@@ -41,11 +41,11 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout, location, searchBarA
       <Link to="/" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="home" defaultMessage="Home" />
       </Link>
-      <Link to="/discover" className="LoggedMenu__item" onClick={toggleMenu}>
+      <Link to="/discover-objects/crypto" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
       <Link
-        to="/object/qjr-investarena-q-and-a/list"
+        to="/object/oul-investarena/menu#qjr-investarena-q-and-a"
         className="LoggedMenu__item"
         onClick={toggleMenu}
       >
