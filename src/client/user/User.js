@@ -135,7 +135,8 @@ export default class User extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
+    if (prevProps.match.params.name !== this.props.match.params.name
+      || prevProps.match.url.includes('follow')) {
       this.props.getUserAccount(this.props.match.params.name);
     }
   }
