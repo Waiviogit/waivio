@@ -40,9 +40,19 @@
     position: absolute;
     z-index: 1;
     right: 5px;
-    font-size: 20px;
-    top: 20px;
     color: @blue-botticelli !important;
+    display: inline-block;
+    cursor: pointer;
+
+    img {
+      width: 20px;
+    }
+
+    &--loader {
+      right: 10px;
+      top: 20px;
+      cursor: no-drop;
+    }
   }
 }
 
