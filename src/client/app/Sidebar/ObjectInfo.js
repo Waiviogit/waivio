@@ -275,7 +275,13 @@ class ObjectInfo extends React.Component {
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
-    const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
+    const hasGalleryImg =
+      wobject.fields &&
+      wobject.fields.filter(
+        field =>
+          field.name === objectFields.galleryItem &&
+          calculateApprovePercent(field.active_votes >= 70),
+      );
 
     const isRenderMap =
       map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);

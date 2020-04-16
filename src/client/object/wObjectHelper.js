@@ -32,7 +32,6 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
       !field.status,
   );
 
-  console.log(menuItems);
   switch (type && type.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
       url = `${pathname}/${OBJECT_TYPE.PAGE}`;

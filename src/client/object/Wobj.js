@@ -85,6 +85,7 @@ export default class Wobj extends React.Component {
       getObject(match.params.name, this.props.authenticatedUserName, [
         'tagCategory',
         'categoryItem',
+        'galleryItem',
       ]),
     );
   }
@@ -107,6 +108,7 @@ export default class Wobj extends React.Component {
       this.props.getObjectInfo(match.params.name, authenticatedUserName, [
         'tagCategory',
         'categoryItem',
+        'galleryItem',
       ]);
     }
   }
@@ -139,6 +141,7 @@ export default class Wobj extends React.Component {
       this.props.getObjectInfo(match.params.name, authenticatedUserName, [
         'tagCategory',
         'categoryItem',
+        'galleryItem',
       ]);
     }
   }

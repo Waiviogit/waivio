@@ -45,7 +45,7 @@ class ExpandingBlock extends Component {
       !isExpanded && minLines < entities.length ? entities.slice(0, minLines - 1) : entities;
 
     return (
-      <React.Fragment>
+      <div>
         <div className={`expanding-block ${className}`}>
           {renderEntities.map(entity => this.getMarkup(entity))}
         </div>
@@ -57,7 +57,7 @@ class ExpandingBlock extends Component {
             })}
           </a>
         ) : null}
-      </React.Fragment>
+      </div>
     );
   }
 }
