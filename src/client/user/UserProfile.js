@@ -103,7 +103,7 @@ class UserProfile extends React.Component {
             <div className="feed-layout__text">
               {this.props.intl.formatMessage({
                 id: 'onlyForecasts',
-                defaultMessage: 'Only topics with forecasts',
+                defaultMessage: 'Only posts with forecasts',
               })}
             </div>
             <Switch
