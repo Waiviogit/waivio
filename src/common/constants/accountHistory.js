@@ -1,7 +1,7 @@
 export const ACCOUNT_CREATE = 'account_create';
 export const ACCOUNT_CREATE_WITH_DELEGATION = 'account_create_with_delegation';
 export const VOTE = 'vote';
-export const ACCOUNT_UPDATE = 'account_update';
+export const ACCOUNT_UPDATE = 'account_update2';
 export const COMMENT = 'comment';
 export const DELETE_COMMENT = 'delete_comment';
 export const CUSTOM_JSON = 'custom_json';

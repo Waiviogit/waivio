@@ -29,6 +29,7 @@ import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 import NotFound from '../statics/NotFound';
+import defaults from '../object/const/defaultValues';
 
 @withRouter
 @connect(
@@ -191,13 +192,7 @@ export default class Wobj extends React.Component {
           <meta property="twitter:site" content={'@investArena'} />
           <meta property="twitter:title" content={objectName} />
           <meta property="twitter:description" content={desc} />
-          <meta
-            property="twitter:image"
-            content={
-              image ||
-              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
-            }
-          />
+          <meta property="twitter:image" content={image || defaults.AVATAR} />
         </Helmet>
         <ScrollToTopOnMount />
         <WobjHero
