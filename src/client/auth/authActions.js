@@ -57,7 +57,11 @@ export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI,
   dispatch(push('/'));
 };
 
-export const logout = () => dispatch => {
+export const logout = () => (dispatch, getState, { busyAPI }) => {
+  let accessToken = Cookie.get('access_token');
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) accessToken = guestAccessToken;
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
   dispatch(logoutWithoutBroker());
   dispatch(disconnectBroker());
 };
