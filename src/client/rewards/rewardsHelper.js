@@ -249,7 +249,7 @@ export const sortDebtObjsData = (items, sortBy = 'amount') => {
       comparator = (a, b) => (b.payable > a.payable ? 1 : -1);
       break;
     case 'time':
-      comparator = (a, b) => (a.alias < b.alias ? 1 : -1);
+      comparator = (a, b) => (a.lastCreatedAt < b.lastCreatedAt ? 1 : -1);
       break;
     default:
       comparator = (a, b) => (a.guideName > b.guideName ? 1 : -1);

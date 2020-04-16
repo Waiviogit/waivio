@@ -55,6 +55,7 @@ const WobjHeader = ({
     return `${link}/reviews`;
   };
   const name = wobject.name || wobject.default_name;
+  const isHashtag = wobject.object_type === 'hashtag';
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -101,7 +102,7 @@ const WobjHeader = ({
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
               {/* eslint-disable-next-line no-nested-ternary */}
-              {canEdit && !descriptionShort ? (
+              {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
