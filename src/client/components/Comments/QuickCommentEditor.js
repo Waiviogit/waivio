@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { SendOutlined } from '@ant-design/icons';
 import { Icon, Input, Modal } from 'antd';
 import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
+
 import './QuickCommentEditor.less';
 
 @withEditor
@@ -116,6 +118,7 @@ class QuickCommentEditor extends React.Component {
             onChange={this.handleMsgChange}
           />
           {isEmpty(currentImage) && setImage}
+          <SendOutlined onClick={this.handleSubmit} className="QuickComment__send-comment"/>
         </div>
         {!isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">

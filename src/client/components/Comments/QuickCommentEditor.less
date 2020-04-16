@@ -12,10 +12,11 @@
 
   &__add-img-icon {
     position: absolute;
-    right: 5px;
-    bottom: 9px;
+    left: 45px;
     color: @blue-botticelli;
     cursor: pointer;
+    z-index: 1;
+
     &:hover {
       color: @grey-empress;
     }
@@ -31,6 +32,17 @@
 
   .ant-input {
     resize: none;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  &__send-comment {
+    position: absolute;
+    z-index: 1;
+    right: 5px;
+    font-size: 20px;
+    top: 20px;
+    color: @blue-botticelli !important;
   }
 }
 
