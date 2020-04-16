@@ -36,6 +36,18 @@ const Details = ({
   const isExpired = objectDetails.status === 'expired';
   const isInActive = objectDetails.status === 'inactive';
 
+  const getRequiredObjectName = () => {
+    let result;
+    if (requiredObjectName.includes('&')) {
+      result = requiredObjectName.replace('&', '%26');
+    } else {
+      result = requiredObjectName;
+    }
+    return result;
+  };
+
+  const objName = getRequiredObjectName();
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -78,7 +90,7 @@ const Details = ({
           ) : (
             <Link
               // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${requiredObjectName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobj.name}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
+              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobj.name}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
             >
               <Button type="primary">
                 {intl.formatMessage({
