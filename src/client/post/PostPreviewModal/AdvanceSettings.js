@@ -2,12 +2,30 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
+import BeneficiariesFindUsers from './BeneficiariesFindUsers';
+import { getAutoCompleteSearchResults } from '../../reducers';
+import {
+  resetSearchAutoCompete,
+  searchAutoComplete,
+  searchUsersAutoCompete,
+} from '../../search/searchActions';
 import './AdvanceSettings.less';
 
 @injectIntl
+@connect(
+  state => ({
+    autoCompleteSearchResults: getAutoCompleteSearchResults(state),
+  }),
+  {
+    searchAutoComplete,
+    searchUsersAutoCompete,
+    resetSearchAutoCompete,
+  },
+)
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -22,6 +40,8 @@ class AdvanceSettings extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
+    resetSearchAutoCompete: PropTypes.func.isRequired,
+    searchAutoComplete: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -89,6 +109,11 @@ class AdvanceSettings extends Component {
           </div>
           {!isUpdating && (
             <div className="beneficiary-settings">
+              <BeneficiariesFindUsers
+                intl={intl}
+                resetSearchAutoCompete={this.props.resetSearchAutoCompete}
+                searchAutoComplete={this.props.searchAutoComplete}
+              />
               <Checkbox
                 checked={beneficiary}
                 onChange={this.handleBeneficiaryChange}

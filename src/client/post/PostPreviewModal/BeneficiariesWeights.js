@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { Input, Progress, Slider } from 'antd';
+import { Progress, Slider } from 'antd';
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
@@ -70,15 +70,6 @@ const BeneficiariesWeights = ({
         <div className="title">
           {intl.formatMessage({ id: 'beneficiaries-weights', defaultMessage: 'Beneficiaries' })}
         </div>
-        <Input
-          onPressEnter={this.handleSearchForInput}
-          placeholder={intl.formatMessage({
-            id: 'find_users_placeholder',
-            defaultMessage: 'Find users',
-          })}
-          autoCapitalize="off"
-          autoCorrect="off"
-        />
         <div
           className={classNames('weight-buffer', {
             hide: weightBuffer === 0 || weightBuffer === 100,
