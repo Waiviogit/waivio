@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash/lodash';
 
 import {
   getPosts,
@@ -88,6 +89,14 @@ class WobjHistory extends React.Component {
   componentDidMount() {
     const { object } = this.props;
     if (object && object.author && object.author_permlink) {
+      this.props.getObjectAppends(object.author, object.author_permlink);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { object } = this.props;
+
+    if (isEmpty(prevProps.object) && !isEmpty(object)) {
       this.props.getObjectAppends(object.author, object.author_permlink);
     }
   }

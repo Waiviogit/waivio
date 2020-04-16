@@ -61,7 +61,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, requiredField = []) => {
+export const getObject = (authorPermlink, user, requiredField = []) => {
   let queryString = '';
 
   if (requiredField.length) {
@@ -75,7 +75,7 @@ export const getObject = (authorPermlink, requiredField = []) => {
         }, '?')
       : `?required_fields=${requiredField}`;
   }
-
+  queryString = user ? `?user=${user}${queryString}` : queryString;
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
