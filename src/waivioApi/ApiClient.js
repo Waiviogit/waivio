@@ -11,6 +11,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 import { logout } from '../client/auth/authActions';
+import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 
 const filterKey = 'beaxy';
 
@@ -908,14 +909,15 @@ export const updateGuestProfile = async (username, json_metadata) => {
     data: {
       operations: [
         [
-          'custom_json',
+          CUSTOM_JSON,
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'account_update',
+            id: ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
-              json_metadata: JSON.stringify(json_metadata),
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },
         ],

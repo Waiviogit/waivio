@@ -8,7 +8,7 @@ import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
 const DiscoverUser = ({ user }) => {
-  const parsedJSON = _.attempt(JSON.parse, user.json_metadata);
+  const parsedJSON = _.attempt(JSON.parse, user.posting_json_metadata);
   const userJSON = _.isError(parsedJSON) ? {} : parsedJSON;
   const userProfile = _.has(userJSON, 'profile') ? userJSON.profile : {};
   const location = userProfile.location;

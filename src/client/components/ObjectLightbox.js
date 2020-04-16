@@ -7,6 +7,7 @@ import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import defaults from '../object/const/defaultValues';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -59,7 +60,7 @@ export default class ObjectLightbox extends Component {
             </a>
             {this.state.open && (
               <Lightbox
-                mainSrc={imageUrl || 'https://steemitimages.com/u/waivio/avatar'}
+                mainSrc={imageUrl || defaults.AVATAR}
                 onCloseRequest={this.handleCloseRequest}
               />
             )}
