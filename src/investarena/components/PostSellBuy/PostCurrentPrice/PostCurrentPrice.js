@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
+import { Tooltip } from 'antd';
 import './PostCurrentPrice.less';
 import { currentTime } from '../../../helpers/currentTime';
 import quoteData from '../../../default/quoteData';
@@ -25,6 +26,7 @@ class PostCurrentPrice extends Component {
       price: 0,
     };
   }
+
   componentWillMount() {
     if (this.props.isExpired) {
       this.getExpiredData();
@@ -32,11 +34,13 @@ class PostCurrentPrice extends Component {
       this.getCurrentData(this.props);
     }
   }
+
   componentWillReceiveProps(nextProps) {
     if (!this.isPostExpires()) {
       this.getCurrentData(nextProps);
     }
   }
+
   getExpiredData = () => {
     const quotePost =
       this.props.finalQuote && this.props.finalQuote.askPrice && this.props.finalQuote.bidPrice
@@ -62,25 +66,26 @@ class PostCurrentPrice extends Component {
   isPostExpires = () => {
     return this.props.isExpired || currentTime.getTime() > moment(this.props.forecast).valueOf();
   };
+
   render() {
     return (
       <div className="st-post-current-price-wrap">
         {this.state.quotePost.state === 'up' && !this.isPostExpires() ? (
-          <div className="st-post-current-price-triangle-up"> </div>
+          <div className="st-post-current-price-triangle-up"></div>
         ) : (
-          <div className="st-margin-arrow-top"> </div>
+          <div className="st-margin-arrow-top"></div>
         )}
-        <span
+        <Tooltip
           title={this.props.intl.formatMessage({
             id: this.isPostExpires() ? 'tips.currentPriceExpired' : 'tips.currentPrice',
           })}
         >
           {this.getCurrentPrice()}
-        </span>
+        </Tooltip>
         {this.state.quotePost.state === 'down' && !this.isPostExpires() ? (
-          <div className="st-post-current-price-triangle-down"> </div>
+          <div className="st-post-current-price-triangle-down"></div>
         ) : (
-          <div className="st-margin-arrow-bottom"> </div>
+          <div className="st-margin-arrow-bottom"></div>
         )}
       </div>
     );

@@ -13,7 +13,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
 import api from '../../../investarena/configApi/apiResources';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { GUEST_PREFIX, WAIVIO_GUEST_PREFIX } from '../../../common/constants/waivio';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -119,7 +119,7 @@ class UserInfo extends React.Component {
                   }}
                 />
               </div>
-              {!user.name.startsWith(GUEST_PREFIX) && (
+              {!user.name.startsWith(GUEST_PREFIX) && !user.name.startsWith(WAIVIO_GUEST_PREFIX) && (
                 <React.Fragment>
                   <div>
                     <i className="iconfont icon-flashlight text-icon" />

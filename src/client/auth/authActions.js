@@ -35,11 +35,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const logoutWithoutBroker = () => (
-  dispatch,
-  getState,
-  { busyAPI, steemConnectAPI, waivioAPI },
-) => {
+export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const isAuthenticated = getIsAuthenticated(getState());
   if (!isAuthenticated) return;
   if (waivioAPI.isGuest) {
@@ -55,14 +51,17 @@ export const logoutWithoutBroker = () => (
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
   }
-  busyAPI.close();
   dispatch({
     type: LOGOUT,
   });
   dispatch(push('/'));
 };
 
-export const logout = () => dispatch => {
+export const logout = () => (dispatch, getState, { busyAPI }) => {
+  let accessToken = Cookie.get('access_token');
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) accessToken = guestAccessToken;
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
   dispatch(logoutWithoutBroker());
   dispatch(disconnectBroker());
 };
