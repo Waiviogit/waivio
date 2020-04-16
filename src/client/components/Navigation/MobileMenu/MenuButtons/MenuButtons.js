@@ -29,7 +29,7 @@ const MenuButtons = ({ intl, username, toggleMenu }) => (
         </Link>
       </Menu.Item>
       <Menu.Item className="MenuButtons__item" key="hot">
-        <HotNews isMobile toggleMobileMenu={toggleMenu} />
+        <HotNews isMobile />
       </Menu.Item>
       <Menu.Item className="MenuButtons__item" key="notifications">
         <NotificationsTooltip isMobile username={username} toggleMobileMenu={toggleMenu} />

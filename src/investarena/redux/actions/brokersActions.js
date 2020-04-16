@@ -145,12 +145,14 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
     cookiesData.forEach(data => {
       Cookies.remove(data);
     });
-    const userName = get(state, ['auth', 'user', 'name'], '');
-    if (getIsBeaxyUser(userName)) dispatch(logoutWithoutBroker());
+    const authUser = get(state, ['auth', 'user'], {});
+    const isBeaxyUser = getIsBeaxyUser(authUser);
+
+    if (isBeaxyUser) dispatch(logoutWithoutBroker());
     dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
-    // if (singleton.platform && singleton.platform.platformName)
-    //   message.success('Broker successfully disconnected');
+    if (singleton.platform && singleton.platform.platformName)
+      message.success('Beaxy connection disabled successfully');
     singleton.closeWebSocketConnection();
     singleton.platform = 'widgets';
     singleton.createWebSocketConnection();

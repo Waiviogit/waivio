@@ -8,7 +8,7 @@ import './TopNavigation.less';
 const LINKS = {
   MY_FEED: '/my_feed',
   DISCOVER: '/discover-objects',
-  ABOUT: '/object/qjr-investarena-q-and-a/list',
+  ABOUT: '/object/oul-investarena/menu#qjr-investarena-q-and-a',
   // QUICK_FORECAST: '/quickforecast',
 };
 
