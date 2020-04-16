@@ -12,8 +12,8 @@ import {
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { getAutoCompleteSearchResults } from '../../reducers';
-// import Avatar from '../../components/Avatar';
-// import WeightTag from '../../components/WeightTag';
+import Avatar from '../../components/Avatar';
+import WeightTag from '../../components/WeightTag';
 
 @injectIntl
 @connect(
@@ -31,7 +31,6 @@ import { getAutoCompleteSearchResults } from '../../reducers';
 class BeneficiariesFindUsers extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    /* from connect */
     autoCompleteSearchResults: PropTypes.oneOfType([
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
@@ -52,12 +51,6 @@ class BeneficiariesFindUsers extends React.Component {
     SELECT_BAR: 'searchSelectBar',
   };
 
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
   constructor(props) {
     super(props);
 
@@ -70,7 +63,13 @@ class BeneficiariesFindUsers extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
+      searchString: '',
     };
+
+    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
+    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
+    this.handleSearchForInput = this.handleSearchForInput.bind(this);
+    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -82,79 +81,24 @@ class BeneficiariesFindUsers extends React.Component {
     }
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 200);
 
   debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
 
   renderTitle = title => <span>{title}</span>;
 
-  // usersSearchLayout = accounts => {
-  //   return (
-  //     <AutoComplete.OptGroup
-  //       key="usersTitle"
-  //       label={this.renderTitle(
-  //         this.props.intl.formatMessage({
-  //           id: 'users_search_title',
-  //           defaultMessage: 'Users',
-  //         }),
-  //         size(accounts),
-  //       )}
-  //     >
-  //       {map(
-  //         accounts,
-  //         option =>
-  //           option && (
-  //             <AutoComplete.Option
-  //               marker={BeneficiariesFindUsers.markers.USER}
-  //               key={`user${option.account}`}
-  //               value={`user${option.account}`}
-  //               className="beneficiariesFindUsers__search-autocomplete"
-  //             >
-  //               <div className="beneficiariesFindUsers__search-content-wrap">
-  //                 <Avatar username={option.account} size={40} />
-  //                 <div className="beneficiariesFindUsers__search-content">{option.account}</div>
-  //                 <span className="beneficiariesFindUsers__search-expertize">
-  //                   <WeightTag weight={option.wobjects_weight} />
-  //                   &middot;
-  //                   <span className="beneficiariesFindUsers__search-follow-counter">
-  //                     {option.followers_count}
-  //                   </span>
-  //                 </span>
-  //               </div>
-  //               <div className="beneficiariesFindUsers__search-content-small">
-  //                 {option.youFollows && !option.followsYou && (
-  //                   <FormattedMessage id="following_user" defaultMessage="following" />
-  //                 )}
-  //                 {!option.youFollows && option.followsYou && (
-  //                   <FormattedMessage id="follows you" defaultMessage="follows you" />
-  //                 )}
-  //                 {option.youFollows && option.followsYou && (
-  //                   <FormattedMessage id="mutual_follow" defaultMessage="mutual following" />
-  //                 )}
-  //               </div>
-  //             </AutoComplete.Option>
-  //           ),
-  //       )}
-  //     </AutoComplete.OptGroup>
-  //   );
-  // };
-
   prepareOptions = searchResults => {
-    console.log('searchResults', searchResults);
-    // const { searchData } = this.state;
     const dataSource = [];
-
-    if (!isEmpty(searchResults.users)) dataSource.push(this.usersSearchLayout(searchResults.users));
-
+    if (!isEmpty(searchResults.users)) dataSource.push(searchResults.users);
     return dataSource;
   };
 
-  handleAutoCompleteSearch = value => {
+  handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
-  };
+    this.setState({ dropdownOpen: true, searchString: value });
+  }
 
-  handleSelectOnAutoCompleteDropdown = (value, data) => {
+  handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === BeneficiariesFindUsers.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
 
@@ -175,9 +119,9 @@ class BeneficiariesFindUsers extends React.Component {
 
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
-  };
+  }
 
-  handleOnChangeForAutoComplete = value => {
+  handleOnChangeForAutoComplete(value) {
     if (!value) {
       this.setState({
         searchBarValue: '',
@@ -193,7 +137,7 @@ class BeneficiariesFindUsers extends React.Component {
       },
       currentItem: 'Users',
     });
-  };
+  }
 
   handleClearSearchData = () =>
     this.setState(
@@ -204,7 +148,7 @@ class BeneficiariesFindUsers extends React.Component {
       this.props.resetSearchAutoCompete,
     );
 
-  handleSearchForInput = event => {
+  handleSearchForInput(event) {
     const value = event.target.value;
     console.log(value);
     this.props.resetSearchAutoCompete();
@@ -216,75 +160,44 @@ class BeneficiariesFindUsers extends React.Component {
       dropdownOpen: false,
     });
     this.handleClearSearchData();
+  }
+
+  renderOption = user => {
+    const { Option } = AutoComplete;
+    return (
+      <Option key={user.account} text={user.wobjects_weight}>
+        <div className="beneficiariesFindUsers__search-content-wrap">
+          <Avatar username={user.account} size={40} />
+          <div className="beneficiariesFindUsers__search-content">{user.account}</div>
+          <span className="beneficiariesFindUsers__search-expertize">
+            <WeightTag weight={user.wobjects_weight} />
+            &middot;
+            <span className="beneficiariesFindUsers__search-follow-counter">
+              {user.followers_count}
+            </span>
+          </span>
+        </div>
+      </Option>
+    );
   };
 
   render() {
     const { intl, autoCompleteSearchResults } = this.props;
-    // const { dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-    // const getOptions = accounts => {
-    //   if (autoCompleteSearchResults.users) {
-    //     map(autoCompleteSearchResults.users, user => {
-    //       return (
-    //         <AutoComplete.OptGroup
-    //           key="usersTitle"
-    //           label={this.renderTitle(
-    //             this.props.intl.formatMessage({
-    //               id: 'users_search_title',
-    //               defaultMessage: 'Users',
-    //             }),
-    //             size(accounts),
-    //           )}
-    //         >
-    //           {map(
-    //             accounts,
-    //             option =>
-    //               option && (
-    //                 <AutoComplete.Option
-    //                   marker={BeneficiariesFindUsers.markers.USER}
-    //                   key={`user${option.account}`}
-    //                   value={`user${option.account}`}
-    //                   className="beneficiariesFindUsers__search-autocomplete"
-    //                 >
-    //                   <div className="beneficiariesFindUsers__search-content-wrap">
-    //                     <Avatar username={option.account} size={40} />
-    //                     <div className="beneficiariesFindUsers__search-content">
-    //                       {option.account}
-    //                     </div>
-    //                     <span className="beneficiariesFindUsers__search-expertize">
-    //                       <WeightTag weight={option.wobjects_weight} />
-    //                       &middot;
-    //                       <span className="beneficiariesFindUsers__search-follow-counter">
-    //                         {option.followers_count}
-    //                       </span>
-    //                     </span>
-    //                   </div>
-    //                 </AutoComplete.Option>
-    //               ),
-    //           )}
-    //         </AutoComplete.OptGroup>
-    //       );
-    //     });
-    //   }
-    // };
+    const options = dropdownOptions[0] ? dropdownOptions[0].map(this.renderOption) : [];
 
-    console.log('dropdownOptions', dropdownOptions);
     return (
       <div className="beneficiariesFindUsers">
         <div className="beneficiariesFindUsers-layout">
           <div className="beneficiariesFindUsers__input-container" onBlur={this.handleOnBlur}>
-            <i className="iconfont icon-search" />
             <AutoComplete
               dropdownClassName="beneficiariesFindUsers__search-dropdown-container"
-              // dataSource={formattedAutoCompleteDropdown}
-              dataSource={dropdownOptions}
+              dataSource={options}
               onSearch={this.handleAutoCompleteSearch}
               onSelect={this.handleSelectOnAutoCompleteDropdown}
               onChange={this.handleOnChangeForAutoComplete}
               defaultActiveFirstOption={false}
               dropdownMatchSelectWidth={false}
-              optionLabelProp="value"
-              dropdownStyle={{ color: 'red' }}
               value={this.state.searchBarValue}
               open={this.state.dropdownOpen}
               onFocus={this.handleOnFocus}
@@ -295,8 +208,6 @@ class BeneficiariesFindUsers extends React.Component {
                   id: 'find_users_placeholder',
                   defaultMessage: 'Find users',
                 })}
-                autoCapitalize="off"
-                autoCorrect="off"
               />
             </AutoComplete>
             {!!this.state.searchBarValue.length && (

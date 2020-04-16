@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Progress, Slider } from 'antd';
 import './AdvanceSettings.less';
+import BeneficiariesFindUsers from './BeneficiariesFindUsers';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
@@ -66,10 +67,12 @@ const BeneficiariesWeights = ({
   }, [objPercentage]);
   return (
     <div className="beneficiaries-weights">
+      <div className="title">
+        {intl.formatMessage({ id: 'beneficiaries-weights', defaultMessage: 'Beneficiaries' })}
+      </div>
+      <BeneficiariesFindUsers intl={intl} />
       <div className="beneficiaries-weights__header">
-        <div className="title">
-          {intl.formatMessage({ id: 'beneficiaries-weights', defaultMessage: 'Beneficiaries' })}
-        </div>
+        <div className="user">{'user.name'}</div>
         <div
           className={classNames('weight-buffer', {
             hide: weightBuffer === 0 || weightBuffer === 100,
