@@ -133,7 +133,11 @@ export const calculateApprovePercent = votes => {
 
 export const addActiveVotesInField = (wobj, field) => {
   const matchField = _.get(wobj, 'fields', []).find(
-    wobjField => field.id && wobjField.body === field.id,
+    wobjField =>
+      wobjField.body === field.id ||
+      wobjField.permlink === field.permlink ||
+      wobjField.body === field.name ||
+      wobjField.body === field.body,
   );
   const activeVotes = matchField ? matchField.active_votes : [];
 

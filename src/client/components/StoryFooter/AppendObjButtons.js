@@ -1,5 +1,5 @@
 import { some } from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { Icon } from 'antd';
@@ -30,6 +30,7 @@ const AppendObjButtons = ({
   defaultVotePercent,
   onActionInitiated,
 }) => {
+  const [key, setKey] = useState('1');
   const upVotes = getAppendUpvotes(post.active_votes).sort(sortVotes);
   const downVotes = getAppendDownvotes(post.active_votes)
     .sort(sortVotes)
@@ -48,7 +49,10 @@ const AppendObjButtons = ({
     0,
   );
   const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
-
+  const openReactionModal = tab => {
+    handleShowReactions();
+    setKey(tab);
+  };
   const upVotesPreview = votes =>
     take(votes, 10).map(vote => (
       <p key={vote.voter}>
@@ -115,7 +119,7 @@ const AppendObjButtons = ({
               <span
                 className="Buttons__number Buttons__reactions-count"
                 role="presentation"
-                onClick={handleShowReactions}
+                onClick={() => openReactionModal('1')}
               >
                 <BTooltip
                   title={
@@ -161,7 +165,7 @@ const AppendObjButtons = ({
                 <span
                   className="Buttons__number Buttons__reactions-count"
                   role="presentation"
-                  onClick={handleShowReactions}
+                  onClick={() => openReactionModal('2')}
                 >
                   <BTooltip
                     title={
@@ -198,6 +202,9 @@ const AppendObjButtons = ({
         ratio={ratio}
         downVotes={downVotes}
         onClose={handleCloseReactions}
+        tab={key}
+        append
+        post={post}
       />
     </div>
   );
