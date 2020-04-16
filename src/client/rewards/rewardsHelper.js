@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, uniqBy } from 'lodash';
 import moment from 'moment';
 
 export const displayLimit = 10;
@@ -238,4 +238,24 @@ export const getDetailsBody = (
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
+};
+
+export const sortDebtObjsData = (items, sortBy = 'amount') => {
+  if (!items || !items.length) return [];
+  if (!sortBy) return items;
+  let comparator;
+  switch (sortBy) {
+    case 'amount':
+      comparator = (a, b) => (b.payable > a.payable ? 1 : -1);
+      break;
+    case 'time':
+      comparator = (a, b) => (a.alias < b.alias ? 1 : -1);
+      break;
+    default:
+      comparator = (a, b) => (a.guideName > b.guideName ? 1 : -1);
+      break;
+  }
+  const sorted = uniqBy(items, 'alias').sort(comparator);
+
+  return sorted;
 };
