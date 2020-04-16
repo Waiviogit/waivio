@@ -38,7 +38,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, onMenuClick }) =
     )}
     <li className="TopNavigation__item">
       <Link
-        to={`${LINKS.DISCOVER}/crypto`}
+        to={`${LINKS.DISCOVER}/cryptopairs`}
         className={classNames('TopNavigation__link', {
           'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
         })}
