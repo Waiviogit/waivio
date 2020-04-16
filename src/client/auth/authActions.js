@@ -1,7 +1,7 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
-import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import { getAuthenticatedUser, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing, getNotifications } from '../user/userActions';
@@ -13,6 +13,7 @@ import {
 import { setToken } from '../helpers/getToken';
 import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
+import { getIsBeaxyUser } from '../user/usersHelper';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -70,7 +71,6 @@ export const logout = () => dispatch => {
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
   const state = getState();
 
-  console.log('beaxyLogin action', bxySessionData);
   return dispatch({
     type: LOGIN,
     payload: new Promise(async (resolve, reject) => {
@@ -140,6 +140,9 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
         const scUserData = await steemConnectAPI.me();
         if (!scUserData) dispatch(logout());
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+        if (isGuest && getIsBeaxyUser(scUserData.account)) {
+          waivioAPI.guestAuthProvider = scUserData.account.provider; // eslint-disable-line
+        }
         resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
@@ -194,11 +197,11 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     }
   });
 
-  const targetUsername = getAuthenticatedUserName(state);
+  const targetUser = getAuthenticatedUser(state);
 
   return dispatch({
     type: BUSY_LOGIN.ACTION,
-    meta: targetUsername,
+    meta: targetUser.name,
     payload: {
       promise: busyAPI.sendAsync(method, [accessToken]),
     },
