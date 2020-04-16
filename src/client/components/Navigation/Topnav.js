@@ -16,6 +16,7 @@ import {
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
+  getAuthenticatedUser,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
   getNightmode,
@@ -40,6 +41,7 @@ import MobileMenu from './MobileMenu/MobileMenu';
 import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
+import { getIsBeaxyUser } from '../../user/usersHelper';
 
 @injectIntl
 @withRouter
@@ -55,6 +57,7 @@ import './Topnav.less';
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isGuest: isGuestUser(state),
+    authUser: getAuthenticatedUser(state),
   }),
   {
     disconnectBroker,
@@ -106,6 +109,7 @@ class Topnav extends React.Component {
     isGuest: PropTypes.bool,
     isMobileMenuOpen: PropTypes.bool.isRequired,
     toggleMobileMenu: PropTypes.func.isRequired,
+    authUser: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -526,12 +530,14 @@ class Topnav extends React.Component {
       username,
       toggleMobileMenu,
       isMobileMenuOpen,
+      authUser,
     } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = '/images/logo-brand.png';
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
+    const isBeaxyUser = getIsBeaxyUser(authUser);
     return (
       <React.Fragment>
         <div className="Topnav">
@@ -640,12 +646,14 @@ class Topnav extends React.Component {
                 >
                   {platformName === 'widgets' ? (
                     <div className="st-header-broker-balance-pl-wrap">
-                      <Button type="primary" onClick={this.toggleModalBroker}>
-                        {intl.formatMessage({
-                          id: 'headerAuthorized.connectToBeaxy',
-                          defaultMessage: 'Connect to beaxy',
-                        })}
-                      </Button>
+                      {!isBeaxyUser && (
+                        <Button type="primary" onClick={this.toggleModalBroker}>
+                          {intl.formatMessage({
+                            id: 'headerAuthorized.connectToBeaxy',
+                            defaultMessage: 'Connect to beaxy',
+                          })}
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <BrokerBalance />

@@ -10,7 +10,7 @@ import { getTopPosts } from '../../../waivioApi/ApiClient';
 import './NewsOverlay.less';
 
 const HotNews = props => {
-  const { intl, isMobile } = props;
+  const { intl, isMobile, toggleMobileMenu } = props;
   const [hotNewsVisible, setHotNewsVisible] = useState(false);
   const [dailyChosenPost, setDailyChosenPost] = useState('');
   const [weeklyChosenPost, setWeeklyChosenPost] = useState('');
@@ -30,6 +30,11 @@ const HotNews = props => {
     }
   };
 
+  const handleNewsItemSelect = () => {
+    setHotNewsVisible(!hotNewsVisible);
+    if (isMobile) toggleMobileMenu();
+  };
+
   return (
     <BTooltip
       placement="bottom"
@@ -46,7 +51,7 @@ const HotNews = props => {
               <Link
                 to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
                 className="Topnav__hot-news-item"
-                onClick={handleVisibleChange}
+                onClick={handleNewsItemSelect}
               >
                 {dailyChosenPost.title}
               </Link>
@@ -55,7 +60,7 @@ const HotNews = props => {
               <Link
                 to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
                 className="Topnav__hot-news-item"
-                onClick={handleVisibleChange}
+                onClick={handleNewsItemSelect}
               >
                 {weeklyChosenPost.title}
               </Link>
@@ -63,7 +68,7 @@ const HotNews = props => {
             <Link
               to="/economical-calendar"
               className="Topnav__hot-news-item"
-              onClick={handleVisibleChange}
+              onClick={handleNewsItemSelect}
             >
               Economical calendar
             </Link>
@@ -89,10 +94,12 @@ const HotNews = props => {
 HotNews.propTypes = {
   intl: PropTypes.shape().isRequired,
   isMobile: PropTypes.bool,
+  toggleMobileMenu: PropTypes.func,
 };
 
 HotNews.defaultProps = {
   isMobile: false,
+  toggleMobileMenu: () => {},
 };
 
 export default injectIntl(HotNews);
