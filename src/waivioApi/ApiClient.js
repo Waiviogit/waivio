@@ -1046,6 +1046,7 @@ class WaivioApiClient {
       throw new Error('Cannot construct singleton');
     }
     this._authToken = null;
+    this._authProvider = '';
     this._dispatch = () => console.warn('Set reference to dispatch function before call it');
   }
 
@@ -1132,6 +1133,13 @@ class WaivioApiClient {
 
   get isGuest() {
     return Boolean(this._authToken);
+  }
+
+  get guestAuthProvider() {
+    return this._authProvider;
+  }
+  set guestAuthProvider(providerName) {
+    this._authProvider = providerName;
   }
 }
 
