@@ -81,7 +81,8 @@ class BeneficiariesFindUsers extends React.Component {
   handleClearSearchData = () =>
     this.setState({ searchString: '' }, this.props.resetSearchAutoCompete);
 
-  handleSearchForInput() {
+  handleSearchForInput(e) {
+    e.preventDefault();
     this.props.resetSearchAutoCompete();
     this.setState({
       searchString: '',

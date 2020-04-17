@@ -13,6 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
+  saveBeneficiariesUsers: [],
 };
 
 export default (state = initialState, action) => {
@@ -129,6 +130,15 @@ export default (state = initialState, action) => {
         searchObjectsResults: [],
       };
     }
+
+    case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
+      const { result, search } = action.payload;
+
+      return {
+        ...state,
+        saveBeneficiariesUsers: isEmpty(search) ? [] : result,
+      };
+    }
     default:
       return state;
   }
@@ -141,3 +151,4 @@ export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
+export const saveBeneficiariesUsers = state => state.saveBeneficiariesUsers;

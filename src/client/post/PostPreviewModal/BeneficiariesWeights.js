@@ -66,6 +66,10 @@ const BeneficiariesWeights = ({
   );
   const user = useSelector(getAuthenticatedUser);
 
+  // const getBeneficiaries = () => {
+  //   const beneficiaries = [];
+  // };
+
   useEffect(() => {
     setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
   }, [objPercentage]);

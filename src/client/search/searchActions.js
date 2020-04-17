@@ -16,6 +16,7 @@ export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
   '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
 );
 export const RESET_SEARCH_USERS_FOR_DISCOVER_PAGE = '@search/RESET_SEARCH_USERS_FOR_DISCOVER_PAGE';
+export const SAVE_BENEFICIARIES_USERS = createAsyncActionType('@search/SAVE_BENEFICIARIES_USERS');
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -142,4 +143,9 @@ export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch 
 export const clearSearchObjectsResults = () => dispatch =>
   dispatch({
     type: CLEAR_SEARCH_OBJECTS_RESULT,
+  });
+
+export const saveBeneficiariesUsers = () => dispatch =>
+  dispatch({
+    type: SAVE_BENEFICIARIES_USERS.ACTION,
   });
