@@ -36,7 +36,7 @@ class TchChart extends Component {
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
       },
-      lang: 'ru',
+      lang: 'en',
       isHeaderHidden: false,
       isSidebarHidden: false,
       isFullScreen: false,
