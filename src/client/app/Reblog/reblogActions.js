@@ -1,5 +1,6 @@
 import store from 'store';
 import { createAction } from 'redux-actions';
+import { reblogPost } from '../../post/postActions';
 
 export const REBLOG_POST = '@reblog/REBLOG_POST';
 export const REBLOG_POST_START = '@reblog/REBLOG_POST_START';
@@ -28,7 +29,7 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
         const list = storePostId(postId);
 
         dispatch(getRebloggedListAction(list));
-
+        dispatch(reblogPost(postId, auth.user.name));
         if (window.analytics) {
           window.analytics.track('Reblog', {
             category: 'reblog',
@@ -40,7 +41,7 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
         return result;
       }),
     },
-    meta: { postId },
+    meta: { postId, userName: auth.user.name },
   });
 };
 
