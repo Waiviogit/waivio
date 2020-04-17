@@ -215,7 +215,7 @@ export default connect(
       ownProps.assignCommentPermlink &&
       !isEmpty(state.comments.comments)
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
-        : { parent_author: ownProps.guide.name },
+        : { parent_author: ownProps.guide && ownProps.guide.name },
   }),
   {
     getSingleComment,
