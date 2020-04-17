@@ -1,7 +1,12 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
-import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+  getNotifications,
+} from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
@@ -51,6 +56,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+        dispatch(getNotifications(tokenData.userData.name));
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
         reject(e);
@@ -95,6 +101,9 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
   });
 
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, waivioAPI }) => {
+  let accessToken = Cookie.get('access_token');
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) accessToken = guestAccessToken;
   if (waivioAPI.isGuest) {
     waivioAPI.clearGuestData();
     if (window) {
@@ -108,7 +117,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI, wai
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
   }
-  busyAPI.close();
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
   dispatch(disconnectBroker());
   dispatch({
     type: LOGOUT,
