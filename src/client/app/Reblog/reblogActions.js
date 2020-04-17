@@ -41,7 +41,7 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
         return result;
       }),
     },
-    meta: { postId, userName: auth.user.name },
+    meta: { postId },
   });
 };
 
