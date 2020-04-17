@@ -17,12 +17,7 @@ const reblogReducer = (state = initialState, action) => {
         ...state,
         pendingReblogs: [...state.pendingReblogs, action.meta.postId],
       };
-    case reblogActions.REBLOG_POST_SUCCESS: {
-      return {
-        ...state,
-        pendingReblogs: state.pendingReblogs.filter(id => id !== action.meta.postId),
-      };
-    }
+    case reblogActions.REBLOG_POST_SUCCESS:
     case reblogActions.REBLOG_POST_ERROR:
       return {
         ...state,
