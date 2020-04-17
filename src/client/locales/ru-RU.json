@@ -764,8 +764,8 @@
   "upvote": "Лайк",
   "action": "Действие",
   "notes": "Примечание",
-  "campaign_terms": "Условия кампании вознаграждений  {campaignName} будут опубликованы в блокчейне Steem",
-  "deactivate_campaign_terms": "Вы хотите деактивировать компанию {campaignName} на блокчейне Steem? Обратите внимание, что все резервации вознаграждений пользователей останутся активными до истечения срока резервации",
+  "campaign_terms": "Условия кампании вознаграждений {campaignName} будут опубликованы в блокчейне HIVE",
+  "deactivate_campaign_terms": "Вы хотите деактивировать компанию {campaignName} на блокчейне HIVE? Обратите внимание, что все резервации вознаграждений пользователей останутся активными до истечения срока резервации",
   "filter-rating": "Самые популярные",
   "campaign_names_used_internal_reports": "Названия кампаний используются только для внутренних отчетов",
   "specific_campaign_parameters_type": "Параметры кампании зависят от типа кампании",
@@ -1070,5 +1070,9 @@
   "cryptos_sing_up": "- Криптовалюта",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на Waivio",
   "objectinfo_more": "еще...",
-  "no_changes": "Нет изменений"
+  "no_changes": "Нет изменений",
+  "append_form_NSFW": "NSFW (небезопасно для работы)",
+  "append_form_flagged": "С пометкой",
+  "author_rewards": "Авторские награды",
+  "replied_to_your_comment": "{username} ответил на ваш комментарий"
 }

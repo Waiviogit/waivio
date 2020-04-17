@@ -26,11 +26,6 @@
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
     "heroku-postbuild": "npm run build"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check"
-    }
-  },
   "keywords": [
     "example",
     "heroku"
@@ -131,6 +126,7 @@
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
+    "are-you-es5": "^1.3.3",
     "assets-webpack-plugin": "^3.5.1",
     "autoprefixer": "^7.1.1",
     "chai": "^3.5.0",
