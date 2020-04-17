@@ -229,6 +229,7 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
 
 // common selectors
 

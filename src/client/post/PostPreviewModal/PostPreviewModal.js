@@ -38,9 +38,11 @@ class PostPreviewModal extends Component {
     }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
+    benefPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
+    onBenefPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
@@ -53,6 +55,7 @@ class PostPreviewModal extends Component {
     reviewData: null,
     isUpdating: false,
     isGuest: false,
+    benefPercentage: {},
   };
 
   constructor(props) {
@@ -128,6 +131,15 @@ class PostPreviewModal extends Component {
     onPercentChange(nextObjPercentage);
   };
 
+  handleBenefPercentChange = (index, percent) => {
+    const { benefPercentage, onBenefPercentChange } = this.props;
+    const nextObjPercentage = {
+      ...benefPercentage,
+      [index]: { percent },
+    };
+    onBenefPercentChange(nextObjPercentage);
+  };
+
   handleReviewSubmit = () => {
     this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
   };
@@ -153,6 +165,7 @@ class PostPreviewModal extends Component {
       settings,
       topics,
       isGuest,
+      benefPercentage,
     } = this.props;
     return (
       <React.Fragment>
@@ -208,6 +221,8 @@ class PostPreviewModal extends Component {
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}
+                onBenefPercentChange={this.handleBenefPercentChange}
+                benefPercentage={benefPercentage}
                 isGuest={isGuest}
               />
             )}

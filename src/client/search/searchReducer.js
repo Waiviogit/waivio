@@ -13,7 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
-  saveBeneficiariesUsers: [],
+  beneficiariesUsers: ['waivio'],
 };
 
 export default (state = initialState, action) => {
@@ -132,11 +132,9 @@ export default (state = initialState, action) => {
     }
 
     case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
-      const { result, search } = action.payload;
-
       return {
         ...state,
-        saveBeneficiariesUsers: isEmpty(search) ? [] : result,
+        beneficiariesUsers: [...state.beneficiariesUsers, action.payload],
       };
     }
     default:
@@ -151,4 +149,4 @@ export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
-export const saveBeneficiariesUsers = state => state.saveBeneficiariesUsers;
+export const getBeneficiariesUsers = state => state.beneficiariesUsers;

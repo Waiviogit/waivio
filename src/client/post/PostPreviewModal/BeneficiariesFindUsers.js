@@ -4,7 +4,11 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
 import { debounce, isEmpty } from 'lodash';
-import { resetSearchAutoCompete, searchAutoComplete } from '../../search/searchActions';
+import {
+  resetSearchAutoCompete,
+  searchAutoComplete,
+  saveBeneficiariesUsers,
+} from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { getAutoCompleteSearchResults } from '../../reducers';
 import Avatar from '../../components/Avatar';
@@ -19,6 +23,7 @@ import WeightTag from '../../components/WeightTag';
     searchAutoComplete,
     getUserMetadata,
     resetSearchAutoCompete,
+    saveBeneficiariesUsers,
   },
 )
 class BeneficiariesFindUsers extends React.Component {
@@ -30,6 +35,7 @@ class BeneficiariesFindUsers extends React.Component {
     ]),
     searchAutoComplete: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
+    saveBeneficiariesUsers: PropTypes.func.isRequired,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
@@ -65,6 +71,7 @@ class BeneficiariesFindUsers extends React.Component {
   handleSelect(value) {
     this.setState({ searchString: value, dropdownOpen: false });
     this.handleClearSearchData();
+    this.props.saveBeneficiariesUsers(value);
   }
 
   handleOnChange(value) {

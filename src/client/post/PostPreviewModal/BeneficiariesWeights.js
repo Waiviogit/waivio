@@ -5,41 +5,39 @@ import { FormattedMessage } from 'react-intl';
 import { Progress, Slider } from 'antd';
 import { useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, getBeneficiariesUsers } from '../../reducers';
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
-    objId: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired,
     objName: PropTypes.string.isRequired,
-    percentValue: PropTypes.number.isRequired,
-    percentMax: PropTypes.number.isRequired,
-    onPercentChange: PropTypes.func.isRequired,
+    onBenefPercentChange: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      percent: props.percentValue,
+      percent: [0],
+      benefPercentage: '',
     };
   }
 
   handlePercentChange = percent => {
-    const { percentMax } = this.props;
-    const percentValue = percent < percentMax ? percent : percentMax;
-    this.setState({ percent: percentValue });
+    this.setState({ percent });
   };
 
   handleAfterPercentChange = percent => {
-    const { objId, onPercentChange } = this.props;
-    onPercentChange(objId, percent);
+    const { index, onBenefPercentChange } = this.props;
+    onBenefPercentChange(index, percent);
   };
 
   render() {
     const { percent } = this.state;
-    const { objId, objName } = this.props;
+    const { index, objName } = this.props;
+
     return (
-      <div key={objId} className="beneficiaries-weights__item">
+      <div key={index} className="beneficiaries-weights__item">
         <div className="beneficiaries-item-name">{`${objName} ${percent}%`}</div>
         <Slider
           className="beneficiaries-item-slider"
@@ -57,22 +55,18 @@ class BeneficiariesWeight extends React.PureComponent {
 const BeneficiariesWeights = ({
   intl,
   isLinkedObjectsValid,
-  linkedObjects,
-  objPercentage,
-  onPercentChange,
+  benefPercentage,
+  onBenefPercentChange,
 }) => {
   const [weightBuffer, setWeightBuffer] = useState(
-    Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
+    Object.values(benefPercentage).reduce((res, curr) => res - curr.percent, 100),
   );
   const user = useSelector(getAuthenticatedUser);
-
-  // const getBeneficiaries = () => {
-  //   const beneficiaries = [];
-  // };
+  const beneficiariesUsers = useSelector(getBeneficiariesUsers);
 
   useEffect(() => {
-    setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
-  }, [objPercentage]);
+    setWeightBuffer(Object.values(benefPercentage).reduce((res, curr) => res - curr.percent, 100));
+  }, [benefPercentage]);
 
   return (
     <div className="beneficiaries-weights">
@@ -110,14 +104,12 @@ const BeneficiariesWeights = ({
           />
         </div>
       )}
-      {linkedObjects.map(obj => (
+      {beneficiariesUsers.map((obj, index) => (
         <BeneficiariesWeight
-          key={obj.id}
-          objId={obj.id}
-          objName={obj.name}
-          percentValue={objPercentage[obj.id].percent}
-          percentMax={objPercentage[obj.id].percent + weightBuffer}
-          onPercentChange={onPercentChange}
+          key={obj}
+          index={index}
+          objName={obj}
+          onBenefPercentChange={onBenefPercentChange}
         />
       ))}
     </div>
@@ -127,17 +119,16 @@ const BeneficiariesWeights = ({
 BeneficiariesWeights.propTypes = {
   intl: PropTypes.shape().isRequired,
   isLinkedObjectsValid: PropTypes.bool,
-  linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
-  objPercentage: PropTypes.shape(),
-  onPercentChange: PropTypes.func,
+  benefPercentage: PropTypes.shape(),
+  onBenefPercentChange: PropTypes.func,
 };
 
 BeneficiariesWeights.defaultProps = {
   title: null,
   isLinkedObjectsValid: true,
   linkedObjects: [],
-  objPercentage: {},
-  onPercentChange: () => {},
+  benefPercentage: {},
+  onBenefPercentChange: () => {},
 };
 
 export default BeneficiariesWeights;

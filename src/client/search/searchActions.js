@@ -145,7 +145,8 @@ export const clearSearchObjectsResults = () => dispatch =>
     type: CLEAR_SEARCH_OBJECTS_RESULT,
   });
 
-export const saveBeneficiariesUsers = () => dispatch =>
+export const saveBeneficiariesUsers = payload => dispatch =>
   dispatch({
     type: SAVE_BENEFICIARIES_USERS.ACTION,
+    payload,
   });
