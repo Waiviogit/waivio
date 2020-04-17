@@ -45,6 +45,7 @@ const HotNews = props => {
       <PopoverContainer
         placement="bottomRight"
         trigger="click"
+        arrowPointAtCenter
         content={
           <div className="Topnav__hot-news">
             {!isEmpty(dailyChosenPost) && (

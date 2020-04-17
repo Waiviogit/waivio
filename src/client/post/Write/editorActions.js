@@ -299,7 +299,7 @@ export function createPost(postData) {
                   });
                 }
 
-                dispatch(push(`/@${author}/${permlink}`));
+                dispatch(push(`/@${authUser.name}`));
               }
             })
             .catch(err => {

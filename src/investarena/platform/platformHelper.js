@@ -420,13 +420,13 @@ export class PlatformHelper {
   }
   static exponentialToDecimal(value) {
     const exponentialNumber = parseFloat(value);
-    const str = exponentialNumber.toString();
-    if (exponentNumberRegex.test(str)) {
-      const [testedString, mantissa, exponent] = str.match(exponentNumberRegex);
+    const stringRepresentation = exponentialNumber.toString();
+    if (exponentNumberRegex.test(stringRepresentation)) {
+      const [testedString, mantissa, exponent] = stringRepresentation.match(exponentNumberRegex);
       const digits = parseInt(exponent, 10) + mantissa.match(/^\d\.?(\d*)$/)[1].length;
       return exponentialNumber.toFixed(digits);
     }
-    return value;
+    return stringRepresentation;
   }
 }
 
