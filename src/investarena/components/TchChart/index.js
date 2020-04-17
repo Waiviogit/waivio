@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
-import TchChart from './TchChart';
 import { getLocale } from '../../../client/reducers';
+import TchChart from './TchChart';
 
 const propTypes = {
   isOpen: PropTypes.bool.isRequired,
