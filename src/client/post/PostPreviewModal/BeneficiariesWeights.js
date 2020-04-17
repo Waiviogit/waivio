@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Progress, Slider } from 'antd';
-import './AdvanceSettings.less';
+import { useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
+import { getAuthenticatedUser } from '../../reducers';
+import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
@@ -37,10 +39,10 @@ class BeneficiariesWeight extends React.PureComponent {
     const { percent } = this.state;
     const { objId, objName } = this.props;
     return (
-      <div key={objId} className="object-weights__item">
-        <div className="obj-item-name">{`${objName} ${percent}%`}</div>
+      <div key={objId} className="beneficiaries-weights__item">
+        <div className="beneficiaries-item-name">{`${objName} ${percent}%`}</div>
         <Slider
-          className="obj-item-slider"
+          className="beneficiaries-item-slider"
           min={0}
           max={100}
           value={percent}
@@ -62,9 +64,12 @@ const BeneficiariesWeights = ({
   const [weightBuffer, setWeightBuffer] = useState(
     Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
   );
+  const user = useSelector(getAuthenticatedUser);
+
   useEffect(() => {
     setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
   }, [objPercentage]);
+
   return (
     <div className="beneficiaries-weights">
       <div className="title">
@@ -72,7 +77,7 @@ const BeneficiariesWeights = ({
       </div>
       <BeneficiariesFindUsers intl={intl} />
       <div className="beneficiaries-weights__header">
-        <div className="user">{'user.name'}</div>
+        <div className="user">{user.name}</div>
         <div
           className={classNames('weight-buffer', {
             hide: weightBuffer === 0 || weightBuffer === 100,
@@ -94,7 +99,7 @@ const BeneficiariesWeights = ({
         </div>
       </div>
       {Boolean(!isLinkedObjectsValid && weightBuffer > 0) && (
-        <div className="object-weights__buffer-validation-msg">
+        <div className="beneficiaries-weights__buffer-validation-msg">
           <FormattedMessage
             id="linked_objects_buffer_validation"
             defaultMessage="Buffer must be empty"

@@ -4,12 +4,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
 import { debounce, isEmpty } from 'lodash';
-import {
-  resetSearchAutoCompete,
-  searchAutoComplete,
-  searchObjectsAutoCompete,
-  searchUsersAutoCompete,
-} from '../../search/searchActions';
+import { resetSearchAutoCompete, searchAutoComplete } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { getAutoCompleteSearchResults } from '../../reducers';
 import Avatar from '../../components/Avatar';
@@ -21,10 +16,8 @@ import WeightTag from '../../components/WeightTag';
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   }),
   {
-    searchObjectsAutoCompete,
     searchAutoComplete,
     getUserMetadata,
-    searchUsersAutoCompete,
     resetSearchAutoCompete,
   },
 )
@@ -37,55 +30,26 @@ class BeneficiariesFindUsers extends React.Component {
     ]),
     searchAutoComplete: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
-    searchUsersAutoCompete: PropTypes.func.isRequired,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
-    username: undefined,
-  };
-
-  static markers = {
-    USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
-    SELECT_BAR: 'searchSelectBar',
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      searchBarActive: false,
-      popoverVisible: false,
-      searchBarValue: '',
-      notificationsPopoverVisible: false,
-      searchData: '',
-      currentItem: 'All',
       dropdownOpen: false,
-      selectColor: false,
       searchString: '',
     };
 
-    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
-    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
-    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-    }
+    this.handleOnChange = this.handleOnChange.bind(this);
   }
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 200);
-
-  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
-
-  renderTitle = title => <span>{title}</span>;
 
   prepareOptions = searchResults => {
     const dataSource = [];
@@ -93,70 +57,34 @@ class BeneficiariesFindUsers extends React.Component {
     return dataSource;
   };
 
-  handleAutoCompleteSearch(value) {
+  handleSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true, searchString: value });
+    this.setState({ dropdownOpen: true });
   }
 
-  handleSelectOnAutoCompleteDropdown(value, data) {
-    if (data.props.marker === BeneficiariesFindUsers.markers.SELECT_BAR) {
-      const optionValue = value.split('#')[1];
-
-      const nextState = {
-        searchData: {
-          subtype: optionValue,
-          type: data.props.type,
-        },
-        dropdownOpen: true,
-        currentItem: optionValue,
-      };
-
-      if (data.props.type === 'user' || data.props.type === 'type') {
-        this.setState(nextState);
-        return;
-      }
-    }
-
-    this.setState({ dropdownOpen: false });
-    this.hideAutoCompleteDropdown();
+  handleSelect(value) {
+    this.setState({ searchString: value, dropdownOpen: false });
+    this.handleClearSearchData();
   }
 
-  handleOnChangeForAutoComplete(value) {
+  handleOnChange(value) {
     if (!value) {
       this.setState({
-        searchBarValue: '',
-        searchData: '',
-        currentItem: '',
+        searchString: '',
       });
     }
     this.setState({
-      searchBarValue: value,
-      searchData: {
-        subtype: 'Users',
-        type: 'user',
-      },
-      currentItem: 'Users',
+      searchString: value,
     });
   }
 
   handleClearSearchData = () =>
-    this.setState(
-      {
-        searchData: '',
-        searchBarValue: '',
-      },
-      this.props.resetSearchAutoCompete,
-    );
+    this.setState({ searchString: '' }, this.props.resetSearchAutoCompete);
 
-  handleSearchForInput(event) {
-    const value = event.target.value;
-    console.log(value);
+  handleSearchForInput() {
     this.props.resetSearchAutoCompete();
     this.setState({
-      searchBarValue: '',
-      searchData: '',
-      currentItem: '',
-      searchBarActive: false,
+      searchString: '',
       dropdownOpen: false,
     });
     this.handleClearSearchData();
@@ -193,12 +121,12 @@ class BeneficiariesFindUsers extends React.Component {
             <AutoComplete
               dropdownClassName="beneficiariesFindUsers__search-dropdown-container"
               dataSource={options}
-              onSearch={this.handleAutoCompleteSearch}
-              onSelect={this.handleSelectOnAutoCompleteDropdown}
-              onChange={this.handleOnChangeForAutoComplete}
+              onSearch={this.handleSearch}
+              onSelect={this.handleSelect}
+              onChange={this.handleOnChange}
               defaultActiveFirstOption={false}
               dropdownMatchSelectWidth={false}
-              value={this.state.searchBarValue}
+              value={this.state.searchString}
               open={this.state.dropdownOpen}
               onFocus={this.handleOnFocus}
             >
@@ -210,7 +138,7 @@ class BeneficiariesFindUsers extends React.Component {
                 })}
               />
             </AutoComplete>
-            {!!this.state.searchBarValue.length && (
+            {!!this.state.searchString.length && (
               <Icon
                 type="close-circle"
                 style={{ fontSize: '12px' }}
