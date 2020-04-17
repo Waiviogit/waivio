@@ -71,6 +71,7 @@ const NotificationsTooltip = props => {
       <PopoverContainer
         placement="bottomRight"
         trigger="click"
+        arrowPointAtCenter
         content={
           <Notifications
             notifications={notifications}
