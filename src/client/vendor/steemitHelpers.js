@@ -51,6 +51,9 @@ export const calculatePayout = post => {
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
   const is_comment = parent_author !== '';
+  const cashoutInTime = cashout_time + '.000Z';
+  const cashoutInTimeUTC = Date.parse(cashoutInTime);
+  const now = new Date().getTime();
 
   let payout = pending_payout + total_author_payout + total_curator_payout;
   if (payout < 0.0) payout = 0.0;
@@ -60,27 +63,19 @@ export const calculatePayout = post => {
   // There is an "active cashout" if: (a) there is a pending payout, OR (b)
   // there is a valid cashout_time AND it's NOT a comment with 0 votes.
   const cashout_active =
-    pending_payout > 0 ||
-    (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
+    cashoutInTimeUTC > now &&
+    (pending_payout > 0 ||
+      (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0)));
+
+  if (promoted > 0) payoutDetails.promotionCost = promoted;
 
   if (cashout_active) {
     payoutDetails.potentialPayout = pending_payout;
+    payoutDetails.cashoutInTime = cashoutInTime;
   }
 
-  if (promoted > 0) {
-    payoutDetails.promotionCost = promoted;
-  }
-
-  if (cashout_active) {
-    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
-    payoutDetails.cashoutInTime = cashout_time + '.000Z';
-  }
-
-  if (max_payout === 0) {
-    payoutDetails.isPayoutDeclined = true;
-  } else if (max_payout < 1000000) {
-    payoutDetails.maxAcceptedPayout = max_payout;
-  }
+  if (max_payout === 0) payoutDetails.isPayoutDeclined = true;
+  else if (max_payout < 1000000) payoutDetails.maxAcceptedPayout = max_payout;
 
   if (total_author_payout > 0) {
     payoutDetails.pastPayouts = total_author_payout + total_curator_payout;
