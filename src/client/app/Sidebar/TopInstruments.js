@@ -110,51 +110,55 @@ class TopInstruments extends React.Component {
     const instrumentsToShow = isAuthenticated ? this.state.instrumentsToShow : instrumentsDefault;
     return (
       <React.Fragment>
-        {isPlatformConnected && <React.Fragment>
-          {!isLoading ? (
-            <React.Fragment>
-              {isAuthenticated && (
-                <div className="SidebarContentBlock SidebarContentBlock__title">
-                  {intl
-                    .formatMessage({
-                      id: 'wia.followingInstruments',
-                      defaultMessage: 'Following instruments',
-                    })
-                    .toUpperCase()}
-                  <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
-                </div>
-              )}
-              {marketNames.map(
-                market =>
-                  !_.isEmpty(instrumentsToShow[market.name]) && (
-                    <div className="SidebarContentBlock top-instruments" key={market.name}>
-                      <div className="SidebarContentBlock__content">
-                        {instrumentsToShow[market.name].map(
-                          instrumentName =>
-                            quotesSettings[instrumentName] &&
-                            quotesSettings[instrumentName].wobjData && (
-                              <TopInstrumentsItem
-                                key={instrumentName}
-                                toggleModalTC={this.toggleModalInstrumentsChart}
-                                intl={intl}
-                                quoteSettings={quotesSettings[instrumentName]}
-                                quoteSecurity={instrumentName}
-                                chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
-                                showTradeBtn={false}
-                                chartHeight={60}
-                                chartWidth={160}
-                              />
-                            ),
-                        )}
+        {isPlatformConnected && (
+          <React.Fragment>
+            {!isLoading ? (
+              <React.Fragment>
+                {isAuthenticated && (
+                  <div className="SidebarContentBlock SidebarContentBlock__title">
+                    {intl
+                      .formatMessage({
+                        id: 'wia.followingInstruments',
+                        defaultMessage: 'Following instruments',
+                      })
+                      .toUpperCase()}
+                    <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
+                  </div>
+                )}
+                {marketNames.map(
+                  market =>
+                    !_.isEmpty(instrumentsToShow[market.name]) && (
+                      <div className="SidebarContentBlock top-instruments" key={market.name}>
+                        <div className="SidebarContentBlock__content">
+                          {instrumentsToShow[market.name].map(
+                            instrumentName =>
+                              quotesSettings[instrumentName] &&
+                              quotesSettings[instrumentName].wobjData && (
+                                <TopInstrumentsItem
+                                  key={instrumentName}
+                                  toggleModalTC={this.toggleModalInstrumentsChart}
+                                  intl={intl}
+                                  quoteSettings={quotesSettings[instrumentName]}
+                                  quoteSecurity={instrumentName}
+                                  chart={
+                                    charts && charts[instrumentName] ? charts[instrumentName] : []
+                                  }
+                                  showTradeBtn={false}
+                                  chartHeight={60}
+                                  chartWidth={160}
+                                />
+                              ),
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ),
-              )}
-            </React.Fragment>
-          ) : (
-            <TopInstrumentsLoading/>
-          )}
-        </React.Fragment>}
+                    ),
+                )}
+              </React.Fragment>
+            ) : (
+              <TopInstrumentsLoading />
+            )}
+          </React.Fragment>
+        )}
       </React.Fragment>
     );
   }
