@@ -28,7 +28,11 @@ const HotNews = props => {
         })
         .catch(error => console.error(error));
     }
-    if (isMobile && hotNewsVisible) toggleMobileMenu();
+  };
+
+  const handleNewsItemSelect = () => {
+    setHotNewsVisible(!hotNewsVisible);
+    if (isMobile) toggleMobileMenu();
   };
 
   return (
@@ -47,7 +51,7 @@ const HotNews = props => {
               <Link
                 to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
                 className="Topnav__hot-news-item"
-                onClick={handleVisibleChange}
+                onClick={handleNewsItemSelect}
               >
                 {dailyChosenPost.title}
               </Link>
@@ -56,7 +60,7 @@ const HotNews = props => {
               <Link
                 to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
                 className="Topnav__hot-news-item"
-                onClick={handleVisibleChange}
+                onClick={handleNewsItemSelect}
               >
                 {weeklyChosenPost.title}
               </Link>
@@ -64,7 +68,7 @@ const HotNews = props => {
             <Link
               to="/economical-calendar"
               className="Topnav__hot-news-item"
-              onClick={handleVisibleChange}
+              onClick={handleNewsItemSelect}
             >
               Economical calendar
             </Link>

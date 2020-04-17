@@ -35,11 +35,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const logoutWithoutBroker = () => (
-  dispatch,
-  getState,
-  { busyAPI, steemConnectAPI, waivioAPI },
-) => {
+export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const isAuthenticated = getIsAuthenticated(getState());
   if (!isAuthenticated) return;
   if (waivioAPI.isGuest) {
@@ -55,16 +51,19 @@ export const logoutWithoutBroker = () => (
     steemConnectAPI.removeAccessToken();
     Cookie.remove('access_token');
   }
-  busyAPI.close();
   dispatch({
     type: LOGOUT,
   });
   dispatch(push('/'));
 };
 
-export const logout = () => dispatch => {
-  dispatch(disconnectBroker());
+export const logout = () => (dispatch, getState, { busyAPI }) => {
+  let accessToken = Cookie.get('access_token');
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) accessToken = guestAccessToken;
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
   dispatch(logoutWithoutBroker());
+  dispatch(disconnectBroker());
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
@@ -207,13 +206,12 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
-  // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.json_metadata);
-  json_metadata.profile = { ...json_metadata.profile, ...values };
+  const jsonMetadata = JSON.parse(state.auth.user.posting_json_metadata);
+  jsonMetadata.profile = { ...jsonMetadata.profile, ...values };
   return dispatch({
     type: UPDATE_PROFILE,
     payload: {
-      promise: updateGuestProfile(username, json_metadata).then(data => {
+      promise: updateGuestProfile(username, jsonMetadata).then(data => {
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
@@ -221,6 +219,6 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
         return { isProfileUpdated: true };
       }),
     },
-    meta: JSON.stringify(json_metadata),
+    meta: JSON.stringify(jsonMetadata),
   });
 };

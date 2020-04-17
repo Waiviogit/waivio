@@ -8,7 +8,7 @@ import './TopNavigation.less';
 const LINKS = {
   MY_FEED: '/my_feed',
   DISCOVER: '/discover-objects',
-  ABOUT: '/object/qjr-investarena-q-and-a/list',
+  ABOUT: '/object/oul-investarena/menu#qjr-investarena-q-and-a',
   // QUICK_FORECAST: '/quickforecast',
 };
 
@@ -38,7 +38,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, onMenuClick }) =
     )}
     <li className="TopNavigation__item">
       <Link
-        to={`${LINKS.DISCOVER}/crypto`}
+        to={`${LINKS.DISCOVER}/cryptopairs`}
         className={classNames('TopNavigation__link', {
           'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
         })}
