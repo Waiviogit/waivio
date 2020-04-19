@@ -7,12 +7,11 @@ const InstrumentCardLoading = () => (
       <div className="InstrumentCardLoader__header__text" style={{ width: '100%' }}>
         <p className="ant-card-loading-block" style={{ width: '40%' }} />
         <p className="ant-card-loading-block" style={{ width: '95%' }} />
+        <p className="ant-card-loading-block" style={{ width: '100%' }} />
       </div>
     </div>
-    <div className="InstrumentCardLoader__header">
-      <div className="InstrumentCardLoader__header__text">
-        <p className="ant-card-loading-block" />
-      </div>
+    <div className="InstrumentCardLoader__content">
+      <p className="ant-card-loading-block" />
     </div>
   </div>
 );

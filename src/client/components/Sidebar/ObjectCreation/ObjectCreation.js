@@ -9,6 +9,7 @@ import { getObjectTypesList } from '../../../reducers';
 import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import './ObjectCreation.less';
+import ObjectCreationLoading from './ObjectCreationLoading';
 
 const objTypesLimit = 5;
 
@@ -77,7 +78,7 @@ class ObjectCreation extends React.Component {
           })}
         </h4>
         <div className="SidebarContentBlock__content">
-          {isEmpty && <Loading />}
+          {isEmpty && <ObjectCreationLoading />}
           {!isEmpty &&
             showedTypes.map(objTypeName => (
               <div
