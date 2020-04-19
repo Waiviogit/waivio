@@ -69,6 +69,9 @@ export default function createSsrHandler(template) {
 
       if (waivioToken && waivioAPI.authToken) {
         res.cookie('waivio_token', waivioAPI.authToken, { maxAge: 86400 * 7 * 1000 });
+        if (waivioAPI.guestAuthProvider === 'beaxy') {
+          res.cookie('platformName', waivioAPI.guestAuthProvider, { maxAge: 86400000 });
+        }
       }
 
       return res.send(

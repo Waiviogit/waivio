@@ -118,7 +118,10 @@ class QuickCommentEditor extends React.Component {
           />
           {isEmpty(currentImage) && setImage}
           {isLoading ? (
-            <Icon type="loading" className="QuickComment__send-comment QuickComment__send-comment--loader" />
+            <Icon
+              type="loading"
+              className="QuickComment__send-comment QuickComment__send-comment--loader"
+            />
           ) : (
             <span
               role="presentation"
@@ -128,7 +131,6 @@ class QuickCommentEditor extends React.Component {
               <img src={'/images/icons/send.svg'} alt="send" />
             </span>
           )}
-
         </div>
         {!isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">

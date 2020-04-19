@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import iconsSvg from '../../../../common/constants/svgIcons';
+import { getFollowingObjects } from '../../../user/userActions';
 import './BeaxyAuthForm.less';
 
 const BeaxyAuthForm = ({
@@ -35,6 +36,7 @@ const BeaxyAuthForm = ({
         defaultMessage: 'Beaxy connection established successfully',
       }),
     );
+    dispatch(getFollowingObjects(user.name));
     if (get(user, ['user_metadata', 'new_user'], false)) {
       const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
       firstLoginResponse({
