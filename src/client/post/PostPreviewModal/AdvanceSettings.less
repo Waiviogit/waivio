@@ -169,8 +169,29 @@
       padding-left: 6px;
       text-transform: uppercase;
     }
+
     .obj-item-slider {
       margin-top: 0;
+    }
+
+    .beneficiaries-item-name {
+      padding-right: 6px;
+    }
+
+    &-title {
+      display: flex;
+      align-items: center;
+
+      .anticon.anticon-close-circle {
+        color: @blue-linkWater;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.5s;
+
+        &:hover {
+          color: @blue-baliHai;
+        }
+      }
     }
   }
 }

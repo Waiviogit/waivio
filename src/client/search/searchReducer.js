@@ -1,4 +1,4 @@
-import { compact, concat, get, isEmpty, map, sortBy } from 'lodash';
+import { compact, concat, get, isEmpty, map, sortBy, omit } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
@@ -13,7 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
-  beneficiariesUsers: ['waivio'],
+  beneficiariesUsers: { waivio: 3 },
 };
 
 export default (state = initialState, action) => {
@@ -132,9 +132,33 @@ export default (state = initialState, action) => {
     }
 
     case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
+      const key = action.payload;
       return {
         ...state,
-        beneficiariesUsers: [...state.beneficiariesUsers, action.payload],
+        beneficiariesUsers: { ...state.beneficiariesUsers, [key]: 0 },
+      };
+    }
+
+    case searchActions.UPDATE_BENEFICIARIES_USERS.ACTION: {
+      const { name, percent } = action.payload;
+      return {
+        ...state,
+        beneficiariesUsers: { ...state.beneficiariesUsers, [name]: percent },
+      };
+    }
+
+    case searchActions.REMOVE_BENEFICIARIES_USERS.ACTION: {
+      const newBeneficiarieUsers = omit({ ...state.beneficiariesUsers }, action.payload);
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiarieUsers,
+      };
+    }
+
+    case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
+      return {
+        ...state,
+        beneficiariesUsers: { waivio: 3 },
       };
     }
     default:

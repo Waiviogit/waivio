@@ -39,8 +39,6 @@ class AdvanceSettings extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
-    benefPercentage: PropTypes.shape(),
-    onBenefPercentChange: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -48,7 +46,6 @@ class AdvanceSettings extends Component {
     linkedObjects: [],
     objPercentage: {},
     isGuest: false,
-    benefPercentage: {},
   };
 
   handleRewardChange = reward => this.props.onSettingsChange({ reward });
@@ -61,10 +58,6 @@ class AdvanceSettings extends Component {
     this.props.onPercentChange(objId, percent);
   };
 
-  handleBenefPercentChange = (index, percent) => {
-    this.props.onBenefPercentChange(index, percent);
-  };
-
   render() {
     const {
       intl,
@@ -73,7 +66,6 @@ class AdvanceSettings extends Component {
       objPercentage,
       settings: { reward, upvote },
       isGuest,
-      benefPercentage,
     } = this.props;
     return (
       <Collapse>
@@ -123,11 +115,7 @@ class AdvanceSettings extends Component {
           </div>
           {!isUpdating && (
             <div className="beneficiary-settings">
-              <BeneficiariesWeights
-                intl={intl}
-                benefPercentage={benefPercentage}
-                onBenefPercentChange={this.handleBenefPercentChange}
-              />
+              <BeneficiariesWeights intl={intl} />
             </div>
           )}
           <ObjectWeights

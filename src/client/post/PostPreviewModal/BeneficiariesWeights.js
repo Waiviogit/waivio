@@ -2,24 +2,30 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { Progress, Slider } from 'antd';
-import { useSelector } from 'react-redux';
+import { Icon, Progress, Slider } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
 import { getAuthenticatedUser, getBeneficiariesUsers } from '../../reducers';
+import { updateBeneficiariesUsers, removeBeneficiariesUsers } from '../../search/searchActions';
 import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
     index: PropTypes.number.isRequired,
     objName: PropTypes.string.isRequired,
+    percent: PropTypes.number,
     onBenefPercentChange: PropTypes.func.isRequired,
+    removeBeneficiariesUsers: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    percent: 0,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      percent: [0],
-      benefPercentage: '',
+      percent: this.props.percent,
     };
   }
 
@@ -28,17 +34,30 @@ class BeneficiariesWeight extends React.PureComponent {
   };
 
   handleAfterPercentChange = percent => {
-    const { index, onBenefPercentChange } = this.props;
-    onBenefPercentChange(index, percent);
+    const { objName, onBenefPercentChange } = this.props;
+    onBenefPercentChange(objName, percent);
+  };
+
+  handleClearSearchData = () => {
+    this.props.removeBeneficiariesUsers(this.props.objName);
   };
 
   render() {
     const { percent } = this.state;
     const { index, objName } = this.props;
-
     return (
       <div key={index} className="beneficiaries-weights__item">
-        <div className="beneficiaries-item-name">{`${objName} ${percent}%`}</div>
+        <div className="beneficiaries-weights__item-title">
+          <div className="beneficiaries-item-name">{`${objName} ${percent}%`}</div>
+          {index > 0 && (
+            <Icon
+              type="close-circle"
+              style={{ fontSize: '12px' }}
+              theme="filled"
+              onClick={this.handleClearSearchData}
+            />
+          )}
+        </div>
         <Slider
           className="beneficiaries-item-slider"
           min={0}
@@ -52,21 +71,23 @@ class BeneficiariesWeight extends React.PureComponent {
   }
 }
 
-const BeneficiariesWeights = ({
-  intl,
-  isLinkedObjectsValid,
-  benefPercentage,
-  onBenefPercentChange,
-}) => {
-  const [weightBuffer, setWeightBuffer] = useState(
-    Object.values(benefPercentage).reduce((res, curr) => res - curr.percent, 100),
-  );
+const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
+  const [weightBuffer, setWeightBuffer] = useState(100);
   const user = useSelector(getAuthenticatedUser);
   const beneficiariesUsers = useSelector(getBeneficiariesUsers);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setWeightBuffer(Object.values(benefPercentage).reduce((res, curr) => res - curr.percent, 100));
-  }, [benefPercentage]);
+    setWeightBuffer(Object.values(beneficiariesUsers).reduce((res, curr) => res - curr, 100));
+  }, [beneficiariesUsers]);
+
+  const onBenefPercentChange = (objName, percent) => {
+    dispatch(updateBeneficiariesUsers({ name: objName, percent }));
+  };
+
+  const onRemoveBeneficiariesUsers = objName => {
+    dispatch(removeBeneficiariesUsers(objName));
+  };
 
   return (
     <div className="beneficiaries-weights">
@@ -78,7 +99,6 @@ const BeneficiariesWeights = ({
         <div className="user">{user.name}</div>
         <div
           className={classNames('weight-buffer', {
-            hide: weightBuffer === 0 || weightBuffer === 100,
             'validation-error': !isLinkedObjectsValid && weightBuffer > 0,
           })}
           title={intl.formatMessage({
@@ -104,12 +124,14 @@ const BeneficiariesWeights = ({
           />
         </div>
       )}
-      {beneficiariesUsers.map((obj, index) => (
+      {Object.keys(beneficiariesUsers).map((obj, index) => (
         <BeneficiariesWeight
           key={obj}
           index={index}
           objName={obj}
+          percent={beneficiariesUsers[obj]}
           onBenefPercentChange={onBenefPercentChange}
+          removeBeneficiariesUsers={onRemoveBeneficiariesUsers}
         />
       ))}
     </div>
@@ -119,16 +141,10 @@ const BeneficiariesWeights = ({
 BeneficiariesWeights.propTypes = {
   intl: PropTypes.shape().isRequired,
   isLinkedObjectsValid: PropTypes.bool,
-  benefPercentage: PropTypes.shape(),
-  onBenefPercentChange: PropTypes.func,
 };
 
 BeneficiariesWeights.defaultProps = {
-  title: null,
   isLinkedObjectsValid: true,
-  linkedObjects: [],
-  benefPercentage: {},
-  onBenefPercentChange: () => {},
 };
 
 export default BeneficiariesWeights;

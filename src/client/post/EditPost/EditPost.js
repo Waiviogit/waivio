@@ -161,10 +161,6 @@ class EditPost extends Component {
     this.setState({ objPercentage: percentage }, this.handleUpdateState);
   };
 
-  handleBenefPercentChange = percentage => {
-    this.setState({ benefPercentage: percentage }, this.handleUpdateState);
-  };
-
   handleSubmit() {
     const postData = this.buildPost();
     this.props.createPost(postData);
@@ -284,7 +280,6 @@ class EditPost extends Component {
       topics,
       linkedObjects,
       objPercentage,
-      benefPercentage,
       settings,
       campaign,
       isUpdating,
@@ -315,7 +310,6 @@ class EditPost extends Component {
               isUpdating={isUpdating}
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
-              benefPercentage={benefPercentage}
               onUpdate={this.saveDraft}
               reviewData={
                 campaign && campaign.fetched
@@ -324,7 +318,6 @@ class EditPost extends Component {
               }
               settings={settings}
               topics={topics}
-              onBenefPercentChange={this.handleBenefPercentChange}
               onPercentChange={this.handlePercentChange}
               onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}

@@ -14,6 +14,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
+import { clearBeneficiariesUsers } from '../../search/searchActions';
 import { getAuthenticatedUserName } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
@@ -282,6 +283,7 @@ export function createPost(postData) {
                 dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
               }
 
+              dispatch(clearBeneficiariesUsers());
               return result;
             })
             .catch(err => {
