@@ -3,11 +3,7 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
-import {
-  BENEFICIARY_ACCOUNT,
-  BENEFICIARY_PERCENT,
-  REFERRAL_PERCENT,
-} from '../../helpers/constants';
+import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
 import { rewardsValues } from '../../../common/constants/rewards';
@@ -128,6 +124,7 @@ const broadcastComment = (
   permlink,
   referral,
   authUsername,
+  beneficiariesAll,
 ) => {
   const operations = [];
   const commentOp = [
@@ -162,17 +159,19 @@ const broadcastComment = (
     commentOptionsConfig.percent_steem_dollars = 0;
   }
 
-  const beneficiaries = [];
-
-  if (beneficiary) {
-    beneficiaries.push({ account: BENEFICIARY_ACCOUNT, weight: BENEFICIARY_PERCENT });
-  }
-
   if (referral && referral !== authUsername) {
-    beneficiaries.push({ account: referral, weight: REFERRAL_PERCENT });
+    beneficiariesAll.push({ account: referral, weight: REFERRAL_PERCENT });
   }
 
-  if (beneficiaries.length !== 0) {
+  const beneficiaries = [
+    ...beneficiariesAll,
+    {
+      account: authUsername,
+      weight: beneficiariesAll.reduce((res, curr) => res - curr.weight, 10000),
+    },
+  ];
+
+  if (beneficiariesAll.length !== 0) {
     commentOptionsConfig.extensions.push([0, { beneficiaries }]);
   }
 
@@ -211,6 +210,7 @@ export function createPost(postData) {
       upvote,
       draftId,
       isUpdating,
+      beneficiariesAll,
     } = postData;
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
@@ -251,6 +251,7 @@ export function createPost(postData) {
             permlink,
             referral,
             authUser.name,
+            beneficiariesAll,
           )
             .then(result => {
               if (draftId) {

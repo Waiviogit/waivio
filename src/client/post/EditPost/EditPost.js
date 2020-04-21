@@ -16,6 +16,7 @@ import {
   getUpvoteSetting,
   getSuitableLanguage,
   isGuestUser,
+  getBeneficiariesUsers,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import {
@@ -61,6 +62,7 @@ const getLinkedObjects = contentStateRaw => {
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
+    beneficiariesAll: getBeneficiariesUsers(state),
   }),
   {
     createPost,
@@ -82,6 +84,7 @@ class EditPost extends Component {
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     isGuest: PropTypes.bool,
+    beneficiariesAll: PropTypes.shape(),
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -93,6 +96,7 @@ class EditPost extends Component {
     createPost: () => {},
     saveDraft: () => {},
     isGuest: false,
+    beneficiariesAll: [],
   };
 
   constructor(props) {
@@ -209,12 +213,14 @@ class EditPost extends Component {
       permlink,
       originalBody,
     } = this.state;
+    const { beneficiariesAll } = this.props;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
       body: postBody,
       title: postTitle,
       lastUpdated: Date.now(),
+      beneficiariesAll,
       isUpdating,
       draftId,
       ...settings,

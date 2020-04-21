@@ -78,7 +78,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weigth / 100, 100));
+    setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weight / 100, 100));
   }, [beneficiariesUsers]);
 
   const onBenefPercentChange = (objName, percent) => {
@@ -96,7 +96,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
       </div>
       <BeneficiariesFindUsers intl={intl} />
       <div className="beneficiaries-weights__header">
-        <div className="user">{user.name}</div>
+        <div className="user">{`${user.name} ${weightBuffer}%`}</div>
         <div
           className={classNames('weight-buffer', {
             'validation-error': !isLinkedObjectsValid && weightBuffer > 0,
@@ -108,7 +108,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
         >
           <Progress
             status="active"
-            showInfo
+            showInfo={false}
             percent={weightBuffer}
             strokeWidth={5}
             strokeColor="orange"
@@ -129,7 +129,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
           key={obj.account}
           index={index}
           objName={obj.account}
-          percent={obj.weigth / 100}
+          percent={obj.weight / 100}
           onBenefPercentChange={onBenefPercentChange}
           removeBeneficiariesUsers={onRemoveBeneficiariesUsers}
         />

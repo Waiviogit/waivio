@@ -13,7 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
-  beneficiariesUsers: [{ account: 'waivio', weigth: 300 }],
+  beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
 };
 
 export default (state = initialState, action) => {
@@ -133,7 +133,7 @@ export default (state = initialState, action) => {
 
     case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
       const key = action.payload;
-      const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weigth: 0 }];
+      const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weight: 0 }];
       return {
         ...state,
         beneficiariesUsers: newBeneficiariesUsers,
@@ -144,7 +144,7 @@ export default (state = initialState, action) => {
       const { name, percent } = action.payload;
       const newBeneficiariesUsers = [...state.beneficiariesUsers];
       const benefIndex = findIndex(newBeneficiariesUsers, user => user.account === name);
-      newBeneficiariesUsers[benefIndex].weigth = percent * 100;
+      newBeneficiariesUsers[benefIndex].weight = percent * 100;
       return {
         ...state,
         beneficiariesUsers: newBeneficiariesUsers,
@@ -163,7 +163,7 @@ export default (state = initialState, action) => {
     case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
       return {
         ...state,
-        beneficiariesUsers: [{ account: 'waivio', weigth: 300 }],
+        beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
       };
     }
     default:
