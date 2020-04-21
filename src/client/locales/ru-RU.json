@@ -1074,5 +1074,6 @@
   "append_form_NSFW": "NSFW (небезопасно для работы)",
   "append_form_flagged": "С пометкой",
   "author_rewards": "Авторские награды",
-  "replied_to_your_comment": "{username} ответил на ваш комментарий"
+  "replied_to_your_comment": "{username} ответил на ваш комментарий",
+  "status_change": "{username} отметил {restaurant} как {status}"
 }

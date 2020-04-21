@@ -100,6 +100,15 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
             },
             { username: displayUsername ? notification.account : '' },
           );
+    case notificationConstants.STATUS_CHANGE:
+      return intl.formatMessage(
+        {
+          id: 'status_change',
+          defaultMessage: '{username} marked {restaurant} as {status}',
+        },
+        { username: displayUsername ? notification.account : '' },
+      );
+
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -123,6 +132,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}`;
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
+    case notificationConstants.STATUS_CHANGE:
+      return `/object/${notification.author_permlink}/updates/status`;
     default:
       return '/notifications-list';
   }
@@ -143,6 +154,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
     case notificationConstants.REBLOG:
     case notificationConstants.WITNESS_VOTE:
       return notification.account;
+    case notificationConstants.STATUS_CHANGE:
+      return notification.author;
     default:
       return currentAuthUsername;
   }
