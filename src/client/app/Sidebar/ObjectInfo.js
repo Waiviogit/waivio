@@ -45,6 +45,8 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
+import { getObject } from '../../../waivioApi/ApiClient';
+
 import './ObjectInfo.less';
 
 @withRouter
@@ -75,6 +77,7 @@ class ObjectInfo extends React.Component {
     selectedField: null,
     showModal: false,
     showMore: {},
+    parentWobj: null,
   };
 
   getLink = link => {
@@ -167,6 +170,25 @@ class ObjectInfo extends React.Component {
         </div>
       ));
     }
+    return null;
+  };
+
+  renderParent = permlink => {
+    if (permlink) {
+      const getParent = () => getObject(permlink).then(res => this.setState({ parentWobj: res }));
+      getParent();
+
+      return (
+        this.state.parentWobj && (
+          <ObjectCard
+            key={this.state.parentWobj.author_permlink}
+            wobject={this.state.parentWobj}
+            showFollow={false}
+          />
+        )
+      );
+    }
+
     return null;
   };
 
@@ -445,7 +467,11 @@ class ObjectInfo extends React.Component {
         {listItem(objectFields.description, <DescriptionInfo description={description} />)}
         {listItem(
           objectFields.rating,
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+          <RateInfo
+            username={userName}
+            authorPermlink={wobject.author_permlink}
+            locale={this.props.usedLocale}
+          />,
         )}
         {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
         {listItem(objectFields.categoryItem, null)}
@@ -643,13 +669,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {wobject && wobject.name && (
           <div className="object-sidebar">
-            {!isHashtag &&
-              listItem(
-                objectFields.parent,
-                parent ? (
-                  <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
-                ) : null,
-              )}
+            {!isHashtag && listItem(objectFields.parent, this.renderParent(parent))}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {!isHashtag && isRenderMenu && menuSection}
             {!isHashtag && aboutSection}
