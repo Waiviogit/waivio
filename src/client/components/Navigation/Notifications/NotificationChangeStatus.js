@@ -9,10 +9,7 @@ import './Notification.less';
 
 const NotificationChangeStatus = ({ notification, read, onClick }) => {
   // eslint-disable-next-line camelcase
-  const { author, object_name, author_permlink, newStatus, timestamp } = notification;
-
-  // eslint-disable-next-line camelcase
-  const statusUrl = `/object/${author_permlink}/updates/status`;
+  const statusUrl = `/object/${notification.author_permlink}/updates/status`;
 
   return (
     <Link
@@ -22,20 +19,21 @@ const NotificationChangeStatus = ({ notification, read, onClick }) => {
         'Notification--unread': !read,
       })}
     >
-      <Avatar username={author} size={40} />
+      <Avatar username={notification.author} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
           <FormattedMessage
             id="status_change"
             defaultMessage="{username} marked {restaurant} as {status}"
             values={{
-              restaurant: object_name,
-              status: newStatus,
+              username: <span className="username">{notification.author}</span>,
+              restaurant: <span className="object_name">{notification.object_name}</span>,
+              status: <span className="newStatus">{notification.newStatus}</span>,
             }}
           />
         </div>
         <div className="Notification__text__date">
-          <FormattedRelative value={epochToUTC(timestamp)} />
+          <FormattedRelative value={epochToUTC(notification.timestamp)} />
         </div>
       </div>
     </Link>

@@ -106,7 +106,11 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           id: 'status_change',
           defaultMessage: '{username} marked {restaurant} as {status}',
         },
-        { username: displayUsername ? notification.account : '' },
+        {
+          username: notification.author,
+          restaurant: notification.object_name,
+          status: notification.newStatus,
+        },
       );
 
     default:
