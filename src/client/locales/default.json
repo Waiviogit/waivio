@@ -1072,5 +1072,6 @@
   "author_rewards": "Author rewards",
   "beneficiaries-weights": "Beneficiaries",
   "find_users_placeholder": "Find users",
-  "replied_to_your_comment": "{username} replied to your comment"
+  "replied_to_your_comment": "{username} replied to your comment",
+  "paymentTable_report": "Report"
 }

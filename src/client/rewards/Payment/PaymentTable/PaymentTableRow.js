@@ -4,55 +4,73 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import './PaymentTable.less';
+// import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 
 const PaymentTableRow = ({ intl, sponsor }) => (
+  // const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
+  // const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
   <tr>
     <td>{formatDate(intl, sponsor.createdAt)}</td>
     <td>
       <div className="PaymentTable__action-wrap">
-        <div>
-          <React.Fragment>
-            <span className="PaymentTable__action-item fw6">
-              {sponsor.type === 'transfer'
-                ? intl.formatMessage({
-                    id: 'paymentTable_transfer',
-                    defaultMessage: `Transfer`,
-                  })
-                : intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: 'Review',
-                  })}
-            </span>{' '}
+        <div className="PaymentTable__action-items">
+          <span className="PaymentTable__action-item fw6">
             {sponsor.type === 'transfer'
               ? intl.formatMessage({
-                  id: 'paymentTable_from',
-                  defaultMessage: 'from',
+                  id: 'paymentTable_transfer',
+                  defaultMessage: `Transfer`,
                 })
               : intl.formatMessage({
-                  id: 'paymentTable_review_by',
-                  defaultMessage: 'by',
-                })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-            {intl.formatMessage({
-              id: 'paymentTable_requested_by',
-              defaultMessage: `requested by`,
-            })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
-          </React.Fragment>
+                  id: 'paymentTable_review',
+                  defaultMessage: 'Review',
+                })}
+          </span>{' '}
+          {sponsor.type === 'transfer'
+            ? intl.formatMessage({
+                id: 'paymentTable_from',
+                defaultMessage: 'from',
+              })
+            : intl.formatMessage({
+                id: 'paymentTable_review_by',
+                defaultMessage: 'by',
+              })}{' '}
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
+          {intl.formatMessage({
+            id: 'paymentTable_requested_by',
+            defaultMessage: `requested by`,
+          })}{' '}
+          <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
         </div>
         {sponsor && sponsor.details && sponsor.details.main_object && (
           <div className="PaymentTable__action-items">
             <div>
-              {`- `}
+              <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
+                {intl.formatMessage({
+                  id: 'paymentTable_review',
+                  defaultMessage: `Review`,
+                })}
+              </Link>
+              :{' '}
               <Link to={`/object/${sponsor.details.main_object}`}>
                 {sponsor.details.main_object}
+                {/* {prymaryObjectName} */}
+              </Link>
+              ,{' '}
+              <Link to={`/object/${sponsor.details.review_object}`}>
+                {sponsor.details.review_object}
+                {/* {reviewObjectName} */}
               </Link>
             </div>
             <div>
-              {`- `}
-              <Link to={`/object/${sponsor.details.review_object}`}>
-                {sponsor.details.review_object}
-              </Link>
+              {intl.formatMessage({
+                id: 'beneficiaries-weights',
+                defaultMessage: `Beneficiaries`,
+              })}
+              : {/* {Object.keys(sponsor.details.beneficiaries).map((benef, index) => ( */}
+              {/*  <Link to={`/@${benef[index]}`}> */}
+              {/*    {benef[index]} */}
+              {/*  </Link> */}
+              {/* ))} */}
             </div>
           </div>
         )}
@@ -79,8 +97,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           <p>
             <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
               {intl.formatMessage({
-                id: 'paymentTable_review',
-                defaultMessage: `Review`,
+                id: 'paymentTable_report',
+                defaultMessage: `Report`,
               })}
             </Link>
           </p>
@@ -100,7 +118,6 @@ const PaymentTableRow = ({ intl, sponsor }) => (
     </td>
   </tr>
 );
-
 PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,
