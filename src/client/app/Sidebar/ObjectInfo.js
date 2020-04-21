@@ -174,29 +174,27 @@ class ObjectInfo extends React.Component {
   };
 
   renderParent = permlink => {
-    if (permlink) {
+    if (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink) {
       const getParent = () => getObject(permlink).then(res => this.setState({ parentWobj: res }));
       getParent();
-
-      return (
-        this.state.parentWobj && (
-          <ObjectCard
-            key={this.state.parentWobj.author_permlink}
-            wobject={this.state.parentWobj}
-            showFollow={false}
-          />
-        )
-      );
     }
 
-    return null;
+    return (
+      this.state.parentWobj && (
+        <ObjectCard
+          key={this.state.parentWobj.author_permlink}
+          wobject={this.state.parentWobj}
+          showFollow={false}
+        />
+      )
+    );
   };
 
   render() {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { status, website, newsFilter } = wobject;
+    const { website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
@@ -221,6 +219,7 @@ class ObjectInfo extends React.Component {
     const button = getApprovedField(wobject, 'button', usedLocale);
     const map = getApprovedField(wobject, 'map', usedLocale);
     const parent = getApprovedField(wobject, 'parent', usedLocale);
+    const status = getApprovedField(wobject, 'status', usedLocale);
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -669,7 +668,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {wobject && wobject.name && (
           <div className="object-sidebar">
-            {!isHashtag && listItem(objectFields.parent, this.renderParent(parent))}
+            {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {!isHashtag && isRenderMenu && menuSection}
             {!isHashtag && aboutSection}
