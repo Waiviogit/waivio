@@ -1,4 +1,4 @@
-import { compact, concat, get, isEmpty, map, sortBy, omit } from 'lodash';
+import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
@@ -13,7 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
-  beneficiariesUsers: { waivio: 3 },
+  beneficiariesUsers: [{ account: 'waivio', weigth: 300 }],
 };
 
 export default (state = initialState, action) => {
@@ -133,22 +133,27 @@ export default (state = initialState, action) => {
 
     case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
       const key = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weigth: 0 }];
       return {
         ...state,
-        beneficiariesUsers: { ...state.beneficiariesUsers, [key]: 0 },
+        beneficiariesUsers: newBeneficiariesUsers,
       };
     }
 
     case searchActions.UPDATE_BENEFICIARIES_USERS.ACTION: {
       const { name, percent } = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers];
+      const benefIndex = findIndex(newBeneficiariesUsers, user => user.account === name);
+      newBeneficiariesUsers[benefIndex].weigth = percent * 100;
       return {
         ...state,
-        beneficiariesUsers: { ...state.beneficiariesUsers, [name]: percent },
+        beneficiariesUsers: newBeneficiariesUsers,
       };
     }
 
     case searchActions.REMOVE_BENEFICIARIES_USERS.ACTION: {
-      const newBeneficiarieUsers = omit({ ...state.beneficiariesUsers }, action.payload);
+      const newBeneficiarieUsers = [...state.beneficiariesUsers];
+      remove(newBeneficiarieUsers, user => user.account === action.payload);
       return {
         ...state,
         beneficiariesUsers: newBeneficiarieUsers,
@@ -158,7 +163,7 @@ export default (state = initialState, action) => {
     case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
       return {
         ...state,
-        beneficiariesUsers: { waivio: 3 },
+        beneficiariesUsers: [{ account: 'waivio', weigth: 300 }],
       };
     }
     default:

@@ -78,7 +78,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setWeightBuffer(Object.values(beneficiariesUsers).reduce((res, curr) => res - curr, 100));
+    setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weigth / 100, 100));
   }, [beneficiariesUsers]);
 
   const onBenefPercentChange = (objName, percent) => {
@@ -124,12 +124,12 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
           />
         </div>
       )}
-      {Object.keys(beneficiariesUsers).map((obj, index) => (
+      {beneficiariesUsers.map((obj, index) => (
         <BeneficiariesWeight
-          key={obj}
+          key={obj.account}
           index={index}
-          objName={obj}
-          percent={beneficiariesUsers[obj]}
+          objName={obj.account}
+          percent={obj.weigth / 100}
           onBenefPercentChange={onBenefPercentChange}
           removeBeneficiariesUsers={onRemoveBeneficiariesUsers}
         />
