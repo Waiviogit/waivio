@@ -472,7 +472,6 @@ class Rewards extends React.Component {
       cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         ? cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         : 0;
-
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
       currentSteemPrice,
@@ -493,6 +492,8 @@ class Rewards extends React.Component {
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
     });
+
+    console.log(robots);
 
     return (
       <div className="Rewards">

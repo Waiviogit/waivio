@@ -187,9 +187,14 @@ export default class User extends React.Component {
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
-
     const isSameUser = authenticated && authenticatedUser.name === username;
+
     const isAboutPage = match.params['0'] === 'about';
+    console.log(image);
+    console.log(desc);
+    console.log(canonicalUrl);
+    console.log(url);
+    console.log(title);
 
     return (
       <div className="main-panel">

@@ -222,6 +222,12 @@ class PostContent extends React.Component {
     )}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
+    console.log(image);
+    console.log(desc);
+    console.log(canonicalUrl);
+    console.log(url);
+    console.log(ampUrl);
+    console.log(metaTitle);
 
     return (
       <div>

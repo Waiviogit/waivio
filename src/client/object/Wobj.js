@@ -159,7 +159,7 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
-    if (!objectName && !isFetching)
+    if (!objectName && !isFetching) {
       return (
         <div className="main-panel">
           <NotFound
@@ -169,8 +169,10 @@ export default class Wobj extends React.Component {
           />
         </div>
       );
+    }
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const desc = `${objectName || ''}`;
+
     const image =
       wobject.avatar ||
       'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
@@ -184,6 +186,12 @@ export default class Wobj extends React.Component {
     }
 
     const { history } = this.props;
+
+    console.log(desc);
+    console.log(objectName);
+    console.log(url);
+    console.log(image);
+    console.log(canonicalUrl);
 
     return (
       <div className="main-panel">
