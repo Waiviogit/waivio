@@ -100,6 +100,10 @@ const BeaxyAuthForm = ({
     hideForm();
   };
 
+  const clearAuthCodeField = () => {
+    setToken2FA(null);
+  };
+
   return (
     <div className="bxy-sing-in-form">
       {hasSingInParent && (
@@ -173,21 +177,29 @@ const BeaxyAuthForm = ({
           })(<Input.Password disabled={!!token2FA} />)}
         </Form.Item>
 
-        <Form.Item
-          className={classNames('signInAuthCode', { hide: !token2FA })}
-          label={
-            <FormattedMessage id="authForm_two_FA_code" defaultMessage="Authentication code" />
-          }
-        >
-          {getFieldDecorator('authCode', {
-            rules: [
-              {
-                pattern: /^-?[0-9]*(\.[0-9]*)?$/,
-                message: 'only numbers',
-              },
-            ],
-          })(<Input maxLength={6} />)}
-        </Form.Item>
+        {
+          <Form.Item
+            className={classNames('signInAuthCode', { hide: !token2FA })}
+            label={
+              <FormattedMessage id="authForm_two_FA_code" defaultMessage="Authentication code" />
+            }
+          >
+            {getFieldDecorator('authCode', {
+              rules: [
+                {
+                  required: !!token2FA,
+                  pattern: /^-?[0-9]*(\.[0-9]*)?$/,
+                  message: 'only numbers',
+                },
+              ],
+            })(
+              <Input
+                addonAfter={<Icon type="close" theme="outlined" onClick={clearAuthCodeField} />}
+                maxLength={6}
+              />,
+            )}
+          </Form.Item>
+        }
 
         <Form.Item className="mb1">
           <Button
@@ -200,10 +212,10 @@ const BeaxyAuthForm = ({
             {btnText || <FormattedMessage id="login" defaultMessage="Log in" />}
           </Button>
         </Form.Item>
-        <Form.Item className="bxy-sing-in-form__condition mb1">
+        <Form.Item className={classNames('bxy-sing-in-form__condition mb1', { hide: !!token2FA })}>
           <FormattedMessage id="or" defaultMessage="or" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item className={classNames({ hide: !!token2FA })}>
           <a href="https://beaxy.com/register/">
             <Button block type="primary">
               <FormattedMessage id="signup" defaultMessage="Sign up" />
