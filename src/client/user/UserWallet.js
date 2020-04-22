@@ -24,7 +24,6 @@ import {
   getCryptosPriceHistory,
   getScreenSize,
   getGuestUserBalance,
-  getNotifications,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -58,7 +57,6 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
-    notifications: getNotifications(state),
   }),
   {
     getGlobalProperties,
@@ -88,14 +86,12 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
-    notifications: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
     guestBalance: null,
-    notifications: [],
   };
 
   componentDidMount() {
@@ -138,10 +134,8 @@ class Wallet extends Component {
       cryptosPriceHistory,
       guestBalance,
       screenSize,
-      notifications,
     } = this.props;
 
-    const walletNotifications = notifications.filter(item => item.type === 'fillOrder');
     const userKey = getUserDetailsKey(user.name);
     const transactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
@@ -170,7 +164,6 @@ class Wallet extends Component {
           getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
           loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
           userHasMoreActions={userHasMoreActions}
-          walletNotifications={walletNotifications}
         />
       );
 

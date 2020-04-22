@@ -7,6 +7,7 @@ export const WITNESS_VOTE = 'witness_vote';
 export const TRANSFER = 'transfer';
 export const STATUS_CHANGE = 'status-change';
 export const POWER_DOWN = 'power_down';
+export const FILL_ORDER = 'fillOrder';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,

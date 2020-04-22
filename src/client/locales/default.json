@@ -1073,5 +1073,5 @@
   "replied_to_your_comment": "{username} replied to your comment",
   "status_change": "{username} marked {restaurant} as {status}",
   "power_down_notification": "{username} initiated 'Power Down' on {amount}",
-  "cancel_order_to_buy": "Cancel order to buy {current_pays}"
+  "fill_order_notification": "You bought {current_pays} and get {open_pays} from {exchanger}"
 }

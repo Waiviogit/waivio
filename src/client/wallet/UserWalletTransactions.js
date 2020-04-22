@@ -6,7 +6,6 @@ import { defaultAccountLimit } from '../helpers/apiHelpers';
 import Loading from '../components/Icon/Loading';
 import WalletTransaction from './WalletTransaction';
 import './UserWalletTransactions.less';
-import TransferCancelOrder from './TransferCancelOrder';
 
 class UserWalletTransactions extends React.Component {
   static propTypes = {
@@ -18,14 +17,12 @@ class UserWalletTransactions extends React.Component {
     totalVestingFundSteem: PropTypes.string.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     userHasMoreActions: PropTypes.bool.isRequired,
-    walletNotifications: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     transactions: [],
     actions: [],
     currentUsername: '',
-    walletNotifications: [],
   };
 
   handleLoadMore = () => {
@@ -49,7 +46,6 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       loadingMoreUsersAccountHistory,
       userHasMoreActions,
-      walletNotifications,
     } = this.props;
 
     if (transactions.length === 0 && !userHasMoreActions) {
@@ -71,10 +67,6 @@ class UserWalletTransactions extends React.Component {
           loadingMore={loadingMoreUsersAccountHistory}
         >
           <div />
-
-          {walletNotifications.map(walletNotification => (
-            <TransferCancelOrder walletNotification={walletNotification} />
-          ))}
           {transactions.map(transaction => (
             <WalletTransaction
               key={`${transaction.trx_id}${transaction.actionCount}`}

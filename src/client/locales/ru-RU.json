@@ -1077,5 +1077,5 @@
   "replied_to_your_comment": "{username} ответил на ваш комментарий",
   "status_change": "{username} отметил {restaurant} как {status}",
   "power_down_notification": "{username} инициировал 'Power Down' на {amount}",
-  "cancel_order_to_by": "Закрытый заказ на покупку {current_pays}"
+  "fill_order_notification": "Вы потратили {current_pays} и получили {open_pays} от {exchanger}"
 }
