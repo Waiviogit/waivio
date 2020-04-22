@@ -45,6 +45,8 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
+import { getObject } from '../../../waivioApi/ApiClient';
+
 import './ObjectInfo.less';
 
 @withRouter
@@ -75,6 +77,7 @@ class ObjectInfo extends React.Component {
     selectedField: null,
     showModal: false,
     showMore: {},
+    parentWobj: null,
   };
 
   getLink = link => {
@@ -170,11 +173,28 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
+  renderParent = permlink => {
+    if (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink) {
+      const getParent = () => getObject(permlink).then(res => this.setState({ parentWobj: res }));
+      getParent();
+    }
+
+    return (
+      this.state.parentWobj && (
+        <ObjectCard
+          key={this.state.parentWobj.author_permlink}
+          wobject={this.state.parentWobj}
+          showFollow={false}
+        />
+      )
+    );
+  };
+
   render() {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { status, website, newsFilter } = wobject;
+    const { website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
@@ -199,6 +219,7 @@ class ObjectInfo extends React.Component {
     const button = getApprovedField(wobject, 'button', usedLocale);
     const map = getApprovedField(wobject, 'map', usedLocale);
     const parent = getApprovedField(wobject, 'parent', usedLocale);
+    const status = getApprovedField(wobject, 'status', usedLocale);
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -445,7 +466,11 @@ class ObjectInfo extends React.Component {
         {listItem(objectFields.description, <DescriptionInfo description={description} />)}
         {listItem(
           objectFields.rating,
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+          <RateInfo
+            username={userName}
+            authorPermlink={wobject.author_permlink}
+            locale={this.props.usedLocale}
+          />,
         )}
         {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
         {listItem(objectFields.categoryItem, null)}
@@ -643,13 +668,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {wobject && wobject.name && (
           <div className="object-sidebar">
-            {!isHashtag &&
-              listItem(
-                objectFields.parent,
-                parent ? (
-                  <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
-                ) : null,
-              )}
+            {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {!isHashtag && isRenderMenu && menuSection}
             {!isHashtag && aboutSection}
