@@ -314,9 +314,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
@@ -760,6 +760,13 @@ export const getTopPosts = () =>
 export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -769,6 +776,13 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
 export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)

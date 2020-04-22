@@ -27,6 +27,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
+import InstrumentCardLoading from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardLoading';
 
 const modalName = {
   FILTERS: 'filters',
@@ -258,7 +259,7 @@ class DiscoverObjectsContent extends Component {
             {objectsRenderer}
           </ReduxInfiniteScroll>
         ) : (
-          (isFetching && <Loading />) || (
+          (isFetching && <InstrumentCardLoading />) || (
             <div className="tc">
               {intl.formatMessage({
                 id: 'no_results_found_for_search',
