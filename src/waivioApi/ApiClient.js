@@ -107,12 +107,13 @@ export const getMoreFeedContentByObject = ({
   skip = 0,
   limit = 10,
   user_languages,
+  lastId,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_languages }),
+      body: JSON.stringify({ skip, limit, user_languages, lastId }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -162,7 +163,13 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_languages }) =>
+export const getMoreUserFeedContent = ({
+  userName,
+  limit = 10,
+  skip = 0,
+  user_languages,
+  lastId,
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
@@ -171,6 +178,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
         skip,
         limit,
         user_languages,
+        lastId,
       }),
     })
       .then(res => res.json())
@@ -253,17 +261,24 @@ export const postAppendWaivioObject = postData =>
     .catch(error => error);
 
 // region Follow API requests
-export const getAllFollowingObjects = (username, skip, limit) =>
-  new Promise((resolve, reject) => {
+export const getAllFollowingObjects = (username, skip, limit) => {
+  const actualHeaders = username
+    ? { ...headers, following: username, follower: username }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers,
+      headers: {
+        ...actualHeaders,
+      },
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
       .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
+};
 
 export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {

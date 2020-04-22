@@ -14,11 +14,13 @@ export default class ObjectDynamicList extends React.Component {
     fetcher: PropTypes.func.isRequired,
     handleObjectCount: PropTypes.func,
     isOnlyHashtags: PropTypes.bool,
+    expertize: PropTypes.bool,
   };
 
   static defaultProps = {
     handleObjectCount: () => {},
     isOnlyHashtags: false,
+    expertize: false,
   };
 
   state = {
@@ -61,6 +63,7 @@ export default class ObjectDynamicList extends React.Component {
   render() {
     const { loading, hasMore, wobjects } = this.state;
     const empty = !hasMore && wobjects.length === 0;
+    const getWeight = wo => (this.props.expertize ? wo.user_weight : wo.weight);
 
     return (
       <div className="ObjectDynamicList">
@@ -75,7 +78,7 @@ export default class ObjectDynamicList extends React.Component {
             <ObjectCard
               key={wo.author_permlink}
               wobject={wo}
-              alt={<WeightTag weight={wo.weight} />}
+              alt={<WeightTag weight={getWeight(wo)} />}
             />
           ))}
         </ReduxInfiniteScroll>

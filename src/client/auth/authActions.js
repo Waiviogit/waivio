@@ -98,6 +98,9 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
 
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
+  let accessToken = Cookie.get('access_token');
+  const guestAccessToken = Cookie.get('waivio_token');
+  if (guestAccessToken) accessToken = guestAccessToken;
   if (state.auth.isGuestUser) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('accessTokenExpiration');
@@ -119,7 +122,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
   }
-  busyAPI.close();
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
   history.push('/');
 
   dispatch({

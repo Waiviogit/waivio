@@ -12,6 +12,9 @@ import NotificationVote from './NotificationVote';
 import NotificationReblog from './NotificationReblog';
 import NotificationTransfer from './NotificationTransfer';
 import NotificationVoteWitness from './NotificationVoteWitness';
+import NotificationChangeStatus from './NotificationChangeStatus';
+import NotificationPowerDown from './NotificationPowerDown';
+import NotificationFillOrder from './NotificationFillOrder';
 import './Notification.less';
 import './Notifications.less';
 import Loading from '../../Icon/Loading';
@@ -209,6 +212,33 @@ class Notifications extends React.Component {
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.STATUS_CHANGE:
+                return (
+                  <NotificationChangeStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.POWER_DOWN:
+                return (
+                  <NotificationPowerDown
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.FILL_ORDER:
+                return (
+                  <NotificationFillOrder
                     key={key}
                     notification={notification}
                     read={read}
