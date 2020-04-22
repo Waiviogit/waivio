@@ -383,7 +383,7 @@
   "debts_pay_all": "Оплатить все",
   "debts_pay_now": "Заплатить сейчас",
   "payment_card_pay_now": "Заплатить сейчас",
-  "payment_page_transfers_with_hashtag_included": "Только перевод с хэштегом \"#waivio\" включен",
+  "payment_page_transfers_with_user_reward_included": "Только переводы с {\"id\":\"user_reward\"} обробляються як винагорода",
   "payment_page_payables": "Задолженность",
   "payment_page_receivables": "Дебиторская задолженность",
   "payment_page_pay_now": "Заплатить сейчас",
