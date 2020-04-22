@@ -11,7 +11,7 @@ import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import { accessTypesArr, getApprovedField, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
@@ -56,6 +56,7 @@ const WobjHeader = ({
   };
   const name = wobject.name || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
+  const status = getApprovedField(wobject, 'status', usedLocale);
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -108,8 +109,8 @@ const WobjHeader = ({
                   fieldName={objectFields.title}
                   objName={wobject.name}
                 />
-              ) : wobject.status ? (
-                getStatusLayout(wobject.status)
+              ) : status ? (
+                getStatusLayout(status)
               ) : (
                 descriptionShort
               )}

@@ -50,7 +50,6 @@
   "generalSearch": "/generalSearch",
   "getGallery": "/gallery",
   "getObjectFollowers": "/followers",
-  "getObjectFollowing": "/following_objects",
   "getObjectTypes": "/objectTypes",
   "getObjects": "/wobject",
   "inactivation": "/validate_inactivation",

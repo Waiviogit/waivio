@@ -253,17 +253,24 @@ export const postAppendWaivioObject = postData =>
     .catch(error => error);
 
 // region Follow API requests
-export const getAllFollowingObjects = (username, skip, limit) =>
-  new Promise((resolve, reject) => {
+export const getAllFollowingObjects = (username, skip, limit) => {
+  const actualHeaders = username
+    ? { ...headers, following: username, follower: username }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers,
+      headers: {
+        ...actualHeaders,
+      },
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
       .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
+};
 
 export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
