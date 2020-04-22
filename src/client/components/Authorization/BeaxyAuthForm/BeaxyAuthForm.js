@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Icon, Input, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -17,6 +17,8 @@ const BeaxyAuthForm = ({
   btnText,
   onAuthSuccessAction,
   intl,
+  hideForm,
+  hasSingInParent,
 }) => {
   const dispatch = useDispatch();
   const { getFieldDecorator, getFieldsError, validateFields } = form;
@@ -94,8 +96,17 @@ const BeaxyAuthForm = ({
     });
   };
 
+  const hideBeaxyForm = () => {
+    hideForm();
+  };
+
   return (
     <div className="bxy-sing-in-form">
+      {hasSingInParent && (
+        <div className="bxy-sing-in-form__back-icon">
+          <Icon type="arrow-left" onClick={hideBeaxyForm} />
+        </div>
+      )}
       <div className="bxy-sing-in-form__logo">{iconsSvg.beaxy}</div>
       <div className="bxy-sing-in-form__error-msg">
         {Boolean(authError) && (
@@ -178,7 +189,7 @@ const BeaxyAuthForm = ({
           })(<Input maxLength={6} />)}
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item className="mb1">
           <Button
             block
             type="primary"
@@ -188,6 +199,16 @@ const BeaxyAuthForm = ({
           >
             {btnText || <FormattedMessage id="login" defaultMessage="Log in" />}
           </Button>
+        </Form.Item>
+        <Form.Item className="bxy-sing-in-form__condition mb1">
+          <FormattedMessage id="or" defaultMessage="or" />
+        </Form.Item>
+        <Form.Item>
+          <a href="https://beaxy.com/register/">
+            <Button block type="primary">
+              <FormattedMessage id="signup" defaultMessage="Sign up" />
+            </Button>
+          </a>
         </Form.Item>
       </Form>
     </div>
@@ -202,10 +223,14 @@ BeaxyAuthForm.propTypes = {
   form: PropTypes.shape().isRequired,
   btnText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   intl: PropTypes.shape().isRequired,
+  hasSingInParent: PropTypes.bool,
+  hideForm: PropTypes.func,
 };
 
 BeaxyAuthForm.defaultProps = {
   btnText: '',
+  hasSingInParent: false,
+  hideForm: () => {},
 };
 
 export default Form.create({ name: 'username' })(injectIntl(BeaxyAuthForm));
