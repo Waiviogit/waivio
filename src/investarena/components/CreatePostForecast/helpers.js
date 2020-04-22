@@ -112,7 +112,7 @@ export const getEditorForecast = (forecast, quotesSettings) => {
     recommend: selectRecommend,
     postPrice: !isNaN(price) ? price : null,
     selectForecast,
-    expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
+    expiredAt: dateTimeValue ? dateTimeValue.utc().format(forecastDateTimeFormat) : null,
     isValid: validateForm(
       selectQuote,
       selectRecommend,

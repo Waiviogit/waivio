@@ -89,11 +89,10 @@ const NotificationsTooltip = props => {
         title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
       >
         <a className="MenuButtons__item-link">
-          {displayBadge ? (
+          {displayBadge && (
             <div className="MenuButtons__notifications-count">{notificationsCountDisplay}</div>
-          ) : (
-            notificationIcon
           )}
+          {notificationIcon}
         </a>
       </PopoverContainer>
     </BTooltip>

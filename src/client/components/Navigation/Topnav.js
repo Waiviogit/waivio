@@ -69,6 +69,7 @@ import { getIsBeaxyUser } from '../../user/usersHelper';
     toggleModal,
   },
 )
+
 class Topnav extends React.Component {
   static handleScrollToTop() {
     if (window) {
@@ -502,7 +503,7 @@ class Topnav extends React.Component {
       dropdownOpen: false,
     });
 
-    if(!this.state.searchData) {
+    if (!this.state.searchData) {
       this.props.resetSearchAutoCompete();
     }
   };
