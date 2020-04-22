@@ -14,6 +14,7 @@ import {
   getLocale,
   getReadLanguages,
   getObjectAlbums,
+  getLastPostId,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -75,6 +76,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const feed = getFeed(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
   const user_languages = getUserLocalesArray(getState);
+  const lastId = getLastPostId(state);
 
   if (!feedContent.length) return Promise.resolve(null);
 
@@ -86,6 +88,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
       skip: feedContent.length,
       limit,
       user_languages,
+      lastId,
     }),
     meta: {
       sortBy,
@@ -149,6 +152,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
   const feed = getFeed(state);
   const feedContent = getFeedFromState('feed', userName, feed);
   const user_languages = getUserLocalesArray(getState);
+  const lastId = getLastPostId(state);
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
@@ -162,6 +166,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       limit,
       skip: countWithWobj,
       user_languages,
+      lastId,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
@@ -207,6 +212,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   const feed = getFeed(state);
   const posts = getPosts(state);
   const user_languages = getUserLocalesArray(getState);
+  const lastId = getLastPostId(state);
 
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -224,6 +230,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
       skip,
       limit,
       user_languages,
+      lastId,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
