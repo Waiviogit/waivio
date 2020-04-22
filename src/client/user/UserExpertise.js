@@ -66,6 +66,7 @@ export default class UserExpertise extends React.Component {
               limit={UserExpertise.limit}
               fetcher={this.fetcher}
               handleObjectCount={this.objectCount}
+              expertize
             />
           </TabPane>
           <TabPane
@@ -87,6 +88,7 @@ export default class UserExpertise extends React.Component {
               limit={UserExpertise.limit}
               fetcher={this.fetcher}
               handleObjectCount={this.objectCount}
+              expertize
             />
           </TabPane>
         </Tabs>

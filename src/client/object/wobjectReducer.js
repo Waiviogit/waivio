@@ -9,6 +9,7 @@ import {
   VOTE_APPEND_SUCCESS,
 } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { getApprovedField } from '../helpers/wObjectHelper';
 
 const initialState = {
   wobject: {},
@@ -38,6 +39,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...state,
           wobject: {
             ...action.payload,
+            name: getApprovedField(action.payload, 'name'),
           },
           isFetching: false,
         };
@@ -246,6 +248,7 @@ export default function wobjectReducer(state = initialState, action) {
       const matchPostIndex = state.wobject.fields.findIndex(
         field => field.permlink === action.payload.permlink,
       );
+      const matchPost = state.wobject.fields[matchPostIndex];
       const percent = action.payload.type === 'approve' ? 100 : -100;
       const voterIndex = action.payload.post.active_votes.findIndex(
         vote => vote.voter === action.payload.voter,
@@ -276,6 +279,31 @@ export default function wobjectReducer(state = initialState, action) {
         isLiked: action.payload.weight % 10 === 0 && action.payload.weight !== 0,
         isReject: action.payload.weight % 10 !== 0 && action.payload.weight !== 0,
       });
+
+      if (matchPost.name === 'categoryItem') {
+        const categoryIndex = state.wobject.tagCategories.findIndex(
+          cat => cat.body === matchPost.tagCategory,
+        );
+        const tagIndex = state.wobject.tagCategories[categoryIndex].categoryItems.findIndex(
+          item => item.name === matchPost.body,
+        );
+
+        state.wobject.tagCategories[categoryIndex].categoryItems.splice(tagIndex, 1, {
+          ...state.wobject.tagCategories[categoryIndex].categoryItems[tagIndex],
+          active_votes: list,
+        });
+      }
+
+      if (matchPost.name === 'tagCategory') {
+        const categoryIndex = state.wobject.tagCategories.findIndex(
+          cat => cat.body === matchPost.body,
+        );
+
+        state.wobject.tagCategories.splice(categoryIndex, 1, {
+          ...state.wobject.tagCategories[categoryIndex],
+          active_votes: list,
+        });
+      }
 
       return {
         ...state,

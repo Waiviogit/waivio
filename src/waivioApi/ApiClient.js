@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
+import { ACCOUNT_UPDATE } from '../common/constants/accountHistory';
 import { message } from 'antd';
 
 let headers = {
@@ -60,7 +61,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, requiredField = []) => {
+export const getObject = (authorPermlink, user, requiredField = []) => {
   let queryString = '';
 
   if (requiredField.length) {
@@ -74,7 +75,7 @@ export const getObject = (authorPermlink, requiredField = []) => {
         }, '?')
       : `?required_fields=${requiredField}`;
   }
-
+  queryString = user ? `?user=${user}${queryString}` : queryString;
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
@@ -106,12 +107,13 @@ export const getMoreFeedContentByObject = ({
   skip = 0,
   limit = 10,
   user_languages,
+  lastId,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_languages }),
+      body: JSON.stringify({ skip, limit, user_languages, lastId }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -161,7 +163,13 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_languages }) =>
+export const getMoreUserFeedContent = ({
+  userName,
+  limit = 10,
+  skip = 0,
+  user_languages,
+  lastId,
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
@@ -170,6 +178,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
         skip,
         limit,
         user_languages,
+        lastId,
       }),
     })
       .then(res => res.json())
@@ -252,17 +261,24 @@ export const postAppendWaivioObject = postData =>
     .catch(error => error);
 
 // region Follow API requests
-export const getAllFollowingObjects = (username, skip, limit) =>
-  new Promise((resolve, reject) => {
+export const getAllFollowingObjects = (username, skip, limit) => {
+  const actualHeaders = username
+    ? { ...headers, following: username, follower: username }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers,
+      headers: {
+        ...actualHeaders,
+      },
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
       .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
+};
 
 export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
@@ -911,9 +927,10 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'account_update2',
+            id: ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
+              json_metadata: '',
               posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },

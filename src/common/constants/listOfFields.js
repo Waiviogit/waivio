@@ -145,6 +145,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.galleryAlbum,
         objectFields.tagCategory,
         objectFields.categoryItem,
+        objectFields.status,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { isNil, some, find } from 'lodash';
-import { Tag } from 'antd';
+import { some, find } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -15,15 +14,12 @@ import PropTypes from 'prop-types';
 import WeightTag from '../components/WeightTag';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
-import { calculateApprovePercent } from '../helpers/wObjectHelper';
-import { dropCategory, replaceBotWithGuestName } from '../helpers/postHelpers';
 import StoryPreview from '../components/Story/StoryPreview';
 import Comments from '../comments/Comments';
 import Slider from '../components/Slider/Slider';
 import AppendObjButtons from '../components/StoryFooter/AppendObjButtons';
 import {
   getAuthenticatedUser,
-  getRewardFund,
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
@@ -34,6 +30,7 @@ import { voteAppends } from './wobjActions';
 import Payout from '../components/StoryFooter/Payout';
 import Confirmation from '../components/StoryFooter/Confirmation';
 import { getVoteValue } from '../helpers/user';
+import ApprovingCard from './ApprovingCard';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
@@ -57,10 +54,8 @@ const AppendCard = props => {
   };
 
   useEffect(() => calculateSliderValue(), []);
-
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
-  const percent = props.post.active_votes && calculateApprovePercent(props.post.active_votes);
 
   function handleLikeClick(post, weight = 10000, type) {
     const { sliderMode, defaultVotePercent } = props;
@@ -152,7 +147,7 @@ const AppendCard = props => {
       </div>
       <div className="Story__content">
         <a
-          href={replaceBotWithGuestName(dropCategory(props.post.url), props.post.guestInfo)}
+          href={`/@${props.post.author_original}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__title"
@@ -162,47 +157,17 @@ const AppendCard = props => {
               id={`object_field_${props.post.append_field_name}`}
               defaultMessage={props.post.append_field_name}
             />
-            {!isNil(props.post.append_field_weight) && (
-              <React.Fragment>
-                <Tag>
-                  <span>
-                    Approval:{' '}
-                    <span
-                      className={`CalculatedPercent-${
-                        percent >= 70 || props.post.upvotedByModerator ? 'green' : 'red'
-                      }`}
-                    >
-                      {props.post.upvotedByModerator ? 100 : percent.toFixed(2)}%
-                    </span>
-                  </span>
-                </Tag>
-                {props.post.upvotedByModerator ? (
-                  <span className="Story__approvedByAdmin">
-                    {props.intl.formatMessage({
-                      id: 'approved_by_admin',
-                      defaultMessage: 'Approved by admin',
-                    })}
-                  </span>
-                ) : (
-                  <span className="MinPercent">
-                    {props.intl.formatMessage({
-                      id: 'min_70_is_required',
-                      defaultMessage: 'Min 70% is required',
-                    })}
-                  </span>
-                )}
-              </React.Fragment>
-            )}
           </h2>
         </a>
         <a
-          href={replaceBotWithGuestName(dropCategory(props.post.url), props.post.guestInfo)}
+          href={`/@${props.post.author_original}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__preview"
         >
           <StoryPreview post={props.post} />
         </a>
+        <ApprovingCard post={props.post} />
       </div>
       <div className="Story__footer">
         <div className="StoryFooter__actions">
@@ -232,7 +197,6 @@ const AppendCard = props => {
 
 AppendCard.propTypes = {
   post: PropTypes.shape().isRequired,
-  intl: PropTypes.shape().isRequired,
   defaultVotePercent: PropTypes.number.isRequired,
   voteAppends: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
@@ -242,7 +206,6 @@ AppendCard.propTypes = {
 const mapStateToProps = state => ({
   defaultVotePercent: getVotePercent(state),
   sliderMode: getVotingPower(state),
-  rewardFund: getRewardFund(state),
   showNSFWPosts: getShowNSFWPosts(state),
   user: getAuthenticatedUser(state),
   isGuest: isGuestUser(state),

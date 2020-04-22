@@ -133,7 +133,11 @@ export const calculateApprovePercent = votes => {
 
 export const addActiveVotesInField = (wobj, field) => {
   const matchField = _.get(wobj, 'fields', []).find(
-    wobjField => field.id && wobjField.body === field.id,
+    wobjField =>
+      wobjField.body === field.id ||
+      wobjField.permlink === field.permlink ||
+      wobjField.body === field.name ||
+      wobjField.body === field.body,
   );
   const activeVotes = matchField ? matchField.active_votes : [];
 
@@ -153,7 +157,7 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
     if (!field.active_votes || field.active_votes.length) {
       mapedField = addActiveVotesInField(wobj, field);
     }
-
+   
     return (
       mapedField.name === fieldName &&
       calculateApprovePercent(mapedField.active_votes) >= 70 &&
