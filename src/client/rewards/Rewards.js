@@ -501,17 +501,19 @@ class Rewards extends React.Component {
           <Helmet>
             <title>Waivio</title>
             <meta
+              name="og:title"
               property="og:title"
               content={`${intl.formatMessage({
                 id: 'rewards',
                 defaultMessage: 'Rewards',
               })} - Waivio`}
             />
-            <meta property="og:type" content="article" />
+            <meta name="og:type" property="og:type" content="article" />
             <meta
+              name="og:image"
               property="og:image"
               content={
-                'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+                'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e'
               }
             />
             <meta property="og:site_name" content="Waivio" />
