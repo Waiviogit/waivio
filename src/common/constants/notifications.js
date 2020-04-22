@@ -6,6 +6,7 @@ export const REBLOG = 'reblog';
 export const WITNESS_VOTE = 'witness_vote';
 export const TRANSFER = 'transfer';
 export const STATUS_CHANGE = 'status-change';
+export const POWER_DOWN = 'power_down';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -16,6 +17,7 @@ export const PARSED_NOTIFICATIONS = [
   WITNESS_VOTE,
   TRANSFER,
   STATUS_CHANGE,
+  POWER_DOWN,
 ];
 
 export const BUSY_API_TYPES = {

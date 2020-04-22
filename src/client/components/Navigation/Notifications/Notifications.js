@@ -13,6 +13,7 @@ import NotificationReblog from './NotificationReblog';
 import NotificationTransfer from './NotificationTransfer';
 import NotificationVoteWitness from './NotificationVoteWitness';
 import NotificationChangeStatus from './NotificationChangeStatus';
+import NotificationPowerDown from './NotificationPowerDown';
 import './Notification.less';
 import './Notifications.less';
 import Loading from '../../Icon/Loading';
@@ -219,6 +220,15 @@ class Notifications extends React.Component {
               case notificationConstants.STATUS_CHANGE:
                 return (
                   <NotificationChangeStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.POWER_DOWN:
+                return (
+                  <NotificationPowerDown
                     key={key}
                     notification={notification}
                     read={read}

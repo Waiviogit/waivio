@@ -112,7 +112,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           status: notification.newStatus,
         },
       );
-
+    case notificationConstants.POWER_DOWN:
+      return intl.formatMessage(
+        {
+          id: 'power_down_notification',
+          defaultMessage: "{username} initiated 'Power Down' on {amount}",
+        },
+        {
+          username: notification.account,
+          amount: notification.amount,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -138,6 +148,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}`;
     case notificationConstants.STATUS_CHANGE:
       return `/object/${notification.author_permlink}/updates/status`;
+    case notificationConstants.POWER_DOWN:
+      return `/@${notification.account / 'transfers'}`;
     default:
       return '/notifications-list';
   }
@@ -160,6 +172,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account;
     case notificationConstants.STATUS_CHANGE:
       return notification.author;
+    case notificationConstants.POWER_DOWN:
+      return notification.account;
     default:
       return currentAuthUsername;
   }
