@@ -35,7 +35,7 @@ const Discover = ({ intl, match, history }) => {
           name="og:image"
           property="og:image"
           content={
-            'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e'
+            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
           }
         />
         <meta property="og:site_name" content="Waivio" />

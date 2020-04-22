@@ -185,18 +185,13 @@ export default class User extends React.Component {
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const image =
       getAvatarURL(username) ||
-      'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e';
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
     const isSameUser = authenticated && authenticatedUser.name === username;
 
     const isAboutPage = match.params['0'] === 'about';
-    console.log(image);
-    console.log(desc);
-    console.log(canonicalUrl);
-    console.log(url);
-    console.log(title);
 
     return (
       <div className="main-panel">
@@ -225,7 +220,7 @@ export default class User extends React.Component {
             property="twitter:image"
             content={
               image ||
-              'https://waivio.nyc3.digitaloceanspaces.com/1586860195_f1e17c2d-5138-4462-9a6d-5468276e208e'
+              'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
             }
           />
         </Helmet>
