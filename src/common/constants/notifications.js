@@ -19,6 +19,7 @@ export const PARSED_NOTIFICATIONS = [
   TRANSFER,
   STATUS_CHANGE,
   POWER_DOWN,
+  FILL_ORDER,
 ];
 
 export const BUSY_API_TYPES = {
