@@ -100,6 +100,41 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
             },
             { username: displayUsername ? notification.account : '' },
           );
+    case notificationConstants.STATUS_CHANGE:
+      return intl.formatMessage(
+        {
+          id: 'status_change',
+          defaultMessage: '{username} marked {restaurant} as {status}',
+        },
+        {
+          username: notification.author,
+          restaurant: notification.object_name,
+          status: notification.newStatus,
+        },
+      );
+    case notificationConstants.POWER_DOWN:
+      return intl.formatMessage(
+        {
+          id: 'power_down_notification',
+          defaultMessage: "{username} initiated 'Power Down' on {amount}",
+        },
+        {
+          username: notification.account,
+          amount: notification.amount,
+        },
+      );
+    case notificationConstants.FILL_ORDER:
+      return intl.formatMessage(
+        {
+          id: 'fill_order_notification',
+          defaultMessage: 'You bought {current_pays} and get {open_pays} from {exchanger}',
+        },
+        {
+          current_pays: notification.current_pays,
+          open_pays: notification.open_pays,
+          exchanger: notification.exchanger,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -123,6 +158,12 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}`;
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
+    case notificationConstants.STATUS_CHANGE:
+      return `/object/${notification.author_permlink}/updates/status`;
+    case notificationConstants.POWER_DOWN:
+      return `/@${notification.account / 'transfers'}`;
+    case notificationConstants.FILL_ORDER:
+      return `/@${notification.account / 'transfers'}`;
     default:
       return '/notifications-list';
   }
@@ -142,6 +183,12 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.from;
     case notificationConstants.REBLOG:
     case notificationConstants.WITNESS_VOTE:
+      return notification.account;
+    case notificationConstants.STATUS_CHANGE:
+      return notification.author;
+    case notificationConstants.POWER_DOWN:
+      return notification.account;
+    case notificationConstants.FILL_ORDER:
       return notification.account;
     default:
       return currentAuthUsername;
