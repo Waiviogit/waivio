@@ -69,6 +69,7 @@ import { getIsBeaxyUser } from '../../user/usersHelper';
     toggleModal,
   },
 )
+
 class Topnav extends React.Component {
   static handleScrollToTop() {
     if (window) {
