@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { message, Tooltip } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
@@ -45,11 +45,21 @@ const TradingForm = ({
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
-          <FormattedMessage id="trading_form_available" defaultMessage="Available" />
-          :&nbsp;&nbsp;
-          <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
-          &nbsp;
-          {wallet.currency}
+          {wallet.id ? (
+            <React.Fragment>
+              <FormattedMessage id="trading_form_available" defaultMessage="Available" />
+              :&nbsp;&nbsp;
+              <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
+              &nbsp;
+              {wallet.currency}
+            </React.Fragment>
+          ) : (
+            <a href="https://uat-exchange.tokenexus.com">
+              <Button className="st-trading-form__button-wrap-uppercase" type="primary" ghost>
+                <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
+              </Button>
+            </a>
+          )}
         </div>
       </div>
 
