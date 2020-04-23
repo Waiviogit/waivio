@@ -472,7 +472,6 @@ class Rewards extends React.Component {
       cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         ? cryptosPriceHistory[HBD.coinGeckoId].usdPriceHistory.usd
         : 0;
-
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
       currentSteemPrice,
@@ -500,17 +499,19 @@ class Rewards extends React.Component {
           <Helmet>
             <title>Waivio</title>
             <meta
+              name="og:title"
               property="og:title"
               content={`${intl.formatMessage({
                 id: 'rewards',
                 defaultMessage: 'Rewards',
               })} - Waivio`}
             />
-            <meta property="og:type" content="article" />
+            <meta name="og:type" property="og:type" content="article" />
             <meta
+              name="og:image"
               property="og:image"
               content={
-                'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+                'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
               }
             />
             <meta property="og:site_name" content="Waivio" />

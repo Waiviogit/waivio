@@ -869,6 +869,7 @@
   "paymentTable_review": "Review",
   "paymentTable_review_by_user": "by @{userName} (requested by @{sponsorName})",
   "paymentTable_review_by": "by",
+  "paymentTable_review_to": "to",
   "paymentTable_requested_by": "requested by",
   "paymentTable_reservation": "Reservation",
   "paymentTable_from": "from",
@@ -1070,5 +1071,9 @@
   "append_form_NSFW": "NSFW (not safe for work)",
   "append_form_flagged": "Flagged",
   "author_rewards": "Author rewards",
-  "replied_to_your_comment": "{username} replied to your comment"
+  "replied_to_your_comment": "{username} replied to your comment",
+  "status_change": "{username} marked {restaurant} as {status}",
+  "power_down_notification": "{username} initiated 'Power Down' on {amount}",
+  "fill_order_notification": "You bought {current_pays} and get {open_pays} from {exchanger}",
+  "paymentTable_payment": "Payment"
 }

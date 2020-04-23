@@ -14,7 +14,6 @@ import PropTypes from 'prop-types';
 import WeightTag from '../components/WeightTag';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
-import { dropCategory, replaceBotWithGuestName } from '../helpers/postHelpers';
 import StoryPreview from '../components/Story/StoryPreview';
 import Comments from '../comments/Comments';
 import Slider from '../components/Slider/Slider';
@@ -148,7 +147,7 @@ const AppendCard = props => {
       </div>
       <div className="Story__content">
         <a
-          href={replaceBotWithGuestName(dropCategory(props.post.url), props.post.guestInfo)}
+          href={`/@${props.post.author_original}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__title"
@@ -161,7 +160,7 @@ const AppendCard = props => {
           </h2>
         </a>
         <a
-          href={replaceBotWithGuestName(dropCategory(props.post.url), props.post.guestInfo)}
+          href={`/@${props.post.author_original}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__preview"

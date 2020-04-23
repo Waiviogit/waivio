@@ -107,12 +107,13 @@ export const getMoreFeedContentByObject = ({
   skip = 0,
   limit = 10,
   user_languages,
+  lastId,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_languages }),
+      body: JSON.stringify({ skip, limit, user_languages, lastId }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -162,7 +163,13 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_languages }) =>
+export const getMoreUserFeedContent = ({
+  userName,
+  limit = 10,
+  skip = 0,
+  user_languages,
+  lastId,
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
@@ -171,6 +178,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
         skip,
         limit,
         user_languages,
+        lastId,
       }),
     })
       .then(res => res.json())
@@ -253,22 +261,31 @@ export const postAppendWaivioObject = postData =>
     .catch(error => error);
 
 // region Follow API requests
-export const getAllFollowingObjects = (username, skip, limit) =>
-  new Promise((resolve, reject) => {
+export const getAllFollowingObjects = (username, skip, limit, authUser) => {
+  const actualHeaders = authUser
+    ? { ...headers, following: authUser, follower: authUser }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers,
+      headers: actualHeaders,
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
       .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
+};
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
-  new Promise((resolve, reject) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => {
+  const actualHeaders = authUser
+    ? { ...headers, following: authUser, follower: authUser }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
-      headers,
+      headers: actualHeaders,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -277,11 +294,16 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .then(result => resolve(result || []))
       .catch(error => reject(error));
   });
+};
 
-export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
-  new Promise((resolve, reject) => {
+export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser) => {
+  const actualHeaders = authUser
+    ? { ...headers, following: authUser, follower: authUser }
+    : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
-      headers,
+      headers: actualHeaders,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -290,14 +312,15 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
 
-export const getUserAccount = (username, with_followings = false) =>
+export const getUserAccount = (username, with_followings = false, authUser) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`, {
       headers: {
         ...headers,
-        following: username,
-        follower: username,
+        following: authUser,
+        follower: authUser,
       },
     })
       .then(res => res.json())
@@ -386,18 +409,21 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
-export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) =>
-  new Promise((resolve, reject) => {
+export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) => {
+  const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
+
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
-      headers,
+      headers: actualHeader,
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user }),
+      body: JSON.stringify({ skip, limit }),
     })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
 
 export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
   new Promise((resolve, reject) => {
@@ -864,15 +890,15 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
     .catch(err => console.error(err));
 };
 
-export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
+export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser) => {
+  const actualHeaders = authUser
+    ? { ...headers, following: authUser, follower: authUser }
+    : headers;
+
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
     {
-      headers: {
-        ...headers,
-        following: username,
-        follower: username,
-      },
+      headers: actualHeaders,
     },
   )
     .then(res => res.json())

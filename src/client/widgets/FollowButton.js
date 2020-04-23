@@ -9,7 +9,6 @@ import {
   getPendingFollows,
   getPendingFollowingObjects,
 } from '../reducers';
-import { followUser, unfollowUser } from '../user/userActions';
 import { followObject, unfollowObject } from '../object/wobjActions';
 import withAuthAction from '../auth/withAuthActions';
 import Follow from '../components/Button/Follow';
@@ -28,9 +27,7 @@ import Follow from '../components/Button/Follow';
   dispatch =>
     bindActionCreators(
       {
-        followUser,
         followObject,
-        unfollowUser,
         unfollowObject,
       },
       dispatch,
@@ -49,6 +46,7 @@ class FollowButton extends React.Component {
     followObject: PropTypes.func,
     unfollowUser: PropTypes.func,
     unfollowObject: PropTypes.func,
+    user: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -62,6 +60,7 @@ class FollowButton extends React.Component {
     followObject: () => {},
     unfollowUser: () => {},
     unfollowObject: () => {},
+    user: {},
   };
 
   constructor(props) {
@@ -72,7 +71,7 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
-    const { following, followingType } = this.props;
+    const { following, followingType, user } = this.props;
     const isFollowed = this.props.followingList.includes(following);
 
     switch (followingType) {
@@ -84,10 +83,10 @@ class FollowButton extends React.Component {
         }
         break;
       case 'user':
-        if (isFollowed) {
-          this.props.unfollowUser(following);
+        if (following) {
+          this.props.unfollowUser(user.name);
         } else {
-          this.props.followUser(following);
+          this.props.followUser(user.name);
         }
         break;
       default:
@@ -104,12 +103,14 @@ class FollowButton extends React.Component {
       following,
       followingList,
       pendingFollows,
+      followingType,
       secondary,
+      user,
     } = this.props;
-    const followed = followingList.includes(following);
-    const pending = pendingFollows.includes(following);
+    const followed = followingType === 'user' ? following : followingList.includes(following);
+    const pending = followingType === 'user' ? user.pending : pendingFollows.includes(following);
 
-    if (authenticatedUserName === following) return null;
+    if (authenticatedUserName === following || authenticatedUserName === user.name) return null;
 
     return (
       <Follow
