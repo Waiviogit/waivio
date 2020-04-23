@@ -224,9 +224,9 @@ export const getDetailsBody = (
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
 <ul><li>Minimum ${
     proposition.requirements.minPhotos
-  } original photos of <a href="/object/${proposedWobjName}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>
-<li>Link to <a href="/object/${proposition.requiredObject ||
-    proposition.requiredObject.author_permlink}">${primaryObjectName}</a></li></ul> `;
+  } original photos of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>
+<li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
+    proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);

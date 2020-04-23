@@ -167,7 +167,7 @@ class EditPost extends Component {
 
   handleSubmit() {
     const postData = this.buildPost();
-    this.props.createPost(postData);
+    this.props.createPost(postData, this.props.beneficiariesAll);
   }
 
   handleToggleLinkedObject(objId, isLinked) {
@@ -213,14 +213,12 @@ class EditPost extends Component {
       permlink,
       originalBody,
     } = this.state;
-    const { beneficiariesAll } = this.props;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
       body: postBody,
       title: postTitle,
       lastUpdated: Date.now(),
-      beneficiariesAll,
       isUpdating,
       draftId,
       ...settings,

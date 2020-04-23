@@ -192,7 +192,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
-export function createPost(postData) {
+export function createPost(postData, beneficiariesAll) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -210,7 +210,6 @@ export function createPost(postData) {
       upvote,
       draftId,
       isUpdating,
-      beneficiariesAll,
     } = postData;
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
