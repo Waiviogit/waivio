@@ -1078,7 +1078,7 @@
   "sponsor": "Sponsor",
   "from": "From",
   "till": "Till:",
-  "total_amount": "Or total amount:",
+  "or_total_amount": "Or total amount:",
   "enter_amount": "Enter amount",
   "include_processing_fees": "Include processing fees",
   "with_links_to_object": "With links to an object",
@@ -1089,5 +1089,6 @@
   "paymentTable_amount_USD": "Amount USD",
   "paymentTable_balance_USD": "Balance USD",
   "reviews_sponsor": "Reviews sponsored by",
-  "total_amount": "Total amount:"
+  "total_amount": "Total amount:",
+  "choose_object": "Please choose object"
 }

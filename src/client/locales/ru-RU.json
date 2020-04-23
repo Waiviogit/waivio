@@ -1082,7 +1082,7 @@
   "sponsor": "Спонсор",
   "from": "От",
   "till": "До:",
-  "total_amount": "Или общая сумма:",
+  "or_total_amount": "Или общая сумма:",
   "enter_amount": "Введите сумму",
   "include_processing_fees": "Включить сборы",
   "with_links_to_object": "Со ссылками на объект",
@@ -1090,5 +1090,6 @@
   "select_date": "Пожалуйста, выберите дату",
   "select_time": "Пожалуйста, выберите время",
   "reviews_sponsor": "Отзывы спонсируются",
-  "total_amount": "Общая сумма:"
+  "total_amount": "Общая сумма:",
+  "choose_object": "Пожалуйста, выберите объект"
 }
