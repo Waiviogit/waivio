@@ -111,7 +111,6 @@ class ReportsForm extends Component {
     );
 
     const objectName = getFieldWithMaxWeight(object, 'name');
-    console.log(this.state.dateFrom);
 
     return (
       <div className="CreateReportForm">
