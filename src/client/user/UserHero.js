@@ -84,7 +84,6 @@ const UserHero = ({
                 <UserHeader
                   user={user}
                   username={username}
-                  handle={user.name}
                   vestingShares={parseFloat(user.vesting_shares)}
                   isSameUser={isSameUser}
                   coverImage={coverImage}

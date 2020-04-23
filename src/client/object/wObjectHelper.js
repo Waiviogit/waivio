@@ -25,12 +25,15 @@ import { calculateApprovePercent } from '../helpers/wObjectHelper';
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
   const { type, sortCustom } = wobj;
-  const menuItems = get(wobj, 'fields', null).filter(
-    field =>
-      field.type === 'menuList' &&
-      calculateApprovePercent(field.active_votes) >= 70 &&
-      !field.status,
-  );
+  const wobject = get(wobj, 'fields', null);
+  const menuItems =
+    wobject &&
+    wobject.filter(
+      field =>
+        field.type === 'menuList' &&
+        calculateApprovePercent(field.active_votes) >= 70 &&
+        !field.status,
+    );
 
   switch (type && type.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
