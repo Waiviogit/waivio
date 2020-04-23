@@ -78,13 +78,20 @@ const ModalSignIn = ({ visible, next, isAuth, isLoaded, isAuthAction, hideModal 
     setIsLoginForm(true);
   };
 
+  const hideBeaxyForm = () => {
+    setUserData({});
+    setIsLoginForm(false);
+  };
+
   const renderSignIn = loginWithCredentials =>
     loginWithCredentials ? (
       <BeaxyAuthForm
+        hideForm={hideBeaxyForm}
         authRequest={beaxyLoginByCredentials}
         auth2FARequest={beaxy2FALogin}
         firstLoginResponse={loginByCredentialsResponse}
         onAuthSuccessAction={beaxyLogin}
+        hasSingInParent
       />
     ) : (
       <React.Fragment>
