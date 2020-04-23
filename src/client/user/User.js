@@ -83,7 +83,6 @@ export default class User extends React.Component {
 
   componentDidMount() {
     const {
-      user,
       authenticated,
       authenticatedUserName,
       usersAccountHistory,
@@ -91,9 +90,7 @@ export default class User extends React.Component {
       getUserAccountHistory,
       match,
     } = this.props;
-    if (!user.id && !user.failed) {
-      this.props.getUserAccount(this.props.match.params.name);
-    }
+    this.props.getUserAccount(this.props.match.params.name);
 
     if (authenticated) {
       currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
@@ -128,7 +125,11 @@ export default class User extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
+    if (
+      prevProps.match.params.name !== this.props.match.params.name ||
+      (!prevProps.authenticatedUserName && this.props.authenticatedUserName) ||
+      (prevProps.match.url.includes('follow') && !this.props.match.url.includes('follow'))
+    ) {
       this.props.getUserAccount(this.props.match.params.name);
     }
   }
