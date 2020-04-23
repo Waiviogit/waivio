@@ -1174,7 +1174,7 @@ export default class AppendForm extends Component {
                 </Select>,
               )}
             </Form.Item>
-            {statusTitle === 'relisted' || statusTitle === 'nsfw' || statusTitle === 'flagged' ? (
+            {statusTitle === 'relisted' ? (
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),

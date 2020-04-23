@@ -236,6 +236,7 @@ class CampaignFooter extends React.Component {
       toggleModalDetails,
       requiredObjectName,
       loading,
+      proposition,
     } = this.props;
     return (
       <div className="CampaignFooter">
@@ -260,6 +261,7 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
+              propositionGuideName={proposition.guide.name}
             />
           )}
         </div>

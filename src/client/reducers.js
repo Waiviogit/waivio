@@ -71,6 +71,7 @@ export const getIsPostLoaded = (state, author, permlink) =>
   fromPosts.getIsPostLoaded(state.posts, author, permlink);
 export const getIsPostFailed = (state, author, permlink) =>
   fromPosts.getIsPostFailed(state.posts, author, permlink);
+export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
 
 export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
 export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);

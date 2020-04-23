@@ -1072,5 +1072,8 @@
   "append_form_flagged": "Flagged",
   "author_rewards": "Author rewards",
   "replied_to_your_comment": "{username} replied to your comment",
-  "paymentTable_payment": "Payment" 
+  "status_change": "{username} marked {restaurant} as {status}",
+  "power_down_notification": "{username} initiated 'Power Down' on {amount}",
+  "fill_order_notification": "You bought {current_pays} and get {open_pays} from {exchanger}",
+  "paymentTable_payment": "Payment"
 }

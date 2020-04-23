@@ -28,7 +28,6 @@ const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
             />
           )}
         </div>
-
         <span className="UserWalletTransactions__payout">{amount}</span>
       </div>
       <span className="UserWalletTransactions__timestamp">

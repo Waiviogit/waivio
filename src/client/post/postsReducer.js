@@ -3,6 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
+import { FAKE_REBLOG_POST } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -37,6 +38,7 @@ const initialState = {
   pendingLikes: {},
   list: {},
   postsStates: {},
+  lastId: null,
 };
 
 const posts = (state = initialState, action) => {
@@ -64,6 +66,9 @@ const posts = (state = initialState, action) => {
       const list = {
         ...state.list,
       };
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
       const postsStates = {
         ...state.postsStates,
       };
@@ -77,11 +82,11 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-
       return {
         ...state,
         list,
         postsStates,
+        lastId,
       };
     }
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
@@ -107,11 +112,15 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       return {
         ...state,
         list,
         postsStates,
+        lastId,
       };
     }
     case postsActions.GET_CONTENT.START:
@@ -148,6 +157,10 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+
       return {
         ...state,
         list: {
@@ -160,6 +173,7 @@ const posts = (state = initialState, action) => {
             id: key,
           },
         },
+        lastId,
         postsStates: {
           ...state.postsStates,
           [key]: {
@@ -226,6 +240,20 @@ const posts = (state = initialState, action) => {
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
 
+    case FAKE_REBLOG_POST: {
+      const rebloggedPost = state.list[action.payload.postId];
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload.postId]: {
+            ...rebloggedPost,
+            reblogged_users: [...rebloggedPost.reblogged_users, action.payload.userName],
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
@@ -244,3 +272,4 @@ export const getIsPostLoaded = (state, author, permlink) =>
   state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].loaded;
 export const getIsPostFailed = (state, author, permlink) =>
   state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].failed;
+export const getLastPostId = state => state.lastId;

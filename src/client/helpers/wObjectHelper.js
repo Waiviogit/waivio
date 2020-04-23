@@ -157,7 +157,7 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
     if (!field.active_votes || field.active_votes.length) {
       mapedField = addActiveVotesInField(wobj, field);
     }
-
+   
     return (
       mapedField.name === fieldName &&
       calculateApprovePercent(mapedField.active_votes) >= 70 &&
