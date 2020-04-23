@@ -6,6 +6,7 @@ import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
+import { getAuthenticatedUserName } from '../reducers';
 
 require('isomorphic-fetch');
 
@@ -60,6 +61,7 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
 export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
+  const user = getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -71,7 +73,9 @@ export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit).then(data => data.users),
+      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit, user).then(
+        data => data.users,
+      ),
     },
   });
 };
@@ -85,6 +89,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
+  const authUserName = getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -94,7 +99,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName),
     },
   });
 };

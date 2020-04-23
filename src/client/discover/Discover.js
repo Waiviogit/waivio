@@ -32,9 +32,10 @@ const Discover = ({ intl, match, history }) => {
         />
         <meta property="og:type" content="article" />
         <meta
+          name="og:image"
           property="og:image"
           content={
-            'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
           }
         />
         <meta property="og:site_name" content="Waivio" />
