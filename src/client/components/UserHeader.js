@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -11,13 +12,13 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
+import { unfollowUser, followUser } from '../user/usersActions';
 
 import './UserHeader.less';
 
 const UserHeader = ({
   username,
   user,
-  handle,
   vestingShares,
   isSameUser,
   coverImage,
@@ -27,6 +28,8 @@ const UserHeader = ({
   intl,
   rewardFund,
   rate,
+  unfollow,
+  follow,
 }) => {
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
@@ -72,7 +75,7 @@ const UserHeader = ({
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox username={handle} size={100} isActive={isActive} />
+        <AvatarLightbox username={user.name} size={100} isActive={isActive} />
         <div className="UserHeader__user">
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
@@ -92,14 +95,20 @@ const UserHeader = ({
                     </Action>
                   </Link>
                 ) : (
-                  <FollowButton following={handle} followingType="user" />
+                  <FollowButton
+                    unfollowUser={unfollow}
+                    followUser={follow}
+                    following={user.youFollows}
+                    user={user}
+                    followingType="user"
+                  />
                 )}
               </div>
             </div>
           </div>
           <div className="UserHeader__handle-rank-container">
             <div className="UserHeader__row UserHeader__handle">
-              @{handle}
+              @{user.name}
               {isFollowing && (
                 <span className="UserHeader__follows-you">
                   <FormattedMessage id="follows_you" defaultMessage="Follows you" />
@@ -164,7 +173,6 @@ const UserHeader = ({
 UserHeader.propTypes = {
   user: PropTypes.shape(),
   rate: PropTypes.number.isRequired,
-  handle: PropTypes.string,
   username: PropTypes.string,
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
@@ -177,6 +185,8 @@ UserHeader.propTypes = {
     reward_balance: PropTypes.string,
   }).isRequired,
   intl: PropTypes.shape().isRequired,
+  unfollow: PropTypes.func.isRequired,
+  follow: PropTypes.func.isRequired,
 };
 
 UserHeader.defaultProps = {
@@ -191,4 +201,9 @@ UserHeader.defaultProps = {
   onTransferClick: () => {},
 };
 
-export default injectIntl(UserHeader);
+export default injectIntl(
+  connect(null, {
+    unfollow: unfollowUser,
+    follow: followUser,
+  })(UserHeader),
+);

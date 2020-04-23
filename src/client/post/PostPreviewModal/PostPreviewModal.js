@@ -76,7 +76,8 @@ class PostPreviewModal extends Component {
     return (
       nextState.isModalOpen ||
       this.state.isModalOpen ||
-      isContentValid(this.props.content) !== isContentValid(nextProps.content)
+      isContentValid(this.props.content) !== isContentValid(nextProps.content) ||
+      nextProps.content
     );
   }
 
@@ -158,6 +159,9 @@ class PostPreviewModal extends Component {
       topics,
       isGuest,
     } = this.props;
+
+    const { postBody } = splitPostContent(content);
+
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -245,7 +249,11 @@ class PostPreviewModal extends Component {
         <div className="edit-post-controls">
           <Button
             htmlType="button"
-            disabled={!content || !isContentValid(content)}
+            disabled={
+              !content ||
+              !isContentValid(content) ||
+              !postBody.replace(new RegExp('\\*', 'g'), '').trim()
+            }
             onClick={this.showModal}
             size="large"
             className="edit-post-controls__publish-ready-btn"

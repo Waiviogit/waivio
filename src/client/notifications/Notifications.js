@@ -22,6 +22,7 @@ import NotificationTransfer from '../components/Navigation/Notifications/Notific
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
 import Loading from '../components/Icon/Loading';
 import './Notifications.less';
+import NotificationChangeStatus from '../components/Navigation/Notifications/NotificationChangeStatus';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -108,6 +109,10 @@ class Notifications extends React.Component {
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness key={key} notification={notification} read={read} />
+                );
+              case notificationConstants.STATUS_CHANGE:
+                return (
+                  <NotificationChangeStatus key={key} notification={notification} read={read} />
                 );
               default:
                 return null;

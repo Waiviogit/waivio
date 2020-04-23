@@ -115,6 +115,20 @@ class QuickCommentEditor extends React.Component {
             onChange={this.handleMsgChange}
           />
           {_.isEmpty(currentImage) && setImage}
+          {isLoading ? (
+            <Icon
+              type="loading"
+              className="QuickComment__send-comment QuickComment__send-comment--loader"
+            />
+          ) : (
+            <span
+              role="presentation"
+              onClick={this.handleSubmit}
+              className="QuickComment__send-comment"
+            >
+              <img src={'/images/icons/send.svg'} alt="send" />
+            </span>
+          )}
         </div>
         {!_.isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">

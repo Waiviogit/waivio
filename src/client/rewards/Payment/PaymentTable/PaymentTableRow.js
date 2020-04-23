@@ -35,12 +35,26 @@ const PaymentTableRow = ({ intl, sponsor }) => (
                 id: 'paymentTable_review_by',
                 defaultMessage: 'by',
               })}{' '}
-          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-          {intl.formatMessage({
-            id: 'paymentTable_requested_by',
-            defaultMessage: `requested by`,
-          })}{' '}
-          <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
+          {sponsor.type === 'transfer' ? (
+            <React.Fragment>
+              {' '}
+              {intl.formatMessage({
+                id: 'paymentTable_review_to',
+                defaultMessage: 'to',
+              })}
+              <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              (
+              {intl.formatMessage({
+                id: 'paymentTable_requested_by',
+                defaultMessage: `requested by`,
+              })}
+              <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
+            </React.Fragment>
+          )}
         </div>
         {sponsor && sponsor.details && sponsor.details.main_object && (
           <div className="PaymentTable__action-items">
@@ -83,8 +97,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       {sponsor.type === 'transfer' || sponsor.type === 'demo_debt' ? (
         <p>
           {intl.formatMessage({
-            id: 'paymentTable_debt_repayment',
-            defaultMessage: `Debt repayment`,
+            id: 'paymentTable_payment',
+            defaultMessage: 'Payment',
           })}
         </p>
       ) : (
@@ -121,6 +135,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
     </td>
   </tr>
 );
+
 PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,

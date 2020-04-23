@@ -22,6 +22,7 @@ class RateInfo extends React.Component {
     ratingFields: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     authorPermlink: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
+    locale: PropTypes.string.isRequired,
   };
 
   state = {
@@ -71,7 +72,7 @@ class RateInfo extends React.Component {
     const { ratingFields, username } = this.props;
     const rankingList = _.sortBy(ratingFields, ['body']);
     const actualRankingList = rankingList.filter(
-      rate => calculateApprovePercent(rate.active_votes) >= 70,
+      rate => calculateApprovePercent(rate.active_votes) >= 70 && rate.locale === this.props.locale,
     );
 
     return (

@@ -11,6 +11,7 @@ export const FAKE_LIKE_POST = '@post/FAKE_LIKE_POST';
 export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
+export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
 
 export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
@@ -92,6 +93,12 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
       : { postId, voter, weight },
   });
 };
+
+export const reblogPost = (postId, userName) => dispatch =>
+  dispatch({
+    type: FAKE_REBLOG_POST,
+    payload: { postId, userName },
+  });
 
 export const voteCommentFromRewards = (postId, author, permlink, weight = 10000) => (
   dispatch,
