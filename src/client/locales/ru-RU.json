@@ -396,6 +396,7 @@
   "paymentTable_review": "Обзор",
   "paymentTable_review_by_user": "от @{userName} (оп запросу @{sponsorName})",
   "paymentTable_review_by": "от",
+  "paymentTable_review_to": "k",
   "paymentTable_requested_by": "по запросу",
   "paymentTable_reservation": "Резервирование",
   "paymentTable_from": "от",
@@ -1074,5 +1075,6 @@
   "append_form_NSFW": "NSFW (небезопасно для работы)",
   "append_form_flagged": "С пометкой",
   "author_rewards": "Авторские награды",
-  "replied_to_your_comment": "{username} ответил на ваш комментарий"
+  "replied_to_your_comment": "{username} ответил на ваш комментарий",
+  "paymentTable_payment": "Оплата" 
 }
