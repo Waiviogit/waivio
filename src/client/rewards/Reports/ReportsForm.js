@@ -24,7 +24,6 @@ class ReportsForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log(this.props.form.values);
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
