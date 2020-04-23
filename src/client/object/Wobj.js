@@ -173,7 +173,7 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
-    if (!objectName && !isFetching)
+    if (!objectName && !isFetching) {
       return (
         <div className="main-panel">
           <NotFound
@@ -183,11 +183,13 @@ export default class Wobj extends React.Component {
           />
         </div>
       );
+    }
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
     const desc = `${objectName || ''}`;
+
     const image =
       wobject.avatar ||
-      'https://cdn.images.hive.blog/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
@@ -204,24 +206,29 @@ export default class Wobj extends React.Component {
         <Helmet>
           <title>{objectName}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta property="description" content={desc} />
-          <meta property="og:title" content={objectName} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image} />
-          <meta property="og:image:width" content="600" />
-          <meta property="og:image:height" content="600" />
-          <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Waivio" />
-          <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@waivio'} />
-          <meta property="twitter:title" content={objectName} />
-          <meta property="twitter:description" content={desc} />
+          <meta name="og:description" property="description" content={desc} />
+          <meta name="og:title" property="og:title" content={objectName} />
+          <meta name="og:type" property="og:type" content="article" />
+          <meta name="og:url" property="og:url" content={url} />
+          <meta name="og:image" property="og:image" content={image} />
+          <meta name="og:image:width" property="og:image:width" content="600" />
+          <meta name="og:image:height" property="og:image:height" content="600" />
+          <meta name="og:description" property="og:description" content={desc} />
+          <meta name="og:site_name" property="og:site_name" content="Waivio" />
           <meta
+            name="twitter:card"
+            property="twitter:card"
+            content={image ? 'summary_large_image' : 'summary'}
+          />
+          <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" property="twitter:title" content={objectName} />
+          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta
+            name="twitter:image"
             property="twitter:image"
             content={
               image ||
-              'https://cdn.images.hive.blog/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+              'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
             }
           />
         </Helmet>
