@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { map } from 'lodash';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import './PaymentTable.less';
 // import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
@@ -66,11 +67,13 @@ const PaymentTableRow = ({ intl, sponsor }) => (
                 id: 'beneficiaries-weights',
                 defaultMessage: `Beneficiaries`,
               })}
-              : {/* {Object.keys(sponsor.details.beneficiaries).map((benef, index) => ( */}
-              {/*  <Link to={`/@${benef[index]}`}> */}
-              {/*    {benef[index]} */}
-              {/*  </Link> */}
-              {/* ))} */}
+              :{' '}
+              {map(sponsor.details.beneficiaries, benef => (
+                <React.Fragment>
+                  <Link to={`/@${benef.account}`}>{benef.account}</Link>
+                  <span>{` (${benef.weight / 100}%) `}</span>
+                </React.Fragment>
+              ))}
             </div>
           </div>
         )}

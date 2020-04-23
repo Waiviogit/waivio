@@ -1076,5 +1076,19 @@
   "author_rewards": "Авторские награды",
   "beneficiaries-weights": "Получатели",
   "find_users_placeholder": "Найти пользователей",
-  "replied_to_your_comment": "{username} ответил на ваш комментарий"
+  "replied_to_your_comment": "{username} ответил на ваш комментарий",
+  "paymentTable_report": "Отчет",
+  "reports": "Отчеты",
+  "sponsor": "Спонсор",
+  "from": "От",
+  "till": "До:",
+  "total_amount": "Или общая сумма:",
+  "enter_amount": "Введите сумму",
+  "include_processing_fees": "Включить сборы",
+  "with_links_to_object": "Со ссылками на объект",
+  "choose_sponsor_name": "Пожалуйста, выберите имя спонсора",
+  "select_date": "Пожалуйста, выберите дату",
+  "select_time": "Пожалуйста, выберите время",
+  "reviews_sponsor": "Отзывы спонсируются",
+  "total_amount": "Общая сумма:"
 }

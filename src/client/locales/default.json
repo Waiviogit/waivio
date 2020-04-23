@@ -1073,5 +1073,21 @@
   "beneficiaries-weights": "Beneficiaries",
   "find_users_placeholder": "Find users",
   "replied_to_your_comment": "{username} replied to your comment",
-  "paymentTable_report": "Report"
+  "paymentTable_report": "Report",
+  "reports": "Reports",
+  "sponsor": "Sponsor",
+  "from": "From",
+  "till": "Till:",
+  "total_amount": "Or total amount:",
+  "enter_amount": "Enter amount",
+  "include_processing_fees": "Include processing fees",
+  "with_links_to_object": "With links to an object",
+  "choose_sponsor_name": "Please choose sponsor name",
+  "select_date": "Please select date",
+  "select_time": "Please select time",
+  "paymentTable_data_time": "Date Time (GMT)",
+  "paymentTable_amount_USD": "Amount USD",
+  "paymentTable_balance_USD": "Balance USD",
+  "reviews_sponsor": "Reviews sponsored by",
+  "total_amount": "Total amount:"
 }
