@@ -7,9 +7,6 @@ import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
 import CreateImage from './CreateImage';
-
-import './ObjectGallery.less';
-
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -19,6 +16,8 @@ import {
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+
+import './ObjectGallery.less';
 
 @withEditor
 @connect(state => ({
