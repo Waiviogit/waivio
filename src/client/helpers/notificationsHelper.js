@@ -161,9 +161,9 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.STATUS_CHANGE:
       return `/object/${notification.author_permlink}/updates/status`;
     case notificationConstants.POWER_DOWN:
-      return `/@${notification.account / 'transfers'}`;
+      return `/@${notification.account}/transfers`;
     case notificationConstants.FILL_ORDER:
-      return `/@${notification.account / 'transfers'}`;
+      return `/@${notification.account}/transfers`;
     default:
       return '/notifications-list';
   }
