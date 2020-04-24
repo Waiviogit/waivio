@@ -13,6 +13,7 @@ import USDDisplay from '../components/Utils/USDDisplay';
 import CurrencyItem from './CurrencyItem/CurrencyItem';
 
 import './UserWalletSummary.less';
+import { Button } from 'antd';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
   const totalDelegatedSP = calculateTotalDelegatedSP(
@@ -118,6 +119,11 @@ const UserWalletSummary = ({
             </div>
           </div>
         )}
+        <a href="https://uat-exchange.tokenexus.com">
+          <Button className="UserWalletSummary__add-wallet mb1" size="large" type="primary">
+            <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
+          </Button>
+        </a>
       </React.Fragment>
     )}
     <div className="UserWalletSummary">

@@ -1,0 +1,27 @@
+@import (reference) '../styles/common';
+@import (reference) '../styles/modules/variables.less';
+
+.UserActivitySearchLoading {
+  position: relative;
+  color: #353535;
+  border: 1px solid @normal-grey;
+  border-radius: 4px;
+  margin-top: 5px;
+  padding: 15px;
+
+  &__header {
+    display: flex;
+
+    .ant-card-loading-block {
+      margin: 0 !important;
+    }
+
+    &__text {
+      margin: -3px 12px;
+
+      p {
+        width: 100%;
+      }
+    }
+  }
+}

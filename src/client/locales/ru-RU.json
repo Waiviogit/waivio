@@ -932,7 +932,7 @@
   "dealsSelect.allTime": "All time",
   "modalStopLoss.header.title": "Стоп лосс",
   "createPost.selectTitle.forecast": "Продолжительность прогноза",
-  "unavailableStatisticsUser": "Пользователь не написал ни одного поста с прогнозами",
+  "unavailableStatisticsUser": "У пользователя нет завершенных прогнозов",
   "performance": "Активность",
   "compare": "Сравнить",
   "compare_profitability": "Cравнить доходность",
@@ -1100,6 +1100,7 @@
   "trading_form_amount": "Сумма",
   "trading_form_total": "Всего",
   "trading_form_fee": "Коммисия",
+  "trading_add_wallet": "Добавить кошелек",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
   "signUp_creditCards": "- кредитные карты"

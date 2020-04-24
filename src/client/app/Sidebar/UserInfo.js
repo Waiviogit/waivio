@@ -156,7 +156,7 @@ class UserInfo extends React.Component {
             <div>
               {intl.formatMessage({
                 id: 'unavailableStatisticsUser',
-                defaultMessage: 'The user has not written any posts with forecasts',
+                defaultMessage: 'User has no completed forecasts',
               })}
             </div>
           </LongTermStatistics>

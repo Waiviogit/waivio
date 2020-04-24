@@ -502,7 +502,7 @@ class Topnav extends React.Component {
       dropdownOpen: false,
     });
 
-    if(!this.state.searchData) {
+    if (!this.state.searchData) {
       this.props.resetSearchAutoCompete();
     }
   };
