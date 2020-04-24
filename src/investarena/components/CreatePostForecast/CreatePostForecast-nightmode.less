@@ -2,6 +2,8 @@
 
 .nightmode {
   .st-create-post-optional {
+    background: @grey-nero;
+
     .ant-collapse {
       background-color: @grey-nero;
       color: @white !important;
@@ -9,6 +11,7 @@
     }
 
     .st-create-post-optional-title,
+    .nav-and-title__title,
     .arrow {
       color: @white;
     }
@@ -24,6 +27,17 @@
 
     .ant-collapse-content-active {
       border-top: 1px solid @normal-grey;
+    }
+  }
+  .st-create-post-optional {
+    .st-create-post-dropdowns {
+      .st-create-post-dropdowns-row {
+        .st-create-post-select-wrap {
+          div {
+            color: #f2f2f2;
+          }
+        }
+      }
     }
   }
 

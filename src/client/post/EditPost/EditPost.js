@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import { Badge } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Badge, Tooltip } from 'antd';
 import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
@@ -87,8 +87,14 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    this.state = getInitialState(props);
+    this.state = {
+      ...getInitialState(props),
+      isForecast: false,
+      title: '',
+    };
 
+    this.toggleForecast = this.toggleForecast.bind(this);
+    this.deleteLinkedObject = this.deleteLinkedObject.bind(this);
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
@@ -122,6 +128,10 @@ class EditPost extends Component {
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
+
+  setTitle = e => {
+    this.setState({ title: e.target.value });
+  };
 
   getLinkedObjects = async contentStateRaw => {
     const { forecastValues, linkedObjects } = this.state;
@@ -316,10 +326,21 @@ class EditPost extends Component {
 
     this.props.saveDraft(draft, redirect, this.props.intl);
 
-    // if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
-    //   this.setState({ draftContent: { title: draft.title, body: draft.body } });
-    // }
+    if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
+      this.setState({ draftContent: { title: this.state.title, body: draft.body } });
+    }
   }, 1500);
+
+  deleteLinkedObject = objectName => {
+    const newLinkedObject = [];
+    this.state.linkedObjects.forEach(object => {
+      if (object.name !== objectName && object.default_name !== objectName)
+        newLinkedObject.push(object);
+    });
+    this.setState({ linkedObjects: newLinkedObject });
+  };
+
+  toggleForecast = () => this.setState({ isForecast: !this.state.isForecast });
 
   render() {
     const {
@@ -340,12 +361,76 @@ class EditPost extends Component {
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
+            {/*<div>{intl.formatMessage({ id: 'title', defaultMessage: 'Add title' })}</div>*/}
             <Editor
+              intl={this.props.intl}
               enabled={!imageLoading}
               initialContent={draftContent}
               locale={locale}
+              setTitle={this.setTitle}
               onChange={this.handleChangeContent}
             />
+            <div className="edit-post__add-topic add-topic">
+              <Tooltip
+                title={intl.formatMessage({ id: 'edit_tooltip', defaultMessage: 'Add object' })}
+                placement="bottomLeft"
+                overlayClassName="custom-tooltip"
+              >
+                <img
+                  className="add-topic__support"
+                  alt="support-icon"
+                  src="./images/icons/support-icon.svg"
+                />
+              </Tooltip>
+              <div className="add-topic__title">
+                {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
+              </div>
+            </div>
+
+            <SearchObjectsAutocomplete
+              className="search-object"
+              handleSelect={this.handleObjectSelect}
+            />
+            {/*<CreateObject onCreateObject={this.handleCreateObject} />*/}
+
+            <div className="edit-post__card-view">
+              {linkedObjects.map(wObj => (
+                <ObjectCardView
+                  wObject={wObj}
+                  key={wObj.id}
+                  shouldHideClose={window.innerWidth <= 500 || window.innerHeight <= 500}
+                  deleteLinkedObject={this.deleteLinkedObject}
+                />
+              ))}
+            </div>
+            <div className="edit-post__banner banner">
+              <div className="banner__title">
+                <FormattedMessage
+                  id="edit_use_chance_label"
+                  defaultMessage="Take the chance to earn more!"
+                />
+              </div>
+              <div className="banner__text">
+                <FormattedMessage
+                  id="edit_add_post_forecast_label"
+                  defaultMessage="Add your post forecast and earn extra points."
+                />
+              </div>
+              {!this.state.isForecast && (
+                <button className="banner__show-more" onClick={this.toggleForecast}>
+                  <FormattedMessage id="edit_show_more" defaultMessage="More details" />
+                </button>
+              )}
+            </div>
+            {this.state.isForecast && (
+              <CreatePostForecast
+                toggleForecast={this.toggleForecast}
+                forecastValues={forecastValues}
+                onChange={this.handleForecastChange}
+                isPosted={isPreview}
+                isUpdating={isUpdating}
+              />
+            )}
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
@@ -355,12 +440,6 @@ class EditPost extends Component {
                 )}
               </div>
             )}
-            <CreatePostForecast
-              forecastValues={forecastValues}
-              onChange={this.handleForecastChange}
-              isPosted={isPreview}
-              isUpdating={isUpdating}
-            />
             <PostPreviewModal
               content={content}
               topics={topics}
@@ -384,14 +463,6 @@ class EditPost extends Component {
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />
-
-            <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
-            <CreateObject onCreateObject={this.handleCreateObject} />
-
-            {linkedObjects.map(wObj => (
-              <ObjectCardView wObject={wObj} key={wObj.id} />
-            ))}
           </div>
           <div className="rightContainer">
             <div className="right">

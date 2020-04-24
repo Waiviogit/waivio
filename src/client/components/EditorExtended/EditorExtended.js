@@ -6,9 +6,9 @@ import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } 
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
-import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { getClientWObj } from '../../adapters';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 const SIDE_BUTTONS = [
   {
@@ -23,10 +23,10 @@ const SIDE_BUTTONS = [
     title: 'Separator',
     component: SeparatorButton,
   },
-  {
-    title: 'Object',
-    component: ObjectSideButton,
-  },
+  // {
+  //   title: 'Object',
+  //   component: ObjectSideButton,
+  // },
 ];
 
 class Editor extends React.Component {
@@ -40,6 +40,7 @@ class Editor extends React.Component {
     }).isRequired,
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    intl: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -123,13 +124,18 @@ class Editor extends React.Component {
       <div className="waiv-editor">
         {isMounted ? (
           <MediumDraftEditor
+            intl={this.props.intl}
             ref={this.refsEditor}
-            placeholder=""
+            placeholder={this.props.intl.formatMessage({
+              id: 'story_placeholder',
+              defaultMessage: 'Write your story...',
+            })}
             editorEnabled={editorEnabled && this.props.enabled}
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
             sideButtons={SIDE_BUTTONS}
+            setTitle={this.props.setTitle}
             withTitle={this.props.withTitle}
           />
         ) : null}

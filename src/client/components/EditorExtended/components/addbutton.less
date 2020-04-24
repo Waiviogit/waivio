@@ -6,11 +6,15 @@
 
 .md-side-toolbar {
   display: flex;
-  position: absolute;
+  margin-top: 5px;
   z-index: 1;
-  left: -37px;
-  top: 0;
+  justify-content: flex-end;
   transition: all 0.1s ease;
+
+  input {
+    color: @grey-nero !important;
+    height: 38px;
+  }
 
   div {
     display: flex;
@@ -20,7 +24,7 @@
   .object-search-input {
     background-color: @white;
     border-radius: 5px;
-    width: calc(100vw - @margin * 4);
+    //width: calc(100vw - @margin * 4);
 
     @media @small {
       width: calc(100vw - @margin * 5 - @right-width);
@@ -36,6 +40,7 @@
       box-shadow: none;
       outline: none;
     }
+
     .ant-btn {
       height: 36px;
       padding: 0 8px;
@@ -65,19 +70,27 @@
   }
 }
 
-.md-sb-button {
+.md-sb-button,
+.block {
+  min-width: 30px;
+  max-height: 30px;
   background: @white none;
   outline: none;
-  border: 1px solid @grey-empress;
-  color: @grey-empress;
   cursor: pointer;
   height: @add-btn-width;
-  min-width: @add-btn-width;
+  //min-width: @add-btn-width;
   border-radius: @add-btn-width / 2;
   font-size: 22px;
-  margin-right: 2px;
   text-align: center;
   transition: all 0.2s ease;
+
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  color: #2a8bfc;
+  background: #fff;
+  box-sizing: border-box;
+  margin-right: 5px;
 
   &:focus {
     outline: none;
@@ -89,7 +102,8 @@
   }
 
   &.action-btn {
-    border-color: @blue-botticelli;
+    border-radius: 0;
+    border: 1px solid #2a8bfc;
     line-height: 1;
 
     &:hover {
@@ -103,7 +117,7 @@
     & > .video-btn {
       padding-left: 2px;
       svg path {
-        fill: @grey-empress;
+        fill: #2a8bfc;
       }
     }
 
@@ -117,6 +131,7 @@
 }
 
 .md-add-button {
+  display: none;
   &.md-open-button {
     transform: rotate(45deg);
   }
@@ -125,6 +140,10 @@
 .md-add-btn-anim-appear {
   transform: translate3d(-38px, 0px, 0px);
   opacity: 0;
+}
+
+button[title='Add topic'] {
+  display: none;
 }
 
 .md-add-btn-anim-appear.md-add-btn-anim-appear-active {

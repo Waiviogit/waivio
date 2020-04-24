@@ -11,7 +11,14 @@ import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
+const ObjectCardView = ({
+  wObject,
+  showSmallVersion,
+  pathNameAvatar,
+  intl,
+  shouldHideClose,
+  deleteLinkedObject,
+}) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
@@ -38,6 +45,9 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
+
+  const deleteLinkedObjectHandler = () => deleteLinkedObject(objName);
+
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -72,6 +82,15 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                   {wObject.title}
                 </div>
               )}
+              {shouldHideClose && (
+                <img
+                  className="ObjectCardView__close"
+                  title={wObject.title}
+                  alt="close"
+                  onClick={deleteLinkedObjectHandler}
+                  src="./images/icons/hide-object.svg"
+                />
+              )}
               {wObject.price && (
                 <span className="ObjectCardView__price" title={wObject.price}>
                   <Icon type="dollar" />
@@ -89,11 +108,15 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  shouldHideClose: PropTypes.bool,
   showSmallVersion: PropTypes.bool,
+  deleteLinkedObject: PropTypes.func,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 ObjectCardView.defaultProps = {
+  deleteLinkedObjectHandler: () => {},
+  shouldHideClose: false,
   showSmallVersion: false,
   pathNameAvatar: '',
 };

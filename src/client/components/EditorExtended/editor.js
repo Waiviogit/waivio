@@ -28,6 +28,8 @@ import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink
 
 import ImageSideButton from './components/sides/ImageSideButton';
 import './index.less';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Form, Input } from 'antd';
 
 /*
 A wrapper over `draft-js`'s default **Editor** component which provides
@@ -36,6 +38,7 @@ some key handling for ease of use so that users' mouse usage is minimum.
 */
 class MediumDraftEditor extends React.Component {
   static propTypes = {
+    intl: PropTypes.shape().isRequired,
     beforeInput: PropTypes.func,
     keyBindingFn: PropTypes.func,
     customStyleMap: PropTypes.shape(),
@@ -93,7 +96,7 @@ class MediumDraftEditor extends React.Component {
     blockRenderMap: RenderMap,
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
-    placeholder: 'Write your story...',
+    placeholder: '',
     withTitle: true,
     continuousBlocks: [Block.UNSTYLED, Block.BLOCKQUOTE, Block.OL, Block.UL, Block.CODE],
     sideButtons: [
@@ -537,38 +540,90 @@ class MediumDraftEditor extends React.Component {
     return (
       <div className="md-RichEditor-root">
         <div className={editorClass}>
-          <Editor
-            ref={node => {
-              this._editorNode = node; // eslint-disable-line
-            }}
-            {...this.props}
-            editorState={editorState}
-            blockRendererFn={this.blockRendererFn}
-            blockStyleFn={this.props.blockStyleFn}
-            onChange={this.onChange}
-            onTab={this.onTab}
-            onUpArrow={this.onUpArrow}
-            blockRenderMap={this.props.blockRenderMap}
-            handleKeyCommand={this.handleKeyCommand}
-            handleBeforeInput={this.handleBeforeInput}
-            handleReturn={this.handleReturn}
-            handlePastedText={this.handlePastedText}
-            customStyleMap={this.props.customStyleMap}
-            readOnly={!editorEnabled}
-            keyBindingFn={this.props.keyBindingFn}
-            placeholder={this.props.placeholder}
-            spellCheck={editorEnabled && this.props.spellCheck}
-          />
-          {this.props.sideButtons.length > 0 && showAddButton && (
-            <AddButton
-              editorState={editorState}
-              getEditorState={this.getEditorState}
-              setEditorState={this.onChange}
-              focus={this.focus}
-              sideButtons={this.props.sideButtons}
-              withTitleLine={this.props.withTitle}
+          <Form.Item
+            label={
+              <span className="Editor__label">
+                <FormattedMessage id="title" defaultMessage="Title" />
+              </span>
+            }
+          >
+            <Input
+              ref={title => {
+                this.title = title;
+              }}
+              onChange={this.props.setTitle}
+              className="Editor__title"
+              placeholder={this.props.intl.formatMessage({
+                id: 'title_placeholder',
+                defaultMessage: 'Add title',
+              })}
             />
-          )}
+          </Form.Item>
+          <Form.Item
+            className="editor__story"
+            label={
+              <span className="Editor__label">
+                <FormattedMessage id="post_text" defaultMessage="Story" />
+              </span>
+            }
+          >
+            <Editor
+              ref={node => {
+                this._editorNode = node; // eslint-disable-line
+              }}
+              {...this.props}
+              editorState={editorState}
+              blockRendererFn={this.blockRendererFn}
+              blockStyleFn={this.props.blockStyleFn}
+              onChange={this.onChange}
+              onTab={this.onTab}
+              onUpArrow={this.onUpArrow}
+              blockRenderMap={this.props.blockRenderMap}
+              handleKeyCommand={this.handleKeyCommand}
+              handleBeforeInput={this.handleBeforeInput}
+              handleReturn={this.handleReturn}
+              handlePastedText={this.handlePastedText}
+              //customStyleMap={this.props.customStyleMap}
+              readOnly={!editorEnabled}
+              keyBindingFn={this.props.keyBindingFn}
+              placeholder={this.props.placeholder}
+              spellCheck={editorEnabled && this.props.spellCheck}
+            />
+          </Form.Item>
+
+          {/*{this.props.sideButtons.map(button => {*/}
+          {/*  const Button = button.component;*/}
+          {/*  const extraProps = button.props ? button.props : {};*/}
+          {/*  return (*/}
+          {/*    <CSSTransition*/}
+          {/*      key={button.title}*/}
+          {/*      classNames="md-add-btn-anim"*/}
+          {/*      appear*/}
+          {/*      timeout={{*/}
+          {/*        enter: 200,*/}
+          {/*        exit: 100,*/}
+          {/*        appear: 100,*/}
+          {/*      }}*/}
+          {/*    >*/}
+          {/*      <Button*/}
+          {/*        {...extraProps}*/}
+          {/*        getEditorState={this.getEditorState}*/}
+          {/*        setEditorState={this.setEditorState}*/}
+          {/*        close={this.openToolbar}*/}
+          {/*        renderControl={this.renderControlElem}*/}
+          {/*      />*/}
+          {/*    </CSSTransition>*/}
+          {/*  );*/}
+          {/*})}*/}
+
+          <AddButton
+            editorState={editorState}
+            getEditorState={this.getEditorState}
+            setEditorState={this.onChange}
+            focus={this.focus}
+            sideButtons={this.props.sideButtons}
+            withTitleLine={this.props.withTitle}
+          />
           {!disableToolbar && (
             <Toolbar
               ref={c => {

@@ -89,6 +89,7 @@
   "dislike": "Не нравится",
   "unlike": "Не нравится",
   "and_more_amount": "и ещё {amount}",
+  "post_text": "Текст поста",
   "post_reply_title": "Это ответ на: {title}",
   "post_reply_show_original_post": "Показать оригинальный пост",
   "post_reply_show_parent_discussion": "Показать предыдущее обсуждение",
@@ -1099,5 +1100,10 @@
   "trading_form_amount": "Сумма",
   "trading_form_total": "Всего",
   "trading_form_fee": "Коммисия",
-  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena"
+  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
+  "edit_use_chance_label": "Воспользуйтесь шансом заработать больше!",
+  "edit_add_post_forecast_label": "Добавьте свой пост прогноз и заработайте дополнительный очки.",
+  "edit_show_more": "Подробнее",
+  "edit_tooltip": "Убедитесь что выбранные хештеги соответствую теме вашего поста - это повысит ваши шансы заработать больше поинтов",
+  "edit_your_forecast_label": "Ваш прогноз"
 }

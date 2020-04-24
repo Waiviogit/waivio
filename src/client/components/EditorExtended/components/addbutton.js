@@ -15,7 +15,7 @@ export default class AddButton extends React.Component {
     this.state = {
       style: {},
       visible: false,
-      isOpen: false,
+      isOpen: true,
       isControlElem: false,
     };
     this.node = null;
@@ -44,13 +44,13 @@ export default class AddButton extends React.Component {
         .indexOf('atomic') >= 0
     ) {
       // console.log('no sel');
-      this.hideBlock();
+      //this.hideBlock();
       return;
     }
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
     if (block.getLength() > 0 || (withTitleLine && block === contentState.getFirstBlock())) {
-      this.hideBlock();
+      //this.hideBlock();
       return;
     }
     if (block.getType() !== this.blockType) {
@@ -64,7 +64,7 @@ export default class AddButton extends React.Component {
     if (this.blockKey === bkey) {
       // console.log('block exists');
       if (block.getLength() > 0) {
-        this.hideBlock();
+        //this.hideBlock();
       } else {
         this.setState({
           visible: true,
@@ -75,7 +75,7 @@ export default class AddButton extends React.Component {
     this.blockKey = bkey;
     if (block.getLength() > 0) {
       // console.log('no len');
-      this.hideBlock();
+      //this.hideBlock();
       return;
     }
     setTimeout(this.findNode, 0);
@@ -146,7 +146,7 @@ export default class AddButton extends React.Component {
       return null;
     }
     return (
-      <div className="md-side-toolbar" style={this.state.style}>
+      <div className="md-side-toolbar">
         <button
           onClick={this.openToolbar}
           className={`md-sb-button md-add-button${this.state.isOpen ? ' md-open-button' : ''}`}
@@ -156,37 +156,36 @@ export default class AddButton extends React.Component {
             <path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" />
           </svg>
         </button>
-        {this.state.isOpen &&
-          (this.state.isControlElem ? (
-            this.sideControl
-          ) : (
-            <TransitionGroup>
-              {this.props.sideButtons.map(button => {
-                const Button = button.component;
-                const extraProps = button.props ? button.props : {};
-                return (
-                  <CSSTransition
-                    key={button.title}
-                    classNames="md-add-btn-anim"
-                    appear
-                    timeout={{
-                      enter: 200,
-                      exit: 100,
-                      appear: 100,
-                    }}
-                  >
-                    <Button
-                      {...extraProps}
-                      getEditorState={this.props.getEditorState}
-                      setEditorState={this.props.setEditorState}
-                      close={this.openToolbar}
-                      renderControl={this.renderControlElem}
-                    />
-                  </CSSTransition>
-                );
-              })}
-            </TransitionGroup>
-          ))}
+        {this.state.isControlElem ? (
+          this.sideControl
+        ) : (
+          <TransitionGroup>
+            {this.props.sideButtons.map(button => {
+              const Button = button.component;
+              const extraProps = button.props ? button.props : {};
+              return (
+                <CSSTransition
+                  key={button.title}
+                  classNames="md-add-btn-anim"
+                  appear
+                  timeout={{
+                    enter: 200,
+                    exit: 100,
+                    appear: 100,
+                  }}
+                >
+                  <Button
+                    {...extraProps}
+                    getEditorState={this.props.getEditorState}
+                    setEditorState={this.props.setEditorState}
+                    close={this.openToolbar}
+                    renderControl={this.renderControlElem}
+                  />
+                </CSSTransition>
+              );
+            })}
+          </TransitionGroup>
+        )}
       </div>
     );
   }

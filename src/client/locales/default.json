@@ -86,6 +86,7 @@
   "unlike": "Unlike",
   "and_more_amount": "and {amount} more",
   "post_reply_title": "This is a reply to: {title}",
+  "post_text": "Post text",
   "post_reply_show_original_post": "Show original post",
   "post_reply_show_parent_discussion": "Show parent discussion",
   "post_deleted": "This post has been deleted",
@@ -1129,5 +1130,10 @@
   "trading_form_amount": "Amount",
   "trading_form_total": "Total",
   "trading_form_fee": "Fee",
-  "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena"
+  "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
+  "edit_use_chance_label": "Take the chance to earn more!",
+  "edit_add_post_forecast_label": "Add your post forecast and earn extra points.",
+  "edit_show_more": "More details",
+  "edit_tooltip": "Make sure that the selected hashtags are relevant to the topic of your post - this will increase your chances of earning more points",
+  "edit_your_forecast_label": "Your forecast"
 }

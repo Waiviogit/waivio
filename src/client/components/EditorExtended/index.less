@@ -2,12 +2,39 @@
 @import (reference) '../../components/Story/StoryFull';
 
 .md-RichEditor-root {
-  //background: @white;
   box-sizing: border-box;
-  //font-family: 'Georgia', serif;
-  padding: 18px;
   position: relative;
   line-height: 1.4em;
+
+  .ant-form-item-label {
+    line-height: 20px !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+
+    &:first-child {
+      margin-bottom: 25px;
+    }
+  }
+
+  .ant-form-item-label {
+    padding: 0;
+  }
+
+  .Editor__label {
+    color: #000000a6;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: @font-family-sans-serif;
+    font-variant: tabular-nums;
+    line-height: 1.5;
+  }
+}
+
+.md-block span {
+  font-family: @font-family-sans-serif;
+  color: @grey-nero;
 }
 
 .md-RichEditor-editor {
@@ -21,15 +48,13 @@
 
   h1.StoryFull__title {
     margin-top: 0;
+    display: none;
+    visibility: hidden;
   }
 }
 
 .md-RichEditor-editor .public-DraftEditorPlaceholder-root:extend(.StoryFull__title) {
   color: @blue-botticelli;
-}
-.md-RichEditor-editor .public-DraftEditor-content {
-  //margin: 0px -15px -15px;
-  //padding: 15px;
 }
 
 .md-RichEditor-editor .public-DraftEditor-content {
@@ -41,20 +66,10 @@
 }
 
 .md-RichEditor-editor {
-  .StoryFull__title {
-    span[data-offset-key^='s_title'] {
-      br {
-        content: ' ';
-
-        &::before {
-          content: 'Title';
-          color: @blue-botticelli;
-        }
-      }
-    }
-  }
-
   .StoryFull__title + div.md-block:only-of-type {
+    font-family: @font-family-sans-serif;
+    color: @grey-nero;
+    height: 18px;
     span[data-offset-key] {
       br {
         content: ' ';
@@ -78,15 +93,20 @@
 }
 
 .public-DraftEditor-content {
+  overflow: auto;
+  height: 290px;
+  background: #fff;
+  padding: 15px 20px;
+  border: 1px solid #e9e7e7;
+  border-radius: 4px;
+
   .md-block:first-child {
     margin-top: 0;
-    padding-top: 0;
   }
 }
 
 .md-RichEditor-editor .public-DraftStyleDefault-pre {
   background-color: rgba(0, 0, 0, 0.05);
-  //font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
   font-size: 16px;
   padding: 20px;
 }
@@ -115,3 +135,11 @@
     display: block;
   }
 }
+
+.Editor__title {
+  font-family: @font-family-sans-serif;
+  color: @grey-nero;
+  height: 40px !important;
+}
+
+@import './index-nightmode.less';
