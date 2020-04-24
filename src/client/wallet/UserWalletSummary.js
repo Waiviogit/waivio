@@ -119,7 +119,7 @@ const UserWalletSummary = ({
             </div>
           </div>
         )}
-        <a href="https://uat-exchange.tokenexus.com">
+        <a href="https://exchange.beaxy.com">
           <Button className="UserWalletSummary__add-wallet mb1" size="large" type="primary">
             <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
           </Button>
