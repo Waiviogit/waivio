@@ -218,8 +218,13 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
     const button = getApprovedField(wobject, 'button', usedLocale);
     const map = getApprovedField(wobject, 'map', usedLocale);
-    const parent = getApprovedField(wobject, 'parent', usedLocale);
+    const parent = getApprovedField(wobject, 'parent');
     const status = getApprovedField(wobject, 'status', usedLocale);
+    const pictures =
+      wobject.preview_gallery &&
+      wobject.preview_gallery.filter(
+        picture => calculateApprovePercent(picture.active_votes) >= 70,
+      );
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -503,7 +508,7 @@ class ObjectInfo extends React.Component {
               </div>
             )}
             {hasGalleryImg && (
-              <PicturesCarousel pics={wobject.preview_gallery} objectID={wobject.author_permlink} />
+              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
             )}
           </div>
         ) : null}
