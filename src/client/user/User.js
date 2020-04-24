@@ -83,7 +83,6 @@ export default class User extends React.Component {
 
   componentDidMount() {
     const {
-      user,
       authenticated,
       authenticatedUserName,
       usersAccountHistory,
@@ -91,9 +90,7 @@ export default class User extends React.Component {
       getUserAccountHistory,
       match,
     } = this.props;
-    if (!user.id && !user.failed) {
-      this.props.getUserAccount(this.props.match.params.name);
-    }
+    this.props.getUserAccount(this.props.match.params.name);
 
     if (authenticated) {
       currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
@@ -128,7 +125,11 @@ export default class User extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
+    if (
+      prevProps.match.params.name !== this.props.match.params.name ||
+      (!prevProps.authenticatedUserName && this.props.authenticatedUserName) ||
+      (prevProps.match.url.includes('follow') && !this.props.match.url.includes('follow'))
+    ) {
       this.props.getUserAccount(this.props.match.params.name);
     }
   }
@@ -183,12 +184,14 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const image = getAvatarURL(username) || '/images/logo.png';
+    const image =
+      getAvatarURL(username) ||
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
-
     const isSameUser = authenticated && authenticatedUser.name === username;
+
     const isAboutPage = match.params['0'] === 'about';
 
     return (
@@ -196,24 +199,29 @@ export default class User extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta property="description" content={desc} />
-          <meta property="og:title" content={title} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image} />
-          <meta property="og:image:width" content="600" />
-          <meta property="og:image:height" content="600" />
-          <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Waivio" />
-          <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@waivio'} />
-          <meta property="twitter:title" content={title} />
-          <meta property="twitter:description" content={desc} />
+          <meta name="description" property="description" content={desc} />
+          <meta name="og:title" property="og:title" content={title} />
+          <meta name="og:type" property="og:type" content="article" />
+          <meta name="og:url" property="og:url" content={url} />
+          <meta name="og:image" property="og:image" content={image} />
+          <meta name="og:image:width" property="og:image:width" content="600" />
+          <meta name="og:image:height" property="og:image:height" content="600" />
+          <meta name="og:description" property="og:description" content={desc} />
+          <meta name="og:site_name" property="og:site_name" content="Waivio" />
           <meta
+            name="twitter:card"
+            property="twitter:card"
+            content={image ? 'summary_large_image' : 'summary'}
+          />
+          <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" property="twitter:title" content={title} />
+          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta
+            name="twitter:image"
             property="twitter:image"
             content={
               image ||
-              'https://cdn.images.hive.blog/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+              'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
             }
           />
         </Helmet>

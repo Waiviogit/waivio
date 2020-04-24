@@ -112,6 +112,77 @@ export default function usersReducer(state = initialState, action) {
           hasMore: false,
         },
       };
+    case actions.UNFOLLOW_USER.SUCCESS:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            youFollows: false,
+            pending: false,
+          },
+        },
+      };
+
+    case actions.UNFOLLOW_USER.START:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            pending: true,
+          },
+        },
+      };
+
+    case actions.UNFOLLOW_USER.ERROR:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            pending: false,
+          },
+        },
+      };
+    case actions.FOLLOW_USER.START:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            pending: true,
+          },
+        },
+      };
+    case actions.FOLLOW_USER.SUCCESS:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            youFollows: true,
+            pending: false,
+          },
+        },
+      };
+    case actions.FOLLOW_USER.ERROR:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [getUserDetailsKey(action.meta.username)]: {
+            ...state.users[getUserDetailsKey(action.meta.username)],
+            pending: false,
+          },
+        },
+      };
+
     default: {
       return state;
     }
