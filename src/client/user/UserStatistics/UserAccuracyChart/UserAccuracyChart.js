@@ -6,11 +6,13 @@ import classNames from 'classnames';
 import { setAccuracyChartLoaded } from '../../userActions';
 import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
-import { noDataPlaceholder } from '../UserAccuracyContainer/UserAccuracyContainer';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => {
-  const noData = statisticsData.successful_count === 0 && statisticsData.failed_count === 0;
+  const noData =
+    statisticsData.successful_count === 0 &&
+    statisticsData.failed_count === 0 &&
+    statisticsData.neutral_count === 0;
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -30,7 +32,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
     pieSliceBorderColor: 'transparent',
     slices: [
       {
-        color: '#54d2a0',
+        color: '#281e1e',
       },
       {
         color: noData ? '#8798a4' : '#d9534f',
@@ -75,7 +77,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
         </div>
         <div className="UserAccuracy__data-wrapper-value">
           {noData ? (
-            noDataPlaceholder
+            <div className="neutral_count">{`${percent}%`}</div>
           ) : (
             <div
               className={classNames('value', {
