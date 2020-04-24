@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationFillOrder = ({ notification, read, onClick }) => {
-  const url = `/@${notification.account / 'transfers'}`;
+  const url = `/@${notification.account}/transfers`;
 
   return (
     <Link
