@@ -8,37 +8,6 @@
   flex-direction: column;
   align-items: center;
 
-  &__data-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5px 15px;
-
-    &-value {
-      position: absolute;
-      margin-top: 30px;
-      max-width: 60%;
-    }
-
-    &-chart {
-      display: flex;
-      justify-content: center;
-      width: 78px;
-
-      @media @xsmall {
-        width: 95px;
-      }
-    }
-  }
-
-  .UserProfitability__data-wrapper-value {
-    .neutral_count_pips {
-      font-size: large;
-      font-weight: bold;
-      color: @grey-mortar;
-    }
-  }
-
   &__value {
     font-size: x-large;
     font-weight: bold;
@@ -64,6 +33,7 @@
   color: @red;
 }
 
-.hideChart {
-  display: none;
+.no-data-wrapper {
+  max-width: 55%;
+  margin: auto 0;
 }
