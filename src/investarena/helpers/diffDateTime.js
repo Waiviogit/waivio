@@ -84,10 +84,13 @@ export function getLongTermStatisticsForUser(data) {
         price: `${price.toFixed(2)}%`,
         label: defaultMessage,
         intlId: `longTermData_${period}`,
-        isUp: price >= 0,
+        isUp: price > 0,
+        isDown: price < 0,
+        isNil: price === 0,
       };
     }
   };
+
   if (data) {
     _.mapKeys(data, (value, key) => {
       if (key) {
