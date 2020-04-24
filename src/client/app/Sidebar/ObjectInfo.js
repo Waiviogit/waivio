@@ -230,7 +230,8 @@ class ObjectInfo extends React.Component {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(
           nameFld =>
-            nameFld.body !== wobject.name && calculateApprovePercent(nameFld.active_votes) >= 70,
+            nameFld.body !== (wobject.name || wobject.default_name) &&
+            calculateApprovePercent(nameFld.active_votes) >= 70,
         )
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
@@ -324,7 +325,7 @@ class ObjectInfo extends React.Component {
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={name}
-                  objName={wobject.name}
+                  objName={wobject.name || wobject.default_name}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
                   linkTo={
@@ -671,7 +672,7 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
-        {wobject && wobject.name && (
+        {wobject && (wobject.name || wobject.default_name) && (
           <div className="object-sidebar">
             {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
