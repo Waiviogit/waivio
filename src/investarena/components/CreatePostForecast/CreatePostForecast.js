@@ -14,7 +14,6 @@ import {
   getEditorForecast,
 } from './helpers';
 import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
-import { ceil10, floor10 } from '../../helpers/calculationsHelper';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import {
   makeGetQuoteState,
@@ -110,7 +109,6 @@ class CreatePostForecast extends Component {
       getEditorForecast(
         {
           ...this.state,
-          ...this.state,
           quotePrice,
           selectQuote,
           takeProfitValue: '',
@@ -133,84 +131,10 @@ class CreatePostForecast extends Component {
           ...this.state,
           quotePrice,
           selectRecommend,
-          takeProfitValue: '',
-          stopLossValue: '',
-          takeProfitValueIncorrect: false,
-          stopLossValueIncorrect: false,
         },
         this.props.quotesSettings,
       ),
     );
-  };
-
-  handleChangeTakeProfitStopLostInputs = (event, input) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      const { selectRecommend } = this.state;
-      const propName = `${input}Incorrect`;
-      const propValue = isStopLossTakeProfitValid(
-        value,
-        input,
-        selectRecommend,
-        getQuotePrice(selectRecommend, this.props.quoteSelected),
-      );
-      this.setState(
-        {
-          [propName]: propValue,
-        },
-        this.props.onChange(
-          getEditorForecast(
-            {
-              ...this.state,
-              [input]: value,
-              [propName]: propValue,
-            },
-            this.props.quotesSettings,
-          ),
-        ),
-      );
-    }
-  };
-
-  handleFocusTakeProfitStopLostInputs = input => {
-    if (this.state[input]) return;
-    const { selectRecommend } = this.state;
-    let initialValue = getQuotePrice(selectRecommend, this.props.quoteSelected);
-
-    switch (selectRecommend) {
-      case 'Buy':
-        initialValue =
-          input === 'takeProfitValue' ? ceil10(initialValue, -1) : floor10(initialValue, -1);
-        break;
-      case 'Sell':
-        initialValue =
-          input === 'takeProfitValue' ? floor10(initialValue, -1) : ceil10(initialValue, -1);
-        break;
-      default:
-        break;
-    }
-
-    if (!isNaN(initialValue) && initialValue > 0) {
-      this.setState(
-        prevState => {
-          if (prevState[input] === '') {
-            return {
-              [`${input}Incorrect`]: false,
-            };
-          }
-          return prevState;
-        },
-        this.props.onChange(
-          getEditorForecast(
-            {
-              ...this.state,
-              [input]: initialValue,
-            },
-            this.props.quotesSettings,
-          ),
-        ),
-      );
-    }
   };
 
   handleChangeDatetime = dateTimeValue => {
@@ -267,8 +191,6 @@ class CreatePostForecast extends Component {
       selectQuote,
       selectRecommend,
       selectForecast,
-      stopLossValue,
-      takeProfitValue,
       dateTimeValue,
       isValid,
       quotePrice,
@@ -403,46 +325,6 @@ class CreatePostForecast extends Component {
                 </div>
               </div>
               <div className="st-create-post-dropdowns-row">
-                <div className="st-create-post-select-wrap-mobile">
-                  <div className="st-create-post-select-wrap">
-                    <p className="m-0">
-                      <FormattedMessage
-                        id="modalTakeProfit.header.title"
-                        defaultMessage="Take profit"
-                      />
-                    </p>
-                    <Input
-                      type="text"
-                      className={`st-create-post-quotation${
-                        this.state.takeProfitValueIncorrect ? ' st-create-post-danger' : ''
-                      }`}
-                      value={takeProfitValue}
-                      disabled={!selectRecommend || !selectQuote || isUpdating}
-                      onChange={e =>
-                        this.handleChangeTakeProfitStopLostInputs(e, 'takeProfitValue')
-                      }
-                      onFocus={() => this.handleFocusTakeProfitStopLostInputs('takeProfitValue')}
-                    />
-                  </div>
-                  <div className="st-create-post-select-wrap">
-                    <p className="m-0">
-                      <FormattedMessage
-                        id="modalStopLoss.header.title"
-                        defaultMessage="Stop loss"
-                      />
-                    </p>
-                    <Input
-                      type="text"
-                      className={`st-create-post-quotation${
-                        this.state.stopLossValueIncorrect ? ' st-create-post-danger' : ''
-                      }`}
-                      value={stopLossValue}
-                      disabled={!selectRecommend || !selectQuote || isUpdating}
-                      onChange={e => this.handleChangeTakeProfitStopLostInputs(e, 'stopLossValue')}
-                      onFocus={() => this.handleFocusTakeProfitStopLostInputs('stopLossValue')}
-                    />
-                  </div>
-                </div>
                 <div className="st-create-post-select-wrap">
                   <p className="m-0">
                     <FormattedMessage id="createPost.selectTitle.price" defaultMessage="Price" />

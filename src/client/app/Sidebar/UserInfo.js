@@ -13,7 +13,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
 import api from '../../../investarena/configApi/apiResources';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { GUEST_PREFIX, WAIVIO_GUEST_PREFIX } from '../../../common/constants/waivio';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -50,17 +50,17 @@ class UserInfo extends React.Component {
     let profile = {};
     let website = null;
     let about = null;
-    if (user && user.json_metadata && user.json_metadata !== '') {
-      if (user.json_metadata.profile) {
-        location = user.json_metadata.profile.location;
-        profile = user.json_metadata.profile || {};
-        website = user.json_metadata.profile.website;
-        about = user.json_metadata.profile.about;
+    if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
+      if (user.posting_json_metadata.profile) {
+        profile = user.posting_json_metadata.profile || {};
+        location = user.posting_json_metadata.profile.location;
+        website = user.posting_json_metadata.profile.website;
+        about = user.posting_json_metadata.profile.about;
       } else {
         try {
-          metadata = JSON.parse(user.json_metadata);
-          location = metadata && get(metadata, 'profile.location');
+          metadata = JSON.parse(user.posting_json_metadata);
           profile = (metadata && get(metadata, 'profile')) || {};
+          location = metadata && get(metadata, 'profile.location');
           website = metadata && get(metadata, 'profile.website');
           about = metadata && get(metadata, 'profile.about');
         } catch (e) {
@@ -119,7 +119,7 @@ class UserInfo extends React.Component {
                   }}
                 />
               </div>
-              {!user.name.startsWith(GUEST_PREFIX) && (
+              {!user.name.startsWith(GUEST_PREFIX) && !user.name.startsWith(WAIVIO_GUEST_PREFIX) && (
                 <React.Fragment>
                   <div>
                     <i className="iconfont icon-flashlight text-icon" />
@@ -156,7 +156,7 @@ class UserInfo extends React.Component {
             <div>
               {intl.formatMessage({
                 id: 'unavailableStatisticsUser',
-                defaultMessage: 'The user has not written any posts with forecasts',
+                defaultMessage: 'User has no completed forecasts',
               })}
             </div>
           </LongTermStatistics>

@@ -1,3 +1,4 @@
+import React from 'react';
 import InstrumentChart from './InstrumentChart';
 
-export default InstrumentChart;
+export default React.memo(InstrumentChart);

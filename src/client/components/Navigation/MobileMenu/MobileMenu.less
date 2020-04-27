@@ -12,13 +12,13 @@
   height: 95vh;
 
   &__wrapper {
-    width: 70%;
+    width: 72%;
     padding: 1rem;
-    background: #3a79ee;
+    background: @blue-dodgerBlue;
   }
 
   &__mask {
-    width: 30%;
+    width: 28%;
     background: rgba(0, 0, 0, 0.45);
   }
 
@@ -28,7 +28,7 @@
 
   .userData {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     height: 3.5rem;
   }
 
@@ -59,7 +59,7 @@
     bottom: 1rem;
 
     button {
-      background-color: #3a79ee;
+      background-color: @blue-dodgerBlue;
       color: @white-smoke;
       border-color: @white-smoke;
     }
@@ -68,8 +68,10 @@
   &__input-container {
     position: relative;
     display: flex;
-    width: 15rem;
     margin: 1rem 0;
+    .ant-select {
+      width: 100%;
+    }
 
     input {
       height: 38px !important;
@@ -98,11 +100,6 @@
     }
   }
 
-  .ant-menu-item > a {
-    border-color: @white;
-    background-color: @white;
-  }
-
   .Topnav__notifications-count {
     height: 36px;
     min-width: 36px;
@@ -115,14 +112,12 @@
 }
 
 .Topnav__search-dropdown-container.ant-select-dropdown {
-  top: 172px !important;
-  width: calc(100% - 15rem);
   border-right: 1px solid @baby-blue;
   border-left: 1px solid @baby-blue;
   border-bottom: 1px solid @baby-blue;
 
   &.logged-out {
-    top: 100px !important;
+    top: 116px !important;
   }
 }
 

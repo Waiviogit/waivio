@@ -97,6 +97,7 @@ class PostPreviewModal extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { isModalOpen, postValidationErrors } = this.state;
+    const { forecastValues } = this.props;
     return (
       isModalOpen ||
       nextState.isModalOpen ||
@@ -104,7 +105,8 @@ class PostPreviewModal extends Component {
       !isEqual(
         postValidationErrors,
         validatePost(nextProps.content, nextProps.objPercentage, nextProps.forecastValues).errors,
-      )
+      ) ||
+      !isEqual(forecastValues, nextProps.forecastValues)
     );
   }
 
@@ -197,7 +199,16 @@ class PostPreviewModal extends Component {
       objPercentage,
       expForecast,
       isUpdating,
+      content,
     } = this.props;
+    const { postTitle, postBody } = splitPostContent(content);
+    const isEmptyRequiredFields = !(
+      postTitle &&
+      postBody &&
+      forecastValues.quoteSecurity &&
+      forecastValues.recommend &&
+      forecastValues.selectForecast
+    );
     const { selectForecast, ...forecastRaw } = forecastValues;
     const forecast = getForecastObject(forecastRaw, selectForecast, !isEmpty(expForecast));
     return (
@@ -311,9 +322,10 @@ class PostPreviewModal extends Component {
             ))}
           <Button
             htmlType="button"
-            disabled={Boolean(this.state.postValidationErrors.length)}
+            disabled={Boolean(this.state.postValidationErrors.length) || isEmptyRequiredFields}
             onClick={this.getPostErrors}
             size="large"
+            type={!isEmptyRequiredFields ? 'primary' : 'default'}
             className="edit-post-controls__publish-ready-btn"
           >
             {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}

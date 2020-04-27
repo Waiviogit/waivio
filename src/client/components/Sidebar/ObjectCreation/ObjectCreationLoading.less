@@ -1,0 +1,23 @@
+@import (reference) '../../../../client/styles/common';
+@import (reference) '../../../../client/styles/modules/variables.less';
+
+.ObjectCreationLoading {
+  position: relative;
+  color: #353535;
+
+  &__header {
+    .ant-card-loading-block {
+      margin: 0 !important;
+    }
+
+    &__text {
+      display: flex;
+      flex-direction: column;
+      margin: -3px 12px;
+
+      p {
+        width: 100%;
+      }
+    }
+  }
+}

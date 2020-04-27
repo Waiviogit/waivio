@@ -60,17 +60,20 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: true,
       };
-    case userActions.GET_FOLLOWING_SUCCESS:
+    case userActions.GET_FOLLOWING_SUCCESS: {
+      const followingNameArray = action.payload.map(user => user.name);
+
       return {
         ...state,
         following: {
           ...state.following,
-          list: action.payload,
+          list: followingNameArray,
           isFetching: false,
           fetched: true,
         },
         fetchFollowListError: false,
       };
+    }
     case userActions.GET_FOLLOWING_OBJECTS_START:
       return {
         ...state,

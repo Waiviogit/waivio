@@ -58,10 +58,13 @@ export const makeIsWalletsExistState = () =>
   createSelector(makeGetQuoteSettingsState(), getUserWalletState, (quoteSetting, wallet) => {
     if (quoteSetting && !isEmpty(wallet)) {
       const { baseCurrency, termCurrency } = quoteSetting;
-      return Boolean(
-        wallet.find(w => w.currency === baseCurrency) &&
-          wallet.find(w => w.currency === termCurrency),
-      );
+      const baseCurrencyWallet = wallet.find(w => w.currency === baseCurrency);
+      const termCurrencyWallet = wallet.find(w => w.currency === termCurrency);
+      return {
+        [baseCurrency]: Boolean(baseCurrencyWallet),
+        [termCurrency]: Boolean(termCurrencyWallet),
+        both: Boolean(baseCurrencyWallet && termCurrencyWallet),
+      };
     }
     return false;
   });

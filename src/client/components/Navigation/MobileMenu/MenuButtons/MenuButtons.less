@@ -1,4 +1,5 @@
 @import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
 
 .MenuButtons {
   &__wrap {
@@ -47,19 +48,34 @@
   }
 
   &__notifications-count {
-    height: 36px;
-    min-width: 36px;
-    border: 1px solid @white;
-    border-radius: 50%;
-    background-color: @primary-color;
+    top: 0;
+    position: absolute;
+    padding: 0 2px;
+    height: 0.8rem;
+    min-width: 0.8rem;
+    left: 1.5rem;
+    border-radius: 5px;
+    background-color: @soft-red;
     color: @white;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
+    font-size: 12px;
+
+    @media @small {
+      left: 1rem;
+      font-size: 10px;
+      height: 0.7rem;
+      min-width: 0.7rem;
+    }
   }
 
   &__notifications-tooltip.ant-tooltip.ant-tooltip-placement-bottom {
     position: fixed;
+  }
+
+  .ant-menu-item > a {
+    border-color: @white;
+    background-color: @white;
   }
 }

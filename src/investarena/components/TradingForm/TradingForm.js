@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { message, Tooltip } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
@@ -27,7 +27,7 @@ const TradingForm = ({
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
 
   const handleTradeButtonClick = () => {
-    if (isAmountValid && isWalletsExist) {
+    if (isAmountValid && isWalletsExist.both) {
       createMarketOrder(side, amount, caller);
     } else if (!isAmountValid) {
       const amountValue = getAmountValue(amount);
@@ -37,21 +37,29 @@ const TradingForm = ({
         message.error('Available balance is insufficient');
       }
     } else {
-      message.error(`You don't have a ${baseCurrency} wallet`);
+      const absentWallet = !isWalletsExist[baseCurrency] ? baseCurrency : termCurrency;
+      message.error(`You don't have a ${absentWallet} wallet`);
     }
   };
   return platformName !== 'widgets' ? (
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
         <div className="flex-info-block">
-          {/* <Tooltip title={}> */}
-          {/*  <i className="iconfont icon-prompt info-icon" /> */}
-          {/* </Tooltip> */}
-          <FormattedMessage id="trading_form_available" defaultMessage="Available" />
-          :&nbsp;&nbsp;
-          <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
-          &nbsp;
-          {wallet.currency}
+          {wallet.id ? (
+            <React.Fragment>
+              <FormattedMessage id="trading_form_available" defaultMessage="Available" />
+              :&nbsp;&nbsp;
+              <FormattedNumber value={wallet.balance} maximumSignificantDigits={6} />
+              &nbsp;
+              {wallet.currency}
+            </React.Fragment>
+          ) : (
+            <a href="https://uat-exchange.tokenexus.com">
+              <Button className="st-trading-form__button-wrap-uppercase" type="primary" ghost>
+                <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
+              </Button>
+            </a>
+          )}
         </div>
       </div>
 
@@ -140,7 +148,11 @@ TradingForm.propTypes = {
     buyerMakerCommissionProgressive: PropTypes.number,
     buyerTakerCommissionProgressive: PropTypes.number,
   }).isRequired,
-  isWalletsExist: PropTypes.bool.isRequired,
+  isWalletsExist: PropTypes.shape({
+    baseCurrencyName: PropTypes.bool,
+    termCurrencyName: PropTypes.bool,
+    both: PropTypes.bool.isRequired,
+  }).isRequired,
   isAmountValid: PropTypes.bool.isRequired,
   platformName: PropTypes.string.isRequired,
   wallet: PropTypes.shape({

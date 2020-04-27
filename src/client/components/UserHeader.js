@@ -28,9 +28,7 @@ const UserHeader = ({
   // isGuest,
   // isGuestPage,
 }) => {
-  const style = hasCover
-    ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
-    : {};
+  const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   // const sendData = () => {
   //   setPostMessageAction('start_chat', handle);
   //   changeChatCondition();

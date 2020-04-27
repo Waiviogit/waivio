@@ -5,6 +5,7 @@ import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
+
 import './QuickCommentEditor.less';
 
 @withEditor
@@ -116,6 +117,20 @@ class QuickCommentEditor extends React.Component {
             onChange={this.handleMsgChange}
           />
           {isEmpty(currentImage) && setImage}
+          {isLoading ? (
+            <Icon
+              type="loading"
+              className="QuickComment__send-comment QuickComment__send-comment--loader"
+            />
+          ) : (
+            <span
+              role="presentation"
+              onClick={this.handleSubmit}
+              className="QuickComment__send-comment"
+            >
+              <img src={'/images/icons/send.svg'} alt="send" />
+            </span>
+          )}
         </div>
         {!isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">

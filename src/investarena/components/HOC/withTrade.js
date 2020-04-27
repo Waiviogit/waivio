@@ -27,7 +27,11 @@ const propTypes = {
   quoteSettings: PropTypes.shape(),
   platformName: PropTypes.string.isRequired,
   isSignIn: PropTypes.bool.isRequired,
-  isWalletsExist: PropTypes.bool.isRequired,
+  isWalletsExist: PropTypes.shape({
+    baseCurrencyName: PropTypes.bool,
+    termCurrencyName: PropTypes.bool,
+    both: PropTypes.bool.isRequired,
+  }).isRequired,
   wallet: PropTypes.shape({
     id: PropTypes.string,
     value: PropTypes.number,

@@ -206,7 +206,7 @@ class ObjectProfile extends React.Component {
           )}
           <div className="feed-layout__switcher">
             <div className="feed-layout__text">
-              <FormattedMessage id="onlyForecasts" defaultMessage="Only topics with forecasts" />
+              <FormattedMessage id="onlyForecasts" defaultMessage="Only posts with forecasts" />
             </div>
             <Switch
               defaultChecked

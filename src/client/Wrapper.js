@@ -24,7 +24,7 @@ import {
   isGuestUser,
 } from './reducers';
 import { busyLogin, login, logout } from './auth/authActions';
-import { getMessagesQuantity } from '../waivioApi/ApiClient';
+// import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
   getFollowing,
@@ -102,7 +102,7 @@ export default class Wrapper extends React.PureComponent {
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
     // isAuthenticated: PropTypes.bool.isRequired,
-    isChat: PropTypes.bool.isRequired,
+    // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
   };
@@ -159,6 +159,7 @@ export default class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
     this.state = {
       messagesCount: 0,
+      isMobileMenuOpen: false,
     };
   }
 
@@ -171,9 +172,11 @@ export default class Wrapper extends React.PureComponent {
         this.props.getNotifications();
         this.props.busyLogin();
       });
-      getMessagesQuantity(this.props.username).then(data =>
-        this.setState({ messagesCount: data.count }),
-      );
+      // if (this.props.username) {
+      //   getMessagesQuantity(this.props.username).then(data =>
+      //     this.setState({ messagesCount: data.count }),
+      //   );
+      // }
     });
     batch(() => {
       this.props.getRewardFund();
@@ -184,16 +187,17 @@ export default class Wrapper extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale, isChat } = this.props;
+    const { locale } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
     }
-    if (nextProps.isChat !== isChat) {
-      getMessagesQuantity(this.props.username).then(data =>
-        this.setState({ messagesCount: data.count }),
-      );
-    }
+    // TODO when chat will ready
+    // if (nextProps.isChat !== isChat || nextProps.username && nextProps.username !== username) {
+    //   getMessagesQuantity(nextProps.username).then(data =>
+    //     this.setState({ messagesCount: data.count }),
+    //   );
+    // }
   }
 
   componentDidUpdate() {
@@ -257,15 +261,19 @@ export default class Wrapper extends React.PureComponent {
         this.props.history.push(`/@${this.props.username}`);
         break;
       case 'discover-objects':
-        this.props.history.push(`/discover-objects/cryptopairs`);
+        this.props.history.push('/discover-objects/cryptopairs');
         break;
       case 'about':
-        this.props.history.push(`/object/qjr-investarena-q-and-a/list`);
+        this.props.history.push('/object/oul-investarena/menu#qjr-investarena-q-and-a');
         break;
       default:
         break;
     }
   }
+
+  toggleMobileMenu = () => {
+    this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen });
+  };
 
   render() {
     const {
@@ -277,7 +285,7 @@ export default class Wrapper extends React.PureComponent {
       // isChat,
       // isAuthenticated,
     } = this.props;
-    const { messagesCount } = this.state;
+    const { messagesCount, isMobileMenuOpen } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -291,6 +299,8 @@ export default class Wrapper extends React.PureComponent {
                   openChat={this.props.changeChatCondition}
                   messagesCount={messagesCount}
                   onMenuItemClick={this.handleMenuItemClick}
+                  toggleMobileMenu={this.toggleMobileMenu}
+                  isMobileMenuOpen={isMobileMenuOpen}
                 />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
@@ -298,7 +308,7 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                <BBackTop className="primary-modal" />
+                {!isMobileMenuOpen && <BBackTop className="primary-modal" />}
                 {/* <ChatButton */}
                 {/*  openChat={this.props.changeChatCondition} */}
                 {/*  isChat={isChat} */}

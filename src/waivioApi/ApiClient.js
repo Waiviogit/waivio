@@ -11,6 +11,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 import { setBxySessionData } from '../client/helpers/localStorageHelpers';
 import { logout } from '../client/auth/authActions';
+import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 
 const filterKey = 'beaxy';
 
@@ -280,17 +281,13 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify(postData),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(postData),
+  })
+    .then(res => res.json())
+    .catch(error => error);
 
 export const getAllFollowingObjects = (username, skip, limit) =>
   new Promise((resolve, reject) => {
@@ -317,9 +314,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
@@ -763,6 +760,13 @@ export const getTopPosts = () =>
 export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -772,6 +776,13 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
 export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        following: username,
+        follower: username,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -912,14 +923,15 @@ export const updateGuestProfile = async (username, json_metadata) => {
     data: {
       operations: [
         [
-          'custom_json',
+          CUSTOM_JSON,
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'account_update',
+            id: ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
-              json_metadata: JSON.stringify(json_metadata),
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },
         ],
@@ -1048,6 +1060,7 @@ class WaivioApiClient {
       throw new Error('Cannot construct singleton');
     }
     this._authToken = null;
+    this._authProvider = '';
     this._dispatch = () => console.warn('Set reference to dispatch function before call it');
   }
 
@@ -1134,6 +1147,13 @@ class WaivioApiClient {
 
   get isGuest() {
     return Boolean(this._authToken);
+  }
+
+  get guestAuthProvider() {
+    return this._authProvider;
+  }
+  set guestAuthProvider(providerName) {
+    this._authProvider = providerName;
   }
 }
 

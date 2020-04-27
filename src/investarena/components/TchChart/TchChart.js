@@ -5,6 +5,7 @@ import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publis
 import { singleton } from '../../platform/singletonPlatform';
 import { quoteIdForWidget } from '../../constants/constantsWidgets';
 import { invArena } from '../../configApi/apiResources';
+import { getChartLocale } from './chartHelper';
 import './TchChart.less';
 
 class TchChart extends Component {
@@ -21,6 +22,7 @@ class TchChart extends Component {
       : name;
     const market = 'crypto';
     const period = humanize(this.props.period);
+    const chartLocale = getChartLocale(this.props.locale);
     let params = {
       pair: { ID: quoteId, Name: name, FullName: fullName, Category: market },
       period: period,
@@ -36,7 +38,7 @@ class TchChart extends Component {
         settingsUrl: 'https://wgt-srv0.beaxy.com/wss/quotation/getsettings?tch=true',
         type: source,
       },
-      lang: 'ru',
+      lang: chartLocale,
       isHeaderHidden: false,
       isSidebarHidden: false,
       isFullScreen: false,

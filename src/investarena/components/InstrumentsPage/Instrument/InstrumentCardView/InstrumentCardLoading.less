@@ -1,0 +1,38 @@
+@import (reference) '../../../../../client/styles/custom.less';
+@import (reference) '../../../../../client/styles/modules/variables.less';
+
+.InstrumentCardLoader {
+  position: relative;
+  color: #353535;
+  border: 1px solid @normal-grey;
+  border-radius: 4px;
+  margin-top: 5px;
+  padding: 15px;
+
+  &__header {
+    display: flex;
+
+    .ant-card-loading-block {
+      margin: 0 !important;
+    }
+
+    &__avatar {
+      width: 74px !important;
+      height: 60px !important;
+    }
+
+    &__text {
+      margin: -3px 12px;
+
+      p {
+        width: 100%;
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    margin-left: -4px;
+  }
+}
