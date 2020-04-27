@@ -199,7 +199,7 @@ class ObjectOfTypePage extends Component {
                   <span>
                     {intl.formatMessage({
                       id: 'empty_object_profile',
-                      defaultMessage: "This object doesn't have any",
+                      defaultMessage: 'Be the first to write a review',
                     })}
                   </span>
                 </div>

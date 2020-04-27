@@ -115,8 +115,7 @@ export const validatorsCreator = (
   },
 
   checkExpireDate: (rule, value, callback) => {
-    const currentDay = new Date().getDate();
-    if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
+    if (value && value.unix() * 1000 < Date.now()) {
       callback(messages.expiredDate);
     } else {
       callback();

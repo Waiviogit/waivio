@@ -187,7 +187,7 @@ class WobjHistory extends React.Component {
         <div className="object-feed__row justify-center">
           <FormattedMessage
             id="empty_object_profile"
-            defaultMessage="This object doesn't have any"
+            defaultMessage="Be the first to write a review"
           />
         </div>
       );
