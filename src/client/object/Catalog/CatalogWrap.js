@@ -133,11 +133,13 @@ class CatalogWrap extends React.Component {
     this.setState({ loading: true });
     getObject(permlink)
       .then(res => {
-        const listItems =
+        let listItems =
           (res &&
             res.listItems &&
             res.listItems.map(item => getClientWObj(item, this.props.locale))) ||
           [];
+        listItems = listItems.map(item => addActiveVotesInField(res, item));
+        console.log(listItems);
         this.setState(prevState => {
           let breadcrumb = [];
           if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {

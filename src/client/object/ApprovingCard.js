@@ -18,6 +18,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
       1000000
     : 0;
   const percent = post.active_votes && calculateApprovePercent(post.active_votes);
+  const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
 
   return (
     <div
@@ -54,8 +55,9 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
         <Tag>
           <span
             className={`AppendCard__${post.upvotedByModerator || voteValue > 0 ? 'green' : 'red'}`}
+            title={voteValue}
           >
-            {post.upvotedByModerator ? 'Approved' : voteValue.toFixed(2)}
+            {post.upvotedByModerator ? 'Approved' : calcVoteValue}
           </span>
         </Tag>
         {post.upvotedByModerator && <span>approved by admin @admin</span>}

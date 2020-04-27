@@ -34,7 +34,7 @@ const StoryPreview = ({ post }) => {
         jsonMetadata.wobj.field.name,
       )
     ) {
-      imagePath = jsonMetadata.wobj.field.body;
+      imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
     }
   } else {
     const contentImages = getContentImages(post.body);
@@ -66,7 +66,6 @@ const StoryPreview = ({ post }) => {
     ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
-
     image: () => (
       <div key={imagePath} className="Story__content__img-container">
         <img alt="" src={imagePath} />

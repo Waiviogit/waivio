@@ -10,7 +10,6 @@ import {
   injectIntl,
 } from 'react-intl';
 import PropTypes from 'prop-types';
-
 import WeightTag from '../components/WeightTag';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';

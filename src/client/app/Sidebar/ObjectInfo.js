@@ -250,7 +250,9 @@ class ObjectInfo extends React.Component {
       menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
 
       menuItems = menuItems.map(item => {
-        const matchField = _.get(wobject, 'fields', []).find(field => field.alias === item.alias);
+        const matchField = _.get(wobject, 'fields', []).find(
+          field => field.body === item.author_permlink,
+        );
         const activeVotes = matchField ? matchField.active_votes : [];
 
         return {
@@ -258,11 +260,11 @@ class ObjectInfo extends React.Component {
           active_votes: [...activeVotes],
         };
       });
+
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
           ? menuItems.filter(item => calculateApprovePercent(item.active_votes) >= 70)
           : null;
-
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
           ? menuItems.filter(

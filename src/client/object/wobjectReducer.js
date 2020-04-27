@@ -217,6 +217,17 @@ export default function wobjectReducer(state = initialState, action) {
         };
       }
 
+      if (payload.name === 'sortCustom') {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields, newField],
+            sortCustom: JSON.parse(payload.body),
+          },
+        };
+      }
+
       return {
         ...state,
         wobject: {
