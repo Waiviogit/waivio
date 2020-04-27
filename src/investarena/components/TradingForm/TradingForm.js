@@ -54,7 +54,7 @@ const TradingForm = ({
               {wallet.currency}
             </React.Fragment>
           ) : (
-            <a href="https://uat-exchange.tokenexus.com">
+            <a href="https://exchange.beaxy.com">
               <Button className="st-trading-form__button-wrap-uppercase" type="primary" ghost>
                 <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
               </Button>
