@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
-import Loading from '../components/Icon/Loading';
+import UserDynamicListLoading from './UserDynamicListLoading';
 import WeightTag from '../components/WeightTag';
 import './UserDynamicList.less';
 
@@ -62,7 +62,7 @@ export default class UserDynamicList extends React.Component {
           elementIsScrollable={false}
           loadingMore={loading}
           hasMore={hasMore}
-          loader={<Loading />}
+          loader={<UserDynamicListLoading />}
           loadMore={this.handleLoadMore}
         >
           {users.map(user => {

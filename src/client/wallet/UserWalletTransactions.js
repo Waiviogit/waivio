@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { last } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import { defaultAccountLimit } from '../helpers/apiHelpers';
-import Loading from '../components/Icon/Loading';
 import WalletTransaction from './WalletTransaction';
+import UserDynamicListLoading from '../user/UserDynamicListLoading';
 import './UserWalletTransactions.less';
 
 class UserWalletTransactions extends React.Component {
@@ -61,7 +61,7 @@ class UserWalletTransactions extends React.Component {
           threshold={500}
           loader={
             <div className="UserWalletTransactions__loader">
-              <Loading />
+              <UserDynamicListLoading />
             </div>
           }
           loadingMore={loadingMoreUsersAccountHistory}

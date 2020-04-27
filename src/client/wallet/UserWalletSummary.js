@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'antd';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import formatter from '../helpers/steemitFormatter';
 import {
@@ -7,13 +8,12 @@ import {
   calculatePendingWithdrawalSP,
   calculateTotalDelegatedSP,
 } from '../vendor/steemitHelpers';
+import UserWalletSummaryLoading from './UserWalletSummaryLoading';
 import BTooltip from '../components/BTooltip';
-import Loading from '../components/Icon/Loading';
 import USDDisplay from '../components/Utils/USDDisplay';
 import CurrencyItem from './CurrencyItem/CurrencyItem';
-
+import UserDynamicListLoading from '../user/UserDynamicListLoading';
 import './UserWalletSummary.less';
-import { Button } from 'antd';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
   const totalDelegatedSP = calculateTotalDelegatedSP(
@@ -134,7 +134,7 @@ const UserWalletSummary = ({
         </div>
         <div className="UserWalletSummary__value">
           {loading ? (
-            <Loading />
+            <UserWalletSummaryLoading />
           ) : (
             <span>
               <FormattedNumber value={balance ? parseFloat(balance) : 0} />
@@ -143,7 +143,7 @@ const UserWalletSummary = ({
           )}
         </div>
       </div>
-      {!isGuest && (
+      {!isGuest && !loading ? (
         <React.Fragment>
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
@@ -152,7 +152,7 @@ const UserWalletSummary = ({
             </div>
             <div className="UserWalletSummary__value">
               {loading || loadingGlobalProperties ? (
-                <Loading />
+                <UserWalletSummaryLoading />
               ) : (
                 <span>
                   <FormattedNumber
@@ -178,7 +178,7 @@ const UserWalletSummary = ({
             </div>
             <div className="UserWalletSummary__value">
               {loading ? (
-                <Loading />
+                <UserWalletSummaryLoading />
               ) : (
                 <span>
                   <FormattedNumber value={parseFloat(user.sbd_balance)} />
@@ -194,7 +194,7 @@ const UserWalletSummary = ({
             </div>
             <div className="UserWalletSummary__value">
               {loading ? (
-                <Loading />
+                <UserWalletSummaryLoading />
               ) : (
                 <span>
                   <FormattedNumber value={parseFloat(user.savings_balance)} />
@@ -206,6 +206,8 @@ const UserWalletSummary = ({
             </div>
           </div>
         </React.Fragment>
+      ) : (
+        <UserDynamicListLoading />
       )}
       {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
         <div className="UserWalletSummary__item">
@@ -215,7 +217,7 @@ const UserWalletSummary = ({
           </div>
           <div className="UserWalletSummary__value">
             {loading || loadingGlobalProperties || steemRateLoading ? (
-              <Loading />
+              <UserWalletSummaryLoading />
             ) : (
               <USDDisplay
                 value={calculateEstAccountValue(
