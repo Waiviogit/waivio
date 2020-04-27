@@ -139,7 +139,7 @@ class CatalogWrap extends React.Component {
             res.listItems.map(item => getClientWObj(item, this.props.locale))) ||
           [];
         listItems = listItems.map(item => addActiveVotesInField(res, item));
-        console.log(listItems);
+      
         this.setState(prevState => {
           let breadcrumb = [];
           if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {
