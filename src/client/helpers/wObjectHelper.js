@@ -140,11 +140,6 @@ export const addActiveVotesInField = (wobj, field) => {
       wobjField.body === field.body ||
       wobjField.body === field.author_permlink,
   );
-  if (field.id === 'mene') {
-    console.log(wobj);
-    console.log(field);
-    console.log(matchField);
-  }
 
   const activeVotes = matchField ? matchField.active_votes : [];
 
