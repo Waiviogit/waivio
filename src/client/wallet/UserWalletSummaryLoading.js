@@ -9,5 +9,4 @@ const UserWalletSummaryLoading = () => (
     </div>
   </div>
 );
-
 export default UserWalletSummaryLoading;
