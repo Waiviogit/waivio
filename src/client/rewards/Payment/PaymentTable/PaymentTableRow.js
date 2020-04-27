@@ -13,12 +13,12 @@ const PaymentTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const toggleModalReport = () => {
     // const requestParams = {
-    //   sponsor,
-    //   user: sponsor.userName,
-    //   reviewPermlink: sponsor.details.review_permlink,
+    //   guideName: sponsor.sponsor,
+    //   userName: sponsor.userName,
+    //   reservationPermlink: sponsor.details.reservation_permlink,
     // }
     setModalReportOpen(!isModalReportOpen);
-    // getLenders({requestParams});
+    // getReport({requestParams});
   };
   // const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
   // const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
