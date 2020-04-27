@@ -1,0 +1,92 @@
+@import (reference) '../../../../styles/modules/variables.less';
+@import (reference) '../../../../styles/custom.less';
+
+.ReportTableRewards {
+  border: 1px solid @black;
+  text-align: center !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: medium;
+  margin-bottom: 20px;
+
+  @media @small {
+    width: 95%;
+  }
+
+  @media @medium {
+    width: 75%;
+  }
+
+  @media @large {
+    width: 100%;
+  }
+
+  & td {
+    border: 1px solid @black;
+  }
+
+  & th {
+    vertical-align: top;
+    text-align: center !important;
+    border: 1px solid @black;
+  }
+
+  & thead th {
+    font-weight: 500;
+    color: @black;
+    text-align: left;
+  }
+
+  & tbody td {
+    font-weight: 500;
+    font-size: small;
+    padding: 3px 2px;
+  }
+
+  &.basicWidth {
+    width: 11%;
+  }
+
+  &.mediumWidth {
+    width: 27%;
+  }
+
+  &.maxWidth {
+    width: 40%;
+    text-align: start !important;
+    padding-left: 15px;
+  }
+
+  &__header {
+    font-size: 18px;
+    color: @black;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 15px;
+  }
+
+  .ReportTableRewardsRow {
+    &__name {
+      color: @orange-hot;
+      text-align: left;
+      padding-left: 25px;
+    }
+
+    &__total {
+      text-align: left;
+      padding-left: 15px;
+      font-size: medium;
+      font-weight: 600;
+      color: @black;
+    }
+
+    &__total-totalHive {
+      font-size: medium;
+      font-weight: 600;
+      color: @black;
+      align-items: center;
+    }
+  }
+}
+
+@import 'ReportTableRewards-nightmode';
