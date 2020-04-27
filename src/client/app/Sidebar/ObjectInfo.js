@@ -1,5 +1,17 @@
-import _ from 'lodash';
 import React from 'react';
+import {
+  isEmpty,
+  size,
+  compact,
+  uniqBy,
+  get,
+  orderBy,
+  pickBy,
+  identity,
+  filter,
+  iteratee,
+  includes,
+} from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -112,7 +124,7 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   renderCategoryItems = (categoryItems, category) => {
-    if (!_.isEmpty(categoryItems)) {
+    if (!isEmpty(categoryItems)) {
       const categoryItemsWithVotes = categoryItems
         .map(item => addActiveVotesInField(this.props.wobject, item))
         .filter(item => calculateApprovePercent(item.active_votes) >= 70);
@@ -226,7 +238,7 @@ class ObjectInfo extends React.Component {
         picture => calculateApprovePercent(picture.active_votes) >= 70,
       );
 
-    if (_.size(wobject) > 0) {
+    if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(
           nameFld =>
@@ -239,7 +251,7 @@ class ObjectInfo extends React.Component {
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
         : [];
-      address = _.compact(addressArr).join(', ');
+      address = compact(addressArr).join(', ');
 
       description = getFieldWithMaxWeight(wobject, objectFields.description);
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
@@ -253,10 +265,10 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
-      menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
+      menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
 
       menuItems = menuItems.map(item => {
-        const matchField = _.get(wobject, 'fields', []).find(field => field.alias === item.alias);
+        const matchField = get(wobject, 'fields', []).find(field => field.alias === item.alias);
         const activeVotes = matchField ? matchField.active_votes : [];
 
         return {
@@ -286,7 +298,7 @@ class ObjectInfo extends React.Component {
         field =>
           field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
       );
-      phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
+      phones = orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
     const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
@@ -300,9 +312,9 @@ class ObjectInfo extends React.Component {
         }
       : {};
 
-    profile = _.pickBy(profile, _.identity);
+    profile = pickBy(profile, identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
+    const album = filter(albums, iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg =
       wobject.fields &&
       wobject.fields.filter(
@@ -316,7 +328,7 @@ class ObjectInfo extends React.Component {
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
-      const shouldDisplay = renderFields.includes(name) || _.includes(TYPES_OF_MENU_ITEM, name);
+      const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
       return shouldDisplay && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
@@ -436,10 +448,10 @@ class ObjectInfo extends React.Component {
                   news: Boolean(newsFilter),
                 },
               ),
-              !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
+              !isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
-          {!_.isEmpty(menuLists) && listItem(objectFields.sorting, null)}
+          {!isEmpty(menuLists) && listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );

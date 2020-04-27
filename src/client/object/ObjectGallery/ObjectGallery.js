@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { getAlbums } from '../../object/ObjectGallery/galleryActions';
+import { getAlbums } from './galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
-import './ObjectGallery.less';
 import CreateAlbum from './CreateAlbum';
 import { getIsObjectAlbumsLoading, getObjectAlbums, getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
+
+import './ObjectGallery.less';
 
 @injectIntl
 @connect(
