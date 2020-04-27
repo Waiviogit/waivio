@@ -40,7 +40,7 @@ class CreatePostForecast extends Component {
     isUpdating: PropTypes.bool,
     forecastValues: PropTypes.shape(),
     onChange: PropTypes.func,
-    toggleForecast: PropTypes.func,
+    toggleForecast: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -195,7 +195,6 @@ class CreatePostForecast extends Component {
       isValid,
       quotePrice,
     } = this.state;
-    console.log(selectQuote);
     const { intl, isPosted, isUpdating, optionsQuote } = this.props;
     return (
       <div className="st-create-post-optional">
@@ -215,41 +214,41 @@ class CreatePostForecast extends Component {
           <div className="st-create-post-show-options">
             <div className="st-create-post-dropdowns">
               <div className="st-create-post-dropdowns-row">
-                <div className="st-create-post-select-wrap" data-test="select-instrument">
-                  <p className="m-0">
-                    <FormattedMessage
-                      id="createPost.selectTitle.instrument"
-                      defaultMessage="Instrument"
-                    />
-                  </p>
-                  <Select
-                    name="selected-quote"
-                    placeholder={intl.formatMessage({
-                      id: 'createPost.selectLabel.default',
-                      defaultMessage: 'Select',
-                    })}
-                    className={classNames('st-create-post-select__quote', {
-                      'st-create-post-danger': isPosted && !isValid && !selectQuote,
-                    })}
-                    disabled={isUpdating}
-                    filterOption
-                    optionFilterProp="title"
-                    onChange={this.updateValueQuote}
-                    onFocus={this.freezeUpdates}
-                    onBlur={this.freezeUpdates}
-                    value={selectQuote}
-                    dropdownClassName="st-create-post-select__dropDown"
-                    showSearch
-                  >
-                    {optionsQuote.map(option => (
-                      <Select.Option key={option.value} value={option.value} title={option.label}>
-                        {option.label}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </div>
                 <div className="st-create-post-select-wrap-mobile">
-                  <div className="st-create-post-select-wrap" data-test="select-recommend">
+                  <div className="st-create-post-select-wrap">
+                    <p className="m-0">
+                      <FormattedMessage
+                        id="createPost.selectTitle.instrument"
+                        defaultMessage="Instrument"
+                      />
+                    </p>
+                    <Select
+                      name="selected-quote"
+                      placeholder={intl.formatMessage({
+                        id: 'createPost.selectLabel.default',
+                        defaultMessage: 'Select',
+                      })}
+                      className={classNames('st-create-post-select__quote', {
+                        'st-create-post-danger': isPosted && !isValid && !selectQuote,
+                      })}
+                      disabled={isUpdating}
+                      filterOption
+                      optionFilterProp="title"
+                      onChange={this.updateValueQuote}
+                      onFocus={this.freezeUpdates}
+                      onBlur={this.freezeUpdates}
+                      value={selectQuote}
+                      dropdownClassName="st-create-post-select__dropDown"
+                      showSearch
+                    >
+                      {optionsQuote.map(option => (
+                        <Select.Option key={option.value} value={option.value} title={option.label}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="st-create-post-select-wrap">
                     <p className="m-0">
                       <FormattedMessage
                         id="createPost.selectTitle.recommend"
@@ -276,6 +275,9 @@ class CreatePostForecast extends Component {
                       ))}
                     </Select>
                   </div>
+                </div>
+
+                <div className="st-create-post-select-wrap-mobile">
                   <div className="st-create-post-select-wrap" data-test="select-forecast">
                     <p className="m-0">
                       <FormattedMessage
@@ -322,21 +324,19 @@ class CreatePostForecast extends Component {
                       </Select>
                     )}
                   </div>
-                </div>
-              </div>
-              <div className="st-create-post-dropdowns-row">
-                <div className="st-create-post-select-wrap">
-                  <p className="m-0">
-                    <FormattedMessage id="createPost.selectTitle.price" defaultMessage="Price" />
-                  </p>
-                  <Input
-                    className="st-create-post-quotation"
-                    type="text"
-                    value={
-                      quotePrice && intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
-                    }
-                    disabled
-                  />
+                  <div className="st-create-post-select-wrap">
+                    <p className="m-0">
+                      <FormattedMessage id="createPost.selectTitle.price" defaultMessage="Price" />
+                    </p>
+                    <Input
+                      className="st-create-post-quotation"
+                      type="text"
+                      value={
+                        quotePrice && intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
+                      }
+                      disabled
+                    />
+                  </div>
                 </div>
               </div>
               {!isUpdating && (selectQuote || selectRecommend || selectForecast) && (
