@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, uniqBy } from 'lodash';
+import { isEmpty, uniqBy, map } from 'lodash';
 import moment from 'moment';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 
 export const displayLimit = 10;
 
@@ -203,12 +204,28 @@ export const getDescription = objectDetails =>
     ? `<p>Additional requirements/notes: ${objectDetails.description}</p>`
     : '';
 
+const getFollowingObjects = objectDetails =>
+  !isEmpty(objectDetails.objects)
+    ? map(objectDetails.objects, obj => ({
+        name: getFieldWithMaxWeight(obj, 'name'),
+        permlink: obj.author_permlink,
+      }))
+    : '';
+
+const getLinksToAllFollowingObjects = followingObjects =>
+  followingObjects.reduce(
+    (acc, obj) => `${acc}, <a href='/object/${obj.permlink}'>${obj.name}</a>`,
+    '',
+  );
+
 export const getDetailsBody = (
   proposition,
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
 ) => {
+  const followingObjects = getFollowingObjects(proposition);
+  const links = getLinksToAllFollowingObjects(followingObjects);
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
@@ -224,7 +241,7 @@ export const getDetailsBody = (
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
 <ul><li>Minimum ${
     proposition.requirements.minPhotos
-  } original photos of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>
+  } original photos of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to one of the following objects: ${links}</li>
 <li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
     proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
