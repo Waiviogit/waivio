@@ -5,13 +5,20 @@ import { injectIntl } from 'react-intl';
 import { map } from 'lodash';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
+// import { getLenders } from '../../../../waivioApi/ApiClient';
 // import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const toggleModalReport = () => {
+    // const requestParams = {
+    //   sponsor,
+    //   user: sponsor.userName,
+    //   reviewPermlink: sponsor.details.review_permlink,
+    // }
     setModalReportOpen(!isModalReportOpen);
+    // getLenders({requestParams});
   };
   // const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
   // const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');

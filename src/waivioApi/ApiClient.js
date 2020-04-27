@@ -731,11 +731,16 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getLenders = ({ sponsor, user, filters }) => {
+export const getLenders = ({ sponsor, user, reviewPermlink, filters }) => {
   const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
   const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
   const days = filters && filters.days ? `&days=${filters.days}` : '';
   const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
+  // const isSponsor = sponsor ? sponsor : '';
+  // const payable = filters && filters.payable ? filters.payable : '';
+  // const days = filters && filters.days ? filters.days : '';
+  // const isUser = user ? user : '';
+  // const isReviewPermlink = reviewPermlink ? reviewPermlink : '';
   return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
@@ -744,6 +749,20 @@ export const getLenders = ({ sponsor, user, filters }) => {
         method: 'GET',
       },
     )
+      // fetch(
+      //   `${config.campaignApiPrefix}${config.payments}${config.payables}`,
+      //   {
+      //     headers,
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       sponsor: isSponsor,
+      //       user: isUser,
+      //       days,
+      //       payable,
+      //       reviewPermlink: isReviewPermlink,
+      //     }),
+      //   },
+      // )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -791,6 +810,18 @@ export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
         method: 'GET',
       },
     )
+      // fetch(
+      //   `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
+      //   {
+      //     headers,
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       userName: userName,
+      //       skip,
+      //       limit,
+      //     })
+      //   },
+      // )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
