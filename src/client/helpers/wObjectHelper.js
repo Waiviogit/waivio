@@ -142,8 +142,10 @@ export const addActiveVotesInField = (wobj, field) => {
       wobjField.body === field.id ||
       wobjField.permlink === field.permlink ||
       wobjField.body === field.name ||
-      wobjField.body === field.body,
+      wobjField.body === field.body ||
+      wobjField.body === field.author_permlink,
   );
+
   const activeVotes = matchField ? matchField.active_votes : [];
 
   return {
