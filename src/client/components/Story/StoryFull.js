@@ -200,10 +200,6 @@ class StoryFull extends React.Component {
       signedBody = `${body}<hr>${signature}`;
     }
 
-    // const parsedBody = getHtml(signedBody, {}, 'text');
-    //
-    // this.images = extractImageTags(parsedBody);
-
     let followText = '';
 
     if (postState.userFollowed && !pendingFollow) {
