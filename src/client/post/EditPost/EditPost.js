@@ -34,7 +34,6 @@ import CreatePostForecast from '../../../investarena/components/CreatePostForeca
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { getClientWObj } from '../../adapters';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
-import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
 
 @injectIntl
@@ -361,7 +360,6 @@ class EditPost extends Component {
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            {/*<div>{intl.formatMessage({ id: 'title', defaultMessage: 'Add title' })}</div>*/}
             <Editor
               intl={this.props.intl}
               enabled={!imageLoading}
@@ -391,14 +389,12 @@ class EditPost extends Component {
               className="search-object"
               handleSelect={this.handleObjectSelect}
             />
-            {/*<CreateObject onCreateObject={this.handleCreateObject} />*/}
-
             <div className="edit-post__card-view">
               {linkedObjects.map(wObj => (
                 <ObjectCardView
                   wObject={wObj}
                   key={wObj.id}
-                  shouldHideClose={window.innerWidth <= 500 || window.innerHeight <= 500}
+                  isCloseButton={false} //set true if you want to show closeBbutton
                   deleteLinkedObject={this.deleteLinkedObject}
                 />
               ))}

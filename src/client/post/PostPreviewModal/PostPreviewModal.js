@@ -203,11 +203,10 @@ class PostPreviewModal extends Component {
     } = this.props;
     const { postTitle, postBody } = splitPostContent(content);
     const isEmptyRequiredFields = !(
-      postTitle &&
-      postBody &&
-      forecastValues.quoteSecurity &&
-      forecastValues.recommend &&
-      forecastValues.selectForecast
+      (postTitle && postBody)
+      // forecastValues.quoteSecurity &&//TODO  Check
+      // forecastValues.recommend &&
+      // forecastValues.selectForecast
     );
     const { selectForecast, ...forecastRaw } = forecastValues;
     const forecast = getForecastObject(forecastRaw, selectForecast, !isEmpty(expForecast));

@@ -7,12 +7,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
-import {
-  getQuotePrice,
-  isStopLossTakeProfitValid,
-  getForecastState,
-  getEditorForecast,
-} from './helpers';
+import { getQuotePrice, getForecastState, getEditorForecast } from './helpers';
 import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import {
@@ -332,7 +327,8 @@ class CreatePostForecast extends Component {
                       className="st-create-post-quotation"
                       type="text"
                       value={
-                        quotePrice && intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
+                        quotePrice &&
+                        intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
                       }
                       disabled
                     />

@@ -1105,10 +1105,9 @@
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
   "signUp_creditCards": "- кредитные карты",
-  "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "edit_use_chance_label": "Воспользуйтесь шансом заработать больше!",
   "edit_add_post_forecast_label": "Добавьте свой пост прогноз и заработайте дополнительный очки.",
   "edit_show_more": "Подробнее",
   "edit_tooltip": "Убедитесь что выбранные хештеги соответствую теме вашего поста - это повысит ваши шансы заработать больше поинтов",
-  "edit_your_forecast_label": "Ваш прогноз"
+  "edit_your_forecast_label": "Ваш прогноз:"
 }

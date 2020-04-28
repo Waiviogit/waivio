@@ -8,7 +8,6 @@ import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { getClientWObj } from '../../adapters';
-import { FormattedMessage, injectIntl } from 'react-intl';
 
 const SIDE_BUTTONS = [
   {
@@ -23,16 +22,13 @@ const SIDE_BUTTONS = [
     title: 'Separator',
     component: SeparatorButton,
   },
-  // {
-  //   title: 'Object',
-  //   component: ObjectSideButton,
-  // },
 ];
 
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
     enabled: PropTypes.bool.isRequired,
+    setTitle: PropTypes.func.isRequired,
     withTitle: PropTypes.bool,
     initialContent: PropTypes.shape({
       title: PropTypes.string,

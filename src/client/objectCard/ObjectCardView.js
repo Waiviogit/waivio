@@ -16,7 +16,7 @@ const ObjectCardView = ({
   showSmallVersion,
   pathNameAvatar,
   intl,
-  shouldHideClose,
+  isCloseButton,
   deleteLinkedObject,
 }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
@@ -82,7 +82,7 @@ const ObjectCardView = ({
                   {wObject.title}
                 </div>
               )}
-              {shouldHideClose && (
+              {isCloseButton && (
                 <img
                   className="ObjectCardView__close"
                   title={wObject.title}
@@ -108,15 +108,15 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  shouldHideClose: PropTypes.bool,
+  isCloseButton: PropTypes.bool,
   showSmallVersion: PropTypes.bool,
-  deleteLinkedObject: PropTypes.func,
+  deleteLinkedObject: PropTypes.func.isRequired,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 ObjectCardView.defaultProps = {
   deleteLinkedObjectHandler: () => {},
-  shouldHideClose: false,
+  isCloseButton: false,
   showSmallVersion: false,
   pathNameAvatar: '',
 };

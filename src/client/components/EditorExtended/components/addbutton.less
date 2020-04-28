@@ -24,17 +24,6 @@
   .object-search-input {
     background-color: @white;
     border-radius: 5px;
-    //width: calc(100vw - @margin * 4);
-
-    @media @small {
-      width: calc(100vw - @margin * 5 - @right-width);
-    }
-    @media @medium {
-      max-width: @input-max-width - @margin * 2;
-    }
-    @media @large {
-      max-width: @input-max-width;
-    }
 
     .ant-input:focus {
       box-shadow: none;
@@ -44,10 +33,6 @@
     .ant-btn {
       height: 36px;
       padding: 0 8px;
-
-      @media @medium, @large {
-        display: none;
-      }
     }
   }
 

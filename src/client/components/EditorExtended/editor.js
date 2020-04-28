@@ -27,9 +27,9 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 
 import ImageSideButton from './components/sides/ImageSideButton';
-import './index.less';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Form, Input } from 'antd';
+import './index.less';
 
 /*
 A wrapper over `draft-js`'s default **Editor** component which provides
@@ -39,6 +39,7 @@ some key handling for ease of use so that users' mouse usage is minimum.
 class MediumDraftEditor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    setTitle: PropTypes.func.isRequired,
     beforeInput: PropTypes.func,
     keyBindingFn: PropTypes.func,
     customStyleMap: PropTypes.shape(),
@@ -269,7 +270,6 @@ class MediumDraftEditor extends React.Component {
     togglled.
   */
   handleKeyCommand(command) {
-    // console.log(command);
     const { editorState } = this.props;
     if (this.props.handleKeyCommand) {
       const behaviour = this.props.handleKeyCommand(command);
@@ -527,7 +527,6 @@ class MediumDraftEditor extends React.Component {
       showLinkEditToolbar,
       toolbarConfig,
     } = this.props;
-    const showAddButton = editorEnabled;
     const editorClass = `md-RichEditor-editor Body Body--full${
       !editorEnabled ? ' md-RichEditor-readonly' : ''
     }`;
@@ -583,39 +582,12 @@ class MediumDraftEditor extends React.Component {
               handleBeforeInput={this.handleBeforeInput}
               handleReturn={this.handleReturn}
               handlePastedText={this.handlePastedText}
-              //customStyleMap={this.props.customStyleMap}
               readOnly={!editorEnabled}
               keyBindingFn={this.props.keyBindingFn}
               placeholder={this.props.placeholder}
               spellCheck={editorEnabled && this.props.spellCheck}
             />
           </Form.Item>
-
-          {/*{this.props.sideButtons.map(button => {*/}
-          {/*  const Button = button.component;*/}
-          {/*  const extraProps = button.props ? button.props : {};*/}
-          {/*  return (*/}
-          {/*    <CSSTransition*/}
-          {/*      key={button.title}*/}
-          {/*      classNames="md-add-btn-anim"*/}
-          {/*      appear*/}
-          {/*      timeout={{*/}
-          {/*        enter: 200,*/}
-          {/*        exit: 100,*/}
-          {/*        appear: 100,*/}
-          {/*      }}*/}
-          {/*    >*/}
-          {/*      <Button*/}
-          {/*        {...extraProps}*/}
-          {/*        getEditorState={this.getEditorState}*/}
-          {/*        setEditorState={this.setEditorState}*/}
-          {/*        close={this.openToolbar}*/}
-          {/*        renderControl={this.renderControlElem}*/}
-          {/*      />*/}
-          {/*    </CSSTransition>*/}
-          {/*  );*/}
-          {/*})}*/}
-
           <AddButton
             editorState={editorState}
             getEditorState={this.getEditorState}
