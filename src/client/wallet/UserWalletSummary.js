@@ -147,7 +147,7 @@ const UserWalletSummary = ({
           )}
         </div>
       </div>
-      {!isGuest && !loading ? (
+      {!isGuest && (
         <React.Fragment>
           <div className="UserWalletSummary__item">
             <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
@@ -210,8 +210,6 @@ const UserWalletSummary = ({
             </div>
           </div>
         </React.Fragment>
-      ) : (
-        <UserDynamicListLoading />
       )}
       {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
         <div className="UserWalletSummary__item">
