@@ -233,7 +233,7 @@ class CryptoChart extends React.Component {
       axes: true,
       xType: 'text',
       yTicks: 0,
-      data: [...graphData, { x: 'now', y: 0.125 }],
+      data: [graphData],
       dataPoints: true,
       mouseOverHandler: !isMobile ? this.chartMouseOverHandler : () => {},
       mouseOutHandler: !isMobile ? this.chartMouseOutHandler : () => {},
