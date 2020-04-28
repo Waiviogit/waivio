@@ -268,7 +268,9 @@ class ObjectInfo extends React.Component {
       menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
 
       menuItems = menuItems.map(item => {
-        const matchField = get(wobject, 'fields', []).find(field => field.body === item.author_permlink);
+        const matchField = get(wobject, 'fields', []).find(
+          field => field.body === item.author_permlink,
+        );
         const activeVotes = matchField ? matchField.active_votes : [];
 
         return {
