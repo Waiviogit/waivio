@@ -77,13 +77,14 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const splittedBody = parsedBody.split('~~~ embed:');
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
-
     const match = section.match(/^([A-Za-z0-9/_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
+
     if (match && match.length >= 4) {
       const id = match[1];
       const type = match[2];
       const link = match[3];
       const embed = getEmbed(link);
+
       sections.push(
         ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
       );
