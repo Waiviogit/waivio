@@ -38,6 +38,9 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(props.post.child);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
+  const author =
+    props.post.guestInfo && !props.post.depth ? props.post.root_author : props.post.author;
+  const postId = `${props.post.author}/${props.post.permlink}`;
 
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
@@ -58,22 +61,19 @@ const AppendCard = props => {
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
   function handleLikeClick(post, weight = 10000, type) {
-    const { sliderMode, defaultVotePercent } = props;
-    const author =
-      props.post.guestInfo && !props.post.depth ? props.post.root_author : props.post.author;
-    const postId = `${props.post.author}/${props.post.permlink}`;
+    const { sliderMode } = props;
 
     if (isLiked) {
       props.voteAppends(postId, author, props.post.permlink, 0, type);
     } else if (sliderMode && !isLiked) {
-      props.voteAppends(postId, author, props.post.permlink, defaultVotePercent, type);
+      showSlider(true);
     } else {
       props.voteAppends(postId, author, props.post.permlink, weight, type);
     }
   }
 
   function handleSliderChange(value) {
-    const { user, rewardFund, rate, isGuest } = this.props;
+    const { user, rewardFund, rate, isGuest } = props;
     const voteWorthCalc = isGuest
       ? 0
       : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
@@ -84,10 +84,8 @@ const AppendCard = props => {
 
   function handleReportClick(post, myWeight, type) {
     const { user } = props;
-
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
-    const postId = `${post.author}/${post.permlink}`;
 
     if (isReject) {
       props.voteAppends(postId, post.author, post.permlink, 0, type);
@@ -109,7 +107,7 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    handleLikeClick(props.post, sliderValue * 100, 'approve');
+    props.voteAppends(postId, author, props.post.permlink, sliderValue * 100, 'approve');
   }
 
   return (
@@ -149,7 +147,6 @@ const AppendCard = props => {
         <a
           href={`/@${props.post.author_original}/${props.post.permlink}`}
           rel="noopener noreferrer"
-          target="_blank"
           className="Story__content__title"
         >
           <h2>
@@ -175,20 +172,22 @@ const AppendCard = props => {
           {visibleSlider && !isLiked && (
             <Confirmation onConfirm={handleLikeConfirm} onCancel={() => showSlider(false)} />
           )}
-          <AppendObjButtons
-            post={props.post}
-            handleLikeClick={handleLikeClick}
-            onFlagClick={handleReportClick}
-            handleShowReactions={() => showReactionModal(true)}
-            handleCommentsClick={handleCommentsClick}
-            handleCloseReactions={() => showReactionModal(false)}
-            reactionsModalVisible={reactionsModalVisible}
-            defaultVotePercent={props.defaultVotePercent}
-          />
-          {visibleSlider && !isLiked && (
-            <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
+          {!visibleSlider && (
+            <AppendObjButtons
+              post={props.post}
+              handleLikeClick={handleLikeClick}
+              onFlagClick={handleReportClick}
+              handleShowReactions={() => showReactionModal(true)}
+              handleCommentsClick={handleCommentsClick}
+              handleCloseReactions={() => showReactionModal(false)}
+              reactionsModalVisible={reactionsModalVisible}
+              defaultVotePercent={props.defaultVotePercent}
+            />
           )}
         </div>
+        {visibleSlider && !isLiked && (
+          <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
+        )}
         <Comments show={commentsVisible} isQuickComments post={props.post} />
       </div>
     </div>
@@ -201,6 +200,9 @@ AppendCard.propTypes = {
   voteAppends: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
   sliderMode: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  rewardFund: PropTypes.shape().isRequired,
+  rate: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({

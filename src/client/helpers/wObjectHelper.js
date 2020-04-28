@@ -112,6 +112,11 @@ export const calculateApprovePercent = votes => {
     }
 
     const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
+
+    if (summRshares < 0) {
+      return 0;
+    }
+
     const approveRshares = getAppendUpvotes(votes).reduce(
       (acc, vote) => acc + vote.rshares_weight,
       0,

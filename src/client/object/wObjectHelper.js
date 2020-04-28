@@ -17,7 +17,7 @@ import {
   objectFieldsWithInnerData,
   TYPES_OF_MENU_ITEM,
   objectFields,
-} from '../../../src/common/constants/listOfFields';
+} from '../../common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 import { calculateApprovePercent } from '../helpers/wObjectHelper';
@@ -271,10 +271,9 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
   );
 };
 
-export const mapObjectAppends = (comments, wObj, albums) => {
+export const mapObjectAppends = (comments = {}, wObj = {}, albums = []) => {
   const galleryImages = [];
   albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
-
   const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
   return [...wObj.fields, ...galleryImages, ...albums].map(field => {
     const matchComment = filteredComments.find(
