@@ -16,7 +16,7 @@ const ObjectCardView = ({
   showSmallVersion,
   pathNameAvatar,
   intl,
-                          screenSize,
+  screenSize,
   isCloseButton,
   deleteLinkedObject,
 }) => {
@@ -128,12 +128,18 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  screenSize: PropTypes.string,
+  isCloseButton: PropTypes.bool,
   showSmallVersion: PropTypes.bool,
+  deleteLinkedObject: PropTypes.func,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 ObjectCardView.defaultProps = {
+  deleteLinkedObject: ()=>{},
+  isCloseButton: false,
   showSmallVersion: false,
   pathNameAvatar: '',
+  screenSize: 'medium'
 };
 export default injectIntl(ObjectCardView);
