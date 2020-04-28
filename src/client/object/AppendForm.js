@@ -162,7 +162,7 @@ export default class AppendForm extends Component {
 
       if (data.field.name === objectFields.sorting) {
         equalBody = isEqual(listItem, JSON.parse(data.field.body));
-        if (equalBody)
+        if (wObject.sortCustom.length && equalBody)
           message.error(
             this.props.intl.formatMessage(
               {
@@ -177,7 +177,7 @@ export default class AppendForm extends Component {
           );
       }
 
-      if (data.field.name !== objectFields.sorting || !equalBody) {
+      if (data.field.name !== objectFields.sorting || !wObject.sortCustom.length || !equalBody) {
         this.setState({ loading: true });
         this.props
           .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
@@ -491,11 +491,13 @@ export default class AppendForm extends Component {
       if (!identicalNameFields.length) {
         const { form, intl } = this.props;
         const currentField = form.getFieldValue('currentField');
+
         if (objectFields.newsFilter === currentField) {
           const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
             sub => sub.length,
           );
           const ignoreList = map(this.state.ignoreList, o => o.id);
+
           if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
           else {
             message.error(

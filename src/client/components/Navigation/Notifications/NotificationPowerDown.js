@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationPowerDown = ({ notification, read, onClick }) => {
-  const url = `/@${notification.account / 'transfers'}`;
+  const url = `/@${notification.account}/transfers`;
 
   return (
     <Link
@@ -25,7 +25,7 @@ const NotificationPowerDown = ({ notification, read, onClick }) => {
             id="power_down_notification"
             defaultMessage="{username} initiated 'Power Down' on {amount}"
             values={{
-              username: <span>{notification.account}</span>,
+              username: <span className="username">{notification.account}</span>,
               amount: <span>{notification.amount}</span>,
             }}
           />

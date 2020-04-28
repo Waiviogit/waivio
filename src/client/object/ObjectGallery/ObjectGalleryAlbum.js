@@ -1,5 +1,4 @@
 import { Icon } from 'antd';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -7,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
-import './ObjectGallery.less';
 import CreateImage from './CreateImage';
 import {
   getAuthenticatedUserName,
@@ -17,6 +15,9 @@ import {
   getObjectAlbums,
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+
+import './ObjectGallery.less';
 
 @withEditor
 @connect(state => ({
@@ -53,7 +54,9 @@ export default class ObjectGalleryAlbum extends Component {
     if (loading) return <Loading center />;
 
     const albumId = match.params.itemId;
-    const album = _.filter(albums, _.iteratee(['id', albumId]));
+    const album = albums.filter(
+      albm => albm.id === albumId && calculateApprovePercent(albm.active_votes),
+    );
 
     return (
       <div className="ObjectGallery">

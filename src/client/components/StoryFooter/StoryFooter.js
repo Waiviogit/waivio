@@ -8,12 +8,13 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getVoteValue } from '../../helpers/user';
-import { getRate, isGuestUser } from '../../reducers';
+import { getAuthenticatedUserName, getRate, isGuestUser } from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
   isGuest: isGuestUser(state),
+  userName: getAuthenticatedUserName(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
@@ -37,6 +38,7 @@ class StoryFooter extends React.Component {
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     isGuest: PropTypes.bool,
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -54,6 +56,7 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
     isGuest: false,
+    userName: '',
   };
 
   constructor(props) {
@@ -161,6 +164,7 @@ class StoryFooter extends React.Component {
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
+              username={this.props.userName}
             />
           )}
         </div>
