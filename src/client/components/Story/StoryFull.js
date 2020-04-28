@@ -382,19 +382,7 @@ class StoryFull extends React.Component {
     return (
       <div className="StoryFull">
         {replyUI}
-        <div className="StoryFull__header__title">
           <h1 className="StoryFull__title">{post.title}</h1>
-          {isForecastValid && (
-            <div className="Story__forecast">
-              <PostForecast
-                quoteSecurity={quoteSecurity}
-                postForecast={predictedEndDate}
-                isExpired={isForecastExpired}
-                expiredAt={expiredAt}
-              />
-            </div>
-          )}
-        </div>
         <h3 className="StoryFull__comments_title">
           <a href="#comments">
             {commentCount === 1 ? (
