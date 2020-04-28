@@ -69,20 +69,24 @@ import './ObjectInfo.less';
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
-    location: PropTypes.shape().isRequired,
+    location: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    usedLocale: PropTypes.string.isRequired,
+    isAuthenticated: PropTypes.bool,
+    albums: PropTypes.arrayOf(PropTypes.shape()),
+    usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     getAreaSearchData: () => {},
     userLocation: {},
+    location: {},
     center: [],
+    albums: [],
+    isAuthenticated: false,
+    usedLocale: 'en-US',
   };
 
   state = {
@@ -126,7 +130,7 @@ class ObjectInfo extends React.Component {
   renderCategoryItems = (categoryItems, category) => {
     if (!isEmpty(categoryItems)) {
       const categoryItemsWithVotes = categoryItems
-        .map(item => addActiveVotesInField(this.props.wobject, item))
+        .map(item => addActiveVotesInField(this.props.wobject, item, category))
         .filter(item => calculateApprovePercent(item.active_votes) >= 70);
       const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
       const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
