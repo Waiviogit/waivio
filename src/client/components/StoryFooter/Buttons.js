@@ -115,7 +115,10 @@ export default class Buttons extends React.Component {
   }
 
   shareClick() {
-    if (this.props.post.reblogged_users.includes(this.props.username)) {
+    if (
+      this.props.post.reblogged_users &&
+      this.props.post.reblogged_users.includes(this.props.username)
+    ) {
       return;
     }
 
@@ -257,6 +260,7 @@ export default class Buttons extends React.Component {
     // eslint-disable-next-line camelcase
     const { reblogged_users } = this.props.post;
     const maxUserCount = 3;
+
     return (
       <span>
         {reblogged_users.map(
@@ -333,7 +337,7 @@ export default class Buttons extends React.Component {
 
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
     const rebloggedClass = classNames({
-      active: post.reblogged_users.includes(username),
+      active: post.reblogged_users && post.reblogged_users.includes(username),
       Buttons__link: true,
     });
 
@@ -343,6 +347,7 @@ export default class Buttons extends React.Component {
     const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
 
     let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
+
     if (postState.isLiked) {
       likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
     } else if (defaultVotePercent !== 10000) {
@@ -358,6 +363,7 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
+
     return (
       <div className="Buttons">
         <React.Fragment>
@@ -439,7 +445,8 @@ export default class Buttons extends React.Component {
           </React.Fragment>
         )}
         {this.renderPostPopoverMenu()}
-        {!this.props.post.reblogged_users.includes(this.props.username) &&
+        {this.props.post.reblogged_users &&
+          !this.props.post.reblogged_users.includes(this.props.username) &&
           this.state.shareModalVisible && (
             <Modal
               title={intl.formatMessage({

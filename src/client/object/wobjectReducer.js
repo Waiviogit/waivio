@@ -192,6 +192,7 @@ export default function wobjectReducer(state = initialState, action) {
           name: payload.body,
           weight: payload.weight,
         };
+
         const categoryItems = parentCategory.categoryItems
           ? [...parentCategory.categoryItems, newTag]
           : [newTag];
