@@ -119,6 +119,9 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
+    getObject('jyp-cryptoinvestarena').then(object => {
+      this.handleCreateObject(object);
+    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });

@@ -1,0 +1,25 @@
+@import (reference) '../../client/styles/custom.less';
+@import (reference) '../../client/styles/modules/variables.less';
+
+.UserWalletSummaryLoading {
+  position: relative;
+  color: #353535;
+  width: 100%;
+
+  &__header {
+    align-items: center;
+
+    .ant-card-loading-block {
+      margin: 0 !important;
+    }
+
+    &__text {
+      margin: 0 12px;
+      width: 70%;
+
+      p {
+        width: 100%;
+      }
+    }
+  }
+}

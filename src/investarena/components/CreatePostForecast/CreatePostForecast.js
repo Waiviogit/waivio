@@ -130,43 +130,10 @@ class CreatePostForecast extends Component {
           ...this.state,
           quotePrice,
           selectRecommend,
-          takeProfitValue: '',
-          stopLossValue: '',
-          takeProfitValueIncorrect: false,
-          stopLossValueIncorrect: false,
         },
         this.props.quotesSettings,
       ),
     );
-  };
-
-  handleChangeTakeProfitStopLostInputs = (event, input) => {
-    const value = event.target.value;
-    if (!isNaN(value)) {
-      const { selectRecommend } = this.state;
-      const propName = `${input}Incorrect`;
-      const propValue = isStopLossTakeProfitValid(
-        value,
-        input,
-        selectRecommend,
-        getQuotePrice(selectRecommend, this.props.quoteSelected),
-      );
-      this.setState(
-        {
-          [propName]: propValue,
-        },
-        this.props.onChange(
-          getEditorForecast(
-            {
-              ...this.state,
-              [input]: value,
-              [propName]: propValue,
-            },
-            this.props.quotesSettings,
-          ),
-        ),
-      );
-    }
   };
 
   handleChangeDatetime = dateTimeValue => {
@@ -223,8 +190,6 @@ class CreatePostForecast extends Component {
       selectQuote,
       selectRecommend,
       selectForecast,
-      stopLossValue,
-      takeProfitValue,
       dateTimeValue,
       isValid,
       quotePrice,
@@ -280,93 +245,48 @@ class CreatePostForecast extends Component {
                       ))}
                     </Select>
                   </div>
-                  <div className="st-create-post-select-wrap-mobile">
-                    <div className="st-create-post-select-wrap" data-test="select-recommend">
-                      <p className="m-0">
-                        <FormattedMessage
-                          id="createPost.selectTitle.recommend"
-                          defaultMessage="Action"
-                        />
-                      </p>
-                      <Select
-                        name="selected-action"
-                        placeholder={intl.formatMessage({
-                          id: 'createPost.selectLabel.default',
-                          defaultMessage: 'Select',
-                        })}
-                        className={classNames('st-create-post-select__action', {
-                          'st-create-post-danger': isPosted && !isValid && !selectRecommend,
-                        })}
-                        disabled={isUpdating}
-                        value={selectRecommend}
-                        onChange={this.updateValueRecommend}
-                      >
-                        {optionsAction.map(option => (
-                          <Select.Option key={option.value} value={option.value}>
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </div>
-                    <div className="st-create-post-select-wrap">
-                      <p className="m-0">
-                        <FormattedMessage
-                          id="createPost.selectTitle.price"
-                          defaultMessage="Price"
-                        />
-                      </p>
-                      <Input
-                        className="st-create-post-quotation"
-                        type="text"
-                        value={
-                          quotePrice &&
-                          intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
-                        }
-                        disabled
+                  <div className="st-create-post-select-wrap" data-test="select-recommend">
+                    <p className="m-0">
+                      <FormattedMessage
+                        id="createPost.selectTitle.recommend"
+                        defaultMessage="Action"
                       />
-                    </div>
+                    </p>
+                    <Select
+                      name="selected-action"
+                      placeholder={intl.formatMessage({
+                        id: 'createPost.selectLabel.default',
+                        defaultMessage: 'Select',
+                      })}
+                      className={classNames('st-create-post-select__action', {
+                        'st-create-post-danger': isPosted && !isValid && !selectRecommend,
+                      })}
+                      disabled={isUpdating}
+                      value={selectRecommend}
+                      onChange={this.updateValueRecommend}
+                    >
+                      {optionsAction.map(option => (
+                        <Select.Option key={option.value} value={option.value}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </div>
                 </div>
                 <div className="st-create-post-dropdowns-row">
-                  <div className="st-create-post-select-wrap-mobile">
-                    <div className="st-create-post-select-wrap">
-                      <p className="m-0">
-                        <FormattedMessage
-                          id="modalTakeProfit.header.title"
-                          defaultMessage="Take profit"
-                        />
-                      </p>
-                      <Input
-                        type="text"
-                        className={`st-create-post-quotation${
-                          this.state.takeProfitValueIncorrect ? ' st-create-post-danger' : ''
-                        }`}
-                        value={takeProfitValue}
-                        disabled={!selectRecommend || !selectQuote || isUpdating}
-                        onChange={e =>
-                          this.handleChangeTakeProfitStopLostInputs(e, 'takeProfitValue')
-                        }
-                      />
-                    </div>
-                    <div className="st-create-post-select-wrap">
-                      <p className="m-0">
-                        <FormattedMessage
-                          id="modalStopLoss.header.title"
-                          defaultMessage="Stop loss"
-                        />
-                      </p>
-                      <Input
-                        type="text"
-                        className={`st-create-post-quotation${
-                          this.state.stopLossValueIncorrect ? ' st-create-post-danger' : ''
-                        }`}
-                        value={stopLossValue}
-                        disabled={!selectRecommend || !selectQuote || isUpdating}
-                        onChange={e =>
-                          this.handleChangeTakeProfitStopLostInputs(e, 'stopLossValue')
-                        }
-                      />
-                    </div>
+                  <div className="st-create-post-select-wrap">
+                    <p className="m-0">
+                      <FormattedMessage id="createPost.selectTitle.price" defaultMessage="Price" />
+                    </p>
+                    <Input
+                      className="st-create-post-quotation"
+                      type="text"
+                      value={
+                        quotePrice &&
+                        intl.formatNumber(quotePrice, { maximumSignificantDigits: 10 })
+                      }
+                      disabled
+                    />
                   </div>
                   <div className="st-create-post-select-wrap" data-test="select-forecast">
                     <p className="m-0">

@@ -52,6 +52,15 @@ class LongTermStatistics extends React.Component {
     this.cancelablePromise.cancel();
   }
 
+  periodClassLogic = period => {
+    if (period.isUp) {
+      return 'success';
+    } else if (period.isDown) {
+      return 'danger';
+    }
+    return 'nil';
+  };
+
   cancelablePromise = makeCancelable(this.props.fetcher(this.props.itemId));
 
   render() {
@@ -69,9 +78,7 @@ class LongTermStatistics extends React.Component {
                   <div className="PeriodStatisticsLine__periodName">
                     {intl.formatMessage({ id: period.intlId, defaultMessage: period.label })}
                   </div>
-                  <div
-                    className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}
-                  >
+                  <div className={`PeriodStatisticsLine__value-${this.periodClassLogic(period)}`}>
                     {period.price}
                   </div>
                 </div>

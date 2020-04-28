@@ -753,7 +753,7 @@
   "compare": "Compare",
   "compare_profitability": "Compare Profitability",
   "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
-  "unavailableStatisticsUser": "The user has not written any posts with forecasts",
+  "unavailableStatisticsUser": "User has no completed forecasts",
   "and": "and",
   "ignoreList": "Ignore list",
   "addNewRule": "Add new rule",
@@ -1130,6 +1130,7 @@
   "trading_form_amount": "Amount",
   "trading_form_total": "Total",
   "trading_form_fee": "Fee",
+  "trading_add_wallet": "Add wallet",
   "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
   "signUp_cryptos": "- CRYPTOS",
   "signUp_creditCards": "- credit cards"
