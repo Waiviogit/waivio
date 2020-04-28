@@ -115,7 +115,10 @@ export default class Buttons extends React.Component {
   }
 
   shareClick() {
-    if (this.props.post.reblogged_users.includes(this.props.username)) {
+    if (
+      this.props.post.reblogged_users &&
+      this.props.post.reblogged_users.includes(this.props.username)
+    ) {
       return;
     }
 
