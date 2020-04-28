@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
-import Loading from '../components/Icon/Loading';
+import UserDynamicListLoading from '../user/UserDynamicListLoading';
 import WeightTag from '../components/WeightTag';
 import './ObjectDynamicList.less';
 
@@ -68,7 +68,7 @@ export default class ObjectDynamicList extends React.Component {
           elementIsScrollable={false}
           loadingMore={loading}
           hasMore={hasMore}
-          loader={<Loading />}
+          loader={<UserDynamicListLoading />}
           loadMore={this.handleLoadMore}
         >
           {_.map(wobjects, wo => (

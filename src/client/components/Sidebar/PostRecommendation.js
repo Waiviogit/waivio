@@ -5,11 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import { usernameURLRegex } from '../../helpers/regexHelpers';
 import { getPostKey } from '../../helpers/stateHelpers';
 import formatter from '../../helpers/steemitFormatter';
-import Loading from '../../components/Icon/Loading';
 import steemAPI from '../../steemAPI';
 import PostRecommendationLink from './PostRecommendationLink';
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
+import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 @withRouter
 class PostRecommendation extends Component {
@@ -116,7 +116,7 @@ class PostRecommendation extends Component {
     const filteredRecommendedPosts = this.getFilteredPosts();
 
     if (loading) {
-      return <Loading />;
+      return <RightSidebarLoading />;
     }
 
     if (filteredRecommendedPosts.length === 0) {

@@ -1,4 +1,4 @@
-import { Icon } from 'antd';
+import { Icon, Popover } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -16,12 +16,15 @@ const ObjectCardView = ({
   showSmallVersion,
   pathNameAvatar,
   intl,
+                          screenSize,
   isCloseButton,
   deleteLinkedObject,
 }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
+
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
@@ -38,6 +41,23 @@ const ObjectCardView = ({
       />
     );
   };
+
+  const titleTruncate = () => {
+    const maxLength = 55;
+    if (isMobile) {
+      if (wObject.title.length > maxLength) {
+        const titleElement = `${wObject.title.slice(0, maxLength - 1)}...`;
+        return (
+          <Popover content={wObject.title} trigger="click">
+            {titleElement}
+          </Popover>
+        );
+      }
+      return wObject.title;
+    }
+    return wObject.title;
+  };
+
   const objName = wObject.name || wObject.default_name;
   const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
   const goToObjTitle = wobjName =>
@@ -79,7 +99,7 @@ const ObjectCardView = ({
               {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
-                  {wObject.title}
+                  {titleTruncate()}
                 </div>
               )}
               {isCloseButton && (
@@ -108,15 +128,11 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  isCloseButton: PropTypes.bool,
   showSmallVersion: PropTypes.bool,
-  deleteLinkedObject: PropTypes.func.isRequired,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 ObjectCardView.defaultProps = {
-  deleteLinkedObjectHandler: () => {},
-  isCloseButton: false,
   showSmallVersion: false,
   pathNameAvatar: '',
 };
