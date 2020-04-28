@@ -12,6 +12,7 @@ import {
   getObjectTypeLoading,
   getObjectTypesList,
   getObjectTypeSorting,
+  getScreenSize,
 } from '../reducers';
 import {
   changeSortingAndLoad,
@@ -44,6 +45,7 @@ const modalName = {
     isFetching: getObjectTypeLoading(state),
     hasMoreObjects: getHasMoreRelatedObjects(state),
     searchString: new URLSearchParams(props.history.location.search).get('search'),
+    screenSize: getScreenSize(state),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -72,11 +74,13 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
     searchString: '',
     typeName: '',
+    screenSize: 'medium',
   };
 
   constructor(props) {
@@ -162,6 +166,7 @@ class DiscoverObjectsContent extends Component {
       activeFilters: { ...chosenFilters },
       filteredObjects,
       hasMoreObjects,
+      screenSize,
     } = this.props;
 
     const tradingTypes = ['cryptopairs'];
@@ -181,7 +186,13 @@ class DiscoverObjectsContent extends Component {
       ));
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
-        <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
+        <ObjectCardView
+          key={wObj.id}
+          wObject={wObj}
+          showSmallVersion
+          intl={intl}
+          screenSize={screenSize}
+        />
       ));
     }
 

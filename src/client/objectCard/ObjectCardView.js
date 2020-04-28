@@ -1,4 +1,4 @@
-import { Icon } from 'antd';
+import { Icon, Popover } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -11,10 +11,12 @@ import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
+const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, screenSize }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
+
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
@@ -31,6 +33,23 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       />
     );
   };
+
+  const titleTruncate = () => {
+    const maxLength = 55;
+    if (isMobile) {
+      if (wObject.title.length > maxLength) {
+        const titleElement = `${wObject.title.slice(0, maxLength - 1)}...`;
+        return (
+          <Popover content={wObject.title} trigger="click">
+            {titleElement}
+          </Popover>
+        );
+      }
+      return wObject.title;
+    }
+    return wObject.title;
+  };
+
   const objName = wObject.name || wObject.default_name;
   const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
   const goToObjTitle = wobjName =>
@@ -69,7 +88,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
               {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
-                  {wObject.title}
+                  {titleTruncate()}
                 </div>
               )}
               {wObject.price && (
@@ -91,10 +110,12 @@ ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  screenSize: PropTypes.string,
 };
 
 ObjectCardView.defaultProps = {
   showSmallVersion: false,
   pathNameAvatar: '',
+  screenSize: 'medium',
 };
 export default injectIntl(ObjectCardView);
