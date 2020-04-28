@@ -1,4 +1,4 @@
-import { Icon, Popover, Button } from 'antd';
+import { Icon, Popover } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
