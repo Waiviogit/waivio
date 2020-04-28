@@ -136,8 +136,9 @@ export const calculateApprovePercent = votes => {
   return 100;
 };
 
-export const addActiveVotesInField = (wobj, field) => {
-  const matchField = _.get(wobj, 'fields', []).find(
+export const addActiveVotesInField = (wobj, field, category = '') => {
+  const fieldsArray = _.get(wobj, 'fields', []);
+  let matchField = fieldsArray.find(
     wobjField =>
       wobjField.body === field.id ||
       wobjField.permlink === field.permlink ||
@@ -145,6 +146,12 @@ export const addActiveVotesInField = (wobj, field) => {
       wobjField.body === field.body ||
       wobjField.body === field.author_permlink,
   );
+
+  if (category) {
+    matchField = fieldsArray.find(
+      wobjField => wobjField.body === field.name && wobjField.tagCategory === category,
+    );
+  }
 
   const activeVotes = matchField ? matchField.active_votes : [];
 
