@@ -7,7 +7,7 @@ import {
   VOTE_APPEND_ERROR,
   VOTE_APPEND_START,
   VOTE_APPEND_SUCCESS,
-} from '../../client/object/wobjActions';
+} from './wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import { getApprovedField } from '../helpers/wObjectHelper';
 
@@ -192,6 +192,7 @@ export default function wobjectReducer(state = initialState, action) {
           name: payload.body,
           weight: payload.weight,
         };
+
         const categoryItems = parentCategory.categoryItems
           ? [...parentCategory.categoryItems, newTag]
           : [newTag];
@@ -213,6 +214,31 @@ export default function wobjectReducer(state = initialState, action) {
             ...state.wobject,
             fields: [...state.wobject.fields, newField],
             tagCategories,
+          },
+        };
+      }
+      if (payload.name === 'galleryItem') {
+        const previewGallery = state.wobject.preview_gallery
+          ? [...state.wobject.preview_gallery, newField]
+          : [newField];
+
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields, newField],
+            preview_gallery: previewGallery,
+          },
+        };
+      }
+
+      if (payload.name === 'sortCustom') {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields, newField],
+            sortCustom: JSON.parse(payload.body),
           },
         };
       }
@@ -301,6 +327,17 @@ export default function wobjectReducer(state = initialState, action) {
 
         state.wobject.tagCategories.splice(categoryIndex, 1, {
           ...state.wobject.tagCategories[categoryIndex],
+          active_votes: list,
+        });
+      }
+
+      if (matchPost.name === 'galleryItem') {
+        const categoryIndex = state.wobject.preview_gallery.findIndex(
+          picture => picture.body === matchPost.body,
+        );
+
+        state.wobject.preview_gallery.splice(categoryIndex, 1, {
+          ...state.wobject.preview_gallery[categoryIndex],
           active_votes: list,
         });
       }

@@ -5,6 +5,7 @@ import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
 import GalleryItem from './GalleryItem';
 import './GalleryAlbum.less';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 class Album extends React.Component {
   static propTypes = {
@@ -23,12 +24,16 @@ class Album extends React.Component {
   render() {
     const { album } = this.props;
     const { isOpen, photoIndex } = this.state;
+    const pictures =
+      album.items &&
+      album.items.filter(picture => calculateApprovePercent(picture.active_votes) >= 70);
+
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>
-          {album.items && album.items.length > 0 ? (
+          {pictures && pictures.length > 0 ? (
             <Row gutter={24}>
-              {album.items.map((image, idx) => (
+              {pictures.map((image, idx) => (
                 <Col span={12} key={image.body}>
                   <GalleryItem
                     image={image}

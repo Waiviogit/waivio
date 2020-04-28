@@ -41,6 +41,7 @@ class UserActivityActionsLoader extends React.Component {
     userHasMoreActions: PropTypes.bool.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
+    user: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {

@@ -37,6 +37,7 @@ export default class Buttons extends React.Component {
     onShareClick: PropTypes.func,
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
+    username: PropTypes.string,
   };
 
   static defaultProps = {
@@ -51,6 +52,7 @@ export default class Buttons extends React.Component {
     onCommentClick: () => {},
     onReportClick: () => {},
     handlePostPopoverMenuClick: () => {},
+    username: '',
   };
 
   constructor(props) {
@@ -113,7 +115,10 @@ export default class Buttons extends React.Component {
   }
 
   shareClick() {
-    if (this.props.postState.isReblogged) {
+    if (
+      this.props.post.reblogged_users &&
+      this.props.post.reblogged_users.includes(this.props.username)
+    ) {
       return;
     }
 
@@ -255,6 +260,7 @@ export default class Buttons extends React.Component {
     // eslint-disable-next-line camelcase
     const { reblogged_users } = this.props.post;
     const maxUserCount = 3;
+
     return (
       <span>
         {reblogged_users.map(
@@ -281,7 +287,15 @@ export default class Buttons extends React.Component {
     this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
   };
   render() {
-    const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
+    const {
+      intl,
+      post,
+      postState,
+      pendingLike,
+      ownPost,
+      defaultVotePercent,
+      username,
+    } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
@@ -322,7 +336,10 @@ export default class Buttons extends React.Component {
     );
 
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
-    const rebloggedClass = classNames({ active: postState.isReblogged, Buttons__link: true });
+    const rebloggedClass = classNames({
+      active: post.reblogged_users && post.reblogged_users.includes(username),
+      Buttons__link: true,
+    });
 
     const showReblogLink = !ownPost && post.parent_author === '';
 
@@ -330,6 +347,7 @@ export default class Buttons extends React.Component {
     const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
 
     let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
+
     if (postState.isLiked) {
       likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
     } else if (defaultVotePercent !== 10000) {
@@ -345,6 +363,7 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
+
     return (
       <div className="Buttons">
         <React.Fragment>
@@ -426,25 +445,27 @@ export default class Buttons extends React.Component {
           </React.Fragment>
         )}
         {this.renderPostPopoverMenu()}
-        {!postState.isReblogged && this.state.shareModalVisible && (
-          <Modal
-            title={intl.formatMessage({
-              id: 'reblog_modal_title',
-              defaultMessage: 'Reblog this post?',
-            })}
-            visible={this.state.shareModalVisible}
-            confirmLoading={this.state.shareModalLoading}
-            okText={intl.formatMessage({ id: 'reblog', defaultMessage: 'Reblog' })}
-            cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-            onOk={this.handleShareOk}
-            onCancel={this.handleShareCancel}
-          >
-            <FormattedMessage
-              id="reblog_modal_content"
-              defaultMessage="This post will appear on your personal feed. This action cannot be reversed."
-            />
-          </Modal>
-        )}
+        {this.props.post.reblogged_users &&
+          !this.props.post.reblogged_users.includes(this.props.username) &&
+          this.state.shareModalVisible && (
+            <Modal
+              title={intl.formatMessage({
+                id: 'reblog_modal_title',
+                defaultMessage: 'Reblog this post?',
+              })}
+              visible={this.state.shareModalVisible}
+              confirmLoading={this.state.shareModalLoading}
+              okText={intl.formatMessage({ id: 'reblog', defaultMessage: 'Reblog' })}
+              cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+              onOk={this.handleShareOk}
+              onCancel={this.handleShareCancel}
+            >
+              <FormattedMessage
+                id="reblog_modal_content"
+                defaultMessage="This post will appear on your personal feed. This action cannot be reversed."
+              />
+            </Modal>
+          )}
         {this.state.isUsersReblogModal && (
           <UserRebloggedModal
             userNames={post.reblogged_users}

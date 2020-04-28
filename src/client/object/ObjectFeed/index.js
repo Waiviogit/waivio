@@ -41,11 +41,11 @@ const ObjectFeedContainer = ({ history, match, wobject }) => {
           <IconButton
             icon={<Icon type="plus-circle" />}
             onClick={handleCreatePost}
-            caption={<FormattedMessage id="write_new_review" defaultMessage="Write new review" />}
+            caption={<FormattedMessage id="write_new_review" defaultMessage="Write a new review" />}
           />
         </div>
       )}
-      <ObjectFeed match={match} />
+      <ObjectFeed match={match} handleCreatePost={handleCreatePost} />
     </React.Fragment>
   );
 };

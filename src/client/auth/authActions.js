@@ -42,6 +42,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
   if (typeof localStorage !== 'undefined') {
     const token = localStorage.getItem('accessToken');
+
     isGuest = token === 'null' ? false : Boolean(token);
   }
 
@@ -52,6 +53,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -65,12 +67,14 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+
         resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
       }
     });
   }
+
   return dispatch({
     type: LOGIN,
     payload: {
@@ -82,6 +86,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   }).catch(e => {
     console.warn(e);
     dispatch(loginError());
+
     return e;
   });
 };
@@ -100,6 +105,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const state = getState();
   let accessToken = Cookie.get('access_token');
   const guestAccessToken = Cookie.get('waivio_token');
+
   if (guestAccessToken) accessToken = guestAccessToken;
   if (state.auth.isGuestUser) {
     localStorage.removeItem('accessToken');
@@ -115,6 +121,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
 
       if (window.gapi && window.gapi.auth2) {
         const authInstance = window.gapi.auth2.getAuthInstance();
+
         if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
       }
     }
@@ -137,6 +144,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 
   if (typeof localStorage !== 'undefined') {
     const guestAccessToken = localStorage.getItem('accessToken');
+
     if (guestAccessToken) {
       method = 'guest_login';
       accessToken = guestAccessToken;
@@ -170,7 +178,9 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
   const json_metadata = JSON.parse(state.auth.user.json_metadata);
+
   json_metadata.profile = { ...json_metadata.profile, ...values };
+
   return dispatch({
     type: UPDATE_PROFILE,
     payload: {
@@ -178,6 +188,7 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
+
         return { isProfileUpdated: true };
       }),
     },

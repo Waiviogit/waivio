@@ -1,5 +1,17 @@
-import _ from 'lodash';
 import React from 'react';
+import {
+  isEmpty,
+  size,
+  compact,
+  uniqBy,
+  get,
+  orderBy,
+  pickBy,
+  identity,
+  filter,
+  iteratee,
+  includes,
+} from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -57,20 +69,24 @@ import './ObjectInfo.less';
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
-    location: PropTypes.shape().isRequired,
+    location: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    usedLocale: PropTypes.string.isRequired,
+    isAuthenticated: PropTypes.bool,
+    albums: PropTypes.arrayOf(PropTypes.shape()),
+    usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     getAreaSearchData: () => {},
     userLocation: {},
+    location: {},
     center: [],
+    albums: [],
+    isAuthenticated: false,
+    usedLocale: 'en-US',
   };
 
   state = {
@@ -112,9 +128,9 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   renderCategoryItems = (categoryItems, category) => {
-    if (!_.isEmpty(categoryItems)) {
+    if (!isEmpty(categoryItems)) {
       const categoryItemsWithVotes = categoryItems
-        .map(item => addActiveVotesInField(this.props.wobject, item))
+        .map(item => addActiveVotesInField(this.props.wobject, item, category))
         .filter(item => calculateApprovePercent(item.active_votes) >= 70);
       const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
       const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
@@ -218,14 +234,20 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
     const button = getApprovedField(wobject, 'button', usedLocale);
     const map = getApprovedField(wobject, 'map', usedLocale);
-    const parent = getApprovedField(wobject, 'parent', usedLocale);
+    const parent = getApprovedField(wobject, 'parent');
     const status = getApprovedField(wobject, 'status', usedLocale);
+    const pictures =
+      wobject.preview_gallery &&
+      wobject.preview_gallery.filter(
+        picture => calculateApprovePercent(picture.active_votes) >= 70,
+      );
 
-    if (_.size(wobject) > 0) {
+    if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(
           nameFld =>
-            nameFld.body !== wobject.name && calculateApprovePercent(nameFld.active_votes) >= 70,
+            nameFld.body !== (wobject.name || wobject.default_name) &&
+            calculateApprovePercent(nameFld.active_votes) >= 70,
         )
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
@@ -233,7 +255,7 @@ class ObjectInfo extends React.Component {
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
         : [];
-      address = _.compact(addressArr).join(', ');
+      address = compact(addressArr).join(', ');
 
       description = getFieldWithMaxWeight(wobject, objectFields.description);
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
@@ -247,10 +269,12 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
-      menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
+      menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
 
       menuItems = menuItems.map(item => {
-        const matchField = _.get(wobject, 'fields', []).find(field => field.alias === item.alias);
+        const matchField = get(wobject, 'fields', []).find(
+          field => field.body === item.author_permlink,
+        );
         const activeVotes = matchField ? matchField.active_votes : [];
 
         return {
@@ -262,7 +286,6 @@ class ObjectInfo extends React.Component {
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
           ? menuItems.filter(item => calculateApprovePercent(item.active_votes) >= 70)
           : null;
-
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
           ? menuItems.filter(
@@ -280,7 +303,7 @@ class ObjectInfo extends React.Component {
         field =>
           field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
       );
-      phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
+      phones = orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
     const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
@@ -294,9 +317,9 @@ class ObjectInfo extends React.Component {
         }
       : {};
 
-    profile = _.pickBy(profile, _.identity);
+    profile = pickBy(profile, identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
+    const album = filter(albums, iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg =
       wobject.fields &&
       wobject.fields.filter(
@@ -310,7 +333,7 @@ class ObjectInfo extends React.Component {
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
-      const shouldDisplay = renderFields.includes(name) || _.includes(TYPES_OF_MENU_ITEM, name);
+      const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
       return shouldDisplay && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
@@ -319,7 +342,7 @@ class ObjectInfo extends React.Component {
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={name}
-                  objName={wobject.name}
+                  objName={wobject.name || wobject.default_name}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
                   linkTo={
@@ -430,10 +453,10 @@ class ObjectInfo extends React.Component {
                   news: Boolean(newsFilter),
                 },
               ),
-              !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
+              !isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
-          {!_.isEmpty(menuLists) && listItem(objectFields.sorting, null)}
+          {!isEmpty(menuLists) && listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );
@@ -503,7 +526,7 @@ class ObjectInfo extends React.Component {
               </div>
             )}
             {hasGalleryImg && (
-              <PicturesCarousel pics={wobject.preview_gallery} objectID={wobject.author_permlink} />
+              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
             )}
           </div>
         ) : null}
@@ -666,7 +689,7 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
-        {wobject && wobject.name && (
+        {wobject && (wobject.name || wobject.default_name) && (
           <div className="object-sidebar">
             {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}

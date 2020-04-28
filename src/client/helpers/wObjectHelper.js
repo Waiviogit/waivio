@@ -112,6 +112,11 @@ export const calculateApprovePercent = votes => {
     }
 
     const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
+
+    if (summRshares < 0) {
+      return 0;
+    }
+
     const approveRshares = getAppendUpvotes(votes).reduce(
       (acc, vote) => acc + vote.rshares_weight,
       0,
@@ -131,14 +136,23 @@ export const calculateApprovePercent = votes => {
   return 100;
 };
 
-export const addActiveVotesInField = (wobj, field) => {
-  const matchField = _.get(wobj, 'fields', []).find(
+export const addActiveVotesInField = (wobj, field, category = '') => {
+  const fieldsArray = _.get(wobj, 'fields', []);
+  let matchField = fieldsArray.find(
     wobjField =>
       wobjField.body === field.id ||
       wobjField.permlink === field.permlink ||
       wobjField.body === field.name ||
-      wobjField.body === field.body,
+      wobjField.body === field.body ||
+      wobjField.body === field.author_permlink,
   );
+
+  if (category) {
+    matchField = fieldsArray.find(
+      wobjField => wobjField.body === field.name && wobjField.tagCategory === category,
+    );
+  }
+
   const activeVotes = matchField ? matchField.active_votes : [];
 
   return {

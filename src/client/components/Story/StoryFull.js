@@ -178,7 +178,6 @@ class StoryFull extends React.Component {
       usedLocale,
       isOriginalPost,
     } = this.props;
-
     const taggedObjects = [];
     const linkedObjects = [];
 
@@ -187,17 +186,19 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
     const { isReported } = postState;
-
     const { open, index } = this.state.lightbox;
-
-    let signedBody = post.body;
-    if (signature) {
-      signedBody = `${post.body}<hr>${signature}`;
-    }
-
-    const parsedBody = getHtml(signedBody, {}, 'text');
+    const parsedBody = getHtml(post.body, {}, 'text');
 
     this.images = extractImageTags(parsedBody);
+    const body = this.images.reduce(
+      (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
+      post.body,
+    );
+
+    let signedBody = body;
+    if (signature) {
+      signedBody = `${body}<hr>${signature}`;
+    }
 
     let followText = '';
 
@@ -446,7 +447,7 @@ class StoryFull extends React.Component {
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
               header={`${intl.formatMessage({
-                id: 'linked_objects',
+                id: 'editor_linked_objects',
                 defaultMessage: 'Linked objects',
               })} ${linkedObjects.length}`}
               key="1"
