@@ -17,13 +17,13 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
       <div className="ReportTableFeesRow__amount" />
     </td>
     <td>
-      <div className="ReportTableFeesRow__amount">{`${shareAmount}%`}</div>
+      <div className="ReportTableFeesRow__amount">{`${shareAmount / 100}%`}</div>
     </td>
     <td>
-      <div className="ReportTableFeesRow__amount">{hiveAmount}</div>
+      <div className="ReportTableFeesRow__amount">{hiveAmount.toFixed(3)}</div>
     </td>
     <td>
-      <div className="ReportTableFeesRow__amount">{`$ ${usdAmount}`}</div>
+      <div className="ReportTableFeesRow__amount">{`$ ${usdAmount.toFixed(3)}`}</div>
     </td>
   </tr>
 );

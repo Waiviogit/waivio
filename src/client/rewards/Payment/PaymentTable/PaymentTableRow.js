@@ -134,7 +134,11 @@ const PaymentTableRow = ({ intl, sponsor }) => {
             </div>
           </React.Fragment>
         )}
-        <Report isModalReportOpen={isModalReportOpen} toggleModal={toggleModalReport} />
+        <Report
+          isModalReportOpen={isModalReportOpen}
+          toggleModal={toggleModalReport}
+          sponsor={sponsor}
+        />
       </td>
       <td>
         {/* eslint-disable-next-line no-nested-ternary */

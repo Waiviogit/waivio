@@ -1,13 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { getCurrentUSDPrice } from '../../rewardsHelper';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
+import { getSingleReportData } from '../../../reducers';
 import Avatar from '../../../components/Avatar';
 import './ReportHeader.less';
 
 const ReportHeader = ({ intl }) => {
-  const currentUSDPrice = getCurrentUSDPrice();
-  const rewardPrise = currentUSDPrice ? `${(currentUSDPrice * 1.2).toFixed(2)} USD` : `${1.2} HIVE`;
+  const singleReportData = useSelector(getSingleReportData);
+  const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM Do YYYY');
+  const reservationDate = moment(singleReportData.reservationDate).format('MMMM Do YYYY');
+  const reviewDate = moment(singleReportData.reviewDate).format('MMMM Do YYYY');
+  const title = singleReportData.title;
+  const rewardHive = singleReportData.rewardHive;
+  const rewardUsd = singleReportData.rewardUsd;
+  const userAlias = singleReportData.user.alias;
+  const userName = singleReportData.user.name;
+  const sponsorAlias = singleReportData.sponsor.alias;
+  const sponsorName = singleReportData.sponsor.name;
 
   return (
     <React.Fragment>
@@ -21,7 +32,8 @@ const ReportHeader = ({ intl }) => {
         <div className="ReportHeader__data">
           <React.Fragment>
             <span className="ReportHeader__data-colored">
-              <span className="fw6">{` ${rewardPrise} `}</span>
+              <span className="hive">{` ${rewardHive} HIVE `}</span>
+              <span className="usd">{` (${rewardUsd} USD*) `}</span>
             </span>
           </React.Fragment>
         </div>
@@ -33,14 +45,14 @@ const ReportHeader = ({ intl }) => {
               <span>{intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}</span>
             </div>
             <div className="ReportHeader__user-info__sponsor-content">
-              <Avatar username="pacific.gifts" size={44} />
+              <Avatar username={sponsorName} size={44} />
               <div className="ReportHeader__user-info__sponsor-name-wrap">
                 <div className="ReportHeader__user-info__sponsor-name-wrap-alias">
-                  Pacific Dining Gifts
+                  {sponsorAlias}
                 </div>
                 <div className="ReportHeader__user-info__sponsor-name-wrap-row">
                   <div className="ReportHeader__user-info__sponsor-name-wrap-row-name">
-                    @pacific.gifts
+                    {`@${sponsorName}`}
                   </div>
                 </div>
               </div>
@@ -53,12 +65,12 @@ const ReportHeader = ({ intl }) => {
               </span>
             </div>
             <div className="ReportHeader__user-info__user-content">
-              <Avatar username="van.dining" size={44} />
+              <Avatar username={userName} size={44} />
               <div className="ReportHeader__user-info__user-name-wrap">
-                <div className="ReportHeader__user-info__user-name-wrap-alias">VanDining</div>
+                <div className="ReportHeader__user-info__user-name-wrap-alias">{userAlias}</div>
                 <div className="ReportHeader__user-info__user-name-wrap-row">
                   <div className="ReportHeader__user-info__user-name-wrap-row-name">
-                    @van.dining
+                    {`@${userName}`}
                   </div>
                 </div>
               </div>
@@ -71,16 +83,31 @@ const ReportHeader = ({ intl }) => {
           {intl.formatMessage({
             id: 'campaign_announcement',
             defaultMessage: 'Campaign announcement:',
-          })}
+          })}{' '}
+          <span className="ReportHeader__campaignInfo-date">
+            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
+            {createCampaignDate}
+          </span>
         </span>
         <span>
           {intl.formatMessage({
             id: 'rewards_reservation',
             defaultMessage: 'Rewards reservation:',
-          })}
+          })}{' '}
+          <span className="ReportHeader__campaignInfo-date">
+            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reservationDate}
+          </span>
         </span>
-        <span>{intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:</span>
-        <span>{intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}</span>
+        <span>
+          {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
+          <span className="ReportHeader__campaignInfo-date">
+            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
+          </span>
+        </span>
+        <span>
+          {intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}{' '}
+          <span className="ReportHeader__campaignInfo-title">{title}</span>
+        </span>
       </div>
     </React.Fragment>
   );

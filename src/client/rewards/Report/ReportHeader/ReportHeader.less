@@ -25,16 +25,13 @@
     &-colored {
       color: @orange-hot;
 
-      &.fw6::after {
-        display: inline-block;
-        margin-right: 4px;
-        color: @black;
-        font-size: 1em;
-        font-family: SimSun, sans-serif;
-        content: '*';
+      .usd {
+        color: @black-text-basic;
+        font-weight: bold;
       }
     }
   }
+
   &__user-info {
     padding-top: 15px;
     display: flex;
@@ -173,6 +170,16 @@
 
     span {
       padding-bottom: 10px;
+    }
+
+    &-date {
+      color: @orange-hot;
+      font-weight: normal;
+    }
+
+    &-title {
+      color: @black;
+      font-weight: normal;
     }
   }
 }

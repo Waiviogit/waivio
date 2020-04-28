@@ -23,6 +23,7 @@ import objectTypeReducer, * as fromObjectType from '../client/objectTypes/object
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
+import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 
 export default history =>
   combineReducers({
@@ -48,6 +49,7 @@ export default history =>
     append: appendReducer,
     gallery: galleryReducer,
     map: mapReducer,
+    rewards: rewardsReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -231,6 +233,14 @@ export const getIsObjectAlbumsLoading = state =>
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+
+export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
+export const getCreateCampaignDate = state => fromRewards.getCreateCampaignDate(state.rewards);
+export const getReservationDate = state => fromRewards.getReservationDate(state.rewards);
+export const getReviewDate = state => fromRewards.getReviewDate(state.rewards);
+export const getTitle = state => fromRewards.getTitle(state.rewards);
+export const getRewardHive = state => fromRewards.getRewardHive(state.rewards);
+export const getRewardUsd = state => fromRewards.getRewardUsd(state.rewards);
 
 // common selectors
 

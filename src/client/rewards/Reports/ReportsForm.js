@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DatePicker, Form, TimePicker, Button, Input, Select, Checkbox, Row, Col } from 'antd';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { isEmpty, map, filter } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+// import { getLenders } from '../../../waivioApi/ApiClient';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
@@ -20,6 +21,7 @@ class ReportsForm extends Component {
     amount: '',
     sponsor: {},
     object: {},
+    objects: [],
   };
 
   handleSubmit = e => {
@@ -51,11 +53,16 @@ class ReportsForm extends Component {
   };
 
   setObject = obj => {
-    this.handleSetState({ object: obj, parentPermlink: obj.author_permlink }, { object: obj });
+    this.handleSetState(
+      { objects: [...this.state.objects, obj] },
+      { objects: [...this.state.objects, obj] },
+    );
   };
 
-  removePrimaryObject = () => {
-    this.handleSetState({ object: {} }, { object: {} });
+  removePrimaryObject = object => {
+    const { objects } = this.state;
+    const newObjects = filter(objects, obj => obj.id !== object.id);
+    this.handleSetState({ objects: newObjects }, { objects: newObjects });
   };
 
   handleOpenChangeFrom = open => {
@@ -83,7 +90,7 @@ class ReportsForm extends Component {
 
   render() {
     const { form, intl, userName } = this.props;
-    const { openFrom, openTill, currency, sponsor, object } = this.state;
+    const { openFrom, openTill, currency, sponsor, object, objects } = this.state;
     const format = 'HH:mm:ss';
     const { Option } = Select;
 
@@ -100,14 +107,16 @@ class ReportsForm extends Component {
         </div>
       ) : null;
 
-    const renderObject = !isEmpty(object) && (
-      <ReviewItem
-        key={object.id}
-        object={object}
-        // loading={disabled}
-        removeReviewObject={this.removePrimaryObject}
-      />
-    );
+    const renderObjects = !isEmpty(objects)
+      ? map(objects, obj => (
+          <ReviewItem
+            key={obj.id}
+            object={obj}
+            // loading={disabled}
+            removeReviewObject={this.removePrimaryObject}
+          />
+        ))
+      : null;
 
     const objectName = getFieldWithMaxWeight(object, 'name');
 
@@ -322,7 +331,7 @@ class ReportsForm extends Component {
                 autoFocus={false}
               />,
             )}
-            <div className="CreateReward__objects-wrap">{renderObject}</div>
+            <div className="CreateReward__objects-wrap">{renderObjects}</div>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" className="submitBtn">

@@ -1,39 +1,69 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map } from 'lodash';
+import { filter, map, get, reduce } from 'lodash';
+import { useSelector } from 'react-redux';
 import ReportTableFeesRow from '../ReportTableFees/ReportTableFeesRow';
-import './ReportTableFees.less';
 import ReportTableFeesRowTotal from './ReportTableFeesRowTotal';
+import { getSingleReportData } from '../../../../reducers';
+import './ReportTableFees.less';
+
+const getName = obj => {
+  let name;
+  if (obj.type === 'index_fee') {
+    name = 'Rewards indexing';
+  } else if (obj.type === 'referral_server_fee') {
+    name = 'Referral';
+  } else if (obj.type === 'campaign_server_fee') {
+    name = 'Campaign management';
+  }
+  return name;
+};
+
+const getAccount = obj => {
+  let account;
+  if (obj.type === 'index_fee') {
+    account = 'waivio.index';
+  } else if (obj.type === 'referral_server_fee') {
+    account = 'pacificgifts.acc';
+  } else if (obj.type === 'campaign_server_fee') {
+    account = 'waivio.campaigns';
+  }
+  return account;
+};
 
 const ReportTableFees = ({ intl }) => {
-  const fees = [
-    {
-      name: 'Campaign management',
-      account: 'waivio.campaigns',
-      share: 2.5,
-      hive: 0.625,
-      usd: 0.09,
-    },
-    {
-      name: 'Rewards indexing',
-      account: 'waivio.index',
-      share: 1.0,
-      hive: 0.25,
-      usd: 0.04,
-    },
-    {
-      name: 'Referral',
-      account: 'pacificgifts.acc',
-      share: 1.5,
-      hive: 0.375,
-      usd: 0.06,
-    },
-  ];
+  const singleReportData = useSelector(getSingleReportData);
 
-  const shareAmount = map(fees, fee => fee.share).reduce((sum, share) => sum + share);
-  const hiveAmount = map(fees, fee => fee.hive).reduce((sum, hive) => sum + hive);
-  const usdAmount = map(fees, fee => fee.usd).reduce((sum, usd) => sum + usd);
+  const filteredHistory = filter(
+    singleReportData.histories,
+    obj =>
+      obj.type === 'index_fee' ||
+      obj.type === 'campaign_server_fee' ||
+      obj.type === 'referral_server_fee',
+  );
+
+  const fees = reduce(
+    filteredHistory,
+    (result, obj) => {
+      const name = getName(obj);
+      const account = getAccount(obj);
+      const fee = {
+        name,
+        account,
+        share: get(obj, ['details', 'commissionWeight']) || '',
+        hive: get(obj, ['amount']) || '',
+        usd: get(obj, ['details', 'payableInDollars']) || '',
+      };
+
+      return [...result, fee];
+    },
+    [],
+  );
+
+  const shareAmount = map(fees, fee => fee.share).reduce((sum, share) => sum + share, 0);
+  const hiveAmount = map(fees, fee => fee.hive).reduce((sum, hive) => sum + hive, 0);
+  const usdAmount = map(fees, fee => fee.usd).reduce((sum, usd) => sum + usd, 0);
 
   return (
     <React.Fragment>
@@ -92,7 +122,6 @@ const ReportTableFees = ({ intl }) => {
 
 ReportTableFees.propTypes = {
   intl: PropTypes.shape().isRequired,
-  // beneficiaries: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ReportTableFees);

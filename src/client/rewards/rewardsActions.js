@@ -41,3 +41,13 @@ export const deleteMatchBotRule = sponsorName => (dispatch, getState, { steemCon
     },
   });
 };
+
+export const SET_DATA_FOR_SINGLE_REPORT = createAsyncActionType(
+  '@rewards/SET_DATA_FOR_SINGLE_REPORT',
+);
+
+export const setDataForSingleReport = payload => dispatch =>
+  dispatch({
+    type: SET_DATA_FOR_SINGLE_REPORT.ACTION,
+    payload,
+  });

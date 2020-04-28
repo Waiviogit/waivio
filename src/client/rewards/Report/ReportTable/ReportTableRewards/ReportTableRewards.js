@@ -1,26 +1,48 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map } from 'lodash';
+import { map, filter, find, get } from 'lodash';
+import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
-import './ReportTableRewards.less';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
+import { getSingleReportData } from '../../../../reducers';
+import './ReportTableRewards.less';
 
 const ReportTableRewards = ({ intl }) => {
-  const beneficiaries = [
-    {
-      account: 'VanDining',
-      weight: 9700,
-    },
-    {
-      account: 'waivio',
-      weight: 300,
-    },
-    {
-      account: 'someUser',
-      weight: 200,
-    },
-  ];
+  const singleReportData = useSelector(getSingleReportData);
+  const filteredHistory = filter(
+    singleReportData.histories,
+    obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
+  );
+
+  const beneficiaries = map(filteredHistory, obj => {
+    const userName = get(obj, ['userName']);
+    const benef = get(obj, ['details', 'beneficiaries']);
+    const account = find(benef, ['account', userName]);
+    const totalWeight = benef.reduce((sum, item) => sum + item.weight, 0);
+
+    return {
+      account: get(obj, ['userName']) || '',
+      weight: account ? account.weight / 100 : (10000 - totalWeight) / 100,
+      votesAmount: get(obj, ['details', 'votesAmount']) || '',
+      amount: get(obj, ['amount']) || '',
+      payableInDollars: get(obj, ['details', 'payableInDollars']) || '',
+    };
+  });
+
+  const totalUSD = map(beneficiaries, benef => benef.payableInDollars).reduce(
+    (sum, usd) => sum + usd,
+    0,
+  );
+  const totalVotesAmount = map(beneficiaries, benef => benef.votesAmount).reduce(
+    (sum, amount) => sum + amount,
+    0,
+  );
+  const totalAmount = map(beneficiaries, benef => benef.amount).reduce(
+    (sum, amount) => sum + amount,
+    0,
+  );
+  const totalHive = totalVotesAmount + totalAmount;
 
   return (
     <React.Fragment>
@@ -70,7 +92,7 @@ const ReportTableRewards = ({ intl }) => {
           {map(beneficiaries, beneficiary => (
             <ReportTableRewardsRow key={beneficiary.account} {...beneficiary} />
           ))}
-          <ReportTableRewardsRowTotal />
+          <ReportTableRewardsRowTotal totalUSD={totalUSD} totalHive={totalHive} />
         </tbody>
       </table>
     </React.Fragment>
@@ -79,7 +101,6 @@ const ReportTableRewards = ({ intl }) => {
 
 ReportTableRewards.propTypes = {
   intl: PropTypes.shape().isRequired,
-  // beneficiaries: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ReportTableRewards);

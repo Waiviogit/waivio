@@ -1,8 +1,14 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 
 const ReportTableRewardsRow = beneficiary => {
-  const weight = beneficiary.weight / 100;
+  const weight = beneficiary.weight;
+  const votesAmount = beneficiary.votesAmount ? beneficiary.votesAmount.toFixed(3) : '';
+  const amount = beneficiary.amount ? beneficiary.amount.toFixed(3) : '';
+  const totalHive = votesAmount + amount;
+  const payableInDollars = beneficiary.payableInDollars
+    ? `$ ${beneficiary.payableInDollars.toFixed(3)}`
+    : '';
+
   return (
     <tr>
       <td>
@@ -12,23 +18,19 @@ const ReportTableRewardsRow = beneficiary => {
         <div className="ReportTableRewardsRow__weigth">{`${weight}%`}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__hivePower">2.425</div>
+        <div className="ReportTableRewardsRow__hivePower">{`${votesAmount}`}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__hive">21.825</div>
+        <div className="ReportTableRewardsRow__hive">{`${amount}`}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__totalHive">24.250</div>
+        <div className="ReportTableRewardsRow__totalHive">{totalHive}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__totalUsd">$ 3.64</div>
+        <div className="ReportTableRewardsRow__totalUsd">{`${payableInDollars}`}</div>
       </td>
     </tr>
   );
-};
-
-ReportTableRewardsRow.propTypes = {
-  // beneficiary: PropTypes.shape().isRequired,
 };
 
 export default ReportTableRewardsRow;

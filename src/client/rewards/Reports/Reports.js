@@ -9,14 +9,10 @@ import './Reports.less';
 const Reports = ({ intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
 
-  // const getUserName = data => map(data, user =>  user.userName);
-  // const getUserSponsor = data => map(data, user =>  user.sponsor);
-
   const requestParams = {
     sponsor: userName,
+    // globalReport: true,
     user: userName,
-    // sponsor: match.path === '/rewards/reports' ? userName : match.params.userName,
-    // user: match.path === '/rewards/reports' ? match.params.userName : userName,
   };
 
   useEffect(() => {
