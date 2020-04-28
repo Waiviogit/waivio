@@ -104,6 +104,7 @@ const Body = props => {
     secureLinks: props.exitPageSetting,
   };
   const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options);
+
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
 

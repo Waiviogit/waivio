@@ -197,7 +197,6 @@ export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
   { steemConnectAPI },
 ) => {
   const { auth, object } = getState();
-
   const post = object.wobject.fields.find(field => field.permlink === permlink);
   const voter = auth.user.name;
   const voteData = {
