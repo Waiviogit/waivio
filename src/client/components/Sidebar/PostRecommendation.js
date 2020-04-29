@@ -5,8 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import { usernameURLRegex } from '../../helpers/regexHelpers';
 import { getPostKey } from '../../helpers/stateHelpers';
 import formatter from '../../helpers/steemitFormatter';
-import steemAPI from '../../steemAPI';
 import PostRecommendationLink from './PostRecommendationLink';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
@@ -55,25 +55,27 @@ class PostRecommendation extends Component {
   }
 
   getPostsByAuthor = author => {
-    steemAPI
-      .sendAsync('get_discussions_by_blog', [
-        {
-          tag: author,
-          limit: 4,
-        },
-      ])
+    getUserProfileBlog(author, { limit: 4 })
       .then(result => {
-        const recommendedPosts = Array.isArray(result) ? result : [];
+        const recommendedPosts = result || [];
         this.setState({
           recommendedPosts,
           loading: false,
           currentAuthor: author,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          loading: false,
         });
       });
   };
 
   getFilteredPosts = () => {
     const { match } = this.props;
+
+    if (!Array.isArray(this.state.recommendedPosts)) return [];
+
     return this.state.recommendedPosts
       .filter(
         post =>

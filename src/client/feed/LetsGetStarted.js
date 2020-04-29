@@ -49,7 +49,9 @@ class LetsGetStarted extends React.Component {
   };
 
   static getCurrentUserState(authenticatedUser, followingList) {
-    const hasPost = authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
+    const hasPost = !!(
+      authenticatedUser.last_root_post && authenticatedUser.last_root_post !== '1970-01-01T00:00:00'
+    );
     const hasVoted = authenticatedUser.last_vote_time !== authenticatedUser.created;
     const jsonMetadata = attempt(JSON.parse, authenticatedUser.posting_json_metadata);
     const hasProfile =
@@ -163,44 +165,44 @@ class LetsGetStarted extends React.Component {
               </span>
             </Link>
           </div>
+          <div className="LetsGetStarted__action">
+            <LetsGetStartedIcon
+              renderCheck={hasFollowed}
+              isLoading={isFetchingFollowingList}
+              iconClassName="icon-addpeople"
+            />
+            <Link to="/discover">
+              <span
+                className={classNames('LetsGetStarted__action__text', {
+                  LetsGetStarted__action__completed: hasFollowed,
+                })}
+              >
+                <FormattedMessage
+                  id="follow_users"
+                  defaultMessage="Follow {amount} users"
+                  values={{ amount: 5 }}
+                />
+              </span>
+            </Link>
+          </div>
           {!this.props.isGuest && (
             <div className="LetsGetStarted__action">
               <LetsGetStartedIcon
-                renderCheck={hasFollowed}
-                isLoading={isFetchingFollowingList}
-                iconClassName="icon-addpeople"
+                renderCheck={hasVoted}
+                isLoading={isAuthFetching}
+                iconClassName="icon-praise"
               />
-              <Link to="/discover">
+              <Link to="/">
                 <span
                   className={classNames('LetsGetStarted__action__text', {
-                    LetsGetStarted__action__completed: hasFollowed,
+                    LetsGetStarted__action__completed: hasVoted,
                   })}
                 >
-                  <FormattedMessage
-                    id="follow_steemians"
-                    defaultMessage="Follow {amount} steemians"
-                    values={{ amount: 5 }}
-                  />
+                  <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
                 </span>
               </Link>
             </div>
           )}
-          <div className="LetsGetStarted__action">
-            <LetsGetStartedIcon
-              renderCheck={hasVoted}
-              isLoading={isAuthFetching}
-              iconClassName="icon-praise"
-            />
-            <Link to="/">
-              <span
-                className={classNames('LetsGetStarted__action__text', {
-                  LetsGetStarted__action__completed: hasVoted,
-                })}
-              >
-                <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
-              </span>
-            </Link>
-          </div>
           <div className="LetsGetStarted__action">
             <LetsGetStartedIcon
               renderCheck={hasPost}
