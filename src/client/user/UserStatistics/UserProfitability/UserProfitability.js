@@ -12,6 +12,7 @@ const UserProfitability = ({ statisticsData, isChart }) => {
     !statisticsData.successful_pips &&
     !statisticsData.failed_pips &&
     !statisticsData.neutral_count;
+
   const nautral = statisticsData.neutral_count;
   const failed = statisticsData.failed_count;
   const successful = statisticsData.successful_count;
