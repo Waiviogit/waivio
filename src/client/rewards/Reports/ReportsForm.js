@@ -107,6 +107,7 @@ class ReportsForm extends Component {
         this.props
           .getHistories(this.prepareSubmitData(values, this.props.userName))
           .then(data => setDataForGlobalReport(data))
+          // .then(this.handleReset())
           .catch(error => console.log(error));
         console.log('Received values of form: ', values);
       }
@@ -195,9 +196,11 @@ class ReportsForm extends Component {
     return preparedObject;
   };
 
-  // handleReset = () => {
-  //   this.props.form.resetFields();
-  // };
+  handleReset = () => {
+    this.props.form.resetFields();
+    this.removeSponsor();
+    this.handleSetState({ objects: {} }, { objects: {} });
+  };
 
   render() {
     const { form, intl, userName } = this.props;
@@ -267,6 +270,7 @@ class ReportsForm extends Component {
                   })}`,
                 },
               ],
+              initialValue: '',
             })(
               <SearchUsersAutocomplete
                 allowClear={false}
@@ -298,13 +302,14 @@ class ReportsForm extends Component {
                 {form.getFieldDecorator('from', {
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       message: `${intl.formatMessage({
                         id: 'select_date',
                         defaultMessage: 'Please select date',
                       })}`,
                     },
                   ],
+                  initialValue: moment(),
                 })(<DatePicker allowClear={false} disabled={false} onChange={this.setDateFrom} />)}
               </Form.Item>
             </Col>
@@ -320,6 +325,7 @@ class ReportsForm extends Component {
                       })}`,
                     },
                   ],
+                  initialValue: null,
                 })(
                   <TimePicker
                     open={openFrom}
@@ -346,6 +352,7 @@ class ReportsForm extends Component {
               >
                 {form.getFieldDecorator('till', {
                   rules: [{ required: false }],
+                  initialValue: null,
                 })(<DatePicker allowClear={false} disabled={false} />)}
               </Form.Item>
             </Col>
@@ -353,6 +360,7 @@ class ReportsForm extends Component {
               <Form.Item>
                 {form.getFieldDecorator('tillTime', {
                   rules: [{ required: false }],
+                  initialValue: null,
                 })(
                   <TimePicker
                     open={openTill}
@@ -379,6 +387,7 @@ class ReportsForm extends Component {
               >
                 {form.getFieldDecorator('amount', {
                   rules: [{ required: false }],
+                  initialValue: null,
                 })(
                   <Input
                     placeholder={intl.formatMessage({
@@ -409,6 +418,7 @@ class ReportsForm extends Component {
               <Form.Item>
                 {form.getFieldDecorator('fees', {
                   rules: [{ required: false }],
+                  initialValue: null,
                 })(
                   <Checkbox onChange={this.handleCheckboxChange}>
                     {intl.formatMessage({
@@ -441,6 +451,7 @@ class ReportsForm extends Component {
                   })}`,
                 },
               ],
+              initialValue: '',
             })(
               <SearchObjectsAutocomplete
                 allowClear={false}
@@ -457,7 +468,13 @@ class ReportsForm extends Component {
             <div className="CreateReward__objects-wrap">{renderObjects}</div>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="submitBtn" loading={loading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="submitBtn"
+              onClick={this.handleReset}
+              loading={loading}
+            >
               {intl.formatMessage({
                 id: 'submit',
                 defaultMessage: 'submit',
