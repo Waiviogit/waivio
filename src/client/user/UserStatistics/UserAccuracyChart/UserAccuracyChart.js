@@ -11,14 +11,14 @@ import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => {
   const noData =
-    statisticsData.successful_count === 0 &&
-    statisticsData.failed_count === 0 &&
-    statisticsData.neutral_count === 0;
+    !statisticsData.successful_count &&
+    !statisticsData.failed_count &&
+    !statisticsData.neutral_count;
 
   const nautral = statisticsData.neutral_count;
   const failed = statisticsData.failed_count;
   const successful = statisticsData.successful_count;
-  const nautralColor = nautral > 0 && failed === 0 && successful === 0;
+  const nautralColor = nautral && !failed && !successful;
 
   const percent =
     statisticsData.successful_count === 0
@@ -66,7 +66,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
           <FormattedMessage id="no_forecasts" defaultMessage="No forecasts" />
         </div>
       );
-    } else if (nautral > 0 && successful === 0 && failed === 0) {
+    } else if (nautral && !successful && !failed) {
       return <div className="neutral_count">{`${percent}%`}</div>;
     }
     return (
