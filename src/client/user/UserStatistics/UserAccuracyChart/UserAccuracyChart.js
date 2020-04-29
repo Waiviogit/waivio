@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
@@ -13,6 +14,12 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
     statisticsData.successful_count === 0 &&
     statisticsData.failed_count === 0 &&
     statisticsData.neutral_count === 0;
+
+  const nautral = statisticsData.neutral_count;
+  const failed = statisticsData.failed_count;
+  const successful = statisticsData.successful_count;
+  const nautralColor = nautral > 0 && failed === 0 && successful === 0;
+
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -21,21 +28,23 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
             (statisticsData.successful_count + statisticsData.failed_count),
           10,
         );
+
   const data = [
     ['', ''],
     ['success', percent],
     ['unsuccess', 100 - percent],
   ];
+
   const options = {
     pieHole: 0.8,
     backgroundColor: 'transparent',
     pieSliceBorderColor: 'transparent',
     slices: [
       {
-        color: '#281e1e',
+        color: '#54d2a0',
       },
       {
-        color: noData ? '#8798a4' : '#d9534f',
+        color: noData || nautralColor ? '#8798a4' : '#d9534f',
       },
     ],
     enableInteractivity: false,
@@ -48,6 +57,28 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
       width: '100%',
       height: '100%',
     },
+  };
+
+  const displaySelection = () => {
+    if (noData) {
+      return (
+        <div className="no-forecast-placeholder">
+          <FormattedMessage id="no_forecasts" defaultMessage="No forecasts" />
+        </div>
+      );
+    } else if (nautral > 0 && successful === 0 && failed === 0) {
+      return <div className="neutral_count">{`${percent}%`}</div>;
+    }
+    return (
+      <div
+        className={classNames('value', {
+          success: percent >= 50,
+          unsuccess: percent < 50,
+        })}
+      >
+        {`${percent}%`}
+      </div>
+    );
   };
 
   return (
@@ -75,20 +106,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
             ]}
           />
         </div>
-        <div className="UserAccuracy__data-wrapper-value">
-          {noData ? (
-            <div className="neutral_count">{`${percent}%`}</div>
-          ) : (
-            <div
-              className={classNames('value', {
-                success: percent >= 50,
-                unsuccess: percent < 50,
-              })}
-            >
-              {`${percent}%`}
-            </div>
-          )}
-        </div>
+        <div className="UserAccuracy__data-wrapper-value">{displaySelection()}</div>
       </div>
     </div>
   );
