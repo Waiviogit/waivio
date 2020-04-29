@@ -20,6 +20,8 @@ const appVersion = require('../../../package.json').version;
 
 export const forecastPostMessage = '> This post contains';
 
+export const guestCommentMessage = ' This message was written by guest';
+
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
 export const isPostTaggedNSFW = post => {

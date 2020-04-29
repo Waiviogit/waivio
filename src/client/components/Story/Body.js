@@ -12,7 +12,7 @@ import { dtubeImageRegex, imageRegex, rewriteRegex } from '../../helpers/regexHe
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
-import { forecastPostMessage } from '../../helpers/postHelpers';
+import { forecastPostMessage, guestCommentMessage } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -108,8 +108,22 @@ const Body = props => {
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options);
-  return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
+  let body = props.body;
+  const isGuestComment = body.indexOf(guestCommentMessage) > 0;
+  let guestComment;
+  if (isGuestComment) {
+    body = body.slice(0, body.indexOf(guestCommentMessage));
+    guestComment = props.body.slice(props.body.indexOf(guestCommentMessage));
+  }
+
+  const htmlSections = getHtml(body, props.jsonMetadata, 'Object', options);
+  const guestCommentHtmlSections = getHtml(guestComment, {}, 'Object', options);
+  return (
+    <div className={classNames('Body', { 'Body--full': props.full })}>
+      {htmlSections}
+      {isGuestComment && <div className="Body-short__line">{guestCommentHtmlSections}</div>}
+    </div>
+  );
 };
 
 Body.propTypes = {
