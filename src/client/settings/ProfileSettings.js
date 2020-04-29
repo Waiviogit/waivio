@@ -95,13 +95,6 @@ export default class ProfileSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    let jsonMetadata = attempt(JSON.parse, props.user.json_metadata);
-
-    if (isError(jsonMetadata)) jsonMetadata = {};
-    let postingJsonMetadata = attempt(JSON.parse, props.user.posting_json_metadata);
-
-    if (isError(postingJsonMetadata)) postingJsonMetadata = {};
-
     const metadata = getMetadata(props.user);
 
     this.state = {
