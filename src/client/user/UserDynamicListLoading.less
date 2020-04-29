@@ -1,0 +1,34 @@
+@import (reference) '../../client/styles/custom.less';
+@import (reference) '../../client/styles/modules/variables.less';
+
+.UserDynamicListLoading {
+  position: relative;
+  color: #353535;
+  width: 100%;
+  margin-top: 5px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px 12px 5px;
+
+    .ant-card-loading-block {
+      margin: 0 !important;
+    }
+
+    &__avatar {
+      width: 32px !important;
+      height: 32px !important;
+    }
+
+    &__text {
+      margin: 0 12px;
+      width: 30%;
+
+      p {
+        width: 100%;
+      }
+    }
+  }
+}

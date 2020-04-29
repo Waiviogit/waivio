@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
@@ -6,11 +7,19 @@ import classNames from 'classnames';
 import { setAccuracyChartLoaded } from '../../userActions';
 import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
-import { noDataPlaceholder } from '../UserAccuracyContainer/UserAccuracyContainer';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => {
-  const noData = statisticsData.successful_count === 0 && statisticsData.failed_count === 0;
+  const noData =
+    !statisticsData.successful_count &&
+    !statisticsData.failed_count &&
+    !statisticsData.neutral_count;
+
+  const nautral = statisticsData.neutral_count;
+  const failed = statisticsData.failed_count;
+  const successful = statisticsData.successful_count;
+  const nautralColor = nautral && !failed && !successful;
+
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -19,11 +28,13 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
             (statisticsData.successful_count + statisticsData.failed_count),
           10,
         );
+
   const data = [
     ['', ''],
     ['success', percent],
     ['unsuccess', 100 - percent],
   ];
+
   const options = {
     pieHole: 0.8,
     backgroundColor: 'transparent',
@@ -33,7 +44,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
         color: '#54d2a0',
       },
       {
-        color: noData ? '#8798a4' : '#d9534f',
+        color: noData || nautralColor ? '#8798a4' : '#d9534f',
       },
     ],
     enableInteractivity: false,
@@ -46,6 +57,28 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
       width: '100%',
       height: '100%',
     },
+  };
+
+  const displaySelection = () => {
+    if (noData) {
+      return (
+        <div className="no-forecast-placeholder">
+          <FormattedMessage id="no_forecasts" defaultMessage="No forecasts" />
+        </div>
+      );
+    } else if (nautral && !successful && !failed) {
+      return <div className="neutral_count">{`${percent}%`}</div>;
+    }
+    return (
+      <div
+        className={classNames('value', {
+          success: percent >= 50,
+          unsuccess: percent < 50,
+        })}
+      >
+        {`${percent}%`}
+      </div>
+    );
   };
 
   return (
@@ -73,20 +106,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
             ]}
           />
         </div>
-        <div className="UserAccuracy__data-wrapper-value">
-          {noData ? (
-            noDataPlaceholder
-          ) : (
-            <div
-              className={classNames('value', {
-                success: percent >= 50,
-                unsuccess: percent < 50,
-              })}
-            >
-              {`${percent}%`}
-            </div>
-          )}
-        </div>
+        <div className="UserAccuracy__data-wrapper-value">{displaySelection()}</div>
       </div>
     </div>
   );
