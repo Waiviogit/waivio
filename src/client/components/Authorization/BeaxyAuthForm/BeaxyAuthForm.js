@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Form, Icon, Input, message } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { attempt, get, isError } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import iconsSvg from '../../../../common/constants/svgIcons';
 import { getFollowingObjects } from '../../../user/userActions';
+import { getAuthenticatedUser } from '../../../reducers';
 import './BeaxyAuthForm.less';
 
 const BeaxyAuthForm = ({
@@ -28,10 +29,12 @@ const BeaxyAuthForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
 
+  const user = useSelector(getAuthenticatedUser);
+
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
   const handleAuthSuccess = response => {
-    const { payload, user, token, expiration, umSession } = response;
+    const { payload, token, expiration, umSession } = response;
     message.success(
       intl.formatMessage({
         id: 'broker_modal_broker_connected_successfully',
