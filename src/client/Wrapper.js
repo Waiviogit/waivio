@@ -160,6 +160,7 @@ export default class Wrapper extends React.PureComponent {
     this.state = {
       messagesCount: 0,
       isMobileMenuOpen: false,
+      isMobileNavMenuOpen: false,
     };
   }
 
@@ -275,6 +276,10 @@ export default class Wrapper extends React.PureComponent {
     this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen });
   };
 
+  toggleMobileNavMenu = () => {
+    this.setState({ isMobileNavMenuOpen: !this.state.isMobileNavMenuOpen });
+  }
+
   render() {
     const {
       user,
@@ -285,7 +290,7 @@ export default class Wrapper extends React.PureComponent {
       // isChat,
       // isAuthenticated,
     } = this.props;
-    const { messagesCount, isMobileMenuOpen } = this.state;
+    const { messagesCount, isMobileMenuOpen, isMobileNavMenuOpen } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -301,10 +306,15 @@ export default class Wrapper extends React.PureComponent {
                   onMenuItemClick={this.handleMenuItemClick}
                   toggleMobileMenu={this.toggleMobileMenu}
                   isMobileMenuOpen={isMobileMenuOpen}
+                  toggleMobileNavMenu={this.toggleMobileNavMenu}
+                  isMobileNavMenuOpen={isMobileNavMenuOpen}
                 />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
-                {renderRoutes(this.props.route.routes)}
+                {renderRoutes(this.props.route.routes, {
+                  isMobileNavMenuOpen,
+                  toggleMobileNavMenu : this.toggleMobileNavMenu
+                })}
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />

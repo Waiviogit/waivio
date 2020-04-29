@@ -42,6 +42,7 @@ import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 import { getIsBeaxyUser } from '../../user/usersHelper';
+import MobileNavigation from './MobileNavigation/MobileNavigation';
 
 @injectIntl
 @withRouter
@@ -109,6 +110,8 @@ class Topnav extends React.Component {
     isGuest: PropTypes.bool,
     isMobileMenuOpen: PropTypes.bool.isRequired,
     toggleMobileMenu: PropTypes.func.isRequired,
+    isMobileNavMenuOpen: PropTypes.bool.isRequired,
+    toggleMobileNavMenu: PropTypes.func.isRequired,
     authUser: PropTypes.shape().isRequired,
   };
 
@@ -522,6 +525,12 @@ class Topnav extends React.Component {
     this.setState({ scrolling: !this.state.scrolling });
   };
 
+  handleOnOpenMobileMenu = () => {
+    const { toggleMobileMenu, toggleMobileNavMenu, isMobileNavMenuOpen } = this.props;
+    toggleMobileMenu();
+    if (isMobileNavMenuOpen) toggleMobileNavMenu();
+  }
+
   renderTitle = title => <span>{title}</span>;
 
   render() {
@@ -634,7 +643,7 @@ class Topnav extends React.Component {
               )}
               <div className="Topnav__right-top__icon">
                 {!isMobileMenuOpen ? (
-                  <Icon type="menu" className="iconfont icon-menu" onClick={toggleMobileMenu} />
+                  <Icon type="menu" className="iconfont icon-menu" onClick={this.handleOnOpenMobileMenu} />
                 ) : (
                   <Icon type="close" theme="outlined" onClick={toggleMobileMenu} />
                 )}
