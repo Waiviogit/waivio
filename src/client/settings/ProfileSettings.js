@@ -28,10 +28,18 @@ import './Settings.less';
 
 const FormItem = Form.Item;
 
-function mapPropsToFields(props) {
-  let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
+const getMetadata = user => {
+  let jsonMetadata = attempt(JSON.parse, user.json_metadata);
+  if (isError(jsonMetadata)) jsonMetadata = {};
+  let postingJsonMetadata = attempt(JSON.parse, user.posting_json_metadata);
+  if (isError(postingJsonMetadata)) postingJsonMetadata = {};
 
-  if (isError(metadata)) metadata = {};
+  return postingMetadataHelper(jsonMetadata, postingJsonMetadata);
+};
+
+function mapPropsToFields(props) {
+  const metadata = getMetadata(props.user);
+
   const profile = metadata.profile || {};
 
   return Object.keys(profile).reduce(
@@ -94,7 +102,7 @@ export default class ProfileSettings extends React.Component {
 
     if (isError(postingJsonMetadata)) postingJsonMetadata = {};
 
-    const metadata = postingMetadataHelper(jsonMetadata, postingJsonMetadata);
+    const metadata = getMetadata(props.user);
 
     this.state = {
       bodyHTML: '',
@@ -267,7 +275,6 @@ export default class ProfileSettings extends React.Component {
       lastAccountUpdate,
       profilePicture,
       coverPicture,
-      profileData,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -327,7 +334,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('name', { initialValue: profileData.name })(
+                      {getFieldDecorator('name')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -345,7 +352,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('about', { initialValue: profileData.about })(
+                      {getFieldDecorator('about')(
                         <Input.TextArea
                           autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
@@ -363,7 +370,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('location', { initialValue: profileData.location })(
+                      {getFieldDecorator('location')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -381,7 +388,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('email', { initialValue: profileData.email })(
+                      {getFieldDecorator('email')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -399,7 +406,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('website', { initialValue: profileData.website })(
+                      {getFieldDecorator('website')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
