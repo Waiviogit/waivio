@@ -9,9 +9,9 @@ import './UserProfitability.less';
 
 const UserProfitability = ({ statisticsData, isChart }) => {
   const noData =
-    statisticsData.successful_pips === 0 &&
-    statisticsData.failed_pips === 0 &&
-    statisticsData.neutral_count === 0;
+    !statisticsData.successful_pips &&
+    !statisticsData.failed_pips &&
+    !statisticsData.neutral_count;
   const nautral = statisticsData.neutral_count;
   const failed = statisticsData.failed_count;
   const successful = statisticsData.successful_count;
@@ -19,7 +19,7 @@ const UserProfitability = ({ statisticsData, isChart }) => {
   const displayPips = () => {
     if (noData) {
       return <div className="no-data-wrapper">{noDataPlaceholder}</div>;
-    } else if (nautral > 0 && successful === 0 && failed === 0) {
+    } else if (nautral > 0 && !successful && !failed) {
       return (
         <React.Fragment>
           <div className="neutral_pips">{`${statisticsData.pips}`}</div>
