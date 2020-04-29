@@ -382,7 +382,7 @@ class StoryFull extends React.Component {
     return (
       <div className="StoryFull">
         {replyUI}
-        <h1 className="StoryFull__title">{post.title}</h1>
+          <h1 className="StoryFull__title">{post.title}</h1>
         <h3 className="StoryFull__comments_title">
           <a href="#comments">
             {commentCount === 1 ? (

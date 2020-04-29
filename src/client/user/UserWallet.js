@@ -35,6 +35,7 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+import UserDynamicListLoading from './UserDynamicListLoading';
 
 const initWalletsQuantity = 5;
 
@@ -194,7 +195,7 @@ class Wallet extends Component {
 
     const walletTransactions =
       transactions.length === 0 && usersAccountHistoryLoading ? (
-        <Loading style={{ marginTop: '20px' }} />
+        <UserDynamicListLoading />
       ) : (
         <UserWalletTransactions
           transactions={transactions}

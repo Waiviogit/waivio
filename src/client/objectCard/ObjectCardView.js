@@ -1,4 +1,4 @@
-import { Icon, Popover } from 'antd';
+import { Icon, Tooltip } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -38,11 +38,13 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, scree
     const maxLength = 55;
     if (isMobile) {
       if (wObject.title.length > maxLength) {
-        const titleElement = `${wObject.title.slice(0, maxLength - 1)}...`;
+        const titleElement = `${wObject.title.slice(0, maxLength - 1)}`;
+        const str = titleElement.split(' ');
+        str.pop();
         return (
-          <Popover content={wObject.title} trigger="click">
-            {titleElement}
-          </Popover>
+          <Tooltip title={wObject.title} trigger="click">
+            {str.join(' ')}...
+          </Tooltip>
         );
       }
       return wObject.title;
