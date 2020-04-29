@@ -418,7 +418,8 @@ class ReportsForm extends Component {
               <Form.Item>
                 {form.getFieldDecorator('fees', {
                   rules: [{ required: false }],
-                  initialValue: null,
+                  initialValue: false,
+                  valuePropName: 'checked',
                 })(
                   <Checkbox onChange={this.handleCheckboxChange}>
                     {intl.formatMessage({
