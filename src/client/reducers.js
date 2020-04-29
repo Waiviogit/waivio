@@ -235,12 +235,7 @@ export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
-export const getCreateCampaignDate = state => fromRewards.getCreateCampaignDate(state.rewards);
-export const getReservationDate = state => fromRewards.getReservationDate(state.rewards);
-export const getReviewDate = state => fromRewards.getReviewDate(state.rewards);
-export const getTitle = state => fromRewards.getTitle(state.rewards);
-export const getRewardHive = state => fromRewards.getRewardHive(state.rewards);
-export const getRewardUsd = state => fromRewards.getRewardUsd(state.rewards);
+export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
 
 // common selectors
 

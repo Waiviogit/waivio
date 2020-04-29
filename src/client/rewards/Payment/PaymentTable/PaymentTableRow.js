@@ -5,8 +5,8 @@ import { injectIntl } from 'react-intl';
 import { map } from 'lodash';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
-// import { getLenders } from '../../../../waivioApi/ApiClient';
-// import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
+// import { getReport } from '../../../../waivioApi/ApiClient';
+import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => {
@@ -20,8 +20,8 @@ const PaymentTableRow = ({ intl, sponsor }) => {
     setModalReportOpen(!isModalReportOpen);
     // getReport({requestParams});
   };
-  // const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
-  // const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
+  const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
+  const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
   return (
     <tr>
       <td>{formatDate(intl, sponsor.createdAt)}</td>
@@ -80,13 +80,13 @@ const PaymentTableRow = ({ intl, sponsor }) => {
                 </Link>
                 :{' '}
                 <Link to={`/object/${sponsor.details.main_object}`}>
-                  {sponsor.details.main_object}
-                  {/* {prymaryObjectName} */}
+                  {/* {sponsor.details.main_object} */}
+                  {prymaryObjectName}
                 </Link>
                 ,{' '}
                 <Link to={`/object/${sponsor.details.review_object}`}>
-                  {sponsor.details.review_object}
-                  {/* {reviewObjectName} */}
+                  {/* {sponsor.details.review_object} */}
+                  {reviewObjectName}
                 </Link>
               </div>
               <div>

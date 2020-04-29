@@ -738,6 +738,12 @@ export const getLenders = ({ sponsor, user, filters }) => {
   const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
   // const isSponsor = sponsor ? sponsor : '';
   // const payable = filters && filters.payable ? filters.payable : '';
+  // const globalReport = filters && filters.globalReport ? filters.globalReport : '';
+  // const endDate = filters && filters.endDate ? filters.endDate : '';
+  // const startDate = filters && filters.startDate ? filters.startDate : '';
+  // const currency = filters && filters.currency ? filters.currency : '';
+  // const processingFees = filters && filters.processingFees ? filters.processingFees : '';
+  // const objects = filters && filters.objects ? filters.objects : '';
   // const days = filters && filters.days ? filters.days : '';
   // const isUser = user ? user : '';
   return new Promise((resolve, reject) => {
@@ -758,11 +764,8 @@ export const getLenders = ({ sponsor, user, filters }) => {
       //       userName: isUser,
       //       days,
       //       payable,
-      //       reviewPermlink: isReviewPermlink,
-      //       skip,
-      //       limit,
-      //       sort,
       //       globalReport,
+      //       objects,
       //       endDate,
       //       startDate,
       //       currency,

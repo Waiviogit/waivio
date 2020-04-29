@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DatePicker, Form, TimePicker, Button, Input, Select, Checkbox, Row, Col } from 'antd';
 import moment from 'moment';
-import { isEmpty, map, filter } from 'lodash';
+import { isEmpty, map, filter, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-// import { getLenders } from '../../../waivioApi/ApiClient';
+import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import { setDataForGlobalReport } from '../rewardsActions';
 
 @injectIntl
+@connect(() => ({}), {
+  setDataForGlobalReport,
+})
 class ReportsForm extends Component {
   state = {
     loading: false,
@@ -22,16 +26,91 @@ class ReportsForm extends Component {
     sponsor: {},
     object: {},
     objects: [],
+    dateFrom: '',
+    dateTill: '',
   };
 
   handleSubmit = e => {
     e.preventDefault();
+    const dataF = {
+      histories: [
+        {
+          _id: '5ea026f98967b70fcfd70612',
+          is_demo_account: false,
+          recounted: false,
+          memo: '',
+          userName: 'w7ngc',
+          sponsor: 'asd09',
+          type: 'review',
+          app: 'waiviodev/1.0.0',
+          details: {
+            beneficiaries: [
+              { account: 'linakay', weight: 200 },
+              { account: 'w7ngc', weight: 9500 },
+              { account: 'waivio', weight: 300 },
+            ],
+            review_permlink: 'review-test8-test6',
+            review_object: {
+              author_permlink: 'test6',
+              object_type: 'hashtag',
+              fields: [
+                {
+                  weight: 1,
+                  locale: 'en-US',
+                  _id: '5d3c6484fa84536e4ebf0b88',
+                  creator: 'monterey',
+                  author: 'asd09',
+                  permlink: 'monterey-6l9pk953od',
+                  name: 'name',
+                  body: 'test6',
+                  active_votes: [],
+                },
+              ],
+            },
+            reservation_permlink: 'reserve-tkre1te7z5j',
+            main_object: {
+              author_permlink: 'test8',
+              object_type: 'hashtag',
+              fields: [
+                {
+                  weight: 1,
+                  locale: 'en-US',
+                  _id: '5d3c6491fa84536e4ebf0ba0',
+                  creator: 'monterey',
+                  author: 'xcv47',
+                  permlink: 'monterey-sd0yq3n74p',
+                  name: 'name',
+                  body: 'test8',
+                  active_votes: [],
+                },
+              ],
+            },
+            payableInDollars: 0.4074,
+          },
+          amount: 0.4074,
+          createdAt: '2020-04-22T11:14:01.360Z',
+          updatedAt: '2020-04-22T11:20:21.003Z',
+          __v: 0,
+          currentUser: 'olegvladim',
+          balance: 3.0444,
+        },
+      ],
+      payable: 3.044,
+      amount: 1.03,
+      hasMore: true,
+    };
+    this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        this.props.setDataForGlobalReport(dataF);
+        this.prepareSubmitData(values, this.props.userName);
+        this.props
+          .getHistories(this.prepareSubmitData(values, this.props.userName))
+          .then(data => setDataForGlobalReport(data))
+          .catch(error => console.log(error));
         console.log('Received values of form: ', values);
       }
     });
-    this.setState({ loading: true });
     this.setState({ loading: false });
   };
 
@@ -88,11 +167,55 @@ class ReportsForm extends Component {
     this.setState({ checked });
   };
 
+  prepareSubmitData = (data, userName) => {
+    const objects = get(data, ['objects']);
+    const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
+    const startDate = data.from ? moment(data.from.format('x')) : '';
+    const endDate = data.till ? moment(data.till.format('x')) : '';
+
+    const preparedObject = {
+      sponsor: get(data, ['sponsor', 'account']) || '',
+      userName: userName || '',
+      filters: {
+        payable: get(data, ['amount']) || '',
+        globalReport: true,
+        // eslint-disable-next-line no-underscore-dangle
+        endDate: endDate._i || '',
+        // eslint-disable-next-line no-underscore-dangle
+        startDate: startDate._i || '',
+        objects: objectsNames || [],
+        currency: get(data, ['currency']) || '',
+        processingFees: get(data, ['fees']) || false,
+      },
+    };
+
+    this.setState({ dateFrom: get(preparedObject, ['filter', 'startDate']) });
+    this.setState({ dateTill: get(preparedObject, ['filter', 'endDate']) });
+
+    return preparedObject;
+  };
+
+  // handleReset = () => {
+  //   this.props.form.resetFields();
+  // };
+
   render() {
     const { form, intl, userName } = this.props;
-    const { openFrom, openTill, currency, sponsor, object, objects } = this.state;
+    const {
+      openFrom,
+      openTill,
+      currency,
+      sponsor,
+      object,
+      objects,
+      loading,
+      dateFrom,
+      dateTill,
+    } = this.state;
     const format = 'HH:mm:ss';
     const { Option } = Select;
+    const from = dateFrom ? moment(dateFrom).format('MMMM Do YYYY') : '';
+    const till = dateTill ? moment(dateTill).format('MMMM Do YYYY') : '';
 
     const renderSponsor =
       !isEmpty(sponsor) && sponsor.account ? (
@@ -190,7 +313,7 @@ class ReportsForm extends Component {
                 {form.getFieldDecorator('fromTime', {
                   rules: [
                     {
-                      required: true,
+                      required: false,
                       message: `${intl.formatMessage({
                         id: 'select_time',
                         defaultMessage: 'Please select time',
@@ -308,7 +431,7 @@ class ReportsForm extends Component {
               </span>
             }
           >
-            {form.getFieldDecorator('object', {
+            {form.getFieldDecorator('objects', {
               rules: [
                 {
                   required: true,
@@ -334,7 +457,7 @@ class ReportsForm extends Component {
             <div className="CreateReward__objects-wrap">{renderObjects}</div>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="submitBtn">
+            <Button type="primary" htmlType="submit" className="submitBtn" loading={loading}>
               {intl.formatMessage({
                 id: 'submit',
                 defaultMessage: 'submit',
@@ -350,16 +473,21 @@ class ReportsForm extends Component {
             })}{' '}
             <Link to={`/@${userName}`}>{`@${userName}`}</Link>
           </div>
-          <div>
-            {intl.formatMessage({
-              id: 'from',
-              defaultMessage: `From`,
-            })}
-            :{' '}
-            {intl.formatMessage({
-              id: 'till',
-              defaultMessage: `Till`,
-            })}{' '}
+          <div className="CreateReportForm__tableHeader-date">
+            <div className="CreateReportForm__tableHeader-date-from">
+              {intl.formatMessage({
+                id: 'from',
+                defaultMessage: `From`,
+              })}
+              : {from}
+            </div>
+            <div className="CreateReportForm__tableHeader-date-till">
+              {intl.formatMessage({
+                id: 'till',
+                defaultMessage: `Till`,
+              })}{' '}
+              {till}
+            </div>
           </div>
           <div>
             {intl.formatMessage({
@@ -386,10 +514,14 @@ ReportsForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  setDataForGlobalReport: PropTypes.func,
+  getHistories: PropTypes.func,
 };
 
 ReportsForm.defaultProps = {
   form: {},
+  setDataForGlobalReport: () => {},
+  getHistories: () => {},
 };
 
 export default WrappedNormalLoginForm;

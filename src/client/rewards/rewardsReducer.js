@@ -1,7 +1,8 @@
-import { SET_DATA_FOR_SINGLE_REPORT } from './rewardsActions';
+import { SET_DATA_FOR_GLOBAL_REPORT, SET_DATA_FOR_SINGLE_REPORT } from './rewardsActions';
 
 const initialState = {
   singleReportData: {},
+  globalReportData: {},
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         singleReportData: action.payload,
+      };
+    case SET_DATA_FOR_GLOBAL_REPORT.ACTION:
+      return {
+        ...state,
+        globalReportData: action.payload,
       };
     default:
       return state;
@@ -20,9 +26,4 @@ export default rewardsReducer;
 
 // export const getIsMapModalOpen = state => state.isFullscreenMode;
 export const getSingleReportData = state => state.singleReportData;
-export const getCreateCampaignDate = state => state.singleReportData.createCampaignDate;
-export const getReservationDate = state => state.reservationDate;
-export const getReviewDate = state => state.reviewDate;
-export const getTitle = state => state.title;
-export const getRewardHive = state => state.rewardHive;
-export const getRewardUsd = state => state.rewardUsd;
+export const getGlobalReportData = state => state.globalReportData;
