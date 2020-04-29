@@ -255,6 +255,7 @@ export function createPost(postData) {
           )
             // eslint-disable-next-line consistent-return
             .then(result => {
+              dispatch(notify('Your post will be posted soon', 'success'));
               if (isGuest) {
                 if (result.ok) {
                   if (draftId) {
@@ -266,7 +267,7 @@ export function createPost(postData) {
                   if (upvote) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
-                  dispatch(notify('Your post will be posted soon', 'success'));
+
                   dispatch(push(`/@${authUser.name}`));
 
                   if (window.analytics) {
