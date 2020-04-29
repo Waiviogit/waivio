@@ -33,6 +33,14 @@ const BeaxyAuthForm = ({
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
+  const hideBeaxyForm = () => {
+    hideForm();
+  };
+
+  const clearAuthCodeField = () => {
+    setToken2FA(null);
+  };
+
   const handleAuthSuccess = response => {
     const { payload, token, expiration, umSession } = response;
     message.success(
@@ -90,6 +98,7 @@ const BeaxyAuthForm = ({
                 const errMessage =
                   error.message === 'TWO_FA_CODE_ERROR' ? 'two_FA_error' : 'server_error';
                 setAuthError(errMessage);
+                clearAuthCodeField();
                 console.log('\t2FA error', error && error.message);
               },
             )
@@ -97,14 +106,6 @@ const BeaxyAuthForm = ({
         }
       }
     });
-  };
-
-  const hideBeaxyForm = () => {
-    hideForm();
-  };
-
-  const clearAuthCodeField = () => {
-    setToken2FA(null);
   };
 
   return (
@@ -210,7 +211,7 @@ const BeaxyAuthForm = ({
             type="primary"
             htmlType="submit"
             loading={isLoading}
-            disabled={hasErrors(getFieldsError())}
+            disabled={hasErrors(getFieldsError()) || authError}
           >
             {btnText || <FormattedMessage id="login" defaultMessage="Log in" />}
           </Button>
