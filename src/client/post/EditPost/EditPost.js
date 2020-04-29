@@ -120,7 +120,10 @@ class EditPost extends Component {
         .catch(error => console.log('Failed to get campaign data:', error));
     }
     getObject('jyp-cryptoinvestarena').then(object => {
-      this.handleCreateObject(object);
+      this.handleObjectSelect(object);
+    });
+    getObject('juh-beaxymember').then(object => {
+      this.handleObjectSelect(object);
     });
   }
 
