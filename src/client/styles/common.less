@@ -50,6 +50,14 @@ textarea.ant-input {
   transition: none;
 }
 
+.ant-calendar-selected-day .ant-calendar-date {
+  background: rgba(0, 0, 0, 0);
+}
+
+.nightmode .ant-calendar-selected-day .ant-calendar-date {
+  color: @white-smoke;
+}
+
 .ant-popover {
   z-index: @ant-popover-mobile-z-index !important;
 
@@ -96,6 +104,10 @@ body.post-modal .primary-modal {
       color: @white;
     }
   }
+}
+
+.newStatus {
+  text-transform: uppercase;
 }
 
 .ant-popover-title {

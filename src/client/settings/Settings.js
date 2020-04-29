@@ -17,6 +17,7 @@ import {
   getUpvoteSetting,
   getExitPageSetting,
   isGuestUser,
+  getAuthenticatedUserName,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -29,9 +30,9 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import './Settings.less';
 import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import './Settings.less';
 
 @requiresLogin
 @injectIntl
@@ -49,6 +50,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
     isGuest: isGuestUser(state),
+    user: getAuthenticatedUserName(state),
   }),
   { reload, saveSettings, notify },
 )
@@ -88,6 +90,8 @@ export default class Settings extends React.Component {
     reload: () => {},
     saveSettings: () => {},
     notify: () => {},
+    user: '',
+    history: {},
   };
 
   constructor(props) {

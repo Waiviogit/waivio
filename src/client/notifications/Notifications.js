@@ -20,9 +20,11 @@ import NotificationVote from '../components/Navigation/Notifications/Notificatio
 import NotificationReblog from '../components/Navigation/Notifications/NotificationReblog';
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
+import NotificationChangeStatus from '../components/Navigation/Notifications/NotificationChangeStatus';
+import NotificationPowerDown from '../components/Navigation/Notifications/NotificationPowerDown';
+import NotificationFillOrder from '../components/Navigation/Notifications/NotificationFillOrder';
 import Loading from '../components/Icon/Loading';
 import './Notifications.less';
-import NotificationChangeStatus from '../components/Navigation/Notifications/NotificationChangeStatus';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -113,6 +115,24 @@ class Notifications extends React.Component {
               case notificationConstants.STATUS_CHANGE:
                 return (
                   <NotificationChangeStatus key={key} notification={notification} read={read} />
+                );
+              case notificationConstants.POWER_DOWN:
+                return (
+                  <NotificationPowerDown
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.FILL_ORDER:
+                return (
+                  <NotificationFillOrder
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
                 );
               default:
                 return null;

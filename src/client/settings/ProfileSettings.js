@@ -30,6 +30,7 @@ const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
   let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
+
   if (isError(metadata)) metadata = {};
   const profile = metadata.profile || {};
 
@@ -70,6 +71,7 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -77,6 +79,7 @@ export default class ProfileSettings extends React.Component {
     onImageInvalid: () => {},
     userName: '',
     user: {},
+    history: {},
     isGuest: false,
     updateProfile: () => {},
   };
@@ -85,8 +88,10 @@ export default class ProfileSettings extends React.Component {
     super(props);
 
     let jsonMetadata = attempt(JSON.parse, props.user.json_metadata);
+
     if (isError(jsonMetadata)) jsonMetadata = {};
     let postingJsonMetadata = attempt(JSON.parse, props.user.posting_json_metadata);
+
     if (isError(postingJsonMetadata)) postingJsonMetadata = {};
 
     const metadata = postingMetadataHelper(jsonMetadata, postingJsonMetadata);
@@ -141,17 +146,22 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
+
         if (isGuest) {
-          updateProfile(userName, cleanValues).then(data => {
-            if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
-              message.success(
-                intl.formatMessage({
-                  id: 'changes_take_effect_later',
-                  defaultMessage: 'Changes will take effect later',
-                }),
-              );
-            }
-          });
+          updateProfile(userName, cleanValues)
+            .then(data => {
+              if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
+                message.success(
+                  intl.formatMessage({
+                    id: 'changes_take_effect_later',
+                    defaultMessage: 'Changes will take effect later',
+                  }),
+                );
+
+                this.props.history.push(`/@${this.props.user.name}`);
+              }
+            })
+            .catch(e => message.error(e.message));
         } else {
           const profileDateEncoded = encodeOp(
             [
@@ -172,6 +182,7 @@ export default class ProfileSettings extends React.Component {
             profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
             '_blank',
           );
+
           win.focus();
         }
       }
@@ -204,6 +215,7 @@ export default class ProfileSettings extends React.Component {
 
   onOkAvatarModal = () => {
     const { avatarImage } = this.state;
+
     this.setState({
       isModal: !this.state.isModal,
       isAvatar: !this.state.isAvatar,
@@ -216,6 +228,7 @@ export default class ProfileSettings extends React.Component {
 
   onOkCoverModal = () => {
     const { coverImage } = this.state;
+
     this.setState({
       isModal: !this.state.isModal,
       isCover: !this.state.isCover,

@@ -39,6 +39,7 @@ export default class ObjectFeed extends React.Component {
     match: PropTypes.shape().isRequired,
     /* default props */
     limit: PropTypes.number,
+    handleCreatePost: PropTypes.func,
   };
 
   static defaultProps = {
@@ -46,6 +47,7 @@ export default class ObjectFeed extends React.Component {
     getObjectPosts: () => {},
     getMoreObjectPosts: () => {},
     readLocales: [],
+    handleCreatePost: () => {},
   };
 
   componentDidMount() {
@@ -83,7 +85,7 @@ export default class ObjectFeed extends React.Component {
   }
 
   render() {
-    const { feed, limit } = this.props;
+    const { feed, limit, handleCreatePost } = this.props;
     const wObjectName = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wObjectName, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
@@ -107,10 +109,11 @@ export default class ObjectFeed extends React.Component {
             showPostModal={this.props.showPostModal}
           />
         ) : (
-          <div className="object-feed__row justify-center">
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+          <div className="object-feed__row justify-center" onClick={handleCreatePost}>
             <FormattedMessage
               id="empty_object_profile"
-              defaultMessage="This object doesn't have any"
+              defaultMessage="Be the first to write a review"
             />
           </div>
         )}
