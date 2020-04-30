@@ -17,13 +17,13 @@ const getTooltipContent = (contentType, data) => {
   const prop = contentType === 'forecast' ? 'count' : 'pips';
   const successValue = data[`successful_${prop}`];
   const failedValue = data[`failed_${prop}`];
-  const neutralValue = data[`neutral_${prop}`];
+  const neutralValue = data.neutral_count;
   return !(successValue === 0 && failedValue === 0 && neutralValue === 0) ? (
     <div>
       <span style={{ color: '#54d2a0', padding: '0 4px' }}>{data[`successful_${prop}`]}</span>/
       {prop !== 'pips' ? (
         <React.Fragment>
-          <span style={{ color: '#867e7e', padding: '0 4px' }}>{data[`neutral_${prop}`]}</span>/
+          <span style={{ color: '#867e7e', padding: '0 4px' }}>{data.neutral_count}</span>/
         </React.Fragment>
       ) : null}
       <span style={{ color: '#d9534f', padding: '0 4px' }}>{data[`failed_${prop}`]}</span>
