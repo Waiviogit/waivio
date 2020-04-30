@@ -35,7 +35,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, scree
   };
 
   const titleTruncate = () => {
-    const maxLength = 55;
+    const maxLength = 59;
     if (isMobile) {
       if (wObject.title.length > maxLength) {
         const titleElement = `${wObject.title.slice(0, maxLength - 1)}`;
