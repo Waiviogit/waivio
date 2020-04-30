@@ -12,6 +12,7 @@ import { setDataForSingleReport } from '../rewardsActions';
 import './Report.less';
 
 const Report = ({ intl, toggleModal, isModalReportOpen }) => {
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   const requestParams = {
   //     guideName: sponsor.sponsor,
@@ -20,12 +21,11 @@ const Report = ({ intl, toggleModal, isModalReportOpen }) => {
   //   };
   //   getReport(requestParams)
   //     .then(data => {
-  //       const dispatch = useDispatch();
+  //
   //       dispatch(setDataForSingleReport(data));
   //     })
   //     .catch(e => console.log(e));
   // }, []);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const data = {
