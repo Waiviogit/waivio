@@ -3,17 +3,14 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
-import {
-  BENEFICIARY_ACCOUNT,
-  BENEFICIARY_PERCENT,
-  REFERRAL_PERCENT,
-} from '../../helpers/constants';
+import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
+import { clearBeneficiariesUsers } from '../../search/searchActions';
 import { getAuthenticatedUserName } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
@@ -127,6 +124,7 @@ const broadcastComment = (
   permlink,
   referral,
   authUsername,
+  beneficiariesAll,
 ) => {
   const operations = [];
   const commentOp = [
@@ -161,17 +159,19 @@ const broadcastComment = (
     commentOptionsConfig.percent_steem_dollars = 0;
   }
 
-  const beneficiaries = [];
-
-  if (beneficiary) {
-    beneficiaries.push({ account: BENEFICIARY_ACCOUNT, weight: BENEFICIARY_PERCENT });
-  }
-
   if (referral && referral !== authUsername) {
-    beneficiaries.push({ account: referral, weight: REFERRAL_PERCENT });
+    beneficiariesAll.push({ account: referral, weight: REFERRAL_PERCENT });
   }
 
-  if (beneficiaries.length !== 0) {
+  const beneficiaries = [
+    ...beneficiariesAll,
+    {
+      account: authUsername,
+      weight: beneficiariesAll.reduce((res, curr) => res - curr.weight, 10000),
+    },
+  ];
+
+  if (beneficiariesAll.length !== 0) {
     commentOptionsConfig.extensions.push([0, { beneficiaries }]);
   }
 
@@ -192,7 +192,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
-export function createPost(postData) {
+export function createPost(postData, beneficiariesAll) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -250,6 +250,7 @@ export function createPost(postData) {
             permlink,
             referral,
             authUser.name,
+            beneficiariesAll,
           )
             .then(result => {
               if (draftId) {
@@ -282,6 +283,7 @@ export function createPost(postData) {
                 dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
               }
 
+              dispatch(clearBeneficiariesUsers());
               return result;
             })
             .catch(err => {
