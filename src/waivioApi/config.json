@@ -57,6 +57,7 @@
   "objectTypesSearch": "/ObjectTypesSearch",
   "payables": "/payables",
   "payments": "/payments",
+  "report": "/report",
   "post": "/post",
   "posts": "/posts",
   "rejectReservation": "/validate_reject_reservation",

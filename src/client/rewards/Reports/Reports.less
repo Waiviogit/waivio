@@ -1,0 +1,90 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Reports {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  min-width: 310px;
+  padding: 0 12px 0 12px;
+
+  @media @small {
+    padding: 0;
+  }
+
+  &__wrap {
+    &-title {
+      font-weight: 500;
+      margin-bottom: 1rem;
+      font-size: 1.7em;
+    }
+  }
+
+  .CreateReportForm {
+    width: 520px;
+
+    &__row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+    }
+
+    &__tableHeader {
+      padding-bottom: 15px;
+
+      &-date {
+        display: flex;
+
+        &-till {
+          padding-left: 50%;
+        }
+      }
+    }
+
+    .ant-form-item {
+      margin-bottom: 5px;
+
+      .submitBtn {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+    }
+
+    .ant-input.ant-select-search__field {
+      width: 100%;
+    }
+
+    .ant-time-picker {
+      padding-left: 10px;
+    }
+
+    .ant-input {
+      width: 150px;
+    }
+
+    .ant-checkbox {
+      padding-left: 15px;
+    }
+
+    .ant-select-show-search {
+      padding-left: 0;
+    }
+  }
+
+  .PaymentTable {
+    width: 100%;
+    margin-bottom: 30px;
+
+    &.basicWidth {
+      width: 11%;
+    }
+
+    &.mediumWidth {
+      width: 20%;
+    }
+
+    &.maxWidth {
+      width: 47%;
+    }
+  }
+}

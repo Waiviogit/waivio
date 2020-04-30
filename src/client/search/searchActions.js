@@ -16,6 +16,14 @@ export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
   '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
 );
 export const RESET_SEARCH_USERS_FOR_DISCOVER_PAGE = '@search/RESET_SEARCH_USERS_FOR_DISCOVER_PAGE';
+export const SAVE_BENEFICIARIES_USERS = createAsyncActionType('@search/SAVE_BENEFICIARIES_USERS');
+export const UPDATE_BENEFICIARIES_USERS = createAsyncActionType(
+  '@search/UPDATE_BENEFICIARIES_USERS',
+);
+export const REMOVE_BENEFICIARIES_USERS = createAsyncActionType(
+  '@search/REMOVE_BENEFICIARIES_USERS',
+);
+export const CLEAR_BENEFICIARIES_USERS = createAsyncActionType('@search/CLEAR_BENEFICIARIES_USERS');
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -142,4 +150,27 @@ export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch 
 export const clearSearchObjectsResults = () => dispatch =>
   dispatch({
     type: CLEAR_SEARCH_OBJECTS_RESULT,
+  });
+
+export const saveBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: SAVE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const updateBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: UPDATE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const removeBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: REMOVE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const clearBeneficiariesUsers = () => dispatch =>
+  dispatch({
+    type: CLEAR_BENEFICIARIES_USERS.ACTION,
   });

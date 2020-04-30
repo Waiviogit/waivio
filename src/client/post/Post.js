@@ -165,7 +165,7 @@ export default class Post extends React.Component {
     const reputation = loaded ? formatter.reputation(content.author_reputation) : 0;
     const showPost = reputation >= 0 || showHiddenPost;
 
-    const signature = get(user, 'json_metadata.profile.signature', null);
+    const signature = get(user, 'posting_json_metadata.profile.signature', null);
 
     return (
       <div className="main-panel">
