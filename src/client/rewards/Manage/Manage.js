@@ -114,7 +114,7 @@ class Manage extends React.Component {
                 <div className="Manage__rewards-campaign-wrap-title">
                   {intl.formatMessage({
                     id: 'manage_page_manage_campaign',
-                    defaultMessage: `Active and pending campaign`,
+                    defaultMessage: `Manage rewards campaign`,
                   })}
                 </div>
                 <CampaignRewardsTable
