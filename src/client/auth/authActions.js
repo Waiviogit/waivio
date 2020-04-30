@@ -177,7 +177,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.json_metadata);
+  const json_metadata = JSON.parse(state.auth.user.posting_json_metadata);
 
   json_metadata.profile = { ...json_metadata.profile, ...values };
 
