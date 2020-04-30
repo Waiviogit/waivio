@@ -1075,5 +1075,6 @@
   "status_change": "{username} marked {restaurant} as {status}",
   "power_down_notification": "{username} initiated 'Power Down' on {amount}",
   "fill_order_notification": "You bought {current_pays} and get {open_pays} from {exchanger}",
-  "paymentTable_payment": "Payment"
+  "paymentTable_payment": "Payment",
+  "profile_updated": "Profile updated"
 }

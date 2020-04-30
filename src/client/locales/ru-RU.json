@@ -1079,5 +1079,6 @@
   "status_change": "{username} отметил {restaurant} как {status}",
   "power_down_notification": "{username} инициировал 'Power Down' на {amount}",
   "fill_order_notification": "Вы потратили {current_pays} и получили {open_pays} от {exchanger}",
-  "paymentTable_payment": "Оплата"
+  "paymentTable_payment": "Оплата",
+  "profile_updated": "Профиль обновлен"
 }
