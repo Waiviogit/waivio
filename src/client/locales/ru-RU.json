@@ -960,7 +960,7 @@
   "manage_page_cant_activate_campaign": "Кампания не может быть активированна '{campaignName}', попробуйте позже",
   "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже",
   "manage_page_account_balance": "Баланс счета (HIVE)",
-  "manage_page_manage_campaign": "Управление кампаниями",
+  "manage_page_active_and_pending": "Активные и компании в ожидании",
   "sidenav_user_personal": "Персональные",
   "sidenav_user_websites": "Веб-сайты",
   "sidenav_user_create": "Создать",
