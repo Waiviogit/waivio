@@ -122,9 +122,6 @@ class EditPost extends Component {
     getObject('jyp-cryptoinvestarena').then(object => {
       this.handleObjectSelect(object);
     });
-    getObject('juh-beaxymember').then(object => {
-      this.handleObjectSelect(object);
-    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
