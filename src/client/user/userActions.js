@@ -239,7 +239,7 @@ export const assignProposition = ({
       proposition,
       proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${secondaryObjectName}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
