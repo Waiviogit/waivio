@@ -152,7 +152,7 @@ export default class User extends React.Component {
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     const { user } = this.props;
-    if (!user.id && !user.fetching)
+    if (!isEmpty(user) && !user.id && !user.fetching)
       return (
         <div className="main-panel">
           <NotFound

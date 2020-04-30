@@ -7,7 +7,7 @@ export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
     if (result.length) {
       const userAccount = result[0];
-      userAccount.json_metadata = jsonParse(result[0].json_metadata);
+      userAccount.posting_json_metadata = jsonParse(result[0].posting_json_metadata);
       return userAccount;
     }
     throw new Error('User Not Found');

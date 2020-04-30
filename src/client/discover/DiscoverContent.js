@@ -43,7 +43,7 @@ class DiscoverContent extends React.Component {
       PropTypes.shape({
         name: PropTypes.string,
         weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        json_metadata: PropTypes.string,
+        posting_json_metadata: PropTypes.string,
       }),
     ).isRequired,
     getTopExperts: PropTypes.func.isRequired,
