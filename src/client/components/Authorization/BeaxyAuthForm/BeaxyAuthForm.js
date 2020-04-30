@@ -22,7 +22,7 @@ const BeaxyAuthForm = ({
   hasSingInParent,
 }) => {
   const dispatch = useDispatch();
-  const { getFieldDecorator, getFieldsError, validateFields } = form;
+  const { getFieldDecorator, getFieldsError, validateFields, setFieldsValue } = form;
 
   // state
   const [token2FA, setToken2FA] = useState(null);
@@ -37,8 +37,14 @@ const BeaxyAuthForm = ({
     hideForm();
   };
 
+  const onAuthInputChange = () => {
+    setAuthError(null);
+  };
+
   const clearAuthCodeField = () => {
     setToken2FA(null);
+    onAuthInputChange();
+    setFieldsValue({ authCode: '' });
   };
 
   const handleAuthSuccess = response => {
@@ -98,7 +104,6 @@ const BeaxyAuthForm = ({
                 const errMessage =
                   error.message === 'TWO_FA_CODE_ERROR' ? 'two_FA_error' : 'server_error';
                 setAuthError(errMessage);
-                clearAuthCodeField();
                 console.log('\t2FA error', error && error.message);
               },
             )
@@ -200,6 +205,7 @@ const BeaxyAuthForm = ({
               <Input
                 addonAfter={<Icon type="close" theme="outlined" onClick={clearAuthCodeField} />}
                 maxLength={6}
+                onChange={onAuthInputChange}
               />,
             )}
           </Form.Item>
