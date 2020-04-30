@@ -278,7 +278,7 @@ export default class Wrapper extends React.PureComponent {
 
   toggleMobileNavMenu = () => {
     this.setState({ isMobileNavMenuOpen: !this.state.isMobileNavMenuOpen });
-  }
+  };
 
   render() {
     const {
@@ -313,7 +313,7 @@ export default class Wrapper extends React.PureComponent {
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes, {
                   isMobileNavMenuOpen,
-                  toggleMobileNavMenu : this.toggleMobileNavMenu
+                  toggleMobileNavMenu: this.toggleMobileNavMenu,
                 })}
                 <Transfer />
                 <PowerUpOrDown />

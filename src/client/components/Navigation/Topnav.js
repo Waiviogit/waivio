@@ -529,7 +529,7 @@ class Topnav extends React.Component {
     const { toggleMobileMenu, toggleMobileNavMenu, isMobileNavMenuOpen } = this.props;
     toggleMobileMenu();
     if (isMobileNavMenuOpen) toggleMobileNavMenu();
-  }
+  };
 
   renderTitle = title => <span>{title}</span>;
 
@@ -643,7 +643,11 @@ class Topnav extends React.Component {
               )}
               <div className="Topnav__right-top__icon">
                 {!isMobileMenuOpen ? (
-                  <Icon type="menu" className="iconfont icon-menu" onClick={this.handleOnOpenMobileMenu} />
+                  <Icon
+                    type="menu"
+                    className="iconfont icon-menu"
+                    onClick={this.handleOnOpenMobileMenu}
+                  />
                 ) : (
                   <Icon type="close" theme="outlined" onClick={toggleMobileMenu} />
                 )}

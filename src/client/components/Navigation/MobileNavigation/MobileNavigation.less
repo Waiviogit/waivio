@@ -89,6 +89,7 @@
     position: relative;
     width: 28%;
   }
+
   &__wrapper {
     position: relative;
     width: 72%;
@@ -97,6 +98,14 @@
     left: 0;
     animation-name: example;
     animation-duration: 1s;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      padding-bottom: 0.7rem;
+      font-weight: 600;
+      border-bottom: 1px solid @white-smoke;
+    }
 
     @keyframes example {
       0% {
@@ -106,6 +115,5 @@
         left: 0;
       }
     }
-
   }
 }
