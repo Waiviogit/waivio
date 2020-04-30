@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, uniqBy, map } from 'lodash';
+import { isEmpty, uniqBy, map, get } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 
@@ -275,4 +275,37 @@ export const sortDebtObjsData = (items, sortBy = 'amount') => {
   const sorted = uniqBy(items, 'alias').sort(comparator);
 
   return sorted;
+};
+
+export const getProcessingFee = data => {
+  if (!data || isEmpty(data)) return null;
+
+  const amounts = {
+    share: get(data, ['details', 'commissionWeight']) || '',
+    hive: get(data, ['amount']) || '',
+    usd: get(data, ['details', 'payableInDollars']) || '',
+  };
+
+  switch (data.type) {
+    case 'index_fee':
+      return {
+        name: 'Rewards indexing',
+        account: 'waivio.index',
+        ...amounts,
+      };
+    case 'referral_server_fee':
+      return {
+        name: 'Referral',
+        account: 'pacificgifts.acc',
+        ...amounts,
+      };
+    case 'campaign_server_fee':
+      return {
+        name: 'Campaign management',
+        account: 'waivio.campaigns',
+        ...amounts,
+      };
+    default:
+      return null;
+  }
 };

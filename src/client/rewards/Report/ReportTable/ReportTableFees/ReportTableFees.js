@@ -1,62 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { filter, map, get, reduce } from 'lodash';
+import { map, reduce } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableFeesRow from '../ReportTableFees/ReportTableFeesRow';
 import ReportTableFeesRowTotal from './ReportTableFeesRowTotal';
 import { getSingleReportData } from '../../../../reducers';
+import { getProcessingFee } from '../../../rewardsHelper';
 import './ReportTableFees.less';
-
-const getName = obj => {
-  let name;
-  if (obj.type === 'index_fee') {
-    name = 'Rewards indexing';
-  } else if (obj.type === 'referral_server_fee') {
-    name = 'Referral';
-  } else if (obj.type === 'campaign_server_fee') {
-    name = 'Campaign management';
-  }
-  return name;
-};
-
-const getAccount = obj => {
-  let account;
-  if (obj.type === 'index_fee') {
-    account = 'waivio.index';
-  } else if (obj.type === 'referral_server_fee') {
-    account = 'pacificgifts.acc';
-  } else if (obj.type === 'campaign_server_fee') {
-    account = 'waivio.campaigns';
-  }
-  return account;
-};
 
 const ReportTableFees = ({ intl }) => {
   const singleReportData = useSelector(getSingleReportData);
 
-  const filteredHistory = filter(
-    singleReportData.histories,
-    obj =>
-      obj.type === 'index_fee' ||
-      obj.type === 'campaign_server_fee' ||
-      obj.type === 'referral_server_fee',
-  );
-
   const fees = reduce(
-    filteredHistory,
+    singleReportData.histories,
     (result, obj) => {
-      const name = getName(obj);
-      const account = getAccount(obj);
-      const fee = {
-        name,
-        account,
-        share: get(obj, ['details', 'commissionWeight']) || '',
-        hive: get(obj, ['amount']) || '',
-        usd: get(obj, ['details', 'payableInDollars']) || '',
-      };
-
-      return [...result, fee];
+      const fee = getProcessingFee(obj);
+      return fee ? [...result, fee] : result;
     },
     [],
   );

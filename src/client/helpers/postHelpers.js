@@ -90,7 +90,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
     community: appName,
     app: `${appName}/${appVersion}`,
     format: 'markdown',
-    hiveCurrency: Date.now() + 3000,
+    timeOfPostCreation: Date.now() + 3000,
   };
 
   metaData = {
