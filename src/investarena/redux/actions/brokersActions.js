@@ -9,6 +9,7 @@ import { toggleModal } from './modalsActions';
 import { getIsBeaxyUser } from '../../../client/user/usersHelper';
 import { logoutWithoutBroker } from '../../../client/auth/authActions';
 import { getPlatformNameState } from '../selectors/platformSelectors';
+import { notify } from '../../../client/app/Notification/notificationActions';
 
 export const AUTHORIZE_BROKER_REQUEST = 'AUTHORIZE_BROKER_REQUEST';
 export const AUTHORIZE_BROKER_SUCCESS = 'AUTHORIZE_BROKER_SUCCESS';
@@ -152,7 +153,7 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
     dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
     if (singleton.platform && singleton.platform.platformName)
-      message.success('Beaxy connection disabled successfully');
+      dispatch(notify('Beaxy connection disabled successfully', 'success'));
     singleton.closeWebSocketConnection();
     singleton.platform = 'widgets';
     singleton.createWebSocketConnection();
