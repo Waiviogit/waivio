@@ -23,6 +23,7 @@ import objectTypeReducer, * as fromObjectType from '../client/objectTypes/object
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
+import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 
 export default history =>
   combineReducers({
@@ -48,6 +49,7 @@ export default history =>
     append: appendReducer,
     gallery: galleryReducer,
     map: mapReducer,
+    rewards: rewardsReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -230,6 +232,10 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+
+export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
+export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
 
 // common selectors
 

@@ -5,12 +5,15 @@ import _ from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsors }) => (
+const PaymentTable = ({ intl, sponsors, isReports }) => (
   <table className="PaymentTable">
     <thead>
       <tr>
         <th className="PaymentTable basicWidth" rowSpan="2">
-          {intl.formatMessage({ id: 'paymentTable_data', defaultMessage: `Date` })}
+          {intl.formatMessage({
+            id: `${isReports ? 'paymentTable_data_time' : 'paymentTable_data'}`,
+            defaultMessage: `${isReports ? 'Date & Time (GMT)' : 'Date'}`,
+          })}
         </th>
         <th className="PaymentTable maxWidth">
           {intl.formatMessage({ id: 'paymentTable_action', defaultMessage: `Action` })}
@@ -19,10 +22,16 @@ const PaymentTable = ({ intl, sponsors }) => (
           {intl.formatMessage({ id: 'paymentTable_details', defaultMessage: `Details` })}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({ id: 'paymentTable_amount', defaultMessage: `Amount HIVE` })}
+          {intl.formatMessage({
+            id: `${isReports ? 'paymentTable_amount_USD' : 'paymentTable_amount'}`,
+            defaultMessage: `${isReports ? 'Amount USD' : 'Amount HIVE'}`,
+          })}
         </th>
         <th className="PaymentTable basicWidth">
-          {intl.formatMessage({ id: 'paymentTable_balance', defaultMessage: `Balance HIVE` })}
+          {intl.formatMessage({
+            id: `${isReports ? 'paymentTable_balance_USD' : 'paymentTable_balance'}`,
+            defaultMessage: `${isReports ? 'Balance USD' : 'Balance HIVE'}`,
+          })}
         </th>
       </tr>
     </thead>
@@ -38,6 +47,11 @@ const PaymentTable = ({ intl, sponsors }) => (
 PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  isReports: PropTypes.bool,
+};
+
+PaymentTable.defaultProps = {
+  isReports: false,
 };
 
 export default injectIntl(PaymentTable);

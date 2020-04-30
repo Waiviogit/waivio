@@ -2,12 +2,29 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
-import { BENEFICIARY_PERCENT } from '../../helpers/constants';
+import { connect } from 'react-redux';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
+import { getAutoCompleteSearchResults } from '../../reducers';
+import {
+  resetSearchAutoCompete,
+  searchAutoComplete,
+  searchUsersAutoCompete,
+} from '../../search/searchActions';
+import BeneficiariesWeights from './BeneficiariesWeights';
 import './AdvanceSettings.less';
 
 @injectIntl
+@connect(
+  state => ({
+    autoCompleteSearchResults: getAutoCompleteSearchResults(state),
+  }),
+  {
+    searchAutoComplete,
+    searchUsersAutoCompete,
+    resetSearchAutoCompete,
+  },
+)
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -47,7 +64,7 @@ class AdvanceSettings extends Component {
       isUpdating,
       linkedObjects,
       objPercentage,
-      settings: { reward, beneficiary, upvote },
+      settings: { reward, upvote },
       isGuest,
     } = this.props;
     return (
@@ -87,23 +104,6 @@ class AdvanceSettings extends Component {
               </Select>
             </div>
           </div>
-          {!isUpdating && (
-            <div className="beneficiary-settings">
-              <Checkbox
-                checked={beneficiary}
-                onChange={this.handleBeneficiaryChange}
-                disabled={isUpdating}
-              >
-                {intl.formatMessage(
-                  {
-                    id: 'add_waivio_beneficiary',
-                    defaultMessage: 'Share {share}% of this post rewards with Waivio',
-                  },
-                  { share: BENEFICIARY_PERCENT / 100 },
-                )}
-              </Checkbox>
-            </div>
-          )}
           <div className="upvote-settings">
             <Checkbox
               checked={!isGuest ? upvote : false}
@@ -113,6 +113,11 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
+          {!isUpdating && (
+            <div className="beneficiary-settings">
+              <BeneficiariesWeights intl={intl} />
+            </div>
+          )}
           <ObjectWeights
             intl={intl}
             linkedObjects={linkedObjects}
