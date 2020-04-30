@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
 import WrappedNormalLoginForm from './ReportsForm';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import PaymentTable from '../Payment/PaymentTable/PaymentTable';
@@ -11,7 +12,7 @@ const Reports = ({ intl, userName }) => {
 
   const requestParams = {
     sponsor: userName,
-    user: userName,
+    globalReport: true,
   };
 
   const getHistories = params => {
@@ -39,7 +40,7 @@ const Reports = ({ intl, userName }) => {
           </div>
         </div>
         <WrappedNormalLoginForm intl={intl} userName={userName} getHistories={getHistories} />
-        <PaymentTable sponsors={sponsors} isReports userName={userName} />
+        {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isReports userName={userName} />}
       </React.Fragment>
     </div>
   );
