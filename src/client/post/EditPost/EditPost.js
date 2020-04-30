@@ -84,7 +84,7 @@ class EditPost extends Component {
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     isGuest: PropTypes.bool,
-    beneficiariesAll: PropTypes.shape(),
+    beneficiariesAll: PropTypes.arrayOf(PropTypes.shape()),
   };
   static defaultProps = {
     upvoteSetting: false,

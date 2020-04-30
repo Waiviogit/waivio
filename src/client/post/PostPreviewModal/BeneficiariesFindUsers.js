@@ -75,13 +75,8 @@ class BeneficiariesFindUsers extends React.Component {
   }
 
   handleOnChange(value) {
-    if (!value) {
-      this.setState({
-        searchString: '',
-      });
-    }
     this.setState({
-      searchString: value,
+      searchString: value || '',
     });
   }
 

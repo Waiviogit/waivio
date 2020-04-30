@@ -11,6 +11,8 @@ import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
+  const getConvertDidits = obj =>
+    obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const toggleModalReport = () => {
     // const requestParams = {
     //   guideName: sponsor.sponsor,
@@ -140,14 +142,7 @@ const PaymentTableRow = ({ intl, sponsor }) => {
           sponsor={sponsor}
         />
       </td>
-      <td>
-        {/* eslint-disable-next-line no-nested-ternary */
-        sponsor.amount
-          ? sponsor.type === 'transfer'
-            ? `-${convertDigits(sponsor.amount)}`
-            : convertDigits(sponsor.amount)
-          : 0}
-      </td>
+      <td>{sponsor.amount ? getConvertDidits(sponsor) : 0}</td>
       <td className="PaymentTable__balance-column">
         {convertDigits(sponsor.balance) ? convertDigits(sponsor.balance) : 0}
       </td>
