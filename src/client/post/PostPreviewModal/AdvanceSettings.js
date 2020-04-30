@@ -117,21 +117,6 @@ class AdvanceSettings extends Component {
             <div className="beneficiary-settings">
               <BeneficiariesWeights intl={intl} />
             </div>
-            // <div className="beneficiary-settings">
-            // <Checkbox
-            // checked={beneficiary}
-            // onChange={this.handleBeneficiaryChange}
-            // disabled={isUpdating}
-            // >
-            // {intl.formatMessage(
-            //   {
-            //     id: 'add_waivio_beneficiary',
-            //     defaultMessage: 'Share {share}% of this post rewards with Waivio',
-            //   },
-            //   { share: BENEFICIARY_PERCENT / 100 },
-            // )}
-            // </Checkbox>
-            // </div>
           )}
           <ObjectWeights
             intl={intl}
