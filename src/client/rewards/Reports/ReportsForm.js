@@ -32,82 +32,14 @@ class ReportsForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const dataF = {
-      histories: [
-        {
-          _id: '5ea026f98967b70fcfd70612',
-          is_demo_account: false,
-          recounted: false,
-          memo: '',
-          userName: 'w7ngc',
-          sponsor: 'asd09',
-          type: 'review',
-          app: 'waiviodev/1.0.0',
-          details: {
-            beneficiaries: [
-              { account: 'linakay', weight: 200 },
-              { account: 'w7ngc', weight: 9500 },
-              { account: 'waivio', weight: 300 },
-            ],
-            review_permlink: 'review-test8-test6',
-            review_object: {
-              author_permlink: 'test6',
-              object_type: 'hashtag',
-              fields: [
-                {
-                  weight: 1,
-                  locale: 'en-US',
-                  _id: '5d3c6484fa84536e4ebf0b88',
-                  creator: 'monterey',
-                  author: 'asd09',
-                  permlink: 'monterey-6l9pk953od',
-                  name: 'name',
-                  body: 'test6',
-                  active_votes: [],
-                },
-              ],
-            },
-            reservation_permlink: 'reserve-tkre1te7z5j',
-            main_object: {
-              author_permlink: 'test8',
-              object_type: 'hashtag',
-              fields: [
-                {
-                  weight: 1,
-                  locale: 'en-US',
-                  _id: '5d3c6491fa84536e4ebf0ba0',
-                  creator: 'monterey',
-                  author: 'xcv47',
-                  permlink: 'monterey-sd0yq3n74p',
-                  name: 'name',
-                  body: 'test8',
-                  active_votes: [],
-                },
-              ],
-            },
-            payableInDollars: 0.4074,
-          },
-          amount: 0.4074,
-          createdAt: '2020-04-22T11:14:01.360Z',
-          updatedAt: '2020-04-22T11:20:21.003Z',
-          __v: 0,
-          currentUser: 'olegvladim',
-          balance: 3.0444,
-        },
-      ],
-      payable: 3.044,
-      amount: 1.03,
-      hasMore: true,
-    };
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.setDataForGlobalReport(dataF);
+        this.props.setDataForGlobalReport(values);
         this.prepareSubmitData(values, this.props.userName);
         this.props
           .getHistories(this.prepareSubmitData(values, this.props.userName))
           .then(data => setDataForGlobalReport(data))
-          // .then(this.handleReset())
           .catch(error => console.log(error));
         console.log('Received values of form: ', values);
       }
@@ -171,21 +103,21 @@ class ReportsForm extends Component {
   prepareSubmitData = (data, userName) => {
     const objects = get(data, ['objects']);
     const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
-    const startDate = data.from ? moment(data.from.format('x')) : '';
-    const endDate = data.till ? moment(data.till.format('x')) : '';
+    const startDate = data.from ? moment(data.from.format('X')) : '';
+    const endDate = data.till ? moment(data.till.format('X')) : '';
 
     const preparedObject = {
-      sponsor: get(data, ['sponsor', 'account']) || '',
+      sponsor: get(data, ['sponsor', 'account']),
       userName: userName || '',
+      globalReport: true,
       filters: {
-        payable: get(data, ['amount']) || '',
-        globalReport: true,
+        payable: get(data, ['amount']),
         // eslint-disable-next-line no-underscore-dangle
-        endDate: endDate._i || '',
+        endDate: endDate._i,
         // eslint-disable-next-line no-underscore-dangle
-        startDate: startDate._i || '',
-        objects: objectsNames || [],
-        currency: get(data, ['currency']) || '',
+        startDate: startDate._i,
+        objects: objectsNames,
+        currency: get(data, ['currency']).toLowerCase(),
         processingFees: get(data, ['fees']) || false,
       },
     };
@@ -193,11 +125,13 @@ class ReportsForm extends Component {
     this.setState({ dateFrom: get(preparedObject, ['filter', 'startDate']) });
     this.setState({ dateTill: get(preparedObject, ['filter', 'endDate']) });
 
+    console.log('preparedObject', preparedObject);
+
     return preparedObject;
   };
 
   handleReset = () => {
-    this.props.form.resetFields();
+    // this.props.form.resetFields();
     this.removeSponsor();
     this.handleSetState({ objects: {} }, { objects: {} });
   };
@@ -445,7 +379,7 @@ class ReportsForm extends Component {
             {form.getFieldDecorator('objects', {
               rules: [
                 {
-                  required: true,
+                  required: false,
                   message: `${intl.formatMessage({
                     id: 'choose_object',
                     defaultMessage: 'Please choose object',
@@ -473,7 +407,7 @@ class ReportsForm extends Component {
               type="primary"
               htmlType="submit"
               className="submitBtn"
-              onClick={this.handleReset}
+              // onClick={this.handleReset}
               loading={loading}
             >
               {intl.formatMessage({
