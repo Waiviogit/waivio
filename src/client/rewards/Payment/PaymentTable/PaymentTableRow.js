@@ -2,26 +2,34 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 import { map } from 'lodash';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
-// import { getReport } from '../../../../waivioApi/ApiClient';
+import { getReport } from '../../../../waivioApi/ApiClient';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
+import { setDataForSingleReport } from '../../rewardsActions';
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const getConvertDidits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
+  const dispatch = useDispatch();
   const toggleModalReport = () => {
-    // const requestParams = {
-    //   guideName: sponsor.sponsor,
-    //   userName: sponsor.userName,
-    //   reservationPermlink: sponsor.details.reservation_permlink,
-    // }
-    setModalReportOpen(!isModalReportOpen);
-    // getReport({requestParams});
+    const requestParams = {
+      guideName: sponsor.sponsor,
+      userName: sponsor.userName,
+      reservationPermlink: sponsor.details.reservation_permlink,
+    };
+    getReport(requestParams)
+      .then(data => {
+        dispatch(setDataForSingleReport(data));
+      })
+      .then(() => setModalReportOpen(!isModalReportOpen))
+      .catch(e => console.log(e));
   };
+
   const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
   const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
   return (

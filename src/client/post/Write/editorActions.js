@@ -124,7 +124,7 @@ const broadcastComment = (
   permlink,
   referral,
   authUsername,
-  beneficiariesAll,
+  beneficiaries,
 ) => {
   const operations = [];
   const commentOp = [
@@ -160,18 +160,10 @@ const broadcastComment = (
   }
 
   if (referral && referral !== authUsername) {
-    beneficiariesAll.push({ account: referral, weight: REFERRAL_PERCENT });
+    beneficiaries.push({ account: referral, weight: REFERRAL_PERCENT });
   }
 
-  const beneficiaries = [
-    ...beneficiariesAll,
-    {
-      account: authUsername,
-      weight: beneficiariesAll.reduce((res, curr) => res - curr.weight, 10000),
-    },
-  ];
-
-  if (beneficiariesAll.length !== 0) {
+  if (beneficiaries.length !== 0) {
     commentOptionsConfig.extensions.push([0, { beneficiaries }]);
   }
 
@@ -192,7 +184,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
-export function createPost(postData, beneficiariesAll) {
+export function createPost(postData, beneficiaries) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -250,7 +242,7 @@ export function createPost(postData, beneficiariesAll) {
             permlink,
             referral,
             authUser.name,
-            beneficiariesAll,
+            beneficiaries,
           )
             .then(result => {
               if (draftId) {

@@ -13,7 +13,6 @@ const ReceivablesContainer = ({ userName, currentSteemPrice, filterData, locatio
   const [sponsors, setSponsors] = useState({});
   useEffect(() => {
     getLenders({
-      sponsor: '',
       user: userName,
       filters: payableFilters,
     })
