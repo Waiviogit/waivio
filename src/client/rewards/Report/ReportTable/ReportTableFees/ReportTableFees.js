@@ -22,8 +22,10 @@ const ReportTableFees = ({ intl }) => {
   );
 
   const shareAmount = map(fees, fee => fee.share).reduce((sum, share) => sum + share, 0);
-  const hiveAmount = map(fees, fee => fee.hive).reduce((sum, hive) => sum + hive, 0);
-  const usdAmount = map(fees, fee => fee.usd).reduce((sum, usd) => sum + usd, 0);
+  const hiveAmount = Number(
+    map(fees, fee => fee.hive).reduce((sum, hive) => sum + hive, 0),
+  ).toFixed(3);
+  const usdAmount = Number(map(fees, fee => fee.usd).reduce((sum, usd) => sum + usd, 0)).toFixed(3);
 
   return (
     <React.Fragment>

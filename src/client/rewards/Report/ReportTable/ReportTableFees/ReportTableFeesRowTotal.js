@@ -20,10 +20,10 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
       <div className="ReportTableFeesRow__amount">{`${shareAmount / 100}%`}</div>
     </td>
     <td>
-      <div className="ReportTableFeesRow__amount">{hiveAmount.toFixed(3)}</div>
+      <div className="ReportTableFeesRow__amount">{hiveAmount}</div>
     </td>
     <td>
-      <div className="ReportTableFeesRow__amount">{`$ ${usdAmount.toFixed(3)}`}</div>
+      <div className="ReportTableFeesRow__amount">{`$ ${usdAmount}`}</div>
     </td>
   </tr>
 );
@@ -31,8 +31,8 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
 ReportTableFeesRowTotal.propTypes = {
   intl: PropTypes.shape().isRequired,
   shareAmount: PropTypes.number.isRequired,
-  hiveAmount: PropTypes.number.isRequired,
-  usdAmount: PropTypes.number.isRequired,
+  hiveAmount: PropTypes.string.isRequired,
+  usdAmount: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ReportTableFeesRowTotal);
