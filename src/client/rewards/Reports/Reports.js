@@ -40,7 +40,16 @@ const Reports = ({ intl, userName }) => {
           </div>
         </div>
         <WrappedNormalLoginForm intl={intl} userName={userName} getHistories={getHistories} />
-        {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isReports userName={userName} />}
+        {!isEmpty(sponsors) ? (
+          <PaymentTable sponsors={sponsors} isReports userName={userName} />
+        ) : (
+          <div>
+            {intl.formatMessage({
+              id: 'list_empty',
+              defaultMessage: `There are no data`,
+            })}
+          </div>
+        )}
       </React.Fragment>
     </div>
   );
