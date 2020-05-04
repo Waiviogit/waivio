@@ -149,10 +149,9 @@ export const addActiveVotesInField = (wobj, field, category = '') => {
 
   if (category) {
     matchField = fieldsArray.find(
-      wobjField => wobjField.body === field.name && wobjField.tagCategory === category,
+      wobjField => wobjField.body === field.name && wobjField.id === category,
     );
   }
-
   const activeVotes = matchField ? matchField.active_votes : [];
 
   return {

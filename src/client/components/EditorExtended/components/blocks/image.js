@@ -39,17 +39,12 @@ class ImageBlock extends React.Component {
     const src = data.get('src');
     if (src !== null) {
       return (
-        <div>
-          <div
-            role="presentation"
-            className="md-block-image-inner-container"
-            onClick={this.focusBlock}
-          >
-            <img alt={data.get('alt') || ''} src={src} />
-          </div>
-          <figcaption>
-            <EditorBlock {...this.props} />
-          </figcaption>
+        <div
+          role="presentation"
+          className="md-block-image-inner-container"
+          onClick={this.focusBlock}
+        >
+          <img alt={data.get('alt') || ''} src={src} />
         </div>
       );
     }
