@@ -13,9 +13,10 @@ const propTypes = {
   history: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
-const ObjectFeedContainer = ({ history, match, wobject }) => {
+const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
   const usedLocale = useSelector(getSuitableLanguage);
@@ -45,7 +46,12 @@ const ObjectFeedContainer = ({ history, match, wobject }) => {
           />
         </div>
       )}
-      <ObjectFeed match={match} handleCreatePost={handleCreatePost} />
+      <ObjectFeed
+        match={match}
+        userName={userName}
+        history={history}
+        handleCreatePost={handleCreatePost}
+      />
     </React.Fragment>
   );
 };
