@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
-import { encodeOp } from 'steem-uri';
-import { updateProfile } from '../auth/authActions';
+import SteemConnectAPI from '../steemConnectAPI';
+import { updateProfile, reload } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import postingMetadataHelper from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
@@ -63,6 +63,7 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    reload,
   },
 )
 @Form.create({
@@ -80,6 +81,8 @@ export default class ProfileSettings extends React.Component {
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
+    reload: PropTypes.func,
+    reloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -90,6 +93,8 @@ export default class ProfileSettings extends React.Component {
     history: {},
     isGuest: false,
     updateProfile: () => {},
+    reload: () => {},
+    reloading: false,
   };
 
   constructor(props) {
@@ -124,7 +129,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
+    const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -159,32 +164,33 @@ export default class ProfileSettings extends React.Component {
                   }),
                 );
 
-                this.props.history.push(`/@${this.props.user.name}`);
+                this.props.history.push(`/@${user.name}`);
               }
             })
             .catch(e => message.error(e.message));
         } else {
-          const profileDateEncoded = encodeOp(
-            [
-              ACCOUNT_UPDATE,
-              {
-                account: userName,
-                extensions: [],
-                memo_key: user.memo_key,
-                json_metadata: '',
-                posting_json_metadata: JSON.stringify({
-                  profile: { ...profileData, ...cleanValues },
+          const profileDateEncoded = [
+            ACCOUNT_UPDATE,
+            {
+              account: userName,
+              extensions: [],
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify({
+                profile: { ...profileData, ...cleanValues },
+              }),
+            },
+          ];
+          SteemConnectAPI.broadcast([profileDateEncoded])
+            .then(() => {
+              reload();
+              message.success(
+                intl.formatMessage({
+                  id: 'profile_updated',
+                  defaultMessage: 'Profile updated',
                 }),
-              },
-            ],
-            { callback: window.location.href },
-          );
-          const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
-            '_blank',
-          );
-
-          win.focus();
+              );
+            })
+            .catch(e => message.error(e.message));
         }
       }
     });
@@ -257,7 +263,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   render() {
-    const { intl, form } = this.props;
+    const { intl, form, reloading } = this.props;
     const {
       bodyHTML,
       isModal,
@@ -492,6 +498,7 @@ export default class ProfileSettings extends React.Component {
                   big
                   type="submit"
                   disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  loading={reloading}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>

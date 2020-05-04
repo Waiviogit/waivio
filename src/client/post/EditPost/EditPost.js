@@ -62,7 +62,7 @@ const getLinkedObjects = contentStateRaw => {
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
-    beneficiariesAll: getBeneficiariesUsers(state),
+    beneficiaries: getBeneficiariesUsers(state),
   }),
   {
     createPost,
@@ -84,7 +84,7 @@ class EditPost extends Component {
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     isGuest: PropTypes.bool,
-    beneficiariesAll: PropTypes.arrayOf(PropTypes.shape()),
+    beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -96,7 +96,7 @@ class EditPost extends Component {
     createPost: () => {},
     saveDraft: () => {},
     isGuest: false,
-    beneficiariesAll: [],
+    beneficiaries: [],
   };
 
   constructor(props) {
@@ -167,7 +167,7 @@ class EditPost extends Component {
 
   handleSubmit() {
     const postData = this.buildPost();
-    this.props.createPost(postData, this.props.beneficiariesAll);
+    this.props.createPost(postData, this.props.beneficiaries);
   }
 
   handleToggleLinkedObject(objId, isLinked) {
