@@ -30,6 +30,7 @@ class ReportsForm extends Component {
     dateTill: '',
     updated: false,
     preparedObject: {},
+    objectsNamesAndPermlinks: [],
   };
 
   handleSubmit = e => {
@@ -38,16 +39,14 @@ class ReportsForm extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err && values) {
         this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
-        const dateFrom = values.from ? moment(values.from.format('MMMM Do YYYY')) : '';
-        const dateTill = values.till ? moment(values.from.format('MMMM Do YYYY')) : '';
-        const sponsor = values.sponsor ? values.sponsor.account : '';
+        const dateFrom = values.from ? moment(values.from.format('MMMM Do, YYYY')) : '';
+        const dateTill = values.till ? moment(values.from.format('MMMM Do, YYYY')) : '';
         this.setState({
           updated: true,
           // eslint-disable-next-line no-underscore-dangle
           dateFrom: dateFrom._i,
           // eslint-disable-next-line no-underscore-dangle
           dateTill: dateTill._i,
-          sponsor,
         });
         console.log('Received values of form: ', values);
       }
@@ -63,6 +62,7 @@ class ReportsForm extends Component {
 
   setSponsor = obj => {
     this.handleSetState({ sponsor: obj }, { sponsor: obj });
+    this.setState({ sponsor: obj });
   };
 
   removeSponsor = () => {
@@ -115,6 +115,13 @@ class ReportsForm extends Component {
     const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
     const startDate = data.from ? moment(data.from.format('X')) : '';
     const endDate = data.till ? moment(data.till.format('X')) : '';
+    const objectsNamesAndPermlinks =
+      objects && objects.length
+        ? map(objects, obj => ({
+            name: getFieldWithMaxWeight(obj, 'name'),
+            permlink: obj.author_permlink,
+          }))
+        : [];
 
     const preparedObject = {
       sponsor: get(data, ['sponsor', 'account']),
@@ -131,10 +138,7 @@ class ReportsForm extends Component {
         processingFees: get(data, ['fees']) || false,
       },
     };
-
-    this.setState({ dateFrom: get(preparedObject, ['filter', 'startDate']) });
-    this.setState({ dateTill: get(preparedObject, ['filter', 'endDate']) });
-    this.setState({ preparedObject });
+    this.setState({ preparedObject, objectsNamesAndPermlinks });
 
     return preparedObject;
   };
@@ -152,12 +156,12 @@ class ReportsForm extends Component {
       openTill,
       currency,
       sponsor,
-      object,
       objects,
       loading,
       dateFrom,
       dateTill,
       preparedObject,
+      objectsNamesAndPermlinks,
     } = this.state;
     const format = 'HH:mm:ss';
     const { Option } = Select;
@@ -185,8 +189,6 @@ class ReportsForm extends Component {
           />
         ))
       : null;
-
-    const objectName = getFieldWithMaxWeight(object, 'name');
 
     return (
       <div className="CreateReportForm">
@@ -450,7 +452,14 @@ class ReportsForm extends Component {
                 id: 'with_links_to_object',
                 defaultMessage: 'With links to an object:',
               })}
-              : {objectName}
+              :{' '}
+              {objectsNamesAndPermlinks
+                ? map(objectsNamesAndPermlinks, obj => (
+                    <Link
+                      to={`/object/${obj.permlink}`}
+                    >{`${obj.name}: (http://www.waivio.com/object/${obj.permlink}) `}</Link>
+                  ))
+                : null}
             </div>
             <div>
               {intl.formatMessage({

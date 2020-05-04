@@ -21,7 +21,9 @@ const ReportTableFees = ({ intl }) => {
     [],
   );
 
-  const shareAmount = map(fees, fee => fee.share).reduce((sum, share) => sum + share, 0);
+  const shareAmount = Number(
+    map(fees, fee => fee.share).reduce((sum, share) => sum + share, 0),
+  ).toFixed(3);
   const hiveAmount = Number(
     map(fees, fee => fee.hive).reduce((sum, hive) => sum + hive, 0),
   ).toFixed(3);
