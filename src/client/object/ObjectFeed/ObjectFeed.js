@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, uniq } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -87,7 +87,7 @@ export default class ObjectFeed extends React.Component {
   render() {
     const { feed, limit, handleCreatePost } = this.props;
     const wObjectName = this.props.match.params.name;
-    const content = getFeedFromState('objectPosts', wObjectName, feed);
+    const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wObjectName, feed);
     const loadMoreContentAction = () => {

@@ -184,7 +184,7 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (payload.name === 'categoryItem') {
         const parentCategoryIndex = state.wobject.tagCategories.findIndex(
-          field => field.body === payload.tagCategory,
+          field => field.id === payload.id,
         );
         const parentCategory = state.wobject.tagCategories[parentCategoryIndex];
         const newTag = {
@@ -307,9 +307,7 @@ export default function wobjectReducer(state = initialState, action) {
       });
 
       if (matchPost.name === 'categoryItem') {
-        const categoryIndex = state.wobject.tagCategories.findIndex(
-          cat => cat.body === matchPost.tagCategory,
-        );
+        const categoryIndex = state.wobject.tagCategories.findIndex(cat => cat.id === matchPost.id);
         const tagIndex = state.wobject.tagCategories[categoryIndex].categoryItems.findIndex(
           item => item.name === matchPost.body,
         );

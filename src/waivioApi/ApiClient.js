@@ -123,7 +123,10 @@ export const getMoreFeedContentByObject = ({
 export const getFeedContent = (sortBy, queryData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
-      headers,
+      headers: {
+        ...headers,
+        app: config.appName,
+      },
       method: 'POST',
       body: JSON.stringify(queryData),
     })
@@ -518,10 +521,11 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {}) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  const actualHeaders = user ? { ...headers, following: user, follower: user } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.users}${queryString}`, {
-      headers,
+      headers: actualHeaders,
       method: 'GET',
     })
       .then(res => res.json())

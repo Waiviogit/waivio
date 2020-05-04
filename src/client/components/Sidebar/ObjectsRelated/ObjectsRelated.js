@@ -46,7 +46,6 @@ const ObjectsRelated = ({ wobject, intl }) => {
 
   useEffect(() => {
     getInitialWobjects();
-    return () => setObjectsState({ objects: [], loading: true, skip: 0, hasNext: true });
   }, [wobject.author_permlink]);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;

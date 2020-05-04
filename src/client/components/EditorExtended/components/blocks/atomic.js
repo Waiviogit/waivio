@@ -22,12 +22,16 @@ const AtomicBlock = props => {
 
 AtomicBlock.propTypes = {
   block: PropTypes.shape(),
-  getEditorState: PropTypes.func,
+  blockProps: PropTypes.shape({
+    getEditorState: PropTypes.func,
+  }),
 };
 
 AtomicBlock.defaultProps = {
   block: {},
-  getEditorState: () => {},
+  blockProps: {
+    getEditorState: () => {},
+  },
 };
 
 export default AtomicBlock;

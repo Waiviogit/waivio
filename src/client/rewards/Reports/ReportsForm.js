@@ -28,22 +28,30 @@ class ReportsForm extends Component {
     objects: [],
     dateFrom: '',
     dateTill: '',
+    updated: false,
+    preparedObject: {},
+    objectsNamesAndPermlinks: [],
   };
 
   handleSubmit = e => {
     e.preventDefault();
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.props.setDataForGlobalReport(values);
-        this.prepareSubmitData(values, this.props.userName);
-        this.props
-          .getHistories(this.prepareSubmitData(values, this.props.userName))
-          .then(data => setDataForGlobalReport(data))
-          .catch(error => console.log(error));
+      if (!err && values) {
+        this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
+        const dateFrom = values.from ? moment(values.from.format('MMMM Do, YYYY')) : '';
+        const dateTill = values.till ? moment(values.from.format('MMMM Do, YYYY')) : '';
+        this.setState({
+          updated: true,
+          // eslint-disable-next-line no-underscore-dangle
+          dateFrom: dateFrom._i,
+          // eslint-disable-next-line no-underscore-dangle
+          dateTill: dateTill._i,
+        });
         console.log('Received values of form: ', values);
       }
     });
+    this.handleReset();
     this.setState({ loading: false });
   };
 
@@ -54,10 +62,12 @@ class ReportsForm extends Component {
 
   setSponsor = obj => {
     this.handleSetState({ sponsor: obj }, { sponsor: obj });
+    this.setState({ sponsor: obj });
   };
 
   removeSponsor = () => {
     this.handleSetState({ sponsor: {} }, { sponsor: {} });
+    this.setState({ sponsor: {} });
   };
 
   setDateFrom = from => {
@@ -105,6 +115,13 @@ class ReportsForm extends Component {
     const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
     const startDate = data.from ? moment(data.from.format('X')) : '';
     const endDate = data.till ? moment(data.till.format('X')) : '';
+    const objectsNamesAndPermlinks =
+      objects && objects.length
+        ? map(objects, obj => ({
+            name: getFieldWithMaxWeight(obj, 'name'),
+            permlink: obj.author_permlink,
+          }))
+        : [];
 
     const preparedObject = {
       sponsor: get(data, ['sponsor', 'account']),
@@ -121,17 +138,13 @@ class ReportsForm extends Component {
         processingFees: get(data, ['fees']) || false,
       },
     };
-
-    this.setState({ dateFrom: get(preparedObject, ['filter', 'startDate']) });
-    this.setState({ dateTill: get(preparedObject, ['filter', 'endDate']) });
-
-    console.log('preparedObject', preparedObject);
+    this.setState({ preparedObject, objectsNamesAndPermlinks });
 
     return preparedObject;
   };
 
   handleReset = () => {
-    // this.props.form.resetFields();
+    this.props.form.resetFields();
     this.removeSponsor();
     this.handleSetState({ objects: {} }, { objects: {} });
   };
@@ -143,16 +156,15 @@ class ReportsForm extends Component {
       openTill,
       currency,
       sponsor,
-      object,
       objects,
       loading,
       dateFrom,
       dateTill,
+      preparedObject,
+      objectsNamesAndPermlinks,
     } = this.state;
     const format = 'HH:mm:ss';
     const { Option } = Select;
-    const from = dateFrom ? moment(dateFrom).format('MMMM Do YYYY') : '';
-    const till = dateTill ? moment(dateTill).format('MMMM Do YYYY') : '';
 
     const renderSponsor =
       !isEmpty(sponsor) && sponsor.account ? (
@@ -177,8 +189,6 @@ class ReportsForm extends Component {
           />
         ))
       : null;
-
-    const objectName = getFieldWithMaxWeight(object, 'name');
 
     return (
       <div className="CreateReportForm">
@@ -403,13 +413,7 @@ class ReportsForm extends Component {
             <div className="CreateReward__objects-wrap">{renderObjects}</div>
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="submitBtn"
-              // onClick={this.handleReset}
-              loading={loading}
-            >
+            <Button type="primary" htmlType="submit" className="submitBtn" loading={loading}>
               {intl.formatMessage({
                 id: 'submit',
                 defaultMessage: 'submit',
@@ -417,44 +421,55 @@ class ReportsForm extends Component {
             </Button>
           </Form.Item>
         </Form>
-        <div className="CreateReportForm__tableHeader">
-          <div>
-            {intl.formatMessage({
-              id: 'reviews_sponsor',
-              defaultMessage: `Reviews sponsored by`,
-            })}{' '}
-            <Link to={`/@${userName}`}>{`@${userName}`}</Link>
-          </div>
-          <div className="CreateReportForm__tableHeader-date">
-            <div className="CreateReportForm__tableHeader-date-from">
+        {this.state.updated && (
+          <div className="CreateReportForm__tableHeader">
+            <div>
               {intl.formatMessage({
-                id: 'from',
-                defaultMessage: `From`,
-              })}
-              : {from}
-            </div>
-            <div className="CreateReportForm__tableHeader-date-till">
-              {intl.formatMessage({
-                id: 'till',
-                defaultMessage: `Till`,
+                id: 'reviews_sponsor',
+                defaultMessage: `Reviews sponsored by`,
               })}{' '}
-              {till}
+              <Link to={`/@${preparedObject.sponsor || userName}`}>{`@${preparedObject.sponsor ||
+                userName}`}</Link>
+            </div>
+            <div className="CreateReportForm__tableHeader-date">
+              <div className="CreateReportForm__tableHeader-date-from">
+                {intl.formatMessage({
+                  id: 'from',
+                  defaultMessage: `From`,
+                })}
+                : {dateFrom}
+              </div>
+              <div className="CreateReportForm__tableHeader-date-till">
+                {intl.formatMessage({
+                  id: 'till',
+                  defaultMessage: `Till`,
+                })}{' '}
+                {dateTill}
+              </div>
+            </div>
+            <div>
+              {intl.formatMessage({
+                id: 'with_links_to_object',
+                defaultMessage: 'With links to an object:',
+              })}
+              :{' '}
+              {objectsNamesAndPermlinks
+                ? map(objectsNamesAndPermlinks, obj => (
+                    <Link
+                      to={`/object/${obj.permlink}`}
+                    >{`${obj.name}: (http://www.waivio.com/object/${obj.permlink}) `}</Link>
+                  ))
+                : null}
+            </div>
+            <div>
+              {intl.formatMessage({
+                id: 'total_amount',
+                defaultMessage: 'Total amount:',
+              })}{' '}
+              {preparedObject.filters.payable}
             </div>
           </div>
-          <div>
-            {intl.formatMessage({
-              id: 'with_links_to_object',
-              defaultMessage: 'With links to an object:',
-            })}
-            : {objectName}
-          </div>
-          <div>
-            {intl.formatMessage({
-              id: 'total_amount',
-              defaultMessage: 'Total amount:',
-            })}{' '}
-          </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -466,7 +481,6 @@ ReportsForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
-  setDataForGlobalReport: PropTypes.func,
   getHistories: PropTypes.func,
 };
 

@@ -273,13 +273,18 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
 
 export const mapObjectAppends = (comments = {}, wObj = {}, albums = []) => {
   const galleryImages = [];
-  albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
+
+  if (albums) albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
+
   const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
-  return [...wObj.fields, ...galleryImages, ...albums].map(field => {
+  const fields = wObj && wObj.fields ? wObj.fields : [];
+
+  return [...fields, ...galleryImages, ...albums].map(field => {
     const matchComment = filteredComments.find(
       comment => comment.permlink === field.permlink && comment.author === field.author,
     );
     const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
+
     return {
       ...matchComment,
       active_votes: field.active_votes,

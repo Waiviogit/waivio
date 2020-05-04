@@ -64,7 +64,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
         <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
         {!isEmpty(objectDetails.match_bots) &&
           objectDetails.match_bots.map(bot => (
-            <React.Fragment>
+            <React.Fragment key={bot}>
               ,
               <Link className="ml1" to={`/@${bot}`}>
                 {`@${bot}`}
@@ -82,7 +82,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
         {!isEmpty(objectDetails.agreementObjects) && ` ${messageData.includingTheFollowing}`}
         {!isEmpty(objectDetails.agreementObjects) &&
           objectDetails.agreementObjects.map(obj => (
-            <Link className="ml1" to={`/object/${obj}/page`}>
+            <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
               {obj}
             </Link>
           ))}

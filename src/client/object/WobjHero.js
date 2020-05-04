@@ -10,9 +10,9 @@ import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 @withRouter
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
-    match: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
+    match: PropTypes.shape(),
+    location: PropTypes.shape(),
+    history: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     albumsAndImagesCount: PropTypes.number,
@@ -20,6 +20,9 @@ class WobjMenuWrapper extends React.Component {
 
   static defaultProps = {
     albumsAndImagesCount: 0,
+    match: {},
+    location: {},
+    history: {},
   };
 
   onChange = key => {
