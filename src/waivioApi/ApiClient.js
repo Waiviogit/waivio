@@ -2,9 +2,10 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
+import { isEmpty } from 'lodash';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
-import { ACCOUNT_UPDATE } from '../common/constants/accountHistory';
+import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { message } from 'antd';
 
 let headers = {
@@ -735,19 +736,49 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getLenders = ({ sponsor, user, filters }) => {
-  const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
-  const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
-  const days = filters && filters.days ? `&days=${filters.days}` : '';
-  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
+export const getLenders = ({ sponsor, user, globalReport, filters }) => {
+  const getBody = obj => {
+    if (!isEmpty(obj)) {
+      return {
+        sponsor: sponsor,
+        globalReport: globalReport,
+        objects: obj.objects,
+        endDate: obj.endDate,
+        startDate: obj.startDate,
+        currency: obj.currency,
+        processingFees: obj.processingFees,
+      };
+    }
+    return {
+      userName: user,
+      sponsor: sponsor,
+      globalReport: globalReport,
+    };
+  };
+
   return new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(getBody(filters)),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
+
+export const getReport = ({ guideName, userName, reservationPermlink }) => {
+  return new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.report}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideName,
+        userName,
+        reservationPermlink,
+      }),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -938,7 +969,7 @@ export const updateGuestProfile = async (username, json_metadata) => {
     data: {
       operations: [
         [
-          'custom_json',
+          CUSTOM_JSON,
           {
             required_auths: [],
             required_posting_auths: [username],

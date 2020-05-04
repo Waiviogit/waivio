@@ -1,4 +1,4 @@
-import { compact, concat, get, isEmpty, map, sortBy } from 'lodash';
+import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
@@ -13,6 +13,7 @@ const initialState = {
     result: [],
     loading: false,
   },
+  beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
 };
 
 export default (state = initialState, action) => {
@@ -253,6 +254,41 @@ export default (state = initialState, action) => {
       };
     }
 
+    case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
+      const key = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weight: 0 }];
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiariesUsers,
+      };
+    }
+
+    case searchActions.UPDATE_BENEFICIARIES_USERS.ACTION: {
+      const { name, percent } = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers];
+      const benefIndex = findIndex(newBeneficiariesUsers, user => user.account === name);
+      newBeneficiariesUsers[benefIndex].weight = percent * 100;
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiariesUsers,
+      };
+    }
+
+    case searchActions.REMOVE_BENEFICIARIES_USERS.ACTION: {
+      const newBeneficiarieUsers = [...state.beneficiariesUsers];
+      remove(newBeneficiarieUsers, user => user.account === action.payload);
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiarieUsers,
+      };
+    }
+
+    case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
+      return {
+        ...state,
+        beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
+      };
+    }
     default:
       return state;
   }
@@ -265,3 +301,4 @@ export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
+export const getBeneficiariesUsers = state => state.beneficiariesUsers;

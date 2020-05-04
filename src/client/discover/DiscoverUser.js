@@ -8,7 +8,7 @@ import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
 const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => {
-  const parsedJSON = attempt(JSON.parse, user.json_metadata);
+  const parsedJSON = attempt(JSON.parse, user.posting_json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
   const profileName = get(userJSON, ['profile', 'name']);
 

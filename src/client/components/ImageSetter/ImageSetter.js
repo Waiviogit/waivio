@@ -189,7 +189,7 @@ const ImageSetter = ({
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
               </div>
-              <img src={image.src} width="86" height="86" alt={image.src} />
+              <img src={image.src} height="86" alt={image.src} />
             </div>
           ))}
           {isLoadingImage &&
