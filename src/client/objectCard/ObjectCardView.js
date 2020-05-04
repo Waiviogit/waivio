@@ -73,6 +73,7 @@ const ObjectCardView = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
+
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -126,10 +127,12 @@ const ObjectCardView = ({
               </span>
               {wObject.address && (
                 <div className="ObjectCardView__tag-text">
-                  {wObject.address.street ? (
-                    <span>{`${wObject.address.street}, `}</span>
-                  ) : (
-                    <span>{`${wObject.address.address}, `}</span>
+                  {(wObject.address.street || wObject.address.address) && (
+                    <span>
+                      {`${
+                        wObject.address.street ? wObject.address.street : wObject.address.address
+                      }, `}
+                    </span>
                   )}
                   {wObject.address.city && <span>{wObject.address.city}</span>}
                 </div>
