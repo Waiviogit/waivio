@@ -84,9 +84,8 @@ export default class UserProfile extends React.Component {
       this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
 
     return (
-      <div>
+      <div className="profile">
         <Feed
-          className="profile"
           content={content}
           isFetching={isFetching}
           hasMore={hasMore}
