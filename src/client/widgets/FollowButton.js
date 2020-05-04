@@ -36,7 +36,7 @@ import Follow from '../components/Button/Follow';
 class FollowButton extends React.Component {
   static propTypes = {
     secondary: PropTypes.bool,
-    following: PropTypes.string.isRequired,
+    following: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
     followingType: PropTypes.oneOf(['user', 'wobject']),
     authenticatedUserName: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
@@ -47,6 +47,7 @@ class FollowButton extends React.Component {
     unfollowUser: PropTypes.func,
     unfollowObject: PropTypes.func,
     user: PropTypes.shape(),
+    top: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -61,6 +62,7 @@ class FollowButton extends React.Component {
     unfollowUser: () => {},
     unfollowObject: () => {},
     user: {},
+    top: false,
   };
 
   constructor(props) {
@@ -71,7 +73,7 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
-    const { following, followingType, user } = this.props;
+    const { following, followingType, user, top } = this.props;
     const isFollowed = this.props.followingList.includes(following);
 
     switch (followingType) {
@@ -84,9 +86,9 @@ class FollowButton extends React.Component {
         break;
       case 'user':
         if (following) {
-          this.props.unfollowUser(user.name);
+          this.props.unfollowUser(user.name, top);
         } else {
-          this.props.followUser(user.name);
+          this.props.followUser(user.name, top);
         }
         break;
       default:

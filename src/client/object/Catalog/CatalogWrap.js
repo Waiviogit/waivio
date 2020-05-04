@@ -81,13 +81,14 @@ class CatalogWrap extends React.Component {
     wobject: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    username: PropTypes.string.isRequired,
+    username: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
   };
   static defaultProps = {
     wobject: {},
     locale: 'en-US',
+    username: '',
   };
 
   constructor(props) {
@@ -138,7 +139,9 @@ class CatalogWrap extends React.Component {
             res.listItems &&
             res.listItems.map(item => getClientWObj(item, this.props.locale))) ||
           [];
-        listItems = listItems.map(item => addActiveVotesInField(res, item));
+        listItems = listItems
+          .map(item => addActiveVotesInField(res, item))
+          .filter(item => calculateApprovePercent(item.active_votes) >= 70);
 
         this.setState(prevState => {
           let breadcrumb = [];

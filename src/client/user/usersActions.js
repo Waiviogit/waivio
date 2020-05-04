@@ -69,7 +69,11 @@ export const getUserMetadata = () => (dispatch, getState) => {
 
 export const UNFOLLOW_USER = createAsyncActionType('@users/UNFOLLOW_USER');
 
-export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
+export const unfollowUser = (username, top = false) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -83,12 +87,13 @@ export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }
     },
     meta: {
       username,
+      top,
     },
   });
 };
 export const FOLLOW_USER = createAsyncActionType('@user/FOLLOW_USER');
 
-export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
+export const followUser = (username, top = false) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -102,6 +107,7 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
     },
     meta: {
       username,
+      top,
     },
   });
 };

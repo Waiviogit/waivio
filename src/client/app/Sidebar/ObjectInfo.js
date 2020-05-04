@@ -138,7 +138,7 @@ class ObjectInfo extends React.Component {
       return (
         <div>
           {tagArray.map(item => (
-            <Tag color="orange">
+            <Tag key={`${category}/${item.name}`} color="orange">
               <Link to={`/object/${item.name}`}>{item.name}</Link>
             </Tag>
           ))}
@@ -182,7 +182,7 @@ class ObjectInfo extends React.Component {
         <div key={item.id}>
           {`${item.body}:`}
           <br />
-          {this.renderCategoryItems(item.categoryItems, item.body)}
+          {this.renderCategoryItems(item.categoryItems, item.id)}
         </div>
       ));
     }

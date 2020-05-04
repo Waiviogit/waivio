@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import { find, isEqual, throttle, isEmpty } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Form, Input, Select, Button, Checkbox } from 'antd';
 import BTooltip from '../BTooltip';
@@ -24,6 +24,7 @@ import {
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
+
 import './Editor.less';
 
 @injectIntl
@@ -128,8 +129,8 @@ class Editor extends React.Component {
     const { title, topics, waivioData, body, reward, beneficiary, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
-      !_.isEqual(topics, nextProps.topics) ||
-      !_.isEqual(waivioData, nextProps.waivioData) ||
+      !isEqual(topics, nextProps.topics) ||
+      !isEqual(waivioData, nextProps.waivioData) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
       beneficiary !== nextProps.beneficiary ||
@@ -142,13 +143,13 @@ class Editor extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { waivioData } = this.props;
-    if (!_.isEqual(prevProps.waivioData, waivioData)) {
+    if (!isEqual(prevProps.waivioData, waivioData)) {
       this.restoreLinkedObjects(waivioData.wobjects);
     }
   }
 
   onUpdate() {
-    _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
+    throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
 
   setValues(post) {
@@ -188,7 +189,7 @@ class Editor extends React.Component {
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
   restoreLinkedObjects(wobjects) {
-    if (_.isEmpty(wobjects)) {
+    if (isEmpty(wobjects)) {
       this.resetLinkedObjects();
       return;
     }
@@ -198,7 +199,7 @@ class Editor extends React.Component {
       const linkedObjects = wobjects.map(obj =>
         !obj.isNew && res.some(exObj => exObj.id === obj.author_permlink)
           ? {
-              ..._.find(res, currObj => currObj.id === obj.author_permlink),
+              ...find(res, currObj => currObj.id === obj.author_permlink),
               influence: { value: obj.percent, max: obj.percent + influenceRemain },
             }
           : {
@@ -228,8 +229,8 @@ class Editor extends React.Component {
   throttledUpdate() {
     const { linkedObjects } = this.state;
     const { form } = this.props;
-
     const values = form.getFieldsValue();
+
     this.setBodyAndRender(values.body);
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;

@@ -85,17 +85,17 @@ export default class UserProfile extends React.Component {
 
     return (
       <div>
-        <div className="profile">
-          <Feed
-            content={content}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreContentAction}
-            showPostModal={this.props.showPostModal}
-          />
+        <Feed
+          className="profile"
+          content={content}
+          isFetching={isFetching}
+          hasMore={hasMore}
+          loadMoreContent={loadMoreContentAction}
+          showPostModal={this.props.showPostModal}
+        >
           {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
           {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-        </div>
+        </Feed>
         {<PostModal />}
       </div>
     );

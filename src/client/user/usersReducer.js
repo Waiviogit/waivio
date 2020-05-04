@@ -112,7 +112,27 @@ export default function usersReducer(state = initialState, action) {
           hasMore: false,
         },
       };
-    case actions.UNFOLLOW_USER.SUCCESS:
+    case actions.UNFOLLOW_USER.SUCCESS: {
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          youFollows: false,
+          pending: false,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -124,8 +144,28 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    }
 
     case actions.UNFOLLOW_USER.START:
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          pending: true,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -138,6 +178,25 @@ export default function usersReducer(state = initialState, action) {
       };
 
     case actions.UNFOLLOW_USER.ERROR:
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          pending: false,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -148,7 +207,27 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.FOLLOW_USER.START:
+
+    case actions.FOLLOW_USER.START: {
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          pending: true,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -159,7 +238,27 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.FOLLOW_USER.SUCCESS:
+    }
+    case actions.FOLLOW_USER.SUCCESS: {
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          youFollows: true,
+          pending: false,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -171,7 +270,28 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.FOLLOW_USER.ERROR:
+    }
+
+    case actions.FOLLOW_USER.ERROR: {
+      if (action.meta.top) {
+        const findExperts = state.topExperts.list.findIndex(
+          user => user.name === action.meta.username,
+        );
+
+        state.topExperts.list.splice(findExperts, 1, {
+          ...state.topExperts.list[findExperts],
+          pending: false,
+        });
+
+        return {
+          ...state,
+          topExperts: {
+            ...state.topExperts,
+            list: [...state.topExperts.list],
+          },
+        };
+      }
+
       return {
         ...state,
         users: {
@@ -182,6 +302,7 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    }
 
     default: {
       return state;

@@ -194,7 +194,7 @@ const ImageSetter = ({
           ))}
           {isLoadingImage &&
             map(fileImages, () => (
-              <div className="image-box__preview">
+              <div key={`${fileImages.size}/${fileImages.name}`} className="image-box__preview">
                 <div className="image-box__preview-loader">
                   <Icon type="loading" />
                 </div>

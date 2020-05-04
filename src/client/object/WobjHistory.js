@@ -177,7 +177,7 @@ class WobjHistory extends React.Component {
     const renderFields = () => {
       if (content && content.length) {
         if (content[0].append_field_name) {
-          return content.map(post => <AppendCard post={post} />);
+          return content.map(post => <AppendCard key={post.permlink} post={post} />);
         }
 
         return <Loading />;

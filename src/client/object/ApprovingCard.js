@@ -71,7 +71,7 @@ ApprovingCard.propTypes = {
     upvotedByModerator: PropTypes.bool,
     append_field_weight: PropTypes.number,
     weight: PropTypes.number,
-    active_votes: PropTypes.arrayOf({}),
+    active_votes: PropTypes.arrayOf(PropTypes.shape()),
   }).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

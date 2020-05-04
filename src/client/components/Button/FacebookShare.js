@@ -4,7 +4,12 @@ import { getFacebookShareURL } from '../../helpers/socialProfiles';
 import './ShareButton.less';
 
 const FacebookShare = ({ url }) => (
-  <a className="ShareButton" href={getFacebookShareURL(url)} target="_blank">
+  <a
+    className="ShareButton"
+    href={getFacebookShareURL(url)}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     <div className="ShareButton__contents ShareButton__contents__facebook">
       <i className="iconfont icon-facebook ShareButton__icon" />
     </div>

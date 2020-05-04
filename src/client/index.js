@@ -32,10 +32,8 @@ message.config({
 
 const render = async Component => {
   const state = store.getState();
+  let activeLocale = getLocale(state);
 
-  const userLocale = getLocale(state);
-
-  let activeLocale = userLocale;
   if (activeLocale === 'auto') {
     activeLocale = Cookie.get('language') || getBrowserLocale() || 'en-US';
   }
@@ -52,8 +50,9 @@ const render = async Component => {
   window.addEventListener('resize', () =>
     store.dispatch(setScreenSize(screenSize(window.screen.width))),
   );
+  const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
 
-  ReactDOM.hydrate(
+  renderMethod(
     <Provider store={store}>
       <Component history={history} />
     </Provider>,

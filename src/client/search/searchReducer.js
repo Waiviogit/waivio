@@ -115,6 +115,15 @@ export default (state = initialState, action) => {
         },
       };
     }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.ERROR: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [...state.usersForDiscoverPage.result],
+          loading: false,
+        },
+      };
+    }
 
     case searchActions.RESET_SEARCH_USERS_FOR_DISCOVER_PAGE: {
       return {
@@ -129,6 +138,121 @@ export default (state = initialState, action) => {
         searchObjectsResults: [],
       };
     }
+    case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+        youFollows: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.UNFOLLOW_SEARCH_USER.START: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: true,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.UNFOLLOW_SEARCH_USER.ERROR: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.FOLLOW_SEARCH_USER.START: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: true,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+    case searchActions.FOLLOW_SEARCH_USER.SUCCESS: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        youFollows: true,
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.FOLLOW_SEARCH_USER.ERROR: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
     default:
       return state;
   }

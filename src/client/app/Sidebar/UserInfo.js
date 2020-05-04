@@ -27,10 +27,17 @@ import { GUEST_PREFIX } from '../../../common/constants/waivio';
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
-    rewardFund: PropTypes.shape().isRequired,
-    rate: PropTypes.number.isRequired,
-    isGuest: PropTypes.bool.isRequired,
+    user: PropTypes.shape(),
+    rewardFund: PropTypes.shape(),
+    rate: PropTypes.number,
+    isGuest: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isGuest: false,
+    user: {},
+    rewardFund: {},
+    rate: 0,
   };
   state = {
     rc_percentage: 0,

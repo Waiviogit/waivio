@@ -19,6 +19,8 @@ import Slider from '../components/Slider/Slider';
 import AppendObjButtons from '../components/StoryFooter/AppendObjButtons';
 import {
   getAuthenticatedUser,
+  getRate,
+  getRewardFund,
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
@@ -210,6 +212,8 @@ const mapStateToProps = state => ({
   showNSFWPosts: getShowNSFWPosts(state),
   user: getAuthenticatedUser(state),
   isGuest: isGuestUser(state),
+  rewardFund: getRewardFund(state),
+  rate: getRate(state),
 });
 
 export default connect(mapStateToProps, {
