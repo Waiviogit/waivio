@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './MobileNavigation.less';
+import HomeBar from './MobilePerformens/HomeBar';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
   useEffect(() => {}, [match]);
@@ -36,15 +37,28 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
       break;
   }
 
+  const getHeaderTitle = () => {
+    switch (url) {
+      case '/my_feed':
+        return <FormattedMessage id="mobnav_my_feed" defaultMessage="My feed" />;
+      case (url.match(pages.discoverObjects.regExp) || {}).input:
+        return <FormattedMessage id="mobnav_discover" defaultMessage="Discover" />;
+      case '/':
+      default:
+        return <FormattedMessage id="mobnav_home" defaultMessage="Home" />;
+    }
+  };
+
   return (
     <React.Fragment>
       {isMobileNavMenuOpen && (
         <div className="MobileLeftSidebar">
           <div className="MobileLeftSidebar__wrapper">
             <div className="header">
-              <FormattedMessage id={`mobnav_${pageId}`} defaultMessage={pageName} />
+              {getHeaderTitle()}
               <Icon type="caret-left" style={{ color: '#f2f2f2' }} onClick={toggleMobileNavMenu} />
             </div>
+            <HomeBar />
           </div>
           <div
             className="MobileLeftSidebar__mask"

@@ -101,10 +101,16 @@
     .header {
       display: flex;
       justify-content: space-between;
+      color: @white-smoke;
       text-transform: uppercase;
       padding-bottom: 0.7rem;
+      margin-bottom: 0.7rem;
       font-weight: 600;
       border-bottom: 1px solid @white-smoke;
+    }
+    .content {
+      padding-top: 1rem;
+      color: @white-smoke;
     }
 
     @keyframes example {
@@ -114,6 +120,14 @@
       100% {
         left: 0;
       }
+    }
+  }
+  .HomeBar {
+    color: @white-smoke;
+    &__content {
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
     }
   }
 }

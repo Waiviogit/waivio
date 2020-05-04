@@ -416,7 +416,7 @@
   "tips.profitabilityTitle": "The difference between the price at the time of publication of the post and the current price in pips",
   "postQuotation.recommend.buy": "Buy",
   "postQuotation.recommend.sell": "Sell",
-  "postSellBuy.profitability": "Profitability:",
+  "postSellBuy.profitability": "Profitability",
   "broker.broker": "Broker",
   "modalBroker.header.title": "Broker settings",
   "modalBroker.tab.connect": "Connect to broker",

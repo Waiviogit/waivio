@@ -17,7 +17,7 @@ import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
 import { toFixNumberLength } from '../../../../investarena/helpers/calculationsHelper';
 import './TopPerformers.less';
 
-const getPerformerLinks = performer => {
+export const getPerformerLinks = performer => {
   switch (performer.type) {
     case 'user':
       return (
@@ -50,7 +50,7 @@ const getPerformerLinks = performer => {
   }
 };
 
-const formatPerformance = performanceValue => {
+export const formatPerformance = performanceValue => {
   if (isNil(performanceValue)) {
     return '—';
   }
