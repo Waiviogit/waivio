@@ -81,9 +81,19 @@ class CreateRewardForm extends React.Component {
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      const expiredAt = moment(new Date(campaign.expired_at));
+      const isExpired = campaign.status === 'expired';
+
+      const expiredAt = isExpired
+        ? moment(new Date().toISOString())
+        : moment(new Date(campaign.expired_at));
 
       const isCampaignActive = campaign.status === 'active';
+
+      const isDuplicate =
+        campaign.status === 'active' ||
+        campaign.status === 'inactive' ||
+        campaign.status === 'pending' ||
+        campaign.status === 'expired';
 
       let combinedObjects;
       let sponsors;
@@ -115,7 +125,11 @@ class CreateRewardForm extends React.Component {
         this.setState({
           iAgree: true,
           loading: false,
-          campaignName: campaign.name,
+          campaignName: `${
+            this.props.match.path.includes('createDuplicate')
+              ? `Copy ${campaign.name}`
+              : campaign.name
+          }`,
           campaignType: campaign.type,
           budget: campaign.budget,
           reward: campaign.reward,
@@ -141,6 +155,7 @@ class CreateRewardForm extends React.Component {
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isCampaignActive,
+          isDuplicate,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -166,7 +181,7 @@ class CreateRewardForm extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
-    const { campaignId, pageObjects } = this.state;
+    const { campaignId, pageObjects, isDuplicate } = this.state;
     const objects = map(data.secondaryObject, o => o.id);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
@@ -206,7 +221,7 @@ class CreateRewardForm extends React.Component {
       reservation_timetable: data.targetDays,
     };
     if (data.description) preparedObject.description = data.description;
-    if (campaignId) preparedObject.id = campaignId;
+    if (campaignId && !isDuplicate) preparedObject.id = campaignId;
     return preparedObject;
   };
 
@@ -354,7 +369,7 @@ class CreateRewardForm extends React.Component {
   };
 
   render() {
-    const { user, currentSteemDollarPrice, form } = this.props;
+    const { user, currentSteemDollarPrice, form, match } = this.props;
     const {
       campaignName,
       campaignType,
@@ -383,9 +398,11 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
+      isDuplicate,
     } = this.state;
     return (
       <CreateFormRenderer
+        match={match}
         handlers={this.handlers}
         campaignName={campaignName}
         campaignType={campaignType}
@@ -418,6 +435,7 @@ class CreateRewardForm extends React.Component {
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
+        isDuplicate={isDuplicate}
       />
     );
   }
