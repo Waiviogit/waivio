@@ -24,7 +24,7 @@ const StoryPreview = ({ post }) => {
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
-  if (jsonMetadata) {
+  if (jsonMetadata && (has(jsonMetadata, 'image') || has(jsonMetadata, 'wobj'))) {
     if (jsonMetadata.image && jsonMetadata.image[0]) {
       imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
     } else if (
