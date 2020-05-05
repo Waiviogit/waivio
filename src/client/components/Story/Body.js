@@ -8,7 +8,7 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHelpers';
+import { imageRegex, rewriteRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
@@ -50,12 +50,27 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     }
   });
 
+  const videoPreviewRegExp = /<center>[\s\S]+<\/center>/g;
+  const videoPreviewResult = parsedBody.match(videoPreviewRegExp);
+
+  if (videoPreviewResult) {
+    const dTubeRegExp = /https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)/;
+    const threeSpeakRegExp = /https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)/;
+    const dTubeRes = videoPreviewResult[0].match(dTubeRegExp);
+    const threeSpeakRes = videoPreviewResult[0].match(threeSpeakRegExp);
+    let videoLink;
+
+    if (dTubeRes) videoLink = dTubeRes[0].split("'>")[0];
+    if (threeSpeakRes) videoLink = threeSpeakRes[0];
+
+    parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
+  }
+
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
-  parsedBody = parsedBody.replace(dtubeImageRegex, '');
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);

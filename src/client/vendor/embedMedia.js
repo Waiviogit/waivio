@@ -62,7 +62,8 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: 'DTube',
-      thumbnail: 'https://images.hive.blog/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
+      thumbnail:
+        'https://waivio.nyc3.digitaloceanspaces.com/1588688462_94b9e41e-9f6f-4946-bc50-f479c5d56256',
       id: dTubeId,
       embed: this.dTube(url, dTubeId, options),
     };
