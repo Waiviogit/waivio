@@ -20,6 +20,8 @@ const initialState = {
   accountHistoryFilter: [],
   currentDisplayedActions: [],
   currentFilteredActions: [],
+  transactions: [],
+  transactionsHistoryLoading: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -95,6 +97,16 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         usersAccountHistoryLoading: false,
       };
+    case walletActions.GET_TRANSACTIONS_HISTORY.START:
+      return { ...state, transactionsHistoryLoading: true };
+    case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS:
+      return {
+        ...state,
+        transactions: [...state.transactions, ...action.payload.wallet],
+        transactionsHistoryLoading: false,
+      };
+    case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
+      return { transactionsHistoryLoading: false };
     case walletActions.GET_MORE_USER_ACCOUNT_HISTORY.START:
       return {
         ...state,
@@ -204,6 +216,7 @@ export const getIsPowerDown = state => state.powerDown;
 export const getTotalVestingShares = state => state.totalVestingShares;
 export const getTotalVestingFundSteem = state => state.totalVestingFundSteem;
 export const getUsersTransactions = state => state.usersTransactions;
+export const getTransactions = state => state.transactions;
 export const getUsersEstAccountsValues = state => state.usersEstAccountsValues;
 export const getUsersAccountHistoryLoading = state => state.usersAccountHistoryLoading;
 export const getLoadingEstAccountValue = state => state.loadingEstAccountValue;

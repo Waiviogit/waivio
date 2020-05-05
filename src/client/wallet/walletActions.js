@@ -10,6 +10,7 @@ import {
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { getTransferHistory } from '../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -20,6 +21,8 @@ export const GET_USER_ACCOUNT_HISTORY = createAsyncActionType('@users/GET_USER_A
 export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
+export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
   '@users/GET_USER_EST_ACCOUNT_VALUE',
 );
@@ -221,3 +224,11 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
     dispatch(getMoreUserAccountHistory(username, lastActionCount, limit));
   }
 };
+
+export const getUserTransactionHistory = username => dispatch =>
+  dispatch({
+    type: GET_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistory(username),
+    },
+  });

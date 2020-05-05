@@ -1088,6 +1088,19 @@ export const waivioAPI = {
   getUserAccount,
 };
 
+export const getTransferHistory = (username, skip = 0, limit = 500) => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
 // I don't read changes before commit
 
 export default null;

@@ -78,5 +78,6 @@
   "followingUsers": "/following_users",
   "comments": "/comments",
   "postComments": "/post_comments",
-  "market": "/marketInfo"
+  "market": "/marketInfo",
+  "transfers_history": "/transfers_history"
 }
