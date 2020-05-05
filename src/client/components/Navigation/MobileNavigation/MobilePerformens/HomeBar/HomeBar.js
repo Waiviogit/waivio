@@ -7,7 +7,7 @@ import PerformerItem from '../../PerformerItem/PerformerItem';
 import api from '../../../../../../investarena/configApi/apiResources';
 import './HomeBar.less';
 
-const HomeBar = ({ intl }) => {
+const HomeBar = ({ intl, toggleMobileNavigation }) => {
   const period = {
     week: 'd7',
     month: 'm1',
@@ -24,7 +24,7 @@ const HomeBar = ({ intl }) => {
     }),
     m6: intl.formatMessage({
       id: 'longTermData_m6',
-      defaultMessage: '6 Month',
+      defaultMessage: '6 Months',
     }),
   };
 
@@ -90,7 +90,11 @@ const HomeBar = ({ intl }) => {
         {currentItem === period.week && (
           <React.Fragment>
             {performersStatWeek.slice(0, 5).map(performer => (
-              <PerformerItem period={period.week} performer={performer} />
+              <PerformerItem
+                period={period.week}
+                performer={performer}
+                toggleMobileNavigation={toggleMobileNavigation}
+              />
             ))}
             {showMoreButton}
           </React.Fragment>
@@ -105,7 +109,11 @@ const HomeBar = ({ intl }) => {
         {currentItem === period.month && (
           <React.Fragment>
             {performersStatMonth.slice(0, 5).map(performer => (
-              <PerformerItem period={period.month} performer={performer} />
+              <PerformerItem
+                period={period.month}
+                performer={performer}
+                toggleMobileNavigation={toggleMobileNavigation}
+              />
             ))}
             {showMoreButton}
           </React.Fragment>
@@ -120,7 +128,11 @@ const HomeBar = ({ intl }) => {
         {currentItem === period.halfYear && (
           <React.Fragment>
             {performersStatHalfYear.slice(0, 5).map(performer => (
-              <PerformerItem period={period.halfYear} performer={performer} />
+              <PerformerItem
+                period={period.halfYear}
+                performer={performer}
+                toggleMobileNavigation={toggleMobileNavigation}
+              />
             ))}
             {showMoreButton}
           </React.Fragment>
@@ -135,7 +147,11 @@ const HomeBar = ({ intl }) => {
         onCancel={toggleModal}
       >
         {getModalContent().map(performer => (
-          <PerformerItem period={currentItem} performer={performer} />
+          <PerformerItem
+            period={currentItem}
+            performer={performer}
+            toggleMobileNavigation={toggleMobileNavigation}
+          />
         ))}
       </Modal>
     </div>
@@ -143,6 +159,7 @@ const HomeBar = ({ intl }) => {
 };
 
 HomeBar.propTypes = {
+  toggleMobileNavigation: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 

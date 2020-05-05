@@ -3,10 +3,10 @@ import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import './MobileNavigation.less';
 import HomeBar from './MobilePerformens/HomeBar/HomeBar';
 import TopInstruments from '../../../app/Sidebar/TopInstruments';
 import SidenavDiscoverObjects from '../../../discoverObjects/SidenavDiscoverObjects';
+import './MobileNavigation.less';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
   const pages = {
@@ -30,12 +30,18 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
     case (url.match(pages.discoverObjects.regExp) || {}).input:
       pageName = 'Discover';
       pageId = 'discover';
-      pageContent = <SidenavDiscoverObjects withTitle={false} />;
+      pageContent = (
+        <SidenavDiscoverObjects
+          withTitle={false}
+          toggleMobileNavigation={toggleMobileNavMenu}
+          isMobile
+        />
+      );
       break;
     case '/':
       pageName = 'Home';
       pageId = 'home';
-      pageContent = <HomeBar />;
+      pageContent = <HomeBar toggleMobileNavigation={toggleMobileNavMenu} />;
       break;
     default:
       break;
@@ -86,23 +92,11 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
           )}
         </span>
       </div>
-
-      {/* <Modal */}
-      {/*  className="discover-filters-modal" */}
-      {/*  footer={null} */}
-      {/*  title={pageName.toUpperCase()} */}
-      {/*  closable */}
-      {/*  visible={isModalOpen} */}
-      {/*  onCancel={() => setModalVisibility(false)} */}
-      {/* > */}
-      {/*  <LeftSidebar/> */}
-      {/* </Modal> */}
     </React.Fragment>
   );
 };
 
 MobileNavigation.propTypes = {
-  location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   isMobileNavMenuOpen: PropTypes.bool.isRequired,
   toggleMobileNavMenu: PropTypes.func.isRequired,

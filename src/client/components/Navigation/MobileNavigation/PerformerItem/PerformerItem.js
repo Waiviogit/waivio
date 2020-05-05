@@ -6,9 +6,9 @@ import { formatPerformance } from '../../../../app/Sidebar/TopPerformers/TopPerf
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../../common/constants/waivio';
 import './PerformerItem.less';
 
-const PerformerItem = ({ performer, period }) => (
+const PerformerItem = ({ performer, period, toggleMobileNavigation }) => (
   <div className="PerformerItem" key={performer.name}>
-    <div className="PerformerItem__links">
+    <div className="PerformerItem__links" onClick={toggleMobileNavigation} role="presentation">
       <Link to={`/object/${performer.id}`}>
         <div
           className="ObjectAvatar"
@@ -37,6 +37,7 @@ const PerformerItem = ({ performer, period }) => (
 );
 
 PerformerItem.propTypes = {
+  toggleMobileNavigation: PropTypes.func.isRequired,
   performer: PropTypes.shape().isRequired,
   period: PropTypes.string.isRequired,
 };
