@@ -282,7 +282,7 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      title: 'reject object for rewards',
+      title: 'Cancelled reservation',
       body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
         waivioRewards: {
