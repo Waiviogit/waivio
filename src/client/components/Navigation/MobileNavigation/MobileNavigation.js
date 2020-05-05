@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './MobileNavigation.less';
 import HomeBar from './MobilePerformens/HomeBar/HomeBar';
-import api from '../../../../investarena/configApi/apiResources';
 import TopInstruments from '../../../app/Sidebar/TopInstruments';
 import SidenavDiscoverObjects from '../../../discoverObjects/SidenavDiscoverObjects';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
-  // useEffect(() => {  api.performers.getPerformersStatisticsForPeriod(period, limit, skip),
-  // }, [match]);
-
   const pages = {
     discoverObjects: {
       regExp: /(^\/discover-objects)\/?(.*)/,
@@ -73,11 +69,11 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
           />
         </div>
       )}
-      <div className="discover-objects-header">
-        <span className="discover-objects-header__title">
+      <div className="NavigationMenu">
+        <span className="NavigationMenu__title">
           {pageName && (
             <span
-              className="discover-objects-header__topic ttc"
+              className="NavigationMenu__topic ttc"
               role="presentation"
               onClick={toggleMobileNavMenu}
             >
