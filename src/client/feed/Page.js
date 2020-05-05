@@ -17,6 +17,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Topnav from '../components/Navigation/Topnav';
+import HeroBannerContainer from './HeroBannerContainer';
 
 @withRouter
 @injectIntl
@@ -66,16 +67,20 @@ class Page extends React.Component {
       const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isAppFilterOn);
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({ checked: isAppFilterOn });
       }
     } else {
       const isAppFilterOn = localStorage.getItem('isAppMyFeedFilterOn');
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isAppFilterOn);
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({ checked: isAppFilterOn });
       }
     }
   }
+
+  setFetched = value => this.setState({ isFetching: value });
 
   handleSortChange = key => {
     const { category } = this.props.match.params;
@@ -119,8 +124,6 @@ class Page extends React.Component {
     }
   };
 
-  setFetched = value => this.setState({ isFetching: value });
-
   render() {
     const {
       authenticated,
@@ -144,6 +147,7 @@ class Page extends React.Component {
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
+        <HeroBannerContainer />
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer" stickPosition={116}>
