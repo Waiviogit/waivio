@@ -169,8 +169,14 @@ class Topnav extends React.Component {
   }
 
   onMobileAvatarClick = () => {
-    const { isMobileMenuOpen, toggleMobileMenu } = this.props;
+    const {
+      isMobileMenuOpen,
+      toggleMobileMenu,
+      isMobileNavMenuOpen,
+      toggleMobileNavMenu,
+    } = this.props;
     if (isMobileMenuOpen) toggleMobileMenu();
+    if (isMobileNavMenuOpen) toggleMobileNavMenu();
   };
 
   getTranformSearchCountData = searchResults => {
