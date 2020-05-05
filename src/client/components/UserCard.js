@@ -6,32 +6,42 @@ import Avatar from '../components/Avatar';
 
 import './UserCard.less';
 
-const UserCard = ({ user, alt, showFollow, unfollow, follow }) =>
-  user && (
-    <div className="UserCard">
-      <div className="UserCard__left">
-        <div className="UserCard__wrap">
-          <Link to={`/@${user.name}`}>
-            <Avatar username={user.name} size={40} />
-          </Link>
-          <Link to={`/@${user.name}`}>
-            <span className="username">{user.name}</span>
-          </Link>
+const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator }) => {
+  const status = moderator ? 'moderator' : 'admin';
+
+  return (
+    user && (
+      <div className="UserCard">
+        <div className="UserCard__left">
+          <div className="UserCard__wrap">
+            <Link to={`/@${user.name}`}>
+              <Avatar username={user.name} size={40} />
+            </Link>
+            <Link to={`/@${user.name}`}>
+              <span className="username">{user.name}</span>
+            </Link>
+            {(admin || moderator) && (
+              <span>
+                &nbsp;(<span className="UserCard__status">{status}</span>)
+              </span>
+            )}
+          </div>
+          {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
         </div>
-        {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
+        {showFollow && (
+          <FollowButton
+            unfollowUser={unfollow}
+            followUser={follow}
+            following={user.youFollows}
+            user={user}
+            followingType="user"
+            secondary
+          />
+        )}
       </div>
-      {showFollow && (
-        <FollowButton
-          unfollowUser={unfollow}
-          followUser={follow}
-          following={user.youFollows}
-          user={user}
-          followingType="user"
-          secondary
-        />
-      )}
-    </div>
+    )
   );
+};
 
 UserCard.propTypes = {
   user: PropTypes.shape(),
@@ -39,6 +49,8 @@ UserCard.propTypes = {
   showFollow: PropTypes.bool,
   unfollow: PropTypes.func,
   follow: PropTypes.func,
+  admin: PropTypes.bool,
+  moderator: PropTypes.bool,
 };
 
 UserCard.defaultProps = {
@@ -48,6 +60,8 @@ UserCard.defaultProps = {
   authUser: '',
   unfollow: () => {},
   follow: () => {},
+  admin: false,
+  moderator: false,
 };
 
 export default UserCard;

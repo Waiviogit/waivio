@@ -31,7 +31,7 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
     wobject.filter(
       field =>
         field.type === 'menuList' &&
-        calculateApprovePercent(field.active_votes) >= 70 &&
+        calculateApprovePercent(field.active_votes, field.weight) >= 70 &&
         !field.status,
     );
 
@@ -67,7 +67,9 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
   let fieldValues;
   if (wObject.fields) {
     fieldValues = wObject.fields.filter(
-      field => field.name === currentField && calculateApprovePercent(field.active_votes) >= 70,
+      field =>
+        field.name === currentField &&
+        calculateApprovePercent(field.active_votes, field.weight) >= 70,
     );
   }
 
@@ -137,7 +139,7 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
       .filter(
         field =>
           !Object.keys(maxWeightedFields).includes(field.name) &&
-          calculateApprovePercent(field.active_votes) >= 70,
+          calculateApprovePercent(field.active_votes, field.weight) >= 70,
       )
       .reduce((acc, curr) => {
         if (acc[curr.name]) {
