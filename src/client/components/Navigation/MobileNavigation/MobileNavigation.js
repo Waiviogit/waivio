@@ -18,20 +18,24 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
 
   let pageName = '';
   let pageId = '';
+  let pageContent = null;
 
   const { url } = match;
   switch (url) {
     case '/my_feed':
       pageName = 'My feed';
       pageId = 'my_feed';
+      pageContent = <TopInstruments isMobile />;
       break;
     case (url.match(pages.discoverObjects.regExp) || {}).input:
       pageName = 'Discover';
       pageId = 'discover';
+      pageContent = <SidenavDiscoverObjects withTitle={false} />;
       break;
     case '/':
       pageName = 'Home';
       pageId = 'home';
+      pageContent = <HomeBar />;
       break;
     default:
       break;
@@ -58,9 +62,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
               {getHeaderTitle()}
               <Icon type="caret-left" style={{ color: '#f2f2f2' }} onClick={toggleMobileNavMenu} />
             </div>
-            {pageId === 'home' && <HomeBar />}
-            {pageId === 'my_feed' && <TopInstruments />}
-            {pageId === 'discover' && <SidenavDiscoverObjects withTitle={false} />}
+            {pageContent}
           </div>
           <div
             className="MobileLeftSidebar__mask"

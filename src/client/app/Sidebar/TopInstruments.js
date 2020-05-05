@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
-import './TopInsruments.less';
 import {
   getIsConnectPlatformState,
   getPlatformNameState,
@@ -15,6 +15,7 @@ import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import TopInstrumentsLoading from './TopInstrumentsLoading';
 import { getFollowingObjectsList, getIsAuthenticated } from '../../reducers';
 import TopInstrumentsItem from './TopInstrumentsItem';
+import './TopInsruments.less';
 
 const instrumentsDefault = {
   crypto: ['BXYBTC', 'BTCUSDC', 'DASHBTC'],
@@ -44,11 +45,13 @@ class TopInstruments extends React.Component {
     platformName: PropTypes.string.isRequired,
     followingObjects: PropTypes.arrayOf(PropTypes.string),
     isPlatformConnected: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
   };
 
   static defaultProps = {
     charts: {},
     followingObjects: { list: [] },
+    isMobile: false,
   };
 
   state = {
@@ -105,9 +108,20 @@ class TopInstruments extends React.Component {
   }
 
   render() {
-    const { quotesSettings, charts, intl, isAuthenticated, isPlatformConnected } = this.props;
+    const {
+      quotesSettings,
+      charts,
+      intl,
+      isAuthenticated,
+      isPlatformConnected,
+      isMobile,
+    } = this.props;
     const { isLoading, instrumentsCount } = this.state;
     const instrumentsToShow = isAuthenticated ? this.state.instrumentsToShow : instrumentsDefault;
+    const cryptoMarket = marketNames[0];
+    const instruments = isMobile
+      ? instrumentsToShow[cryptoMarket.name].slice(0, 3)
+      : instrumentsToShow[cryptoMarket.name];
     return (
       <React.Fragment>
         {isPlatformConnected && (
@@ -115,43 +129,49 @@ class TopInstruments extends React.Component {
             {!isLoading ? (
               <React.Fragment>
                 {isAuthenticated && (
-                  <div className="SidebarContentBlock SidebarContentBlock__title">
-                    {intl
-                      .formatMessage({
-                        id: 'wia.followingInstruments',
-                        defaultMessage: 'Following instruments',
-                      })
-                      .toUpperCase()}
+                  <div
+                    className={classNames('SidebarContentBlock SidebarContentBlock__title', {
+                      mobileTitle: isMobile,
+                    })}
+                  >
+                    {intl.formatMessage({
+                      id: 'wia.followingInstruments',
+                      defaultMessage: 'Following instruments',
+                    })}
                     <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
                   </div>
                 )}
-                {marketNames.map(
-                  market =>
-                    !_.isEmpty(instrumentsToShow[market.name]) && (
-                      <div className="SidebarContentBlock top-instruments" key={market.name}>
-                        <div className="SidebarContentBlock__content">
-                          {instrumentsToShow[market.name].map(
-                            instrumentName =>
-                              quotesSettings[instrumentName] &&
-                              quotesSettings[instrumentName].wobjData && (
-                                <TopInstrumentsItem
-                                  key={instrumentName}
-                                  toggleModalTC={this.toggleModalInstrumentsChart}
-                                  intl={intl}
-                                  quoteSettings={quotesSettings[instrumentName]}
-                                  quoteSecurity={instrumentName}
-                                  chart={
-                                    charts && charts[instrumentName] ? charts[instrumentName] : []
-                                  }
-                                  showTradeBtn={false}
-                                  chartHeight={60}
-                                  chartWidth={160}
-                                />
-                              ),
-                          )}
-                        </div>
-                      </div>
-                    ),
+                {!_.isEmpty(instrumentsToShow[cryptoMarket.name]) && (
+                  <div
+                    className={classNames('SidebarContentBlock top-instruments', {
+                      mobileBlock: isMobile,
+                    })}
+                    key={cryptoMarket.name}
+                  >
+                    <div
+                      className={classNames('SidebarContentBlock__content', {
+                        mobileContent: isMobile,
+                      })}
+                    >
+                      {instruments.map(
+                        instrumentName =>
+                          quotesSettings[instrumentName] &&
+                          quotesSettings[instrumentName].wobjData && (
+                            <TopInstrumentsItem
+                              key={instrumentName}
+                              toggleModalTC={this.toggleModalInstrumentsChart}
+                              intl={intl}
+                              quoteSettings={quotesSettings[instrumentName]}
+                              quoteSecurity={instrumentName}
+                              chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
+                              showTradeBtn={false}
+                              chartHeight={60}
+                              chartWidth={160}
+                            />
+                          ),
+                      )}
+                    </div>
+                  </div>
                 )}
               </React.Fragment>
             ) : (
