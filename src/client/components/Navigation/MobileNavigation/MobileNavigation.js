@@ -4,10 +4,13 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './MobileNavigation.less';
-import HomeBar from './MobilePerformens/HomeBar';
+import HomeBar from './MobilePerformens/HomeBar/HomeBar';
+import api from '../../../../investarena/configApi/apiResources';
+import TopInstruments from '../../../app/Sidebar/TopInstruments';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
-  useEffect(() => {}, [match]);
+  // useEffect(() => {  api.performers.getPerformersStatisticsForPeriod(period, limit, skip),
+  // }, [match]);
 
   const pages = {
     discoverObjects: {
@@ -58,7 +61,8 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
               {getHeaderTitle()}
               <Icon type="caret-left" style={{ color: '#f2f2f2' }} onClick={toggleMobileNavMenu} />
             </div>
-            <HomeBar />
+            {pageId === 'home' && <HomeBar />}
+            {pageId === 'my_feed' && <TopInstruments />}
           </div>
           <div
             className="MobileLeftSidebar__mask"

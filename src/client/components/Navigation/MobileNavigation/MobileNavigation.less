@@ -84,7 +84,8 @@
   display: flex;
   height: calc(100% - 52px);
   top: 52px;
-  z-index: 1600;
+  z-index: 1200;
+
   &__mask {
     position: relative;
     width: 28%;
@@ -94,10 +95,11 @@
     position: relative;
     width: 72%;
     padding: 1rem;
-    background: @blue-dodgerBlue;
+    background: @black-darkTraffic;
     left: 0;
     animation-name: example;
     animation-duration: 1s;
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -105,9 +107,11 @@
       text-transform: uppercase;
       padding-bottom: 0.7rem;
       margin-bottom: 0.7rem;
+      font-size: 18px;
       font-weight: 600;
       border-bottom: 1px solid @white-smoke;
     }
+
     .content {
       padding-top: 1rem;
       color: @white-smoke;
@@ -120,14 +124,6 @@
       100% {
         left: 0;
       }
-    }
-  }
-  .HomeBar {
-    color: @white-smoke;
-    &__content {
-      padding: 0 1rem;
-      display: flex;
-      flex-direction: column;
     }
   }
 }

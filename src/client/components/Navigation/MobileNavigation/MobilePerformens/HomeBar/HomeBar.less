@@ -1,0 +1,55 @@
+@import (reference) '../../../../../styles/custom';
+
+.HomeBar {
+  color: @white-smoke;
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &__content {
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__item {
+    font-size: 1.1rem;
+    padding-bottom: 0.2rem;
+    &.selected {
+      padding-bottom: 0.5rem;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  &__show-more {
+    text-align: center;
+    color: @blue-botticelli;
+    font-weight: 500;
+    cursor: pointer;
+    padding-bottom: 0.2rem;
+  }
+}
+
+.HomeBar__modal.ant-modal {
+  min-width: 100vw;
+
+  .ant-modal-header {
+    background-color: @grey-nero;
+
+    .ant-modal-title {
+      color: @white-smoke;
+    }
+  }
+
+  .ant-modal-content {
+    min-height: 100vh;
+    background-color: @grey-nero;
+
+    .ant-modal-close {
+      color: @white-smoke;
+    }
+  }
+}

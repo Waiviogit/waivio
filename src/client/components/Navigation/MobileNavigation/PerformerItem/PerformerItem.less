@@ -1,0 +1,44 @@
+@import (reference) '../../../../styles/custom.less';
+
+.PerformerItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid @white-smoke;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+
+  &__links {
+    display: flex;
+    align-items: center;
+
+    &-name {
+      color: @white-smoke;
+      margin-left: 8px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 500;
+      max-width: 6rem;
+    }
+  }
+
+  &__info {
+    &.success {
+      color: @green-darker;
+    }
+
+    &.danger {
+      color: @red;
+    }
+    &.nil {
+      color: @white-smoke;
+    }
+  }
+
+  .ObjectAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+}
