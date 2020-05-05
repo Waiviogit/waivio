@@ -7,6 +7,7 @@ import './MobileNavigation.less';
 import HomeBar from './MobilePerformens/HomeBar/HomeBar';
 import api from '../../../../investarena/configApi/apiResources';
 import TopInstruments from '../../../app/Sidebar/TopInstruments';
+import SidenavDiscoverObjects from '../../../discoverObjects/SidenavDiscoverObjects';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
   // useEffect(() => {  api.performers.getPerformersStatisticsForPeriod(period, limit, skip),
@@ -63,6 +64,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
             </div>
             {pageId === 'home' && <HomeBar />}
             {pageId === 'my_feed' && <TopInstruments />}
+            {pageId === 'discover' && <SidenavDiscoverObjects withTitle={false} />}
           </div>
           <div
             className="MobileLeftSidebar__mask"
