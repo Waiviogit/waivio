@@ -15,8 +15,6 @@ import { getObjectPosts, getMoreObjectPosts } from '../../feed/feedActions';
 import { showPostModal } from '../../app/appActions';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import PostModal from '../../post/PostModalContainer';
-import * as ApiClient from '../../../waivioApi/ApiClient';
-import { preparePropositionReqData } from '../../rewards/rewardsHelper';
 import './ObjectFeed.less';
 
 @injectIntl
@@ -45,10 +43,12 @@ export default class ObjectFeed extends React.Component {
     /* default props */
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
-    userName: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape().isRequired,
+    propositions: PropTypes.shape().isRequired,
+    currentProposition: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -59,16 +59,9 @@ export default class ObjectFeed extends React.Component {
     handleCreatePost: () => {},
   };
 
-  state = {
-    propositions: [],
-    sort: 'reward',
-  };
-
   componentDidMount() {
-    const { match, limit, readLocales, userName } = this.props;
+    const { match, limit, readLocales } = this.props;
     const { name } = match.params;
-    const { sort } = this.state;
-    this.getPropositions({ match, name, userName, sort });
     this.props.getObjectPosts({
       object: name,
       username: name,
@@ -99,27 +92,6 @@ export default class ObjectFeed extends React.Component {
     }
   }
 
-  getPropositions = ({ match, requiredObject, userName, sort }) => {
-    this.setState({ loadingPropositions: true });
-    ApiClient.getPropositions(
-      preparePropositionReqData({
-        match,
-        requiredObject,
-        userName,
-        sort,
-      }),
-    ).then(data => {
-      this.setState({
-        propositions: data.campaigns,
-        hasMore: data.hasMore,
-        sponsors: data.sponsors,
-        sort,
-        loadingCampaigns: false,
-        loadingPropositions: false,
-      });
-    });
-  };
-
   getCurrentUSDPrice = () => {
     const { cryptosPriceHistory } = this.props;
 
@@ -134,10 +106,11 @@ export default class ObjectFeed extends React.Component {
   };
 
   render() {
-    const { feed, limit, handleCreatePost } = this.props;
-    const { propositions } = this.state;
-    console.log('propositions', propositions);
+    const { feed, limit, handleCreatePost, wobject, propositions, currentProposition } = this.props;
     const wObjectName = this.props.match.params.name;
+    console.log('wobject', wobject);
+
+    console.log('currentProposition', currentProposition);
     const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wObjectName, feed);
@@ -152,16 +125,12 @@ export default class ObjectFeed extends React.Component {
       this.props.history.push(`/rewards/All`);
     };
     const currentUSDPrice = this.getCurrentUSDPrice();
-    // const minReward = proposition.required_object
-    //   ? proposition.required_object.min_reward
-    //   : proposition.min_reward;
-    // const maxReward = proposition.required_object
-    //   ? proposition.required_object.max_reward
-    //   : proposition.max_reward;
+    const minReward = currentProposition ? currentProposition.min_reward : null;
+    const maxReward = currentProposition ? currentProposition.max_reward : null;
 
-    // const rewardPrise = currentUSDPrice
-    //   ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
-    //   : `${maxReward} HIVE`;
+    const rewardPrise = currentUSDPrice
+      ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
+      : `${maxReward} HIVE`;
 
     return (
       <div className="object-feed">
@@ -169,7 +138,7 @@ export default class ObjectFeed extends React.Component {
           {!isEmpty(propositions)
             ? map(propositions, proposition => (
                 <div>
-                  <ObjectCardView wObject={proposition.required_object} />
+                  <ObjectCardView wObject={proposition.required_object} passedParent={wobject} />
                   <div className="Campaign__button" role="presentation" onClick={goToProducts}>
                     <Button type="primary" size="large">
                       <React.Fragment>
@@ -180,37 +149,10 @@ export default class ObjectFeed extends React.Component {
                           })}
                         </span>
                         <span>
-                          <span className="fw6 ml1">{currentUSDPrice}</span>
+                          <span className="fw6 ml1">{rewardPrise}</span>
                           <Icon type="right" />
                         </span>
                       </React.Fragment>
-                      {/* {!rewardMax ? ( */}
-                      {/*  <React.Fragment> */}
-                      {/* <span> */}
-                      {/*  {this.props.intl.formatMessage({ */}
-                      {/*    id: 'rewards_details_earn', */}
-                      {/*    defaultMessage: 'Earn', */}
-                      {/*  })} */}
-                      {/* </span> */}
-                      {/*    <span> */}
-                      {/*  <span className="fw6 ml1">{rewardPrise}</span> */}
-                      {/*  <Icon type="right" /> */}
-                      {/* </span> */}
-                      {/*  </React.Fragment> */}
-                      {/* ) : ( */}
-                      {/*  <React.Fragment> */}
-                      {/* <span> */}
-                      {/*  {this.props.intl.formatMessage({ */}
-                      {/*    id: 'rewards_details_earn_up_to', */}
-                      {/*    defaultMessage: 'Earn up to', */}
-                      {/*  })} */}
-                      {/* </span> */}
-                      {/*    <span> */}
-                      {/*  <span className="fw6 ml1">{`${rewardMax}`}</span> */}
-                      {/*  <Icon type="right" /> */}
-                      {/* </span> */}
-                      {/*  </React.Fragment> */}
-                      {/* )} */}
                     </Button>
                   </div>
                 </div>

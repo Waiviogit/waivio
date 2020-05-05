@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, filter, get } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import { getIsAuthenticated, getSuitableLanguage } from '../../reducers';
 import IconButton from '../../components/IconButton';
 import { getClientWObj } from '../../adapters';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -20,6 +21,24 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
   const usedLocale = useSelector(getSuitableLanguage);
+  const [allPropositions, setPropositions] = useState([]);
+
+  const getPropositions = username => {
+    const reqData = { currentUserName: username };
+    ApiClient.getPropositions(reqData).then(data => {
+      setPropositions(data.campaigns);
+    });
+  };
+
+  useEffect(() => {
+    getPropositions(userName);
+  }, []);
+
+  const propositions = filter(
+    allPropositions,
+    proposition => proposition.required_object.author_permlink === match.params.name,
+  );
+  const currentProposition = get(propositions, ['0']);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -51,6 +70,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
         userName={userName}
         history={history}
         handleCreatePost={handleCreatePost}
+        wobject={wobject}
+        propositions={propositions}
+        currentProposition={currentProposition}
       />
     </React.Fragment>
   );
