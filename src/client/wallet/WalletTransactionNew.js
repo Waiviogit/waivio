@@ -28,17 +28,14 @@ const getFormattedTransactionAmount = (amount, currency) => {
     </span>
   );
 };
-const WalletTransaction = ({
+const WalletTransactionNew = ({
   transaction,
   currentUsername,
   totalVestingShares,
   totalVestingFundSteem,
 }) => {
-  const transactionType = transaction.op[0];
-  const transactionDetails = transaction.op[1];
-
-  // console.log('transactionType: ', transactionType)
-  // console.log('transactionDetails: ', transactionDetails)
+  const transactionType = transaction.type;
+  const transactionDetails = transaction;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -96,11 +93,11 @@ const WalletTransaction = ({
   }
 };
 
-WalletTransaction.propTypes = {
+WalletTransactionNew.propTypes = {
   transaction: PropTypes.shape().isRequired,
   currentUsername: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
 };
 
-export default WalletTransaction;
+export default WalletTransactionNew;
