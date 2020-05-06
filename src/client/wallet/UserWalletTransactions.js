@@ -16,7 +16,7 @@ class UserWalletTransactions extends React.Component {
     currentUsername: PropTypes.string,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
-    // loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
+    loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     userHasMoreActions: PropTypes.bool.isRequired,
     transactionHistory: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func,
@@ -53,7 +53,7 @@ class UserWalletTransactions extends React.Component {
       currentUsername,
       totalVestingShares,
       totalVestingFundSteem,
-      // loadingMoreUsersAccountHistory,
+      loadingMoreUsersAccountHistory,
       userHasMoreActions,
       transactionHistory,
     } = this.props;
@@ -80,18 +80,32 @@ class UserWalletTransactions extends React.Component {
 
     const handleLoadMoreNew = () => {
       console.log('transactionHistory: ', transactionHistory);
-      const lastAction = _.last(transactionHistory);
-      const lastIndex = transactionHistory.lastIndexOf(lastAction);
 
-      console.log('index: ', lastIndex);
-      if (transactionHistory.length === lastIndex) {
-        this.setState({
-          hasMoreTransactions: false,
-        });
+      const lastAction = _.last(transactionHistory);
+      const lastActionCount = lastAction ? transactionHistory.lastIndexOf(lastAction) : -1;
+      let limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
+
+      if (lastActionCount === -1) {
+        limit = defaultAccountLimit;
       }
 
-      this.props.getUserTransactionHistory(currentUsername, lastIndex, defaultAccountLimit);
+      this.props.getUserTransactionHistory(currentUsername, lastActionCount, limit);
     };
+
+    // const handleLoadMoreNew = () => {
+    //   console.log('transactionHistory: ', transactionHistory);
+    //   const lastAction = _.last(transactionHistory);
+    //   const lastIndex = transactionHistory.lastIndexOf(lastAction);
+    //
+    //   console.log('index: ', lastIndex);
+    //   if (transactionHistory.length === lastIndex) {
+    //     this.setState({
+    //       hasMoreTransactions: false,
+    //     });
+    //   }
+    //
+    //   this.props.getUserTransactionHistory(currentUsername, lastIndex, defaultAccountLimit);
+    // };
 
     console.log('hasMoreTransactions: ', hasMoreTransactions);
 
@@ -100,7 +114,7 @@ class UserWalletTransactions extends React.Component {
         <React.Fragment>
           <ReduxInfiniteScroll
             loadMore={handleLoadMoreNew}
-            hasMore={hasMoreTransactions}
+            hasMore={userHasMoreActions}
             elementIsScrollable={false}
             threshold={500}
             loader={
@@ -108,6 +122,7 @@ class UserWalletTransactions extends React.Component {
                 <Loading />
               </div>
             }
+            loadingMore={loadingMoreUsersAccountHistory}
           >
             <div />
             {transactionHistory.map(transaction => (
