@@ -199,29 +199,6 @@ class DiscoverObjectsContent extends Component {
     return (
       <React.Fragment>
         <div className="discover-objects-header">
-          <div className="flex justify-between">
-            <span className="discover-objects-header__title">
-              <span className="discover-objects-header__topic ttc">
-                {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
-              </span>
-              <span className="ttc">
-                {get(discoverObjectsContentTypes, [typeName, 'intl', 'id'], null) &&
-                  get(discoverObjectsContentTypes, [typeName, 'intl', 'defaultMessage'], null) &&
-                  intl.formatMessage({
-                    id: discoverObjectsContentTypes[typeName].intl.id,
-                    defaultMessage: discoverObjectsContentTypes[typeName].intl.defaultMessage,
-                  })}
-              </span>
-              &nbsp;
-              <span className="discover-objects-header__selector">
-                (
-                <span className="underline" role="presentation" onClick={this.showTypesModal}>
-                  {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
-                </span>
-                )
-              </span>
-            </span>
-          </div>
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
