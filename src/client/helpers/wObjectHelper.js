@@ -105,7 +105,9 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   };
 };
 
-export const calculateApprovePercent = votes => {
+export const calculateApprovePercent = (votes, weight) => {
+  if (weight < 0) return 0;
+
   if (!_.isEmpty(votes)) {
     if (getAppendDownvotes(votes).length && !getAppendUpvotes(votes).length) {
       return 0;

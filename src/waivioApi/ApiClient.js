@@ -1081,6 +1081,21 @@ export const getWalletCryptoPriceHistory = symbol => {
   ).then(res => res.json());
 };
 
+export const checkFollowing = (user, users = []) => {
+  const queryString = users.length
+    ? users.reduce((acc, usr, index) => {
+        if (index !== users.length - 1) return acc + `users=${usr}&`;
+
+        return acc + `users=${usr}`;
+      }, '?')
+    : '';
+
+  return fetch(`${config.apiPrefix}${config.user}/${user}/getFollowingsState${queryString}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

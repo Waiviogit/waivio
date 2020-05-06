@@ -1116,6 +1116,10 @@
   "processing_fees_are_paid_by_campaign_sponsor": "Processing fees are paid by campaign sponsor in addition to the user rewards.",
   "posted_on": "posted on",
   "profile_updated": "Profile updated",
+  "approved_by_moderator": "approved by moderator",
+  "vote_count_tag": "Vote count",
+  "approval": "Approval",
+  "approved": "Approved",
   "fillOrder_wallet_transferred": "You transferred {current_pays}",
   "fillOrder_wallet_get": "You get {open_pays}"
 }
