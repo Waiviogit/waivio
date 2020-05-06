@@ -41,8 +41,11 @@ export const getFakeSingleComment = (
   const state = getState();
   const date = new Date().toISOString().split('.')[0];
   const id = `${parentAuthor}/${parentPermlink}`;
+  const guestCommentPostscript =
+    '\n This message was written by guest waivio_konstantin-zakh, and is [available at crypto.investarena.com](https://crypto.investarena.com/@u89gw/adfsg#@f76wz/re-u89gw-adfsg-20200506t132750240z)';
   const depth = state.comments.comments[id] ? state.comments.comments[id].depth + 1 : 0;
   const authorGuest = state.auth.isGuestUser ? state.auth.user.name : author;
+  const fakeBody = state.auth.isGuestUser ? `${body} ${guestCommentPostscript}` : body;
   const payload = new Promise(resolve => {
     resolve({
       category: 'waivio',
@@ -57,7 +60,7 @@ export const getFakeSingleComment = (
       author_reputation: 0,
       cashout_time: date,
       active_votes: [],
-      body,
+      body: fakeBody,
       depth,
       author_wobjects_weight: 0,
       created: date,
@@ -193,6 +196,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           parentPost.root_author,
         )
         .then(res => {
+          console.log('SEND_COMMENT');
           dispatch(
             getFakeSingleComment(
               guestParentAuthor || parentAuthor,
