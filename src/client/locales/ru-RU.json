@@ -1115,5 +1115,7 @@
   "only_upvotes_from_registered_accounts": "Только выплаты с зарегистрированных аккаунтов (спонсор, waivio.match) учитываются при оплыте вознаграждений. Стоимость всех остальных голосов не вычитается из указанной суммы вознаграждения.",
   "processing_fees_are_paid_by_campaign_sponsor": "Сборы за обработку оплачиваются спонсором кампании в дополнение к вознаграждениям пользователей.",
   "posted_on": "опубликовано",
-  "profile_updated": "Профиль обновлен"
+  "profile_updated": "Профиль обновлен",
+  "fillOrder_wallet_transferred": "Вы перевели {current_pays}",
+  "fillOrder_wallet_get": "Вы получили {open_pays}"
 }

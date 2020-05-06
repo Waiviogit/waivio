@@ -23,6 +23,7 @@ export const TRANSFER_FROM_SAVINGS = 'transfer_from_savings';
 export const TRANSFER_TO_SAVINGS = 'transfer_to_savings';
 export const DELEGATE_VESTING_SHARES = 'delegate_vesting_shares';
 export const CLAIM_REWARD_BALANCE = 'claim_reward_balance';
+export const FILL_ORDER = 'fillOrder';
 
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';
