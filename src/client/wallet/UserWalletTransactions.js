@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { last } from 'lodash';
+import _ from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-// import { defaultAccountLimit } from '../helpers/apiHelpers';
+import { defaultAccountLimit } from '../helpers/apiHelpers';
 import Loading from '../components/Icon/Loading';
 // import WalletTransaction from './WalletTransaction';
 import './UserWalletTransactions.less';
@@ -16,7 +16,7 @@ class UserWalletTransactions extends React.Component {
     currentUsername: PropTypes.string,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
-    loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
+    // loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     userHasMoreActions: PropTypes.bool.isRequired,
     transactionHistory: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func,
@@ -28,6 +28,10 @@ class UserWalletTransactions extends React.Component {
     currentUsername: '',
     transactionHistory: [],
     getUserTransactionHistory: () => {},
+  };
+
+  state = {
+    hasMoreTransactions: true,
   };
 
   // handleLoadMore = () => {
@@ -43,31 +47,18 @@ class UserWalletTransactions extends React.Component {
   //   this.props.getMoreUserAccountHistory(currentUsername, lastActionCount, limit);
   // };
 
-  handleLoadMoreNew = transactionHistory => {
-    const { currentUsername } = this.props;
-    const actionCount = transactionHistory[0];
-    const lastAction = last(transactionHistory);
-    const lastActionCount = lastAction ? actionCount : -1;
-    let limit = lastActionCount < 500 ? lastActionCount : 500;
-    console.log('transactionHistory: ', transactionHistory);
-
-    if (lastActionCount === -1) {
-      limit = 500;
-    }
-
-    this.props.getUserTransactionHistory(currentUsername, lastActionCount, limit);
-  };
-
   render() {
     const {
       transactions,
       currentUsername,
       totalVestingShares,
       totalVestingFundSteem,
-      loadingMoreUsersAccountHistory,
+      // loadingMoreUsersAccountHistory,
       userHasMoreActions,
       transactionHistory,
     } = this.props;
+
+    const { hasMoreTransactions } = this.state;
 
     if (transactions.length === 0 && !userHasMoreActions) {
       return null;
@@ -87,14 +78,29 @@ class UserWalletTransactions extends React.Component {
     //   console.log('transaction', transaction)
     // })
 
-    const getMore = this.handleLoadMoreNew(transactionHistory);
+    const handleLoadMoreNew = () => {
+      console.log('transactionHistory: ', transactionHistory);
+      const lastAction = _.last(transactionHistory);
+      const lastIndex = transactionHistory.lastIndexOf(lastAction);
+
+      console.log('index: ', lastIndex);
+      if (transactionHistory.length === lastIndex) {
+        this.setState({
+          hasMoreTransactions: false,
+        });
+      }
+
+      this.props.getUserTransactionHistory(currentUsername, lastIndex, defaultAccountLimit);
+    };
+
+    console.log('hasMoreTransactions: ', hasMoreTransactions);
 
     return (
       <div className="UserWalletTransactions">
         <React.Fragment>
           <ReduxInfiniteScroll
-            loadMore={getMore}
-            hasMore={userHasMoreActions}
+            loadMore={handleLoadMoreNew}
+            hasMore={hasMoreTransactions}
             elementIsScrollable={false}
             threshold={500}
             loader={
@@ -102,7 +108,6 @@ class UserWalletTransactions extends React.Component {
                 <Loading />
               </div>
             }
-            loadingMore={loadingMoreUsersAccountHistory}
           >
             <div />
             {transactionHistory.map(transaction => (

@@ -225,10 +225,10 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   }
 };
 
-export const getUserTransactionHistory = username => dispatch =>
+export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username),
+      promise: getTransferHistory(username, skip, limit),
     },
   });
