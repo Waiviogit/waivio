@@ -54,6 +54,7 @@ const Proposition = ({
     };
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
+        requiredObjectName,
         companyAuthor: proposition.guide.name,
         companyPermlink: proposition.activation_permlink,
         objPermlink: obj.author_permlink,

@@ -89,13 +89,11 @@ const PaymentTableRow = ({ intl, sponsor }) => {
                   })}
                 </Link>
                 :{' '}
-                <Link to={`/object/${sponsor.details.main_object}`}>
-                  {/* {sponsor.details.main_object} */}
+                <Link to={`/object/${sponsor.details.main_object.author_permlink}`}>
                   {prymaryObjectName}
                 </Link>
                 ,{' '}
-                <Link to={`/object/${sponsor.details.review_object}`}>
-                  {/* {sponsor.details.review_object} */}
+                <Link to={`/object/${sponsor.details.review_object.author_permlink}`}>
                   {reviewObjectName}
                 </Link>
               </div>
