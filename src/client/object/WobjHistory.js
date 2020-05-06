@@ -11,6 +11,8 @@ import {
   getReadLanguages,
   getIsAuthenticated,
   getObjectAlbums,
+  getRewardFund,
+  getRate,
 } from '../reducers';
 import {
   objectFields,
@@ -31,6 +33,7 @@ import { AppSharedContext } from '../Wrapper';
 import { getObjectAppends } from './wobjActions';
 import AppendCard from './AppendCard';
 import Loading from '../components/Icon/Loading';
+import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 import './WobjHistory.less';
 
@@ -41,6 +44,8 @@ import './WobjHistory.less';
     readLanguages: getReadLanguages(state),
     isAuthenticated: getIsAuthenticated(state),
     albums: getObjectAlbums(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   {
     getObjectAppends,
@@ -55,6 +60,11 @@ class WobjHistory extends React.Component {
     isAuthenticated: PropTypes.bool,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
+    rewardFund: PropTypes.shape({
+      recent_claims: PropTypes.string,
+      reward_balance: PropTypes.string,
+    }).isRequired,
+    rate: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -142,18 +152,34 @@ class WobjHistory extends React.Component {
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { object, readLanguages, isAuthenticated } = this.props;
+    const { object, readLanguages, isAuthenticated, rewardFund, rate } = this.props;
     const { params } = this.props.match;
-    const sortedList = wobj => {
-      if (sort !== 'recency') {
-        return wobj.fields.sort(
-          (before, after) => after.append_field_weight - before.append_field_weight,
-        );
-      }
+    const isFullParams =
+      rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
+    const voteValue = post =>
+      isFullParams
+        ? (post.weight / rewardFund.recent_claims) *
+          rewardFund.reward_balance.replace(' HIVE', '') *
+          rate *
+          1000000
+        : 0;
 
-      return wobj.fields.sort(
-        (before, after) => Date.parse(after.created) - Date.parse(before.created),
-      );
+    const sortedList = wobj => {
+      switch (sort) {
+        case 'vote':
+          return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
+
+        case 'approval':
+          return wobj.fields.sort(
+            (before, after) =>
+              calculateApprovePercent(after.active_votes, after.weight) -
+              calculateApprovePercent(before.active_votes, before.weight),
+          );
+        default:
+          return wobj.fields.sort(
+            (before, after) => Date.parse(after.created) - Date.parse(before.created),
+          );
+      }
     };
     let content = object && object.fields && sortedList(object);
     const isFetching = content && content.length && content[0].append_field_name;
@@ -177,7 +203,14 @@ class WobjHistory extends React.Component {
     const renderFields = () => {
       if (content && content.length) {
         if (content[0].append_field_name) {
-          return content.map(post => <AppendCard key={post.permlink} post={post} />);
+          return content.map(post => (
+            <AppendCard
+              key={post.permlink}
+              post={post}
+              adminsList={object.admins}
+              moderatorsList={object.moderators}
+            />
+          ));
         }
 
         return <Loading />;
@@ -250,13 +283,18 @@ class WobjHistory extends React.Component {
         {isFetching && (
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
-              <SortSelector.Item key="rank">
-                <FormattedMessage id="rank" defaultMessage="Rank">
+              <SortSelector.Item key="recency">
+                <FormattedMessage id="recency" defaultMessage="Recency">
                   {msg => msg.toUpperCase()}
                 </FormattedMessage>
               </SortSelector.Item>
-              <SortSelector.Item key="recency">
-                <FormattedMessage id="recency" defaultMessage="Recency">
+              <SortSelector.Item key="vote">
+                <FormattedMessage id="vote_count_tag" defaultMessage="Vote count">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </SortSelector.Item>
+              <SortSelector.Item key="approval">
+                <FormattedMessage id="approval" defaultMessage="Approval">
                   {msg => msg.toUpperCase()}
                 </FormattedMessage>
               </SortSelector.Item>

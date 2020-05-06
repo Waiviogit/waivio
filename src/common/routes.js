@@ -115,7 +115,12 @@ const routes = [
             component: MatchBotCampaign,
           },
           {
-            path: '/rewards/edit/:campaignId',
+            path: '/rewards/details/:campaignId',
+            exact: true,
+            component: CreateRewardForm,
+          },
+          {
+            path: '/rewards/createDuplicate/:campaignId',
             exact: true,
             component: CreateRewardForm,
           },
