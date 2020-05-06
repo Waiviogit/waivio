@@ -1,11 +1,14 @@
-import _ from 'lodash';
+import { max } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
 import './GalleryAlbum.less';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 const GalleryAlbum = ({ album }) => {
-  const albumItem = _.max(album.items, item => item.weight) || {
+  const filterItems =
+    album.items && album.items.filter(item => calculateApprovePercent(item.active_votes) >= 70);
+  const albumItem = max(filterItems, item => item.weight) || {
     body: '/images/icons/no-image.png',
   };
   return (
@@ -14,7 +17,7 @@ const GalleryAlbum = ({ album }) => {
         hoverable
         cover={<img alt="example" src={albumItem.body} className="GalleryAlbum__image" />}
       >
-        <Card.Meta title={`${album.body} (${album.items ? album.items.length : 0})`} />
+        <Card.Meta title={`${album.body} (${filterItems ? filterItems.length : 0})`} />
       </Card>
     </div>
   );
