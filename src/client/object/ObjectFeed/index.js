@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty, filter, get } from 'lodash';
+import { isEmpty, filter } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import { getIsAuthenticated, getSuitableLanguage } from '../../reducers';
 import IconButton from '../../components/IconButton';
@@ -21,24 +21,27 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
   const usedLocale = useSelector(getSuitableLanguage);
-  const [allPropositions, setPropositions] = useState([]);
+  const [allPropositions, setAllPropositions] = useState([]);
+  const [needUpdate, setNeedUpdate] = useState(true);
 
   const getPropositions = username => {
     const reqData = { currentUserName: username };
+    setNeedUpdate(false);
     ApiClient.getPropositions(reqData).then(data => {
-      setPropositions(data.campaigns);
+      setAllPropositions(data.campaigns);
     });
   };
 
   useEffect(() => {
-    getPropositions(userName);
-  }, []);
+    if (needUpdate) {
+      getPropositions(userName);
+    }
+  }, [wobject]);
 
-  const propositions = filter(
+  const currentProposition = filter(
     allPropositions,
-    proposition => proposition.required_object.author_permlink === match.params.name,
+    obj => obj.required_object.author_permlink === match.params.name,
   );
-  const currentProposition = get(propositions, ['0']);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -71,7 +74,6 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
         history={history}
         handleCreatePost={handleCreatePost}
         wobject={wobject}
-        propositions={propositions}
         currentProposition={currentProposition}
       />
     </React.Fragment>

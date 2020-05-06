@@ -18,6 +18,8 @@ const ObjectCardView = ({
   passedParent,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
+  // console.log('wObject', wObject)
+  // console.log('passedParent', passedParent)
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
