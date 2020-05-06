@@ -47,8 +47,8 @@ export default class ObjectFeed extends React.Component {
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
-    propositions: PropTypes.shape().isRequired,
-    currentProposition: PropTypes.shape().isRequired,
+    propositions: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    currentProposition: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -57,6 +57,7 @@ export default class ObjectFeed extends React.Component {
     getMoreObjectPosts: () => {},
     readLocales: [],
     handleCreatePost: () => {},
+    currentProposition: {},
   };
 
   componentDidMount() {
@@ -109,6 +110,7 @@ export default class ObjectFeed extends React.Component {
     const { feed, limit, handleCreatePost, wobject, propositions, currentProposition } = this.props;
     const wObjectName = this.props.match.params.name;
     console.log('wobject', wobject);
+    console.log('propositions', propositions);
 
     console.log('currentProposition', currentProposition);
     const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
@@ -137,7 +139,7 @@ export default class ObjectFeed extends React.Component {
         <div>
           {!isEmpty(propositions)
             ? map(propositions, proposition => (
-                <div>
+                <div key={proposition.required_object.id}>
                   <ObjectCardView wObject={proposition.required_object} passedParent={wobject} />
                   <div className="Campaign__button" role="presentation" onClick={goToProducts}>
                     <Button type="primary" size="large">
