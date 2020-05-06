@@ -11,6 +11,7 @@ import sanitizeConfig from '../../vendor/SanitizeConfig';
 import { imageRegex, rewriteRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
+import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
 
@@ -54,16 +55,8 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const videoPreviewResult = parsedBody.match(videoPreviewRegExp);
 
   if (videoPreviewResult) {
-    const dTubeRegExp = /https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)/;
-    const threeSpeakRegExp = /https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)/;
-    const dTubeRes = videoPreviewResult[0].match(dTubeRegExp);
-    const threeSpeakRes = videoPreviewResult[0].match(threeSpeakRegExp);
-    let videoLink;
-
-    if (dTubeRes) videoLink = dTubeRes[0].split("'>")[0];
-    if (threeSpeakRes) videoLink = threeSpeakRes[0];
-
-    parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
+    const videoLink = getBodyLink(videoPreviewResult);
+    if (videoLink) parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
   }
 
   parsedBody = improve(parsedBody);
@@ -92,7 +85,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const splittedBody = parsedBody.split('~~~ embed:');
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
-    const match = section.match(/^([A-Za-z0-9/_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
+    const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
 
     if (match && match.length >= 4) {
       const id = match[1];
