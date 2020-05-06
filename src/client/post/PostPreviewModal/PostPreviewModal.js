@@ -287,6 +287,7 @@ class PostPreviewModal extends Component {
                 loading={isPublishing}
                 size="large"
                 disabled={!isConfirmed}
+                type="primary"
                 className="edit-post__submit-btn"
               >
                 {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
