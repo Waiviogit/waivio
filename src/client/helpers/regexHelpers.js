@@ -15,4 +15,6 @@ export const linkRegex = /((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-
 
 export const mobileUserAgents = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i;
 
+export const videoPreviewRegex = /<center>[\s\S]+<\/center>/g;
+
 export default null;
