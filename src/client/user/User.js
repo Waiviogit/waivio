@@ -28,6 +28,7 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import NotFound from '../statics/NotFound';
+import { getMetadata } from '../helpers/postingMetadata';
 
 @connect(
   (state, ownProps) => ({
@@ -147,11 +148,11 @@ export default class User extends React.Component {
       match,
       rewardFund,
       rate,
+      user,
     } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
-    const { user } = this.props;
     if (!isEmpty(user) && !user.id && !user.fetching)
       return (
         <div className="main-panel">
@@ -162,18 +163,10 @@ export default class User extends React.Component {
           />
         </div>
       );
-    let profile = {};
-    try {
-      if (user.posting_json_metadata) {
-        if (user.posting_json_metadata.profile) {
-          profile = user.posting_json_metadata.profile;
-        } else {
-          profile = JSON.parse(user.posting_json_metadata).profile;
-        }
-      }
-    } catch (error) {
-      // jsonMetadata = user.json_metadata || {}
-    }
+
+    const metadata = getMetadata(user);
+    const profile = get(metadata, 'profile', {});
+
     let desc = `Posts by ${username}`;
     let displayedUsername = username;
     let coverImage = null;
