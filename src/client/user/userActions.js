@@ -270,9 +270,9 @@ export const pendingUpdateSuccess = () => dispatch =>
 export const declineProposition = ({
   companyAuthor,
   companyPermlink,
-  objPermlink,
   unreservationPermlink,
   reservationPermlink,
+  requiredObjectName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -282,8 +282,9 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      title: 'reject object for rewards',
-      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      requiredObjectName,
+      title: 'Cancelled reservation',
+      body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_reject_object_campaign',
