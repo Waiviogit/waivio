@@ -8,9 +8,10 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHelpers';
+import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
+import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
 
@@ -50,12 +51,18 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     }
   });
 
+  const videoPreviewResult = parsedBody.match(videoPreviewRegex);
+
+  if (videoPreviewResult) {
+    const videoLink = getBodyLink(videoPreviewResult);
+    if (videoLink) parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
+  }
+
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
-  parsedBody = parsedBody.replace(dtubeImageRegex, '');
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);
@@ -77,7 +84,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   const splittedBody = parsedBody.split('~~~ embed:');
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
-    const match = section.match(/^([A-Za-z0-9/_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
+    const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
 
     if (match && match.length >= 4) {
       const id = match[1];
