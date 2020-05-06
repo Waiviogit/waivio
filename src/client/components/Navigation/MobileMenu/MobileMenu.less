@@ -12,14 +12,25 @@
   height: 95vh;
 
   &__wrapper {
+    position: relative;
     width: 72%;
     padding: 1rem;
     background: @blue-dodgerBlue;
+    right: 0;
+    animation-name: menuAnimation;
+    animation-duration: 1s;
+    @keyframes menuAnimation {
+      0% {
+        right: -72%;
+      }
+      100% {
+        right: 0;
+      }
+    }
   }
 
   &__mask {
     width: 28%;
-    background: rgba(0, 0, 0, 0.45);
   }
 
   .ModalSignUp__button {
@@ -69,6 +80,7 @@
     position: relative;
     display: flex;
     margin: 1rem 0;
+
     .ant-select {
       width: 100%;
     }

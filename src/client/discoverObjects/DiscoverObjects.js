@@ -8,8 +8,9 @@ import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import './DiscoverObjects.less';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
-const DiscoverObjects = ({ intl, history, match }) => {
+const DiscoverObjects = ({ intl, history, match, isMobileNavMenuOpen, toggleMobileNavMenu }) => {
   const isTypeChosen = Boolean(match.params.typeName !== 'show_all');
   const { pathname, search } = history.location;
 
@@ -35,6 +36,10 @@ const DiscoverObjects = ({ intl, history, match }) => {
           </Affix>
         )}
         <div className={`discover-objects${isTypeChosen ? ' center' : ''}`}>
+          <MobileNavigation
+            toggleMobileNavMenu={toggleMobileNavMenu}
+            isMobileNavMenuOpen={isMobileNavMenuOpen}
+          />
           {isTypeChosen ? (
             <DiscoverObjectsContent
               history={history}
@@ -56,6 +61,8 @@ DiscoverObjects.propTypes = {
   intl: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
+  isMobileNavMenuOpen: PropTypes.bool.isRequired,
+  toggleMobileNavMenu: PropTypes.func.isRequired,
 };
 
 export default injectIntl(DiscoverObjects);

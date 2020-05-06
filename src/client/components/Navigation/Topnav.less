@@ -26,6 +26,14 @@
   }
 
   &__brand {
+    position: absolute;
+    height: 52px;
+
+    @media @small {
+      position: relative;
+      height: unset;
+    }
+
     &-icon {
       display: none;
 

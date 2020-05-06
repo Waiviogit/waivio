@@ -6,20 +6,49 @@
   .content-block();
   margin-bottom: 10px;
   padding-bottom: 16px;
+  &.mobileBlock {
+    border-color: @normal-grey !important;
+  }
 
   &__title {
-    .content-block-title();
+    .content-block-title(space-between);
     margin-bottom: 12px;
+    text-transform: uppercase;
 
     @media @small {
       border-top-right-radius: @border-radius-base;
       border-top-left-radius: @border-radius-base;
     }
+
+    &.mobileTitle {
+      color: @white-smoke !important;
+      font-size: 18px;
+      font-weight: 600;
+      border: none !important;
+      text-transform: none;
+      background: none !important;
+      padding: 0;
+      min-height: 0;
+      margin: 0 0 0.7rem;
+    }
   }
 
   &__content {
     padding: 0 16px;
-
+    &.mobileContent {
+      color: @white-smoke;
+      background-color: @grey-nero;
+      .st-card {
+        padding-bottom: 5px;
+        border-color: @normal-grey !important;
+      }
+      .st-instrument-name {
+        color: @white-smoke;
+      }
+      .st-card__content {
+        border-color: @normal-grey !important;
+      }
+    }
     .collapsible-block {
       &__title {
         &.active > .collapsible-block__title-text {
@@ -27,7 +56,13 @@
           border: @border-width-base @border-style-base @border-color-base !important;
           border-radius: @border-radius-base;
           color: @blue-dodgerBlue;
+          &.mobileBlock {
+            background-color: @grey-nero;
+            color: @white !important;
+            border: @border-width-base @border-style-base @normal-grey !important;
+          }
         }
+
         span {
           margin-bottom: -16px;
           display: block;
@@ -41,16 +76,20 @@
           &::first-letter {
             text-transform: uppercase;
           }
+
           &.collapsible-block__title-icon {
             color: @blue-botticelli;
             margin-left: auto;
+
             &.hidden {
               visibility: hidden;
             }
+
             .iconfont {
               font-size: 22px !important;
             }
           }
+
           &:hover {
             color: rgba(0, 0, 0, 0.75);
           }
@@ -121,6 +160,7 @@ div[data-dir='rtl'] .SidebarContentBlock {
 
 div[data-dir='rtl'] .collapsible-block {
   text-align: right;
+
   &__title {
     &__icon {
       margin-right: auto;
