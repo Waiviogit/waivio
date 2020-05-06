@@ -408,7 +408,6 @@ class CatalogWrap extends React.Component {
     objPermlink,
     unreservationPermlink,
     reservationPermlink,
-    requiredObjectName,
   }) => {
     this.setState({ loadingAssignDiscard: true });
     return this.props
@@ -419,7 +418,6 @@ class CatalogWrap extends React.Component {
         objPermlink,
         unreservationPermlink,
         reservationPermlink,
-        requiredObjectName,
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
