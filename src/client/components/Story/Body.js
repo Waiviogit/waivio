@@ -8,7 +8,7 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, rewriteRegex } from '../../helpers/regexHelpers';
+import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
@@ -51,8 +51,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     }
   });
 
-  const videoPreviewRegExp = /<center>[\s\S]+<\/center>/g;
-  const videoPreviewResult = parsedBody.match(videoPreviewRegExp);
+  const videoPreviewResult = parsedBody.match(videoPreviewRegex);
 
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
