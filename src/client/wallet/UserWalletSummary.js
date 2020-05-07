@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
 import formatter from '../helpers/steemitFormatter';
 import {
@@ -10,6 +11,7 @@ import {
 import BTooltip from '../components/BTooltip';
 import Loading from '../components/Icon/Loading';
 import USDDisplay from '../components/Utils/USDDisplay';
+import HiveSvg from './WalletHiveLogo';
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -91,7 +93,7 @@ const UserWalletSummary = ({
 }) => (
   <div className="UserWalletSummary">
     <div className="UserWalletSummary__item">
-      <i className="iconfont icon-steem UserWalletSummary__icon" />
+      <Icon component={HiveSvg} className="iconfont icon-hive UserWalletSummary__icon" />
       <div className="UserWalletSummary__label">
         <FormattedMessage id="hive" defaultMessage="Hive" />
       </div>
