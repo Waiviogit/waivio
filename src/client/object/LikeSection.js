@@ -27,7 +27,6 @@ class LikeSection extends React.Component {
     form: PropTypes.shape().isRequired,
     onVotePercentChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
-
     intl: PropTypes.shape().isRequired,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number,
@@ -114,7 +113,6 @@ class LikeSection extends React.Component {
             </Checkbox>,
           )}
         </Form.Item>
-
         {form.getFieldValue('like') && sliderVisible && (
           <React.Fragment>
             <div className="like-slider">
