@@ -9,12 +9,12 @@ import './ReportHeader.less';
 
 const ReportHeader = ({ intl }) => {
   const singleReportData = useSelector(getSingleReportData);
-  const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM Do, YYYY');
-  const reservationDate = moment(singleReportData.reservationDate).format('MMMM Do, YYYY');
-  const reviewDate = moment(singleReportData.reviewDate).format('MMMM Do, YYYY');
+  const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM D, YYYY');
+  const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
+  const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive;
-  const rewardUsd = singleReportData.rewardUsd.toFixed(3);
+  const rewardUsd = singleReportData.rewardUsd.toFixed(2);
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
