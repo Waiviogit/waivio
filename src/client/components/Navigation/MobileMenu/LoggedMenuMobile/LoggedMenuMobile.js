@@ -11,7 +11,7 @@ const LoggedMenuMobile = ({ username, toggleMenu, onLogout, location, searchBarA
       <Link to="/my_feed" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="my_feed" defaultMessage="My feed" />
       </Link>
-      <Link to="/discover-objects/crypto" className="LoggedMenu__item" onClick={toggleMenu}>
+      <Link to="/discover-objects/cryptopairs" className="LoggedMenu__item" onClick={toggleMenu}>
         <FormattedMessage id="discover" defaultMessage="Discover" />
       </Link>
       <Link to="/drafts" className="LoggedMenu__item" onClick={toggleMenu}>
