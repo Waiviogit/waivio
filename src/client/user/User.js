@@ -217,6 +217,7 @@ export default class User extends React.Component {
             isGuestPage={isGuestPage}
             isGuest={isGuest}
             authenticated={authenticated}
+            authenticatedUser={authenticatedUser}
             user={user}
             changeChatCondition={this.props.changeChatCondition}
             setPostMessageAction={this.props.setPostMessageAction}
