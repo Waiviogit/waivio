@@ -168,12 +168,9 @@ class TopInstruments extends React.Component {
               <React.Fragment>
                 {isAuthenticated && (
                   <div
-                    className={classNames(
-                      'SidebarContentBlock SidebarContentBlock__title ttu justify-between',
-                      {
-                        mobileTitle: isMobile,
-                      },
-                    )}
+                    className={classNames('SidebarContentBlock SidebarContentBlock__title ttu', {
+                      mobileTitle: isMobile,
+                    })}
                   >
                     {instrumentsTitle}
                     <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
