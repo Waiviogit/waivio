@@ -83,6 +83,7 @@ const UserHero = ({
                   isGuest={isGuest}
                   isGuestPage={isGuestPage}
                   username={username}
+                  user={user}
                   authenticated={authenticated}
                   isChat={isChat}
                   changeChatCondition={changeChatCondition}
