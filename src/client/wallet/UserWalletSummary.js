@@ -12,7 +12,6 @@ import UserWalletSummaryLoading from './UserWalletSummaryLoading';
 import BTooltip from '../components/BTooltip';
 import USDDisplay from '../components/Utils/USDDisplay';
 import CurrencyItem from './CurrencyItem/CurrencyItem';
-import UserDynamicListLoading from '../user/UserDynamicListLoading';
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
