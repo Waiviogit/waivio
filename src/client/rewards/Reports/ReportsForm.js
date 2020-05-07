@@ -221,7 +221,7 @@ class ReportsForm extends Component {
                 autoFocus={false}
               />,
             )}
-            <div className="CreateReward__objects-wrap">{renderSponsor}</div>
+            <div className="CreateReportForm__objects-wrap">{renderSponsor}</div>
           </Form.Item>
           <Row gutter={24} className="CreateReportForm__row">
             <Col span={7}>
