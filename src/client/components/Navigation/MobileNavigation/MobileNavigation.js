@@ -36,7 +36,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
         performersStatYear: data[3],
       }),
     );
-  });
+  }, []);
   const pages = {
     discoverObjects: {
       regExp: /(^\/discover-objects)\/?(.*)/,
