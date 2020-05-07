@@ -44,7 +44,7 @@ const ObjectCardView = ({
         }))
       : ratingFields;
   };
-  const pathName = pathNameAvatar || `/object/${wObject.id || wObject.author_permlink}`;
+  const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
@@ -65,7 +65,7 @@ const ObjectCardView = ({
       />
     );
   };
-  const objName = getFieldWithMaxWeight(wObject, objectTypes.name, '') || wObject.default_name;
+  const objName = wObject.name || wObject.default_name;
   const parentName = !isEmpty(wObject.parent)
     ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
     : null;

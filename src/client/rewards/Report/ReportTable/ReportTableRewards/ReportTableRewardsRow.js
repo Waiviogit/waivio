@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ReportTableRewardsRow = beneficiary => {
   const weight = beneficiary.weight ? `${beneficiary.weight}%` : '';
@@ -12,7 +13,9 @@ const ReportTableRewardsRow = beneficiary => {
   return (
     <tr>
       <td>
-        <div className="ReportTableRewardsRow__name">{beneficiary.account}</div>
+        <div className="ReportTableRewardsRow__name">
+          <Link to={`/@${beneficiary.account}`}>{beneficiary.account}</Link>
+        </div>
       </td>
       <td>
         <div className="ReportTableRewardsRow__weigth">{weight}</div>

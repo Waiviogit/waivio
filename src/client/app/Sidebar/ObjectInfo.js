@@ -58,15 +58,19 @@ import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
 import { getObject } from '../../../waivioApi/ApiClient';
+import { changeParent } from '../../object/wobjActions';
 
 import './ObjectInfo.less';
 
 @withRouter
-@connect(state => ({
-  albums: getObjectAlbums(state),
-  isAuthenticated: getIsAuthenticated(state),
-  usedLocale: getSuitableLanguage(state),
-}))
+@connect(
+  state => ({
+    albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
+    usedLocale: getSuitableLanguage(state),
+  }),
+  { changeParent },
+)
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
@@ -77,6 +81,7 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
+    changeParent: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -131,7 +136,7 @@ class ObjectInfo extends React.Component {
     if (!isEmpty(categoryItems)) {
       const categoryItemsWithVotes = categoryItems
         .map(item => addActiveVotesInField(this.props.wobject, item, category))
-        .filter(item => calculateApprovePercent(item.active_votes) >= 70);
+        .filter(item => calculateApprovePercent(item.active_votes, item.weight) >= 70);
       const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
       const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
@@ -170,11 +175,11 @@ class ObjectInfo extends React.Component {
       tagCategories &&
       tagCategories.filter(
         category =>
-          calculateApprovePercent(category.active_votes) >= 70 &&
+          calculateApprovePercent(category.active_votes, category.weight) >= 70 &&
           category.categoryItems &&
           category.categoryItems.filter(item => {
             const itemWithLike = addActiveVotesInField(this.props.wobject, item);
-            return calculateApprovePercent(itemWithLike.active_votes) >= 70;
+            return calculateApprovePercent(itemWithLike.active_votes, itemWithLike.weight) >= 70;
           }).length,
       );
     if (filteredTagCategories) {
@@ -191,7 +196,11 @@ class ObjectInfo extends React.Component {
 
   renderParent = permlink => {
     if (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink) {
-      const getParent = () => getObject(permlink).then(res => this.setState({ parentWobj: res }));
+      const getParent = () =>
+        getObject(permlink).then(res => {
+          this.setState({ parentWobj: res });
+          this.props.changeParent(res);
+        });
       getParent();
     }
 
@@ -239,7 +248,7 @@ class ObjectInfo extends React.Component {
     const pictures =
       wobject.preview_gallery &&
       wobject.preview_gallery.filter(
-        picture => calculateApprovePercent(picture.active_votes) >= 70,
+        picture => calculateApprovePercent(picture.active_votes, picture.weight) >= 70,
       );
 
     if (size(wobject) > 0) {
@@ -247,7 +256,7 @@ class ObjectInfo extends React.Component {
         .filter(
           nameFld =>
             nameFld.body !== (wobject.name || wobject.default_name) &&
-            calculateApprovePercent(nameFld.active_votes) >= 70,
+            calculateApprovePercent(nameFld.active_votes, nameFld.weight) >= 70,
         )
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
@@ -284,14 +293,14 @@ class ObjectInfo extends React.Component {
       });
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(item => calculateApprovePercent(item.active_votes) >= 70)
+          ? menuItems.filter(item => calculateApprovePercent(item.active_votes, item.weight) >= 70)
           : null;
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
           ? menuItems.filter(
               item =>
                 item.object_type === OBJECT_TYPE.PAGE &&
-                calculateApprovePercent(item.active_votes) >= 70,
+                calculateApprovePercent(item.active_votes, item.weight) >= 70,
             )
           : null;
 
@@ -299,9 +308,10 @@ class ObjectInfo extends React.Component {
 
       tagCategories = wobject.tagCategories;
 
-      const filteredPhones = wobject.fields.filter(
+      const filteredPhones = get(wobject, 'fields', []).filter(
         field =>
-          field.name === objectFields.phone && calculateApprovePercent(field.active_votes) >= 70,
+          field.name === objectFields.phone &&
+          calculateApprovePercent(field.active_votes, field.weight) >= 70,
       );
       phones = orderBy(filteredPhones, ['weight'], ['desc']);
     }
@@ -325,7 +335,7 @@ class ObjectInfo extends React.Component {
       wobject.fields.filter(
         field =>
           field.name === objectFields.galleryItem &&
-          calculateApprovePercent(field.active_votes >= 70),
+          calculateApprovePercent(field.active_votes, field.weight) >= 70,
       );
 
     const isRenderMap =

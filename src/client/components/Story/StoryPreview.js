@@ -18,13 +18,15 @@ import {
 import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { getBodyLink } from '../EditorExtended/util/videoHelper';
+import { videoPreviewRegex } from '../../helpers/regexHelpers';
 
 const StoryPreview = ({ post }) => {
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
-  if (jsonMetadata) {
+  if (jsonMetadata && (has(jsonMetadata, 'image') || has(jsonMetadata, 'wobj'))) {
     if (jsonMetadata.image && jsonMetadata.image[0]) {
       imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
     } else if (
@@ -59,6 +61,37 @@ const StoryPreview = ({ post }) => {
       thumbnail: getProxyImageURL(`https://ipfs.io/ipfs/${video.info.snaphash}`, 'preview'),
     };
   }
+
+  const videoPreviewResult = post.body.match(videoPreviewRegex);
+
+  if (videoPreviewResult) {
+    const videoLink = getBodyLink(videoPreviewResult);
+
+    if (videoLink) {
+      const options = {
+        width: '100%',
+        height: 340,
+        autoplay: false,
+        thumbnail: '',
+      };
+      let thumbnailID;
+
+      if (video && video.files) {
+        if (video.files.ipfs && video.files.ipfs.img) {
+          thumbnailID = video.files.ipfs.img[360];
+          options.thumbnail = thumbnailID && `https://ipfs.io/ipfs/${thumbnailID}`;
+        } else {
+          thumbnailID = video.files.youtube;
+          options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
+        }
+      }
+      embeds[0] = steemEmbed.get(videoLink, options);
+      embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
+    }
+  }
+
+  if (embeds && embeds[0] && embeds[0].thumbnail)
+    embeds[0].thumbnail = embeds[0].thumbnail.replace('/maxresdefault', '/0');
 
   const preview = {
     text: () => (

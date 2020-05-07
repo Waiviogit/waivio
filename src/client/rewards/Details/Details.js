@@ -46,7 +46,18 @@ const Details = ({
     return result;
   };
 
+  const getProposedWobjName = () => {
+    let result;
+    if (proposedWobj.name.includes('&')) {
+      result = proposedWobj.name.replace('&', '%26');
+    } else {
+      result = proposedWobj.name;
+    }
+    return result;
+  };
+
   const objName = getRequiredObjectName();
+  const proposedWobjName = getProposedWobjName();
 
   return (
     <Modal
@@ -90,7 +101,7 @@ const Details = ({
           ) : (
             <Link
               // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobj.name}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
+              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
             >
               <Button type="primary">
                 {intl.formatMessage({

@@ -73,10 +73,10 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
           }
 
           return acc + `required_fields=${field}`;
-        }, '?')
-      : `?required_fields=${requiredField}`;
+        }, '')
+      : `required_fields=${requiredField}`;
   }
-  queryString = user ? `?user=${user}${queryString}` : queryString;
+  queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
@@ -1079,6 +1079,21 @@ export const getWalletCryptoPriceHistory = symbol => {
       method: 'GET',
     },
   ).then(res => res.json());
+};
+
+export const checkFollowing = (user, users = []) => {
+  const queryString = users.length
+    ? users.reduce((acc, usr, index) => {
+        if (index !== users.length - 1) return acc + `users=${usr}&`;
+
+        return acc + `users=${usr}`;
+      }, '?')
+    : '';
+
+  return fetch(`${config.apiPrefix}${config.user}/${user}/getFollowingsState${queryString}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

@@ -29,10 +29,6 @@ const CampaignRewardsTable = ({
               defaultMessage: `Campaign`,
             })}
           </th>
-          <th className="Campaign-rewards basicWidth" rowSpan="3">
-            {intl.formatMessage({ id: 'edit', defaultMessage: `Edit` })}
-            **
-          </th>
           <th className="Campaign-rewards mediumWidth" rowSpan="3">
             {intl.formatMessage({
               id: 'status',

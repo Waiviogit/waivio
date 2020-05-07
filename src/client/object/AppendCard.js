@@ -165,7 +165,11 @@ const AppendCard = props => {
         >
           <StoryPreview post={props.post} />
         </a>
-        <ApprovingCard post={props.post} />
+        <ApprovingCard
+          post={props.post}
+          adminsList={props.adminsList}
+          moderatorsList={props.moderatorsList}
+        />
       </div>
       <div className="Story__footer">
         <div className="StoryFooter__actions">
@@ -183,6 +187,8 @@ const AppendCard = props => {
               handleCloseReactions={() => showReactionModal(false)}
               reactionsModalVisible={reactionsModalVisible}
               defaultVotePercent={props.defaultVotePercent}
+              adminsList={props.adminsList}
+              moderatorsList={props.moderatorsList}
             />
           )}
         </div>
@@ -204,6 +210,8 @@ AppendCard.propTypes = {
   isGuest: PropTypes.bool.isRequired,
   rewardFund: PropTypes.shape().isRequired,
   rate: PropTypes.number.isRequired,
+  adminsList: PropTypes.arrayOf(PropTypes.string).isRequired,
+  moderatorsList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = state => ({
