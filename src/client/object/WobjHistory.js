@@ -192,7 +192,7 @@ class WobjHistory extends React.Component {
       return true;
     });
 
-    if (params[1] && content && content[0].append_field_name) {
+    if (params[1] && content && content.length && content[0].append_field_name) {
       content = content.filter(
         f =>
           sortingMenuName[params[1]] === f.append_field_name || f.append_field_name === params[1],
