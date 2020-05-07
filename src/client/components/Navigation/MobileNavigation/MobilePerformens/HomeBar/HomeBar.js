@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import classNames from 'classnames';
 import PerformerItem from '../../PerformerItem/PerformerItem';
-import api from '../../../../../../investarena/configApi/apiResources';
 import './HomeBar.less';
 
-const HomeBar = ({ intl, toggleMobileNavigation }) => {
-  const period = {
-    week: 'd7',
-    month: 'm1',
-    halfYear: 'm6',
-  };
+const HomeBar = ({ intl, toggleMobileNavigation, period, periodsContent }) => {
   const title = {
     d7: intl.formatMessage({
       id: 'longTermData_d7',
@@ -26,25 +20,14 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
       id: 'longTermData_m6',
       defaultMessage: '6 Months',
     }),
+    m12: intl.formatMessage({
+      id: 'longTermData_m12',
+      defaultMessage: 'Year',
+    }),
   };
 
-  const [performersStatWeek, setPerformersStatWeek] = useState([]);
-  const [performersStatMonth, setPerformersStatMonth] = useState([]);
-  const [performersStatHalfYear, setPerformersStatHalfYear] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(period.week);
-
-  useEffect(() => {
-    api.performers
-      .getPerformersStatisticsForPeriod(period.week, 30)
-      .then(data => setPerformersStatWeek(data));
-    api.performers
-      .getPerformersStatisticsForPeriod(period.month, 30)
-      .then(data => setPerformersStatMonth(data));
-    api.performers
-      .getPerformersStatisticsForPeriod(period.halfYear, 30)
-      .then(data => setPerformersStatHalfYear(data));
-  }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -52,13 +35,15 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
 
   const getModalContent = () => {
     switch (currentItem) {
+      case period.year:
+        return periodsContent.performersStatYear;
       case period.halfYear:
-        return performersStatHalfYear;
+        return periodsContent.performersStatHalfYear;
       case period.month:
-        return performersStatMonth;
+        return periodsContent.performersStatMonth;
       case period.week:
       default:
-        return performersStatWeek;
+        return periodsContent.performersStatWeek;
     }
   };
 
@@ -89,7 +74,7 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
         </div>
         {currentItem === period.week && (
           <React.Fragment>
-            {performersStatWeek.slice(0, 5).map(performer => (
+            {periodsContent.performersStatWeek.slice(0, 5).map(performer => (
               <PerformerItem
                 period={period.week}
                 performer={performer}
@@ -108,7 +93,7 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
         </div>
         {currentItem === period.month && (
           <React.Fragment>
-            {performersStatMonth.slice(0, 5).map(performer => (
+            {periodsContent.performersStatMonth.slice(0, 5).map(performer => (
               <PerformerItem
                 period={period.month}
                 performer={performer}
@@ -127,9 +112,28 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
         </div>
         {currentItem === period.halfYear && (
           <React.Fragment>
-            {performersStatHalfYear.slice(0, 5).map(performer => (
+            {periodsContent.performersStatHalfYear.slice(0, 5).map(performer => (
               <PerformerItem
                 period={period.halfYear}
+                performer={performer}
+                toggleMobileNavigation={toggleMobileNavigation}
+              />
+            ))}
+            {showMoreButton}
+          </React.Fragment>
+        )}
+        <div
+          className={classNames('HomeBar__item', { selected: currentItem === period.year })}
+          onClick={() => setCurrentItem(period.year)}
+          role="presentation"
+        >
+          {title[period.year]}
+        </div>
+        {currentItem === period.year && (
+          <React.Fragment>
+            {periodsContent.performersStatYear.slice(0, 5).map(performer => (
+              <PerformerItem
+                period={period.year}
                 performer={performer}
                 toggleMobileNavigation={toggleMobileNavigation}
               />
@@ -161,6 +165,8 @@ const HomeBar = ({ intl, toggleMobileNavigation }) => {
 HomeBar.propTypes = {
   toggleMobileNavigation: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
+  period: PropTypes.shape().isRequired,
+  periodsContent: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(HomeBar);
