@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -6,9 +6,37 @@ import PropTypes from 'prop-types';
 import HomeBar from './MobilePerformens/HomeBar/HomeBar';
 import TopInstruments from '../../../app/Sidebar/TopInstruments';
 import SidenavDiscoverObjects from '../../../discoverObjects/SidenavDiscoverObjects';
+import api from '../../../../investarena/configApi/apiResources';
 import './MobileNavigation.less';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
+  const period = {
+    week: 'd7',
+    month: 'm1',
+    halfYear: 'm6',
+    year: 'm12',
+  };
+  const [periodsContent, setPeriodsContent] = useState({
+    performersStatWeek: [],
+    performersStatMonth: [],
+    performersStatHalfYear: [],
+    performersStatYear: [],
+  });
+
+  useEffect(() => {
+    Promise.all(
+      Object.values(period).map(currentPeriod =>
+        api.performers.getPerformersStatisticsForPeriod(currentPeriod, 30),
+      ),
+    ).then(data =>
+      setPeriodsContent({
+        performersStatWeek: data[0],
+        performersStatMonth: data[1],
+        performersStatHalfYear: data[2],
+        performersStatYear: data[3],
+      }),
+    );
+  }, []);
   const pages = {
     discoverObjects: {
       regExp: /(^\/discover-objects)\/?(.*)/,
@@ -41,7 +69,13 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
     case '/':
       pageName = 'Home';
       pageId = 'home';
-      pageContent = <HomeBar toggleMobileNavigation={toggleMobileNavMenu} />;
+      pageContent = (
+        <HomeBar
+          toggleMobileNavigation={toggleMobileNavMenu}
+          periodsContent={periodsContent}
+          period={period}
+        />
+      );
       break;
     default:
       break;

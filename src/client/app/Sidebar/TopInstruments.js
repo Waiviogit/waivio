@@ -168,7 +168,7 @@ class TopInstruments extends React.Component {
               <React.Fragment>
                 {isAuthenticated && (
                   <div
-                    className={classNames('SidebarContentBlock SidebarContentBlock__title', {
+                    className={classNames('SidebarContentBlock SidebarContentBlock__title ttu', {
                       mobileTitle: isMobile,
                     })}
                   >
