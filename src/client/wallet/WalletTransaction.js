@@ -8,6 +8,7 @@ import SavingsTransaction from './SavingsTransaction';
 import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
 import './UserWalletTransactions.less';
+import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -34,11 +35,8 @@ const WalletTransaction = ({
   totalVestingShares,
   totalVestingFundSteem,
 }) => {
-  const transactionType = transaction.op[0];
-  const transactionDetails = transaction.op[1];
-
-  // console.log('transactionType: ', transactionType)
-  // console.log('transactionDetails: ', transactionDetails)
+  const transactionType = transaction.type;
+  const transactionDetails = transaction;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -90,6 +88,15 @@ const WalletTransaction = ({
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
           timestamp={transaction.timestamp}
         />
+      );
+    case accountHistoryConstants.FILL_ORDER:
+      return (
+        <React.Fragment>
+          <WalletFillOrderTransferred
+            transactionDetails={transactionDetails}
+            timestamp={transaction.timestamp}
+          />
+        </React.Fragment>
       );
     default:
       return null;
