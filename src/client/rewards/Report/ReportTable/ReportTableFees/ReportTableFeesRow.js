@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ReportTableFeesRow = fee => {
   const hive = fee.hive ? fee.hive.toFixed(3) : '';
@@ -10,7 +11,9 @@ const ReportTableFeesRow = fee => {
         <div className="ReportTableFeesRow__name">{fee.name}</div>
       </td>
       <td>
-        <div className="ReportTableFeesRow__account">{fee.account}</div>
+        <div className="ReportTableFeesRow__account">
+          <Link to={`/@${fee.account}`}>{fee.account}</Link>
+        </div>
       </td>
       <td>
         <div className="ReportTableFeesRow__share">{share}</div>
