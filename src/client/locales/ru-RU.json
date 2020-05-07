@@ -1102,6 +1102,7 @@
   "trading_form_total": "Всего",
   "trading_form_fee": "Коммисия",
   "trading_add_wallet": "Добавить кошелек",
+  "trading_add_wallet_named": "Добавить {currency} кошелек",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
   "signUp_creditCards": "- кредитные карты"
