@@ -8,7 +8,6 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
-import Loading from '../components/Icon/Loading';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,

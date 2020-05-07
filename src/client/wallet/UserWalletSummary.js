@@ -12,6 +12,7 @@ import UserWalletSummaryLoading from './UserWalletSummaryLoading';
 import BTooltip from '../components/BTooltip';
 import USDDisplay from '../components/Utils/USDDisplay';
 import CurrencyItem from './CurrencyItem/CurrencyItem';
+import { redirectToBeaxy } from '../user/usersHelper';
 import './UserWalletSummary.less';
 
 const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -118,11 +119,14 @@ const UserWalletSummary = ({
             </div>
           </div>
         )}
-        <a href="https://uat-exchange.tokenexus.com">
-          <Button className="UserWalletSummary__add-wallet mb1" size="large" type="primary">
-            <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
-          </Button>
-        </a>
+        <Button
+          className="UserWalletSummary__add-wallet mb1"
+          size="large"
+          type="primary"
+          onClick={redirectToBeaxy}
+        >
+          <FormattedMessage id="trading_add_wallet" defaultMessage="Add wallet" />
+        </Button>
       </React.Fragment>
     )}
     <div className="UserWalletSummary">

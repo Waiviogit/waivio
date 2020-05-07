@@ -1054,6 +1054,7 @@
   "user_statistics_no_data": "There is no statistics data yet",
   "menu": "Menu",
   "disconnect_broker": "Disconnect broker",
+  "disconnect_beaxy": "Disconnect beaxy",
   "brokers": "Brokers",
   "hashtags": "Hashtags",
   "umarkets": "Umarkets",
@@ -1132,6 +1133,7 @@
   "trading_form_total": "Total",
   "trading_form_fee": "Fee",
   "trading_add_wallet": "Add wallet",
+  "trading_add_wallet_named": "Add {currency} wallet",
   "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
   "signUp_cryptos": "- CRYPTOS",
   "signUp_creditCards": "- credit cards"
