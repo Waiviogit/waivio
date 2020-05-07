@@ -1,15 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { getIsAuthenticated } from '../reducers';
 import './UserMenu.less';
 
-@connect(state => ({
-  isAuthenticated: getIsAuthenticated(state),
-}))
 class UserMenu extends React.Component {
   static propTypes = {
     onChange: PropTypes.func,
@@ -17,7 +12,7 @@ class UserMenu extends React.Component {
     followers: PropTypes.number,
     following: PropTypes.number,
     isGuest: PropTypes.bool,
-    isAuthenticated: PropTypes.bool,
+    isGuestPage: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -26,7 +21,7 @@ class UserMenu extends React.Component {
     followers: 0,
     following: 0,
     isGuest: false,
-    isAuthenticated: false,
+    isGuestPage: false,
   };
 
   constructor(props) {
@@ -51,7 +46,8 @@ class UserMenu extends React.Component {
   };
 
   render() {
-    const { isAuthenticated } = this.props;
+    const { isGuestPage } = this.props;
+
     return (
       <div className="UserMenu">
         <div className="container menu-layout">
@@ -135,7 +131,7 @@ class UserMenu extends React.Component {
               >
                 <FormattedMessage id="statistics" defaultMessage="Statistics" />
               </li>
-              {!this.props.isGuest && isAuthenticated ? (
+              {!isGuestPage ? (
                 <li
                   className={this.getItemClasses('activity')}
                   onClick={this.handleClick}
