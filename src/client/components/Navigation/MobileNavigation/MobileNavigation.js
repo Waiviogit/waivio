@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import HomeBar from './MobilePerformens/HomeBar/HomeBar';
 import TopInstruments from '../../../app/Sidebar/TopInstruments';
 import SidenavDiscoverObjects from '../../../discoverObjects/SidenavDiscoverObjects';
-import './MobileNavigation.less';
 import api from '../../../../investarena/configApi/apiResources';
+import './MobileNavigation.less';
 
 const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) => {
   const period = {
