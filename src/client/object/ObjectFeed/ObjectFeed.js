@@ -146,7 +146,7 @@ export default class ObjectFeed extends React.Component {
         proposition.objects,
         wobj =>
           wobj.object &&
-          wobj.object.author_permlink && (
+          wobj.object.author_permlink === this.props.match.params.name && (
             <Proposition
               proposition={proposition}
               wobj={wobj.object}
