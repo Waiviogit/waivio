@@ -246,3 +246,11 @@ export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
       });
     });
 };
+
+export const SET_NEW_PARENT = 'SET_NEW_PARENT';
+
+export const changeParent = parent => dispatch =>
+  dispatch({
+    type: SET_NEW_PARENT,
+    payload: { parent },
+  });

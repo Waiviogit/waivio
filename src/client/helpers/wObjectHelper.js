@@ -155,15 +155,17 @@ export const addActiveVotesInField = (wobj, field, category = '') => {
     );
   }
   const activeVotes = matchField ? matchField.active_votes : [];
+  const weight = matchField ? matchField.weight : 0;
 
   return {
     ...field,
     active_votes: [...activeVotes],
+    weight,
   };
 };
 
 export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
-  const stringBodyFields = ['name', 'parent'];
+  const stringBodyFields = ['name', 'parent', 'avatar'];
   if (!wobj || !wobj.fields || !fieldName) return null;
 
   let approvedField = _.get(wobj, 'fields').filter(field => {
@@ -175,7 +177,7 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
 
     return (
       mapedField.name === fieldName &&
-      calculateApprovePercent(mapedField.active_votes) >= 70 &&
+      calculateApprovePercent(mapedField.active_votes, mapedField.weight) >= 70 &&
       mapedField.locale === locale
     );
   });
