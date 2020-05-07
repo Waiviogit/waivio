@@ -21,13 +21,13 @@ class ReportsForm extends Component {
     loading: false,
     openFrom: false,
     openTill: false,
-    currency: 'USD',
-    amount: '',
+    currency: 'HIVE',
+    amount: 0,
     sponsor: {},
     object: {},
     objects: [],
     dateFrom: '',
-    dateTill: '',
+    dateTill: moment().format('MMMM D, YYYY'),
     updated: false,
     preparedObject: {},
     objectsNamesAndPermlinks: [],
@@ -37,16 +37,10 @@ class ReportsForm extends Component {
     e.preventDefault();
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
-      if (!err && values) {
+      if (!err) {
         this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
-        const dateFrom = values.from ? moment(values.from.format('MMMM Do, YYYY')) : '';
-        const dateTill = values.till ? moment(values.from.format('MMMM Do, YYYY')) : '';
         this.setState({
           updated: true,
-          // eslint-disable-next-line no-underscore-dangle
-          dateFrom: dateFrom._i,
-          // eslint-disable-next-line no-underscore-dangle
-          dateTill: dateTill._i,
         });
         console.log('Received values of form: ', values);
       }
@@ -71,7 +65,7 @@ class ReportsForm extends Component {
   };
 
   setDateFrom = from => {
-    this.handleSetState({ dateFrom: from }, { dateFrom: from });
+    this.handleSetState({ dateFrom: from.format('MMMM D, YYYY') }, { dateFrom: from });
   };
 
   setObject = obj => {
@@ -162,6 +156,7 @@ class ReportsForm extends Component {
       dateTill,
       preparedObject,
       objectsNamesAndPermlinks,
+      amount,
     } = this.state;
     const format = 'HH:mm:ss';
     const { Option } = Select;
@@ -214,11 +209,9 @@ class ReportsForm extends Component {
                   })}`,
                 },
               ],
-              initialValue: '',
             })(
               <SearchUsersAutocomplete
                 allowClear={false}
-                // disabled={disabled}
                 handleSelect={this.setSponsor}
                 placeholder={intl.formatMessage({
                   id: 'find_users_placeholder',
@@ -246,14 +239,13 @@ class ReportsForm extends Component {
                 {form.getFieldDecorator('from', {
                   rules: [
                     {
-                      required: false,
+                      required: true,
                       message: `${intl.formatMessage({
                         id: 'select_date',
                         defaultMessage: 'Please select date',
                       })}`,
                     },
                   ],
-                  initialValue: moment(),
                 })(<DatePicker allowClear={false} disabled={false} onChange={this.setDateFrom} />)}
               </Form.Item>
             </Col>
@@ -296,7 +288,7 @@ class ReportsForm extends Component {
               >
                 {form.getFieldDecorator('till', {
                   rules: [{ required: false }],
-                  initialValue: null,
+                  initialValue: moment(),
                 })(<DatePicker allowClear={false} disabled={false} />)}
               </Form.Item>
             </Col>
@@ -406,7 +398,6 @@ class ReportsForm extends Component {
                   defaultMessage: 'Find object',
                 })}
                 handleSelect={this.setObject}
-                // disabled={disabled}
                 autoFocus={false}
               />,
             )}
@@ -455,9 +446,7 @@ class ReportsForm extends Component {
               :{' '}
               {objectsNamesAndPermlinks
                 ? map(objectsNamesAndPermlinks, obj => (
-                    <Link
-                      to={`/object/${obj.permlink}`}
-                    >{`${obj.name}: (http://www.waivio.com/object/${obj.permlink}) `}</Link>
+                    <a href={`http://www.waivio.com/object/${obj.permlink}`}>{`${obj.name}`}</a>
                   ))
                 : null}
             </div>
@@ -466,7 +455,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable}
+              {preparedObject.filters.payable || amount}
             </div>
           </div>
         )}
