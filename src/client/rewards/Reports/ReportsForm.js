@@ -47,7 +47,7 @@ class ReportsForm extends Component {
       }
     });
     this.handleReset();
-    this.setState({ loading: false });
+    this.setState({ loading: false, disabled: true });
   };
 
   handleSetState = (stateData, callbackData) => {
