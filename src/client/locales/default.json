@@ -1054,6 +1054,7 @@
   "user_statistics_no_data": "There is no statistics data yet",
   "menu": "Menu",
   "disconnect_broker": "Disconnect broker",
+  "disconnect_beaxy": "Disconnect beaxy",
   "brokers": "Brokers",
   "hashtags": "Hashtags",
   "umarkets": "Umarkets",
