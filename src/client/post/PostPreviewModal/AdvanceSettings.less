@@ -2,6 +2,8 @@
 @import (reference) '../../styles/modules/variables.less';
 
 @padding: 8px;
+@base-spacing: 0;
+
 .rewards-settings {
   display: flex;
   flex-direction: row;
@@ -33,9 +35,107 @@
   }
 }
 
-.object-weights {
-  &__header {
+.beneficiary-settings {
+  &.title {
+    font-weight: bold;
+  }
+}
+
+.beneficiariesFindUsers__search-dropdown-container.ant-select-dropdown {
+  z-index: 10000000 !important;
+}
+
+.beneficiariesFindUsers {
+  &__search-content-wrap {
     display: flex;
+    align-items: center;
+  }
+
+  &__search-content {
+    margin-left: 10px;
+    max-width: calc(100vw - 20px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__input-container {
+    padding: 0 @base-spacing;
+    position: relative;
+    height: 45px;
+    display: flex;
+    margin-left: 15px;
+
+    &:hover .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    &:focus .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    .anticon.anticon-close-circle {
+      position: absolute;
+      color: @blue-linkWater;
+      font-size: 20px;
+      z-index: 1000;
+      right: 16px;
+      left: unset;
+      cursor: pointer;
+      top: 20px;
+      transition: 0.5s;
+      opacity: 0;
+
+      &:hover {
+        color: @blue-baliHai;
+      }
+    }
+
+    > .ant-select-show-search {
+      width: 100%;
+
+      .ant-select-search__field {
+        background-color: @white !important;
+
+        &:hover,
+        &:focus {
+          border-radius: 4px;
+        }
+      }
+    }
+
+    input {
+      height: 32px !important;
+      margin-top: 8px;
+      border-radius: @border-radius-base;
+      border: @border-width-base @border-style-base @border-color-base;
+
+      &:hover,
+      &:focus {
+        box-shadow: none !important;
+        //border: @border-width-base @border-style-base @border-color-base !important;
+      }
+    }
+
+    @media @small {
+      margin-left: 20px;
+    }
+  }
+}
+
+.beneficiaries-weights {
+  .title {
+    display: flex;
+    align-self: center;
+    flex-shrink: 0;
+    padding-right: @padding;
+    font-weight: 500;
+  }
+}
+
+.object-weights,
+.beneficiaries-weights {
+  &__header {
     padding: @padding 0;
     margin-top: 5px;
 
@@ -68,8 +168,29 @@
       padding-left: 6px;
       text-transform: uppercase;
     }
+
     .obj-item-slider {
       margin-top: 0;
+    }
+
+    .beneficiaries-item-name {
+      padding-right: 6px;
+    }
+
+    &-title {
+      display: flex;
+      align-items: center;
+
+      .anticon.anticon-close-circle {
+        color: @blue-linkWater;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.5s;
+
+        &:hover {
+          color: @blue-baliHai;
+        }
+      }
     }
   }
 }

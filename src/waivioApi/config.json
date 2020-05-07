@@ -4,7 +4,7 @@
     "": "www.waivio.com",
     "host": "waiviodev.com",
     "": "localhost:8093",
-    "appName": "waivio"
+    "appName": "waiviodev"
   },
   "test": {
     "protocol": "https://",
@@ -57,6 +57,7 @@
   "objectTypesSearch": "/ObjectTypesSearch",
   "payables": "/payables",
   "payments": "/payments",
+  "report": "/report",
   "post": "/post",
   "posts": "/posts",
   "rejectReservation": "/validate_reject_reservation",

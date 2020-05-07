@@ -146,6 +146,7 @@ const WelcomeModal = ({
               setIsOpenUsersModal(true);
               setIsOpenTopicsModal(false);
             }}
+            key="next"
           >
             {intl.formatMessage({ id: 'next', defaultMessage: 'Next' })}
           </button>,
@@ -189,7 +190,12 @@ const WelcomeModal = ({
           defaultMessage: 'Select experts to follow',
         })}
         footer={[
-          <Link to={'/'} className="WelcomeModal__button" onClick={handleCloseSecondModal}>
+          <Link
+            to={'/'}
+            className="WelcomeModal__button"
+            key="open"
+            onClick={handleCloseSecondModal}
+          >
             {intl.formatMessage({ id: 'open_my_feed', defaultMessage: 'Open my feed' })}
           </Link>,
         ]}

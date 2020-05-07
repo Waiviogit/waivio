@@ -163,19 +163,11 @@ const CampaignRewardsTableRow = ({
             disabled={activationStatus ? activationStatus === 'inactivated' : isInactive}
           />
         </td>
-        <td>{currentItem.name}</td>
         <td>
-          {!isChecked ? (
-            // eslint-disable-next-line no-underscore-dangle
-            <Link to={`/rewards/edit/${currentItem._id}`} title="Edit">
-              Edit
-            </Link>
-          ) : (
-            // eslint-disable-next-line no-underscore-dangle
-            <Link to={`/rewards/edit/${currentItem._id}`} title="Edit">
-              View
-            </Link>
-          )}
+          {/* eslint-disable-next-line no-underscore-dangle */}
+          <Link to={`/rewards/details/${currentItem._id}`} title="View">
+            {currentItem.name}
+          </Link>
         </td>
 
         <td>

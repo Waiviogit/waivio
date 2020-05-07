@@ -25,8 +25,8 @@ import { Block, Entity as E, HANDLED, NOT_HANDLED, KEY_COMMANDS } from './util/c
 import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
-
 import ImageSideButton from './components/sides/ImageSideButton';
+
 import './index.less';
 
 /*
@@ -67,7 +67,7 @@ class MediumDraftEditor extends React.Component {
     sideButtons: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string.isRequired,
-        component: PropTypes.func,
+        component: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
       }),
     ),
     editorState: PropTypes.shape().isRequired,
@@ -266,7 +266,6 @@ class MediumDraftEditor extends React.Component {
     togglled.
   */
   handleKeyCommand(command) {
-    // console.log(command);
     const { editorState } = this.props;
     if (this.props.handleKeyCommand) {
       const behaviour = this.props.handleKeyCommand(command);

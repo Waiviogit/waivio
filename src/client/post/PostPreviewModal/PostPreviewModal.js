@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 import { throttle } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -12,10 +13,12 @@ import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
+import { clearBeneficiariesUsers } from '../../search/searchActions';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
+@connect(null, { clearBeneficiariesUsers })
 class PostPreviewModal extends Component {
   static findScrollElement() {
     return document.querySelector('.post-preview-modal');
@@ -44,6 +47,7 @@ class PostPreviewModal extends Component {
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
+    clearBeneficiariesUsers: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -63,7 +67,6 @@ class PostPreviewModal extends Component {
       title: '',
       body: '',
       isConfirmed: false,
-      // Check review modal
       isCheckReviewModalOpen: false,
       isReviewValid: false,
     };
@@ -107,6 +110,7 @@ class PostPreviewModal extends Component {
   hideModal = () => {
     if (!this.props.isPublishing) {
       this.setState({ isModalOpen: false });
+      this.props.clearBeneficiariesUsers();
     }
   };
 

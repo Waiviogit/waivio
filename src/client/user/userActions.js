@@ -239,7 +239,7 @@ export const assignProposition = ({
       proposition,
       proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${secondaryObjectName}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
@@ -270,9 +270,9 @@ export const pendingUpdateSuccess = () => dispatch =>
 export const declineProposition = ({
   companyAuthor,
   companyPermlink,
-  objPermlink,
   unreservationPermlink,
   reservationPermlink,
+  requiredObjectName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -282,8 +282,9 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      title: 'reject object for rewards',
-      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      requiredObjectName,
+      title: 'Cancelled reservation',
+      body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_reject_object_campaign',

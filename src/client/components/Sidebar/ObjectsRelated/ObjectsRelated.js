@@ -21,22 +21,32 @@ const ObjectsRelated = ({ wobject, intl }) => {
 
   const getInitialWobjects = () => {
     getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
-      .then(data =>
+      .then(data => {
+        const objects = data.map(wobj => ({
+          ...wobj,
+          parent: wobject,
+        }));
+
         setObjectsState({
-          objects: [...data],
+          objects: [...objects],
           loading: false,
           skip: 5,
           hasNext: data.length === 5,
-        }),
-      )
+        });
+      })
       .catch(() => setObjectsState({ loading: false }));
   };
 
   const getWobjects = () => {
     getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
       .then(data => {
+        const objects = data.map(wobj => ({
+          ...wobj,
+          parent: wobject,
+        }));
+
         setObjectsState({
-          objects: [...objectsState.objects, ...data],
+          objects: [...objectsState.objects, ...objects],
           skip: objectsState.skip + 5,
           hasNext: data.length === 5,
         });
@@ -46,7 +56,6 @@ const ObjectsRelated = ({ wobject, intl }) => {
 
   useEffect(() => {
     getInitialWobjects();
-    return () => setObjectsState({ objects: [], loading: true, skip: 0, hasNext: true });
   }, [wobject.author_permlink]);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
@@ -70,6 +79,7 @@ const ObjectsRelated = ({ wobject, intl }) => {
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
+          parent={wobject}
           showFollow={false}
           alt={<WeightTag weight={item.weight} />}
           isNewWindow={false}

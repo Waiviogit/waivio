@@ -46,6 +46,7 @@ import ManageCampaign from '../client/rewards/Manage/Manage';
 import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
 import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
+import Reports from '../client/rewards/Reports/Reports';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import SubFeed from '../client/feed/SubFeed';
@@ -64,6 +65,7 @@ const routes = [
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/payables',
+          '/rewards/reports',
           '/rewards/receivables',
           '/rewards/payables/@:userName',
           '/rewards/receivables/@:userName',
@@ -93,6 +95,11 @@ const routes = [
             component: PayablesCampaign,
           },
           {
+            path: '/rewards/reports',
+            exact: true,
+            component: Reports,
+          },
+          {
             path: '/rewards/payables/@:userName',
             exact: true,
             component: PaymentCampaign,
@@ -108,7 +115,12 @@ const routes = [
             component: MatchBotCampaign,
           },
           {
-            path: '/rewards/edit/:campaignId',
+            path: '/rewards/details/:campaignId',
+            exact: true,
+            component: CreateRewardForm,
+          },
+          {
+            path: '/rewards/createDuplicate/:campaignId',
             exact: true,
             component: CreateRewardForm,
           },

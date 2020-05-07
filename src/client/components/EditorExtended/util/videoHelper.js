@@ -73,4 +73,16 @@ export const getSrc = ({ src }) => {
   return undefined;
 };
 
+export const getBodyLink = previewResult => {
+  const dTubeRegExp = /https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)/;
+  const threeSpeakRegExp = /https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)/;
+  const dTubeRes = previewResult[0].match(dTubeRegExp);
+  const threeSpeakRes = previewResult[0].match(threeSpeakRegExp);
+
+  if (dTubeRes) return dTubeRes[0].split("'>")[0];
+  else if (threeSpeakRes) return threeSpeakRes[0];
+
+  return null;
+};
+
 export default getSrc;

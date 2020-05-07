@@ -24,7 +24,7 @@ describe('fromAuth', () => {
         isReloading: 'isReloading',
         user: {
           name: 'name',
-          json_metadata: JSON.stringify({
+          posting_json_metadata: JSON.stringify({
             'profile.profile_image': 'profile_image',
           }),
         },

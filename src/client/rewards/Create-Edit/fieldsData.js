@@ -325,4 +325,7 @@ export default (messageFactory, validators, userName) => ({
       'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
     ),
   },
+  createDuplicate: {
+    text: messageFactory('create_duplicate', 'create a duplicate'),
+  },
 });
