@@ -20,6 +20,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
     performersStatWeek: [],
     performersStatMonth: [],
     performersStatHalfYear: [],
+    performersStatYear: [],
   });
 
   useEffect(() => {
