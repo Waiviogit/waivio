@@ -22,6 +22,7 @@ const UserHeader = ({
   hasCover,
   isFollowing,
   isActive,
+  user,
   // changeChatCondition,
   // isChat,
   // setPostMessageAction,
@@ -37,7 +38,7 @@ const UserHeader = ({
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox username={handle} size={100} isActive={isActive} />
+        <AvatarLightbox username={handle} size={100} isActive={isActive} user={user} />
         <div className="UserHeader__user">
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
@@ -100,6 +101,7 @@ const UserHeader = ({
 };
 
 UserHeader.propTypes = {
+  user: PropTypes.shape().isRequired,
   username: PropTypes.string,
   // authenticated: PropTypes.bool.isRequired,
   handle: PropTypes.string,
