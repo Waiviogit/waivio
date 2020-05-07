@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { attempt, isError, isEmpty, get, throttle } from 'lodash';
+import { isEmpty, get, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
 import { updateProfile, reload } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
-import postingMetadataHelper from '../helpers/postingMetadata';
+import { getMetadata } from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
@@ -27,15 +27,6 @@ import { getAvatarURL } from '../components/Avatar';
 import './Settings.less';
 
 const FormItem = Form.Item;
-
-const getMetadata = user => {
-  let jsonMetadata = attempt(JSON.parse, user.json_metadata);
-  if (isError(jsonMetadata)) jsonMetadata = {};
-  let postingJsonMetadata = attempt(JSON.parse, user.posting_json_metadata);
-  if (isError(postingJsonMetadata)) postingJsonMetadata = {};
-
-  return postingMetadataHelper(jsonMetadata, postingJsonMetadata);
-};
 
 function mapPropsToFields(props) {
   const metadata = getMetadata(props.user);
@@ -176,7 +167,7 @@ export default class ProfileSettings extends React.Component {
               extensions: [],
               json_metadata: '',
               posting_json_metadata: JSON.stringify({
-                profile: { ...profileData, ...cleanValues },
+                profile: { ...profileData, ...cleanValues, version: 2 },
               }),
             },
           ];
