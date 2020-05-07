@@ -17,3 +17,7 @@ export const prepareInstrumentsData = (quotes, statData) =>
   }));
 
 export const getIsBeaxyUser = user => get(user, ['provider'], '') === 'beaxy';
+
+export const redirectToBeaxy = () => {
+  window.open('https://uat-exchange.tokenexus.com');
+};
