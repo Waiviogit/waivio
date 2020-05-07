@@ -22,16 +22,15 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
   const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
   const adminName = post.active_votes.find(vote => adminsList.includes(vote.voter));
   const moderatorName = post.active_votes.find(vote => moderatorsList.includes(vote.voter));
-  const approveByAdmin = Boolean(adminName);
-  const approveByModerator = Boolean(moderatorName);
+  const approved = Boolean(adminName || moderatorName);
 
   const classListApproveTag = classNames({
-    AppendCard__green: percent >= 70 || approveByAdmin || approveByModerator,
-    AppendCard__red: percent <= 70 || !approveByAdmin || !approveByModerator,
+    AppendCard__green: percent >= 70 || approved,
+    AppendCard__red: percent <= 70 || !approved,
   });
   const classListVoteValueTag = classNames({
-    AppendCard__green: approveByAdmin || approveByModerator || voteValue > 0,
-    AppendCard__red: !approveByAdmin || !approveByModerator || voteValue < 0,
+    AppendCard__green: approved || voteValue > 0,
+    AppendCard__red: !approved || voteValue < 0,
   });
   const classListModal = classNames('AppendCard__approving', {
     'AppendCard__approving--modal': modal,
@@ -75,7 +74,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
               </span>
             </span>
           </Tag>
-          {(!approveByAdmin || !approveByModerator) && !modal && (
+          {!approved && !modal && (
             <span className="MinPercent">
               {intl.formatMessage({
                 id: 'min_70_is_required',
@@ -93,7 +92,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
         :{' '}
         <Tag>
           <span className={classListVoteValueTag} title={voteValue}>
-            {approveByAdmin || approveByModerator
+            {approved
               ? intl.formatMessage({
                   id: 'approved',
                   defaultMessage: 'Approved',
@@ -101,7 +100,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
               : calcVoteValue}
           </span>
         </Tag>
-        {(approveByAdmin || approveByModerator) && textApproving}
+        {approved && textApproving}
       </div>
     </div>
   );
