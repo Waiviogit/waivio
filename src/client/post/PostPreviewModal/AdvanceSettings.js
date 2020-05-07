@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
+import { isGuestUser } from '../../reducers';
 import './AdvanceSettings.less';
 
 @injectIntl
+@connect(state => ({
+  isGuest: isGuestUser(state),
+}))
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -21,6 +26,7 @@ class AdvanceSettings extends Component {
     isUpdating: PropTypes.bool,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     intl: {},
@@ -28,6 +34,7 @@ class AdvanceSettings extends Component {
     linkedObjects: [],
     objPercentage: {},
     weightBuffer: 0,
+    isGuest: false,
   };
 
   handleRewardChange = reward => this.props.onSettingsChange({ reward });
@@ -47,6 +54,7 @@ class AdvanceSettings extends Component {
       linkedObjects,
       objPercentage,
       settings: { reward, beneficiary, upvote },
+      isGuest,
     } = this.props;
     return (
       <Collapse>
@@ -70,13 +78,13 @@ class AdvanceSettings extends Component {
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
                     id: 'reward_option_100',
-                    defaultMessage: '100% Steem Power',
+                    defaultMessage: '100% Hive Power',
                   })}
                 </Select.Option>
                 <Select.Option value={rewardsValues.half}>
                   {intl.formatMessage({
                     id: 'reward_option_50',
-                    defaultMessage: '50% SBD and 50% SP',
+                    defaultMessage: '50% HBD and 50% HP',
                   })}
                 </Select.Option>
                 <Select.Option value={rewardsValues.none}>
@@ -103,7 +111,11 @@ class AdvanceSettings extends Component {
             </div>
           )}
           <div className="upvote-settings">
-            <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
+            <Checkbox
+              checked={upvote}
+              onChange={this.handleUpvoteChange}
+              disabled={isGuest || isUpdating}
+            >
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>

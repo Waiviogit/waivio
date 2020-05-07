@@ -86,7 +86,7 @@ class Page extends React.Component {
 
   handleChangeFeed = isAppFilterOn => {
     this.setState({ checked: !!isAppFilterOn });
-    if (localStorage) {
+    if (typeof localStorage !== 'undefined') {
       if (this.props.match.path === '/') {
         // eslint-disable-next-line no-unused-expressions
         isAppFilterOn

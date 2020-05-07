@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
+import { message } from 'antd';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUser } from '../reducers';
 import { getUserAccountHistory } from './walletActions';
 import { reload } from '../auth/authActions';
 import Action from '../components/Button/Action';
+
 import './ClaimRewardsBlock.less';
 import '../components/Sidebar/SidebarContentBlock.less';
 
@@ -49,19 +51,24 @@ class ClaimRewardsBlock extends Component {
     this.setState({
       loading: true,
     });
-    SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance, err => {
-      if (!err) {
+
+    SteemConnect.claimRewardBalance(name, steemBalance, sbdBalance, vestingBalance)
+      .then(
+        () =>
+          this.setState({
+            loading: false,
+            rewardClaimed: true,
+          }),
+
+        this.props.getUserAccountHistory(name).then(() => this.props.reload()),
+      )
+      .catch(e => {
         this.setState({
           loading: false,
-          rewardClaimed: true,
         });
-      } else {
-        this.setState({
-          loading: false,
-        });
-      }
-      this.props.getUserAccountHistory(name).then(() => this.props.reload());
-    });
+
+        message.error(e.error_description);
+      });
   };
 
   renderReward = (value, currency, rewardField) => (
@@ -108,9 +115,9 @@ class ClaimRewardsBlock extends Component {
         <div className="SidebarContentBlock__content">
           {!rewardClaimed && (
             <div>
-              {rewardSteem > 0 && this.renderReward(rewardSteem, 'STEEM', 'steem')}
-              {rewardSbd > 0 && this.renderReward(rewardSbd, 'SBD', 'steem_dollar')}
-              {rewardSP > 0 && this.renderReward(rewardSP, 'SP', 'steem_power')}
+              {rewardSteem > 0 && this.renderReward(rewardSteem, 'HIVE', 'hive')}
+              {rewardSbd > 0 && this.renderReward(rewardSbd, 'HBD', 'steem_dollar')}
+              {rewardSP > 0 && this.renderReward(rewardSP, 'HP', 'steem_power')}
             </div>
           )}
           <Action

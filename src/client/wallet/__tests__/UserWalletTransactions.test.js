@@ -12,7 +12,7 @@ describe('(Component) UserWalletTransactions', () => {
             op: [
               'transfer_to_vesting',
               {
-                amount: '100 STEEM',
+                amount: '100 HIVE',
               },
             ],
           },
@@ -23,7 +23,7 @@ describe('(Component) UserWalletTransactions', () => {
               {
                 from: 'hellosteem1',
                 memo: 'transfer memo',
-                amount: '100 STEEM',
+                amount: '100 HIVE',
               },
             ],
           },

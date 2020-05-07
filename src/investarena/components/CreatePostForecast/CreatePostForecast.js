@@ -20,6 +20,7 @@ import {
   makeGetQuoteState,
   makeGetInstrumentsDropdownOptions,
 } from '../../../investarena/redux/selectors/quotesSelectors';
+
 import './CreatePostForecast.less';
 
 @injectIntl
@@ -184,6 +185,7 @@ class CreatePostForecast extends Component {
       default:
         break;
     }
+
     if (!isNaN(initialValue) && initialValue > 0) {
       this.setState(
         prevState => {
@@ -308,6 +310,7 @@ class CreatePostForecast extends Component {
                       onFocus={this.freezeUpdates}
                       onBlur={this.freezeUpdates}
                       value={selectQuote}
+                      dropdownClassName="st-create-post-select__dropDown"
                       showSearch
                     >
                       {optionsQuote.map(option => (

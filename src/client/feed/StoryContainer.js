@@ -18,7 +18,7 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import { votePost } from '../post/postActions';
+import { votePost, votePostUpdate } from '../post/postActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
@@ -68,6 +68,7 @@ const mapStateToProps = (state, { id }) => {
 
 export default connect(mapStateToProps, {
   votePost,
+  votePostUpdate,
   toggleBookmark,
   editPost,
   reblog,

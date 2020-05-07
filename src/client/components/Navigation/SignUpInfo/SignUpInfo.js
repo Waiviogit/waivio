@@ -5,10 +5,7 @@ const SignUpInfo = () => (
   <React.Fragment>
     <div className="ModalSignUp__subtitle">
       <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)" />
-      <FormattedMessage
-        id="getSteemAccountNow"
-        defaultMessage="to get a Steem account now using:"
-      />
+      <FormattedMessage id="getSteemAccountNow" defaultMessage="to get a Hive account now using:" />
     </div>
     <div className="mb3">
       <a
@@ -33,7 +30,7 @@ const SignUpInfo = () => (
         rel="noopener noreferrer"
         target="_blank"
       >
-        <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
+        <FormattedMessage id="STEEMcoins" defaultMessage="- HIVE coins" />
       </a>
     </div>
     <h2 className="ModalSignUp__title ModalSignUp__title--lined mt3">
@@ -47,10 +44,7 @@ const SignUpInfo = () => (
         id="lookAroundgetRewardsMakeConnections"
         defaultMessage="Look around, get rewards, make connections,"
       />
-      <FormattedMessage
-        id="createSteemAccountLater"
-        defaultMessage="create a Steem account later"
-      />
+      <FormattedMessage id="createSteemAccountLater" defaultMessage="create a Hive account later" />
     </div>
   </React.Fragment>
 );

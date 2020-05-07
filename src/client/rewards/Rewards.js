@@ -389,8 +389,8 @@ class Rewards extends React.Component {
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
     const currentSteemDollarPrice =
-      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+      cryptosPriceHistory && cryptosPriceHistory.HBD && cryptosPriceHistory.HBD.priceDetails
+        ? cryptosPriceHistory.HBD.priceDetails.currentUSDPrice
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {

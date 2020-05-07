@@ -151,13 +151,13 @@ const broadcastComment = (
     permlink,
     allow_votes: true,
     allow_curation_rewards: true,
-    max_accepted_payout: '1000000.000 SBD',
+    max_accepted_payout: '1000000.000 HBD',
     percent_steem_dollars: 10000,
     extensions: [],
   };
 
   if (reward === rewardsValues.none) {
-    commentOptionsConfig.max_accepted_payout = '0.000 SBD';
+    commentOptionsConfig.max_accepted_payout = '0.000 HBD';
   } else if (reward === rewardsValues.all) {
     commentOptionsConfig.percent_steem_dollars = 0;
   }
@@ -256,21 +256,40 @@ export function createPost(postData) {
           )
             // eslint-disable-next-line consistent-return
             .then(result => {
-              if (result.ok) {
-                if (draftId) {
-                  batch(() => {
-                    dispatch(deleteDraft(draftId));
-                    dispatch(addEditedPost(permlink));
-                  });
-                }
-                if (isGuest) {
+              if (isGuest) {
+                if (result.ok) {
+                  if (draftId) {
+                    batch(() => {
+                      dispatch(deleteDraft(draftId));
+                      dispatch(addEditedPost(permlink));
+                    });
+                  }
                   if (upvote) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
                   dispatch(push('/'));
                   dispatch(notify('Your post will be posted soon', 'success'));
-                } else {
-                  dispatch(push(`/@${author}/${permlink}`));
+
+                  if (window.analytics) {
+                    window.analytics.track('Post', {
+                      category: 'post',
+                      label: 'submit',
+                      value: 10,
+                    });
+                  }
+
+                  return result;
+                }
+
+                result.json().then(err => {
+                  dispatch(notify(err.error.message || err.error_description, 'error'));
+                });
+              } else {
+                if (draftId) {
+                  batch(() => {
+                    dispatch(deleteDraft(draftId));
+                    dispatch(addEditedPost(permlink));
+                  });
                 }
 
                 if (window.analytics) {
@@ -280,13 +299,13 @@ export function createPost(postData) {
                     value: 10,
                   });
                 }
-                return result;
+
+                dispatch(push(`/@${author}/${permlink}`));
               }
-              result.json().then(err => {
-                dispatch(notify(err.error.message || err.error_description, 'error'));
-              });
             })
-            .catch(() => {}),
+            .catch(err => {
+              dispatch(notify(err.error.message || err.error_description, 'error'));
+            }),
         },
       });
     });

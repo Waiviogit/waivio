@@ -9,7 +9,7 @@ import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import SteemConnect from '../steemConnectAPI';
 import { busyLogin, login } from '../auth/authActions';
-import { getUserAccount, isUserRegistered } from '../../waivioApi/ApiClient';
+import { getUserAccount, isUserRegistered, waivioAPI } from '../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../user/userActions';
 import { notify } from '../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
@@ -96,7 +96,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
   };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');
-  const showModal = visible || (!!localStorage.getItem('accessToken') && !isAuth && isLoaded);
+  const showModal = visible || (!!waivioAPI.authToken && !isAuth && isLoaded);
 
   const validateUserName = async (rule, value, callback) => {
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
@@ -159,12 +159,8 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next, isAuth, isLoa
           <FormattedMessage id="login" defaultMessage="Log in" />
         </h2>
         <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
-          <img
-            src="/images/icons/steemit.svg"
-            alt="steemit"
-            className="ModalSignUp__icon-steemit"
-          />
-          <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
+          <img src="/images/icons/logo-hive.svg" alt="hive" className="ModalSignUp__icon-steemit" />
+          <FormattedMessage id="signin_with_steemIt" defaultMessage="HiveSigner" />
         </a>
         <div className="ModalSignUp__social">
           <GoogleLogin

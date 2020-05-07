@@ -35,7 +35,7 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = '') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '') => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -81,6 +81,7 @@ const parseGuestActions = actions => {
       action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
         ? { from: action.sponsor, to: action.userName }
         : { from: action.userName, to: action.sponsor || 'mock' };
+
     return {
       trx_id: action._id, // eslint-disable-line
       block: 39603148,
@@ -92,8 +93,8 @@ const parseGuestActions = actions => {
         'transfer',
         {
           ...transferDirection,
-          amount: `${action.amount} STEEM`,
-          memo: (action.type === guestActionType.DEMO_POST && action.details.post_permlink) || '',
+          amount: `${action.amount} HIVE`,
+          memo: action.memo || '',
         },
       ],
       actionCount: index + 1,

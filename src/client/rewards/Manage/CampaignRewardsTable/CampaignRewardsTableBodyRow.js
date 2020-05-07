@@ -133,7 +133,7 @@ const CampaignRewardsTableRow = ({
           ? intl.formatMessage(
               {
                 id: 'campaign_terms',
-                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,
+                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Hive blockchain`,
               },
               {
                 campaignName: currentItem.name,
@@ -142,7 +142,7 @@ const CampaignRewardsTableRow = ({
           : intl.formatMessage(
               {
                 id: 'deactivate_campaign_terms',
-                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be stopped on Steem blockchain`,
+                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be stopped on Hive blockchain`,
               },
               {
                 campaignName: currentItem.name,

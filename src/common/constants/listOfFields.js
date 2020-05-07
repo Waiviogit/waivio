@@ -6,7 +6,6 @@ export const objectFields = {
   title: 'title',
   description: 'description',
   address: 'address',
-  map: 'map',
   link: 'link',
   avatar: 'avatar',
   background: 'background',
@@ -39,7 +38,6 @@ export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 export const objectFieldsWithInnerData = [
   'newsFilter',
   'address',
-  'map',
   'link',
   'button',
   'website',

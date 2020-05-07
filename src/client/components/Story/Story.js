@@ -1,6 +1,6 @@
-import { filter, get, isEmpty, isEqual, isNil, map, maxBy, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil, some } from 'lodash';
 import {
   FormattedDate,
   FormattedMessage,
@@ -19,6 +19,8 @@ import {
   isPostDeleted,
   isPostTaggedNSFW,
 } from '../../helpers/postHelpers';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import StoryPreview from './StoryPreview';
@@ -34,7 +36,7 @@ import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+
 import './Story.less';
 
 @injectIntl
@@ -62,6 +64,7 @@ class Story extends React.Component {
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
     toggleBookmark: PropTypes.func,
+    votePostUpdate: PropTypes.func.isRequired,
     reblog: PropTypes.func,
     editPost: PropTypes.func,
     followUser: PropTypes.func,
@@ -227,31 +230,55 @@ class Story extends React.Component {
 
   handleChangeVisibility = isVisible => this.setState({ isVisible });
 
-  handleLikeClick(post, postState, weight = 10000) {
-    const { sliderMode, defaultVotePercent } = this.props;
+  handleLikeClick(post, postState, weight = 10000, type) {
+    const { sliderMode, defaultVotePercent, votePost, votePostUpdate, user } = this.props;
     const author = post.depth === 0 ? post.root_author : post.author;
 
-    if (sliderMode) {
-      this.props.votePost(post.id, post.author_original || author, post.permlink, weight);
+    if (post.append_field_name) {
+      const upVotes = getAppendUpvotes(post.active_votes);
+      const isLiked = post.isLiked || some(upVotes, { voter: user.name });
+      const postId = `${post.author}/${post.permlink}`;
+
+      if (isLiked) {
+        votePostUpdate(postId, post.author, post.permlink, 0, type);
+      } else {
+        if (sliderMode && !isLiked) {
+          votePostUpdate(postId, post.author, post.permlink, defaultVotePercent, type);
+        }
+
+        votePostUpdate(postId, post.author, post.permlink, weight, type);
+      }
+    } else if (sliderMode && !postState.isLiked) {
+      votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, post.author_original || author, post.permlink, 0);
+      votePost(post.id, author, post.permlink, 0);
     } else {
-      this.props.votePost(
-        post.id,
-        post.author_original || author,
-        post.permlink,
-        defaultVotePercent,
-      );
+      votePost(post.id, author, post.permlink, defaultVotePercent);
     }
   }
 
-  handleReportClick(post, postState, isRejectField) {
-    const author = post.depth === 0 ? post.root_author : post.author;
+  handleReportClick(post, postState, isRejectField, myWeight, type) {
+    const { votePostUpdate, votePost, user } = this.props;
+    const author = post.author_original || post.author;
     let weight = postState.isReported ? 0 : -10000;
-    if (isRejectField) {
-      weight = postState.isReported ? 0 : 9999;
+
+    if (post.append_field_name) {
+      const downVotes = getAppendDownvotes(post.active_votes);
+      const isReject = post.isReject || some(downVotes, { voter: user.name });
+      const postId = `${post.author}/${post.permlink}`;
+
+      if (isReject) {
+        votePostUpdate(postId, author, post.permlink, 0, type);
+      } else {
+        votePostUpdate(postId, author, post.permlink, myWeight, type);
+      }
+    } else {
+      if (isRejectField) {
+        weight = postState.isReported ? 0 : 9999;
+      }
+
+      votePost(post.id, author, post.permlink, weight);
     }
-    this.props.votePost(post.id, author, post.permlink, weight);
   }
 
   handleShareClick(post) {
@@ -324,7 +351,7 @@ class Story extends React.Component {
   handlePreviewClickPostModalDisplay(e) {
     e.preventDefault();
 
-    const { post } = this.props;
+    const { post, history } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const elementNodeName = toLower(get(e, 'target.nodeName', ''));
     const elementClassName = get(e, 'target.className', '');
@@ -334,7 +361,7 @@ class Story extends React.Component {
     const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
-      this.props.history.push(postURL);
+      history.push(postURL);
     } else if (openInNewTab && showPostModal) {
       if (window) {
         const url = `${window.location.origin}${postURL}`;
@@ -406,6 +433,7 @@ class Story extends React.Component {
       profitability,
       isForecastValid,
     } = getForecastData(post);
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
 
     if (isEnoughData) {
@@ -437,8 +465,6 @@ class Story extends React.Component {
         );
       }
     }
-
-    const author = post.guestInfo ? post.guestInfo.userId : post.author;
 
     return isEnoughData ? (
       <VisibilitySensor onChange={this.handleChangeVisibility} partialVisibility>
