@@ -122,7 +122,7 @@ const MobileMenu = props => {
               </Button>
             ) : (
               <Button onClick={onDisconnectPlatform}>
-                <FormattedMessage id="disconnect_broker" defaultMessage="Disconnect broker" />
+                <FormattedMessage id="disconnect_beaxy" defaultMessage="Disconnect beaxy" />
               </Button>
             )}
           </div>
