@@ -37,7 +37,7 @@ class UserMenuWrapper extends React.Component {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    return <UserMenu defaultKey={currentKey} onChange={this.onChange} is {...otherProps} />;
   }
 }
 
@@ -103,6 +103,7 @@ const UserHero = ({
                 followers={followersCount}
                 following={followingCount}
                 isGuest={isGuest}
+                isGuestPage={isGuestPage}
               />
             </div>
           )}
