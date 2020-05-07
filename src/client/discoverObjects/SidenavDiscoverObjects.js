@@ -35,7 +35,7 @@ const menuConfig = {
   },
 };
 
-const SidenavDiscoverObjects = ({ withTitle }) => {
+const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile }) => {
   // redux-store
   const isLoading = useSelector(getObjectTypesLoading);
   return (
@@ -54,17 +54,25 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
           width={170}
         />
       ) : (
-        <SidebarMenu menuConfig={menuConfig} />
+        <SidebarMenu
+          menuConfig={menuConfig}
+          toggleMobileNavigation={toggleMobileNavigation}
+          isMobile={isMobile}
+        />
       )}
     </div>
   );
 };
 
 SidenavDiscoverObjects.propTypes = {
+  toggleMobileNavigation: PropTypes.func,
   withTitle: PropTypes.bool,
+  isMobile: PropTypes.bool,
 };
 SidenavDiscoverObjects.defaultProps = {
+  toggleMobileNavigation: () => {},
   withTitle: true,
+  isMobile: false,
 };
 
 export default SidenavDiscoverObjects;

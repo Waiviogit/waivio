@@ -1,0 +1,118 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.HeroBanner {
+  position: relative;
+  height: 300px;
+  background: @grey-nero;
+  border: 1px solid @normal-grey;
+
+  &__close {
+    position: absolute;
+    top: 8px;
+    right: 30px;
+    color: @primary-color;
+    z-index: 1;
+    cursor: pointer;
+
+    &:link,
+    &:visited,
+    &:hover,
+    &:focus,
+    &:active {
+      text-decoration: none;
+    }
+
+    &:hover {
+      color: @white-gainsboro;
+    }
+  }
+
+  .container {
+    height: 100%;
+  }
+
+  &__container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    margin: 0 auto;
+    max-width: @container-width;
+    padding: 16px;
+
+    @media @medium {
+      padding: 16px 0;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    &__description {
+      width: 200px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    &__title {
+      display: flex;
+      justify-content: center;
+      font-size: 19px;
+      font-weight: bold;
+      color: @white;
+      width: 100%;
+      line-height: 20px;
+      margin: 10px 0;
+
+      span {
+        text-align: center;
+      }
+    }
+
+    &__image {
+      height: 115px;
+      width: 135px;
+      margin-bottom: 15px;
+    }
+
+    &__number {
+      font-weight: bold;
+      background-color: @primary-color;
+      color: @white;
+      width: 30px;
+      height: 30px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__content-container {
+    display: none;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+
+    @media @small {
+      display: flex;
+    }
+  }
+}
+
+div[data-dir='rtl'] .HeroBanner {
+  &__container {
+    @media @medium {
+      padding: 16px 0;
+    }
+  }
+}
