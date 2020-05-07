@@ -12,6 +12,9 @@ import {
   getAuthenticatedUserName,
   getFollowingObjectsList,
   getSuitableLanguage,
+  getVotePercent,
+  getRewardFund,
+  getRate,
 } from '../../reducers';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -23,6 +26,8 @@ import { fieldsRules } from '../const/appendFormConstants';
 import { getClientWObj } from '../../adapters';
 import AppendFormFooter from '../AppendFormFooter';
 import { getLanguageText } from '../../translations';
+import { getVoteValue } from '../../helpers/user';
+
 import './CreateTag.less';
 
 @connect(
@@ -33,6 +38,9 @@ import './CreateTag.less';
     followingList: getFollowingObjectsList(state),
     locale: getSuitableLanguage(state),
     usedLocale: getSuitableLanguage(state),
+    defaultVotePercent: getVotePercent(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -48,6 +56,8 @@ class CreateTag extends React.Component {
     loading: false,
     selectedCategory: [],
     currentTags: [],
+    votePercent: this.props.defaultVotePercent / 100,
+    voteWorth: 0,
   };
 
   async componentDidMount() {
@@ -82,6 +92,19 @@ class CreateTag extends React.Component {
       }
       return rule;
     });
+  };
+
+  calculateVoteWorth = value => {
+    const { currentUsername, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      currentUsername,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+
+    this.setState({ votePercent: value, voteWorth });
   };
 
   validateFieldValue = (rule, value, callback) => {
@@ -170,6 +193,8 @@ class CreateTag extends React.Component {
     data.title = '';
     data.lastUpdated = Date.now();
     data.wobjectName = getField(wObject, objectFields.name);
+    data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
+
     return data;
   };
 
@@ -186,7 +211,8 @@ class CreateTag extends React.Component {
       },
       body: this.getWobjectBody(),
     };
-    await this.props.appendObject(postData);
+
+    await this.props.appendObject(postData, { votePower: postData.votePower });
   };
 
   handleModalCancel = () => {
@@ -220,8 +246,8 @@ class CreateTag extends React.Component {
   render() {
     const { showModal, form, intl, categories, usedLocale } = this.props;
     const { categoryItem, loading, selectedCategory, currentTags } = this.state;
-
     const languageOptions = [];
+
     LANGUAGES.forEach(lang => {
       languageOptions.push(
         <Select.Option key={lang.id} value={lang.id}>
@@ -301,7 +327,14 @@ class CreateTag extends React.Component {
               </React.Fragment>
             )}
           </Form.Item>
-          <AppendFormFooter loading={loading} form={form} handleSubmit={this.handleSubmit} />
+          <AppendFormFooter
+            loading={loading}
+            calcVote={this.calculateVoteWorth}
+            form={form}
+            handleSubmit={this.handleSubmit}
+            votePercent={this.state.votePercent}
+            voteWorth={this.state.voteWorth}
+          />
         </Form>
       </Modal>
     );
@@ -318,6 +351,9 @@ CreateTag.propTypes = {
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
   usedLocale: PropTypes.string,
+  defaultVotePercent: PropTypes.number.isRequired,
+  rewardFund: PropTypes.shape(),
+  rate: PropTypes.number,
 };
 
 CreateTag.defaultProps = {
@@ -328,6 +364,8 @@ CreateTag.defaultProps = {
   categories: [],
   followingList: [],
   usedLocale: 'en-US',
+  rewardFund: {},
+  rate: 0,
 };
 
 export default injectIntl(Form.create()(CreateTag));
