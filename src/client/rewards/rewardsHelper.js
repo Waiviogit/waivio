@@ -171,10 +171,12 @@ export const getDaysLeft = (reserveDate, daysCount) => {
   return parseInt((reservationTime - currentTime) / 86400, 10);
 };
 
-export const getFrequencyAssign = objectDetails =>
-  objectDetails.frequency_assign
-    ? `<ul><li>Have not received a reward from @${objectDetails.guide.name} for reviewing @${objectDetails.requiredObject} in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+export const getFrequencyAssign = objectDetails => {
+  const requiredObjectName = getFieldWithMaxWeight(objectDetails.required_object, 'name');
+  return objectDetails.frequency_assign
+    ? `<ul><li>Have not received a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/@${objectDetails.requiredObject}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
+};
 
 export const getAgreementObjects = objectDetails =>
   !isEmpty(objectDetails.agreementObjects)
@@ -186,7 +188,7 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? objectDetails.match_bots.reduce((acc, bot) => `${acc}, @${bot}`, '')
+    ? objectDetails.match_bots.reduce((acc, bot) => `${acc}, @${bot}`, '').slice(1)
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
@@ -207,16 +209,15 @@ export const getDescription = objectDetails =>
 const getFollowingObjects = objectDetails =>
   !isEmpty(objectDetails.objects)
     ? map(objectDetails.objects, obj => ({
-        name: getFieldWithMaxWeight(obj, 'name'),
-        permlink: obj.author_permlink,
+        name: getFieldWithMaxWeight(obj.object || obj, 'name'),
+        permlink: obj.author_permlink || obj.object.author_permlink,
       }))
     : '';
 
 const getLinksToAllFollowingObjects = followingObjects =>
-  followingObjects.reduce(
-    (acc, obj) => `${acc}, <a href='/object/${obj.permlink}'>${obj.name}</a>`,
-    '',
-  );
+  followingObjects
+    .reduce((acc, obj) => `${acc}, <a href='/object/${obj.permlink}'>${obj.name}</a>`, '')
+    .slice(1);
 
 export const getDetailsBody = (
   proposition,
@@ -235,7 +236,7 @@ export const getDetailsBody = (
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
 </ul>`;
   const frequencyAssign = getFrequencyAssign(proposition);
-  const blacklist = `<ul><li>User account is not blacklisted by @${proposition.guide.name} or referenced accounts.</li></ul>`;
+  const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
@@ -249,7 +250,7 @@ export const getDetailsBody = (
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
-<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (@${proposition.guide.name} ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
+<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
 <p>By making the reservation, you confirm that you have read and agree to the Terms and Conditions of the Service Agreement <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
