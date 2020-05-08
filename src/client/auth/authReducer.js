@@ -11,6 +11,7 @@ const initialState = {
   user: {},
   userMetaData: {},
   isGuestUser: false,
+  guestBalance: null,
 };
 
 export default (state = initialState, action) => {
@@ -26,6 +27,7 @@ export default (state = initialState, action) => {
       };
     case types.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+      console.log('action.payload: ', action.payload);
       return {
         ...state,
         isFetching: false,
@@ -34,6 +36,7 @@ export default (state = initialState, action) => {
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
+        guestBalance: action.payload.guestBalance,
       };
     case types.LOGIN_ERROR:
       return {
@@ -108,3 +111,4 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
+export const guestBalance = state => state.guestBalance;

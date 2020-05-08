@@ -22,8 +22,9 @@ import {
   getTranslations,
   getUsedLocale,
   isGuestUser,
+  guestBalance,
 } from './reducers';
-import { busyLogin, login, logout } from './auth/authActions';
+import { busyLogin, login, logout, getGuestBalance } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -61,6 +62,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
+    balance: guestBalance(state),
   }),
   {
     login,
@@ -76,6 +78,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     setUsedLocale,
     getChartsData,
     changeChatCondition,
+    getGuestBalance,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -105,6 +108,7 @@ export default class Wrapper extends React.PureComponent {
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
+    getGuestBalance: PropTypes.func,
   };
 
   static defaultProps = {
@@ -129,6 +133,8 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
+    balance: null,
+    getGuestBalance: () => {},
   };
 
   static async fetchData({ store, req }) {
@@ -172,6 +178,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.getPerformersStatistic();
         this.props.getNotifications();
         this.props.busyLogin();
+        this.props.getGuestBalance();
       });
       // if (this.props.username) {
       //   getMessagesQuantity(this.props.username).then(data =>
@@ -179,6 +186,7 @@ export default class Wrapper extends React.PureComponent {
       //   );
       // }
     });
+
     batch(() => {
       this.props.getRewardFund();
       this.props.getRebloggedList();
