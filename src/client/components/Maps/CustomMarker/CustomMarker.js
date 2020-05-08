@@ -14,7 +14,7 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    onContextMenu: PropTypes.func.isRequired,
+    onContextMenu: PropTypes.func,
     onMouseOver: PropTypes.func.isRequired,
     onMouseOut: PropTypes.func.isRequired,
     left: PropTypes.number,

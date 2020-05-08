@@ -54,7 +54,7 @@ export default class ObjectFeed extends React.Component {
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
-    currentProposition: PropTypes.shape(),
+    currentProposition: PropTypes.arrayOf(PropTypes.shape()),
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
@@ -216,24 +216,22 @@ export default class ObjectFeed extends React.Component {
 
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
     this.state.propositions.map(proposition => {
+      const updatedProposition = proposition;
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition._id === propsId) {
-        proposition.objects.forEach((object, index) => {
+      if (updatedProposition._id === propsId) {
+        updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = isAssign;
+            updatedProposition.objects[index].assigned = isAssign;
           } else {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = null;
+            updatedProposition.objects[index].assigned = null;
           }
         });
       }
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
-        // eslint-disable-next-line no-param-reassign
-        proposition.isReservedSiblingObj = true;
+      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+        updatedProposition.isReservedSiblingObj = true;
       }
-      return proposition;
+      return updatedProposition;
     });
 
   discardProposition = ({
@@ -288,14 +286,14 @@ export default class ObjectFeed extends React.Component {
       this.props.history.push(`/rewards/All`);
     };
     const currentUSDPrice = this.getCurrentUSDPrice();
-    const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : null;
-    const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : null;
+    const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
+    const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;
     const rewardPrise = currentUSDPrice
       ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
       : `${maxReward} HIVE`;
 
     const getFeedProposition = () => {
-      if (!wobject.parent && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
+      if (isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
         return (
           <div>
             <ObjectCardView wObject={wobject} passedParent={currentProposition} />
