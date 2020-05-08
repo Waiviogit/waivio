@@ -1,5 +1,4 @@
 import React from 'react';
-import { isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -20,20 +19,22 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
     : 0;
   const percent = post.active_votes && calculateApprovePercent(post.active_votes, post.weight);
   const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
+  const adminName = post.active_votes.find(vote => adminsList.includes(vote.voter));
+  const moderatorName = post.active_votes.find(vote => moderatorsList.includes(vote.voter));
+  const approved = Boolean(adminName || moderatorName);
 
   const classListApproveTag = classNames({
-    AppendCard__green: percent >= 70 || post.upvotedByModerator,
-    AppendCard__red: percent <= 70 || !post.upvotedByModerator,
+    AppendCard__green: percent >= 70 || approved,
+    AppendCard__red: percent <= 70 || !approved,
   });
   const classListVoteValueTag = classNames({
-    AppendCard__green: post.upvotedByModerator || voteValue > 0,
-    AppendCard__red: !post.upvotedByModerator || voteValue < 0,
+    AppendCard__green: approved || voteValue > 0,
+    AppendCard__red: !approved || voteValue < 0,
   });
   const classListModal = classNames('AppendCard__approving', {
     'AppendCard__approving--modal': modal,
   });
-  const adminName = post.active_votes.find(vote => adminsList.includes(vote.voter));
-  const moderatorName = post.active_votes.find(vote => moderatorsList.includes(vote.voter));
+
   const textApproving = moderatorName ? (
     <span>
       {intl.formatMessage({
@@ -58,30 +59,26 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
 
   return (
     <div className={classListModal}>
-      {!isNil(post.append_field_weight) && (
-        <div>
-          {intl.formatMessage({
-            id: 'approval',
-            defaultMessage: 'Approval',
-          })}
-          :{' '}
-          <Tag>
-            <span>
-              <span className={classListApproveTag}>
-                {post.upvotedByModerator ? 100 : percent.toFixed(2)}%
-              </span>
-            </span>
-          </Tag>
-          {!post.upvotedByModerator && !modal && (
-            <span className="MinPercent">
-              {intl.formatMessage({
-                id: 'min_70_is_required',
-                defaultMessage: 'Min 70% is required',
-              })}
-            </span>
-          )}
-        </div>
-      )}
+      <div>
+        {intl.formatMessage({
+          id: 'approval',
+          defaultMessage: 'Approval',
+        })}
+        :{' '}
+        <Tag>
+          <span>
+            <span className={classListApproveTag}>{approved ? 100 : percent.toFixed(2)}%</span>
+          </span>
+        </Tag>
+        {!approved && !modal && (
+          <span className="MinPercent">
+            {intl.formatMessage({
+              id: 'min_70_is_required',
+              defaultMessage: 'Min 70% is required',
+            })}
+          </span>
+        )}
+      </div>
       <div>
         {intl.formatMessage({
           id: 'vote_count_tag',
@@ -90,7 +87,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
         :{' '}
         <Tag>
           <span className={classListVoteValueTag} title={voteValue}>
-            {post.upvotedByModerator
+            {approved
               ? intl.formatMessage({
                   id: 'approved',
                   defaultMessage: 'Approved',
@@ -98,7 +95,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
               : calcVoteValue}
           </span>
         </Tag>
-        {post.upvotedByModerator && textApproving}
+        {approved && textApproving}
       </div>
     </div>
   );

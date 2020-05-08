@@ -373,6 +373,7 @@ export default class Buttons extends React.Component {
             ratio={ratio}
             downVotes={downVotes}
             onClose={this.handleCloseReactions}
+            user={username}
           />
           <BTooltip title={likeTooltip}>
             <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>

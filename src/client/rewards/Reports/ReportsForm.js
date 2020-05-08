@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DatePicker, Form, TimePicker, Button, Input, Select, Checkbox, Row, Col } from 'antd';
+import { DatePicker, Form, Button, Input, Select, Checkbox, Row, Col } from 'antd';
 import moment from 'moment';
 import { isEmpty, map, filter, get } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -21,38 +21,33 @@ class ReportsForm extends Component {
     loading: false,
     openFrom: false,
     openTill: false,
-    currency: 'USD',
-    amount: '',
+    currency: 'HIVE',
+    amount: 0,
     sponsor: {},
     object: {},
     objects: [],
     dateFrom: '',
-    dateTill: '',
+    dateTill: moment().format('MMMM D, YYYY HH:mm:ss'),
     updated: false,
     preparedObject: {},
     objectsNamesAndPermlinks: [],
+    disabled: true,
   };
 
   handleSubmit = e => {
     e.preventDefault();
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
-      if (!err && values) {
+      if (!err) {
         this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
-        const dateFrom = values.from ? moment(values.from.format('MMMM Do, YYYY')) : '';
-        const dateTill = values.till ? moment(values.from.format('MMMM Do, YYYY')) : '';
         this.setState({
           updated: true,
-          // eslint-disable-next-line no-underscore-dangle
-          dateFrom: dateFrom._i,
-          // eslint-disable-next-line no-underscore-dangle
-          dateTill: dateTill._i,
         });
         console.log('Received values of form: ', values);
       }
     });
     this.handleReset();
-    this.setState({ loading: false });
+    this.setState({ loading: false, disabled: true });
   };
 
   handleSetState = (stateData, callbackData) => {
@@ -62,7 +57,7 @@ class ReportsForm extends Component {
 
   setSponsor = obj => {
     this.handleSetState({ sponsor: obj }, { sponsor: obj });
-    this.setState({ sponsor: obj });
+    this.setState({ sponsor: obj, disabled: false });
   };
 
   removeSponsor = () => {
@@ -71,7 +66,11 @@ class ReportsForm extends Component {
   };
 
   setDateFrom = from => {
-    this.handleSetState({ dateFrom: from }, { dateFrom: from });
+    this.handleSetState({ dateFrom: from.format('MMMM D, YYYY HH:mm:ss') }, { dateFrom: from });
+  };
+
+  setDateTill = till => {
+    this.handleSetState({ dateTill: till.format('MMMM D, YYYY HH:mm:ss') }, { dateTill: till });
   };
 
   setObject = obj => {
@@ -143,6 +142,36 @@ class ReportsForm extends Component {
     return preparedObject;
   };
 
+  disabledStartDate = dateFrom => {
+    const dateTill = this.props.form.getFieldValue('till');
+    if (!dateFrom || !dateTill) {
+      return false;
+    }
+    return (
+      moment(dateFrom)
+        .format('x')
+        .valueOf() >
+      moment(dateTill)
+        .format('x')
+        .valueOf()
+    );
+  };
+
+  disabledEndDate = dateTill => {
+    const dateFrom = this.props.form.getFieldValue('from');
+    if (!dateTill || !dateFrom) {
+      return false;
+    }
+    return (
+      moment(dateTill)
+        .format('x')
+        .valueOf() <=
+      moment(dateFrom)
+        .format('x')
+        .valueOf()
+    );
+  };
+
   handleReset = () => {
     this.props.form.resetFields();
     this.removeSponsor();
@@ -152,8 +181,6 @@ class ReportsForm extends Component {
   render() {
     const { form, intl, userName } = this.props;
     const {
-      openFrom,
-      openTill,
       currency,
       sponsor,
       objects,
@@ -162,8 +189,10 @@ class ReportsForm extends Component {
       dateTill,
       preparedObject,
       objectsNamesAndPermlinks,
+      amount,
+      disabled,
     } = this.state;
-    const format = 'HH:mm:ss';
+
     const { Option } = Select;
 
     const renderSponsor =
@@ -214,11 +243,9 @@ class ReportsForm extends Component {
                   })}`,
                 },
               ],
-              initialValue: '',
             })(
               <SearchUsersAutocomplete
                 allowClear={false}
-                // disabled={disabled}
                 handleSelect={this.setSponsor}
                 placeholder={intl.formatMessage({
                   id: 'find_users_placeholder',
@@ -228,10 +255,10 @@ class ReportsForm extends Component {
                 autoFocus={false}
               />,
             )}
-            <div className="CreateReward__objects-wrap">{renderSponsor}</div>
+            <div className="CreateReportForm__objects-wrap">{renderSponsor}</div>
           </Form.Item>
           <Row gutter={24} className="CreateReportForm__row">
-            <Col span={7}>
+            <Col span={12}>
               <Form.Item
                 label={
                   <span className="CreateReportForm__label">
@@ -253,69 +280,40 @@ class ReportsForm extends Component {
                       })}`,
                     },
                   ],
-                  initialValue: moment(),
-                })(<DatePicker allowClear={false} disabled={false} onChange={this.setDateFrom} />)}
-              </Form.Item>
-            </Col>
-            <Col span={17}>
-              <Form.Item>
-                {form.getFieldDecorator('fromTime', {
-                  rules: [
-                    {
-                      required: false,
-                      message: `${intl.formatMessage({
-                        id: 'select_time',
-                        defaultMessage: 'Please select time',
-                      })}`,
-                    },
-                  ],
-                  initialValue: null,
+                  initialValue: '',
                 })(
-                  <TimePicker
-                    open={openFrom}
-                    onOpenChange={this.handleOpenChangeFrom}
-                    defaultOpenValue={moment('00:00:00', format)}
-                    format={format}
-                    addon={() => (
-                      <Button size="small" type="primary" onClick={this.handleCloseFrom}>
-                        Ok
-                      </Button>
-                    )}
+                  <DatePicker
+                    disabledDate={this.disabledStartDate}
+                    showTime
+                    allowClear={false}
+                    disabled={false}
+                    onChange={this.setDateFrom}
                   />,
                 )}
               </Form.Item>
             </Col>
-          </Row>
-          <Row gutter={24} className="CreateReportForm__row">
-            <Col span={7}>
+            <Col span={12}>
               <Form.Item
-                label={intl.formatMessage({
-                  id: 'till',
-                  defaultMessage: 'Till:',
-                })}
+                label={
+                  <span className="CreateReportForm__label">
+                    {intl.formatMessage({
+                      id: 'till',
+                      defaultMessage: 'Till',
+                    })}
+                    :
+                  </span>
+                }
               >
                 {form.getFieldDecorator('till', {
                   rules: [{ required: false }],
-                  initialValue: null,
-                })(<DatePicker allowClear={false} disabled={false} />)}
-              </Form.Item>
-            </Col>
-            <Col span={17}>
-              <Form.Item>
-                {form.getFieldDecorator('tillTime', {
-                  rules: [{ required: false }],
-                  initialValue: null,
+                  initialValue: moment(),
                 })(
-                  <TimePicker
-                    open={openTill}
-                    onOpenChange={this.handleOpenChangeTill}
-                    defaultOpenValue={moment('00:00:00', format)}
-                    format={format}
-                    addon={() => (
-                      <Button size="small" type="primary" onClick={this.handleCloseTill}>
-                        Ok
-                      </Button>
-                    )}
+                  <DatePicker
+                    disabledDate={this.disabledEndDate}
+                    showTime
+                    allowClear={false}
+                    disabled={false}
+                    onChange={this.setDateTill}
                   />,
                 )}
               </Form.Item>
@@ -406,14 +404,19 @@ class ReportsForm extends Component {
                   defaultMessage: 'Find object',
                 })}
                 handleSelect={this.setObject}
-                // disabled={disabled}
                 autoFocus={false}
               />,
             )}
             <div className="CreateReward__objects-wrap">{renderObjects}</div>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="submitBtn" loading={loading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="submitBtn"
+              disabled={disabled}
+              loading={loading}
+            >
               {intl.formatMessage({
                 id: 'submit',
                 defaultMessage: 'submit',
@@ -455,9 +458,7 @@ class ReportsForm extends Component {
               :{' '}
               {objectsNamesAndPermlinks
                 ? map(objectsNamesAndPermlinks, obj => (
-                    <Link
-                      to={`/object/${obj.permlink}`}
-                    >{`${obj.name}: (http://www.waivio.com/object/${obj.permlink}) `}</Link>
+                    <a href={`http://www.waivio.com/object/${obj.permlink}`}>{`${obj.name} `}</a>
                   ))
                 : null}
             </div>
@@ -466,7 +467,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable}
+              {preparedObject.filters.payable || amount}
             </div>
           </div>
         )}

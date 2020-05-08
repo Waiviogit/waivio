@@ -330,7 +330,7 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (matchPost.name === 'galleryItem') {
         const categoryIndex = state.wobject.preview_gallery.findIndex(
-          picture => picture.body === matchPost.body,
+          picture => picture.permlink === matchPost.permlink,
         );
 
         state.wobject.preview_gallery.splice(categoryIndex, 1, {

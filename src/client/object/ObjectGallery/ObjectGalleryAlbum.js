@@ -55,7 +55,7 @@ export default class ObjectGalleryAlbum extends Component {
 
     const albumId = match.params.itemId;
     const album = albums.filter(
-      albm => albm.id === albumId && calculateApprovePercent(albm.active_votes),
+      albm => albm.id === albumId && calculateApprovePercent(albm.active_votes, albm.weight),
     );
 
     return (
