@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, uniqBy, map, get } from 'lodash';
+import { isEmpty, uniqBy, map, get, reduce } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 
@@ -180,7 +180,8 @@ export const getFrequencyAssign = objectDetails => {
 
 export const getAgreementObjects = objectDetails =>
   !isEmpty(objectDetails.agreementObjects)
-    ? `including the following: Legal highlights: ${objectDetails.agreementObjects.reduce(
+    ? `including the following: Legal highlights: ${reduce(
+        objectDetails.agreementObjects,
         (acc, obj) => ` ${acc} <a href='/object/${obj}/page'>${obj}</a> `,
         '',
       )}`
@@ -188,7 +189,7 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? objectDetails.match_bots.reduce((acc, bot) => `${acc}, @${bot}`, '').slice(1)
+    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, @${bot}`, '').slice(1)
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
@@ -215,9 +216,11 @@ const getFollowingObjects = objectDetails =>
     : '';
 
 const getLinksToAllFollowingObjects = followingObjects =>
-  followingObjects
-    .reduce((acc, obj) => `${acc}, <a href='/object/${obj.permlink}'>${obj.name}</a>`, '')
-    .slice(1);
+  reduce(
+    followingObjects,
+    (acc, obj) => `${acc}, <a href='/object/${obj.permlink}'>${obj.name}</a>`,
+    '',
+  ).slice(1);
 
 export const getDetailsBody = (
   proposition,
