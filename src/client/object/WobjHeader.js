@@ -59,11 +59,12 @@ const WobjHeader = ({
     if (isMobile) return `${link}/about`;
     if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
       return `${link}/${wobject.object_type}`;
+
     return `${link}/reviews`;
   };
-  const name = wobject.name || wobject.default_name;
+  const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
-  const status = getApprovedField(wobject, 'status', usedLocale);
+  const status = getApprovedField(wobject, 'status');
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
