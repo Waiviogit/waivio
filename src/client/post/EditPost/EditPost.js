@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Badge } from 'antd';
+import { Badge, Icon } from 'antd';
 import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
@@ -36,6 +36,7 @@ import { getClientWObj } from '../../adapters';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
+import classNames from 'classnames';
 
 @injectIntl
 @requiresLogin
@@ -119,9 +120,6 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
-    getObject('jyp-cryptoinvestarena').then(object => {
-      this.handleObjectSelect(object);
-    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
@@ -129,10 +127,10 @@ class EditPost extends Component {
   getLinkedObjects = async contentStateRaw => {
     const { forecastValues, linkedObjects } = this.state;
     const { isValid, wobjData } = forecastValues;
+    const cryptoObject = await getObject('jyp-cryptoinvestarena');
     const objEntities = Object.values(contentStateRaw.entityMap).filter(
       entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
     );
-
     const forecastObjectId = get(wobjData, ['author_permlink'], '');
     let forecastObject = linkedObjects.find(obj => obj.id === forecastObjectId);
 
@@ -141,12 +139,16 @@ class EditPost extends Component {
       forecastObject = getClientWObj(serverObject, this.props.locale);
     }
     return compact(
-      uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'),
+      uniqBy(
+        [cryptoObject, forecastObject, ...objEntities.map(entity => entity.data.object)],
+        'id',
+      ),
     );
   };
 
-  handleChangeContent(rawContent) {
+  async handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
+
     this.getLinkedObjects(rawContent).then(linkedObjects => {
       const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
       if (isLinkedObjectsChanged) {
@@ -393,7 +395,12 @@ class EditPost extends Component {
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (
-              <ObjectCardView wObject={wObj} key={wObj.id} />
+              <div className="edit-post__object-card">
+                <div className="edit-post__object-card-icon">
+                  <Icon type="close-circle" />
+                </div>
+                <ObjectCardView wObject={wObj} key={wObj.id} />
+              </div>
             ))}
           </div>
           <div className="rightContainer">

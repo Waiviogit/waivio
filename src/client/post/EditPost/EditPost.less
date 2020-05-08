@@ -3,8 +3,24 @@
 .edit-post {
   &__saving-badge {
     text-align: right;
+
     .ant-badge-status-text {
       color: @grey-darkGrey;
+    }
+  }
+
+  &__object-card {
+    position: relative;
+
+    &-icon {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      z-index: 1;
+      &:hover {
+        color: @blue-dodgerBlue;
+        cursor: pointer;
+      }
     }
   }
 }
