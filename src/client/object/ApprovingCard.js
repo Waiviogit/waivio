@@ -1,5 +1,4 @@
 import React from 'react';
-import { isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -60,30 +59,26 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
 
   return (
     <div className={classListModal}>
-      {!isNil(post.append_field_weight) && (
-        <div>
-          {intl.formatMessage({
-            id: 'approval',
-            defaultMessage: 'Approval',
-          })}
-          :{' '}
-          <Tag>
-            <span>
-              <span className={classListApproveTag}>
-                {post.upvotedByModerator ? 100 : percent.toFixed(2)}%
-              </span>
-            </span>
-          </Tag>
-          {!approved && !modal && (
-            <span className="MinPercent">
-              {intl.formatMessage({
-                id: 'min_70_is_required',
-                defaultMessage: 'Min 70% is required',
-              })}
-            </span>
-          )}
-        </div>
-      )}
+      <div>
+        {intl.formatMessage({
+          id: 'approval',
+          defaultMessage: 'Approval',
+        })}
+        :{' '}
+        <Tag>
+          <span>
+            <span className={classListApproveTag}>{approved ? 100 : percent.toFixed(2)}%</span>
+          </span>
+        </Tag>
+        {!approved && !modal && (
+          <span className="MinPercent">
+            {intl.formatMessage({
+              id: 'min_70_is_required',
+              defaultMessage: 'Min 70% is required',
+            })}
+          </span>
+        )}
+      </div>
       <div>
         {intl.formatMessage({
           id: 'vote_count_tag',
