@@ -138,7 +138,7 @@ class ObjectInfo extends React.Component {
         .map(item => addActiveVotesInField(this.props.wobject, item, category))
         .filter(item => calculateApprovePercent(item.active_votes, item.weight) >= 70);
       const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
-      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
+      const tagArray = this.state.showMore[category] ? categoryItemsWithVotes : onlyFiveItems;
 
       return (
         <div>
@@ -147,7 +147,7 @@ class ObjectInfo extends React.Component {
               <Link to={`/object/${item.name}`}>{item.name}</Link>
             </Tag>
           ))}
-          {categoryItems.length > 5 && !this.state.showMore[category] && (
+          {categoryItemsWithVotes.length > 5 && !this.state.showMore[category] && (
             <span
               role="presentation"
               className="show-more"
@@ -195,7 +195,10 @@ class ObjectInfo extends React.Component {
   };
 
   renderParent = permlink => {
-    if (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink) {
+    if (
+      permlink &&
+      (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink)
+    ) {
       const getParent = () =>
         getObject(permlink).then(res => {
           this.setState({ parentWobj: res });
@@ -250,7 +253,6 @@ class ObjectInfo extends React.Component {
       wobject.preview_gallery.filter(
         picture => calculateApprovePercent(picture.active_votes, picture.weight) >= 70,
       );
-
     if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(
@@ -737,10 +739,7 @@ class ObjectInfo extends React.Component {
                   </div>
                 )}
                 {hasGalleryImg && (
-                  <PicturesCarousel
-                    pics={wobject.preview_gallery}
-                    objectID={wobject.author_permlink}
-                  />
+                  <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
                 )}
               </div>
             ) : null}

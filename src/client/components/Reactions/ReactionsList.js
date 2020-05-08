@@ -43,10 +43,9 @@ export default class UserList extends React.Component {
 
   componentDidMount() {
     const { votes, moderatorsList, adminsList, name } = this.props;
-    checkFollowing(
-      name,
-      votes.map(vote => vote.voter),
-    ).then(res => {
+    const usersList = votes.map(vote => vote.voter);
+
+    checkFollowing(name, usersList).then(res => {
       const mappedList = votes.map(vote => {
         const follow = res.find(r => !isNil(r[vote.voter]));
 
@@ -62,7 +61,6 @@ export default class UserList extends React.Component {
       const moderators = mappedList.filter(v => v.moderator);
       const admins = mappedList.filter(v => !v.moderator && v.admin);
       const users = mappedList.filter(v => !v.moderator && !v.admin);
-
       this.setState({ usersList: [...moderators, ...admins, ...users] });
     });
   }
