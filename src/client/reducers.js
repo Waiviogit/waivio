@@ -76,7 +76,7 @@ export const getAuthenticateduserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const guestBalance = state => fromAuth.guestBalance(state.auth);
+export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>

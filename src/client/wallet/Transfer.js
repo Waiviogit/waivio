@@ -21,6 +21,7 @@ import {
   getTransferTo,
   isGuestUser,
   getGuestUserBalance,
+  isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -42,6 +43,7 @@ const InputGroup = Input.Group;
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     guestsBalance: getGuestUserBalance(state),
+    authGuestBalance: isGuestBalance(state),
   }),
   {
     closeTransfer,
@@ -68,6 +70,7 @@ export default class Transfer extends React.Component {
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
     guestsBalance: PropTypes.number,
+    authGuestBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -81,6 +84,7 @@ export default class Transfer extends React.Component {
     isGuest: false,
     notify: () => {},
     guestsBalance: 0,
+    authGuestBalance: null,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -365,7 +369,7 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
-      guestsBalance,
+      authGuestBalance,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
@@ -375,7 +379,7 @@ export default class Transfer extends React.Component {
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-    const currentBalance = isGuest ? `${guestsBalance} HIVE` : balance;
+    const currentBalance = isGuest ? `${authGuestBalance} HIVE` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(

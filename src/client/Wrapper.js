@@ -22,7 +22,7 @@ import {
   getTranslations,
   getUsedLocale,
   isGuestUser,
-  guestBalance,
+  isGuestBalance,
 } from './reducers';
 import { busyLogin, login, logout, getGuestBalance } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
@@ -62,7 +62,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    balance: guestBalance(state),
+    balance: isGuestBalance(state),
   }),
   {
     login,

@@ -144,7 +144,7 @@ export default ({
           };
         }
       }
-      console.log('Blocked, did not match iframe "src" white list urls:', tagName, attribs);
+      // console.log('Blocked, did not match iframe "src" white list urls:', tagName, attribs);
       sanitizeErrors.push(`Invalid iframe URL: ${srcAtty}`);
       return { tagName: 'div', text: `(Unsupported ${srcAtty})` };
     },

@@ -11,7 +11,7 @@ const initialState = {
   user: {},
   userMetaData: {},
   isGuestUser: false,
-  guestBalance: null,
+  isGuestBalance: null,
 };
 
 export default (state = initialState, action) => {
@@ -36,7 +36,7 @@ export default (state = initialState, action) => {
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
-        guestBalance: action.payload.guestBalance,
+        isGuestBalance: action.payload.isGuestBalance,
       };
     case types.LOGIN_ERROR:
       return {
@@ -111,4 +111,4 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
-export const guestBalance = state => state.guestBalance;
+export const isGuestBalance = state => state.isGuestBalance;
