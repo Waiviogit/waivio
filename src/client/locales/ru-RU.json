@@ -1106,5 +1106,6 @@
   "trading_add_wallet_named": "Добавить {currency} кошелек",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
-  "signUp_creditCards": "- кредитные карты"
+  "signUp_creditCards": "- кредитные карты",
+  "transaction_to_bxy": "Вы не можете совершить транзакцию из гостевой учетной записи в учетную запись с префиксом 'bxy_'"
 }

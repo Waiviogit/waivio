@@ -24,7 +24,7 @@ import {
   isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -84,14 +84,14 @@ export default class Transfer extends React.Component {
     isGuest: false,
     notify: () => {},
     guestsBalance: 0,
-    authGuestBalance: null,
+    authGuestBalance: 0,
   };
 
   // eslint-disable-next-line react/sort-comp
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
   static minAccountLength = 3;
-  static maxAccountLength = 16;
+  static maxAccountLength = 23;
   static exchangeRegex = /^(bittrex|blocktrades|poloniex|changelly|openledge|shapeshiftio|deepcrypto8)$/;
   static CURRENCIES = {
     HIVE: 'HIVE',
@@ -102,6 +102,11 @@ export default class Transfer extends React.Component {
     currency: Transfer.CURRENCIES.HIVE,
     oldAmount: undefined,
   };
+
+  componentWillMount() {
+    const { authGuestBalance } = this.props;
+    this.setState({ currentGuestBalance: authGuestBalance });
+  }
 
   componentDidMount() {
     const { cryptosPriceHistory } = this.props;
@@ -264,13 +269,26 @@ export default class Transfer extends React.Component {
   };
 
   validateUsername = (rule, value, callback) => {
-    const { intl } = this.props;
+    const { intl, isGuest } = this.props;
     const guestName = value.startsWith(GUEST_PREFIX);
+    const bxyName = value.startsWith(BXY_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
       callback();
       return;
+    }
+
+    if (isGuest && bxyName) {
+      callback([
+        new Error(
+          intl.formatMessage({
+            id: 'transaction_to_bxy',
+            defaultMessage:
+              "You cannot make a transaction from the guest account to the account with the prefix 'bxy_'",
+          }),
+        ),
+      ]);
     }
 
     if (value.length < Transfer.minAccountLength) {

@@ -1136,5 +1136,6 @@
   "trading_add_wallet_named": "Add {currency} wallet",
   "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
   "signUp_cryptos": "- CRYPTOS",
-  "signUp_creditCards": "- credit cards"
+  "signUp_creditCards": "- credit cards",
+  "transaction_to_bxy": "You cannot make a transaction from the guest account to the account with the prefix 'bxy_'"
 }

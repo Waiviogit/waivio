@@ -1,6 +1,7 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
+import { get } from 'lodash';
 import { getAuthenticatedUser, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
@@ -14,7 +15,6 @@ import { setToken } from '../helpers/getToken';
 import { getGuestPaymentsHistory, updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import { getIsBeaxyUser } from '../user/usersHelper';
-import { get } from 'lodash';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
