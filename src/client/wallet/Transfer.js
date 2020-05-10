@@ -24,7 +24,7 @@ import {
   isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -271,7 +271,6 @@ export default class Transfer extends React.Component {
   validateUsername = (rule, value, callback) => {
     const { intl, isGuest } = this.props;
     const guestName = value.startsWith(GUEST_PREFIX);
-    const bxyName = value.startsWith(BXY_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -279,7 +278,7 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    if (isGuest && bxyName) {
+    if (isGuest && guestName) {
       callback([
         new Error(
           intl.formatMessage({
