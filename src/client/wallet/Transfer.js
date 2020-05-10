@@ -103,11 +103,6 @@ export default class Transfer extends React.Component {
     oldAmount: undefined,
   };
 
-  componentWillMount() {
-    const { authGuestBalance } = this.props;
-    this.setState({ currentGuestBalance: authGuestBalance });
-  }
-
   componentDidMount() {
     const { cryptosPriceHistory } = this.props;
     const currentSteemRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
