@@ -2,7 +2,7 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import { get, has, isEmpty, isEqual, map, forEach, uniq, filter } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -260,10 +260,13 @@ class CatalogWrap extends React.Component {
     });
   };
 
-  renderProposition = propositions =>
+  renderProposition = (propositions, listItem) =>
     map(propositions, proposition =>
       map(
-        proposition.objects,
+        filter(
+          proposition.objects,
+          object => get(object, ['object', 'author_permlink']) === listItem.author_permlink,
+        ),
         wobj =>
           wobj.object &&
           wobj.object.author_permlink && (
@@ -284,15 +287,15 @@ class CatalogWrap extends React.Component {
       ),
     );
 
-  getListRow = (listItem, campaignObjects) => {
+  getListRow = (listItem, objects) => {
     const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.type === OBJ_TYPE.LIST;
     let item;
     if (isList) {
       item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
-    } else if (campaignObjects.includes(listItem.id)) {
-      item = this.renderProposition(propositions);
+    } else if (objects.length && objects[0].includes(listItem.author_permlink)) {
+      item = this.renderProposition(propositions, listItem);
     } else {
       item = <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />;
     }
