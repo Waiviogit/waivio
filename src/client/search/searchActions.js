@@ -1,8 +1,14 @@
 import { each, concat, reverse, sortBy } from 'lodash';
+import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getSuitableLanguage, getFollowingList, getAuthenticatedUserName } from '../reducers';
+import {
+  getSuitableLanguage,
+  getFollowingList,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../reducers';
 import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
@@ -16,6 +22,14 @@ export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
   '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
 );
 export const RESET_SEARCH_USERS_FOR_DISCOVER_PAGE = '@search/RESET_SEARCH_USERS_FOR_DISCOVER_PAGE';
+export const SAVE_BENEFICIARIES_USERS = createAsyncActionType('@search/SAVE_BENEFICIARIES_USERS');
+export const UPDATE_BENEFICIARIES_USERS = createAsyncActionType(
+  '@search/UPDATE_BENEFICIARIES_USERS',
+);
+export const REMOVE_BENEFICIARIES_USERS = createAsyncActionType(
+  '@search/REMOVE_BENEFICIARIES_USERS',
+);
+export const CLEAR_BENEFICIARIES_USERS = createAsyncActionType('@search/CLEAR_BENEFICIARIES_USERS');
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -115,7 +129,46 @@ export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getSta
           result,
           search,
         }))
-        .catch(console.log),
+        .catch(e => message.error(e)),
+    },
+  });
+};
+
+export const UNFOLLOW_SEARCH_USER = createAsyncActionType('@users/UNFOLLOW_SEARCH_USER');
+
+export const unfollowSearchUser = username => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: UNFOLLOW_SEARCH_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+    },
+    meta: {
+      username,
+    },
+  });
+};
+export const FOLLOW_SEARCH_USER = createAsyncActionType('@user/FOLLOW_SEARCH_USER');
+
+export const followSearchUser = username => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: FOLLOW_SEARCH_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+    },
+    meta: {
+      username,
     },
   });
 };
@@ -142,4 +195,27 @@ export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch 
 export const clearSearchObjectsResults = () => dispatch =>
   dispatch({
     type: CLEAR_SEARCH_OBJECTS_RESULT,
+  });
+
+export const saveBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: SAVE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const updateBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: UPDATE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const removeBeneficiariesUsers = payload => dispatch =>
+  dispatch({
+    type: REMOVE_BENEFICIARIES_USERS.ACTION,
+    payload,
+  });
+
+export const clearBeneficiariesUsers = () => dispatch =>
+  dispatch({
+    type: CLEAR_BENEFICIARIES_USERS.ACTION,
   });

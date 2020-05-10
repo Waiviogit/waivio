@@ -87,8 +87,9 @@ const Payment = ({ match, intl, userName }) => {
           :
         </div>
         {intl.formatMessage({
-          id: 'payment_page_transfers_with_hashtag_included',
-          defaultMessage: 'Only transfer with hashtag "#waivio" are included',
+          id: 'payment_page_transfers_with_user_reward_included',
+          defaultMessage:
+            'Only transfer with {"id":"user_reward"} instructions are processed as rewards payments',
         })}
       </div>
       {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}

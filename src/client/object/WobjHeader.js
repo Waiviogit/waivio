@@ -11,10 +11,15 @@ import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
-import { accessTypesArr, getApprovedField, haveAccess } from '../helpers/wObjectHelper';
-import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
+import {
+  accessTypesArr,
+  addActiveVotesInField,
+  calculateApprovePercent,
+  getApprovedField,
+  haveAccess,
+} from '../helpers/wObjectHelper';
 
 import '../components/ObjectHeader.less';
 
@@ -33,9 +38,11 @@ const WobjHeader = ({
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parentName = wobject.parent
-    ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
-    : '';
+  const parent = wobject.parent && addActiveVotesInField(wobject, wobject.parent);
+  const parentName =
+    parent &&
+    calculateApprovePercent(parent.active_votes, parent.weight) >= 70 &&
+    (getApprovedField(wobject.parent, objectFields.name) || wobject.default_name);
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -52,11 +59,12 @@ const WobjHeader = ({
     if (isMobile) return `${link}/about`;
     if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
       return `${link}/${wobject.object_type}`;
+
     return `${link}/reviews`;
   };
-  const name = wobject.name || wobject.default_name;
+  const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
-  const status = getApprovedField(wobject, 'status', usedLocale);
+  const status = getApprovedField(wobject, 'status');
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>

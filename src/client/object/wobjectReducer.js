@@ -4,6 +4,7 @@ import {
   GET_OBJECT_APPENDS,
   RATE_WOBJECT_SUCCESS,
   SEND_COMMENT_APPEND,
+  SET_NEW_PARENT,
   VOTE_APPEND_ERROR,
   VOTE_APPEND_START,
   VOTE_APPEND_SUCCESS,
@@ -96,6 +97,7 @@ export default function wobjectReducer(state = initialState, action) {
         state.wobject.fields.filter(field =>
           action.payload.find(f => f.permlink === field.permlink),
         );
+
       listFields = listFields.map(field => {
         const matchPost = action.payload.find(f => f.permlink === field.permlink);
         return {
@@ -136,10 +138,7 @@ export default function wobjectReducer(state = initialState, action) {
         author: payload.author,
         author_original: payload.author,
         author_rank: 0,
-        author_reputation: 1039122303835,
         body: payload.body,
-        category: 'waivio-object-type',
-        children: 0,
         creator: payload.creator,
         curator_payout_value: '0.000 HBD',
         depth: 2,
@@ -184,7 +183,7 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (payload.name === 'categoryItem') {
         const parentCategoryIndex = state.wobject.tagCategories.findIndex(
-          field => field.body === payload.tagCategory,
+          field => field.id === payload.id,
         );
         const parentCategory = state.wobject.tagCategories[parentCategoryIndex];
         const newTag = {
@@ -307,9 +306,7 @@ export default function wobjectReducer(state = initialState, action) {
       });
 
       if (matchPost.name === 'categoryItem') {
-        const categoryIndex = state.wobject.tagCategories.findIndex(
-          cat => cat.body === matchPost.tagCategory,
-        );
+        const categoryIndex = state.wobject.tagCategories.findIndex(cat => cat.id === matchPost.id);
         const tagIndex = state.wobject.tagCategories[categoryIndex].categoryItems.findIndex(
           item => item.name === matchPost.body,
         );
@@ -333,7 +330,7 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (matchPost.name === 'galleryItem') {
         const categoryIndex = state.wobject.preview_gallery.findIndex(
-          picture => picture.body === matchPost.body,
+          picture => picture.permlink === matchPost.permlink,
         );
 
         state.wobject.preview_gallery.splice(categoryIndex, 1, {
@@ -387,6 +384,16 @@ export default function wobjectReducer(state = initialState, action) {
         wobject: {
           ...state.wobject,
           fields: [...state.wobject.fields],
+        },
+      };
+    }
+    case SET_NEW_PARENT: {
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          fields: [...state.wobject.fields],
+          parent: action.payload.parent,
         },
       };
     }

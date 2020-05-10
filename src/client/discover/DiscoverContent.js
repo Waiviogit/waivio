@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
+import { followUser, getTopExperts as getTopExpertsApi, unfollowUser } from '../user/usersActions';
 import {
   getTopExperts,
   getTopExpertsLoading,
@@ -16,12 +16,15 @@ import {
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import {
+  followSearchUser,
   resetSearchUsersForDiscoverPage,
   searchUsersForDiscoverPage,
+  unfollowSearchUser,
 } from '../search/searchActions';
+import withAuthActions from '../auth/withAuthActions';
 
 const displayLimit = 20;
-
+@withAuthActions
 @connect(
   state => ({
     topExperts: getTopExperts(state),
@@ -35,6 +38,10 @@ const displayLimit = 20;
     getObjectTypes,
     searchUsersForDiscoverPage,
     resetSearchUsersForDiscoverPage,
+    followTopUser: followUser,
+    unfollowTopUser: unfollowUser,
+    unfollowSearchUser,
+    followSearchUser,
   },
 )
 class DiscoverContent extends React.Component {
@@ -43,7 +50,7 @@ class DiscoverContent extends React.Component {
       PropTypes.shape({
         name: PropTypes.string,
         weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        json_metadata: PropTypes.string,
+        posting_json_metadata: PropTypes.string,
       }),
     ).isRequired,
     getTopExperts: PropTypes.func.isRequired,
@@ -53,8 +60,16 @@ class DiscoverContent extends React.Component {
     getObjectTypes: PropTypes.func.isRequired,
     searchUsersForDiscoverPage: PropTypes.func.isRequired,
     searchString: PropTypes.string,
-    searchUsersList: PropTypes.arrayOf(PropTypes.shape()),
+    searchUsersList: PropTypes.shape({
+      result: PropTypes.arrayOf(PropTypes.shape()),
+      loading: PropTypes.bool,
+    }),
     resetSearchUsersForDiscoverPage: PropTypes.func.isRequired,
+    unfollowTopUser: PropTypes.func,
+    followTopUser: PropTypes.func,
+    onActionInitiated: PropTypes.func.isRequired,
+    followSearchUser: PropTypes.func.isRequired,
+    unfollowSearchUser: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -63,6 +78,8 @@ class DiscoverContent extends React.Component {
       result: [],
       loading: true,
     },
+    unfollowTopUser: () => {},
+    followTopUser: () => {},
   };
 
   componentDidMount() {
@@ -90,6 +107,22 @@ class DiscoverContent extends React.Component {
     }
   };
 
+  unfollowTopUser = (name, top) => {
+    if (this.props.searchString) {
+      this.props.onActionInitiated(() => this.props.unfollowSearchUser(name));
+    } else {
+      this.props.onActionInitiated(() => this.props.unfollowTopUser(name, top));
+    }
+  };
+
+  followTopUser = (name, top) => {
+    if (this.props.searchString) {
+      this.props.onActionInitiated(() => this.props.followSearchUser(name));
+    } else {
+      this.props.onActionInitiated(() => this.props.followTopUser(name, top));
+    }
+  };
+
   render() {
     const {
       topExperts,
@@ -106,23 +139,25 @@ class DiscoverContent extends React.Component {
         />
       </div>
     );
-
     const mapSearchUsersList =
       searchUsersList &&
       searchUsersList.result &&
       searchUsersList.result.map(user => ({
         name: user.account,
-        wobjects_weight: user.wobjects_weight,
-        followers_count: user.followers_count,
+        ...user,
       }));
-
     const searchUsers =
       mapSearchUsersList && mapSearchUsersList.length
         ? mapSearchUsersList.map(expert => (
-            <DiscoverUser user={expert} key={expert.name} isReblogged />
+            <DiscoverUser
+              user={expert}
+              key={expert.name}
+              unfollow={this.unfollowTopUser}
+              follow={this.followTopUser}
+              isReblogged
+            />
           ))
         : noUserError;
-
     const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
 
     return (
@@ -138,7 +173,13 @@ class DiscoverContent extends React.Component {
             loader={<Loading />}
           >
             {topExperts.map(expert => (
-              <DiscoverUser user={expert} key={expert.name} isReblogged />
+              <DiscoverUser
+                user={expert}
+                key={expert.name}
+                unfollow={this.unfollowTopUser}
+                follow={this.followTopUser}
+                isReblogged
+              />
             ))}
           </ReduxInfiniteScroll>
         )}

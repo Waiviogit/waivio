@@ -59,6 +59,7 @@ export default function withAuthActions(WrappedComponent) {
           showModal={this.state.displayLoginModal}
           handleLoginModalCancel={this.hideLoginModal}
           hideLink
+          key="modal-sign-in"
         />,
         <WrappedComponent
           key="wrapped-component"

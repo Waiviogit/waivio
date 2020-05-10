@@ -2,9 +2,10 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
+import { isEmpty } from 'lodash';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
-import { ACCOUNT_UPDATE } from '../common/constants/accountHistory';
+import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { message } from 'antd';
 
 let headers = {
@@ -72,10 +73,10 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
           }
 
           return acc + `required_fields=${field}`;
-        }, '?')
-      : `?required_fields=${requiredField}`;
+        }, '')
+      : `required_fields=${requiredField}`;
   }
-  queryString = user ? `?user=${user}${queryString}` : queryString;
+  queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
@@ -122,7 +123,10 @@ export const getMoreFeedContentByObject = ({
 export const getFeedContent = (sortBy, queryData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
-      headers,
+      headers: {
+        ...headers,
+        app: config.appName,
+      },
       method: 'POST',
       body: JSON.stringify(queryData),
     })
@@ -517,10 +521,11 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {}) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  const actualHeaders = user ? { ...headers, following: user, follower: user } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.users}${queryString}`, {
-      headers,
+      headers: actualHeaders,
       method: 'GET',
     })
       .then(res => res.json())
@@ -731,19 +736,49 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getLenders = ({ sponsor, user, filters }) => {
-  const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
-  const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
-  const days = filters && filters.days ? `&days=${filters.days}` : '';
-  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
+export const getLenders = ({ sponsor, user, globalReport, filters }) => {
+  const getBody = obj => {
+    if (!isEmpty(obj)) {
+      return {
+        sponsor: sponsor,
+        globalReport: globalReport,
+        objects: obj.objects,
+        endDate: obj.endDate,
+        startDate: obj.startDate,
+        currency: obj.currency,
+        processingFees: obj.processingFees,
+      };
+    }
+    return {
+      userName: user,
+      sponsor: sponsor,
+      globalReport: globalReport,
+    };
+  };
+
   return new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(getBody(filters)),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
+
+export const getReport = ({ guideName, userName, reservationPermlink }) => {
+  return new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.payments}${config.report}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideName,
+        userName,
+        reservationPermlink,
+      }),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -934,7 +969,7 @@ export const updateGuestProfile = async (username, json_metadata) => {
     data: {
       operations: [
         [
-          'custom_json',
+          CUSTOM_JSON,
           {
             required_auths: [],
             required_posting_auths: [username],
@@ -1044,6 +1079,21 @@ export const getWalletCryptoPriceHistory = symbol => {
       method: 'GET',
     },
   ).then(res => res.json());
+};
+
+export const checkFollowing = (user, users = []) => {
+  const queryString = users.length
+    ? users.reduce((acc, usr, index) => {
+        if (index !== users.length - 1) return acc + `users=${usr}&`;
+
+        return acc + `users=${usr}`;
+      }, '?')
+    : '';
+
+  return fetch(`${config.apiPrefix}${config.user}/${user}/getFollowingsState${queryString}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

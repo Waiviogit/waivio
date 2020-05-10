@@ -16,6 +16,7 @@ import {
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { getMetadata } from '../../helpers/postingMetadata';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -27,10 +28,17 @@ import { GUEST_PREFIX } from '../../../common/constants/waivio';
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
-    rewardFund: PropTypes.shape().isRequired,
-    rate: PropTypes.number.isRequired,
-    isGuest: PropTypes.bool.isRequired,
+    user: PropTypes.shape(),
+    rewardFund: PropTypes.shape(),
+    rate: PropTypes.number,
+    isGuest: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isGuest: false,
+    user: {},
+    rewardFund: {},
+    rate: 0,
   };
   state = {
     rc_percentage: 0,
@@ -48,25 +56,12 @@ class UserInfo extends React.Component {
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       lastActive = intl.formatRelative(Date.parse(user.updatedAt));
-
-      if (user.posting_json_metadata.profile) {
-        location = user.posting_json_metadata.profile.location;
-        profile = user.posting_json_metadata.profile || {};
-        website = user.posting_json_metadata.profile.website;
-        about = user.posting_json_metadata.profile.about;
-        email = user.posting_json_metadata.profile.email;
-      } else {
-        try {
-          metadata = JSON.parse(user.posting_json_metadata);
-          location = metadata && get(metadata, 'profile.location');
-          profile = (metadata && get(metadata, 'profile')) || {};
-          website = metadata && get(metadata, 'profile.website');
-          about = metadata && get(metadata, 'profile.about');
-          email = metadata && get(metadata, 'profile.email');
-        } catch (e) {
-          // do nothing
-        }
-      }
+      metadata = getMetadata(user);
+      profile = get(metadata, 'profile', {});
+      location = metadata && get(profile, 'location');
+      website = metadata && get(profile, 'website');
+      about = metadata && get(profile, 'about');
+      email = metadata && get(profile, 'email');
     }
 
     if (user.name && !this.state.rc_percentage && !isGuest) {

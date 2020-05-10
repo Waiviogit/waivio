@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { attempt, isError, isEmpty, get, throttle } from 'lodash';
+import { isEmpty, get, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
-import { encodeOp } from 'steem-uri';
-import { updateProfile } from '../auth/authActions';
+import SteemConnectAPI from '../steemConnectAPI';
+import { updateProfile, reload } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
-import postingMetadataHelper from '../helpers/postingMetadata';
+import { getMetadata } from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
@@ -29,9 +29,8 @@ import './Settings.less';
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
-  let metadata = attempt(JSON.parse, props.user.posting_json_metadata);
+  const metadata = getMetadata(props.user);
 
-  if (isError(metadata)) metadata = {};
   const profile = metadata.profile || {};
 
   return Object.keys(profile).reduce(
@@ -55,6 +54,7 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    reload,
   },
 )
 @Form.create({
@@ -72,6 +72,8 @@ export default class ProfileSettings extends React.Component {
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
+    reload: PropTypes.func,
+    reloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -82,19 +84,14 @@ export default class ProfileSettings extends React.Component {
     history: {},
     isGuest: false,
     updateProfile: () => {},
+    reload: () => {},
+    reloading: false,
   };
 
   constructor(props) {
     super(props);
 
-    let jsonMetadata = attempt(JSON.parse, props.user.json_metadata);
-
-    if (isError(jsonMetadata)) jsonMetadata = {};
-    let postingJsonMetadata = attempt(JSON.parse, props.user.posting_json_metadata);
-
-    if (isError(postingJsonMetadata)) postingJsonMetadata = {};
-
-    const metadata = postingMetadataHelper(jsonMetadata, postingJsonMetadata);
+    const metadata = getMetadata(props.user);
 
     this.state = {
       bodyHTML: '',
@@ -123,7 +120,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
+    const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -158,32 +155,33 @@ export default class ProfileSettings extends React.Component {
                   }),
                 );
 
-                this.props.history.push(`/@${this.props.user.name}`);
+                this.props.history.push(`/@${user.name}`);
               }
             })
             .catch(e => message.error(e.message));
         } else {
-          const profileDateEncoded = encodeOp(
-            [
-              ACCOUNT_UPDATE,
-              {
-                account: userName,
-                extensions: [],
-                memo_key: user.memo_key,
-                json_metadata: '',
-                posting_json_metadata: JSON.stringify({
-                  profile: { ...profileData, ...cleanValues },
+          const profileDateEncoded = [
+            ACCOUNT_UPDATE,
+            {
+              account: userName,
+              extensions: [],
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify({
+                profile: { ...profileData, ...cleanValues, version: 2 },
+              }),
+            },
+          ];
+          SteemConnectAPI.broadcast([profileDateEncoded])
+            .then(() => {
+              reload();
+              message.success(
+                intl.formatMessage({
+                  id: 'profile_updated',
+                  defaultMessage: 'Profile updated',
                 }),
-              },
-            ],
-            { callback: window.location.href },
-          );
-          const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
-            '_blank',
-          );
-
-          win.focus();
+              );
+            })
+            .catch(e => message.error(e.message));
         }
       }
     });
@@ -256,7 +254,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   render() {
-    const { intl, form } = this.props;
+    const { intl, form, reloading } = this.props;
     const {
       bodyHTML,
       isModal,
@@ -267,7 +265,6 @@ export default class ProfileSettings extends React.Component {
       lastAccountUpdate,
       profilePicture,
       coverPicture,
-      profileData,
     } = this.state;
     const { getFieldDecorator } = form;
 
@@ -327,7 +324,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('name', { initialValue: profileData.name })(
+                      {getFieldDecorator('name')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -345,7 +342,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('about', { initialValue: profileData.about })(
+                      {getFieldDecorator('about')(
                         <Input.TextArea
                           autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
@@ -363,7 +360,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('location', { initialValue: profileData.location })(
+                      {getFieldDecorator('location')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -381,7 +378,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('email', { initialValue: profileData.email })(
+                      {getFieldDecorator('email')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -399,7 +396,7 @@ export default class ProfileSettings extends React.Component {
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
-                      {getFieldDecorator('website', { initialValue: profileData.website })(
+                      {getFieldDecorator('website')(
                         <Input
                           size="large"
                           placeholder={intl.formatMessage({
@@ -492,6 +489,7 @@ export default class ProfileSettings extends React.Component {
                   big
                   type="submit"
                   disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  loading={reloading}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>

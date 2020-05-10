@@ -19,10 +19,14 @@ import { calculateApprovePercent } from '../../../helpers/wObjectHelper';
 class RateInfo extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
-    ratingFields: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    ratingFields: PropTypes.arrayOf(PropTypes.shape()),
     authorPermlink: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    ratingFields: [],
   };
 
   state = {
