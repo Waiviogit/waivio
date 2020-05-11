@@ -381,24 +381,22 @@ class CatalogWrap extends React.Component {
 
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
     this.state.propositions.map(proposition => {
+      const updatedProposition = proposition;
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition._id === propsId) {
-        proposition.objects.forEach((object, index) => {
+      if (updatedProposition._id === propsId) {
+        updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = isAssign;
+            updatedProposition.objects[index].assigned = isAssign;
           } else {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = null;
+            updatedProposition.objects[index].assigned = null;
           }
         });
       }
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
-        // eslint-disable-next-line no-param-reassign
-        proposition.isReservedSiblingObj = true;
+      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+        updatedProposition.isReservedSiblingObj = true;
       }
-      return proposition;
+      return updatedProposition;
     });
 
   discardProposition = ({

@@ -26,8 +26,9 @@ class Album extends React.Component {
     const { isOpen, photoIndex } = this.state;
     const pictures =
       album.items &&
-      album.items.filter(picture => calculateApprovePercent(picture.active_votes) >= 70);
-
+      album.items.filter(
+        picture => calculateApprovePercent(picture.active_votes, picture.weight) >= 70,
+      );
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>
@@ -51,18 +52,18 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={album.items[photoIndex].body}
-            nextSrc={album.items[(photoIndex + 1) % album.items.length].body}
-            prevSrc={album.items[(photoIndex + album.items.length - 1) % album.items.length].body}
+            mainSrc={pictures[photoIndex].body}
+            nextSrc={pictures[(photoIndex + 1) % pictures.length].body}
+            prevSrc={pictures[(photoIndex + pictures.length - 1) % pictures.length].body}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({
-                photoIndex: (photoIndex + album.items.length - 1) % album.items.length,
+                photoIndex: (photoIndex + pictures.length - 1) % pictures.length,
               })
             }
             onMoveNextRequest={() =>
               this.setState({
-                photoIndex: (photoIndex + 1) % album.items.length,
+                photoIndex: (photoIndex + 1) % pictures.length,
               })
             }
           />

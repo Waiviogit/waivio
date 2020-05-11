@@ -48,7 +48,7 @@ const Details = ({
 
   const getProposedWobjName = () => {
     let result;
-    if (proposedWobj.name.includes('&')) {
+    if (proposedWobj.name && proposedWobj.name.includes('&')) {
       result = proposedWobj.name.replace('&', '%26');
     } else {
       result = proposedWobj.name;
@@ -124,11 +124,16 @@ Details.propTypes = {
   objectDetails: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   reserveOnClickHandler: PropTypes.func.isRequired,
-  assigned: PropTypes.bool.isRequired,
+  assigned: PropTypes.bool,
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
+};
+
+Details.defaultProps = {
+  loading: false,
+  assigned: false,
 };
 export default injectIntl(Details);
