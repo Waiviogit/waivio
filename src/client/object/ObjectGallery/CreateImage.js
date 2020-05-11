@@ -6,7 +6,14 @@ import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, message } from 'antd';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
-import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getObject,
+  getObjectAlbums,
+  getRate,
+  getRewardFund,
+  getVotePercent,
+} from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
@@ -14,12 +21,16 @@ import { getField, generatePermlink, prepareImageToStore } from '../../helpers/w
 import AppendFormFooter from '../AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
+import { getVoteValue } from '../../helpers/user';
 
 @connect(
   state => ({
     currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
     albums: getObjectAlbums(state),
+    defaultVotePercent: getVotePercent(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -38,6 +49,8 @@ class CreateImage extends React.Component {
     imageUploading: false,
     currentImages: [],
     isValidLink: false,
+    votePercent: this.props.defaultVotePercent / 100,
+    voteWorth: 0,
   };
 
   getWobjectData = () => {
@@ -49,7 +62,22 @@ class CreateImage extends React.Component {
     data.title = '';
     data.lastUpdated = Date.now();
     data.wobjectName = getField(wObject, objectFields.name);
+    data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
+
     return data;
+  };
+
+  calculateVoteWorth = value => {
+    const { currentUsername, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      currentUsername,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+
+    this.setState({ votePercent: value, voteWorth });
   };
 
   getWobjectField = image => {
@@ -214,6 +242,7 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
+    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
 
     return (
       <Modal
@@ -284,19 +313,14 @@ class CreateImage extends React.Component {
             )}
           </Form.Item>
           <Form.Item>
-            {!uploadingList.length ? (
-              <AppendFormFooter
-                loading={loading}
-                form={this.props.form}
-                handleSubmit={this.handleSubmit}
-              />
-            ) : (
-              <AppendFormFooter
-                loading={Boolean(uploadingList.length)}
-                form={this.props.form}
-                handleSubmit={this.handleSubmit}
-              />
-            )}
+            <AppendFormFooter
+              loading={isLoading}
+              calcVote={this.calculateVoteWorth}
+              form={form}
+              handleSubmit={this.handleSubmit}
+              votePercent={this.state.votePercent}
+              voteWorth={this.state.voteWorth}
+            />
           </Form.Item>
         </Form>
       </Modal>
@@ -315,6 +339,9 @@ CreateImage.propTypes = {
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
   addImageToAlbumStore: PropTypes.func,
+  rewardFund: PropTypes.shape(),
+  rate: PropTypes.number,
+  defaultVotePercent: PropTypes.number.isRequired,
 };
 
 CreateImage.defaultProps = {
@@ -324,6 +351,8 @@ CreateImage.defaultProps = {
   albums: [],
   appendObject: () => {},
   addImageToAlbumStore: () => {},
+  rewardFund: {},
+  rate: 0,
 };
 
 export default injectIntl(Form.create()(CreateImage));

@@ -54,6 +54,7 @@ const Proposition = ({
     };
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
+        requiredObjectName,
         companyAuthor: proposition.guide.name,
         companyPermlink: proposition.activation_permlink,
         objPermlink: obj.author_permlink,
@@ -195,7 +196,7 @@ Proposition.propTypes = {
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
@@ -206,6 +207,7 @@ Proposition.defaultProps = {
   authorizedUserName: '',
   post: {},
   assigned: null,
+  loading: false,
 };
 
 export default connect(

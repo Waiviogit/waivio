@@ -40,6 +40,7 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import './Topnav.less';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
+import { getApprovedField } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @withRouter
@@ -597,7 +598,7 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          const wobjName = getApprovedField(option, objectFields.name) || option.default_name;
           const parent = option.parent;
 
           return wobjName ? (

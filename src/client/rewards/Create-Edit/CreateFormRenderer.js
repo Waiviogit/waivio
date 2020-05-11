@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -15,6 +15,7 @@ const { Option } = Select;
 
 const CreateFormRenderer = props => {
   const {
+    match,
     handlers,
     campaignName,
     campaignType,
@@ -48,6 +49,8 @@ const CreateFormRenderer = props => {
     isCampaignActive,
     iAgree,
   } = props;
+
+  const currentItemId = get(match, ['params', 'campaignId']);
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
@@ -163,7 +166,25 @@ const CreateFormRenderer = props => {
         onSubmit={handlers.handleSubmit}
         className={loading && 'CreateReward__loading'}
       >
-        <Form.Item label={fields.campaignName.label}>
+        <Form.Item>
+          {!isEmpty(match.params) ? (
+            <div className="CreateReward__createDuplicate">
+              <div className="CreateReward__first">*</div>
+              <div className="CreateReward__second">
+                {fields.campaignName.label}{' '}
+                {
+                  <Link to={`/rewards/createDuplicate/${currentItemId}`} title="Create a duplicate">
+                    ({fields.createDuplicate.text})
+                  </Link>
+                }
+              </div>
+            </div>
+          ) : (
+            <div className="CreateReward__createDuplicate">
+              <div className="CreateReward__first">*</div>
+              <div className="CreateReward__second">{fields.campaignName.label}</div>
+            </div>
+          )}
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
             initialValue: campaignName,
@@ -535,6 +556,7 @@ CreateFormRenderer.propTypes = {
   campaignId: PropTypes.string,
   isCampaignActive: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
+  match: PropTypes.shape().isRequired,
 };
 
 export default CreateFormRenderer;

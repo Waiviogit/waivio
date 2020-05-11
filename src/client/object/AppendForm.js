@@ -103,7 +103,7 @@ export default class AppendForm extends Component {
     currentField: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
-    ratingFields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    ratingFields: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
   static defaultProps = {
@@ -125,6 +125,7 @@ export default class AppendForm extends Component {
     defaultVotePercent: 100,
     followingList: [],
     rateObject: () => {},
+    ratingFields: [],
   };
 
   state = {
@@ -473,6 +474,7 @@ export default class AppendForm extends Component {
       rate,
       value * 100,
     );
+
     this.setState({ votePercent: value, voteWorth });
   };
 
@@ -1528,9 +1530,15 @@ export default class AppendForm extends Component {
             </Select>,
           )}
         </Form.Item>
-
         {this.renderContentValue(getFieldValue('currentField'))}
-        <AppendFormFooter loading={loading} form={form} handleSubmit={this.handleSubmit} />
+        <AppendFormFooter
+          loading={loading}
+          calcVote={this.calculateVoteWorth}
+          form={form}
+          handleSubmit={this.handleSubmit}
+          votePercent={this.state.votePercent}
+          voteWorth={this.state.voteWorth}
+        />
       </Form>
     );
   }
