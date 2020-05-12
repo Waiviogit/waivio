@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import _ from 'lodash';
-// import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-// import { defaultAccountLimit } from '../helpers/apiHelpers';
-// import Loading from '../components/Icon/Loading';
+import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import { defaultAccountLimit } from '../helpers/apiHelpers';
+import Loading from '../components/Icon/Loading';
 import './UserWalletTransactions.less';
 import WalletTransaction from './WalletTransaction';
 
@@ -13,84 +12,58 @@ class UserWalletTransactions extends React.Component {
     currentUsername: PropTypes.string,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
-    // loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
-    userHasMoreActions: PropTypes.bool.isRequired,
     transactions: PropTypes.arrayOf(PropTypes.shape()),
-    // getUserTransactionHistory: PropTypes.func,
+    getUserTransactionHistory: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     currentUsername: '',
     transactions: [],
-    getUserTransactionHistory: () => {},
+  };
+
+  handleLoadMore = () => {
+    const { getUserTransactionHistory, currentUsername, transactions } = this.props;
+    console.log('transactions: ', transactions);
+    let skip = 0;
+    if (transactions.length >= 5) {
+      skip = transactions.length;
+    }
+    return getUserTransactionHistory(currentUsername, skip, defaultAccountLimit);
   };
 
   render() {
-    const {
-      currentUsername,
-      totalVestingShares,
-      totalVestingFundSteem,
-      // loadingMoreUsersAccountHistory,
-      userHasMoreActions,
-      transactions,
-    } = this.props;
+    const { currentUsername, totalVestingShares, totalVestingFundSteem, transactions } = this.props;
 
     const key = Math.random();
 
-    if (transactions.length === 0 && !userHasMoreActions) {
+    if (!transactions.length) {
       return null;
     }
-
-    // const handleLoadMore = () => {
-    //   console.log('transactionHistory: ', transactionHistory);
-    //
-    //   const lastAction = _.last(transactionHistory);
-    //   const lastActionCount = lastAction ? transactionHistory.lastIndexOf(lastAction) : -1;
-    //   let limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
-    //
-    //   if (lastActionCount === -1) {
-    //     limit = defaultAccountLimit;
-    //   }
-    //
-    //   this.props.getUserTransactionHistory(currentUsername, lastActionCount, limit);
-    // };
 
     return (
       <div className="UserWalletTransactions">
         <React.Fragment>
-          {transactions.map(transaction => (
-            <WalletTransaction
-              key={key}
-              transaction={transaction}
-              currentUsername={currentUsername}
-              totalVestingShares={totalVestingShares}
-              totalVestingFundSteem={totalVestingFundSteem}
-            />
-          ))}
-
-          {/* <ReduxInfiniteScroll */}
-          {/*  loadMore={handleLoadMore} */}
-          {/*  hasMore={userHasMoreActions} */}
-          {/*  elementIsScrollable={false} */}
-          {/*  threshold={500} */}
-          {/*  loader={ */}
-          {/*    <div className="UserWalletTransactions__loader"> */}
-          {/*      <Loading /> */}
-          {/*    </div> */}
-          {/*  } */}
-          {/*  loadingMore={loadingMoreUsersAccountHistory} */}
-          {/* > */}
-          {/*  <div /> */}
-          {/*  {transactionHistory.map(transaction => ( */}
-          {/*    <WalletTransaction */}
-          {/*      key={key} */}
-          {/*      transaction={transaction} */}
-          {/*      currentUsername={currentUsername} */}
-          {/*      totalVestingShares={totalVestingShares} */}
-          {/*      totalVestingFundSteem={totalVestingFundSteem} */}
-          {/*    /> */}
-          {/*  ))} */}
-          {/* </ReduxInfiniteScroll> */}
+          <ReduxInfiniteScroll
+            loadMore={this.handleLoadMore}
+            elementIsScrollable={false}
+            threshold={500}
+            loader={
+              <div className="UserWalletTransactions__loader">
+                <Loading />
+              </div>
+            }
+          >
+            <div />
+            {transactions.map(transaction => (
+              <WalletTransaction
+                key={key}
+                transaction={transaction}
+                currentUsername={currentUsername}
+                totalVestingShares={totalVestingShares}
+                totalVestingFundSteem={totalVestingFundSteem}
+              />
+            ))}
+          </ReduxInfiniteScroll>
         </React.Fragment>
       </div>
     );

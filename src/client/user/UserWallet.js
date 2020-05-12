@@ -155,6 +155,7 @@ class Wallet extends Component {
         <Loading style={{ marginTop: '20px' }} />
       ) : (
         <UserWalletTransactions
+          getUserTransactionHistory={getUserTransactionHistory}
           transactions={transactions}
           currentUsername={user.name}
           totalVestingShares={totalVestingShares}
