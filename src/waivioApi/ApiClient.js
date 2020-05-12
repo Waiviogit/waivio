@@ -73,10 +73,10 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
           }
 
           return acc + `required_fields=${field}`;
-        }, '?')
-      : `?required_fields=${requiredField}`;
+        }, '')
+      : `required_fields=${requiredField}`;
   }
-  queryString = user ? `?user=${user}${queryString}` : queryString;
+  queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,

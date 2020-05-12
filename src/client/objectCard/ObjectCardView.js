@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
+import { filter, includes, orderBy, isEmpty, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -47,7 +47,8 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (!isEmpty(passedParent) && avatar === DEFAULTS.AVATAR) {
+    const parentAvatar = get(passedParent, ['avatar']);
+    if (!isEmpty(passedParent) && parentAvatar && avatar === DEFAULTS.AVATAR) {
       url = passedParent.avatar;
     }
     if (includes(url, 'waivio.')) url = `${url}_medium`;
