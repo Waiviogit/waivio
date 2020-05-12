@@ -57,6 +57,7 @@ class MapObjectInfo extends React.Component {
         anchor={[+lat, +lng]}
         payload={wobject}
         onClick={this.handleMarkerClick}
+        onMouseOver={this.handleMarkerClick}
       />
     ) : null;
   };

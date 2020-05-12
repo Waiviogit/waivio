@@ -12,7 +12,12 @@ import { mapFields, objectFields } from '../../../common/constants/listOfFields'
 import { RADIUS, ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
-import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
+import {
+  getFilteredObjectsMap,
+  getIsMapModalOpen,
+  getSuitableLanguage,
+  getUpdatedMap,
+} from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
@@ -27,6 +32,8 @@ const defaultCoords = {
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
+    mapWobjects: getFilteredObjectsMap(state),
+    updated: getUpdatedMap(state),
   }),
   {
     setMapFullscreenMode,
@@ -61,10 +68,17 @@ class MapOS extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { zoom, center, radius } = this.state;
+    const { zoom, center } = this.state;
+    const { mapWobjects, updated } = this.props;
+    if (prevProps.updated !== updated) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ needUpdate: false, zoom: mapWobjects.length < 6 ? 3 : zoom });
+    }
+
     if (prevState.zoom !== zoom || !isEqual(prevState.center, center)) {
       const { setMapArea } = this.props;
-      setMapArea({ radius, coordinates: center });
+      const newRadius = this.calculateRadius(zoom);
+      setMapArea({ radius: newRadius, coordinates: center });
     }
   }
 
@@ -107,6 +121,7 @@ class MapOS extends React.Component {
             anchor={[+lat, +lng]}
             payload={wobject}
             onClick={this.handleMarkerClick}
+            onMouseOver={this.handleMarkerClick}
           />
         ) : null;
       })
@@ -316,6 +331,8 @@ MapOS.propTypes = {
   onMarkerClick: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   getAreaSearchData: PropTypes.func,
+  mapWobjects: PropTypes.arrayOf(PropTypes.shape()),
+  updated: PropTypes.bool,
 };
 
 MapOS.defaultProps = {
@@ -327,6 +344,8 @@ MapOS.defaultProps = {
   userLocation: {},
   customControl: null,
   usedLocale: 'en-US',
+  mapWobjects: [],
+  updated: false,
   setArea: () => {},
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},
