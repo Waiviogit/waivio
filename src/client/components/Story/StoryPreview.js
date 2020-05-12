@@ -39,8 +39,6 @@ const StoryPreview = ({ post }) => {
     imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
     const contentImages = getContentImages(post.body);
-    // console.log(post.body);
-    // console.log(contentImages);
     if (contentImages.length) {
       imagePath = getProxyImageURL(contentImages[0], 'preview');
     }
@@ -48,14 +46,12 @@ const StoryPreview = ({ post }) => {
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
-  let hasVideo = false;
 
   if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
     const author = get(video, 'info.author', '');
     const permlink = get(video, 'info.permlink', '');
     const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
     const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
-    hasVideo = true;
     embeds[0] = {
       type: 'video',
       provider_name: 'DTube',
@@ -66,7 +62,7 @@ const StoryPreview = ({ post }) => {
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
 
-  if (videoPreviewResult) {
+  if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
     if (videoLink) {
@@ -88,27 +84,12 @@ const StoryPreview = ({ post }) => {
         }
       }
 
-      hasVideo = true;
       embeds[0] = steemEmbed.get(videoLink, options);
       embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
     }
   }
 
-  // const steemPressRegex = /<iframe [\s\S]+><\/iframe>/g;
-  // const steemPressVideos = post.body.match(steemPressRegex)
-
-  // if (steemPressVideos) {
-  //   const options = {
-  //     width: '100%',
-  //     height: 340,
-  //     autoplay: false,
-  //   }
-  //
-  //   console.log(steemPressVideos)
-  //   embeds[0] = steemEmbed.get(steemPressVideos[0], options);
-  //   console.log(embeds[0]);
-  // }
-
+  const hasVideo = embeds && embeds[0] && true;
   const preview = {
     text: () => (
       <BodyShort key="text" className="Story__content__body" body={post.fullBody || post.body} />
