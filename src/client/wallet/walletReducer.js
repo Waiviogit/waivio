@@ -98,15 +98,20 @@ export default function walletReducer(state = initialState, action) {
         usersAccountHistoryLoading: false,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.START:
-      return { ...state, transactionsHistoryLoading: true };
+      return {
+        ...state,
+        transactionsHistoryLoading: true,
+      };
     case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS:
       return {
         ...state,
-        transactions: [...state.transactions, ...action.payload.wallet],
+        transactions: action.payload.transactions,
         transactionsHistoryLoading: false,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
-      return { transactionsHistoryLoading: false };
+      return {
+        transactionsHistoryLoading: false,
+      };
     case walletActions.GET_MORE_USER_ACCOUNT_HISTORY.START:
       return {
         ...state,

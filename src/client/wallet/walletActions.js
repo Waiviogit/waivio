@@ -125,25 +125,6 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getUserAccountHistory = username => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
-  return dispatch({
-    type: GET_USER_ACCOUNT_HISTORY.ACTION,
-    payload: {
-      promise: getAccountHistory(username, { isGuest }).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions, isGuest);
-
-        return {
-          username,
-          userWalletTransactions: parsedUserActions.userWalletTransactions,
-          userAccountHistory: parsedUserActions.userAccountHistory,
-          balance: get(userActions, ['payable'], null),
-        };
-      }),
-    },
-  });
-};
-
 export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
   const isGuest = username.startsWith(GUEST_PREFIX);
   return dispatch({
@@ -225,10 +206,33 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   }
 };
 
+export const getUserAccountHistory = username => dispatch => {
+  const isGuest = username.startsWith(GUEST_PREFIX);
+  return dispatch({
+    type: GET_USER_ACCOUNT_HISTORY.ACTION,
+    payload: {
+      promise: getAccountHistory(username, { isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
+
+        return {
+          username,
+          userWalletTransactions: parsedUserActions.userWalletTransactions,
+          userAccountHistory: parsedUserActions.userAccountHistory,
+          balance: get(userActions, ['payable'], null),
+        };
+      }),
+    },
+  });
+};
+
 export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, skip, limit),
+      promise: getTransferHistory(username, skip, limit)
+        .then(data => ({
+          transactions: data.wallet,
+        }))
+        .catch(error => console.log(error)),
     },
   });

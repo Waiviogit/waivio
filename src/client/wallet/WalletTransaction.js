@@ -91,12 +91,10 @@ const WalletTransaction = ({
       );
     case accountHistoryConstants.FILL_ORDER:
       return (
-        <React.Fragment>
-          <WalletFillOrderTransferred
-            transactionDetails={transactionDetails}
-            timestamp={transaction.timestamp}
-          />
-        </React.Fragment>
+        <WalletFillOrderTransferred
+          transactionDetails={transactionDetails}
+          timestamp={transaction.timestamp}
+        />
       );
     default:
       return null;
