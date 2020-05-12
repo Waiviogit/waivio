@@ -39,6 +39,8 @@ const StoryPreview = ({ post }) => {
     imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
     const contentImages = getContentImages(post.body);
+    // console.log(post.body);
+    // console.log(contentImages);
     if (contentImages.length) {
       imagePath = getProxyImageURL(contentImages[0], 'preview');
     }
@@ -47,6 +49,7 @@ const StoryPreview = ({ post }) => {
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
   let hasVideo = false;
+
   if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
     const author = get(video, 'info.author', '');
     const permlink = get(video, 'info.permlink', '');
@@ -84,13 +87,27 @@ const StoryPreview = ({ post }) => {
           options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
         }
       }
+
+      hasVideo = true;
       embeds[0] = steemEmbed.get(videoLink, options);
       embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
     }
   }
 
-  if (embeds && embeds[0] && embeds[0].thumbnail)
-    embeds[0].thumbnail = embeds[0].thumbnail.replace('/maxresdefault', '/0');
+  // const steemPressRegex = /<iframe [\s\S]+><\/iframe>/g;
+  // const steemPressVideos = post.body.match(steemPressRegex)
+
+  // if (steemPressVideos) {
+  //   const options = {
+  //     width: '100%',
+  //     height: 340,
+  //     autoplay: false,
+  //   }
+  //
+  //   console.log(steemPressVideos)
+  //   embeds[0] = steemEmbed.get(steemPressVideos[0], options);
+  //   console.log(embeds[0]);
+  // }
 
   const preview = {
     text: () => (

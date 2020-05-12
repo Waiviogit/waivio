@@ -79,6 +79,9 @@ export const isBannedPost = post => {
 export function getContentImages(content, parsed = false) {
   const parsedBody = parsed ? content : getHtml(content, {}, 'text');
 
+  console.log('content', content);
+  console.log('parsedBody', parsedBody);
+
   return extractImageTags(parsedBody).map(tag =>
     unescape(tag.src.replace('https://images.hive.blog/0x0/', '')),
   );
