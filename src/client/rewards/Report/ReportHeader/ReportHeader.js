@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import { getSingleReportData } from '../../../reducers';
 import Avatar from '../../../components/Avatar';
 import './ReportHeader.less';
@@ -15,7 +15,7 @@ const ReportHeader = ({ intl }) => {
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive;
-  const rewardUsd = singleReportData.rewardUsd.toFixed(2);
+  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(2) : '';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
@@ -28,13 +28,12 @@ const ReportHeader = ({ intl }) => {
   ]);
   const reviewPermlink = get(singleReportData, ['histories', '0', 'details', 'review_permlink']);
   // const activationPermlink = get(singleReportData, ['histories', '0', 'details', 'activation_permlink']);
-  const primaryObjectPermlink = get(singleReportData, ['histories', '0', 'details', 'main_object']);
-  const secondaryObjectPermlink = get(singleReportData, [
-    'histories',
-    '0',
-    'details',
-    'review_object',
-  ]);
+  const primaryObjectPermlink = get(singleReportData, ['primaryObject', 'author_permlink']);
+  const primaryObjectName = get(singleReportData, ['primaryObject', 'object_name']);
+  const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
+    name: secondaryObject.object_name,
+    permlink: secondaryObject.author_permlink,
+  }));
 
   return (
     <React.Fragment>
@@ -132,11 +131,14 @@ const ReportHeader = ({ intl }) => {
         <span>
           {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
           <a href={`/object/${primaryObjectPermlink}`}>
-            <span className="ReportHeader__campaignInfo-links">${}</span>
+            <span className="ReportHeader__campaignInfo-links">{primaryObjectName}</span>
           </a>
-          <a href={`/object/${secondaryObjectPermlink}`}>
-            <span className="ReportHeader__campaignInfo-links">${}</span>
-          </a>
+          {', '}
+          {map(secondaryObjects, object => (
+            <a href={`/object/${object.permlink}`}>
+              <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+            </a>
+          ))}
         </span>
       </div>
     </React.Fragment>
