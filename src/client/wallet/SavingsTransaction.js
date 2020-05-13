@@ -94,7 +94,7 @@ SavingsTransaction.propTypes = {
 };
 
 SavingsTransaction.defaultProps = {
-  timestamp: '',
+  timestamp: 0,
   transactionDetails: {},
   transactionType: PropTypes.string,
   amount: <span />,
