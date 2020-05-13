@@ -2,10 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
-import { getCurrentUSDPrice } from '../../rewardsHelper';
+import { useSelector } from 'react-redux';
+import { get } from 'lodash';
+import { getSingleReportData } from '../../../reducers';
 
-const ReportFooter = ({ intl, onClick }) => {
-  const currentUSDPrice = getCurrentUSDPrice();
+const ReportFooter = ({ intl, toggleModal }) => {
+  const singleReportData = useSelector(getSingleReportData);
+  const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
+
   return (
     <div className="Report__modal-footer">
       <div className="Report__modal-footer-notes">
@@ -13,7 +17,8 @@ const ReportFooter = ({ intl, onClick }) => {
           *{' '}
           {intl.formatMessage({
             id: 'exchange_rate',
-            defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${currentUSDPrice} USD).`,
+            defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${reservationRate ||
+              ''} USD).`,
           })}
         </div>
         <div>
@@ -34,7 +39,7 @@ const ReportFooter = ({ intl, onClick }) => {
         </div>
       </div>
       <div className="Report__modal-footer-btn">
-        <Button type="primary" onClick={onClick}>
+        <Button type="primary" onClick={toggleModal}>
           {intl.formatMessage({
             id: 'modal_button_yes',
             defaultMessage: `Ok`,
@@ -47,7 +52,7 @@ const ReportFooter = ({ intl, onClick }) => {
 
 ReportFooter.propTypes = {
   intl: PropTypes.shape().isRequired,
-  onClick: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 export default injectIntl(ReportFooter);

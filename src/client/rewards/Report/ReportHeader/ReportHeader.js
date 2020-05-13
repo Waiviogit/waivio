@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { get } from 'lodash';
 import { getSingleReportData } from '../../../reducers';
 import Avatar from '../../../components/Avatar';
 import './ReportHeader.less';
@@ -19,6 +20,21 @@ const ReportHeader = ({ intl }) => {
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
   const sponsorName = singleReportData.sponsor.name;
+  const reservationPermlink = get(singleReportData, [
+    'histories',
+    '0',
+    'details',
+    'reservation_permlink',
+  ]);
+  const reviewPermlink = get(singleReportData, ['histories', '0', 'details', 'review_permlink']);
+  // const activationPermlink = get(singleReportData, ['histories', '0', 'details', 'activation_permlink']);
+  const primaryObjectPermlink = get(singleReportData, ['histories', '0', 'details', 'main_object']);
+  const secondaryObjectPermlink = get(singleReportData, [
+    'histories',
+    '0',
+    'details',
+    'review_object',
+  ]);
 
   return (
     <React.Fragment>
@@ -94,19 +110,33 @@ const ReportHeader = ({ intl }) => {
             id: 'rewards_reservation',
             defaultMessage: 'Rewards reservation:',
           })}{' '}
-          <span className="ReportHeader__campaignInfo-date">
-            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reservationDate}
-          </span>
+          <a href={`/@${userName}/${reservationPermlink}`}>
+            <span className="ReportHeader__campaignInfo-date">
+              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
+              {reservationDate}
+            </span>
+          </a>
         </span>
         <span>
           {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
-          <span className="ReportHeader__campaignInfo-date">
-            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
-          </span>
+          <a href={`/@${userName}/${reviewPermlink}`}>
+            <span className="ReportHeader__campaignInfo-date">
+              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
+            </span>
+          </a>
         </span>
         <span>
           {intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}{' '}
           <span className="ReportHeader__campaignInfo-title">{title}</span>
+        </span>
+        <span>
+          {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
+          <a href={`/object/${primaryObjectPermlink}`}>
+            <span className="ReportHeader__campaignInfo-links">${}</span>
+          </a>
+          <a href={`/object/${secondaryObjectPermlink}`}>
+            <span className="ReportHeader__campaignInfo-links">${}</span>
+          </a>
         </span>
       </div>
     </React.Fragment>
