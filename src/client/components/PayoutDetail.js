@@ -62,6 +62,7 @@ const PayoutDetail = ({ intl, post }) => {
     pastPayouts,
     authorPayouts,
     curatorPayouts,
+    totalPayout,
   } = calculatePayout(post);
   const beneficaries = getBeneficaries(post);
 
@@ -102,7 +103,7 @@ const PayoutDetail = ({ intl, post }) => {
           <AmountWithLabel
             id="payout_total_past_payout_amount"
             defaultMessage="Total Past Payouts: {amount}"
-            amount={pastPayouts}
+            amount={pastPayouts || totalPayout}
           />
           <AmountWithLabel
             id="payout_author_payout_amount"
