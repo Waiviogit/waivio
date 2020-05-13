@@ -106,7 +106,7 @@ export default function walletReducer(state = initialState, action) {
     case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS:
       return {
         ...state,
-        transactions: action.payload.transactions,
+        transactions: [...state.transactions, ...action.payload.transactions],
         hasMore: action.payload.hasMore,
         transactionsHistoryLoading: false,
       };
