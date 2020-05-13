@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 const SignUpButton = ({ isButton, setIsModalOpen }) =>
@@ -23,4 +23,4 @@ SignUpButton.defaultProps = {
   setIsModalOpen: () => {},
 };
 
-export default React.memo(SignUpButton);
+export default injectIntl(React.memo(SignUpButton));

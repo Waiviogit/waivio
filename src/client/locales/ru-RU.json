@@ -1052,7 +1052,7 @@
   "name_is_too_long": "Слишком длинное имя (макс 25 символов)",
   "already_exists": "Пользователь с данным именем уже существует",
   "please_input_username": "Пожалуйста введите имя пользователя",
-  "only_letters": "Только буквы(латиница), цыфры, точки, дефисы",
+  "only_letters": "Только строчные буквы(латиница), цифры, точки, дефисы",
   "imageSetter_add_image": "Добавить картинку",
   "imageSetter_add_images": "Добавить картинки",
   "imageSetter_upload": "Загрузить",
@@ -1106,5 +1106,6 @@
   "trading_add_wallet_named": "Добавить {currency} кошелек",
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
-  "signUp_creditCards": "- кредитные карты"
+  "signUp_creditCards": "- кредитные карты",
+  "transaction_to_bxy": "Вы не можете совершить транзакцию из гостевой учетной записи в учетную запись с префиксом 'bxy_'"
 }

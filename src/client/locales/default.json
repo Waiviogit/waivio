@@ -1087,7 +1087,7 @@
   "number_photos_required_increased": "If selected, the number of photos required will be increased by one.",
   "already_exists": "User with such username already exists",
   "please_input_username": "Please input your username",
-  "only_letters": "Only letters, digits, periods, dashes are allowed",
+  "only_letters": "Only lowercase letters, digits, periods, dashes are allowed",
   "imageSetter_add_image": "Add image",
   "imageSetter_add_images": "Add images",
   "imageSetter_upload": "Upload",
@@ -1136,5 +1136,6 @@
   "trading_add_wallet_named": "Add {currency} wallet",
   "there_are_not user with name": "Sorry! There are no user with name {item} on InvestArena",
   "signUp_cryptos": "- CRYPTOS",
-  "signUp_creditCards": "- credit cards"
+  "signUp_creditCards": "- credit cards",
+  "transaction_to_bxy": "You cannot make a transaction from the guest account to the account with the prefix 'bxy_'"
 }

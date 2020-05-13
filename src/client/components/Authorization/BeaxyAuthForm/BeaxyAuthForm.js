@@ -49,12 +49,7 @@ const BeaxyAuthForm = ({
 
   const handleAuthSuccess = response => {
     const { payload, user, token, expiration, umSession } = response;
-    message.success(
-      intl.formatMessage({
-        id: 'broker_modal_broker_connected_successfully',
-        defaultMessage: 'Beaxy connection established successfully',
-      }),
-    );
+
     if (!isAuthUser) dispatch(getFollowingObjects(user.name));
     if (get(user, ['user_metadata', 'new_user'], false)) {
       const userJsonMetadata = attempt(JSON.parse, user.json_metadata);
@@ -68,6 +63,13 @@ const BeaxyAuthForm = ({
     } else {
       dispatch(onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }));
     }
+
+    message.success(
+      intl.formatMessage({
+        id: 'broker_modal_broker_connected_successfully',
+        defaultMessage: 'Beaxy connection established successfully',
+      }),
+    );
   };
 
   const handleSubmit = e => {
