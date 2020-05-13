@@ -1,17 +1,18 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
+import { get } from 'lodash';
 import { getAuthenticatedUser, getIsAuthenticated, getIsLoaded } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing, getNotifications } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import {
-  initBrokerConnection,
   disconnectBroker,
+  initBrokerConnection,
 } from '../../investarena/redux/actions/brokersActions';
 import { setToken } from '../helpers/getToken';
-import { updateGuestProfile } from '../../waivioApi/ApiClient';
+import { getGuestPaymentsHistory, updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import { getIsBeaxyUser } from '../user/usersHelper';
 
@@ -35,6 +36,11 @@ export const LOGOUT = '@auth/LOGOUT';
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
+
+export const getGuestBalance = async username =>
+  getGuestPaymentsHistory(username, {})
+    .then(result => get(result, ['payable'], null))
+    .catch(err => err);
 
 export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const isAuthenticated = getIsAuthenticated(getState());
@@ -74,6 +80,8 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
     type: LOGIN,
     payload: new Promise(async (resolve, reject) => {
       try {
+        const username = userData.user.name;
+        const getBalance = await getGuestBalance(username);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
         waivioAPI.saveGuestData(
           userData.token,
@@ -89,6 +97,7 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           userMetaData,
           socialNetwork: 'beaxy',
           isGuestUser: true,
+          isGuestBalance: getBalance,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -113,6 +122,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   if (socialNetwork === 'beaxy')
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();
+
   let promise = Promise.resolve(null);
 
   const isGuest = waivioAPI.isGuest;
@@ -124,7 +134,15 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
       try {
         const tokenData = await setToken(oAuthToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+        const username = tokenData.userData.name;
+        const getBalance = await getGuestBalance(username);
+        resolve({
+          account: tokenData.userData,
+          userMetaData,
+          socialNetwork,
+          isGuestUser: true,
+          isGuestBalance: getBalance,
+        });
         dispatch(getNotifications(tokenData.userData.name));
       } catch (e) {
         dispatch(notify(e.error.details[0].message));

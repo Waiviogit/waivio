@@ -21,6 +21,7 @@ import {
   getTransferTo,
   isGuestUser,
   getGuestUserBalance,
+  isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -42,6 +43,7 @@ const InputGroup = Input.Group;
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     guestsBalance: getGuestUserBalance(state),
+    authGuestBalance: isGuestBalance(state),
   }),
   {
     closeTransfer,
@@ -68,6 +70,7 @@ export default class Transfer extends React.Component {
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
     guestsBalance: PropTypes.number,
+    authGuestBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -81,13 +84,14 @@ export default class Transfer extends React.Component {
     isGuest: false,
     notify: () => {},
     guestsBalance: 0,
+    authGuestBalance: 0,
   };
 
   // eslint-disable-next-line react/sort-comp
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
 
   static minAccountLength = 3;
-  static maxAccountLength = 16;
+  static maxAccountLength = 23;
   static exchangeRegex = /^(bittrex|blocktrades|poloniex|changelly|openledge|shapeshiftio|deepcrypto8)$/;
   static CURRENCIES = {
     HIVE: 'HIVE',
@@ -260,13 +264,25 @@ export default class Transfer extends React.Component {
   };
 
   validateUsername = (rule, value, callback) => {
-    const { intl } = this.props;
+    const { intl, isGuest } = this.props;
     const guestName = value.startsWith(GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
       callback();
       return;
+    }
+
+    if (isGuest && guestName) {
+      callback([
+        new Error(
+          intl.formatMessage({
+            id: 'transaction_to_bxy',
+            defaultMessage:
+              "You cannot make a transaction from the guest account to the account with the prefix 'bxy_'",
+          }),
+        ),
+      ]);
     }
 
     if (value.length < Transfer.minAccountLength) {
@@ -365,7 +381,7 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
-      guestsBalance,
+      authGuestBalance,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
@@ -375,7 +391,7 @@ export default class Transfer extends React.Component {
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-    const currentBalance = isGuest ? `${guestsBalance} HIVE` : balance;
+    const currentBalance = isGuest ? `${authGuestBalance} HIVE` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
