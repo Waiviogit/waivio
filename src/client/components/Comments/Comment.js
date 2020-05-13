@@ -22,6 +22,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
 import WeightTag from '../WeightTag';
+import { SEND_COMMENT_SUCCESS } from '../../comments/commentsActions';
 import './Comment.less';
 
 @injectIntl
@@ -161,7 +162,7 @@ class Comment extends React.Component {
     return this.props
       .onSendComment(parentPost, commentValue, isUpdating, originalComment)
       .then(res => {
-        if (res.value.ok) {
+        if (res.action && res.action.type === SEND_COMMENT_SUCCESS) {
           if (isUpdating) {
             message.success(
               intl.formatMessage({
