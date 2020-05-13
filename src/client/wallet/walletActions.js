@@ -232,6 +232,7 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
       promise: getTransferHistory(username, skip, limit)
         .then(data => ({
           transactions: data.wallet,
+          hasMore: data.hasMore,
         }))
         .catch(error => console.log(error)),
     },

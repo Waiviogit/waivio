@@ -21,6 +21,7 @@ const initialState = {
   currentDisplayedActions: [],
   currentFilteredActions: [],
   transactions: [],
+  hasMore: false,
   transactionsHistoryLoading: false,
 };
 
@@ -106,6 +107,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         transactions: action.payload.transactions,
+        hasMore: action.payload.hasMore,
         transactionsHistoryLoading: false,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
@@ -222,6 +224,7 @@ export const getTotalVestingShares = state => state.totalVestingShares;
 export const getTotalVestingFundSteem = state => state.totalVestingFundSteem;
 export const getUsersTransactions = state => state.usersTransactions;
 export const getTransactions = state => state.transactions;
+export const getUserHasMore = state => state.hasMore;
 export const getUsersEstAccountsValues = state => state.usersEstAccountsValues;
 export const getUsersAccountHistoryLoading = state => state.usersAccountHistoryLoading;
 export const getLoadingEstAccountValue = state => state.loadingEstAccountValue;
