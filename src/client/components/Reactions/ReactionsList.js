@@ -9,9 +9,11 @@ import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../user/usersActions';
+import { getIsAuthenticated } from '../../reducers';
 
 import './ReactionsList.less';
-@connect(null, {
+
+@connect(state => ({ isAuth: getIsAuthenticated(state) }), {
   unfollow: unfollowUser,
   follow: followUser,
 })
@@ -24,6 +26,7 @@ export default class UserList extends React.Component {
     name: PropTypes.string,
     unfollow: PropTypes.func,
     follow: PropTypes.func,
+    isAuth: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -34,6 +37,7 @@ export default class UserList extends React.Component {
     name: '',
     unfollow: () => {},
     follow: () => {},
+    isAuth: false,
   };
 
   state = {
@@ -42,27 +46,27 @@ export default class UserList extends React.Component {
   };
 
   componentDidMount() {
-    const { votes, moderatorsList, adminsList, name } = this.props;
+    const { votes, moderatorsList, adminsList, name, isAuth } = this.props;
     const usersList = votes.map(vote => vote.voter);
 
-    checkFollowing(name, usersList).then(res => {
-      const mappedList = votes.map(vote => {
-        const follow = res.find(r => !isNil(r[vote.voter]));
+    if (isAuth) {
+      checkFollowing(name, usersList).then(res => {
+        const mappedList = votes.map(vote => {
+          const follow = res.find(r => !isNil(r[vote.voter]));
 
-        return {
-          ...vote,
-          name: vote.voter,
-          admin: adminsList.includes(vote.voter),
-          moderator: moderatorsList.includes(vote.voter),
-          youFollows: follow[vote.voter],
-          pending: false,
-        };
+          return {
+            ...vote,
+            name: vote.voter,
+            admin: adminsList.includes(vote.voter),
+            moderator: moderatorsList.includes(vote.voter),
+            youFollows: follow[vote.voter],
+            pending: false,
+          };
+        });
+
+        this.setState({ usersList: mappedList });
       });
-      const moderators = mappedList.filter(v => v.moderator);
-      const admins = mappedList.filter(v => !v.moderator && v.admin);
-      const users = mappedList.filter(v => !v.moderator && !v.admin);
-      this.setState({ usersList: [...moderators, ...admins, ...users] });
-    });
+    }
   }
 
   paginate = () => this.setState(prevState => ({ page: prevState.page + 1 }));
@@ -119,10 +123,25 @@ export default class UserList extends React.Component {
   };
 
   render() {
-    const { votes, ratio } = this.props;
+    const { votes, ratio, isAuth, adminsList, moderatorsList } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
     const voteValue = vote => (vote.rshares_weight || vote.rshares) * ratio || 0;
+    const votesList = votes.map(vote => ({
+      ...vote,
+      name: vote.voter,
+      admin: adminsList.includes(vote.voter),
+      moderator: moderatorsList.includes(vote.voter),
+      pending: false,
+      youFollows: false,
+    }));
+
+    const currentVoterList =
+      isAuth && this.state.usersList.length ? this.state.usersList : votesList;
+    const moderators = currentVoterList.filter(v => v.moderator);
+    const admins = currentVoterList.filter(v => !v.moderator && v.admin);
+    const users = currentVoterList.filter(v => !v.moderator && !v.admin);
+    const usersList = [...moderators, ...admins, ...users];
 
     return (
       <Scrollbars autoHide style={{ height: '400px' }}>
@@ -133,7 +152,7 @@ export default class UserList extends React.Component {
           useWindow={false}
         >
           <div className="ReactionsList__content">
-            {take(this.state.usersList, noOfItemsToShow).map(vote => (
+            {take(usersList, noOfItemsToShow).map(vote => (
               <UserCard
                 key={vote.voter}
                 user={vote}
