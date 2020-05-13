@@ -98,17 +98,19 @@ export default function wobjectReducer(state = initialState, action) {
           action.payload.find(f => f.permlink === field.permlink),
         );
 
-      listFields = listFields.map(field => {
-        const matchPost = action.payload.find(f => f.permlink === field.permlink);
-        return {
-          ...field,
-          ...matchPost,
-          active_votes: field.active_votes,
-          author: field.author,
-          fullBody: matchPost.body,
-          body: field.body,
-        };
-      });
+      listFields =
+        listFields &&
+        listFields.map(field => {
+          const matchPost = action.payload.find(f => f.permlink === field.permlink);
+          return {
+            ...field,
+            ...matchPost,
+            active_votes: field.active_votes,
+            author: field.author,
+            fullBody: matchPost.body,
+            body: field.body,
+          };
+        });
 
       return {
         ...state,

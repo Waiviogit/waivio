@@ -1119,5 +1119,7 @@
   "approved_by_moderator": "approved by moderator",
   "vote_count_tag": "Vote count",
   "approval": "Approval",
-  "approved": "Approved"
+  "approved": "Approved",
+  "fillOrder_wallet_transferred": "You transferred {current_pays}",
+  "fillOrder_wallet_get": "You get {open_pays}"
 }
