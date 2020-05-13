@@ -89,6 +89,7 @@ export default function walletReducer(state = initialState, action) {
         },
         usersAccountHistoryLoading: false,
         balance: action.payload.balance,
+        authUserBalance: action.payload.balance,
       };
     }
     case walletActions.GET_USER_ACCOUNT_HISTORY.ERROR:

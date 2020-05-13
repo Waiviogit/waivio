@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Badge } from 'antd';
+import { Badge, Icon } from 'antd';
 import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
@@ -36,6 +36,7 @@ import { getClientWObj } from '../../adapters';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
+import classNames from 'classnames';
 
 @injectIntl
 @requiresLogin
@@ -119,20 +120,17 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
-    getObject('jyp-cryptoinvestarena').then(object => {
-      this.handleObjectSelect(object);
-    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
 
   getLinkedObjects = async contentStateRaw => {
-    const { forecastValues, linkedObjects } = this.state;
+    const { forecastValues, linkedObjects, isRemovedCryptoObj } = this.state;
     const { isValid, wobjData } = forecastValues;
+    const cryptoObject = await getObject('jyp-cryptoinvestarena');
     const objEntities = Object.values(contentStateRaw.entityMap).filter(
       entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
     );
-
     const forecastObjectId = get(wobjData, ['author_permlink'], '');
     let forecastObject = linkedObjects.find(obj => obj.id === forecastObjectId);
 
@@ -140,12 +138,14 @@ class EditPost extends Component {
       const serverObject = await getObject(forecastObjectId);
       forecastObject = getClientWObj(serverObject, this.props.locale);
     }
-    return compact(
-      uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'),
-    );
+
+    let linkedList = [forecastObject, ...objEntities.map(entity => entity.data.object)];
+    if (!isRemovedCryptoObj) linkedList = [cryptoObject, ...linkedList];
+
+    return compact(uniqBy(linkedList, 'id'));
   };
 
-  handleChangeContent(rawContent) {
+  async handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     this.getLinkedObjects(rawContent).then(linkedObjects => {
       const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
@@ -324,6 +324,59 @@ class EditPost extends Component {
     // }
   }, 1500);
 
+  removeBodyItem = bodyItem => {
+    const { draftContent } = this.state;
+    const { postTitle } = splitPostContent(draftContent);
+    const objName = bodyItem.name || bodyItem.default_name;
+    let draftBody = draftContent.body;
+    let currentItem = `\n[${objName}](${getObjectUrl(bodyItem.id || bodyItem.author_permlink)})`;
+    if (
+      draftContent.body.includes(
+        `\n[${objName}](${getObjectUrl(bodyItem.id || bodyItem.author_permlink)})&nbsp;\n`,
+      )
+    ) {
+      currentItem = `\n[${objName}](${getObjectUrl(
+        bodyItem.id || bodyItem.author_permlink,
+      )})&nbsp;\n`;
+    }
+    const itemIndex = draftContent.body.indexOf(currentItem) + currentItem.length;
+    if (
+      itemIndex !== -1 &&
+      !!draftContent.body[itemIndex] &&
+      draftContent.body[itemIndex].charCodeAt(0) === 160
+    ) {
+      draftBody = draftBody.replace(draftContent.body[itemIndex], '');
+    }
+    draftBody = draftBody.replace(currentItem, '');
+    this.setState({ draftContent: { title: postTitle, body: draftBody } });
+  };
+
+  removeLinkedObject = object => {
+    const { linkedObjects, draftContent, forecastValues } = this.state;
+    const objName = object.name || object.default_name;
+    const isBodyItem = draftContent.body.includes(
+      `\n[${objName}](${getObjectUrl(object.id || object.author_permlink)})`,
+    );
+    if (object.author_permlink === 'jyp-cryptoinvestarena') {
+      const objectList = linkedObjects.filter(
+        item => item.author_permlink !== object.author_permlink,
+      );
+      this.setState({ linkedObjects: objectList, isRemovedCryptoObj: true });
+    }
+    if (isBodyItem) this.removeBodyItem(object);
+    if (
+      object.type === 'cryptopairs' &&
+      forecastValues.wobjData &&
+      forecastValues.wobjData.author_permlink === object.author_permlink
+    ) {
+      this.handleForecastChange({ isValid: true }, true);
+      const objectList = linkedObjects.filter(
+        item => item.author_permlink !== object.author_permlink,
+      );
+      this.setState({ linkedObjects: objectList });
+    }
+  };
+
   render() {
     const {
       draftContent,
@@ -393,7 +446,12 @@ class EditPost extends Component {
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (
-              <ObjectCardView wObject={wObj} key={wObj.id} />
+              <div className="edit-post__object-card">
+                <div className="edit-post__object-card-icon">
+                  <Icon type="close-circle" onClick={() => this.removeLinkedObject(wObj)} />
+                </div>
+                <ObjectCardView wObject={wObj} key={wObj.id} />
+              </div>
             ))}
           </div>
           <div className="rightContainer">
