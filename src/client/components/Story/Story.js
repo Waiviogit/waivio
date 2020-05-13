@@ -1,4 +1,4 @@
-import { isEqual, filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
+import { filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -102,10 +102,6 @@ class Story extends React.Component {
     this.handleShareClick = this.handleShareClick.bind(this);
     this.handleFollowClick = this.handleFollowClick.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
   getDisplayStoryPreview() {

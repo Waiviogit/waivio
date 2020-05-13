@@ -91,7 +91,11 @@ const UserWalletSummary = ({
 }) => (
   <div className="UserWalletSummary">
     <div className="UserWalletSummary__item">
-      <i className="iconfont icon-steem UserWalletSummary__icon" />
+      <img
+        className="UserWalletSummary__icon hive"
+        src="/images/icons/logo-hive-wallet.svg"
+        alt="hive"
+      />
       <div className="UserWalletSummary__label">
         <FormattedMessage id="hive" defaultMessage="Hive" />
       </div>

@@ -41,7 +41,7 @@ class StoryFull extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     signature: PropTypes.string,
     pendingLike: PropTypes.bool,
@@ -81,6 +81,7 @@ class StoryFull extends React.Component {
     onEditClick: () => {},
     postState: {},
     isOriginalPost: '',
+    defaultVotePercent: 0,
   };
 
   constructor(props) {
