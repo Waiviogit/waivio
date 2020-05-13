@@ -1103,7 +1103,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 50) => {
+export const getTransferHistory = (username, skip = 0, limit = 5) => {
   return fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
