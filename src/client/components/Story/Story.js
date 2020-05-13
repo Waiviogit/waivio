@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil, some } from 'lodash';
 import {
@@ -38,10 +39,14 @@ import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 
 import './Story.less';
+import { isGuestUser } from '../../reducers';
 
 @injectIntl
 @withRouter
 @withAuthActions
+@connect(state => ({
+  isGuest: isGuestUser(state),
+}))
 class Story extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -71,6 +76,7 @@ class Story extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -98,6 +104,7 @@ class Story extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
+    isGuest: false,
   };
 
   constructor(props) {
@@ -373,7 +380,7 @@ class Story extends React.Component {
   }
 
   renderStoryPreview() {
-    const { post } = this.props;
+    const { post, isGuest } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
     const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) ? (
       <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
@@ -393,7 +400,7 @@ class Story extends React.Component {
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
       >
-        <StoryPreview post={post} />
+        <StoryPreview isGuest={isGuest} post={post} />
       </a>
     ) : (
       hiddenStoryPreviewMessage
@@ -417,6 +424,7 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
+
     const isEnoughData = !isEmpty(post) && !isEmpty(postState);
     const {
       predictedEndDate,

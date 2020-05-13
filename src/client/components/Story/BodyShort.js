@@ -13,6 +13,10 @@ function decodeEntities(body) {
 
 const BodyShort = props => {
   let body = props.body;
+  const isGuest = props.isGuest;
+
+  console.log('isGuest: ', isGuest);
+
   const isForecastPost = body.indexOf(forecastPostMessage) > 0;
   let forecastMessage;
   if (isForecastPost) {
@@ -45,12 +49,14 @@ BodyShort.propTypes = {
   className: PropTypes.string,
   body: PropTypes.string,
   length: PropTypes.number,
+  isGuest: PropTypes.bool,
 };
 
 BodyShort.defaultProps = {
   className: '',
   body: '',
   length: 140,
+  isGuest: false,
 };
 
 export default BodyShort;
