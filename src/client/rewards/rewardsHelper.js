@@ -231,6 +231,7 @@ export const getDetailsBody = (
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
+  secondaryObjectName,
 ) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
@@ -245,11 +246,17 @@ export const getDetailsBody = (
   const frequencyAssign = getFrequencyAssign(proposition);
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
+  const linkToFollowingObjects = secondaryObjectName
+    ? `<li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>`
+    : `<li>Link to one of the following objects: ${links}</li>`;
+  const proposedWobj = secondaryObjectName
+    ? `of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a>`
+    : '';
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
 <ul><li>Minimum ${
     proposition.requirements.minPhotos
-  } original photos</li> ${receiptPhoto} <li>Link to one of the following objects: ${links}</li>
+  } original photos ${proposedWobj}</li> ${receiptPhoto} ${linkToFollowingObjects}
 <li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
     proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);

@@ -64,7 +64,7 @@ const CreateFormRenderer = props => {
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
-  const disabled = (!isDuplicate && !isPending) || loading;
+  const disabled = (!isDuplicate && !isPending && !isEmpty(campaignId)) || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
