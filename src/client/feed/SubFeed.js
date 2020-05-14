@@ -82,7 +82,8 @@ class SubFeed extends React.Component {
       this.props.getUserFeedContent(user.name);
     } else {
       const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
+      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const sortBy = withCategoryFilter ? 'trending' : 'created';
       const category = withAppHomeFilter ? 'crypto_feed' : 'all';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
@@ -114,8 +115,10 @@ class SubFeed extends React.Component {
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
       const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
+      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const sortBy = withCategoryFilter ? 'trending' : 'created';
       const category = withAppHomeFilter ? 'crypto_feed' : 'all';
+
       const fetching = getFeedLoadingFromState(sortBy, category, feed);
       if (!fetching) {
         this.props.getFeedContent(sortBy, category);
@@ -163,7 +166,6 @@ class SubFeed extends React.Component {
       failed = getFeedFailedFromState(sortBy, category, feed);
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, category);
     }
-    console.log('feed', content);
     const empty = _.isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
     const ready = loaded && fetched && !isFetching;

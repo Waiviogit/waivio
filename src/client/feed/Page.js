@@ -65,7 +65,6 @@ class Page extends React.Component {
     if (this.props.match.path === '/') {
       const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
       const isCategoryFilterOn = !localStorage.getItem('isCategoryFilterOff');
-
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isCategoryFilterOn, isAppFilterOn);
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -133,6 +132,7 @@ class Page extends React.Component {
     const {
       authenticated,
       history,
+      match,
       location: { pathname },
       toggleMobileNavMenu,
       isMobileNavMenuOpen,
@@ -168,27 +168,29 @@ class Page extends React.Component {
               />
               {authenticated && <QuickPostEditor history={history} />}
               <div className="feed-layout__switcher">
-                <div className="feed-layout__switcher-item">
-                  <div className="feed-layout__text">
-                    {this.props.intl.formatMessage({
-                      id: 'feed_new',
-                      defaultMessage: 'New',
-                    })}
+                {match.path === '/' && (
+                  <div className="feed-layout__switcher-item">
+                    <div className="feed-layout__text">
+                      {this.props.intl.formatMessage({
+                        id: 'feed_new',
+                        defaultMessage: 'New',
+                      })}
+                    </div>
+                    <Switch
+                      defaultChecked
+                      onChange={this.handleChangeFeedCategory}
+                      disabled={isFetching}
+                      checked={this.state.isNewFeed}
+                      size="small"
+                    />
+                    <div className="feed-layout__text">
+                      {this.props.intl.formatMessage({
+                        id: 'feed_by_profit',
+                        defaultMessage: 'By profit',
+                      })}
+                    </div>
                   </div>
-                  <Switch
-                    defaultChecked
-                    onChange={this.handleChangeFeedCategory}
-                    disabled={isFetching}
-                    checked={this.state.isNewFeed}
-                    size="small"
-                  />
-                  <div className="feed-layout__text">
-                    {this.props.intl.formatMessage({
-                      id: 'feed_by_profit',
-                      defaultMessage: 'By profit',
-                    })}
-                  </div>
-                </div>
+                )}
                 <div className="feed-layout__switcher-item">
                   <div className="feed-layout__text">
                     {this.props.intl.formatMessage({
