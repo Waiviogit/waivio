@@ -15,15 +15,15 @@ const BodyShort = props => {
   let body = props.body;
   const isGuest = props.isGuest;
 
-  console.log('isGuest: ', isGuest);
-
   const isForecastPost = body.indexOf(forecastPostMessage) > 0;
   let forecastMessage;
   if (isForecastPost) {
     body = body.slice(0, body.indexOf(forecastPostMessage));
     forecastMessage = props.body.slice(props.body.indexOf(forecastPostMessage));
     forecastMessage = striptags(remarkable.render(striptags(decodeEntities(forecastMessage))));
-    forecastMessage = forecastMessage.replace(/(?:https?|ftp):\/\/[\S]+/g, '');
+    forecastMessage = isGuest
+      ? forecastMessage.replace(/\WThis message/, '. This message')
+      : forecastMessage.replace(/(?:https?|ftp):\/\/[\S]+/g, '');
   }
 
   body = striptags(remarkable.render(striptags(decodeEntities(body))));
@@ -49,14 +49,14 @@ BodyShort.propTypes = {
   className: PropTypes.string,
   body: PropTypes.string,
   length: PropTypes.number,
-  isGuest: PropTypes.bool,
+  isGuest: PropTypes.arrayOf(),
 };
 
 BodyShort.defaultProps = {
   className: '',
   body: '',
   length: 140,
-  isGuest: false,
+  isGuest: {},
 };
 
 export default BodyShort;

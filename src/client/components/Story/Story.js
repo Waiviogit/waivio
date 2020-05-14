@@ -39,14 +39,10 @@ import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 
 import './Story.less';
-import { isGuestUser } from '../../reducers';
 
 @injectIntl
 @withRouter
 @withAuthActions
-@connect(state => ({
-  isGuest: isGuestUser(state),
-}))
 class Story extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -76,7 +72,6 @@ class Story extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
-    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -104,7 +99,6 @@ class Story extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
-    isGuest: false,
   };
 
   constructor(props) {
@@ -380,7 +374,7 @@ class Story extends React.Component {
   }
 
   renderStoryPreview() {
-    const { post, isGuest } = this.props;
+    const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
     const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) ? (
       <NSFWStoryPreviewMessage onClick={this.handleShowStoryPreview} />
@@ -400,7 +394,7 @@ class Story extends React.Component {
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
       >
-        <StoryPreview isGuest={isGuest} post={post} />
+        <StoryPreview post={post} />
       </a>
     ) : (
       hiddenStoryPreviewMessage

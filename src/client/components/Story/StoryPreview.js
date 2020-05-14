@@ -19,7 +19,7 @@ import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
 import { objectFields } from '../../../common/constants/listOfFields';
 
-const StoryPreview = ({ post, isGuest }) => {
+const StoryPreview = ({ post }) => {
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
@@ -62,7 +62,12 @@ const StoryPreview = ({ post, isGuest }) => {
 
   const preview = {
     text: () => (
-      <BodyShort key="text" className="Story__content__body" isGuest={isGuest} body={post.body} />
+      <BodyShort
+        key="text"
+        className="Story__content__body"
+        isGuest={post.guestInfo}
+        body={post.body}
+      />
     ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
@@ -111,11 +116,6 @@ const StoryPreview = ({ post, isGuest }) => {
 
 StoryPreview.propTypes = {
   post: PropTypes.shape().isRequired,
-  isGuest: PropTypes.bool,
-};
-
-StoryPreview.defaultProps = {
-  isGuest: false,
 };
 
 export default StoryPreview;
