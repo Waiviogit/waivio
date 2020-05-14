@@ -49,23 +49,24 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
+export const getFeedContent = ({ sortBy = 'created', category, limit = 20 }) => (
   dispatch,
   getState,
 ) => {
   const user_languages = getUserLocalesArray(getState);
-
   const doApiRequest = () => {
-    if (category === 'wia_feed') {
+    if (category === 'crypto_feed' && sortBy === 'created') {
       return ApiClient.getFeedContentByObject('xka-crypto-ia-wtrade', limit, user_languages);
     }
-    return ApiClient.getFeedContent(sortBy, {
+    const queryData = {
       category: sortBy,
       tag: category,
       skip: 0,
       limit,
       user_languages,
-    });
+    };
+    if (category === 'crypto_feed' && sortBy === 'trending') queryData.onlyCrypto = true;
+    return ApiClient.getFeedContent(sortBy, queryData);
   };
 
   dispatch({
@@ -88,7 +89,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   if (!feedContent.length) return Promise.resolve(null);
 
   const doApiRequest = () => {
-    if (category === 'wia_feed') {
+    if (category === 'crypto_feed') {
       return ApiClient.getMoreFeedContentByObject({
         authorPermlink: 'xka-crypto-ia-wtrade',
         skip: feedContent.length,

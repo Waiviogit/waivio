@@ -1,9 +1,11 @@
 import { hasActionType, hasField } from '../object/wObjectHelper';
 
 export const getFeedFromState = (sortBy, category = 'all', state) => {
+  console.log('sortBy', sortBy, 'category', category);
   switch (sortBy) {
     case 'feed':
     case 'trending':
+    case 'created':
     case 'comments':
     case 'blog':
     case 'bookmarks':

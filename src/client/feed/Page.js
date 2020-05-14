@@ -57,21 +57,24 @@ class Page extends React.Component {
 
   state = {
     checked: false,
+    isNewFeed: false,
     isFetching: false,
   };
 
   componentDidMount() {
     if (this.props.match.path === '/') {
       const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
+      const isCategoryFilterOn = !localStorage.getItem('isCategoryFilterOff');
+
       if (isAppFilterOn !== this.state.checked) {
-        this.reloadContent(isAppFilterOn);
+        this.reloadContent(isCategoryFilterOn, isAppFilterOn);
         // eslint-disable-next-line react/no-did-mount-set-state
-        this.setState({ checked: isAppFilterOn });
+        this.setState({ checked: isAppFilterOn, isNewFeed: isCategoryFilterOn });
       }
     } else {
       const isAppFilterOn = localStorage.getItem('isAppMyFeedFilterOn');
       if (isAppFilterOn !== this.state.checked) {
-        this.reloadContent(isAppFilterOn);
+        this.reloadContent();
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({ checked: isAppFilterOn });
       }
@@ -81,6 +84,7 @@ class Page extends React.Component {
   setFetched = value => this.setState({ isFetching: value });
 
   handleChangeFeed = isAppFilterOn => {
+    const { isNewFeed } = this.state;
     this.setState({ checked: !!isAppFilterOn });
     if (typeof localStorage !== 'undefined') {
       if (this.props.match.path === '/') {
@@ -95,15 +99,29 @@ class Page extends React.Component {
           : localStorage.removeItem('isAppMyFeedFilterOn');
       }
     }
-    this.reloadContent(isAppFilterOn);
+    this.reloadContent(isNewFeed, isAppFilterOn);
   };
 
-  reloadContent = isAppFilterOn => {
+  handleChangeFeedCategory = isCategoryFilterOn => {
+    const { checked } = this.state;
+    this.setState({ isNewFeed: !!isCategoryFilterOn });
+    if (typeof localStorage !== 'undefined') {
+      if (this.props.match.path === '/') {
+        // eslint-disable-next-line no-unused-expressions
+        isCategoryFilterOn
+          ? localStorage.removeItem('isCategoryFilterOff')
+          : localStorage.setItem('isCategoryFilterOff', `true`);
+      }
+    }
+    this.reloadContent(isCategoryFilterOn, checked);
+  };
+
+  reloadContent = (isCategoryFilter = false, isCryptoFilter = false) => {
     this.props.cleanFeed();
     if (this.props.match.path === '/') {
       this.props.getFeedContent({
-        sortBy: isAppFilterOn ? 'feed' : 'trending',
-        category: isAppFilterOn ? 'wia_feed' : 'all',
+        sortBy: isCategoryFilter ? 'trending' : 'created',
+        category: isCryptoFilter ? 'crypto_feed' : 'all',
         limit: 10,
       });
     } else {
@@ -159,9 +177,9 @@ class Page extends React.Component {
                   </div>
                   <Switch
                     defaultChecked
-                    onChange={this.handleChangeFeed}
+                    onChange={this.handleChangeFeedCategory}
                     disabled={isFetching}
-                    checked={this.state.checked}
+                    checked={this.state.isNewFeed}
                     size="small"
                   />
                   <div className="feed-layout__text">
