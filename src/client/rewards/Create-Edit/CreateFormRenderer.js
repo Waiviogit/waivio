@@ -46,8 +46,8 @@ const CreateFormRenderer = props => {
     getFieldValue,
     commissionAgreement,
     campaignId,
-    isCampaignActive,
     iAgree,
+    isPending,
   } = props;
 
   const currentItemId = get(match, ['params', 'campaignId']);
@@ -63,7 +63,7 @@ const CreateFormRenderer = props => {
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
-  const disabled = isCampaignActive || loading;
+  const disabled = !isPending || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
@@ -75,11 +75,6 @@ const CreateFormRenderer = props => {
       </div>
     ) : null;
 
-  const activeCampaignWarn = isCampaignActive ? (
-    <div className="notEnoughMoneyWarn">
-      {handlers.messageFactory('active_campaign_warn', 'Only pending campaigns could be edited')}
-    </div>
-  ) : null;
   const renderCompensationAccount =
     !isEmpty(compensationAccount) && compensationAccount.account ? (
       <div className="CreateReward__objects-wrap">
@@ -159,7 +154,6 @@ const CreateFormRenderer = props => {
   return (
     <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
-      {activeCampaignWarn}
 
       <Form
         layout="vertical"
@@ -554,7 +548,7 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
-  isCampaignActive: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
   match: PropTypes.shape().isRequired,
 };

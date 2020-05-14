@@ -71,7 +71,6 @@ class CreateRewardForm extends React.Component {
     commissionAgreement: 5,
     iAgree: false,
     campaignId: '',
-    isCampaignActive: false,
   };
 
   componentDidMount = async () => {
@@ -87,13 +86,13 @@ class CreateRewardForm extends React.Component {
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
 
-      const isCampaignActive = campaign.status === 'active';
-
       const isDuplicate =
         campaign.status === 'active' ||
         campaign.status === 'inactive' ||
         campaign.status === 'pending' ||
         campaign.status === 'expired';
+
+      const isPending = campaign.status === 'pending';
 
       let combinedObjects;
       let sponsors;
@@ -154,8 +153,8 @@ class CreateRewardForm extends React.Component {
           eligibleDays: campaign.frequency_assign,
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
-          isCampaignActive,
           isDuplicate,
+          isPending,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -382,7 +381,6 @@ class CreateRewardForm extends React.Component {
       reservationPeriod,
       compensationAccount,
       commissionAgreement,
-      isCampaignActive,
       loading,
       parentPermlink,
       targetDays,
@@ -398,7 +396,7 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
-      isDuplicate,
+      isPending,
     } = this.state;
     return (
       <CreateFormRenderer
@@ -432,10 +430,9 @@ class CreateRewardForm extends React.Component {
         getFieldValue={form.getFieldValue}
         commissionAgreement={commissionAgreement}
         campaignId={campaignId}
-        isCampaignActive={isCampaignActive}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
-        isDuplicate={isDuplicate}
+        isPending={isPending}
       />
     );
   }
