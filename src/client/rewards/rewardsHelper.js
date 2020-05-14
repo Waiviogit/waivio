@@ -189,7 +189,11 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, @${bot}`, '').slice(1)
+    ? reduce(
+        objectDetails.match_bots,
+        (acc, bot) => `${acc}, <a href='/object/${bot}/page'>${bot}</a>`,
+        '',
+      )
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
@@ -245,7 +249,7 @@ export const getDetailsBody = (
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
 <ul><li>Minimum ${
     proposition.requirements.minPhotos
-  } original photos of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a></li> ${receiptPhoto} <li>Link to one of the following objects: ${links}</li>
+  } original photos</li> ${receiptPhoto} <li>Link to one of the following objects: ${links}</li>
 <li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
     proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
