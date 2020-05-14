@@ -26,7 +26,11 @@ export default class UserFollowing extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    authUser: PropTypes.string.isRequired,
+    authUser: PropTypes.string,
+  };
+
+  static defaultProps = {
+    authUser: '',
   };
 
   static limit = 50;

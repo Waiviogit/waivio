@@ -76,10 +76,13 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
         }, '')
       : `required_fields=${requiredField}`;
   }
+
   queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
+
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
+      follower: user,
     },
   })
     .then(handleErrors)
@@ -266,9 +269,7 @@ export const postAppendWaivioObject = postData =>
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser) => {
-  const actualHeaders = authUser
-    ? { ...headers, following: authUser, follower: authUser }
-    : headers;
+  const actualHeaders = authUser ? { ...headers, follower: authUser } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
@@ -347,12 +348,15 @@ export const getFollowingUpdates = (userName, count = 5) =>
       .catch(error => reject(error));
   });
 
-export const getFollowingObjectsUpdates = (userName, objType, limit = 5, skip = 0) =>
-  new Promise((resolve, reject) => {
+export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 0) => {
+  return new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.user}/${userName}${config.followingObjectsUpdates}?object_type=${objType}&limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.user}/${follower}${config.followingObjectsUpdates}?object_type=${objType}&limit=${limit}&skip=${skip}`,
       {
-        headers,
+        headers: {
+          follower,
+          ...headers,
+        },
         method: 'GET',
       },
     )
@@ -361,6 +365,7 @@ export const getFollowingObjectsUpdates = (userName, objType, limit = 5, skip = 
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
 
 export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
   new Promise((resolve, reject) => {
@@ -395,15 +400,20 @@ export const getWobjectsWithUserWeight = (
   userName,
   skip = 0,
   limit = 30,
+  authUser,
   objectTypes,
   excludeObjectTypes,
 ) => {
   const reqData = { skip, limit };
   if (objectTypes) reqData.object_types = objectTypes;
   if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
+
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
-      headers,
+      headers: {
+        ...headers,
+        follower: authUser,
+      },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
