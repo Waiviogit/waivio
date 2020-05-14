@@ -10,13 +10,11 @@ import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../re
 import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import TopicSelector from '../components/TopicSelector';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import Topnav from '../components/Navigation/Topnav';
 import HeroBannerContainer from './HeroBannerContainer';
 
 @withRouter
@@ -82,17 +80,6 @@ class Page extends React.Component {
 
   setFetched = value => this.setState({ isFetching: value });
 
-  handleSortChange = key => {
-    const { category } = this.props.match.params;
-    if (category) {
-      this.props.history.push(`/${key}/${category}`);
-    } else {
-      this.props.history.push(`/${key}`);
-    }
-  };
-
-  handleTopicClose = () => this.props.history.push('/trending');
-
   handleChangeFeed = isAppFilterOn => {
     this.setState({ checked: !!isAppFilterOn });
     if (typeof localStorage !== 'undefined') {
@@ -129,15 +116,11 @@ class Page extends React.Component {
       authenticated,
       history,
       location: { pathname },
-      match,
       toggleMobileNavMenu,
       isMobileNavMenuOpen,
     } = this.props;
     const { isFetching } = this.state;
-    const { category, sortBy } = match.params;
     const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
-
-    const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
 
     return (
       <div>
@@ -165,30 +148,50 @@ class Page extends React.Component {
                 toggleMobileNavMenu={toggleMobileNavMenu}
                 isMobileNavMenuOpen={isMobileNavMenuOpen}
               />
-              {shouldDisplaySelector && (
-                <TopicSelector
-                  isSingle={false}
-                  sort={sortBy}
-                  topics={category ? [category] : []}
-                  onSortChange={this.handleSortChange}
-                  onTopicClose={this.handleTopicClose}
-                />
-              )}
               {authenticated && <QuickPostEditor history={history} />}
               <div className="feed-layout__switcher">
-                <div className="feed-layout__text">
-                  {this.props.intl.formatMessage({
-                    id: 'onlyRelated',
-                    defaultMessage: 'Only trade topics',
-                  })}
+                <div className="feed-layout__switcher-item">
+                  <div className="feed-layout__text">
+                    {this.props.intl.formatMessage({
+                      id: 'feed_new',
+                      defaultMessage: 'New',
+                    })}
+                  </div>
+                  <Switch
+                    defaultChecked
+                    onChange={this.handleChangeFeed}
+                    disabled={isFetching}
+                    checked={this.state.checked}
+                    size="small"
+                  />
+                  <div className="feed-layout__text">
+                    {this.props.intl.formatMessage({
+                      id: 'feed_by_profit',
+                      defaultMessage: 'By profit',
+                    })}
+                  </div>
                 </div>
-                <Switch
-                  defaultChecked
-                  onChange={this.handleChangeFeed}
-                  disabled={isFetching}
-                  checked={this.state.checked}
-                  size="small"
-                />
+                <div className="feed-layout__switcher-item">
+                  <div className="feed-layout__text">
+                    {this.props.intl.formatMessage({
+                      id: 'feed_all',
+                      defaultMessage: 'All',
+                    })}
+                  </div>
+                  <Switch
+                    defaultChecked
+                    onChange={this.handleChangeFeed}
+                    disabled={isFetching}
+                    checked={this.state.checked}
+                    size="small"
+                  />
+                  <div className="feed-layout__text">
+                    {this.props.intl.formatMessage({
+                      id: 'feed_only_crypto',
+                      defaultMessage: 'Only crypto',
+                    })}
+                  </div>
+                </div>
               </div>
               <SubFeed setFetched={this.setFetched} />
             </div>
