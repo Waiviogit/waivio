@@ -1120,6 +1120,8 @@
   "vote_count_tag": "Vote count",
   "approval": "Approval",
   "approved": "Approved",
+  "fillOrder_wallet_transferred": "You transferred {current_pays}",
+  "fillOrder_wallet_get": "You get {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Services",
   "links": "Links"
