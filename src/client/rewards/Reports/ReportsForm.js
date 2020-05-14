@@ -142,34 +142,12 @@ class ReportsForm extends Component {
     return preparedObject;
   };
 
-  disabledStartDate = dateFrom => {
+  disabledDate = dateFrom => {
     const dateTill = this.props.form.getFieldValue('till');
     if (!dateFrom || !dateTill) {
       return false;
     }
-    return (
-      moment(dateFrom)
-        .format('x')
-        .valueOf() >
-      moment(dateTill)
-        .format('x')
-        .valueOf()
-    );
-  };
-
-  disabledEndDate = dateTill => {
-    const dateFrom = this.props.form.getFieldValue('from');
-    if (!dateTill || !dateFrom) {
-      return false;
-    }
-    return (
-      moment(dateTill)
-        .format('x')
-        .valueOf() <=
-      moment(dateFrom)
-        .format('x')
-        .valueOf()
-    );
+    return moment(dateFrom).isAfter(moment(dateTill));
   };
 
   handleReset = () => {
@@ -283,7 +261,7 @@ class ReportsForm extends Component {
                   initialValue: '',
                 })(
                   <DatePicker
-                    disabledDate={this.disabledStartDate}
+                    disabledDate={this.disabledDate}
                     showTime
                     allowClear={false}
                     disabled={false}
@@ -309,7 +287,7 @@ class ReportsForm extends Component {
                   initialValue: moment(),
                 })(
                   <DatePicker
-                    disabledDate={this.disabledEndDate}
+                    disabledDate={this.disabledDate}
                     showTime
                     allowClear={false}
                     disabled={false}
