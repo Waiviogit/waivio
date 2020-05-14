@@ -34,27 +34,10 @@ export function dropCategory(url) {
 
 export const replaceBotWithGuestName = (url, guestInfo) => {
   if (url) {
-    const splittedCommentUrl = url.split('#');
-    console.log('url', url);
-    console.log('splittedCommentUrl', splittedCommentUrl);
-
     if (url.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
       return url;
     }
-
-    if (guestInfo && guestInfo.userId) {
-      if (splittedCommentUrl && splittedCommentUrl[1]) {
-        // if (url.match(botNameRegex)[0] && splittedCommentUrl[1].match(botNameRegex)[0]) {
-        //   return url.replace(botNameRegex, `@${guestInfo.userId}`);
-        // }
-
-        splittedCommentUrl[1].replace(botNameRegex, `@${guestInfo.userId}`);
-        return splittedCommentUrl.join('#');
-      }
-
-      return url.replace(botNameRegex, `@${guestInfo.userId}`);
-    }
-    return url;
+    return guestInfo && guestInfo.userId ? url.replace(botNameRegex, `@${guestInfo.userId}`) : url;
   }
   return null;
 };

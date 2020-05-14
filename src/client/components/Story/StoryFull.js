@@ -181,6 +181,8 @@ class StoryFull extends React.Component {
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
+    const authorName =
+      post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
 
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
@@ -206,22 +208,22 @@ class StoryFull extends React.Component {
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     }
 
@@ -238,7 +240,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}>
+            <Link to={dropCategory(post.url)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"
@@ -325,9 +327,6 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-
-    const authorName =
-      post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
 
     return (
       <div className="StoryFull">
