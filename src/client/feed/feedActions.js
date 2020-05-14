@@ -89,7 +89,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   if (!feedContent.length) return Promise.resolve(null);
 
   const doApiRequest = () => {
-    if (category === 'crypto_feed') {
+    if (category === 'crypto_feed' && sortBy === 'created') {
       return ApiClient.getMoreFeedContentByObject({
         authorPermlink: 'xka-crypto-ia-wtrade',
         skip: feedContent.length,
@@ -97,13 +97,15 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
         user_languages,
       });
     }
-    return ApiClient.getFeedContent(sortBy, {
+    const queryData = {
       category: sortBy,
       tag: category,
       skip: feedContent.length,
       limit,
       user_languages,
-    });
+    };
+    if (category === 'crypto_feed' && sortBy === 'trending') queryData.onlyCrypto = true;
+    return ApiClient.getFeedContent(sortBy, queryData);
   };
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
