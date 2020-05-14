@@ -5,54 +5,69 @@ import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } fro
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 
-const ReceiveTransaction = ({ from, memo, amount, timestamp }) => (
-  <div className="UserWalletTransactions__transaction">
-    <div className="UserWalletTransactions__avatar">
-      <Avatar username={from} size={40} />
-    </div>
-    <div className="UserWalletTransactions__content">
-      <div className="UserWalletTransactions__content-recipient">
-        <div>
-          <FormattedMessage
-            id="received_from"
-            defaultMessage="Received from {username}"
-            values={{
-              username: (
-                <Link to={`/@${from}`}>
-                  <span className="username">{from}</span>
-                </Link>
-              ),
-            }}
-          />
+const ReceiveTransaction = ({ from, memo, amount, timestamp, type }) => {
+  const demoPost = type === 'demo_post';
+
+  return (
+    <div className="UserWalletTransactions__transaction">
+      {demoPost ? (
+        <div className="UserWalletTransactions__icon-container">
+          <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
         </div>
-        <div className="UserWalletTransactions__received">
-          {'+ '}
-          {amount}
+      ) : (
+        <div className="UserWalletTransactions__avatar">
+          <Avatar username={from} size={40} />
         </div>
-      </div>
-      <span className="UserWalletTransactions__timestamp">
-        <BTooltip
-          title={
+      )}
+      <div className="UserWalletTransactions__content">
+        <div className="UserWalletTransactions__content-recipient">
+          <div>
+            {demoPost ? (
+              <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />
+            ) : (
+              <FormattedMessage
+                id="received_from"
+                defaultMessage="Received from {username}"
+                values={{
+                  username: (
+                    <Link to={`/@${from}`}>
+                      <span className="username">{from}</span>
+                    </Link>
+                  ),
+                }}
+              />
+            )}
+          </div>
+          <div className="UserWalletTransactions__received">
+            {'+ '}
+            {amount}
+          </div>
+        </div>
+        <span className="UserWalletTransactions__timestamp">
+          <BTooltip
+            title={
+              <span>
+                <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              </span>
+            }
+          >
             <span>
-              <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              <FormattedRelative value={`${timestamp}Z`} />
             </span>
-          }
-        >
-          <span>
-            <FormattedRelative value={`${timestamp}Z`} />
-          </span>
-        </BTooltip>
-      </span>
-      <span className="UserWalletTransactions__memo">{memo}</span>
+          </BTooltip>
+        </span>
+        <span className="UserWalletTransactions__memo">{memo}</span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 ReceiveTransaction.propTypes = {
   from: PropTypes.string,
   memo: PropTypes.string,
   amount: PropTypes.element,
   timestamp: PropTypes.string,
+  type: PropTypes.string,
 };
 
 ReceiveTransaction.defaultProps = {
@@ -60,6 +75,7 @@ ReceiveTransaction.defaultProps = {
   memo: '',
   amount: <span />,
   timestamp: '',
+  type: '',
 };
 
 export default ReceiveTransaction;

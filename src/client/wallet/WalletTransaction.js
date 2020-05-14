@@ -37,6 +37,8 @@ const WalletTransaction = ({
 }) => {
   const transactionType = transaction.op[0];
   const transactionDetails = transaction.op[1];
+  const type = transaction.op[1].typeTransfer;
+
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
       return (
@@ -55,6 +57,7 @@ const WalletTransaction = ({
             memo={transactionDetails.memo}
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
             timestamp={transaction.timestamp}
+            type={type}
           />
         );
       }
@@ -64,6 +67,7 @@ const WalletTransaction = ({
           memo={transactionDetails.memo}
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
           timestamp={transaction.timestamp}
+          type={type}
         />
       );
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
