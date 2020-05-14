@@ -287,7 +287,7 @@ export const getProcessingFee = data => {
   const amounts = {
     share: get(data, ['details', 'commissionWeight']) || '',
     hive: get(data, ['amount']) || '',
-    usd: get(data, ['payment', 'details', 'payableInDollars']) || '',
+    usd: get(data, ['details', 'payableInDollars']) || '',
   };
 
   switch (data.type) {

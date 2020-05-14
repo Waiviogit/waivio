@@ -26,7 +26,7 @@ const ReportTableRewards = ({ intl }) => {
       weight: account ? account.weight / 100 : (10000 - totalWeight) / 100,
       votesAmount: get(obj, ['details', 'votesAmount']) || null,
       amount: get(obj, ['amount']) || null,
-      payableInDollars: get(obj, ['payment', 'details', 'payableInDollars']) || null,
+      payableInDollars: get(obj, ['details', 'payableInDollars']) || null,
     };
   });
 

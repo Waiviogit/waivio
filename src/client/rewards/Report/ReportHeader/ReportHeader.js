@@ -27,7 +27,7 @@ const ReportHeader = ({ intl }) => {
     'reservation_permlink',
   ]);
   const reviewPermlink = get(singleReportData, ['histories', '0', 'details', 'review_permlink']);
-  // const activationPermlink = get(singleReportData, ['histories', '0', 'details', 'activation_permlink']);
+  // const activationPermlink = get(singleReportData, ['activationPermlink']);
   const primaryObjectPermlink = get(singleReportData, ['primaryObject', 'author_permlink']);
   const primaryObjectName = get(singleReportData, ['primaryObject', 'object_name']);
   const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
@@ -99,10 +99,12 @@ const ReportHeader = ({ intl }) => {
             id: 'campaign_announcement',
             defaultMessage: 'Campaign announcement:',
           })}{' '}
+          {/* <a href={`/@${userName}/${activationPermlink}`}> */}
           <span className="ReportHeader__campaignInfo-date">
             {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
             {createCampaignDate}
           </span>
+          {/* </a> */}
         </span>
         <span>
           {intl.formatMessage({
