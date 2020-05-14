@@ -1,45 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {
-  getAuthenticatedUserName,
-  getFollowingList,
-  getFollowingObjectsList,
-  getPendingFollows,
-  getPendingFollowingObjects,
-} from '../reducers';
-import { followObject, unfollowObject } from '../object/wobjActions';
+import { getAuthenticatedUserName } from '../reducers';
 import withAuthAction from '../auth/withAuthActions';
 import Follow from '../components/Button/Follow';
 
 @withAuthAction
-@connect(
-  (state, ownProps) => ({
-    authenticatedUserName: getAuthenticatedUserName(state),
-    followingList:
-      ownProps.followingType === 'user' ? getFollowingList(state) : getFollowingObjectsList(state),
-    pendingFollows:
-      ownProps.followingType === 'user'
-        ? getPendingFollows(state)
-        : getPendingFollowingObjects(state),
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        followObject,
-        unfollowObject,
-      },
-      dispatch,
-    ),
-)
+@connect(state => ({
+  authenticatedUserName: getAuthenticatedUserName(state),
+}))
 class FollowButton extends React.Component {
   static propTypes = {
     secondary: PropTypes.bool,
-    following: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+    following: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     followingType: PropTypes.oneOf(['user', 'wobject']),
     authenticatedUserName: PropTypes.string,
-    followingList: PropTypes.arrayOf(PropTypes.string),
     pendingFollows: PropTypes.arrayOf(PropTypes.string).isRequired,
     onActionInitiated: PropTypes.func,
     followUser: PropTypes.func,
@@ -48,6 +23,7 @@ class FollowButton extends React.Component {
     unfollowObject: PropTypes.func,
     user: PropTypes.shape(),
     top: PropTypes.bool,
+    wobj: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -63,6 +39,8 @@ class FollowButton extends React.Component {
     unfollowObject: () => {},
     user: {},
     top: false,
+    wobj: {},
+    following: false,
   };
 
   constructor(props) {
@@ -73,15 +51,14 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
-    const { following, followingType, user, top } = this.props;
-    const isFollowed = this.props.followingList.includes(following);
+    const { following, followingType, user, top, wobj } = this.props;
 
     switch (followingType) {
       case 'wobject':
-        if (isFollowed) {
-          this.props.unfollowObject(following);
+        if (following) {
+          this.props.unfollowObject(wobj.author_permlink);
         } else {
-          this.props.followObject(following);
+          this.props.followObject(wobj.author_permlink);
         }
         break;
       case 'user':
@@ -103,20 +80,18 @@ class FollowButton extends React.Component {
     const {
       authenticatedUserName,
       following,
-      followingList,
       pendingFollows,
       followingType,
       secondary,
       user,
+      wobj,
     } = this.props;
-    const followed = followingType === 'user' ? following : followingList.includes(following);
-    const pending = followingType === 'user' ? user.pending : pendingFollows.includes(following);
+    const pending = followingType === 'user' ? user.pending : wobj.pending;
 
     if (authenticatedUserName === following || authenticatedUserName === user.name) return null;
-
     return (
       <Follow
-        isFollowed={followed}
+        isFollowed={following}
         pending={pending}
         disabled={Boolean(pendingFollows.length) && !pending}
         onClick={this.handleFollowClick}
