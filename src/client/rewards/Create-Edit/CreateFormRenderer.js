@@ -48,6 +48,7 @@ const CreateFormRenderer = props => {
     campaignId,
     iAgree,
     isPending,
+    isDuplicate,
   } = props;
 
   const currentItemId = get(match, ['params', 'campaignId']);
@@ -63,7 +64,7 @@ const CreateFormRenderer = props => {
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
-  const disabled = !isPending || loading;
+  const disabled = (!isDuplicate && !isPending) || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
@@ -549,6 +550,7 @@ CreateFormRenderer.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
   isPending: PropTypes.bool.isRequired,
+  isDuplicate: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
   match: PropTypes.shape().isRequired,
 };
