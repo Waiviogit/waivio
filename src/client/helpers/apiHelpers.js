@@ -101,7 +101,8 @@ export const isWalletTransaction = actionType =>
   actionType === accountHistoryConstants.TRANSFER_FROM_SAVINGS ||
   actionType === accountHistoryConstants.TRANSFER_TO_SAVINGS ||
   actionType === accountHistoryConstants.DELEGATE_VESTING_SHARES ||
-  actionType === accountHistoryConstants.CLAIM_REWARD_BALANCE;
+  actionType === accountHistoryConstants.CLAIM_REWARD_BALANCE ||
+  actionType === accountHistoryConstants.FILL_ORDER;
 
 export const getAccountReputation = (name, limit = 20) =>
   SteemAPI.sendAsync('call', ['reputation_api', 'get_account_reputations', [name, limit]]);

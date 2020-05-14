@@ -8,6 +8,7 @@ import SavingsTransaction from './SavingsTransaction';
 import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
 import './UserWalletTransactions.less';
+import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -34,8 +35,8 @@ const WalletTransaction = ({
   totalVestingShares,
   totalVestingFundSteem,
 }) => {
-  const transactionType = transaction.op[0];
-  const transactionDetails = transaction.op[1];
+  const transactionType = transaction.type;
+  const transactionDetails = transaction;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -85,6 +86,13 @@ const WalletTransaction = ({
           transactionDetails={transactionDetails}
           transactionType={transactionType}
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
+          timestamp={transaction.timestamp}
+        />
+      );
+    case accountHistoryConstants.FILL_ORDER:
+      return (
+        <WalletFillOrderTransferred
+          transactionDetails={transactionDetails}
           timestamp={transaction.timestamp}
         />
       );
