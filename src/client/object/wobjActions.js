@@ -9,7 +9,6 @@ import {
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { mapObjectAppends } from './wObjectHelper';
-import { FOLLOW_USER } from '../user/usersActions';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
