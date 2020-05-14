@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { Switch } from 'antd';
 import { injectIntl } from 'react-intl';
+import classNames from 'classnames';
 import { cleanFeed, getFeedContent, getUserFeedContent } from './feedActions';
 import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import SubFeed from './SubFeed';
@@ -139,7 +140,7 @@ class Page extends React.Component {
     } = this.props;
     const { isFetching } = this.state;
     const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
-
+    const isHomePage = match.path === '/';
     return (
       <div>
         <Helmet>
@@ -167,8 +168,8 @@ class Page extends React.Component {
                 isMobileNavMenuOpen={isMobileNavMenuOpen}
               />
               {authenticated && <QuickPostEditor history={history} />}
-              <div className="feed-layout__switcher">
-                {match.path === '/' && (
+              <div className={classNames('feed-layout__switcher', { 'justify-end': !isHomePage })}>
+                {isHomePage && (
                   <div className="feed-layout__switcher-item">
                     <div className="feed-layout__text">
                       {this.props.intl.formatMessage({
