@@ -272,7 +272,7 @@ class CreateObject extends React.Component {
             </span>
             <Form.Item>
               {getFieldDecorator('type', {
-                initialValue: defaultObjectType,
+                initialValue: defaultValue,
                 rules: [
                   {
                     required: true,
@@ -285,6 +285,7 @@ class CreateObject extends React.Component {
               })(
                 <Select
                   showSearch
+                  value="Hashtag"
                   disabled={isSingleType}
                   style={{ width: '100%' }}
                   optionFilterProp="children"
