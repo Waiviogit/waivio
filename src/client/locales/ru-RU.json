@@ -88,7 +88,7 @@
   "edit_post": "Редактировать пост",
   "add_to_favorites": "Добавить в избранное",
   "remove_from_favorites": "Удалить из избранного",
-  "like": "Нравится",
+  "like": "Лайк",
   "like_slider_info": "Ваш голос будет стоить {amount}.",
   "dislike": "Не нравится",
   "unlike": "Не нравится",
@@ -1111,5 +1111,7 @@
   "there_are_not_object_with_name": "Извините! Нет объекта {item} на InvestArena",
   "signUp_cryptos": "- Криптовалюта",
   "signUp_creditCards": "- кредитные карты",
-  "transaction_to_bxy": "Вы не можете совершить транзакцию из гостевой учетной записи в учетную запись с префиксом 'bxy_'"
+  "transaction_to_bxy": "Вы не можете совершить транзакцию из гостевой учетной записи в учетную запись с префиксом 'bxy_'",
+  "topic_language": "Язык темы",
+  "topic_type": "Тип темы"
 }
