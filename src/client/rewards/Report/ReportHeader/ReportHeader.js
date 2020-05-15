@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { get, map } from 'lodash';
 import { getSingleReportData } from '../../../reducers';
 import Avatar from '../../../components/Avatar';
 import './ReportHeader.less';
@@ -14,11 +15,25 @@ const ReportHeader = ({ intl }) => {
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive;
-  const rewardUsd = singleReportData.rewardUsd.toFixed(2);
+  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(2) : '';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
   const sponsorName = singleReportData.sponsor.name;
+  const reservationPermlink = get(singleReportData, [
+    'histories',
+    '0',
+    'details',
+    'reservation_permlink',
+  ]);
+  const reviewPermlink = get(singleReportData, ['histories', '0', 'details', 'review_permlink']);
+  const activationPermlink = get(singleReportData, ['activationPermlink']);
+  const primaryObjectPermlink = get(singleReportData, ['primaryObject', 'author_permlink']);
+  const primaryObjectName = get(singleReportData, ['primaryObject', 'object_name']);
+  const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
+    name: secondaryObject.object_name,
+    permlink: secondaryObject.author_permlink,
+  }));
 
   return (
     <React.Fragment>
@@ -84,29 +99,48 @@ const ReportHeader = ({ intl }) => {
             id: 'campaign_announcement',
             defaultMessage: 'Campaign announcement:',
           })}{' '}
-          <span className="ReportHeader__campaignInfo-date">
-            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
-            {createCampaignDate}
-          </span>
+          <a href={`/@${sponsorName}/${activationPermlink}`}>
+            <span className="ReportHeader__campaignInfo-date">
+              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
+              {createCampaignDate}
+            </span>
+          </a>
         </span>
         <span>
           {intl.formatMessage({
             id: 'rewards_reservation',
             defaultMessage: 'Rewards reservation:',
           })}{' '}
-          <span className="ReportHeader__campaignInfo-date">
-            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reservationDate}
-          </span>
+          <a href={`/@${userName}/${reservationPermlink}`}>
+            <span className="ReportHeader__campaignInfo-date">
+              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
+              {reservationDate}
+            </span>
+          </a>
         </span>
         <span>
           {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
-          <span className="ReportHeader__campaignInfo-date">
-            {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
-          </span>
+          <a href={`/@${userName}/${reviewPermlink}`}>
+            <span className="ReportHeader__campaignInfo-date">
+              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
+            </span>
+          </a>
         </span>
         <span>
           {intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}{' '}
           <span className="ReportHeader__campaignInfo-title">{title}</span>
+        </span>
+        <span>
+          {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
+          <a href={`/object/${primaryObjectPermlink}`}>
+            <span className="ReportHeader__campaignInfo-links">{primaryObjectName}</span>
+          </a>
+          {', '}
+          {map(secondaryObjects, object => (
+            <a href={`/object/${object.permlink}`}>
+              <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+            </a>
+          ))}
         </span>
       </div>
     </React.Fragment>
