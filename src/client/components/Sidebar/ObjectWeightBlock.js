@@ -1,17 +1,23 @@
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, message } from 'antd';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import * as api from '../../../waivioApi/ApiClient';
+import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
+import { getWobjectsWithUserWeight } from '../../../waivioApi/ApiClient';
 import ObjectCard from './ObjectCard';
 import WeightTag from '../WeightTag';
+
 import './ObjectWeightBlock.less';
-import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 
 class ObjectWeightBlock extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
+    authUser: PropTypes.string,
+  };
+
+  static defaultProps = {
+    authUser: '',
   };
 
   state = {
@@ -20,19 +26,19 @@ class ObjectWeightBlock extends React.Component {
     loading: true,
   };
 
-  async componentDidMount() {
-    try {
-      const response = await api.getWobjectsWithUserWeight(this.props.username, 0, 5);
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        wObjects: response.wobjects,
-        wObjectsCount: response.wobjects_count,
-        loading: false,
+  componentDidMount() {
+    getWobjectsWithUserWeight(this.props.username, 0, 5, this.props.authUser)
+      .then(response => {
+        this.setState({
+          wObjects: response.wobjects,
+          wObjectsCount: response.wobjects_count,
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({ wObjects: [], loading: false });
+        message.error(error);
       });
-    } catch (error) {
-      this.setState({ wObjects: [], loading: false }); // eslint-disable-line react/no-did-mount-set-state
-      console.log(error);
-    }
   }
 
   render() {

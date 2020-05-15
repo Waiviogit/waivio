@@ -114,28 +114,53 @@ class PostContent extends React.Component {
   }
 
   componentDidMount() {
-    const { hash } = window.location;
+    this.renderWithCommentsSettings();
+  }
+
+  componentDidUpdate() {
+    this.renderWithCommentsSettings();
+  }
+
+  renderWithCommentsSettings = () => {
+    const { hash, pathname } = window.location;
+    const { content } = this.props;
     // PostContent renders only when content is loaded so it's good moment to scroll to comments.
-    if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z-.]+\/[a-zA-Z-]+/.test(hash)) {
+    if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z0-9-.]+\/[a-zA-Z0-9-]+/.test(hash)) {
+      if (
+        typeof window !== 'undefined' &&
+        content.guestInfo &&
+        content.guestInfo.userId &&
+        pathname.indexOf(content.guestInfo.userId) === -1
+      )
+        window.history.replaceState(
+          {},
+          '',
+          `/@${content.guestInfo.userId}/${content.permlink}${window.location.hash}`,
+        );
+
       const el = document.getElementById('comments');
       if (el) el.scrollIntoView({ block: 'start' });
     }
-  }
+  };
+
+  getAuthorName = post =>
+    post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
 
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
+    const authorName = this.getAuthorName(post);
     if (sliderMode && !postState.isLiked) {
-      this.props.votePost(post.id, post.author, post.permlink, weight);
+      this.props.votePost(post.id, authorName, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, post.author, post.permlink, 0);
+      this.props.votePost(post.id, authorName, post.permlink, 0);
     } else {
-      this.props.votePost(post.id, post.author, post.permlink, defaultVotePercent);
+      this.props.votePost(post.id, authorName, post.permlink, defaultVotePercent);
     }
   };
 
   handleReportClick(post, postState) {
     const weight = postState.isReported ? 0 : -10000;
-    this.props.votePost(post.id, post.author, post.permlink, weight);
+    this.props.votePost(post.id, this.getAuthorName(post), post.permlink, weight);
   }
 
   handleShareClick = post => this.props.reblog(post.id);
@@ -143,11 +168,12 @@ class PostContent extends React.Component {
   handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
-    const isFollowed = this.props.followingList.includes(post.author);
+    const authorName = this.getAuthorName(post);
+    const isFollowed = this.props.followingList.includes(authorName);
     if (isFollowed) {
-      this.props.unfollowUser(post.author);
+      this.props.unfollowUser(authorName);
     } else {
-      this.props.followUser(post.author);
+      this.props.followUser(authorName);
     }
   };
 
@@ -193,7 +219,7 @@ class PostContent extends React.Component {
         : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(content.author),
+      userFollowed: followingList.includes(this.getAuthorName(content)),
     };
 
     const pendingLike =
@@ -206,23 +232,21 @@ class PostContent extends React.Component {
       (pendingLikes[content.id].weight < 0 ||
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
-    const { title, category, created, author, body } = content;
+    const { title, category, created, body, guestInfo } = content;
+    const authorName = this.getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
+    const desc = `${truncate(bodyText, { length: 143 })} by ${authorName}`;
     const image =
       postMetaImage ||
-      getAvatarURL(author) ||
+      getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
       dropCategory(content.url),
-      content.guestInfo,
+      guestInfo,
     )}`;
-    const url = `${waivioHost}${replaceBotWithGuestName(
-      dropCategory(content.url),
-      content.guestInfo,
-    )}`;
+    const url = `${waivioHost}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
 
@@ -259,11 +283,11 @@ class PostContent extends React.Component {
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
-          pendingFollow={pendingFollows.includes(content.author)}
+          pendingFollow={pendingFollows.includes(authorName)}
           pendingBookmark={pendingBookmarks.includes(content.id)}
           saving={saving}
           rewardFund={rewardFund}
-          ownPost={author === user.name}
+          ownPost={authorName === user.name}
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
           onLikeClick={this.handleLikeClick}
