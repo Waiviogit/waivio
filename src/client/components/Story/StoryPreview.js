@@ -65,7 +65,7 @@ const StoryPreview = ({ post }) => {
       <BodyShort
         key="text"
         className="Story__content__body"
-        isGuest={post.guestInfo}
+        guestInfo={post.guestInfo}
         body={post.body}
       />
     ),
