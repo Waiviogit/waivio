@@ -54,6 +54,7 @@ export default (state = initialState, action) => {
         ...state,
         isReloading: false,
         user: action.payload.account || state.user,
+        isGuestBalance: action.payload.isGuestBalance,
       };
     case types.RELOAD_ERROR:
       return {

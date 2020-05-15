@@ -23,6 +23,7 @@ import {
   getUsedLocale,
   isGuestUser,
   isGuestBalance,
+  getIsReloading,
 } from './reducers';
 import { busyLogin, login, logout, getGuestBalance } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
@@ -63,6 +64,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     balance: isGuestBalance(state),
+    isReloading: getIsReloading(state),
   }),
   {
     login,
@@ -104,11 +106,12 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
-    // isAuthenticated: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool,
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
     getGuestBalance: PropTypes.func,
+    getIsReloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -135,6 +138,7 @@ export default class Wrapper extends React.PureComponent {
     isGuest: false,
     balance: null,
     getGuestBalance: () => {},
+    getIsReloading: false,
   };
 
   static async fetchData({ store, req }) {
@@ -187,12 +191,23 @@ export default class Wrapper extends React.PureComponent {
       // }
     });
 
+    if (this.props.isAuthenticated && this.props.getIsReloading) {
+      this.props.getGuestBalance(this.props.username);
+    }
+
     batch(() => {
       this.props.getRewardFund();
       this.props.getRebloggedList();
       this.props.getRate();
       this.props.getChartsData();
     });
+
+    // if (this.props.isAuthenticated) {
+    //   this.props.getGuestBalance(this.props.username).then(result => {
+    //     console.log('result: ', result)
+    //     return result
+    //   })
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
