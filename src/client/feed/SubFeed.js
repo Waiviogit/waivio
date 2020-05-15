@@ -82,8 +82,9 @@ class SubFeed extends React.Component {
       this.props.getUserFeedContent(user.name);
     } else {
       const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
-      const category = withAppHomeFilter ? 'wia_feed' : 'all';
+      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const sortBy = withCategoryFilter ? 'trending' : 'created';
+      const category = withAppHomeFilter ? 'crypto_feed' : 'all';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
@@ -114,8 +115,10 @@ class SubFeed extends React.Component {
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
       const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
-      const category = withAppHomeFilter ? 'wia_feed' : 'all';
+      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const sortBy = withCategoryFilter ? 'trending' : 'created';
+      const category = withAppHomeFilter ? 'crypto_feed' : 'all';
+
       const fetching = getFeedLoadingFromState(sortBy, category, feed);
       if (!fetching) {
         this.props.getFeedContent(sortBy, category);
@@ -137,7 +140,6 @@ class SubFeed extends React.Component {
     let failed;
     let loadMoreContent;
     const isAuthHomeFeed = match.url === '/my_feed' && authenticated;
-
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
       isFetching = getUserFeedLoadingFromState(user.name, feed);
@@ -152,9 +154,10 @@ class SubFeed extends React.Component {
     } else {
       const withAppHomeFilter =
         typeof window !== 'undefined' ? !localStorage.getItem('isAppHomeFilterOff') : true;
-
-      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
-      const category = withAppHomeFilter ? 'wia_feed' : 'all';
+      const withCategoryFilter =
+        typeof window !== 'undefined' ? !localStorage.getItem('isCategoryFilterOff') : true;
+      const sortBy = withCategoryFilter ? 'trending' : 'created';
+      const category = withAppHomeFilter ? 'crypto_feed' : 'all';
       hasMore = getFeedHasMoreFromState(sortBy, category, feed);
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);
@@ -163,7 +166,6 @@ class SubFeed extends React.Component {
       failed = getFeedFailedFromState(sortBy, category, feed);
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, category);
     }
-
     const empty = _.isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
     const ready = loaded && fetched && !isFetching;
