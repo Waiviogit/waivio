@@ -14,6 +14,7 @@ class BeneficiariesWeight extends React.PureComponent {
     index: PropTypes.number.isRequired,
     objName: PropTypes.string.isRequired,
     percent: PropTypes.number,
+    percentMax: PropTypes.number.isRequired,
     onBenefPercentChange: PropTypes.func.isRequired,
     removeBeneficiariesUsers: PropTypes.func.isRequired,
   };
@@ -30,7 +31,9 @@ class BeneficiariesWeight extends React.PureComponent {
   }
 
   handlePercentChange = percent => {
-    this.setState({ percent });
+    const { percentMax } = this.props;
+    const percentValue = percent < percentMax ? percent : percentMax;
+    this.setState({ percent: percentValue });
   };
 
   handleAfterPercentChange = percent => {
@@ -130,6 +133,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
           index={index}
           objName={obj.account}
           percent={obj.weight / 100}
+          percentMax={obj.weight / 100 + weightBuffer}
           onBenefPercentChange={onBenefPercentChange}
           removeBeneficiariesUsers={onRemoveBeneficiariesUsers}
         />
