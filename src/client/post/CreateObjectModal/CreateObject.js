@@ -162,7 +162,6 @@ class CreateObject extends React.Component {
       objectTypes,
       withOpenModalBtn,
       openModalBtnText,
-      defaultObjectType,
       isSingleType,
     } = this.props;
 
