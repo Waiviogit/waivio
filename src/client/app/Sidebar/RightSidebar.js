@@ -18,6 +18,7 @@ import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar
 @withRouter
 @connect(state => ({
   authenticated: store.getIsAuthenticated(state),
+  authUserName: store.getAuthenticatedUserName(state),
   isAuthFetching: store.getIsAuthFetching(state),
 }))
 export default class RightSidebar extends React.Component {
@@ -26,15 +27,23 @@ export default class RightSidebar extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
+    authUserName: PropTypes.string,
   };
 
   static defaultProps = {
     showPostRecommendation: false,
     match: {},
+    authUserName: '',
   };
 
   render() {
-    const { authenticated, showPostRecommendation, isAuthFetching, match } = this.props;
+    const {
+      authenticated,
+      showPostRecommendation,
+      isAuthFetching,
+      match,
+      authUserName,
+    } = this.props;
 
     if (isAuthFetching) {
       return <Loading />;
@@ -62,7 +71,11 @@ export default class RightSidebar extends React.Component {
           />
           <Route
             path="/@:name"
-            render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
+            render={() =>
+              authenticated && (
+                <ObjectWeightBlock username={match.params.name} authUser={authUserName} />
+              )
+            }
           />
           <Route
             path="/"

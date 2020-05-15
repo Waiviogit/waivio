@@ -1121,5 +1121,8 @@
   "approval": "Одобрено",
   "approved": "Одобрено",
   "fillOrder_wallet_transferred": "Вы перевели {current_pays}",
-  "fillOrder_wallet_get": "Вы получили {open_pays}"
+  "fillOrder_wallet_get": "Вы получили {open_pays}",
+  "hive_power": "Hive** Power",
+  "services": "Сервисы",
+  "links": "Ссылки"
 }

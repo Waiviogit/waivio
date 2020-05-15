@@ -20,6 +20,7 @@ import {
   getApprovedField,
   haveAccess,
 } from '../helpers/wObjectHelper';
+import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
 
@@ -31,6 +32,8 @@ const WobjHeader = ({
   toggleViewEditMode,
   authenticated,
   isMobile,
+  followWobj,
+  unfollowWobj,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
@@ -89,7 +92,13 @@ const WobjHeader = ({
                 {name}
               </div>
               <div className="ObjectHeader__controls">
-                <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
+                <FollowButton
+                  followObject={followWobj}
+                  unfollowObject={unfollowWobj}
+                  following={wobject.youFollows}
+                  wobj={wobject}
+                  followingType="wobject"
+                />
                 {accessExtend && authenticated && (
                   <Link to={getLink()}>
                     <Button onClick={toggleViewEditMode}>
@@ -147,6 +156,8 @@ WobjHeader.propTypes = {
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
   isMobile: PropTypes.bool,
+  followWobj: PropTypes.func,
+  unfollowWobj: PropTypes.func,
 };
 
 WobjHeader.defaultProps = {
@@ -157,8 +168,14 @@ WobjHeader.defaultProps = {
   username: '',
   toggleViewEditMode: () => {},
   isMobile: false,
+  followWobj: () => {},
+  unfollowWobj: () => {},
 };
 
 const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
 
-export default injectIntl(connect(mapStateToProps)(WobjHeader));
+export default injectIntl(
+  connect(mapStateToProps, { followWobj: followWobject, unfollowWobj: unfollowWobject })(
+    WobjHeader,
+  ),
+);
