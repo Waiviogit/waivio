@@ -61,7 +61,14 @@ const StoryPreview = ({ post }) => {
   }
 
   const preview = {
-    text: () => <BodyShort key="text" className="Story__content__body" body={post.body} />,
+    text: () => (
+      <BodyShort
+        key="text"
+        className="Story__content__body"
+        guestInfo={post.guestInfo}
+        body={post.body}
+      />
+    ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
 
