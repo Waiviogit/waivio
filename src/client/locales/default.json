@@ -990,6 +990,7 @@
   "comment_options": "comment_options",
   "for_days": "for",
   "legal_notice_users_user": "Legal notice to users (optional)",
+  "legal_notice": "Legal notice",
   "custom": "Custom",
   "payables": "Payables",
   "manage": "Manage",
