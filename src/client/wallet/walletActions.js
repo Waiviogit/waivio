@@ -95,6 +95,7 @@ const parseGuestActions = actions => {
           ...transferDirection,
           amount: `${action.amount} HIVE`,
           memo: action.memo || '',
+          typeTransfer: action.type,
         },
       ],
       actionCount: index + 1,
