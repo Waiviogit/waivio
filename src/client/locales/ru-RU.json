@@ -31,9 +31,9 @@
   "feed": "Лента",
   "my_feed": "Моя лента",
   "feed_new": "Новые",
-  "feed_by_profit": "По прибыли",
+  "feed_by_profit": "Награды",
   "feed_all": "Все",
-  "feed_only_crypto": "Только по Криптовалютам",
+  "feed_only_crypto": "Криптовалюты",
   "home": "Главная",
   "markets": "Торговля",
   "my_deals": "Cделки",
@@ -805,7 +805,7 @@
   "reset_filter": "Все",
   "forecast_title": "Угадай и получи деньги ",
   "legal_notice_users_user": "Обратите внимание(необязательно)",
-  "legal_notice": "Официальное уведомление",
+  "legal_notice": "Я принимаю условия пользовательского соглашения",
   "custom": "Польз.",
   "absolutely": "абсолютно ",
   "free": "бесплатно",
@@ -1115,5 +1115,8 @@
   "transaction_to_bxy": "Вы не можете совершить транзакцию из гостевой учетной записи в учетную запись с префиксом 'bxy_'",
   "topic_language": "Язык темы",
   "topic_type": "Тип темы",
-  "author_rewards": "Авторские награды"
+  "author_rewards": "Авторские награды",
+  "mobnav_my_feed": "Моя лента",
+  "mobnav_discover": "Обзор",
+  "mobnav_home": "Главная"
 }
