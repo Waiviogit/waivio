@@ -991,7 +991,7 @@
   "name_is_too_long": "Name is too long (map 25 symbols)",
   "already_exists": "User with such username already exists",
   "please_input_username": "Please input your username",
-  "only_letters": "Only letters, digits, periods, dashes are allowed",
+  "only_letters": "Only lowercase letters, digits, periods, dashes are allowed",
   "imageSetter_add_image": "Add image",
   "imageSetter_add_images": "Add images",
   "imageSetter_upload": "Upload",
