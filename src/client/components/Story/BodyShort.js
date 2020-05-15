@@ -49,14 +49,17 @@ BodyShort.propTypes = {
   className: PropTypes.string,
   body: PropTypes.string,
   length: PropTypes.number,
-  isGuest: PropTypes.arrayOf(),
+  isGuest: PropTypes.shape({
+    userId: PropTypes.string,
+    social: PropTypes.string,
+  }),
 };
 
 BodyShort.defaultProps = {
   className: '',
   body: '',
   length: 140,
-  isGuest: {},
+  isGuest: null,
 };
 
 export default BodyShort;
