@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
+
 import './UserExpertise.less';
 
 const TabPane = Tabs.TabPane;
@@ -20,12 +21,13 @@ export default class UserExpertise extends React.Component {
     tagCount: 0,
   };
 
-  fetcher = (skip, isOnlyHashtags) => {
+  fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match } = this.props;
     return getWobjectsWithUserWeight(
       match.params.name,
       skip,
       UserExpertise.limit,
+      authUser,
       isOnlyHashtags ? ['hashtag'] : null,
       !isOnlyHashtags ? ['hashtag'] : null,
     );
