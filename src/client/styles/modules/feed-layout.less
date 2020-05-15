@@ -13,16 +13,21 @@
   &__switcher {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
+    justify-content: space-between;
+    padding: 10px 5px;
 
     @media @small {
-      padding-right: 0;
+      padding: 0;
+    }
+    &-item {
+      display: flex;
+      align-items: center;
+      .ant-switch {
+        margin: 0 8px;
+      }
     }
   }
-  &__text {
-    margin-right: 8px;
-  }
+
   &:after {
     content: '';
     display: table;
@@ -95,3 +100,5 @@ div[data-dir='rtl'] .feed-layout {
     float: left;
   }
 }
+
+@import 'feed-layout-nightmode';

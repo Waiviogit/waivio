@@ -193,6 +193,7 @@ export function getInitialState(props) {
     originalBody: null,
     forecastValues: { isValid: true },
     expForecast: null,
+    isRemovedCryptoObj: false,
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);

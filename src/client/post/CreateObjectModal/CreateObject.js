@@ -162,9 +162,11 @@ class CreateObject extends React.Component {
       objectTypes,
       withOpenModalBtn,
       openModalBtnText,
-      defaultObjectType,
       isSingleType,
     } = this.props;
+
+    const defaultValue = _.get(objectTypes, 'hashtag.name');
+
     const { loading } = this.state;
 
     const Option = Select.Option;
@@ -205,6 +207,12 @@ class CreateObject extends React.Component {
             confirmLoading={this.state.isCreating}
             footer={null}
           >
+            <span>
+              {intl.formatMessage({
+                id: 'value_placeholder',
+                defaultMessage: 'Topic name',
+              })}
+            </span>
             <Form.Item>
               {getFieldDecorator(objectFields.name, {
                 initialValue: '',
@@ -227,17 +235,15 @@ class CreateObject extends React.Component {
                     }),
                   },
                 ],
-              })(
-                <Input
-                  disabled={loading}
-                  className="Editor__title"
-                  placeholder={intl.formatMessage({
-                    id: 'value_placeholder',
-                    defaultMessage: 'Topic name',
-                  })}
-                />,
-              )}
+              })(<Input disabled={loading} className="Editor__title" />)}
             </Form.Item>
+
+            <span>
+              {intl.formatMessage({
+                id: 'topic_language',
+                defaultMessage: 'Topic language',
+              })}
+            </span>
             <Form.Item>
               {getFieldDecorator('locale', {
                 initialValue: locale,
@@ -256,9 +262,16 @@ class CreateObject extends React.Component {
                 </Select>,
               )}
             </Form.Item>
+
+            <span>
+              {intl.formatMessage({
+                id: 'topic_type',
+                defaultMessage: 'Topic type',
+              })}
+            </span>
             <Form.Item>
               {getFieldDecorator('type', {
-                initialValue: defaultObjectType,
+                initialValue: defaultValue,
                 rules: [
                   {
                     required: true,
@@ -271,12 +284,9 @@ class CreateObject extends React.Component {
               })(
                 <Select
                   showSearch
+                  value="Hashtag"
                   disabled={isSingleType}
                   style={{ width: '100%' }}
-                  placeholder={intl.formatMessage({
-                    id: 'placeholder_obj_type',
-                    defaultMessage: 'Object type',
-                  })}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -296,7 +306,7 @@ class CreateObject extends React.Component {
               disabled={loading}
             />
             <FollowObjectForm form={form} loading={loading} />
-            <Form.Item className="Editor__bottom__submit">
+            <Form.Item className="Editor__bottom__submit modal-confirm">
               <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
                 {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
               </Button>

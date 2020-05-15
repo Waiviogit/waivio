@@ -263,7 +263,10 @@ class PostPreviewModal extends Component {
               className="post-preview-legal-notice"
               isChecked={isConfirmed}
               disabled={isPublishing}
-              checkboxLabel="Legal notice"
+              checkboxLabel={intl.formatMessage({
+                id: 'legal_notice',
+                defaultMessage: 'Legal notice',
+              })}
               policyText={intl.formatMessage({
                 id: 'legal_notice_create_post',
                 defaultMessage:

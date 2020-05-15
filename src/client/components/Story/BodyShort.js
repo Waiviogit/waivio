@@ -13,13 +13,17 @@ function decodeEntities(body) {
 
 const BodyShort = props => {
   let body = props.body;
+  const guestInfo = props.guestInfo;
+
   const isForecastPost = body.indexOf(forecastPostMessage) > 0;
   let forecastMessage;
   if (isForecastPost) {
     body = body.slice(0, body.indexOf(forecastPostMessage));
     forecastMessage = props.body.slice(props.body.indexOf(forecastPostMessage));
     forecastMessage = striptags(remarkable.render(striptags(decodeEntities(forecastMessage))));
-    forecastMessage = forecastMessage.replace(/(?:https?|ftp):\/\/[\S]+/g, '');
+    forecastMessage = guestInfo
+      ? forecastMessage.replace(/\WThis message/, '. This message')
+      : forecastMessage.replace(/(?:https?|ftp):\/\/[\S]+/g, '');
   }
 
   body = striptags(remarkable.render(striptags(decodeEntities(body))));
@@ -45,12 +49,17 @@ BodyShort.propTypes = {
   className: PropTypes.string,
   body: PropTypes.string,
   length: PropTypes.number,
+  guestInfo: PropTypes.shape({
+    userId: PropTypes.string,
+    social: PropTypes.string,
+  }),
 };
 
 BodyShort.defaultProps = {
   className: '',
   body: '',
   length: 140,
+  guestInfo: null,
 };
 
 export default BodyShort;
