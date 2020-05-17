@@ -185,23 +185,31 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
 
-export const reload = () => (dispatch, getState, { steemConnectAPI }) => {
-  const state = getState();
-  const username = state.auth.name;
-  const promise = new Promise(async (resolve, reject) => {
-    try {
-      // const steemConnect = await steemConnectAPI.me();
-      const getBalance = await getGuestBalance(username);
-      resolve({ isGuestBalance: getBalance });
-    } catch (e) {
-      reject(e);
-    }
-  });
+// export const reload = () => (dispatch, getState, { steemConnectAPI }) => {
+//   const state = getState();
+//   const username = state.auth.name;
+//   const promise = new Promise(async (resolve, reject) => {
+//     try {
+//       // const steemConnect = await steemConnectAPI.me();
+//       const getBalance = await getGuestBalance(username);
+//       resolve({ isGuestBalance: getBalance });
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+//   dispatch({
+//     type: RELOAD,
+//     payload: Promise.all([steemConnectAPI.me(), promise]),
+//   });
+// };
+
+export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
   dispatch({
     type: RELOAD,
-    payload: Promise.all([steemConnectAPI.me(), promise]),
+    payload: {
+      promise: steemConnectAPI.me(),
+    },
   });
-};
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   let accessToken = Cookie.get('access_token');

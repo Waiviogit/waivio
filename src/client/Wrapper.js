@@ -191,9 +191,9 @@ export default class Wrapper extends React.PureComponent {
       // }
     });
 
-    if (this.props.isAuthenticated && this.props.getIsReloading) {
-      this.props.getGuestBalance(this.props.username);
-    }
+    // if (this.props.isAuthenticated && this.props.getIsReloading) {
+    //   this.props.getGuestBalance(this.props.username);
+    // }
 
     batch(() => {
       this.props.getRewardFund();
