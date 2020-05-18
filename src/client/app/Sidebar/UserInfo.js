@@ -15,7 +15,7 @@ import {
 } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
 
 @injectIntl
@@ -141,7 +141,7 @@ class UserInfo extends React.Component {
                     :&nbsp;{calcReputation(user.reputation)}
                   </div>
                 )}
-                {!user.name.startsWith(GUEST_PREFIX) && (
+                {!user.name.startsWith(GUEST_PREFIX) && !user.name.startsWith(BXY_GUEST_PREFIX) && (
                   <React.Fragment>
                     <div>
                       <i className="iconfont icon-praise text-icon" />

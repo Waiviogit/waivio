@@ -23,7 +23,7 @@ import {
   getGuestUserBalance,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -177,7 +177,7 @@ export default class Transfer extends React.Component {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
 
-        if (values.to.startsWith(GUEST_PREFIX)) {
+        if (values.to.startsWith(GUEST_PREFIX) || values.to.startsWith(BXY_GUEST_PREFIX)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
@@ -269,7 +269,7 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
-    const guestName = value.startsWith(GUEST_PREFIX);
+    const guestName = value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -312,7 +312,10 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (this.props.isGuest && value.startsWith(GUEST_PREFIX)) {
+    if (
+      this.props.isGuest &&
+      (value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX))
+    ) {
       callback([
         new Error(
           intl.formatMessage({
@@ -390,7 +393,7 @@ export default class Transfer extends React.Component {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
-    const guestName = to && to.startsWith(GUEST_PREFIX);
+    const guestName = to && (to.startsWith(GUEST_PREFIX) || to.startsWith(BXY_GUEST_PREFIX));
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;

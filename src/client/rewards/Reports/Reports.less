@@ -80,3 +80,15 @@
     }
   }
 }
+
+.ant-calendar-selected-day .ant-calendar-date {
+  &.ant-calendar-date[aria-selected='true'] {
+    background: @orange-hot;
+    color: @white;
+    font-weight: bold;
+  }
+  &.ant-calendar-date[aria-disabled='true'] {
+    color: rgba(0, 0, 0, 0.25);
+    background: #f5f5f5;
+  }
+}

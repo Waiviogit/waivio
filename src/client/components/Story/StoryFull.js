@@ -418,8 +418,11 @@ class StoryFull extends React.Component {
           <Lightbox
             imageTitle={this.images[index].alt}
             mainSrc={this.images[index].src}
-            nextSrc={this.images[(index + 1) % this.images.length].src}
-            prevSrc={this.images[(index + (this.images.length - 1)) % this.images.length].src}
+            nextSrc={this.images.length > 1 && this.images[(index + 1) % this.images.length].src}
+            prevSrc={
+              this.images.length > 1 &&
+              this.images[(index + (this.images.length - 1)) % this.images.length].src
+            }
             onCloseRequest={() => {
               this.setState({
                 lightbox: {

@@ -142,34 +142,14 @@ class ReportsForm extends Component {
     return preparedObject;
   };
 
-  disabledStartDate = dateFrom => {
+  disabledStartDate = date => {
     const dateTill = this.props.form.getFieldValue('till');
-    if (!dateFrom || !dateTill) {
-      return false;
-    }
-    return (
-      moment(dateFrom)
-        .format('x')
-        .valueOf() >
-      moment(dateTill)
-        .format('x')
-        .valueOf()
-    );
+    return moment(date) > moment(dateTill).add(1, 'day');
   };
 
-  disabledEndDate = dateTill => {
+  disabledEndDate = date => {
     const dateFrom = this.props.form.getFieldValue('from');
-    if (!dateTill || !dateFrom) {
-      return false;
-    }
-    return (
-      moment(dateTill)
-        .format('x')
-        .valueOf() <=
-      moment(dateFrom)
-        .format('x')
-        .valueOf()
-    );
+    return moment(date).isAfter(moment()) || moment(date).isBefore(dateFrom);
   };
 
   handleReset = () => {
