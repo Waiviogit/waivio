@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
@@ -21,6 +21,7 @@ const GuestSignUpFormContent = ({
   image,
   initialLanguages,
   socialNetwork,
+  intl,
 }) => {
   const usernameError = getFieldError('username');
   const aliasError = getFieldError('alias');
@@ -52,8 +53,8 @@ const GuestSignUpFormContent = ({
                 pattern: /^[a-z0-9.-]+$/,
                 message: (
                   <FormattedMessage
-                    id="only_letters"
-                    defaultMessage="Only letters, digits, periods, dashes are allowed"
+                    id="only_lowercase_letters"
+                    defaultMessage="Only lowercase letters, digits, periods, dashes are allowed"
                   />
                 ),
               },
@@ -65,7 +66,10 @@ const GuestSignUpFormContent = ({
             // todo: get prefix by app
             <Input
               disabled={socialNetwork === 'beaxy'}
-              placeholder="Enter nickname"
+              placeholder={intl.formatMessage({
+                id: 'enter_nickname',
+                defaultMessage: 'Enter nickname',
+              })}
               addonBefore={`@${GUEST_PREFIX}`}
               maxLength={16}
             />,
@@ -107,7 +111,15 @@ const GuestSignUpFormContent = ({
                 ),
               },
             ],
-          })(<Input placeholder="Enter username" maxLength={64} />)}
+          })(
+            <Input
+              placeholder={intl.formatMessage({
+                id: 'enter_username',
+                defaultMessage: 'Enter username',
+              })}
+              maxLength={64}
+            />,
+          )}
         </Form.Item>
 
         <Form.Item
@@ -129,7 +141,7 @@ const GuestSignUpFormContent = ({
         <Form.Item
           validateStatus={agreementError ? 'error' : ''}
           help={agreementError || ''}
-          label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal" />}
+          label={<FormattedMessage id="legal" defaultMessage="Legal" />}
         >
           {getFieldDecorator('agreement', {
             rules: [
@@ -153,7 +165,10 @@ const GuestSignUpFormContent = ({
                       target="_blank"
                       href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
                     >
-                      Terms And Conditions
+                      {intl.formatMessage({
+                        id: 'terms_and_conditions',
+                        defaultMessage: 'Terms And Conditions ',
+                      })}
                     </a>
                   ),
                   Privacy: (
@@ -162,7 +177,10 @@ const GuestSignUpFormContent = ({
                       target="_blank"
                       href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
                     >
-                      Privacy Policy
+                      {intl.formatMessage({
+                        id: 'privacy_policy',
+                        defaultMessage: 'Privacy Policy ',
+                      })}
                     </a>
                   ),
                   Cookies: (
@@ -171,7 +189,10 @@ const GuestSignUpFormContent = ({
                       target="_blank"
                       href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
                     >
-                      Cookies Policy
+                      {intl.formatMessage({
+                        id: 'cookies_policy',
+                        defaultMessage: 'Cookies Policy ',
+                      })}
                     </a>
                   ),
                 }}
@@ -208,6 +229,7 @@ GuestSignUpFormContent.propTypes = {
   setIsLoading: PropTypes.func,
   image: PropTypes.string,
   initialLanguages: PropTypes.string,
+  intl: PropTypes.shape().isRequired,
 };
 
 GuestSignUpFormContent.defaultProps = {
@@ -225,4 +247,4 @@ GuestSignUpFormContent.defaultProps = {
   initialLanguages: 'en-US',
 };
 
-export default GuestSignUpFormContent;
+export default injectIntl(GuestSignUpFormContent);
