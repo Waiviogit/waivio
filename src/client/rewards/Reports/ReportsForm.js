@@ -43,11 +43,9 @@ class ReportsForm extends Component {
         this.setState({
           updated: true,
         });
-        console.log('Received values of form: ', values);
       }
     });
-    this.handleReset();
-    this.setState({ loading: false, disabled: true });
+    this.setState({ loading: false });
   };
 
   handleSetState = (stateData, callbackData) => {
@@ -62,7 +60,7 @@ class ReportsForm extends Component {
 
   removeSponsor = () => {
     this.handleSetState({ sponsor: {} }, { sponsor: {} });
-    this.setState({ sponsor: {} });
+    this.setState({ sponsor: {}, disabled: true });
   };
 
   setDateFrom = from => {
@@ -189,7 +187,6 @@ class ReportsForm extends Component {
       dateTill,
       preparedObject,
       objectsNamesAndPermlinks,
-      amount,
       disabled,
     } = this.state;
 
@@ -467,7 +464,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable || amount}
+              {preparedObject.filters.payable}
             </div>
           </div>
         )}
