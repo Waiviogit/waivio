@@ -60,7 +60,7 @@ const EditorToolbar = ({ intl, onSelect }) => {
       )}
     >
       <div className="EditorToolbar">
-        <Dropdown overlay={menu}>
+        <Dropdown overlayClassName="EditorToolbar__dropdown" overlay={menu} trigger={['click']}>
           <Button className="EditorToolbar__button">
             <i className="iconfont icon-fontsize" /> <Icon type="down" />
           </Button>
