@@ -11,11 +11,17 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
+import { getAuthenticatedUser } from '../../reducers';
 
 @injectIntl
-@connect(() => ({}), {
-  setDataForGlobalReport,
-})
+@connect(
+  state => ({
+    user: getAuthenticatedUser(state),
+  }),
+  {
+    setDataForGlobalReport,
+  },
+)
 class ReportsForm extends Component {
   state = {
     loading: false,
@@ -33,6 +39,10 @@ class ReportsForm extends Component {
     objectsNamesAndPermlinks: [],
     disabled: true,
   };
+
+  componentDidMount() {
+    this.setSponsor(this.props.user);
+  }
 
   handleSubmit = e => {
     e.preventDefault();
@@ -121,7 +131,7 @@ class ReportsForm extends Component {
         : [];
 
     const preparedObject = {
-      sponsor: get(data, ['sponsor', 'account']),
+      sponsor: get(data, ['sponsor', 'name']) || get(data, ['sponsor', 'account']),
       userName: userName || '',
       globalReport: true,
       filters: {
@@ -193,12 +203,11 @@ class ReportsForm extends Component {
     const { Option } = Select;
 
     const renderSponsor =
-      !isEmpty(sponsor) && sponsor.account ? (
+      (!isEmpty(sponsor) && sponsor.account) || sponsor.name ? (
         <div className="CreateReportForm__objects-wrap">
           <ReviewItem
             key={sponsor}
             object={sponsor}
-            // loading={loading}
             removeReviewObject={this.removeSponsor}
             isUser
           />
@@ -207,12 +216,7 @@ class ReportsForm extends Component {
 
     const renderObjects = !isEmpty(objects)
       ? map(objects, obj => (
-          <ReviewItem
-            key={obj.id}
-            object={obj}
-            // loading={disabled}
-            removeReviewObject={this.removePrimaryObject}
-          />
+          <ReviewItem key={obj.id} object={obj} removeReviewObject={this.removePrimaryObject} />
         ))
       : null;
 
@@ -478,6 +482,7 @@ const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(ReportsForm
 ReportsForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
+  user: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   getHistories: PropTypes.func,
 };
