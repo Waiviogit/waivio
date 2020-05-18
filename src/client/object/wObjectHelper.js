@@ -31,7 +31,7 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
     wobject.filter(
       field =>
         field.type === 'menuList' &&
-        calculateApprovePercent(field.active_votes, field.weight) >= 70 &&
+        calculateApprovePercent(field.active_votes, field.weight, wobj) >= 70 &&
         !field.status,
     );
 
@@ -69,7 +69,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
     fieldValues = wObject.fields.filter(
       field =>
         field.name === currentField &&
-        calculateApprovePercent(field.active_votes, field.weight) >= 70,
+        calculateApprovePercent(field.active_votes, field.weight, wObject) >= 70,
     );
   }
 
@@ -139,7 +139,7 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
       .filter(
         field =>
           !Object.keys(maxWeightedFields).includes(field.name) &&
-          calculateApprovePercent(field.active_votes, field.weight) >= 70,
+          calculateApprovePercent(field.active_votes, field.weight, wObj) >= 70,
       )
       .reduce((acc, curr) => {
         if (acc[curr.name]) {
@@ -416,3 +416,31 @@ export function combineObjectMenu(menuItems, { button, news } = { button: null, 
   }
   return result;
 }
+
+export const mainerName = (votes, moderators, admins) => {
+  if (!votes || !moderators || !admins) return null;
+
+  const statusName = perc => (perc > 0 ? 'approve' : 'reject');
+  const mainObjCreator = (mainer, name, status) => ({
+    mainer,
+    name,
+    status,
+  });
+  const moderator = votes
+    .filter(vote => moderators.includes(vote.voter))
+    .sort((after, before) => before.createdAt - after.createdAt)[0];
+
+  if (moderator) {
+    return mainObjCreator('moderator', moderator.voter, statusName(moderator.percent));
+  }
+
+  const admin = votes
+    .filter(vote => admins.includes(vote.voter))
+    .sort((after, before) => after.createdAt - before.createdAt)[0];
+
+  if (admin) {
+    return mainObjCreator('admin', admin.voter, statusName(admin.percent));
+  }
+
+  return null;
+};
