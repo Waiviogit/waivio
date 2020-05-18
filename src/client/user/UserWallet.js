@@ -197,6 +197,7 @@ class Wallet extends Component {
         <UserDynamicListLoading />
       ) : (
         <UserWalletTransactions
+          isGuestUser={isGuest}
           transactions={transactions}
           actions={actions}
           currentUsername={user.name}
