@@ -7,13 +7,13 @@ import { Tooltip } from 'antd';
 import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
 import { openTransfer } from '../../wallet/walletActions';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
 import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
 const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   const dispatch = useDispatch();
-  const isReceiverGuest = name.startsWith(GUEST_PREFIX);
+  const isReceiverGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
   const handleSetUser = () => {
     history.push(path);
   };

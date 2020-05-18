@@ -7,7 +7,7 @@ import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 const dmp = new diff_match_patch();
 /**
@@ -120,7 +120,7 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
     if (s === '') {
       s = base58.encode(secureRandom.randomBuffer(4));
     }
-    if (author.startsWith(GUEST_PREFIX)) {
+    if (author.startsWith(GUEST_PREFIX) || author.startsWith(BXY_GUEST_PREFIX)) {
       const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
       permlink = prefix + s;
       return Promise.resolve(checkPermLinkLength(permlink));
