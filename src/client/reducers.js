@@ -64,8 +64,7 @@ export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUser
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, author, permlink) =>
-  fromPosts.getPostContent(state.posts, author, permlink);
+export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
@@ -171,6 +170,8 @@ export const getRewardSetting = state => fromSettings.getRewardSetting(state.set
 export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(state.wallet);
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);
 export const getUsersTransactions = state => fromWallet.getUsersTransactions(state.wallet);
+export const getTransactions = state => fromWallet.getTransactions(state.wallet);
+export const getUserHasMore = state => fromWallet.getUserHasMore(state.wallet);
 export const getUsersAccountHistory = state => fromWallet.getUsersAccountHistory(state.wallet);
 export const getUsersAccountHistoryLoading = state =>
   fromWallet.getUsersAccountHistoryLoading(state.wallet);

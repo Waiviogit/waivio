@@ -4,10 +4,10 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, map } from 'lodash';
 import PaymentCard from '../PaymentCard/PaymentCard';
 import SortSelector from '../../components/SortSelector/SortSelector';
-import { sortDebtObjsData } from '../rewardsHelper';
+import { sortDebtObjsData, getCurrentUSDPrice } from '../rewardsHelper';
 import './Debts.less';
 
-const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => {
+const Debts = ({ intl, debtObjsData, componentLocation }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
 
@@ -39,6 +39,9 @@ const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => 
 
   const renderData = getRenderData();
 
+  const currentUSDPrice = getCurrentUSDPrice();
+  console.log(currentUSDPrice);
+
   return (
     <div className="Debts">
       <div className="Debts__information-row">
@@ -49,8 +52,8 @@ const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => 
           })}
           : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
           {' HIVE '}
-          {currentSteemPrice && debtObjsData.payable
-            ? `($${(currentSteemPrice * debtObjsData.payable).toFixed(2)})`
+          {currentUSDPrice && debtObjsData.payable
+            ? `($${(currentUSDPrice * debtObjsData.payable).toFixed(2)})`
             : ''}
         </div>
       </div>
@@ -75,7 +78,6 @@ const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => 
 Debts.propTypes = {
   intl: PropTypes.shape().isRequired,
   debtObjsData: PropTypes.shape().isRequired,
-  currentSteemPrice: PropTypes.number.isRequired,
   componentLocation: PropTypes.string.isRequired,
 };
 

@@ -71,7 +71,7 @@ class CreateRewardForm extends React.Component {
     commissionAgreement: 5,
     iAgree: false,
     campaignId: '',
-    isCampaignActive: false,
+    isDuplicate: false,
   };
 
   componentDidMount = async () => {
@@ -87,13 +87,9 @@ class CreateRewardForm extends React.Component {
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
 
-      const isCampaignActive = campaign.status === 'active';
+      const isDuplicate = this.props.match.path.includes('createDuplicate');
 
-      const isDuplicate =
-        campaign.status === 'active' ||
-        campaign.status === 'inactive' ||
-        campaign.status === 'pending' ||
-        campaign.status === 'expired';
+      const isPending = campaign.status === 'pending';
 
       let combinedObjects;
       let sponsors;
@@ -154,8 +150,8 @@ class CreateRewardForm extends React.Component {
           eligibleDays: campaign.frequency_assign,
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
-          isCampaignActive,
           isDuplicate,
+          isPending,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -333,6 +329,7 @@ class CreateRewardForm extends React.Component {
     },
 
     handleSubmit: e => {
+      const { isDuplicate } = this.state;
       e.preventDefault();
       this.checkOptionFields();
       this.setState({ loading: true });
@@ -340,7 +337,11 @@ class CreateRewardForm extends React.Component {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
-              message.success(`Rewards campaign ${values.campaignName} has been created.`);
+              message.success(
+                `Rewards campaign ${values.campaignName} ${
+                  isDuplicate ? 'has been created' : 'has been updated'
+                }`,
+              );
               this.setState({ loading: false });
               this.manageRedirect();
             })
@@ -382,7 +383,6 @@ class CreateRewardForm extends React.Component {
       reservationPeriod,
       compensationAccount,
       commissionAgreement,
-      isCampaignActive,
       loading,
       parentPermlink,
       targetDays,
@@ -398,6 +398,7 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
+      isPending,
       isDuplicate,
     } = this.state;
     return (
@@ -432,9 +433,9 @@ class CreateRewardForm extends React.Component {
         getFieldValue={form.getFieldValue}
         commissionAgreement={commissionAgreement}
         campaignId={campaignId}
-        isCampaignActive={isCampaignActive}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
+        isPending={isPending}
         isDuplicate={isDuplicate}
       />
     );

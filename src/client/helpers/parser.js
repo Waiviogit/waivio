@@ -9,7 +9,7 @@ export function getFromMetadata(jsonMetadata, key) {
 
 const attrs = /(\w+=".*?")/g;
 const attrElements = /^(\w+)="(.*?)"$/;
-const imgTag = /<img(.*)\/>/g;
+const imgTag = /<img(.*?)\/>/g;
 const hrefRegex = /<a[^>]+href="([^">]+)"/g;
 
 function extract(body, regex) {

@@ -779,6 +779,7 @@
   "users_start_with_zero_followers": "Новые пользователи начинают с 0 фоловеров",
   "users_start_with_zero_posts": "Новые пользователи начинают с 0 сообщений",
   "legal": "Соглашения",
+  "legal_notice": "Я принимаю условия пользовательского соглашения",
   "reward_payments_made_directly_waivio_provide_information": "Все вознаграждения выплачиваются непосредственно пользователям создателем кампании. Waivio и другие партнеры предоставляют только информационные услуги и услуги по обнаружению.",
   "can_add_link_agreement_govern_relationships": "Здесь вы можете добавить ссылку на соглашение, которая будет регулировать отношения между вами и участвующими пользователями.",
   "legal_notice_users": "Официальное уведомление для пользователей(необязательно)",
@@ -1119,5 +1120,10 @@
   "approved_by_moderator": "одобрено модератором",
   "vote_count_tag": "Голоса",
   "approval": "Одобрено",
-  "approved": "Одобрено"
+  "approved": "Одобрено",
+  "fillOrder_wallet_transferred": "Вы перевели {current_pays}",
+  "fillOrder_wallet_get": "Вы получили {open_pays}",
+  "hive_power": "Hive** Power",
+  "services": "Сервисы",
+  "links": "Ссылки"
 }

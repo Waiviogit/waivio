@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { map } from 'lodash';
+import { map, reduce } from 'lodash';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
@@ -29,9 +29,15 @@ const PaymentTableRow = ({ intl, sponsor }) => {
       .then(() => setModalReportOpen(!isModalReportOpen))
       .catch(e => console.log(e));
   };
+  const closeModalReport = () => {
+    if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
+  };
 
   const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
   const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
+  const userWeight = `(${(10000 -
+    reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
+    100}%)`;
   return (
     <tr>
       <td>{formatDate(intl, sponsor.createdAt)}</td>
@@ -106,9 +112,10 @@ const PaymentTableRow = ({ intl, sponsor }) => {
                 {map(sponsor.details.beneficiaries, benef => (
                   <React.Fragment>
                     <Link to={`/@${benef.account}`}>{benef.account}</Link>
-                    <span>{` (${benef.weight / 100}%) `}</span>
+                    <span>{` (${benef.weight / 100}%), `}</span>
                   </React.Fragment>
-                ))}
+                ))}{' '}
+                <Link to={`/@${sponsor.userName}`}>{sponsor.userName}</Link> {userWeight}
               </div>
             </div>
           )}
@@ -144,7 +151,7 @@ const PaymentTableRow = ({ intl, sponsor }) => {
         )}
         <Report
           isModalReportOpen={isModalReportOpen}
-          toggleModal={toggleModalReport}
+          toggleModal={closeModalReport}
           sponsor={sponsor}
         />
       </td>

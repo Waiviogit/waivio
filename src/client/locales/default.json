@@ -739,6 +739,7 @@
   "users_start_with_zero_followers": "New users start with 0 followers",
   "users_start_with_zero_posts": "New users start with 0 posts",
   "legal": "Legal",
+  "legal_notice": "Legal notice",
   "reward_payments_made_directly_waivio_provide_information": "All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only.",
   "can_add_link_agreement_govern_relationships": "Here you can add a link to the agreement, which will govern the relationship between you and participating users.",
   "legal_notice_users": "Legal notice to users (optional)",
@@ -856,7 +857,7 @@
   "debts_pay_all": "Pay all",
   "pay": "Pay",
   "payment_card_pay_now": "Pay now",
-  "payment_page_transfers_with_user_reward_included": "Only transfer with {\"id\":\"user_reward\"} instructions are processed as rewards payments",
+  "payment_page_transfers_with_user_reward_included": "Only transfers with {\"id\":\"user_reward\"} instructions are processed as rewards payments",
   "payment_page_payables": "Payables",
   "payment_page_receivables": "Receivables",
   "payment_page_pay_now": "Pay now",
@@ -1119,5 +1120,10 @@
   "approved_by_moderator": "approved by moderator",
   "vote_count_tag": "Vote count",
   "approval": "Approval",
-  "approved": "Approved"
+  "approved": "Approved",
+  "fillOrder_wallet_transferred": "You transferred {current_pays}",
+  "fillOrder_wallet_get": "You get {open_pays}",
+  "hive_power": "Hive** Power",
+  "services": "Services",
+  "links": "Links"
 }

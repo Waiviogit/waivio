@@ -115,7 +115,7 @@ export default class ObjectFeed extends React.Component {
     const { needUpdate } = this.state;
     const { userName, wobject } = this.props;
     const requiredObject = get(wobject, ['parent', 'author_permlink']);
-    if (needUpdate && userName && requiredObject) {
+    if (needUpdate && requiredObject) {
       this.getPropositions({ userName, requiredObject });
     }
   }
