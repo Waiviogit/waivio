@@ -23,7 +23,6 @@ import {
   getUsedLocale,
   isGuestUser,
   isGuestBalance,
-  getIsReloading,
 } from './reducers';
 import {
   busyLogin,
@@ -70,7 +69,6 @@ export const UsedLocaleContext = React.createContext('en-US');
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     balance: isGuestBalance(state),
-    isReloading: getIsReloading(state),
   }),
   {
     login,
