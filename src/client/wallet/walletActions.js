@@ -9,7 +9,7 @@ import {
   defaultAccountLimit,
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getTransferHistory } from '../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
@@ -126,7 +126,7 @@ export const getGlobalProperties = () => dispatch =>
   });
 
 export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
+  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
@@ -207,7 +207,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
 };
 
 export const getUserAccountHistory = username => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
+  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {

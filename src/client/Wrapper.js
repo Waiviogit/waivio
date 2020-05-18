@@ -29,7 +29,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
-import { GUEST_PREFIX } from '../common/constants/waivio';
+import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../common/constants/waivio';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -238,7 +238,9 @@ export default class Wrapper extends React.PureComponent {
           <AppSharedContext.Provider
             value={{
               usedLocale,
-              isGuestUser: username && username.startsWith(GUEST_PREFIX),
+              isGuestUser:
+                username &&
+                (username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX)),
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
