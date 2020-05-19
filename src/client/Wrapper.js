@@ -88,6 +88,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     guestBalanceOnReload,
   },
 )
+
 export default class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
