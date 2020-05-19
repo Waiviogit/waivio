@@ -18,8 +18,15 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
+  isGuestBalance,
 } from './reducers';
-import { login, logout, busyLogin } from './auth/authActions';
+import {
+  login,
+  logout,
+  busyLogin,
+  getGuestBalance,
+  guestBalanceOnReload,
+} from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
@@ -48,6 +55,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
+    balance: isGuestBalance(state),
   }),
   {
     login,
@@ -60,6 +68,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
+    getGuestBalance,
+    guestBalanceOnReload,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -84,6 +94,8 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
+    getGuestBalance: PropTypes.func,
+    guestBalanceOnReload: PropTypes.func,
   };
 
   static defaultProps = {
@@ -102,6 +114,9 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
+    balance: null,
+    getGuestBalance: () => {},
+    guestBalanceOnReload: () => {},
   };
 
   static async fetchData({ store, req }) {
@@ -133,6 +148,7 @@ export default class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
+  // eslint-disable-next-line consistent-return
   componentDidMount() {
     this.props.login().then(() => {
       batch(() => {
@@ -143,13 +159,25 @@ export default class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.getRebloggedList();
         this.props.getRate();
+        this.props.getGuestBalance();
       });
     });
+
     batch(() => {
       this.props.getRewardFund();
       this.props.getRebloggedList();
       this.props.getRate();
     });
+
+    if (this.props.isAuthenticated) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          this.props.guestBalanceOnReload();
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
