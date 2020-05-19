@@ -9,14 +9,21 @@ import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../user/usersActions';
-import { getIsAuthenticated } from '../../reducers';
+import { getIsAuthenticated, getObjectAdmins, getObjectModerators } from '../../reducers';
 
 import './ReactionsList.less';
 
-@connect(state => ({ isAuth: getIsAuthenticated(state) }), {
-  unfollow: unfollowUser,
-  follow: followUser,
-})
+@connect(
+  state => ({
+    isAuth: getIsAuthenticated(state),
+    moderatorsList: getObjectAdmins(state),
+    adminsList: getObjectModerators(state),
+  }),
+  {
+    unfollow: unfollowUser,
+    follow: followUser,
+  },
+)
 export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),

@@ -205,7 +205,7 @@ export default class ObjectFeed extends React.Component {
           loadingAssignDiscard: false,
           isAssign: true,
         });
-        console.log('isAssign', this.state.isAssign);
+
         return { isAssign: true };
       })
       .catch(e => {
@@ -293,7 +293,7 @@ export default class ObjectFeed extends React.Component {
       : `${maxReward} HIVE`;
 
     const getFeedProposition = () => {
-      if (isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
+      if (wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
         return (
           <div>
             <ObjectCardView wObject={wobject} passedParent={currentProposition} />

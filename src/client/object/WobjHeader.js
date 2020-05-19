@@ -44,7 +44,7 @@ const WobjHeader = ({
   const parent = wobject.parent && addActiveVotesInField(wobject, wobject.parent);
   const parentName =
     parent &&
-    calculateApprovePercent(parent.active_votes, parent.weight) >= 70 &&
+    calculateApprovePercent(parent.active_votes, parent.weight, wobject) >= 70 &&
     (getApprovedField(wobject.parent, objectFields.name) || wobject.default_name);
 
   const getStatusLayout = statusField => (
