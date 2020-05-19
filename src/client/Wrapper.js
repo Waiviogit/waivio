@@ -148,7 +148,6 @@ export default class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
-  // eslint-disable-next-line consistent-return
   componentDidMount() {
     this.props.login().then(() => {
       batch(() => {
@@ -168,16 +167,6 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRebloggedList();
       this.props.getRate();
     });
-
-    if (this.props.isAuthenticated) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          this.props.guestBalanceOnReload();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -188,11 +177,22 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   componentDidUpdate() {
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
     } else {
       document.body.classList.remove('nightmode');
+    }
+
+    if (this.props.isAuthenticated) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          this.props.guestBalanceOnReload();
+        } catch (e) {
+          reject(e);
+        }
+      });
     }
   }
 

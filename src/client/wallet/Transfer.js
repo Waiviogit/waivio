@@ -392,6 +392,7 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
+
       authGuestBalance,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
