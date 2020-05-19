@@ -5,12 +5,12 @@ import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } fro
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 
-const ReceiveTransaction = ({ from, memo, amount, timestamp, type }) => {
+const ReceiveTransaction = ({ from, memo, amount, timestamp, type, isGuestUser }) => {
   const demoPost = type === 'demo_post';
 
   return (
     <div className="UserWalletTransactions__transaction">
-      {demoPost ? (
+      {demoPost && isGuestUser ? (
         <div className="UserWalletTransactions__icon-container">
           <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
         </div>
@@ -22,7 +22,7 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp, type }) => {
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
-            {demoPost ? (
+            {demoPost && isGuestUser ? (
               <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />
             ) : (
               <FormattedMessage
@@ -68,6 +68,7 @@ ReceiveTransaction.propTypes = {
   amount: PropTypes.element,
   timestamp: PropTypes.string,
   type: PropTypes.string,
+  isGuestUser: PropTypes.bool,
 };
 
 ReceiveTransaction.defaultProps = {
@@ -76,6 +77,7 @@ ReceiveTransaction.defaultProps = {
   amount: <span />,
   timestamp: '',
   type: '',
+  isGuestUser: false,
 };
 
 export default ReceiveTransaction;
