@@ -207,7 +207,6 @@ export const getObjectFetchingState = state => fromObject.getObjectFetchingState
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectAdmins = state => fromObject.getObjectAdmins(state.object);
 export const getObjectModerators = state => fromObject.getObjectModerators(state.object);
-
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);

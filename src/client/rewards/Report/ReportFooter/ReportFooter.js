@@ -3,12 +3,19 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { useSelector } from 'react-redux';
-import { get } from 'lodash';
+import { get, isEmpty, reduce } from 'lodash';
 import { getSingleReportData } from '../../../reducers';
 
 const ReportFooter = ({ intl, toggleModal }) => {
   const singleReportData = useSelector(getSingleReportData);
   const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
+  const sponsor = get(singleReportData, ['sponsor', 'name']);
+
+  const getWaivioMatch = () =>
+    !isEmpty(singleReportData.match_bots)
+      ? reduce(singleReportData.match_bots, (acc, bot) => `${acc}, ${bot}`, '')
+      : '';
+  const matchBots = getWaivioMatch();
 
   return (
     <div className="Report__modal-footer">
@@ -23,11 +30,17 @@ const ReportFooter = ({ intl, toggleModal }) => {
         </div>
         <div>
           **{' '}
-          {intl.formatMessage({
-            id: 'only_upvotes_from_registered_accounts',
-            defaultMessage:
-              'Only upvotes from registered accounts (sponsor, waivio.match) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
-          })}
+          {intl.formatMessage(
+            {
+              id: 'only_upvotes_from_registered_accounts',
+              defaultMessage:
+                'Only upvotes from registered accounts ({sponsor} {waivioMatch}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
+            },
+            {
+              sponsor,
+              waivioMatch: matchBots,
+            },
+          )}
         </div>
         <div>
           ***{' '}
