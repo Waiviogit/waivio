@@ -10,20 +10,28 @@
   @media @large {
     padding: 0;
   }
+
   &__switcher {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 5px;
+    padding: 15px;
 
     @media @small {
       padding: 0;
     }
+
     &-item {
       display: flex;
       align-items: center;
+
       .ant-switch {
         margin: 0 8px;
+        background-color: @blue-dodgerBlue;
+      }
+
+      .ant-switch-checked {
+        background-color: @blue-dodgerBlue;
       }
     }
   }

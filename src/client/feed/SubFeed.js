@@ -81,8 +81,8 @@ class SubFeed extends React.Component {
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
     } else {
-      const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const withAppHomeFilter = !!localStorage.getItem('isAppHomeFilterOff');
+      const withCategoryFilter = !!localStorage.getItem('isCategoryFilterOff');
       const sortBy = withCategoryFilter ? 'trending' : 'created';
       const category = withAppHomeFilter ? 'crypto_feed' : 'all';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
@@ -114,8 +114,8 @@ class SubFeed extends React.Component {
         this.props.getUserFeedContent(user.name);
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
-      const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
-      const withCategoryFilter = !localStorage.getItem('isCategoryFilterOff');
+      const withAppHomeFilter = !!localStorage.getItem('isAppHomeFilterOff');
+      const withCategoryFilter = !!localStorage.getItem('isCategoryFilterOff');
       const sortBy = withCategoryFilter ? 'trending' : 'created';
       const category = withAppHomeFilter ? 'crypto_feed' : 'all';
 
@@ -153,9 +153,9 @@ class SubFeed extends React.Component {
       loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
       const withAppHomeFilter =
-        typeof window !== 'undefined' ? !localStorage.getItem('isAppHomeFilterOff') : true;
+        typeof window !== 'undefined' ? !!localStorage.getItem('isAppHomeFilterOff') : true;
       const withCategoryFilter =
-        typeof window !== 'undefined' ? !localStorage.getItem('isCategoryFilterOff') : true;
+        typeof window !== 'undefined' ? !!localStorage.getItem('isCategoryFilterOff') : true;
       const sortBy = withCategoryFilter ? 'trending' : 'created';
       const category = withAppHomeFilter ? 'crypto_feed' : 'all';
       hasMore = getFeedHasMoreFromState(sortBy, category, feed);
