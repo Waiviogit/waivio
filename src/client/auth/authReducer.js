@@ -66,13 +66,7 @@ export default (state = initialState, action) => {
       };
 
     case types.LOGOUT:
-      return {
-        ...state,
-        isAuthenticated: false,
-        loaded: false,
-        isGuestUser: false,
-        user: {},
-      };
+      return initialState;
 
     case GET_USER_METADATA.SUCCESS:
       return {
