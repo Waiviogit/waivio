@@ -1,8 +1,8 @@
 {
   "development": {
     "protocol": "https://",
-    "": "www.waivio.com",
-    "host": "waiviodev.com",
+    "host": "www.waivio.com",
+    "": "waiviodev.com",
     "": "localhost:8093",
     "appName": "beaxy"
   },

@@ -162,14 +162,13 @@ export default class Comments extends React.Component {
 
     const parentNode = comments.childrenById[postId];
 
-    if (
-      !isEmpty(comments.fakeComment) &&
-      comments.fakeComment.postId === postId &&
-      !includes(parentNode, comments.fakeComment.id)
-    ) {
-      parentNode.push(comments.fakeComment.id);
+    if (comments.fakeComments && comments.fakeComments.length) {
+      comments.fakeComments.forEach(comment => {
+        if (comment.postId === postId && !includes(parentNode, comment.id)) {
+          parentNode.push(comment.id);
+        }
+      });
     }
-
     if (parentNode instanceof Array) {
       rootLevelComments = parentNode.map(id => comments.comments[id]);
     }

@@ -7,7 +7,7 @@ const initialState = {
   childrenById: {},
   comments: {},
   pendingVotes: [],
-  fakeComment: {},
+  fakeComments: [],
   fetchingPostId: '',
   isFetching: false,
   isLoaded: false,
@@ -147,10 +147,13 @@ export default (state = initialState, action) => {
         pendingVotes: pendingVotes(state.pendingVotes, action),
       };
       if (action.payload && action.payload.isFakeComment) {
-        currentComments.fakeComment = {
-          postId: action.payload.id,
-          id: `${action.payload.author}/${action.payload.permlink}`,
-        };
+        currentComments.fakeComments = [
+          ...state.fakeComments,
+          {
+            postId: action.payload.id,
+            id: `${action.payload.author}/${action.payload.permlink}`,
+          },
+        ];
       }
       return currentComments;
     }

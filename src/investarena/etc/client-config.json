@@ -33,7 +33,7 @@
     "logonWithToken": "https://api.beaxy.com/Account/logonWithToken?token="
   },
   "staging": {
-    "apiPrefix": "https://uat-crypto.investarena.com/",
+    "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
@@ -62,7 +62,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://uat-crypto.investarena.com/",
+    "apiPrefix": "https://crypto.investarena.com/",
     "brokerWSUrl": {
       "beaxy": "https://uat-exchange.tokenexus.com/stomp/",
       "maximarkets": "https://trading.maximarkets.org/stomp/",
