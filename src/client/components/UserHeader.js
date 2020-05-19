@@ -73,7 +73,7 @@ const UserHeader = ({
       ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
       : 0;
 
-  const guestPrefix = '(guest)';
+  const guestPrefix = ' (guest)';
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
