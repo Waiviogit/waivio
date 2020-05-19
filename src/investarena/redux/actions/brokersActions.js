@@ -10,6 +10,7 @@ import { getIsBeaxyUser } from '../../../client/user/usersHelper';
 import { logoutWithoutBroker } from '../../../client/auth/authActions';
 import { getPlatformNameState } from '../selectors/platformSelectors';
 import { notify } from '../../../client/app/Notification/notificationActions';
+import { getTranslations } from '../../../client/reducers';
 
 export const AUTHORIZE_BROKER_REQUEST = 'AUTHORIZE_BROKER_REQUEST';
 export const AUTHORIZE_BROKER_SUCCESS = 'AUTHORIZE_BROKER_SUCCESS';
@@ -152,8 +153,10 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
     if (isBeaxyUser) dispatch(logoutWithoutBroker());
     dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
-    if (singleton.platform && singleton.platform.platformName)
-      dispatch(notify('Beaxy connection disabled successfully', 'success'));
+    if (singleton.platform && singleton.platform.platformName) {
+      const disconnectMessage = getTranslations(state).broker_modal_broker_disconnect_successfully;
+      dispatch(notify(disconnectMessage, 'success'));
+    }
     singleton.closeWebSocketConnection();
     singleton.platform = 'widgets';
     singleton.createWebSocketConnection();
@@ -163,6 +166,7 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
   }
   return { type: DISCONNECT_BROKER_SUCCESS };
 };
+
 export function reconnectBroker(data) {
   const token = store.get('token');
   if (token && data.platform && data.platform !== 'undefined') {
