@@ -12,6 +12,7 @@ const initialState = {
   fetching: false,
   hasMoreRelatedObjects: true,
   mapWobjects: [],
+  updated: false,
 };
 const objectType = (state = initialState, action) => {
   switch (action.type) {
@@ -75,6 +76,7 @@ const objectType = (state = initialState, action) => {
         data,
         mapWobjects: filteredObjects,
         map: Boolean(filters && !isEmpty(filters.map)),
+        updated: true,
       };
     }
     case wobjTypeActions.UPDATE_ACTIVE_FILTERS:
@@ -103,6 +105,7 @@ export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
 export const getFilteredObjectsMap = state => state.mapWobjects;
+export const getUpdatedMap = state => state.updated;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
 export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;

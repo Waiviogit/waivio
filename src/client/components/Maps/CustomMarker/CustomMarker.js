@@ -55,7 +55,11 @@ class CustomMarker extends React.Component {
     return this.isHover() ? pinHover : pin;
   };
 
-  handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
+  handleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    return this.props.onClick && this.props.onClick(this.eventParameters(event));
+  };
 
   handleContextMenu = event =>
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));

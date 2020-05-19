@@ -109,7 +109,8 @@ class StoryFull extends React.Component {
     const { post } = this.props;
     const hideWhiteBG =
       document &&
-      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
+      document.location.pathname !==
+        replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -181,6 +182,8 @@ class StoryFull extends React.Component {
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
+    const authorName =
+      post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
 
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
@@ -206,22 +209,22 @@ class StoryFull extends React.Component {
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: authorName },
       );
     }
 
@@ -238,7 +241,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.userInfo)}>
+            <Link to={dropCategory(post.url)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"
@@ -350,12 +353,12 @@ class StoryFull extends React.Component {
           </h3>
         )}
         <div className="StoryFull__header">
-          <Link to={`/@${post.author}`}>
-            <Avatar username={post.author} size={60} />
+          <Link to={`/@${authorName}`}>
+            <Avatar username={authorName} size={60} />
           </Link>
           <div className="StoryFull__header__text">
-            <Link to={`/@${post.author}`}>
-              <span className="username">{post.author}</span>
+            <Link to={`/@${authorName}`}>
+              <span className="username">{authorName}</span>
               <WeightTag weight={post.author_wobjects_weight} />
             </Link>
             <BTooltip
@@ -415,8 +418,11 @@ class StoryFull extends React.Component {
           <Lightbox
             imageTitle={this.images[index].alt}
             mainSrc={this.images[index].src}
-            nextSrc={this.images[(index + 1) % this.images.length].src}
-            prevSrc={this.images[(index + (this.images.length - 1)) % this.images.length].src}
+            nextSrc={this.images.length > 1 && this.images[(index + 1) % this.images.length].src}
+            prevSrc={
+              this.images.length > 1 &&
+              this.images[(index + (this.images.length - 1)) % this.images.length].src
+            }
             onCloseRequest={() => {
               this.setState({
                 lightbox: {

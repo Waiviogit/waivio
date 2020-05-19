@@ -225,6 +225,7 @@ export const assignProposition = ({
     proposedWobjName,
     proposedWobjAuthorPermlink,
     primaryObjectName,
+    secondaryObjectName,
   );
   const commentOp = [
     'comment',

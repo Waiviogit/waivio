@@ -146,7 +146,7 @@ export const validatorsCreator = (
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
-    const budgetValue = getFieldValue('budget');
+    const budgetValue = Number(getFieldValue('budget'));
     if (value > 0 && value < 0.001) callback(messages.rewardsLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);

@@ -9,7 +9,7 @@ import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import './Payment.less';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
 
 // eslint-disable-next-line no-shadow
 const Payment = ({ match, intl, userName }) => {
@@ -23,7 +23,9 @@ const Payment = ({ match, intl, userName }) => {
     user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
   };
 
-  const isReceiverGuest = match.params.userName.startsWith(GUEST_PREFIX);
+  const isReceiverGuest =
+    match.params.userName.startsWith(GUEST_PREFIX) ||
+    match.params.userName.startsWith(BXY_GUEST_PREFIX);
   const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
 
   useEffect(() => {

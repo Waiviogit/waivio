@@ -18,7 +18,7 @@ const PaymentTable = ({ intl, sponsors, isReports }) => (
         <th className="PaymentTable maxWidth">
           {intl.formatMessage({ id: 'paymentTable_action', defaultMessage: `Action` })}
         </th>
-        <th className="PaymentTable mediumWidth">
+        <th className="PaymentTable basicWidth">
           {intl.formatMessage({ id: 'paymentTable_details', defaultMessage: `Details` })}
         </th>
         <th className="PaymentTable basicWidth">

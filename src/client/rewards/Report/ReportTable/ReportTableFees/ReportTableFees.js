@@ -33,7 +33,7 @@ const ReportTableFees = ({ intl }) => {
     <React.Fragment>
       <div className="ReportTableFees__header">
         <span>
-          {intl.formatMessage({ id: 'processing_fees', defaultMessage: 'Processing fees***' })}:
+          {intl.formatMessage({ id: 'processing_fees', defaultMessage: 'Processing fees' })}***:
         </span>
       </div>
       <table className="ReportTableFees">
@@ -41,10 +41,9 @@ const ReportTableFees = ({ intl }) => {
           <tr>
             <th className="ReportTableFees maxWidth" rowSpan="2">
               {intl.formatMessage({
-                id: 'processing_fees',
-                defaultMessage: 'Processing fees',
+                id: 'services',
+                defaultMessage: 'Services',
               })}
-              ***
             </th>
             <th className="ReportTableFees mediumWidth">
               {intl.formatMessage({ id: 'account', defaultMessage: `Account` })}

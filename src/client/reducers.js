@@ -64,8 +64,7 @@ export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUser
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, author, permlink) =>
-  fromPosts.getPostContent(state.posts, author, permlink);
+export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
@@ -222,6 +221,7 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
+export const getUpdatedMap = state => fromObjectType.getUpdatedMap(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
