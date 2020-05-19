@@ -7,6 +7,7 @@ const initialState = {
   childrenById: {},
   comments: {},
   pendingVotes: [],
+  fakeComment: {},
   fetchingPostId: '',
   isFetching: false,
   isLoaded: false,
@@ -138,13 +139,21 @@ const pendingVotes = (state = initialState.pendingVotes, action) => {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case commentsTypes.GET_SINGLE_COMMENT.SUCCESS:
-      return {
+    case commentsTypes.GET_SINGLE_COMMENT.SUCCESS: {
+      const currentComments = {
         ...state,
         comments: comments(state.comments, action),
         childrenById: childrenById(state.childrenById, action),
         pendingVotes: pendingVotes(state.pendingVotes, action),
       };
+      if (action.payload && action.payload.isFakeComment) {
+        currentComments.fakeComment = {
+          postId: action.payload.id,
+          id: `${action.payload.author}/${action.payload.permlink}`,
+        };
+      }
+      return currentComments;
+    }
     case commentsTypes.FAKE_LIKE_COMMENT.SUCCESS: {
       const comment = state.comments[action.meta.commentId];
       comment.active_votes = comment.active_votes.filter(vote => vote.voter !== action.meta.voter);

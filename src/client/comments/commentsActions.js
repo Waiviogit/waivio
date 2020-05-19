@@ -195,7 +195,6 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           parentPost.root_author,
         )
         .then(res => {
-          console.log('SEND_COMMENT');
           dispatch(
             getFakeSingleComment(
               guestParentAuthor || parentAuthor,
