@@ -17,12 +17,14 @@ class UserWalletTransactions extends React.Component {
     totalVestingFundSteem: PropTypes.string.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     userHasMoreActions: PropTypes.bool.isRequired,
+    isGuestUser: PropTypes.bool,
   };
 
   static defaultProps = {
     transactions: [],
     actions: [],
     currentUsername: '',
+    isGuestUser: false,
   };
 
   handleLoadMore = () => {
@@ -46,6 +48,7 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       loadingMoreUsersAccountHistory,
       userHasMoreActions,
+      isGuestUser,
     } = this.props;
 
     if (transactions.length === 0 && !userHasMoreActions) {
@@ -69,6 +72,7 @@ class UserWalletTransactions extends React.Component {
           <div />
           {transactions.map(transaction => (
             <WalletTransaction
+              isGuestUser={isGuestUser}
               key={`${transaction.trx_id}${transaction.actionCount}`}
               transaction={transaction}
               currentUsername={currentUsername}
