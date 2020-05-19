@@ -431,13 +431,12 @@ const CreateFormRenderer = props => {
             <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title ant-form-item-required">
                 {fields.checkboxAgree.textBeforeLink}
-                <Link to={fields.checkboxAgree.link.to}>{fields.checkboxAgree.link.text}</Link>
+                <Link to={fields.checkboxAgree.link.to}>{fields.checkboxAgree.link.text} </Link>
                 {fields.checkboxAgree.textAfterLink}
               </span>
             </Checkbox>,
           )}
         </Form.Item>
-
         <Form.Item label={fields.expiredAt.label}>
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,

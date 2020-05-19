@@ -58,7 +58,7 @@ const PaymentTableRow = ({ intl, sponsor }) => {
                   id: 'paymentTable_review_by',
                   defaultMessage: 'by',
                 })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>{' '}
             {sponsor.type === 'transfer' ? (
               <React.Fragment>
                 {' '}
@@ -74,7 +74,7 @@ const PaymentTableRow = ({ intl, sponsor }) => {
                 {intl.formatMessage({
                   id: 'paymentTable_requested_by',
                   defaultMessage: `requested by`,
-                })}
+                })}{' '}
                 <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
               </React.Fragment>
             )}

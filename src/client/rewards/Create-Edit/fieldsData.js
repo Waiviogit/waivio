@@ -288,7 +288,7 @@ export default (messageFactory, validators, userName) => ({
     textBeforeLink: messageFactory('agree_to_the', 'I agree to the '),
     link: {
       to: 'https://waivio.com/object/xrj-terms-and-conditions',
-      text: messageFactory('terms_and_conditions', 'Terms and Conditions '),
+      text: messageFactory('terms_and_conditions', 'Terms and Conditions'),
     },
     textAfterLink: messageFactory(
       'service_acknowledge_campaign_not_violate_laws',
