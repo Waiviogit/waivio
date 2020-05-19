@@ -8,6 +8,7 @@ export const TRANSFER = 'transfer';
 export const STATUS_CHANGE = 'status-change';
 export const POWER_DOWN = 'power_down';
 export const FILL_ORDER = 'fillOrder';
+export const ACTIVATION_CAMPAIGN = 'activationCampaign';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -20,6 +21,7 @@ export const PARSED_NOTIFICATIONS = [
   STATUS_CHANGE,
   POWER_DOWN,
   FILL_ORDER,
+  ACTIVATION_CAMPAIGN,
 ];
 
 export const BUSY_API_TYPES = {

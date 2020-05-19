@@ -1125,5 +1125,6 @@
   "fillOrder_wallet_get": "You get {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Services",
-  "links": "Links"
+  "links": "Links",
+  "activation_campaign": "{author} launched a new campaign for {object_name}"
 }

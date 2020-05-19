@@ -135,6 +135,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           exchanger: notification.exchanger,
         },
       );
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return intl.formatMessage(
+        {
+          id: 'activation_campaign',
+          defaultMessage: '{author} launched a new campaign for {object_name}',
+        },
+        {
+          author: notification.author,
+          object_name: notification.object_name,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
