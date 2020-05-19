@@ -172,8 +172,8 @@ class WobjHistory extends React.Component {
         case 'approval':
           return wobj.fields.sort(
             (before, after) =>
-              calculateApprovePercent(after.active_votes, after.weight) -
-              calculateApprovePercent(before.active_votes, before.weight),
+              calculateApprovePercent(after.active_votes, after.weight, wobj) -
+              calculateApprovePercent(before.active_votes, before.weight, wobj),
           );
         default:
           return wobj.fields.sort(
@@ -203,14 +203,7 @@ class WobjHistory extends React.Component {
     const renderFields = () => {
       if (content && content.length) {
         if (content[0].append_field_name) {
-          return content.map(post => (
-            <AppendCard
-              key={post.permlink}
-              post={post}
-              adminsList={object.admins}
-              moderatorsList={object.moderators}
-            />
-          ));
+          return content.map(post => <AppendCard key={post.permlink} post={post} />);
         }
 
         return <Loading />;
