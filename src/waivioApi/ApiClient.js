@@ -22,7 +22,7 @@ export function handleErrors(response) {
 
 export function handleErrorReserve(response) {
   if (response.ok) {
-    return response.json();
+    return response;
   }
   return response.json().then(data => {
     throw Error(data.message);
@@ -674,6 +674,7 @@ export const reserveActivatedCampaign = data =>
       body: JSON.stringify(data),
     })
       .then(handleErrorReserve)
+      .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
