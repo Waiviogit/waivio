@@ -1125,5 +1125,6 @@
   "fillOrder_wallet_get": "Вы получили {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Сервисы",
-  "links": "Ссылки"
+  "links": "Ссылки",
+  "reject_update": "{voter} отклонил ваше обновление для {fieldName}"
 }
