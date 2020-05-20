@@ -98,7 +98,6 @@ class Manage extends React.Component {
   };
 
   render() {
-    // eslint-disable-next-line no-shadow
     const {
       intl,
       // eslint-disable-next-line no-shadow
