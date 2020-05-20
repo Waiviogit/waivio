@@ -96,8 +96,8 @@ const Proposition = ({
         }
       })
       .catch(e => {
-        if (e.error_description) {
-          message.error(e.error_description);
+        if (e.error_description || e.message) {
+          message.error(e.error_description || e.message);
         } else {
           message.error(
             intl.formatMessage({
