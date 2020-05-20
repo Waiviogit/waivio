@@ -168,7 +168,15 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRebloggedList();
       this.props.getRate();
     });
+  }
 
+  // eslint-disable-next-line consistent-return
+  componentWillReceiveProps(nextProps) {
+    const { locale } = this.props;
+
+    if (locale !== nextProps.locale) {
+      this.loadLocale(nextProps.locale);
+    }
     if (this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -177,14 +185,6 @@ export default class Wrapper extends React.PureComponent {
           reject(e);
         }
       });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
-
-    if (locale !== nextProps.locale) {
-      this.loadLocale(nextProps.locale);
     }
   }
 

@@ -65,6 +65,12 @@ export default (state = initialState, action) => {
         isReloading: false,
       };
 
+    case types.UPDATE_GUEST_BALANCE.SUCCESS:
+      return {
+        ...state,
+        isGuestBalance: action.payload.isGuestBalance,
+      };
+
     case types.LOGOUT:
       return initialState;
 

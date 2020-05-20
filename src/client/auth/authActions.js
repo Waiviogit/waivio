@@ -39,16 +39,11 @@ export const getGuestBalance = async username =>
     .then(result => get(result, ['payable'], null))
     .catch(err => err);
 
-export const guestBalanceOnReload = async () => (
-  dispatch,
-  accessToken = '',
-  socialNetwork = '',
-  regData = '',
-) => {
+export const guestBalanceOnReload = () => (dispatch, getState) => {
+  const state = getState();
+  const username = state.auth.user.name;
   const promise = new Promise(async (resolve, reject) => {
     try {
-      const tokenData = await setToken(accessToken, socialNetwork, regData);
-      const username = tokenData.userData.name;
       const getBalance = await getGuestBalance(username);
       resolve({ isGuestBalance: getBalance });
     } catch (e) {
