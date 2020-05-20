@@ -1125,5 +1125,7 @@
   "fillOrder_wallet_get": "You get {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Services",
-  "links": "Links"
+  "links": "Links",
+  "note": "Note",
+  "guest_accounts": "Guest accounts can not change these settings"
 }
