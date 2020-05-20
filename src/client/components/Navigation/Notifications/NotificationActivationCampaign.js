@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationActicationCampaign = ({ notification, read, onClick }) => {
-  const url = `/object/@${notification.author}`;
+  const url = `/rewards/all/${notification.author_permlink}`;
 
   return (
     <Link
@@ -25,7 +25,7 @@ const NotificationActicationCampaign = ({ notification, read, onClick }) => {
             id="activation_campaign"
             defaultMessage="{author} launched a new campaign for {object_name}"
             values={{
-              author: <span>{notification.author}</span>,
+              author: <span className="username">{notification.author}</span>,
               object_name: <span>{notification.object_name}</span>,
             }}
           />
@@ -44,6 +44,7 @@ NotificationActicationCampaign.propTypes = {
     author: PropTypes.string,
     object_name: PropTypes.number,
     timestamp: PropTypes.number,
+    author_permlink: PropTypes.string,
   }),
   onClick: PropTypes.func,
 };
