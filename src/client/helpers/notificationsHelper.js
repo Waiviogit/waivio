@@ -175,6 +175,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}/transfers`;
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return `/rewards/all/${notification.author_permlink}`;
     default:
       return '/notifications-list';
   }
@@ -201,6 +203,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account;
     case notificationConstants.FILL_ORDER:
       return notification.account;
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return notification.author;
     default:
       return currentAuthUsername;
   }
