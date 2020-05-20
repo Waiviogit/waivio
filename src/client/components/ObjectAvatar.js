@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { filter, maxBy, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ObjectAvatar.less';
@@ -10,8 +10,8 @@ import {
 } from '../helpers/wObjectHelper';
 
 export const getObjectUrl = item => {
-  const avatarFields = _.filter(item.fields, o => o.name === 'avatar');
-  const avatarField = _.maxBy(avatarFields, 'weight');
+  const avatarFields = filter(item.fields, o => o.name === 'avatar');
+  const avatarField = maxBy(avatarFields, 'weight');
   return avatarField ? avatarField.body : null;
 };
 
@@ -24,11 +24,11 @@ const ObjectAvatar = ({ item, size }) => {
   const parent = item.parent && addActiveVotesInField(item, item.parent);
   const parentAvatar =
     parent &&
-    calculateApprovePercent(parent.active_votes, parent.weight) >= 70 &&
+    calculateApprovePercent(parent.active_votes, parent.weight, parent) >= 70 &&
     getApprovedField(parent, 'avatar');
   let url = getApprovedField(item, 'avatar') || parentAvatar;
 
-  if (_.includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
+  if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
   if (url) {
     style = {
