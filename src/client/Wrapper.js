@@ -19,7 +19,6 @@ import {
   getTranslations,
   getNightmode,
   isGuestBalance,
-  getIsReloading,
 } from './reducers';
 import {
   login,
@@ -57,7 +56,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     balance: isGuestBalance(state),
-    isReloading: getIsReloading(state),
   }),
   {
     login,
@@ -98,7 +96,6 @@ export default class Wrapper extends React.PureComponent {
     isNewUser: PropTypes.bool.isRequired,
     getGuestBalance: PropTypes.func,
     guestBalanceOnReload: PropTypes.func,
-    getIsReloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -120,7 +117,6 @@ export default class Wrapper extends React.PureComponent {
     balance: null,
     getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
-    getIsReloading: false,
   };
 
   static async fetchData({ store, req }) {
@@ -173,7 +169,7 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRate();
     });
 
-    if (this.props.getIsReloading) {
+    if (this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
           this.props.guestBalanceOnReload();
