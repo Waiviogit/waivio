@@ -175,6 +175,7 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
+    console.log('proposedWobj', proposedWobj);
     discardPr(proposedWobj).then(({ isAssign }) => {
       if (!isAssign) {
         this.toggleModal();

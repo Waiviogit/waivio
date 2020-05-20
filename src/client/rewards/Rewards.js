@@ -316,7 +316,7 @@ class Rewards extends React.Component {
       // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
-          if (object.object.author_permlink === objPermlink) {
+          if (object.author_permlink === objPermlink) {
             updatedProposition.objects[index].assigned = isAssign;
           } else {
             updatedProposition.objects[index].assigned = null;
@@ -391,18 +391,17 @@ class Rewards extends React.Component {
         map(
           proposition.objects,
           wobj =>
-            wobj.object &&
-            wobj.object.author_permlink && (
+            wobj.author_permlink && (
               <Proposition
                 guide={proposition.guide}
                 proposition={proposition}
-                wobj={wobj.object}
+                wobj={wobj}
                 assignCommentPermlink={wobj.permlink}
                 assignProposition={this.assignPropositionHandler}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${wobj.object.author_permlink}`}
+                key={`${wobj.author_permlink}`}
                 assigned={wobj.assigned}
                 history={this.props.history}
                 isAssign={isAssign}
