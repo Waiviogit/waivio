@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationActicationCampaign = ({ notification, read, onClick }) => {
-  const url = `/@${notification.author}/transfers`;
+  const url = `/object/@${notification.author}`;
 
   return (
     <Link
