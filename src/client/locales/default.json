@@ -1127,7 +1127,7 @@
   "services": "Services",
   "links": "Links",
   "reject_update": "{voter} rejected your update for '{object_name}'",
-  "activation_campaign": "{author} launched a new campaign for {object_name}"
+  "activation_campaign": "{author} launched a new campaign for {object_name}",
   "links": "Links",
   "note": "Note",
   "guest_accounts": "Guest accounts can not change these settings"
