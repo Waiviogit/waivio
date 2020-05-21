@@ -25,6 +25,7 @@ import NotificationPowerDown from '../components/Navigation/Notifications/Notifi
 import NotificationFillOrder from '../components/Navigation/Notifications/NotificationFillOrder';
 import Loading from '../components/Icon/Loading';
 import './Notifications.less';
+import NotificationRejectUpdate from '../components/Navigation/Notifications/NotificationRejectUpdate';
 import NotificationActicationCampaign from '../components/Navigation/Notifications/NotificationActivationCampaign';
 
 class Notifications extends React.Component {
@@ -129,6 +130,15 @@ class Notifications extends React.Component {
               case notificationConstants.FILL_ORDER:
                 return (
                   <NotificationFillOrder
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.REJECT_UPDATE:
+                return (
+                  <NotificationRejectUpdate
                     key={key}
                     notification={notification}
                     read={read}

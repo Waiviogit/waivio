@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { isGuestUser } from '../reducers';
+import { epochToUTC } from '../helpers/formatter';
 
 const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
   const isGuest = useSelector(isGuestUser);
@@ -45,12 +46,12 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
           <BTooltip
             title={
               <span>
-                <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+                <FormattedRelative value={epochToUTC(timestamp)} />
               </span>
             }
           >
             <span>
-              <FormattedRelative value={`${timestamp}Z`} />
+              <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
           </BTooltip>
         </span>

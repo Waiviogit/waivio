@@ -1126,5 +1126,6 @@
   "hive_power": "Hive** Power",
   "services": "Services",
   "links": "Links",
+  "reject_update": "{voter} rejected your update for '{object_name}'",
   "activation_campaign": "{author} launched a new campaign for {object_name}"
 }

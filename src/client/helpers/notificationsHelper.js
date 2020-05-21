@@ -135,6 +135,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           exchanger: notification.exchanger,
         },
       );
+    case notificationConstants.REJECT_UPDATE:
+      return intl.formatMessage(
+        {
+          id: 'reject_update',
+          defaultMessage: 'Your update to {object_name} was rejected',
+        },
+        {
+          voter: notification.voter,
+          object_name: notification.object_name,
+        },
+      );
     case notificationConstants.ACTIVATION_CAMPAIGN:
       return intl.formatMessage(
         {
@@ -175,6 +186,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}/transfers`;
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
+    case notificationConstants.REJECT_UPDATE:
+      return `/object/${notification.author_permlink}/updates/${notification.object_name}`;
     case notificationConstants.ACTIVATION_CAMPAIGN:
       return `/rewards/all/${notification.author_permlink}`;
     default:
@@ -203,6 +216,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account;
     case notificationConstants.FILL_ORDER:
       return notification.account;
+    case notificationConstants.REJECT_UPDATE:
+      return notification.voter;
     case notificationConstants.ACTIVATION_CAMPAIGN:
       return notification.author;
     default:

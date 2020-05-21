@@ -1126,5 +1126,6 @@
   "hive_power": "Hive** Power",
   "services": "Сервисы",
   "links": "Ссылки",
+  "reject_update": "{voter} отклонил ваше обновление для '{object_name}'",
   "activation_campaign": "{author} запустил новую компанию для {object_name}"
 }
