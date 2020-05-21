@@ -135,7 +135,7 @@ export default class ObjectFeed extends React.Component {
 
   getPropositions = ({ userName, requiredObject }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
-    ApiClient.getPropositions({ currentUserName: userName, requiredObject }).then(data => {
+    ApiClient.getPropositions({ userName, requiredObject }).then(data => {
       this.setState({ allPropositions: data.campaigns, loadingPropositions: false });
     });
   };

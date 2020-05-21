@@ -278,7 +278,7 @@ class CatalogWrap extends React.Component {
   getPropositions = ({ username, match, requiredObject, sort }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
     ApiClient.getPropositions({
-      currentUserName: username,
+      username,
       match,
       requiredObject,
       sort,

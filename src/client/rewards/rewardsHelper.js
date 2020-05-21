@@ -68,6 +68,7 @@ export const getUrl = match => {
       url = `${config.campaignApiPrefix}${config.campaigns}${config.reserved}`;
       break;
     default:
+      url = `${config.campaignApiPrefix}${config.campaigns}${config.all}`;
       break;
   }
   return url;
