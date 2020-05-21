@@ -30,7 +30,6 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
   const authenticated = useSelector(getIsAuthenticated);
   // local state
   const [menuState, dispatch] = useReducer(sidebarMenuReducer, menuConfig);
-
   const toggleBlock = section => () =>
     dispatch({ type: actionType.TOGGLE_BLOCK, payload: { block: section.name } });
 
@@ -105,7 +104,7 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
         !section.requireAuth || authenticated ? (
           <div className={`collapsible-block__${section.name}-section`} key={section.name}>
             {getSectionTitle(section)}
-            {section.isCollapsible && !section.isCollapsed ? getSectionContent(section) : null}
+            {section.isCollapsible && !section.isCollapsed && getSectionContent(section)}
           </div>
         ) : null,
       )}
