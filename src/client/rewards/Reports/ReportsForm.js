@@ -318,6 +318,7 @@ class ReportsForm extends Component {
                       defaultMessage: 'Enter amount',
                     })}
                     onChange={this.handleInputChange}
+                    autoComplete="off"
                   />,
                 )}
               </Form.Item>
