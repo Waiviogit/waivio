@@ -36,7 +36,10 @@ export const getPerformerLinks = performer => {
           <Link to={`/object/${performer.id}`} className="performer__avatar">
             <div
               className="ObjectAvatar"
-              style={{ backgroundImage: `url(${performer.avatar || DEFAULT_OBJECT_AVATAR_URL})` }}
+              style={{ backgroundImage: `url(${performer.avatar
+                  ? `${performer.avatar}_small`
+                  : DEFAULT_OBJECT_AVATAR_URL})`
+              }}
               title={performer.name}
             />
           </Link>
