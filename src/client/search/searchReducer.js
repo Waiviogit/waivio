@@ -10,6 +10,10 @@ const initialState = {
   searchResults: [],
   autoCompleteSearchResults: [],
   searchObjectsResults: [],
+  usersForDiscoverPage: {
+    result: [],
+    loading: false,
+  },
 };
 
 export default (state = initialState, action) => {
@@ -90,6 +94,40 @@ export default (state = initialState, action) => {
         searchObjectsResults: [],
       };
     }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.START: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [],
+          loading: true,
+        },
+      };
+    }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.SUCCESS: {
+      const { result } = action.payload;
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result,
+          loading: false,
+        },
+      };
+    }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.ERROR: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [...state.usersForDiscoverPage.result],
+          loading: false,
+        },
+      };
+    }
+    case searchActions.RESET_SEARCH_USERS_FOR_DISCOVER_PAGE: {
+      return {
+        ...state,
+        usersForDiscoverPage: [],
+      };
+    }
     case LOGOUT:
       return initialState;
     default:
@@ -103,3 +141,5 @@ export const getAutoCompleteSearchResults = state => state.autoCompleteSearchRes
 export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
+export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
+

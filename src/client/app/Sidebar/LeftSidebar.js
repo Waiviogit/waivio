@@ -9,7 +9,6 @@ import SidenavUser from '../../components/Navigation/SidenavUser';
 import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
-import DealsList from './DealsList';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => {
   return (
@@ -34,6 +33,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => {
       <Route path="/rewards/match-bot" component={SidenavRewards} />
       <Route path="/rewards/edit/:campaignName" component={SidenavRewards} />
       <Route path="/discover-objects/:typeName?" component={SidenavDiscoverObjects} />
+      <Route path="/discover/:search?" component={SidenavDiscoverObjects} />
       <Route path="/replies" component={SidebarMenu} />
       <Route path="/bookmarks" component={SidenavUser} />
       <Route path="/drafts" component={SidenavUser} />
