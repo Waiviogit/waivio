@@ -64,8 +64,8 @@ class Page extends React.Component {
 
   componentDidMount() {
     if (this.props.match.path === '/') {
-      const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
-      const isCategoryFilterOn = !localStorage.getItem('isCategoryFilterOff');
+      const isAppFilterOn = !!localStorage.getItem('isAppHomeFilterOff');
+      const isCategoryFilterOn = !!localStorage.getItem('isCategoryFilterOff');
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isCategoryFilterOn, isAppFilterOn);
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -89,7 +89,7 @@ class Page extends React.Component {
     if (typeof localStorage !== 'undefined') {
       if (this.props.match.path === '/') {
         // eslint-disable-next-line no-unused-expressions
-        isAppFilterOn
+        !isAppFilterOn
           ? localStorage.removeItem('isAppHomeFilterOff')
           : localStorage.setItem('isAppHomeFilterOff', `true`);
       } else {
@@ -108,7 +108,7 @@ class Page extends React.Component {
     if (typeof localStorage !== 'undefined') {
       if (this.props.match.path === '/') {
         // eslint-disable-next-line no-unused-expressions
-        isCategoryFilterOn
+        !isCategoryFilterOn
           ? localStorage.removeItem('isCategoryFilterOff')
           : localStorage.setItem('isCategoryFilterOff', `true`);
       }
