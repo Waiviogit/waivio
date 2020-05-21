@@ -2,7 +2,7 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import { get, has, isEmpty, isEqual, map, forEach, uniq, filter } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -41,7 +41,6 @@ import {
   pendingUpdateSuccess,
 } from '../../user/userActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { preparePropositionReqData } from '../../rewards/rewardsHelper';
 import Proposition from '../../rewards/Proposition/Proposition';
 import './CatalogWrap.less';
 
@@ -102,13 +101,18 @@ class CatalogWrap extends React.Component {
     sort: 'reward',
     isAssign: false,
     loadingPropositions: false,
+    needUpdate: true,
   };
 
   componentDidMount() {
-    const { username, match } = this.props;
+    const { username, match, wobject } = this.props;
     const { sort } = this.state;
-    const requiredObject = match.params.name;
-    this.getPropositions({ username, match, requiredObject, sort });
+    if (!isEmpty(wobject)) {
+      const requiredObject = this.getRequiredObject(wobject, match);
+      if (requiredObject) {
+        this.getPropositions({ username, match, requiredObject, sort });
+      }
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -130,6 +134,29 @@ class CatalogWrap extends React.Component {
     }
   }
 
+  componentDidUpdate() {
+    const { needUpdate, sort } = this.state;
+    const { username, match, wobject } = this.props;
+    if (!isEmpty(wobject)) {
+      const requiredObject = this.getRequiredObject(wobject, match);
+      if (needUpdate && requiredObject) {
+        this.getPropositions({ username, match, requiredObject, sort });
+      }
+    }
+  }
+
+  getRequiredObject = (obj, match) => {
+    let requiredObject;
+    if (!isEmpty(obj.parent)) {
+      requiredObject = obj.parent.author_permlink;
+    } else if (!isEmpty(obj.listItems)) {
+      requiredObject = obj.listItems[0].parent.author_permlink;
+    } else {
+      requiredObject = match.params.campaignParent || match.params.name;
+    }
+    return requiredObject;
+  };
+
   getObjectFromApi = (permlink, path) => {
     this.setState({ loading: true });
     getObject(permlink)
@@ -141,7 +168,7 @@ class CatalogWrap extends React.Component {
           [];
         listItems = listItems
           .map(item => addActiveVotesInField(res, item))
-          .filter(item => calculateApprovePercent(item.active_votes) >= 70);
+          .filter(item => calculateApprovePercent(item.active_votes, item.weight, res) >= 70);
 
         this.setState(prevState => {
           let breadcrumb = [];
@@ -218,7 +245,13 @@ class CatalogWrap extends React.Component {
         );
       }
     }
-    return { sort: sorting.type, listItems: sortedItems, breadcrumb, wobjNested: null };
+    return {
+      sort: sorting.type,
+      listItems: sortedItems,
+      breadcrumb,
+      wobjNested: null,
+      needUpdate: true,
+    };
   };
 
   handleAddItem = listItem => {
@@ -243,15 +276,13 @@ class CatalogWrap extends React.Component {
   };
 
   getPropositions = ({ username, match, requiredObject, sort }) => {
-    this.setState({ loadingPropositions: true });
-    ApiClient.getPropositions(
-      preparePropositionReqData({
-        username,
-        match,
-        requiredObject,
-        sort,
-      }),
-    ).then(data => {
+    this.setState({ loadingPropositions: true, needUpdate: false });
+    ApiClient.getPropositions({
+      currentUserName: username,
+      match,
+      requiredObject,
+      sort,
+    }).then(data => {
       this.setState({
         propositions: data.campaigns,
         hasMore: data.hasMore,
@@ -263,10 +294,13 @@ class CatalogWrap extends React.Component {
     });
   };
 
-  renderProposition = propositions =>
+  renderProposition = (propositions, listItem) =>
     map(propositions, proposition =>
       map(
-        proposition.objects,
+        filter(
+          proposition.objects,
+          object => get(object, ['object', 'author_permlink']) === listItem.author_permlink,
+        ),
         wobj =>
           wobj.object &&
           wobj.object.author_permlink && (
@@ -287,15 +321,15 @@ class CatalogWrap extends React.Component {
       ),
     );
 
-  getListRow = (listItem, campaignObjects) => {
+  getListRow = (listItem, objects) => {
     const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.type === OBJ_TYPE.LIST;
     let item;
     if (isList) {
       item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
-    } else if (campaignObjects.includes(listItem.id)) {
-      item = this.renderProposition(propositions);
+    } else if (objects.length && objects[0].includes(listItem.author_permlink)) {
+      item = this.renderProposition(propositions, listItem);
     } else {
       item = <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />;
     }
@@ -304,30 +338,37 @@ class CatalogWrap extends React.Component {
 
   getMenuList = () => {
     const { listItems, breadcrumb, propositions } = this.state;
-    let actualListItems =
-      listItems && listItems.map(item => addActiveVotesInField(this.props.wobject, item));
+    let listRow;
+    if (propositions) {
+      let actualListItems =
+        listItems && listItems.map(item => addActiveVotesInField(this.props.wobject, item));
 
-    actualListItems =
-      actualListItems &&
-      actualListItems.filter(
-        list => !list.status && calculateApprovePercent(list.active_votes) >= 70,
+      actualListItems =
+        actualListItems &&
+        actualListItems.filter(
+          list =>
+            !list.status &&
+            calculateApprovePercent(list.active_votes, list.weight, this.props.wobject) >= 70,
+        );
+
+      if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
+        return (
+          <div>
+            {this.props.intl.formatMessage({
+              id: 'emptyList',
+              defaultMessage: 'This list is empty',
+            })}
+          </div>
+        );
+      }
+
+      const campaignObjects = map(propositions, item =>
+        map(item.objects, obj => get(obj, ['object', 'author_permlink'])),
       );
 
-    if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
-      return (
-        <div>
-          {this.props.intl.formatMessage({
-            id: 'emptyList',
-            defaultMessage: 'This list is empty',
-          })}
-        </div>
-      );
+      listRow = map(actualListItems, listItem => this.getListRow(listItem, campaignObjects));
     }
-    const campaignObjects = map(propositions, item =>
-      get(item, 'objects[0].object.author_permlink'),
-    );
-
-    return map(actualListItems, listItem => this.getListRow(listItem, campaignObjects));
+    return listRow;
   };
 
   // Propositions
@@ -381,24 +422,22 @@ class CatalogWrap extends React.Component {
 
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
     this.state.propositions.map(proposition => {
+      const updatedProposition = proposition;
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition._id === propsId) {
-        proposition.objects.forEach((object, index) => {
+      if (updatedProposition._id === propsId) {
+        updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = isAssign;
+            updatedProposition.objects[index].assigned = isAssign;
           } else {
-            // eslint-disable-next-line no-param-reassign
-            proposition.objects[index].assigned = null;
+            updatedProposition.objects[index].assigned = null;
           }
         });
       }
       // eslint-disable-next-line no-underscore-dangle
-      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
-        // eslint-disable-next-line no-param-reassign
-        proposition.isReservedSiblingObj = true;
+      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+        updatedProposition.isReservedSiblingObj = true;
       }
-      return proposition;
+      return updatedProposition;
     });
 
   discardProposition = ({

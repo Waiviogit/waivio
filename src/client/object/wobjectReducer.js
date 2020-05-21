@@ -1,6 +1,7 @@
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import {
+  FOLLOW_OBJECT,
   GET_OBJECT_APPENDS,
   RATE_WOBJECT_SUCCESS,
   SEND_COMMENT_APPEND,
@@ -8,6 +9,7 @@ import {
   VOTE_APPEND_ERROR,
   VOTE_APPEND_START,
   VOTE_APPEND_SUCCESS,
+  UNFOLLOW_OBJECT,
 } from './wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import { getApprovedField } from '../helpers/wObjectHelper';
@@ -98,17 +100,19 @@ export default function wobjectReducer(state = initialState, action) {
           action.payload.find(f => f.permlink === field.permlink),
         );
 
-      listFields = listFields.map(field => {
-        const matchPost = action.payload.find(f => f.permlink === field.permlink);
-        return {
-          ...field,
-          ...matchPost,
-          active_votes: field.active_votes,
-          author: field.author,
-          fullBody: matchPost.body,
-          body: field.body,
-        };
-      });
+      listFields =
+        listFields &&
+        listFields.map(field => {
+          const matchPost = action.payload.find(f => f.permlink === field.permlink);
+          return {
+            ...field,
+            ...matchPost,
+            active_votes: field.active_votes,
+            author: field.author,
+            fullBody: matchPost.body,
+            body: field.body,
+          };
+        });
 
       return {
         ...state,
@@ -330,7 +334,7 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (matchPost.name === 'galleryItem') {
         const categoryIndex = state.wobject.preview_gallery.findIndex(
-          picture => picture.body === matchPost.body,
+          picture => picture.permlink === matchPost.permlink,
         );
 
         state.wobject.preview_gallery.splice(categoryIndex, 1, {
@@ -397,6 +401,88 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+    case FOLLOW_OBJECT.START: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: true,
+          },
+        };
+      }
+
+      return state;
+    }
+    case FOLLOW_OBJECT.SUCCESS: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+            youFollows: true,
+          },
+        };
+      }
+
+      return state;
+    }
+    case FOLLOW_OBJECT.ERROR: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+          },
+        };
+      }
+
+      return state;
+    }
+
+    case UNFOLLOW_OBJECT.START: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: true,
+          },
+        };
+      }
+
+      return state;
+    }
+    case UNFOLLOW_OBJECT.SUCCESS: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+            youFollows: false,
+          },
+        };
+      }
+
+      return state;
+    }
+    case UNFOLLOW_OBJECT.ERROR: {
+      if (state.wobject.author_permlink === action.meta.permlink) {
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            pending: false,
+          },
+        };
+      }
+
+      return state;
+    }
+
     default: {
       return state;
     }
@@ -407,6 +493,8 @@ export const getObjectState = state => state.wobject;
 export const getObjectFetchingState = state => state.isFetching;
 export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields || [];
+export const getObjectAdmins = state => state.wobject.admins || [];
+export const getObjectModerators = state => state.wobject.moderators || [];
 export const getRatingFields = state =>
   getObjectFields(state).filter(field => field.name === objectFields.rating);
 export const getObjectTagCategory = state => state.wobject.tagCategories;

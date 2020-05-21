@@ -1,26 +1,40 @@
 import _ from 'lodash';
 import React from 'react';
+import { message } from 'antd';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
+import { followWobject, unfollowWobject } from './wobjActions';
+import { getAuthenticatedUserName, isGuestUser } from '../reducers';
+
 import './ObjectDynamicList.less';
 
-export default class ObjectDynamicList extends React.Component {
+class ObjectDynamicList extends React.Component {
   static propTypes = {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
     handleObjectCount: PropTypes.func,
     isOnlyHashtags: PropTypes.bool,
     expertize: PropTypes.bool,
+    unfollowWobj: PropTypes.func,
+    followWobj: PropTypes.func,
+    isGuest: PropTypes.bool,
+    authUser: PropTypes.string,
   };
 
   static defaultProps = {
     handleObjectCount: () => {},
     isOnlyHashtags: false,
     expertize: false,
+    unfollowWobj: () => {},
+    followWobj: () => {},
+    isGuest: false,
+    authUser: '',
   };
 
   state = {
@@ -30,7 +44,7 @@ export default class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, limit, handleObjectCount, isOnlyHashtags } = this.props;
+    const { fetcher, limit, handleObjectCount, isOnlyHashtags, authUser } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -38,26 +52,87 @@ export default class ObjectDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(wobjects.length, isOnlyHashtags).then(newWobjects => {
-          newWobjects.wobjects_count // eslint-disable-line no-unused-expressions
-            ? this.setState(
-                state => ({
-                  loading: false,
-                  hasMore: _.size(newWobjects.wobjects) === limit,
-                  wobjects: _.union(state.wobjects, newWobjects.wobjects),
-                }),
-                () => {
-                  handleObjectCount(newWobjects.wobjects_count, isOnlyHashtags);
-                },
-              )
-            : this.setState(state => ({
+        fetcher(wobjects.length, authUser, isOnlyHashtags).then(newWobjects => {
+          if (newWobjects.wobjects_count) {
+            this.setState(
+              state => ({
                 loading: false,
-                hasMore: newWobjects.length === limit,
-                wobjects: _.union(state.wobjects, newWobjects),
-              }));
+                hasMore: _.size(newWobjects.wobjects) === limit,
+                wobjects: _.union(state.wobjects, newWobjects.wobjects),
+              }),
+              () => {
+                handleObjectCount(newWobjects.wobjects_count, isOnlyHashtags);
+              },
+            );
+          } else {
+            this.setState(state => ({
+              loading: false,
+              hasMore: newWobjects.length === limit,
+              wobjects: _.union(state.wobjects, newWobjects),
+            }));
+          }
         });
       },
     );
+  };
+
+  unFollow = permlink => {
+    const matchWobjIndex = this.state.wobjects.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...this.state.wobjects];
+    wobjectsArray.splice(matchWobjIndex, 1, {
+      ...wobjectsArray[matchWobjIndex],
+      pending: true,
+    });
+
+    this.setState({ wobjects: [...wobjectsArray] });
+    this.props.unfollowWobj(permlink).then(res => {
+      if ((res.value.ok && this.props.isGuest) || !res.message) {
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          youFollows: false,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          pending: false,
+        });
+      }
+
+      this.setState({ wobjects: [...wobjectsArray] });
+    });
+  };
+
+  follow = permlink => {
+    const matchWobjectIndex = this.state.wobjects.findIndex(
+      wobj => wobj.author_permlink === permlink,
+    );
+    const wobjectsArray = [...this.state.wobjects];
+
+    wobjectsArray.splice(matchWobjectIndex, 1, {
+      ...wobjectsArray[matchWobjectIndex],
+      pending: true,
+    });
+
+    this.setState({ wobjects: [...wobjectsArray] });
+    this.props.followWobj(permlink).then(res => {
+      if ((this.props.isGuest && res.value.ok) || !res.message) {
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          youFollows: true,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          pending: false,
+        });
+      }
+
+      this.setState({ wobjects: [...wobjectsArray] });
+    });
   };
 
   render() {
@@ -79,6 +154,8 @@ export default class ObjectDynamicList extends React.Component {
               key={wo.author_permlink}
               wobject={wo}
               alt={<WeightTag weight={getWeight(wo)} />}
+              unfollow={this.unFollow}
+              follow={this.follow}
             />
           ))}
         </ReduxInfiniteScroll>
@@ -91,3 +168,14 @@ export default class ObjectDynamicList extends React.Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    authUser: getAuthenticatedUserName(state),
+  }),
+  {
+    followWobj: followWobject,
+    unfollowWobj: unfollowWobject,
+  },
+)(ObjectDynamicList);

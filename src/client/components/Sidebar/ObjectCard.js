@@ -7,7 +7,7 @@ import { getApprovedField } from '../../helpers/wObjectHelper';
 
 import './ObjectCard.less';
 
-const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
+const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
   const name = getApprovedField(wobject, 'name') || wobject.default_name;
   const pathname = `/object/${wobject.author_permlink}`;
 
@@ -30,7 +30,14 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
       </div>
       <div className="ObjectCard__follow">
         {showFollow && (
-          <FollowButton following={wobject.author_permlink} followingType="wobject" secondary />
+          <FollowButton
+            wobj={wobject}
+            following={wobject.youFollows}
+            followingType="wobject"
+            unfollowObject={unfollow}
+            followObject={follow}
+            secondary
+          />
         )}
       </div>
     </div>
@@ -42,12 +49,16 @@ ObjectCard.propTypes = {
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
   isNewWindow: PropTypes.bool,
+  unfollow: PropTypes.func,
+  follow: PropTypes.func,
 };
 
 ObjectCard.defaultProps = {
   alt: '',
   showFollow: true,
   isNewWindow: false,
+  unfollow: () => {},
+  follow: () => {},
 };
 
 export default ObjectCard;

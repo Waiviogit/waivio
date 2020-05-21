@@ -96,8 +96,8 @@ const Proposition = ({
         }
       })
       .catch(e => {
-        if (e.error_description) {
-          message.error(e.error_description);
+        if (e.error_description || e.message) {
+          message.error(e.error_description || e.message);
         } else {
           message.error(
             intl.formatMessage({
@@ -196,7 +196,7 @@ Proposition.propTypes = {
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
@@ -207,6 +207,7 @@ Proposition.defaultProps = {
   authorizedUserName: '',
   post: {},
   assigned: null,
+  loading: false,
 };
 
 export default connect(

@@ -5,7 +5,7 @@ import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -34,7 +34,8 @@ class UserMenuWrapper extends React.Component {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    const isGuest = match.params.name.startsWith(GUEST_PREFIX);
+    const isGuest =
+      match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
     return (
       <UserMenu
         defaultKey={currentKey}
@@ -65,6 +66,7 @@ const UserHero = ({
   onTransferClick,
   rewardFund,
   rate,
+  isGuest,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
@@ -93,6 +95,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                   rewardFund={rewardFund}
                   rate={rate}
+                  isGuest={isGuest}
                 />
               )}
               <UserMenuWrapper followers={followersCount} following={followingCount} />
@@ -116,6 +119,7 @@ UserHero.propTypes = {
   onTransferClick: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHero.defaultProps = {
@@ -125,6 +129,7 @@ UserHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
 export default UserHero;

@@ -56,20 +56,29 @@ class MapObjectInfo extends React.Component {
         isMarked={isMarked}
         anchor={[+lat, +lng]}
         payload={wobject}
-        onMouseOver={this.handleMarkerClick}
-        onClick={this.onMarkerClick}
-        onMouseOut={this.closeInfobox}
+        onClick={this.handleMarkerClick}
       />
     ) : null;
   };
 
+  handleMarkerClick = ({ payload, anchor }) => {
+    if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
+      this.setState({ infoboxData: null });
+    }
+    this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+  };
+
   getOverlayLayout = () => {
-    const wobj = getClientWObj(this.state.infoboxData.wobject, this.props.usedLocale);
+    const { infoboxData } = this.state;
+    const { usedLocale } = this.props;
+    const wobj = getClientWObj(infoboxData.wobject, usedLocale);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
-        <div role="presentation" className="MapOS__overlay-wrap">
+        <div role="presentation" className="MapOS__overlay-wrap" onMouseLeave={this.closeInfobox}>
           <img src={wobj.avatar} width={35} height={35} alt="" />
-          <div className="MapOS__overlay-wrap-name">{wobj.name}</div>
+          <div role="presentation" className="MapOS__overlay-wrap-name">
+            {wobj.name}
+          </div>
         </div>
       </Overlay>
     );
@@ -85,7 +94,7 @@ class MapObjectInfo extends React.Component {
   };
 
   onMarkerClick = permlink => {
-    this.props.history.push(`/object/${permlink.payload.id}`);
+    this.props.history.push(`/object/${permlink}`);
   };
 
   showUserPosition = position =>

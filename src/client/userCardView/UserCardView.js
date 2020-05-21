@@ -9,14 +9,14 @@ const UserCardView = ({ user }) => (
     <div className="UserCardView">
       <div className="UserCardView__content">
         <div className="UserCardView__content-row">
-          <Avatar username={user.account} size={80} />
+          <Avatar username={user.name || user.account} size={80} />
           <div className="UserCardView__content--name-wrap">
             <Link
-              to={`/@${user.account}`}
-              title={user.account}
+              to={`/@${user.name || user.account}`}
+              title={user.name || user.account}
               className="UserCardView__content--user-name"
             >
-              {user.account}
+              {user.name || user.account}
             </Link>
           </div>
         </div>

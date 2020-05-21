@@ -254,3 +254,42 @@ export const changeParent = parent => dispatch =>
     type: SET_NEW_PARENT,
     payload: { parent },
   });
+
+export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
+export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
+
+export const followWobject = permlink => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: FOLLOW_OBJECT.ACTION,
+    payload: {
+      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), permlink),
+    },
+    meta: {
+      permlink,
+    },
+  });
+};
+
+export const unfollowWobject = permlink => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: UNFOLLOW_OBJECT.ACTION,
+    payload: {
+      promise: steemConnectAPI.unfollowObject(getAuthenticatedUserName(state), permlink),
+    },
+    meta: {
+      permlink,
+    },
+  });
+};

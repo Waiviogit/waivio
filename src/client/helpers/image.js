@@ -14,8 +14,10 @@ export const getProxyImageURL = (url, type) => {
     url.indexOf('https://img.esteem.ws') === 0
   )
     return `${IMG_PROXY}${url}`;
-  else if (type === 'preview') return `${IMG_PROXY_PREVIEW}${url}`;
-  else if (type === 'small') return `${IMG_PROXY_SMALL}${url}`;
+  else if (type === 'preview') {
+    if (url.indexOf('//') === 0) return `${IMG_PROXY_PREVIEW}http:${url}`;
+    return `${IMG_PROXY_PREVIEW}${url}`;
+  } else if (type === 'small') return `${IMG_PROXY_SMALL}${url}`;
 
   return url;
 };

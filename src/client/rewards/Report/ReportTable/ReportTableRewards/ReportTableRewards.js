@@ -61,9 +61,7 @@ const ReportTableRewards = ({ intl }) => {
               {intl.formatMessage({ id: 'shares', defaultMessage: `Shares` })}
             </th>
             <th className="ReportTableRewards basicWidth">
-              {intl
-                .formatMessage({ id: 'steem_power', defaultMessage: `HIVE POWER` })
-                .toUpperCase()}
+              {intl.formatMessage({ id: 'hive_power', defaultMessage: `Hive** Power` })}
             </th>
             <th className="ReportTableRewards basicWidth">
               {intl

@@ -29,7 +29,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen }) => (
     <ReportHeader />
     <ReportTableRewards />
     <ReportTableFees />
-    <ReportFooter onClick={toggleModal} />
+    <ReportFooter toggleModal={toggleModal} />
   </Modal>
 );
 

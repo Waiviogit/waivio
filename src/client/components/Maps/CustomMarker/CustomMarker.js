@@ -14,16 +14,23 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    onContextMenu: PropTypes.func.isRequired,
+    onContextMenu: PropTypes.func,
     onMouseOver: PropTypes.func.isRequired,
     onMouseOut: PropTypes.func.isRequired,
-    left: PropTypes.number.isRequired,
-    top: PropTypes.number.isRequired,
-    anchor: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    left: PropTypes.number,
+    top: PropTypes.number,
+    anchor: PropTypes.arrayOf(PropTypes.number).isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
-    hover: PropTypes.bool.isRequired,
+    hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
+  };
+
+  static defaultProps = {
+    onContextMenu: () => {},
+    left: 0,
+    top: 0,
+    hover: false,
   };
 
   constructor(props) {
@@ -48,7 +55,11 @@ class CustomMarker extends React.Component {
     return this.isHover() ? pinHover : pin;
   };
 
-  handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
+  handleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    return this.props.onClick && this.props.onClick(this.eventParameters(event));
+  };
 
   handleContextMenu = event =>
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));

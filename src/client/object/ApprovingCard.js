@@ -1,12 +1,18 @@
 import React from 'react';
-import { isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { calculateApprovePercent } from '../helpers/wObjectHelper';
-import { getAuthenticatedUserName, getRate, getRewardFund } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getObjectAdmins,
+  getObjectModerators,
+  getRate,
+  getRewardFund,
+} from '../reducers';
+import { mainerName } from './wObjectHelper';
 
 import './AppendCard.less';
 
@@ -18,72 +24,57 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
       rate *
       1000000
     : 0;
-  const percent = post.active_votes && calculateApprovePercent(post.active_votes, post.weight);
+  const percent =
+    post.active_votes &&
+    calculateApprovePercent(post.active_votes, post.weight, {
+      moderators: moderatorsList,
+      admins: adminsList,
+    });
   const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
-  const adminName = post.active_votes.find(vote => adminsList.includes(vote.voter));
-  const moderatorName = post.active_votes.find(vote => moderatorsList.includes(vote.voter));
-  const approved = Boolean(adminName || moderatorName);
+  const appendState = mainerName(post.active_votes, moderatorsList, adminsList);
 
   const classListApproveTag = classNames({
-    AppendCard__green: percent >= 70 || approved,
-    AppendCard__red: percent <= 70 || !approved,
-  });
-  const classListVoteValueTag = classNames({
-    AppendCard__green: approved || voteValue > 0,
-    AppendCard__red: !approved || voteValue < 0,
+    AppendCard__green: percent >= 70,
+    AppendCard__red: percent <= 70,
   });
   const classListModal = classNames('AppendCard__approving', {
     'AppendCard__approving--modal': modal,
   });
 
-  const textApproving = moderatorName ? (
+  const text = (mainer, name, status) => (
     <span>
       {intl.formatMessage({
-        id: 'approved_by_moderator',
-        defaultMessage: 'approved by moderator',
+        id: `${status}_by_${mainer}`,
+        defaultMessage: `${status} by ${mainer}`,
       })}{' '}
-      <a href={`/@${moderatorName && moderatorName.voter}`} className="AppendCard__name-admin">
-        @{moderatorName && moderatorName.voter}
-      </a>
-    </span>
-  ) : (
-    <span>
-      {intl.formatMessage({
-        id: 'approved_by_admin',
-        defaultMessage: 'approved by admin',
-      })}{' '}
-      <a href={`/@${adminName && adminName.voter}`} className="AppendCard__name-admin">
-        @{adminName && adminName.voter}
+      <a href={`/@${name}`} className="AppendCard__name-admin">
+        @{name}
       </a>
     </span>
   );
 
   return (
     <div className={classListModal}>
-      {!isNil(post.append_field_weight) && (
-        <div>
-          {intl.formatMessage({
-            id: 'approval',
-            defaultMessage: 'Approval',
-          })}
-          :{' '}
-          <Tag>
-            <span>
-              <span className={classListApproveTag}>
-                {post.upvotedByModerator ? 100 : percent.toFixed(2)}%
-              </span>
-            </span>
-          </Tag>
-          {!approved && !modal && (
-            <span className="MinPercent">
-              {intl.formatMessage({
-                id: 'min_70_is_required',
-                defaultMessage: 'Min 70% is required',
-              })}
-            </span>
-          )}
-        </div>
-      )}
+      <div>
+        {intl.formatMessage({
+          id: 'approval',
+          defaultMessage: 'Approval',
+        })}
+        :{' '}
+        <Tag>
+          <span>
+            <span className={classListApproveTag}>{percent.toFixed(2)}%</span>
+          </span>
+        </Tag>
+        {!appendState && !modal && (
+          <span className="MinPercent">
+            {intl.formatMessage({
+              id: 'min_70_is_required',
+              defaultMessage: 'Min 70% is required',
+            })}
+          </span>
+        )}
+      </div>
       <div>
         {intl.formatMessage({
           id: 'vote_count_tag',
@@ -91,16 +82,16 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
         })}
         :{' '}
         <Tag>
-          <span className={classListVoteValueTag} title={voteValue}>
-            {approved
+          <span className={classListApproveTag} title={voteValue}>
+            {appendState
               ? intl.formatMessage({
-                  id: 'approved',
-                  defaultMessage: 'Approved',
+                  id: appendState.status,
+                  defaultMessage: appendState.status,
                 })
               : calcVoteValue}
           </span>
         </Tag>
-        {approved && textApproving}
+        {appendState && text(appendState.mainer, appendState.name, appendState.status)}
       </div>
     </div>
   );
@@ -134,4 +125,6 @@ export default connect(state => ({
   userName: getAuthenticatedUserName(state),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
+  moderatorsList: getObjectAdmins(state),
+  adminsList: getObjectModerators(state),
 }))(injectIntl(ApprovingCard));

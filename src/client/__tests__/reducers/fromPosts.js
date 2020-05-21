@@ -43,7 +43,7 @@ describe('fromPosts', () => {
   });
 
   it('Should return post', () => {
-    expect(getPostContent(state, author, permlink)).toEqual(state.posts.list[0]);
+    expect(getPostContent(state, permlink)).toEqual(state.posts.list[0]);
   });
 
   it('Should return pendingLikes', () => {

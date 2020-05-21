@@ -62,10 +62,10 @@ export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
+export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, author, permlink) =>
-  fromPosts.getPostContent(state.posts, author, permlink);
+export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
@@ -171,6 +171,8 @@ export const getRewardSetting = state => fromSettings.getRewardSetting(state.set
 export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(state.wallet);
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);
 export const getUsersTransactions = state => fromWallet.getUsersTransactions(state.wallet);
+export const getTransactions = state => fromWallet.getTransactions(state.wallet);
+export const getUserHasMore = state => fromWallet.getUserHasMore(state.wallet);
 export const getUsersAccountHistory = state => fromWallet.getUsersAccountHistory(state.wallet);
 export const getUsersAccountHistoryLoading = state =>
   fromWallet.getUsersAccountHistoryLoading(state.wallet);
@@ -204,6 +206,8 @@ export const searchObjectTypesResults = state => fromSearch.searchObjectTypesRes
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
+export const getObjectAdmins = state => fromObject.getObjectAdmins(state.object);
+export const getObjectModerators = state => fromObject.getObjectModerators(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
@@ -217,6 +221,7 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
+export const getUpdatedMap = state => fromObjectType.getUpdatedMap(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);

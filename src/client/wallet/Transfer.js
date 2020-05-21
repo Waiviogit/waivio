@@ -21,9 +21,10 @@ import {
   getTransferTo,
   isGuestUser,
   getGuestUserBalance,
+  isGuestBalance,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -42,6 +43,7 @@ const InputGroup = Input.Group;
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     guestsBalance: getGuestUserBalance(state),
+    authGuestBalance: isGuestBalance(state),
   }),
   {
     closeTransfer,
@@ -68,6 +70,7 @@ export default class Transfer extends React.Component {
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
     guestsBalance: PropTypes.number,
+    authGuestBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -81,6 +84,7 @@ export default class Transfer extends React.Component {
     isGuest: false,
     notify: () => {},
     guestsBalance: 0,
+    authGuestBalance: 0,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -100,17 +104,12 @@ export default class Transfer extends React.Component {
   };
 
   componentDidMount() {
-    const { cryptosPriceHistory } = this.props;
-    const currentSteemRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+    const { cryptosPriceHistory, getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
+    const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
+    const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
 
-    if (isNull(currentSteemRate)) {
-      this.props.getCryptoPriceHistory(HIVE.coinGeckoId);
-    }
-
-    if (isNull(currentSBDRate)) {
-      this.props.getCryptoPriceHistory(HBD.coinGeckoId);
-    }
+    if (isNull(currentHiveRate) || isNull(currentHBDRate))
+      getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -177,7 +176,7 @@ export default class Transfer extends React.Component {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
 
-        if (values.to.startsWith(GUEST_PREFIX)) {
+        if (values.to.startsWith(GUEST_PREFIX) || values.to.startsWith(BXY_GUEST_PREFIX)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
@@ -269,7 +268,7 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
-    const guestName = value.startsWith(GUEST_PREFIX);
+    const guestName = value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -312,7 +311,10 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (this.props.isGuest && value.startsWith(GUEST_PREFIX)) {
+    if (
+      this.props.isGuest &&
+      (value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX))
+    ) {
       callback([
         new Error(
           intl.formatMessage({
@@ -385,16 +387,17 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
-      guestsBalance,
+
+      authGuestBalance,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
-    const guestName = to && to.startsWith(GUEST_PREFIX);
+    const guestName = to && (to.startsWith(GUEST_PREFIX) || to.startsWith(BXY_GUEST_PREFIX));
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentBalance = isGuest ? `${guestsBalance} HIVE` : balance;
+    const currentBalance = isGuest ? `${authGuestBalance} HIVE` : balance;
     const isChangesDisabled = !!memo;
 
     const currencyPrefix = getFieldDecorator('currency', {
