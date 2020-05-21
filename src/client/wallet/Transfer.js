@@ -302,11 +302,7 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (
-      guestName ||
-      (guestNameWaivio && value.length > Transfer.maxGuestAccountLength) ||
-      !guestName || (guestNameWaivio && value.length > Transfer.maxAccountLength)
-    ) {
+    if (value.length > Transfer.maxAccountLength) {
       callback([
         new Error(
           intl.formatMessage(
