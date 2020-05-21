@@ -1126,5 +1126,5 @@
   "hive_power": "Hive** Power",
   "services": "Сервисы",
   "links": "Ссылки",
-  "reject_update": "{voter} отклонил ваше обновление для {fieldName}"
+  "reject_update": "{voter} отклонил ваше обновление для '{object_name}'"
 }

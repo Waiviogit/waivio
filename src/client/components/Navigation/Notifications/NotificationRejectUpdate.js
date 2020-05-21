@@ -8,7 +8,8 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationRejectUpdate = ({ notification, read, onClick }) => {
-  const url = `/object/${notification.author_permlink}/updates/${notification.fieldName}`;
+  const url = `/object/${notification.author_permlink}/updates/${notification.object_name}`;
+  const parent = notification.parent_permlink && notification.parent_name;
   return (
     <Link
       to={url}
@@ -22,10 +23,15 @@ const NotificationRejectUpdate = ({ notification, read, onClick }) => {
         <div className="Notification__text__message">
           <FormattedMessage
             id="reject_update"
-            defaultMessage="{voter} rejected your update for {fieldName}"
+            defaultMessage="{voter} rejected your update for '{object_name}'"
             values={{
               voter: <span className="username">{notification.voter}</span>,
-              fieldName: <span>{notification.fieldName}</span>,
+              object_name: (
+                <span>
+                  {notification.object_name}
+                  {parent ? `(${notification.parent_name})` : null}
+                </span>
+              ),
             }}
           />
         </div>
@@ -41,9 +47,11 @@ NotificationRejectUpdate.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
     voter: PropTypes.string,
-    fieldName: PropTypes.string,
+    object_name: PropTypes.string,
     timestamp: PropTypes.number,
     author_permlink: PropTypes.string,
+    parent_permlink: PropTypes.string,
+    parent_name: PropTypes.string,
   }),
   onClick: PropTypes.func,
 };

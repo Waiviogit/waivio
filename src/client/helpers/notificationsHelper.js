@@ -139,11 +139,11 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
       return intl.formatMessage(
         {
           id: 'reject_update',
-          defaultMessage: '{voter} rejected your update for {fieldName}',
+          defaultMessage: 'Your update to {object_name} was rejected',
         },
         {
           voter: notification.voter,
-          fieldName: notification.fieldName,
+          object_name: notification.object_name,
         },
       );
     default:
@@ -176,7 +176,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
     case notificationConstants.REJECT_UPDATE:
-      return `/object/${notification.author_permlink}/updates/${notification.fieldName}`;
+      return `/object/${notification.author_permlink}/updates/${notification.object_name}`;
     default:
       return '/notifications-list';
   }
