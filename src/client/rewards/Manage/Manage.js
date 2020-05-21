@@ -7,7 +7,7 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign, inactivateCampaign } from '../../user/userActions';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, isGuestBalance, isGuestUser } from '../../reducers';
 import Error401 from '../../statics/Error401';
 import './Manage.less';
 
@@ -15,6 +15,8 @@ import './Manage.less';
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
+    isGuest: isGuestUser(state),
+    guestBalance: isGuestBalance(state),
   }),
   { activateCampaign, inactivateCampaign },
 )
@@ -25,12 +27,16 @@ class Manage extends React.Component {
     user: PropTypes.shape(),
     activateCampaign: PropTypes.func,
     inactivateCampaign: PropTypes.func,
+    isGuest: PropTypes.bool,
+    guestBalance: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
     user: {},
     activateCampaign: () => {},
     inactivateCampaign: () => {},
+    isGuest: false,
+    guestBalance: null,
   };
   state = {
     campaigns: [],
@@ -92,8 +98,17 @@ class Manage extends React.Component {
   };
 
   render() {
-    // eslint-disable-next-line no-shadow
-    const { intl, activateCampaign, inactivateCampaign, user, userName } = this.props;
+    const {
+      intl,
+      // eslint-disable-next-line no-shadow
+      activateCampaign,
+      // eslint-disable-next-line no-shadow
+      inactivateCampaign,
+      user,
+      userName,
+      isGuest,
+      guestBalance,
+    } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -108,7 +123,13 @@ class Manage extends React.Component {
                   defaultMessage: `Account balance (HIVE)`,
                 })}
               </div>
-              <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
+              <BalanceTable
+                isGuest={isGuest}
+                guestBalance={guestBalance}
+                intl={intl}
+                budgetTotal={budgetTotal}
+                user={user}
+              />
               <div className="Manage__account-balance-wrap-text-content">{balanceContent}</div>
               <div className="Manage__rewards-campaign-wrap">
                 <div className="Manage__rewards-campaign-wrap-title">

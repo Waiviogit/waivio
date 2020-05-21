@@ -20,6 +20,15 @@ export function handleErrors(response) {
   return response;
 }
 
+export function handleErrorReserve(response) {
+  if (response.ok) {
+    return response;
+  }
+  return response.json().then(data => {
+    throw Error(data.message);
+  });
+}
+
 export function handleValidateCampaignErrors(response) {
   if (!response.ok) {
     return response.json().then(data => Promise.reject(data));
@@ -664,7 +673,7 @@ export const reserveActivatedCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
-      .then(handleErrors)
+      .then(handleErrorReserve)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

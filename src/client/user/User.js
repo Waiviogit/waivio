@@ -29,6 +29,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import NotFound from '../statics/NotFound';
 import { getMetadata } from '../helpers/postingMetadata';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 @connect(
   (state, ownProps) => ({
@@ -187,6 +188,9 @@ export default class User extends React.Component {
 
     const isAboutPage = match.params['0'] === 'about';
 
+    const isGuest =
+      match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
+
     return (
       <div className="main-panel">
         <Helmet>
@@ -232,6 +236,7 @@ export default class User extends React.Component {
             onTransferClick={this.handleTransferClick}
             rewardFund={rewardFund}
             rate={rate}
+            isGuest={isGuest}
           />
         )}
         <div className="shifted">
