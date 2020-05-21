@@ -1127,7 +1127,7 @@
   "services": "Сервисы",
   "links": "Ссылки",
   "reject_update": "{voter} отклонил ваше обновление для '{object_name}'",
-  "activation_campaign": "{author} запустил новую компанию для {object_name}"
+  "activation_campaign": "{author} запустил новую компанию для {object_name}",
   "links": "Ссылки",
   "note": "Примечание",
   "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки"
