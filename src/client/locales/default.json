@@ -1113,7 +1113,7 @@
   "share": "Share",
   "usd": "USD",
   "exchange_rate": "The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {currentUSDPrice} USD).",
-  "only_upvotes_from_registered_accounts": "Only upvotes from registered accounts (sponsor, waivio.match) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.",
+  "only_upvotes_from_registered_accounts": "Only upvotes from registered accounts ({sponsor} {waivioMmatch}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.",
   "processing_fees_are_paid_by_campaign_sponsor": "Processing fees are paid by campaign sponsor in addition to the user rewards.",
   "posted_on": "posted on",
   "profile_updated": "Profile updated",
@@ -1125,5 +1125,10 @@
   "fillOrder_wallet_get": "You get {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Services",
-  "links": "Links"
+  "links": "Links",
+  "reject_update": "{voter} rejected your update for '{object_name}'",
+  "activation_campaign": "{author} launched a new campaign for {object_name}"
+  "links": "Links",
+  "note": "Note",
+  "guest_accounts": "Guest accounts can not change these settings"
 }

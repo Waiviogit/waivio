@@ -15,8 +15,6 @@ class ReactionsModal extends React.Component {
     onClose: PropTypes.func,
     append: PropTypes.bool,
     post: PropTypes.shape({}),
-    adminsList: PropTypes.arrayOf(PropTypes.string),
-    moderatorsList: PropTypes.arrayOf(PropTypes.string),
     user: PropTypes.string,
   };
 
@@ -30,7 +28,6 @@ class ReactionsModal extends React.Component {
     tab: '1',
     append: false,
     post: {},
-    adminsList: [],
     moderatorsList: [],
     user: '',
   };
@@ -40,7 +37,7 @@ class ReactionsModal extends React.Component {
   };
 
   render() {
-    const { upVotes, downVotes, ratio, tab, moderatorsList, adminsList, user } = this.props;
+    const { upVotes, downVotes, ratio, tab, user } = this.props;
     const tabs = [];
 
     if (upVotes.length > 0) {
@@ -56,13 +53,7 @@ class ReactionsModal extends React.Component {
           }
           key="1"
         >
-          <ReactionsList
-            votes={upVotes}
-            ratio={ratio}
-            moderatorsList={moderatorsList}
-            adminsList={adminsList}
-            name={user}
-          />
+          <ReactionsList votes={upVotes} ratio={ratio} name={user} />
         </Tabs.TabPane>,
       );
     }
@@ -80,13 +71,7 @@ class ReactionsModal extends React.Component {
           }
           key="2"
         >
-          <ReactionsList
-            votes={downVotes}
-            ratio={ratio}
-            moderatorsList={moderatorsList}
-            adminsList={adminsList}
-            name={user}
-          />
+          <ReactionsList votes={downVotes} ratio={ratio} name={user} />
         </Tabs.TabPane>,
       );
     }
@@ -97,14 +82,7 @@ class ReactionsModal extends React.Component {
         footer={null}
         onCancel={this.props.onClose}
       >
-        {this.props.append && (
-          <ApprovingCard
-            post={this.props.post}
-            adminsList={adminsList}
-            moderatorsList={moderatorsList}
-            modal
-          />
-        )}
+        {this.props.append && <ApprovingCard post={this.props.post} modal />}
         <Tabs activeKey={tab}>{tabs}</Tabs>
       </Modal>
     );

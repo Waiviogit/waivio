@@ -29,8 +29,6 @@ const AppendObjButtons = ({
   handleCloseReactions,
   defaultVotePercent,
   onActionInitiated,
-  adminsList,
-  moderatorsList,
 }) => {
   const [key, setKey] = useState('1');
   const upVotes = getAppendUpvotes(post.active_votes).sort(sortVotes);
@@ -82,6 +80,7 @@ const AppendObjButtons = ({
   const messageLiked = { id: 'like', defaultMessage: 'Like' };
   const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
   let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
+
   if (isLiked) {
     likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
   } else if (defaultVotePercent !== 10000) {
@@ -207,8 +206,6 @@ const AppendObjButtons = ({
         tab={key}
         append
         post={post}
-        adminsList={adminsList}
-        moderatorsList={moderatorsList}
         user={userName}
       />
     </div>
@@ -227,8 +224,6 @@ AppendObjButtons.propTypes = {
   handleShowReactions: PropTypes.func.isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   defaultVotePercent: PropTypes.number.isRequired,
-  adminsList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  moderatorsList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 AppendObjButtons.defaultProps = { userName: '' };

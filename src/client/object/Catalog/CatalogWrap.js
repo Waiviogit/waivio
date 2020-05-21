@@ -168,7 +168,7 @@ class CatalogWrap extends React.Component {
           [];
         listItems = listItems
           .map(item => addActiveVotesInField(res, item))
-          .filter(item => calculateApprovePercent(item.active_votes) >= 70);
+          .filter(item => calculateApprovePercent(item.active_votes, item.weight, res) >= 70);
 
         this.setState(prevState => {
           let breadcrumb = [];
@@ -346,7 +346,9 @@ class CatalogWrap extends React.Component {
       actualListItems =
         actualListItems &&
         actualListItems.filter(
-          list => !list.status && calculateApprovePercent(list.active_votes) >= 70,
+          list =>
+            !list.status &&
+            calculateApprovePercent(list.active_votes, list.weight, this.props.wobject) >= 70,
         );
 
       if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {

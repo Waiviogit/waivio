@@ -11,11 +11,17 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
+import { getAuthenticatedUser } from '../../reducers';
 
 @injectIntl
-@connect(() => ({}), {
-  setDataForGlobalReport,
-})
+@connect(
+  state => ({
+    user: getAuthenticatedUser(state),
+  }),
+  {
+    setDataForGlobalReport,
+  },
+)
 class ReportsForm extends Component {
   state = {
     loading: false,
@@ -34,6 +40,10 @@ class ReportsForm extends Component {
     disabled: true,
   };
 
+  componentDidMount() {
+    this.setSponsor(this.props.user);
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     this.setState({ loading: true });
@@ -43,11 +53,9 @@ class ReportsForm extends Component {
         this.setState({
           updated: true,
         });
-        console.log('Received values of form: ', values);
       }
     });
-    this.handleReset();
-    this.setState({ loading: false, disabled: true });
+    this.setState({ loading: false });
   };
 
   handleSetState = (stateData, callbackData) => {
@@ -62,7 +70,7 @@ class ReportsForm extends Component {
 
   removeSponsor = () => {
     this.handleSetState({ sponsor: {} }, { sponsor: {} });
-    this.setState({ sponsor: {} });
+    this.setState({ sponsor: {}, disabled: true });
   };
 
   setDateFrom = from => {
@@ -123,7 +131,7 @@ class ReportsForm extends Component {
         : [];
 
     const preparedObject = {
-      sponsor: get(data, ['sponsor', 'account']),
+      sponsor: get(data, ['sponsor', 'name']) || get(data, ['sponsor', 'account']),
       userName: userName || '',
       globalReport: true,
       filters: {
@@ -169,19 +177,17 @@ class ReportsForm extends Component {
       dateTill,
       preparedObject,
       objectsNamesAndPermlinks,
-      amount,
       disabled,
     } = this.state;
 
     const { Option } = Select;
 
     const renderSponsor =
-      !isEmpty(sponsor) && sponsor.account ? (
+      (!isEmpty(sponsor) && sponsor.account) || sponsor.name ? (
         <div className="CreateReportForm__objects-wrap">
           <ReviewItem
             key={sponsor}
             object={sponsor}
-            // loading={loading}
             removeReviewObject={this.removeSponsor}
             isUser
           />
@@ -190,12 +196,7 @@ class ReportsForm extends Component {
 
     const renderObjects = !isEmpty(objects)
       ? map(objects, obj => (
-          <ReviewItem
-            key={obj.id}
-            object={obj}
-            // loading={disabled}
-            removeReviewObject={this.removePrimaryObject}
-          />
+          <ReviewItem key={obj.id} object={obj} removeReviewObject={this.removePrimaryObject} />
         ))
       : null;
 
@@ -447,7 +448,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable || amount}
+              {preparedObject.filters.payable}
             </div>
           </div>
         )}
@@ -461,6 +462,7 @@ const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(ReportsForm
 ReportsForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
+  user: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   getHistories: PropTypes.func,
 };

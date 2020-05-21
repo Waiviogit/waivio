@@ -66,6 +66,7 @@ const UserHero = ({
   onTransferClick,
   rewardFund,
   rate,
+  isGuest,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
@@ -94,6 +95,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                   rewardFund={rewardFund}
                   rate={rate}
+                  isGuest={isGuest}
                 />
               )}
               <UserMenuWrapper followers={followersCount} following={followingCount} />
@@ -117,6 +119,7 @@ UserHero.propTypes = {
   onTransferClick: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHero.defaultProps = {
@@ -126,6 +129,7 @@ UserHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
 export default UserHero;

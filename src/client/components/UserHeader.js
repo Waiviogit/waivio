@@ -30,6 +30,7 @@ const UserHeader = ({
   rate,
   unfollow,
   follow,
+  isGuest,
 }) => {
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
@@ -72,6 +73,8 @@ const UserHeader = ({
       ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
       : 0;
 
+  const guestPrefix = ' (guest)';
+
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
@@ -109,6 +112,7 @@ const UserHeader = ({
           <div className="UserHeader__handle-rank-container">
             <div className="UserHeader__row UserHeader__handle">
               @{user.name}
+              {isGuest && guestPrefix}
               {isFollowing && (
                 <span className="UserHeader__follows-you">
                   <FormattedMessage id="follows_you" defaultMessage="Follows you" />
@@ -187,6 +191,7 @@ UserHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   unfollow: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -199,6 +204,7 @@ UserHeader.defaultProps = {
   hasCover: false,
   isFollowing: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
 export default injectIntl(

@@ -62,6 +62,7 @@ export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
+export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
@@ -205,6 +206,8 @@ export const searchObjectTypesResults = state => fromSearch.searchObjectTypesRes
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
+export const getObjectAdmins = state => fromObject.getObjectAdmins(state.object);
+export const getObjectModerators = state => fromObject.getObjectModerators(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
