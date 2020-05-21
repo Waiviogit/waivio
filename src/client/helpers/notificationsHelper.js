@@ -146,6 +146,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           object_name: notification.object_name,
         },
       );
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return intl.formatMessage(
+        {
+          id: 'activation_campaign',
+          defaultMessage: '{author} launched a new campaign for {object_name}',
+        },
+        {
+          author: notification.author,
+          object_name: notification.object_name,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -177,6 +188,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}/transfers`;
     case notificationConstants.REJECT_UPDATE:
       return `/object/${notification.author_permlink}/updates/${notification.object_name}`;
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return `/rewards/all/${notification.author_permlink}`;
     default:
       return '/notifications-list';
   }
@@ -205,6 +218,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account;
     case notificationConstants.REJECT_UPDATE:
       return notification.voter;
+    case notificationConstants.ACTIVATION_CAMPAIGN:
+      return notification.author;
     default:
       return currentAuthUsername;
   }
