@@ -107,11 +107,7 @@ class AdvanceSettings extends Component {
           </div>
           {!isGuest && (
             <div className="upvote-settings">
-              <Checkbox
-                checked={!isGuest ? upvote : false}
-                onChange={this.handleUpvoteChange}
-                disabled={isUpdating || isGuest}
-              >
+              <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
                 {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
               </Checkbox>
             </div>
