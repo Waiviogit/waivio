@@ -39,7 +39,7 @@ const CheckReviewModal = ({
   onEdit,
   onSubmit,
 }) => {
-  const { postRequirements, authorRequirements } = getReviewRequirements(campaign, reviewer.name);
+  const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
   const secondaryObject = linkedObjects.find(obj => obj.id === postRequirements.secondaryObject);
   const primaryObject = linkedObjects.find(obj => obj.id === postRequirements.primaryObject);
   const hasMinPhotos =
@@ -169,29 +169,6 @@ const CheckReviewModal = ({
                 primaryObjectUrl: getObjectUrl(primaryObject && primaryObject.id) || 'not found',
               },
             )}
-          </div>
-          <div className="check-review-modal__list">
-            <div className="check-review-modal__list-title fw5">
-              {intl.formatMessage({
-                id: `check_review_author_requirements`,
-                defaultMessage: 'Author requirements',
-              })}
-              :
-            </div>
-            {Object.keys(authorRequirements).map(optionName => (
-              <div className="check-review-modal__list-item" key={optionName}>
-                <Icon type="check-square" style={{ color: '#30b580' }} />
-                {intl.formatMessage(
-                  {
-                    id: `check_review_${optionName}`,
-                    defaultMessage: `${optionName} - ${authorRequirements[optionName]}`,
-                  },
-                  {
-                    [optionName]: authorRequirements[optionName],
-                  },
-                )}
-              </div>
-            ))}
           </div>
         </div>
         <div className="check-review-modal__buttons">
