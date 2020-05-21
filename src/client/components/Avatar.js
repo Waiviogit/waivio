@@ -14,7 +14,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
     : '';
 
   if (guestUserRegex.test(username)) {
-    return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
+    return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}_medium?${lastAccountUpdate}`;
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
