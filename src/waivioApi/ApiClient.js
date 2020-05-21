@@ -1093,7 +1093,6 @@ export const setUserStatus = user => {
 export const getWalletCryptoPriceHistory = symbols => {
   return fetch(
     `${config.currenciesApiPrefix}${config.market}?ids=${symbols[0]}&ids=${symbols[1]}&currencies=usd&currencies=btc`,
-    // `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
     {
       headers,
       method: 'GET',
