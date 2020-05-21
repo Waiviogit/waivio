@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { find } from 'lodash';
+import { find, isEmpty, includes } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -162,6 +162,13 @@ export default class Comments extends React.Component {
 
     const parentNode = comments.childrenById[postId];
 
+    if (comments.fakeComments && comments.fakeComments.length) {
+      comments.fakeComments.forEach(comment => {
+        if (comment.postId === postId && !includes(parentNode, comment.id)) {
+          parentNode.push(comment.id);
+        }
+      });
+    }
     if (parentNode instanceof Array) {
       rootLevelComments = parentNode.map(id => comments.comments[id]);
     }
