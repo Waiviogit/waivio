@@ -41,8 +41,8 @@ const DiscoverUser = ({ user }) => {
                   <span className="username">{name || user.name}</span>
                 </span>
               </Link>
-              {user.wobjects_weight && typeof user.wobjects_weight === 'number' && (
-                <WeightTag weight={user.wobjects_weight} />
+              {user.wobjects_weight && (
+                <WeightTag weight={+user.wobjects_weight} />
               )}
               <div className="Discover__user__follow">
                 <FollowButton following={user.name} followingType="user" />

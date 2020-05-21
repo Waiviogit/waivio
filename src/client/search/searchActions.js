@@ -1,8 +1,10 @@
 import _ from 'lodash';
+import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getSuitableLanguage } from '../reducers';
+import {getAuthenticatedUserName, getSuitableLanguage} from '../reducers';
+import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
@@ -11,6 +13,10 @@ export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
 export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
+export const SEARCH_USERS_FOR_DISCOVER_PAGE = createAsyncActionType(
+  '@search/SEARCH_USERS_FOR_DISCOVER_PAGE',
+);
+export const RESET_SEARCH_USERS_FOR_DISCOVER_PAGE = '@search/RESET_SEARCH_USERS_FOR_DISCOVER_PAGE';
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -96,3 +102,24 @@ export const clearSearchObjectsResults = () => dispatch =>
   dispatch({
     type: CLEAR_SEARCH_OBJECTS_RESULT,
   });
+
+export const resetSearchUsersForDiscoverPage = () => dispatch =>
+  dispatch({
+    type: RESET_SEARCH_USERS_FOR_DISCOVER_PAGE,
+  });
+
+export const searchUsersForDiscoverPage = (userName, limit) => dispatch => {
+  const search = replacer(userName, '@');
+
+  dispatch({
+    type: SEARCH_USERS_FOR_DISCOVER_PAGE.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(search, limit)
+        .then(result => ({
+          result,
+          search,
+        }))
+        .catch(e => message.error(e)),
+    },
+  });
+};

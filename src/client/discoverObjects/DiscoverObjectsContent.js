@@ -202,7 +202,7 @@ class DiscoverObjectsContent extends Component {
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
-          {isTypeHasFilters ? (
+          {isTypeHasFilters && (
             <React.Fragment>
               {!isEmpty(availableFilters) && (
                 <div className="discover-objects-header__tags-block">
@@ -232,7 +232,7 @@ class DiscoverObjectsContent extends Component {
                 </div>
               )}
             </React.Fragment>
-          ) : null}
+          )}
         </div>
         {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
