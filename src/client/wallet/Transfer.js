@@ -24,7 +24,7 @@ import {
   isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT, GUEST_PREFIX, WAIVIO_GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -92,6 +92,7 @@ export default class Transfer extends React.Component {
 
   static minAccountLength = 3;
   static maxAccountLength = 23;
+  static maxGuestAccountLength = 23;
   static exchangeRegex = /^(bittrex|blocktrades|poloniex|changelly|openledge|shapeshiftio|deepcrypto8)$/;
   static CURRENCIES = {
     HIVE: 'HIVE',
@@ -266,6 +267,7 @@ export default class Transfer extends React.Component {
   validateUsername = (rule, value, callback) => {
     const { intl, isGuest } = this.props;
     const guestName = value.startsWith(GUEST_PREFIX);
+    const guestNameWaivio = value.startsWith(WAIVIO_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -273,13 +275,13 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    if (isGuest && guestName) {
+    if ((isGuest && guestName) || guestNameWaivio) {
       callback([
         new Error(
           intl.formatMessage({
-            id: 'transaction_to_bxy',
+            id: 'transaction_to_guest',
             defaultMessage:
-              "You cannot make a transaction from the guest account to the account with the prefix 'bxy_'",
+              'You cannot make a transaction from the guest account to another guest account',
           }),
         ),
       ]);
@@ -302,8 +304,9 @@ export default class Transfer extends React.Component {
       return;
     }
     if (
-      (guestName && value.length > Transfer.maxGuestAccountLength) ||
-      (!guestName && value.length > Transfer.maxAccountLength)
+      guestName ||
+      (guestNameWaivio && value.length > Transfer.maxGuestAccountLength) ||
+      !guestName || (guestNameWaivio && value.length > Transfer.maxAccountLength)
     ) {
       callback([
         new Error(
@@ -360,7 +363,9 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentSelectedBalance = this.props.isGuest ? this.props.guestsBalance : selectedBalance;
+    const currentSelectedBalance = this.props.isGuest
+      ? this.props.authGuestBalance
+      : selectedBalance;
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
         new Error(
