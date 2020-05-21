@@ -76,35 +76,37 @@ class AdvanceSettings extends Component {
             defaultMessage: 'Advance settings',
           })}
         >
-          <div className="rewards-settings">
-            <div className="rewards-settings__label">
-              {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
+          {!isGuest && (
+            <div className="rewards-settings">
+              <div className="rewards-settings__label">
+                {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
+              </div>
+              <div className="rewards-settings__control">
+                <Select
+                  value={reward}
+                  dropdownClassName="rewards-settings__dropdown"
+                  onChange={this.handleRewardChange}
+                  disabled={isUpdating || isGuest}
+                >
+                  <Select.Option value={rewardsValues.all}>
+                    {intl.formatMessage({
+                      id: 'reward_option_100',
+                      defaultMessage: '100% Hive Power',
+                    })}
+                  </Select.Option>
+                  <Select.Option value={rewardsValues.half}>
+                    {intl.formatMessage({
+                      id: 'reward_option_50',
+                      defaultMessage: '50% HBD and 50% HP',
+                    })}
+                  </Select.Option>
+                  <Select.Option value={rewardsValues.none}>
+                    {intl.formatMessage({ id: 'reward_option_0', defaultMessage: 'Declined' })}
+                  </Select.Option>
+                </Select>
+              </div>
             </div>
-            <div className="rewards-settings__control">
-              <Select
-                value={reward}
-                dropdownClassName="rewards-settings__dropdown"
-                onChange={this.handleRewardChange}
-                disabled={isUpdating || isGuest}
-              >
-                <Select.Option value={rewardsValues.all}>
-                  {intl.formatMessage({
-                    id: 'reward_option_100',
-                    defaultMessage: '100% Hive Power',
-                  })}
-                </Select.Option>
-                <Select.Option value={rewardsValues.half}>
-                  {intl.formatMessage({
-                    id: 'reward_option_50',
-                    defaultMessage: '50% HBD and 50% HP',
-                  })}
-                </Select.Option>
-                <Select.Option value={rewardsValues.none}>
-                  {intl.formatMessage({ id: 'reward_option_0', defaultMessage: 'Declined' })}
-                </Select.Option>
-              </Select>
-            </div>
-          </div>
+          )}
           {!isGuest && (
             <div className="upvote-settings">
               <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
@@ -119,6 +121,13 @@ class AdvanceSettings extends Component {
           )}
           {isGuest && (
             <div>
+              <div className="rewards-settings__guest">
+                <span>{intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}:</span>{' '}
+                {intl.formatMessage({
+                  id: 'reward_option_100',
+                  defaultMessage: '100% Hive Power',
+                })}
+              </div>
               <div className="rewards-settings__guest">
                 <span>
                   {intl.formatMessage({
