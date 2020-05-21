@@ -183,6 +183,8 @@ export default class ProfileSettings extends React.Component {
             })
             .catch(e => message.error(e.message));
         }
+
+        this.props.history.push(`/@${user.name}`);
       }
     });
   };

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
+import { epochToUTC } from '../helpers/formatter';
 
 const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
   <div className="UserWalletTransactions__transaction">
@@ -34,12 +35,12 @@ const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
         <BTooltip
           title={
             <span>
-              <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
           }
         >
           <span>
-            <FormattedRelative value={`${timestamp}Z`} />
+            <FormattedRelative value={epochToUTC(timestamp)} />
           </span>
         </BTooltip>
       </span>
