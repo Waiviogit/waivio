@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEqual, sortBy } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Rate } from 'antd';
@@ -6,15 +6,18 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
-import { getRatingFields } from '../../../reducers';
+import { getObjectAdmins, getObjectModerators, getRatingFields } from '../../../reducers';
 import BTooltip from '../../BTooltip';
 import RateObjectModal from './RateObjectModal';
-import './RateInfo.less';
 import { calculateApprovePercent } from '../../../helpers/wObjectHelper';
+
+import './RateInfo.less';
 
 @injectIntl
 @connect(state => ({
   ratingFields: getRatingFields(state),
+  moderators: getObjectAdmins(state),
+  admins: getObjectModerators(state),
 }))
 class RateInfo extends React.Component {
   static propTypes = {
@@ -23,6 +26,8 @@ class RateInfo extends React.Component {
     authorPermlink: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
+    admins: PropTypes.arrayOf(PropTypes.string).isRequired,
+    moderators: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
   static defaultProps = {
@@ -35,7 +40,7 @@ class RateInfo extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(this.props.ratingFields, nextProps.ratingFields) || this.state !== nextState;
+    return !isEqual(this.props.ratingFields, nextProps.ratingFields) || this.state !== nextState;
   }
 
   getInitialRateValue = field => {
@@ -73,10 +78,12 @@ class RateInfo extends React.Component {
   };
 
   render() {
-    const { ratingFields, username } = this.props;
-    const rankingList = _.sortBy(ratingFields, ['body']);
+    const { ratingFields, username, admins, moderators } = this.props;
+    const rankingList = sortBy(ratingFields, ['body']);
     const actualRankingList = rankingList.filter(
-      rate => calculateApprovePercent(rate.active_votes) >= 70 && rate.locale === this.props.locale,
+      rate =>
+        calculateApprovePercent(rate.active_votes, rate.weight, { admins, moderators }) >= 70 &&
+        rate.locale === this.props.locale,
     );
 
     return (
