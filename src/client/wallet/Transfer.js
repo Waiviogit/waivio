@@ -100,17 +100,12 @@ export default class Transfer extends React.Component {
   };
 
   componentDidMount() {
-    const { cryptosPriceHistory } = this.props;
-    const currentSteemRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+    const { cryptosPriceHistory, getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
+    const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
+    const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
 
-    if (isNull(currentSteemRate)) {
-      this.props.getCryptoPriceHistory(HIVE.coinGeckoId);
-    }
-
-    if (isNull(currentSBDRate)) {
-      this.props.getCryptoPriceHistory(HBD.coinGeckoId);
-    }
+    if (isNull(currentHiveRate) || isNull(currentHBDRate))
+      getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentWillReceiveProps(nextProps) {
