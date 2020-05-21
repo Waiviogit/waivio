@@ -59,28 +59,35 @@ export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
 //   });
 // };
 
-export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
-  if (refresh) dispatch(refreshCryptoPriceHistory(symbol));
+export const getCryptoPriceHistory = (symbols, refresh = false) => dispatch => {
+  if (refresh) symbols.forEach(symbol => dispatch(refreshCryptoPriceHistory(symbol)));
 
   dispatch({
     type: GET_CRYPTO_PRICE_HISTORY.ACTION,
     payload: {
-      promise: ApiClient.getWalletCryptoPriceHistory(symbol).then(response => {
-        const { usd, usd_24h_change: usdChange, btc, btc_24h_change: btcChange } = response.current[
-          symbol
-        ];
-        const usdPriceHistory = { usd, usd_24h_change: usdChange };
-        const btcPriceHistory = { btc, btc_24h_change: btcChange };
-        const priceDetails = response.weekly
-          .map(elem => ({ usd: elem[symbol].usd, createdAt: elem.createdAt }))
-          .reverse();
+      promise: ApiClient.getWalletCryptoPriceHistory(symbols).then(response => {
+        const storeObject = {};
+        Object.keys(response.current).forEach(key => {
+          const {
+            usd,
+            usd_24h_change: usdChange,
+            btc,
+            btc_24h_change: btcChange,
+          } = response.current[key];
+          const usdPriceHistory = { usd, usd_24h_change: usdChange };
+          const btcPriceHistory = { btc, btc_24h_change: btcChange };
+          const priceDetails = response.weekly
+            .map(elem => ({ usd: elem[key].usd, createdAt: elem.createdAt }))
+            .reverse();
 
-        return {
-          usdPriceHistory,
-          btcPriceHistory,
-          priceDetails,
-          symbol,
-        };
+          storeObject[key] = {
+            usdPriceHistory,
+            btcPriceHistory,
+            priceDetails,
+          };
+        });
+
+        return storeObject;
       }),
     },
   });

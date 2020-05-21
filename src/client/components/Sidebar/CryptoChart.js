@@ -6,39 +6,27 @@ import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
 import { LineChart } from 'react-easy-chart';
 import { getCryptosPriceHistory, getLocale, getIsMobile } from '../../reducers';
-import { getCryptoPriceHistory, setIsMobile } from '../../app/appActions';
 import { getCryptoDetails, getCurrentDaysOfTheWeek } from '../../helpers/cryptosHelper';
 import USDDisplay from '../Utils/USDDisplay';
 import Loading from '../Icon/Loading';
 
-@connect(
-  state => ({
-    cryptosPriceHistory: getCryptosPriceHistory(state),
-    locale: getLocale(state),
-    isMobile: getIsMobile(state),
-  }),
-  {
-    getCryptoPriceHistory,
-    setIsMobile,
-  },
-)
+@connect(state => ({
+  cryptosPriceHistory: getCryptosPriceHistory(state),
+  locale: getLocale(state),
+  isMobile: getIsMobile(state),
+}))
 class CryptoChart extends React.Component {
   static propTypes = {
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    getCryptoPriceHistory: PropTypes.func.isRequired,
-    refreshCharts: PropTypes.bool,
     crypto: PropTypes.string,
     locale: PropTypes.string,
     isMobile: PropTypes.bool.isRequired,
-    setIsMobile: PropTypes.func,
   };
 
   static defaultProps = {
-    refreshCharts: false,
     crypto: '',
     locale: '',
     isMobile: false,
-    setIsMobile: () => {},
   };
 
   constructor(props) {
@@ -57,32 +45,6 @@ class CryptoChart extends React.Component {
         x: '',
       },
     };
-  }
-
-  componentDidMount() {
-    const { currentCrypto } = this.state;
-    if (!_.isEmpty(currentCrypto)) {
-      this.props.getCryptoPriceHistory(currentCrypto.coinGeckoId);
-    }
-
-    this.props.setIsMobile();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const currentCrypto = getCryptoDetails(nextProps.crypto);
-    const isDifferentCrypto = this.props.crypto !== nextProps.crypto;
-    if (isDifferentCrypto || nextProps.refreshCharts) {
-      this.setState(
-        {
-          currentCrypto,
-        },
-        () => this.props.getCryptoPriceHistory(currentCrypto.coinGeckoId, true),
-      );
-    } else {
-      this.setState({
-        currentCrypto,
-      });
-    }
   }
 
   toggleDisplayChart() {
