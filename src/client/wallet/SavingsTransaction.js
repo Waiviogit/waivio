@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
+import { epochToUTC } from '../helpers/formatter';
 
 const getSavingsTransactionMessage = (transactionType, transactionDetails, amount) => {
   switch (transactionType) {
@@ -72,12 +73,12 @@ const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, am
         <BTooltip
           title={
             <span>
-              <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
           }
         >
           <span>
-            <FormattedRelative value={`${timestamp}Z`} />
+            <FormattedRelative value={epochToUTC(timestamp)} />
           </span>
         </BTooltip>
       </span>

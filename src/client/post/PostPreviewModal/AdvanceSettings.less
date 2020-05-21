@@ -13,21 +13,32 @@
     font-weight: 500;
     padding-right: @padding;
   }
+
   &__control {
     flex-grow: 1;
+
     .ant-select {
       width: 100%;
+    }
+  }
+
+  &__guest {
+    margin-top: 10px;
+
+    span {
+      font-weight: bold;
     }
   }
 }
 
 .rewards-settings__dropdown.ant-select-dropdown {
-  z-index: @backtop-z-index!important;
+  z-index: @backtop-z-index !important;
 }
 
 .beneficiary-settings,
 .upvote-settings {
   padding-top: @padding;
+
   .ant-checkbox-wrapper {
     .ant-checkbox {
       top: -0.2em;
@@ -150,19 +161,23 @@
     .weight-buffer {
       width: 100%;
       padding: 0 5px 5px 5px;
+
       &.hide {
         visibility: hidden;
       }
+
       &.validation-error {
         border: 1px solid @red;
         box-shadow: 0 0 3px @orange, 0 0 5px @red;
       }
     }
   }
+
   &__buffer-validation-msg {
     color: @red-danger;
     text-align: right;
   }
+
   &__item {
     .obj-item-name {
       padding-left: 6px;

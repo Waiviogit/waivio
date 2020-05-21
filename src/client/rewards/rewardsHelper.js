@@ -328,7 +328,7 @@ export const getProcessingFee = data => {
     case 'referral_server_fee':
       return {
         name: 'Referral',
-        account: 'pacificgifts.acc',
+        account: 'waivio.referrals',
         ...amounts,
       };
     case 'campaign_server_fee':

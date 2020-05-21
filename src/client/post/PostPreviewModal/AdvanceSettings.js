@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
 import { getAutoCompleteSearchResults } from '../../reducers';
@@ -84,7 +85,7 @@ class AdvanceSettings extends Component {
                 value={reward}
                 dropdownClassName="rewards-settings__dropdown"
                 onChange={this.handleRewardChange}
-                disabled={isUpdating}
+                disabled={isUpdating || isGuest}
               >
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
@@ -104,18 +105,43 @@ class AdvanceSettings extends Component {
               </Select>
             </div>
           </div>
-          <div className="upvote-settings">
-            <Checkbox
-              checked={!isGuest ? upvote : false}
-              onChange={this.handleUpvoteChange}
-              disabled={isUpdating || isGuest}
-            >
-              {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
-            </Checkbox>
-          </div>
-          {!isUpdating && (
+          {!isGuest && (
+            <div className="upvote-settings">
+              <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
+                {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
+              </Checkbox>
+            </div>
+          )}
+          {!isUpdating && !isGuest && (
             <div className="beneficiary-settings">
               <BeneficiariesWeights intl={intl} />
+            </div>
+          )}
+          {isGuest && (
+            <div>
+              <div className="rewards-settings__guest">
+                <span>
+                  {intl.formatMessage({
+                    id: 'beneficiaries-weights',
+                    defaultMessage: 'Beneficiaries',
+                  })}
+                  :
+                </span>{' '}
+                {intl.formatMessage(
+                  {
+                    id: 'add_waivio_beneficiary',
+                    defaultMessage: 'Share {share}% of this post rewards with Waivio',
+                  },
+                  { share: BENEFICIARY_PERCENT / 100 },
+                )}
+              </div>
+              <div className="rewards-settings__guest">
+                <span>{intl.formatMessage({ id: 'note', defaultMessage: 'Note' })}:</span>{' '}
+                {intl.formatMessage({
+                  id: 'guest_accounts',
+                  defaultMessage: 'Guest accounts can not change these settings',
+                })}
+              </div>
             </div>
           )}
           <ObjectWeights

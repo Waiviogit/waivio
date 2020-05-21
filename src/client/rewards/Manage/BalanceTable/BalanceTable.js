@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './BalanceTable.less';
 
 const BalanceTable = props => {
-  const { intl, budgetTotal, user } = props;
+  const { intl, budgetTotal, user, isGuest, guestBalance } = props;
   const balance = parseFloat(user.balance);
   const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
   const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
@@ -22,7 +22,7 @@ const BalanceTable = props => {
       <tbody>
         <tr>
           <td>
-            <FormattedNumber value={balance} />
+            <FormattedNumber value={isGuest ? guestBalance : balance} />
           </td>
           <td>{payable}</td>
           <td>{reserved}</td>
@@ -37,12 +37,16 @@ BalanceTable.propTypes = {
   budgetTotal: PropTypes.shape(),
   user: PropTypes.shape(),
   intl: PropTypes.shape(),
+  isGuest: PropTypes.bool,
+  guestBalance: PropTypes.number,
 };
 
 BalanceTable.defaultProps = {
   budgetTotal: {},
   user: {},
   intl: {},
+  isGuest: false,
+  guestBalance: null,
 };
 
 export default BalanceTable;
