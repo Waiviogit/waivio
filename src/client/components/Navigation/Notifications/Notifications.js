@@ -18,6 +18,7 @@ import NotificationFillOrder from './NotificationFillOrder';
 import './Notification.less';
 import './Notifications.less';
 import Loading from '../../Icon/Loading';
+import NotificationRejectUpdate from './NotificationRejectUpdate';
 
 const displayLimit = 6;
 
@@ -239,6 +240,15 @@ class Notifications extends React.Component {
               case notificationConstants.FILL_ORDER:
                 return (
                   <NotificationFillOrder
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.REJECT_UPDATE:
+                return (
+                  <NotificationRejectUpdate
                     key={key}
                     notification={notification}
                     read={read}
