@@ -152,7 +152,7 @@ class ReportsForm extends Component {
 
   disabledStartDate = date => {
     const dateTill = this.props.form.getFieldValue('till');
-    return moment(date) > moment(dateTill).add(1, 'day');
+    return moment(date) > moment(dateTill);
   };
 
   disabledEndDate = date => {
