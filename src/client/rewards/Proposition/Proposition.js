@@ -30,15 +30,10 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
-  isAssign,
 }) => {
-  console.log('proposition', proposition);
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
   const isEligible = getEligibility(proposition);
-  console.log('isEligible', isEligible);
-  console.log('isAssign', isAssign);
-  console.log('assigned', assigned);
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -80,7 +75,6 @@ const Proposition = ({
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
-    console.log();
     reserveActivatedCampaign(reserveData)
       .then(() =>
         assignProposition({
@@ -193,7 +187,7 @@ const Proposition = ({
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
-        isAssign={isAssign}
+        isEligible={isEligible}
       />
     </div>
   );
