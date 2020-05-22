@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, map, get } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -21,7 +21,6 @@ import {
   setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
-import { discoverObjectsContentTypes } from '../../investarena/constants/objectsInvestarena';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
