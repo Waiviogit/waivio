@@ -33,11 +33,11 @@ const TransferTransaction = ({ to, memo, amount, timestamp, type, isGuestUser })
           {isGuestUser ? (
             <div
               className={classNames({
-                UserWalletTransactions__transfer: typeToGuest,
-                UserWalletTransactions__received: typeDemo,
+                UserWalletTransactions__transfer: typeDemo,
+                UserWalletTransactions__received: typeToGuest,
               })}
             >
-              {typeDemo ? '+ ' : '- '}
+              {typeDemo ? '- ' : '+ '}
               {amount}
             </div>
           ) : (
