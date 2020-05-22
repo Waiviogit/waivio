@@ -207,6 +207,7 @@ const AppendObjButtons = ({
         append
         post={post}
         user={userName}
+        setTabs={setKey}
       />
     </div>
   );

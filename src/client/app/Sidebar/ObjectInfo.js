@@ -277,8 +277,7 @@ class ObjectInfo extends React.Component {
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
         : [];
       address = compact(addressArr).join(', ');
-
-      description = getFieldWithMaxWeight(wobject, objectFields.description);
+      description = getApprovedField(wobject, 'description', usedLocale);
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
       background = getFieldWithMaxWeight(wobject, objectFields.background);
 
@@ -511,7 +510,8 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+        {description &&
+          listItem(objectFields.description, <DescriptionInfo description={description} />)}
         {listItem(
           objectFields.rating,
           <RateInfo
