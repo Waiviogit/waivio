@@ -41,7 +41,7 @@ const CheckReviewModal = ({
 }) => {
   const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
   const secondaryObject = linkedObjects.find(
-    obj => obj.name === get(postRequirements, ['secondaryObject', 'name']),
+    obj => obj.id === get(postRequirements, ['secondaryObject', 'author_permlink']),
   );
   const primaryObject = linkedObjects.find(obj => obj.id === postRequirements.primaryObject);
   const hasMinPhotos =
