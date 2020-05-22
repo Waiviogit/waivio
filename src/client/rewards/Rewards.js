@@ -386,22 +386,24 @@ class Rewards extends React.Component {
             ),
         );
       }
+      console.log('propositions', propositions);
 
       return map(propositions, proposition =>
         map(
           proposition.objects,
           wobj =>
-            wobj.author_permlink && (
+            wobj.object &&
+            wobj.object.author_permlink && (
               <Proposition
                 guide={proposition.guide}
                 proposition={proposition}
-                wobj={wobj}
+                wobj={wobj.object}
                 assignCommentPermlink={wobj.permlink}
                 assignProposition={this.assignPropositionHandler}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${wobj.author_permlink}`}
+                key={`${wobj.object.author_permlink}`}
                 assigned={wobj.assigned}
                 history={this.props.history}
                 isAssign={isAssign}
