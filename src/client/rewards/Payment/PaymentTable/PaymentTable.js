@@ -38,7 +38,7 @@ const PaymentTable = ({ intl, sponsors, isReports }) => (
     <tbody>
       {_.map(sponsors, sponsor => (
         // eslint-disable-next-line no-underscore-dangle
-        <PaymentTableRow key={sponsor._id} sponsor={sponsor} />
+        <PaymentTableRow key={sponsor._id} sponsor={sponsor} isReports={isReports} />
       ))}
     </tbody>
   </table>

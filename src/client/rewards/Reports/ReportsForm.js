@@ -119,7 +119,7 @@ class ReportsForm extends Component {
 
   prepareSubmitData = (data, userName) => {
     const objects = get(data, ['objects']);
-    const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
+    const objectsNames = map(objects, obj => get(obj, 'author_permlink'));
     const startDate = data.from ? moment(data.from.format('X')) : '';
     const endDate = data.till ? moment(data.till.format('X')) : '';
     const objectsNamesAndPermlinks =
