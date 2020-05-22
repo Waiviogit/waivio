@@ -196,6 +196,7 @@ const broadcastComment = (
 };
 
 export function createPost(postData) {
+  debugger;
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
