@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { useDispatch } from 'react-redux';
-import {Tag} from 'antd';
+import { Tag } from 'antd';
 
 import { injectIntl, FormattedMessage } from 'react-intl';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -23,20 +23,23 @@ const Discover = ({ intl, match, history }) => {
     <div className="shifted">
       <Helmet>
         <title>
-          {intl.formatMessage({id: 'discover_more_people', defaultMessage: 'discover_more_people'})}{' '}
+          {intl.formatMessage({
+            id: 'discover_more_people',
+            defaultMessage: 'discover_more_people',
+          })}{' '}
           - InvestArena
         </title>
       </Helmet>
       <div className="feed-layout container">
         <Affix className="leftContainer" stickPosition={116}>
           <div className="left">
-            <LeftSidebar/>
+            <LeftSidebar />
           </div>
         </Affix>
         <div className="Discover">
           <div className="Discover__title">
             <h1>
-              <FormattedMessage id="discover_more_people" defaultMessage="Discover more people"/>
+              <FormattedMessage id="discover_more_people" defaultMessage="Discover more people" />
             </h1>
             <FormattedMessage
               id="discover_more_people_info"
@@ -56,7 +59,7 @@ const Discover = ({ intl, match, history }) => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 Discover.propTypes = {
@@ -66,6 +69,7 @@ Discover.propTypes = {
       search: PropTypes.string,
     }),
   }).isRequired,
-  history: PropTypes.shape().isRequired,};
+  history: PropTypes.shape().isRequired,
+};
 
 export default injectIntl(Discover);

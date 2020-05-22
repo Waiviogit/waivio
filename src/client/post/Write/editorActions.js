@@ -3,6 +3,7 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
+import { get } from 'lodash';
 import {
   BENEFICIARY_ACCOUNT,
   BENEFICIARY_PERCENT,
@@ -16,6 +17,7 @@ import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { getAuthenticatedUserName } from '../../reducers';
 import { attachPostInfo } from '../../helpers/postHelpers';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -268,7 +270,21 @@ export function createPost(postData) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
 
-                  dispatch(push(`/@${authUser.name}`));
+                  const lala = setInterval(() => {
+                    getUserProfileBlog(authUser.name, {})
+                      .then(posts => {
+                        const lastPost = get(posts, '[0].permlink');
+                        if (lastPost === permlink) {
+                          dispatch(notify('Your post is published', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        } else {
+                          dispatch(notify('Your post will be posted soon', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        }
+                      })
+                      .catch(err => err);
+                  }, 5000);
+                  setTimeout(() => clearInterval(lala), 6000);
 
                   if (window.analytics) {
                     window.analytics.track('Post', {
@@ -278,7 +294,7 @@ export function createPost(postData) {
                     });
                   }
 
-                  return result;
+                  return result && lala;
                 }
 
                 result.json().then(err => {
