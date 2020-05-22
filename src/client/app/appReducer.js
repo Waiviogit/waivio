@@ -102,7 +102,6 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
-      const { symbol, usdPriceHistory, btcPriceHistory, priceDetails } = action.payload;
       // const usdPriceHistoryByClose = map(usdPriceHistory.Data, data => data.close);
       // const btcPriceHistoryByClose = map(btcPriceHistory.Data, data => data.close);
       // const priceDetails = getCryptoPriceIncreaseDetails(
@@ -116,11 +115,7 @@ export default (state = initialState, action) => {
         ...state,
         cryptosPriceHistory: {
           ...state.cryptosPriceHistory,
-          [symbol]: {
-            usdPriceHistory,
-            btcPriceHistory,
-            priceDetails,
-          },
+          ...action.payload,
         },
       };
     }

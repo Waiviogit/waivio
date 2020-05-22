@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import './BalanceTable.less';
 
 const BalanceTable = props => {
-  const { intl, budgetTotal } = props;
+  const { intl, budgetTotal, isGuest, guestBalance } = props;
   const balance = budgetTotal.account_amount ? budgetTotal.account_amount : '0.000';
   const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable : '0.000';
   const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved : '0.000';
@@ -22,7 +22,7 @@ const BalanceTable = props => {
       {!isEmpty(budgetTotal) && (
         <tbody>
           <tr>
-            <td>{balance}</td>
+            <td>{isGuest ? guestBalance : balance}</td>
             <td>{payable}</td>
             <td>{reserved}</td>
             <td>{remaining}</td>
@@ -36,12 +36,16 @@ const BalanceTable = props => {
 BalanceTable.propTypes = {
   budgetTotal: PropTypes.shape(),
   intl: PropTypes.shape(),
+  isGuest: PropTypes.bool,
+  guestBalance: PropTypes.number,
 };
 
 BalanceTable.defaultProps = {
   budgetTotal: {},
   user: {},
   intl: {},
+  isGuest: false,
+  guestBalance: null,
 };
 
 export default BalanceTable;

@@ -20,6 +20,15 @@ export function handleErrors(response) {
   return response;
 }
 
+export function handleErrorReserve(response) {
+  if (response.ok) {
+    return response;
+  }
+  return response.json().then(data => {
+    throw Error(data.message);
+  });
+}
+
 export function handleValidateCampaignErrors(response) {
   if (!response.ok) {
     return response.json().then(data => Promise.reject(data));
@@ -664,7 +673,7 @@ export const reserveActivatedCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
-      .then(handleErrors)
+      .then(handleErrorReserve)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -1081,9 +1090,9 @@ export const setUserStatus = user => {
   }).then(res => res.json());
 };
 
-export const getWalletCryptoPriceHistory = symbol => {
+export const getWalletCryptoPriceHistory = symbols => {
   return fetch(
-    `${config.currenciesApiPrefix}${config.market}?ids=${symbol}&currencies=usd&currencies=btc`,
+    `${config.currenciesApiPrefix}${config.market}?ids=${symbols[0]}&ids=${symbols[1]}&currencies=usd&currencies=btc`,
     {
       headers,
       method: 'GET',
@@ -1113,7 +1122,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 5) => {
+export const getTransferHistory = (username, skip = 0, limit = 20) => {
   return fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
