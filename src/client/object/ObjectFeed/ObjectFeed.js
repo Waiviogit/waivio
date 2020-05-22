@@ -54,7 +54,7 @@ export default class ObjectFeed extends React.Component {
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
-    currentProposition: PropTypes.shape(),
+    currentProposition: PropTypes.arrayOf(PropTypes.shape()),
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
