@@ -257,7 +257,6 @@ export function createPost(postData) {
           )
             // eslint-disable-next-line consistent-return
             .then(result => {
-              dispatch(notify('Your post will be posted soon', 'success'));
               if (isGuest) {
                 if (result.ok) {
                   if (draftId) {
@@ -270,21 +269,24 @@ export function createPost(postData) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
 
-                  const lala = setInterval(() => {
-                    getUserProfileBlog(authUser.name, {})
-                      .then(posts => {
-                        const lastPost = get(posts, '[0].permlink');
-                        if (lastPost === permlink) {
-                          dispatch(notify('Your post is published', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        } else {
-                          dispatch(notify('Your post will be posted soon', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        }
-                      })
-                      .catch(err => err);
-                  }, 5000);
-                  setTimeout(() => clearInterval(lala), 6000);
+                  // eslint-disable-next-line func-names
+                  (function() {
+                    const waitingPost = setInterval(() => {
+                      getUserProfileBlog(authUser.name, {})
+                        .then(posts => {
+                          const lastPost = get(posts, '[0].permlink');
+                          if (lastPost === permlink) {
+                            dispatch(notify('Your post is published', 'success'));
+                            dispatch(push(`/@${authUser.name}`));
+                          } else {
+                            dispatch(notify('Your post will be posted soon', 'success'));
+                            dispatch(push(`/@${authUser.name}`));
+                          }
+                        })
+                        .catch(err => err);
+                    }, 5000);
+                    setTimeout(() => clearInterval(waitingPost), 6000);
+                  })();
 
                   if (window.analytics) {
                     window.analytics.track('Post', {
@@ -294,7 +296,7 @@ export function createPost(postData) {
                     });
                   }
 
-                  return result && lala;
+                  return result;
                 }
 
                 result.json().then(err => {
