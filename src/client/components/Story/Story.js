@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil, some } from 'lodash';
 import {

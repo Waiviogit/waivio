@@ -209,7 +209,7 @@ class CreateObject extends React.Component {
           >
             <span>
               {intl.formatMessage({
-                id: 'value_placeholder',
+                id: 'topic_name',
                 defaultMessage: 'Topic name',
               })}
             </span>

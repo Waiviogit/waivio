@@ -6,7 +6,7 @@ import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } fro
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 
-const TransferTransaction = ({ to, memo, amount, timestamp, type }) => {
+const TransferTransaction = ({ to, memo, amount, timestamp, type, isGuestUser }) => {
   const typeToGuest = type === 'user_to_guest_transfer';
   const typeDemo = type === 'demo_user_transfer';
 
@@ -30,15 +30,22 @@ const TransferTransaction = ({ to, memo, amount, timestamp, type }) => {
               }}
             />
           </div>
-          <div
-            className={classNames({
-              UserWalletTransactions__transfer: typeToGuest,
-              UserWalletTransactions__received: typeDemo,
-            })}
-          >
-            {typeDemo ? '+ ' : '- '}
-            {amount}
-          </div>
+          {isGuestUser ? (
+            <div
+              className={classNames({
+                UserWalletTransactions__transfer: typeDemo,
+                UserWalletTransactions__received: typeToGuest,
+              })}
+            >
+              {typeDemo ? '- ' : '+ '}
+              {amount}
+            </div>
+          ) : (
+            <div className="UserWalletTransactions__transfer">
+              {'- '}
+              {amount}
+            </div>
+          )}
         </div>
         <span className="UserWalletTransactions__timestamp">
           <BTooltip
@@ -65,6 +72,7 @@ TransferTransaction.propTypes = {
   amount: PropTypes.element,
   timestamp: PropTypes.string,
   type: PropTypes.string,
+  isGuestUser: PropTypes.bool,
 };
 
 TransferTransaction.defaultProps = {
@@ -73,6 +81,7 @@ TransferTransaction.defaultProps = {
   amount: <span />,
   timestamp: '',
   type: '',
+  isGuestUser: false,
 };
 
 export default TransferTransaction;

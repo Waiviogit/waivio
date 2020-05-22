@@ -124,6 +124,7 @@ export default class Wobj extends React.Component {
     const { authenticatedUserName, match } = this.props;
     if (prevProps.match.params.name !== match.params.name) {
       this.props.getObjectInfo(match.params.name, authenticatedUserName);
+      this.setState({ isEditMode: false });
     }
   }
 

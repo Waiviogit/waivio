@@ -35,6 +35,8 @@ export const LOGOUT = '@auth/LOGOUT';
 
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
+export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
+
 const loginError = createAction(LOGIN_ERROR);
 
 export const getGuestBalance = async username =>
@@ -71,6 +73,24 @@ export const logout = () => (dispatch, getState, { busyAPI }) => {
   busyAPI.sendAsync('unsubscribe', [accessToken]);
   dispatch(logoutWithoutBroker());
   dispatch(disconnectBroker());
+};
+
+export const guestBalanceOnReload = () => (dispatch, getState) => {
+  const state = getState();
+  const username = state.auth.user.name;
+  const promise = new Promise(async (resolve, reject) => {
+    try {
+      const getBalance = await getGuestBalance(username);
+      resolve({ isGuestBalance: getBalance });
+    } catch (e) {
+      reject(e);
+    }
+  });
+
+  return dispatch({
+    type: UPDATE_GUEST_BALANCE.ACTION,
+    payload: promise,
+  });
 };
 
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
@@ -122,6 +142,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   if (socialNetwork === 'beaxy')
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();
+  let username = null;
 
   let promise = Promise.resolve(null);
 
@@ -134,7 +155,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
       try {
         const tokenData = await setToken(oAuthToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        const username = tokenData.userData.name;
+        username = tokenData.userData.name;
         const getBalance = await getGuestBalance(username);
         resolve({
           account: tokenData.userData,
@@ -160,7 +181,8 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
         if (isGuest && getIsBeaxyUser(scUserData.account)) {
           waivioAPI.guestAuthProvider = scUserData.account.provider; // eslint-disable-line
         }
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
+        const getBalance = await getGuestBalance(username);
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest, isGuestBalance: getBalance });
       } catch (e) {
         reject(e);
       }

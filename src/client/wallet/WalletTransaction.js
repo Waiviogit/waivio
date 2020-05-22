@@ -34,6 +34,7 @@ const WalletTransaction = ({
   currentUsername,
   totalVestingShares,
   totalVestingFundSteem,
+  isGuestUser,
 }) => {
   const transactionType = transaction.op[0];
   const transactionDetails = transaction.op[1];
@@ -58,6 +59,7 @@ const WalletTransaction = ({
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
             timestamp={transaction.timestamp}
             type={type}
+            isGuestUser={isGuestUser}
           />
         );
       }
@@ -68,6 +70,7 @@ const WalletTransaction = ({
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
           timestamp={transaction.timestamp}
           type={type}
+          isGuestUser={isGuestUser}
         />
       );
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
@@ -102,6 +105,11 @@ WalletTransaction.propTypes = {
   currentUsername: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
+  isGuestUser: PropTypes.bool,
+};
+
+WalletTransaction.defaultProps = {
+  isGuestUser: false,
 };
 
 export default WalletTransaction;

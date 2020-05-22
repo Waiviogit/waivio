@@ -297,7 +297,7 @@ const routes = [
       },
 
       {
-        path: '/discover',
+        path: '/discover/:search?',
         exact: true,
         component: Discover,
       },

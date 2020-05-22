@@ -60,6 +60,11 @@ export default (state = initialState, action) => {
         ...state,
         isReloading: false,
       };
+    case types.UPDATE_GUEST_BALANCE.SUCCESS:
+      return {
+        ...state,
+        isGuestBalance: action.payload.isGuestBalance,
+      };
     case types.LOGOUT:
       return initialState;
     case GET_USER_METADATA.SUCCESS:

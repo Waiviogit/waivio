@@ -24,7 +24,13 @@ import {
   isGuestUser,
   isGuestBalance,
 } from './reducers';
-import { busyLogin, login, logout, getGuestBalance } from './auth/authActions';
+import {
+  busyLogin,
+  login,
+  logout,
+  getGuestBalance,
+  guestBalanceOnReload,
+} from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -79,6 +85,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     getChartsData,
     changeChatCondition,
     getGuestBalance,
+    guestBalanceOnReload,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -104,11 +111,12 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
-    // isAuthenticated: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
     getGuestBalance: PropTypes.func,
+    guestBalanceOnReload: PropTypes.func,
   };
 
   static defaultProps = {
@@ -135,6 +143,7 @@ export default class Wrapper extends React.PureComponent {
     isGuest: false,
     balance: null,
     getGuestBalance: () => {},
+    guestBalanceOnReload: () => {},
   };
 
   static async fetchData({ store, req }) {
@@ -170,6 +179,7 @@ export default class Wrapper extends React.PureComponent {
     };
   }
 
+  // eslint-disable-next-line consistent-return
   componentDidMount() {
     this.props.login().then(() => {
       batch(() => {
@@ -193,6 +203,16 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRate();
       this.props.getChartsData();
     });
+
+    if (this.props.isAuthenticated) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          this.props.guestBalanceOnReload();
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {

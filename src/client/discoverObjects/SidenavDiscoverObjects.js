@@ -6,38 +6,47 @@ import { getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import SidebarMenu from '../components/Sidebar/SidebarMenu/SidebarMenu';
 
-const menuSections = {
+const objectsMenuSections = {
   HASHTAGS: 'Hashtags',
   CRYPTOPAIRS: 'Crypto pairs',
   CRYPTOCURRENCIES: 'Cryptocurrencies',
 };
-const menuConfig = {
-  [menuSections.HASHTAGS]: {
-    name: menuSections.HASHTAGS,
+const objectMenuConfig = {
+  [objectsMenuSections.HASHTAGS]: {
+    name: objectsMenuSections.HASHTAGS,
     intlId: 'hashtags',
     isCollapsible: false,
     linkTo: '/discover-objects/hashtag',
     items: [],
   },
-  [menuSections.CRYPTOPAIRS]: {
-    name: menuSections.CRYPTOPAIRS,
+  [objectsMenuSections.CRYPTOPAIRS]: {
+    name: objectsMenuSections.CRYPTOPAIRS,
     intlId: 'modalAssets.cryptopairs',
     isCollapsible: false,
     linkTo: '/discover-objects/cryptopairs',
     items: [],
   },
-  [menuSections.CRYPTOCURRENCIES]: {
-    name: menuSections.CRYPTOCURRENCIES,
+  [objectsMenuSections.CRYPTOCURRENCIES]: {
+    name: objectsMenuSections.CRYPTOCURRENCIES,
     intlId: 'modalAssets.cryptocurrencies',
     isCollapsible: false,
     linkTo: '/discover-objects/crypto',
     items: [],
   },
 };
+const usersMenuConfig = {
+  All: {
+    name: 'All',
+    intlId: 'all',
+    isCollapsible: false,
+    linkTo: '/discover',
+    items: [],
+  },
+};
 
 const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile }) => {
-  // redux-store
   const isLoading = useSelector(getObjectTypesLoading);
+
   return (
     <div className="sidenav-discover-objects Sidenav">
       {withTitle && (
@@ -55,9 +64,31 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
         />
       ) : (
         <SidebarMenu
-          menuConfig={menuConfig}
+          menuConfig={objectMenuConfig}
           toggleMobileNavigation={toggleMobileNavigation}
           isMobile={isMobile}
+          users
+        />
+      )}
+      {withTitle && (
+        <div className="Sidenav__section-title">
+          <FormattedMessage id="users" defaultMessage="users" />:
+        </div>
+      )}
+      {isLoading ? (
+        <SkeletonCustom
+          className="sidenav-discover-objects__loading"
+          isLoading={isLoading}
+          randomWidth
+          rows={10}
+          width={170}
+        />
+      ) : (
+        <SidebarMenu
+          menuConfig={usersMenuConfig}
+          toggleMobileNavigation={toggleMobileNavigation}
+          isMobile={isMobile}
+          users
         />
       )}
     </div>

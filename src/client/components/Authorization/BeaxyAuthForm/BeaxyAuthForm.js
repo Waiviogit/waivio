@@ -64,11 +64,15 @@ const BeaxyAuthForm = ({
       dispatch(onAuthSuccessAction({ user, token, expiration }, { ...payload, umSession }));
     }
 
-    message.success(
-      intl.formatMessage({
-        id: 'broker_modal_broker_connected_successfully',
-        defaultMessage: 'Beaxy connection established successfully',
-      }),
+    setTimeout(
+      () =>
+        message.success(
+          intl.formatMessage({
+            id: 'broker_modal_broker_connected_successfully',
+            defaultMessage: 'Beaxy connection established successfully',
+          }),
+        ),
+      1000,
     );
   };
 
