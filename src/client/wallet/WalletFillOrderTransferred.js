@@ -18,9 +18,10 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp }) => (
           <div>
             <FormattedMessage
               id="fillOrder_wallet_transferred"
-              defaultMessage="You transferred {current_pays}"
+              defaultMessage="You sold {current_pays} to {exchanger}"
               values={{
                 current_pays: <span>{transactionDetails.current_pays}</span>,
+                exchanger: <span>{transactionDetails.exchanger}</span>,
               }}
             />
           </div>
@@ -51,11 +52,13 @@ WalletFillOrderTransferred.propTypes = {
   transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   timestamp: PropTypes.number,
   current_pays: PropTypes.string,
+  exchanger: PropTypes.string,
 };
 
 WalletFillOrderTransferred.defaultProps = {
   timestamp: 0,
   current_pays: '',
+  exchanger: '',
 };
 
 export default WalletFillOrderTransferred;
