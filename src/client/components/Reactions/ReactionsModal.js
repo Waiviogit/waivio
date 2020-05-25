@@ -16,6 +16,7 @@ class ReactionsModal extends React.Component {
     append: PropTypes.bool,
     post: PropTypes.shape({}),
     user: PropTypes.string,
+    setTabs: PropTypes.func,
   };
 
   static defaultProps = {
@@ -30,15 +31,21 @@ class ReactionsModal extends React.Component {
     post: {},
     moderatorsList: [],
     user: '',
+    setTabs: () => {},
   };
 
   state = {
     visible: false,
+    tabKey: '1',
   };
 
+  setTabKey = key => this.setState({ tabKey: key });
+
   render() {
-    const { upVotes, downVotes, ratio, tab, user } = this.props;
+    const { upVotes, downVotes, ratio, user, setTabs, tab, append } = this.props;
     const tabs = [];
+    const currentSetter = append ? setTabs : this.setTabKey;
+    const currentKey = append ? tab : this.state.tabKey;
 
     if (upVotes.length > 0) {
       tabs.push(
@@ -83,7 +90,9 @@ class ReactionsModal extends React.Component {
         onCancel={this.props.onClose}
       >
         {this.props.append && <ApprovingCard post={this.props.post} modal />}
-        <Tabs activeKey={tab}>{tabs}</Tabs>
+        <Tabs onTabClick={key => currentSetter(key)} activeKey={currentKey}>
+          {tabs}
+        </Tabs>
       </Modal>
     );
   }

@@ -73,7 +73,6 @@ export default class ProfileSettings extends React.Component {
     user: PropTypes.shape(),
     history: PropTypes.shape(),
     reload: PropTypes.func,
-    reloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -85,7 +84,6 @@ export default class ProfileSettings extends React.Component {
     isGuest: false,
     updateProfile: () => {},
     reload: () => {},
-    reloading: false,
   };
 
   constructor(props) {
@@ -107,6 +105,7 @@ export default class ProfileSettings extends React.Component {
       isCover: false,
       isAvatar: false,
       lastAccountUpdate: moment(props.user.updatedAt).unix(),
+      isLoading: false,
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -174,17 +173,22 @@ export default class ProfileSettings extends React.Component {
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
               reload();
-              message.success(
-                intl.formatMessage({
-                  id: 'profile_updated',
-                  defaultMessage: 'Profile updated',
-                }),
-              );
-            })
-            .catch(e => message.error(e.message));
-        }
 
-        this.props.history.push(`/@${user.name}`);
+              setTimeout(() => {
+                message.success(
+                  intl.formatMessage({
+                    id: 'profile_updated',
+                    defaultMessage: 'Profile updated',
+                  }),
+                );
+                this.props.history.push(`/@${user.name}`);
+              }, 2000);
+            })
+            .catch(e => {
+              this.setState({ isLoading: false });
+              message.error(e.message);
+            });
+        }
       }
     });
   };
@@ -193,6 +197,8 @@ export default class ProfileSettings extends React.Component {
     e.preventDefault();
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
+
+    this.setState({ isLoading: true });
 
     if (isGuest && !isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, avatarImage[0].src, intl)
@@ -256,7 +262,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   render() {
-    const { intl, form, reloading } = this.props;
+    const { intl, form } = this.props;
     const {
       bodyHTML,
       isModal,
@@ -269,7 +275,6 @@ export default class ProfileSettings extends React.Component {
       coverPicture,
     } = this.state;
     const { getFieldDecorator } = form;
-
     const socialInputs = socialProfiles.map(profile => (
       <FormItem key={profile.id}>
         {getFieldDecorator(profile.id, {
@@ -491,7 +496,7 @@ export default class ProfileSettings extends React.Component {
                   big
                   type="submit"
                   disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
-                  loading={reloading}
+                  loading={this.state.isLoading}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>

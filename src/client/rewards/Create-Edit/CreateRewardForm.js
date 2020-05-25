@@ -93,10 +93,16 @@ class CreateRewardForm extends React.Component {
 
       let combinedObjects;
       let sponsors;
-
+      const secondaryObjectsPermlinks = campaign.objects
+        ? map(campaign.objects, obj => obj.author_permlink)
+        : [];
       if (!isEmpty(campaign.match_bots)) {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [...campaign.match_bots, campaign.requiredObject, ...campaign.objects],
+          authorPermlinks: [
+            ...campaign.match_bots,
+            campaign.requiredObject.author_permlink,
+            ...secondaryObjectsPermlinks,
+          ],
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
@@ -104,16 +110,16 @@ class CreateRewardForm extends React.Component {
         );
       } else {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [campaign.requiredObject, ...campaign.objects],
+          authorPermlinks: [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks],
         });
       }
 
       const primaryObject = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.requiredObject,
+        wobj => wobj.author_permlink === campaign.requiredObject.author_permlink,
       );
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.objects, wobj.author_permlink),
+        includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
