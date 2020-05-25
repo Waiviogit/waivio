@@ -283,7 +283,8 @@ export default class ObjectFeed extends React.Component {
       });
     };
     const goToProducts = () => {
-      this.props.history.push(`/rewards/All`);
+      const permlink = get(wobject, 'author_permlink');
+      this.props.history.push(`/rewards/All/${permlink}`);
     };
     const currentUSDPrice = this.getCurrentUSDPrice();
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
