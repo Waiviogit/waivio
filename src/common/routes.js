@@ -2,11 +2,20 @@ import Loadable from 'react-loadable';
 import URL from '../../src/common/constants/routing';
 import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
-import Search from '../client/search/Search';
-import Error404 from '../client/statics/Error404';
-import ExitPage from '../client/statics/ExitPage';
 import Loading from "../client/components/Icon/Loading";
 
+const Search = Loadable({
+  loader: () => import('../client/search/Search'),
+  loading: Loading
+});
+const Error404 = Loadable({
+  loader: () => import('../client/statics/Error404'),
+  loading: Loading
+});
+const ExitPage = Loadable({
+  loader: () => import('../client/statics/ExitPage'),
+  loading: Loading
+});
 const User = Loadable({
   loader: () => import('../client/user/User'),
   loading: Loading
