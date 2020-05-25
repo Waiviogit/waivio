@@ -9,7 +9,8 @@ export const MAXIMUM_UPLOAD_SIZE = 15728640;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
-  if (type === 'preview') return `${IMG_PROXY_SMALL}${base58.encode(new Buffer(url))}${IMG_PREVIEW}`;
+  if (type === 'preview')
+    return `${IMG_PROXY_SMALL}${base58.encode(new Buffer(url))}${IMG_PREVIEW}`;
   else if (type === 'small') return `${IMG_PROXY_SMALL}${base58.encode(new Buffer(url))}`;
 
   return `${IMG_PROXY}${url}`;

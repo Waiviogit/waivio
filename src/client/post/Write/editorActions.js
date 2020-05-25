@@ -277,16 +277,7 @@ export function createPost(postData) {
                     });
                   }
 
-                  return result;
-                }
-
-                result.json().then(err => {
-                  dispatch(notify(err.error.message || err.error_description, 'error'));
-                });
-
-                // eslint-disable-next-line func-names
-                (function() {
-                  const waitingPost = setInterval(() => {
+                  setTimeout(() => {
                     getUserProfileBlog(authUser.name, {})
                       .then(posts => {
                         const lastPost = get(posts, '[0].permlink');
@@ -299,9 +290,14 @@ export function createPost(postData) {
                         }
                       })
                       .catch(err => err);
-                  }, 5000);
-                  setTimeout(() => clearInterval(waitingPost), 6000);
-                })();
+                  }, 6000);
+
+                  return result;
+                }
+
+                result.json().then(err => {
+                  dispatch(notify(err.error.message || err.error_description, 'error'));
+                });
               } else {
                 if (draftId) {
                   batch(() => {
