@@ -113,10 +113,10 @@ export default class ObjectFeed extends React.Component {
 
   componentDidUpdate() {
     const { needUpdate } = this.state;
-    const { userName, wobject } = this.props;
+    const { userName, wobject, match } = this.props;
     const requiredObject = get(wobject, ['parent', 'author_permlink']);
     if (needUpdate && requiredObject) {
-      this.getPropositions({ userName, requiredObject });
+      this.getPropositions({ userName, requiredObject, match });
     }
   }
 
@@ -133,9 +133,9 @@ export default class ObjectFeed extends React.Component {
     return currentUSDPrice;
   };
 
-  getPropositions = ({ userName, requiredObject }) => {
+  getPropositions = ({ userName, requiredObject, match }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
-    ApiClient.getPropositions({ currentUserName: userName, requiredObject }).then(data => {
+    ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
       this.setState({ allPropositions: data.campaigns, loadingPropositions: false });
     });
   };
@@ -270,7 +270,7 @@ export default class ObjectFeed extends React.Component {
 
   render() {
     const { feed, limit, handleCreatePost, wobject, currentProposition } = this.props;
-    const { allPropositions, loadingPropositions } = this.state;
+    const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);

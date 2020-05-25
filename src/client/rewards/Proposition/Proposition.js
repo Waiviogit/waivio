@@ -30,8 +30,10 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
-  isAssign,
 }) => {
+  const getEligibility = proposition =>
+    Object.values(proposition.requirement_filters).every(item => item === true);
+  const isEligible = getEligibility(proposition);
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -119,13 +121,13 @@ const Proposition = ({
       </div>
       <div
         className={classNames('Proposition__footer', {
-          'justify-end': assigned === null || isReserved,
+          'justify-end': isReserved || !isEligible,
         })}
       >
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {proposition.activation_permlink && assigned === true ? (
+        {assigned ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -139,7 +141,7 @@ const Proposition = ({
           />
         ) : (
           <React.Fragment>
-            {assigned !== null && !assigned && !isReserved && (
+            {isEligible && !isReserved && !assigned && (
               <div className="Proposition__footer-button">
                 <Button
                   type="primary"
@@ -185,7 +187,7 @@ const Proposition = ({
         isReviewDetails={isReviewDetails}
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
-        isAssign={isAssign}
+        isEligible={isEligible}
       />
     </div>
   );
