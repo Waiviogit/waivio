@@ -11,11 +11,10 @@ const ReportFooter = ({ intl, toggleModal }) => {
   const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
   const sponsor = get(singleReportData, ['sponsor', 'name']);
 
-  const getWaivioMatch = () =>
-    !isEmpty(singleReportData.match_bots)
-      ? reduce(singleReportData.match_bots, (acc, bot) => `${acc}, ${bot}`, '')
-      : '';
-  const matchBots = getWaivioMatch();
+  const getWaivioMatch = data =>
+    !isEmpty(data.match_bots) ? reduce(data.match_bots, (acc, bot) => `${acc}, ${bot}`, '') : '';
+
+  const matchBots = getWaivioMatch(singleReportData);
 
   return (
     <div className="Report__modal-footer">
