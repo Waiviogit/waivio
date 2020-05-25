@@ -27,7 +27,7 @@ class ReportsForm extends Component {
     loading: false,
     openFrom: false,
     openTill: false,
-    currency: 'HIVE',
+    currency: 'hive',
     amount: 0,
     sponsor: {},
     object: {},
@@ -49,8 +49,10 @@ class ReportsForm extends Component {
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const isHive = this.getIsHive();
-        this.props.getHistories(this.prepareSubmitData(values, this.props.userName), isHive);
+        this.props.getHistories(
+          this.prepareSubmitData(values, this.props.userName),
+          this.state.currency,
+        );
         this.setState({
           updated: true,
         });
@@ -165,12 +167,6 @@ class ReportsForm extends Component {
     this.props.form.resetFields();
     this.removeSponsor();
     this.handleSetState({ objects: {} }, { objects: {} });
-  };
-
-  getIsHive = () => {
-    const currency = this.props.form.getFieldValue('currency');
-    const isHive = currency === 'HIVE';
-    return isHive;
   };
 
   render() {

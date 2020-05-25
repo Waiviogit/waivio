@@ -16,12 +16,17 @@ const Reports = ({ intl, userName }) => {
     globalReport: true,
   };
 
+  const getIsHive = currency => {
+    if (currency === 'hive') return true;
+    return false;
+  };
+
   const getHistories = (params, currency) => {
     getLenders(params)
       .then(data => {
         setSponsors(data.histories);
-        setIsHive(currency);
-        console.log('isHive', isHive);
+        const hive = currency ? getIsHive(currency) : isHive;
+        setIsHive(hive);
       })
       .catch(e => console.log(e));
   };
