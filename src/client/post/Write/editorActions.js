@@ -196,7 +196,6 @@ const broadcastComment = (
 };
 
 export function createPost(postData) {
-  debugger;
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -270,25 +269,6 @@ export function createPost(postData) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
 
-                  // eslint-disable-next-line func-names
-                  (function() {
-                    const waitingPost = setInterval(() => {
-                      getUserProfileBlog(authUser.name, {})
-                        .then(posts => {
-                          const lastPost = get(posts, '[0].permlink');
-                          if (lastPost === permlink) {
-                            dispatch(notify('Your post is published', 'success'));
-                            dispatch(push(`/@${authUser.name}`));
-                          } else {
-                            dispatch(notify('Your post will be posted soon', 'success'));
-                            dispatch(push(`/@${authUser.name}`));
-                          }
-                        })
-                        .catch(err => err);
-                    }, 5000);
-                    setTimeout(() => clearInterval(waitingPost), 6000);
-                  })();
-
                   if (window.analytics) {
                     window.analytics.track('Post', {
                       category: 'post',
@@ -303,6 +283,25 @@ export function createPost(postData) {
                 result.json().then(err => {
                   dispatch(notify(err.error.message || err.error_description, 'error'));
                 });
+
+                // eslint-disable-next-line func-names
+                (function() {
+                  const waitingPost = setInterval(() => {
+                    getUserProfileBlog(authUser.name, {})
+                      .then(posts => {
+                        const lastPost = get(posts, '[0].permlink');
+                        if (lastPost === permlink) {
+                          dispatch(notify('Your post is published', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        } else {
+                          dispatch(notify('Your post will be posted soon', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        }
+                      })
+                      .catch(err => err);
+                  }, 5000);
+                  setTimeout(() => clearInterval(waitingPost), 6000);
+                })();
               } else {
                 if (draftId) {
                   batch(() => {
