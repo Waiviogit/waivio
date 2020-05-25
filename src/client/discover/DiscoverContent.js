@@ -6,10 +6,19 @@ import { isEmpty } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
-import {getTopExperts, getTopExpertsLoading, getTopExpertsHasMore, getObjectTypesList, getSearchUsersResultsForDiscoverPage} from '../reducers';
+import {
+  getTopExperts,
+  getTopExpertsLoading,
+  getTopExpertsHasMore,
+  getObjectTypesList,
+  getSearchUsersResultsForDiscoverPage,
+} from '../reducers';
 import Loading from '../components/Icon/Loading';
-import {resetSearchUsersForDiscoverPage, searchUsersForDiscoverPage} from '../search/searchActions';
-import {getObjectTypes} from "../objectTypes/objectTypesActions";
+import {
+  resetSearchUsersForDiscoverPage,
+  searchUsersForDiscoverPage,
+} from '../search/searchActions';
+import { getObjectTypes } from '../objectTypes/objectTypesActions';
 
 const displayLimit = 20;
 
@@ -25,7 +34,7 @@ const displayLimit = 20;
     getTopExperts: getTopExpertsApi,
     resetSearchUsersForDiscoverPage,
     searchUsersForDiscoverPage,
-    getObjectTypes
+    getObjectTypes,
   },
 )
 class DiscoverContent extends React.Component {
@@ -113,14 +122,14 @@ class DiscoverContent extends React.Component {
       const searchUsers =
         mapSearchUsersList && mapSearchUsersList.length
           ? mapSearchUsersList.map(expert => (
-            <DiscoverUser
-              user={expert}
-              key={expert.name}
-              unfollow={this.unfollowTopUser}
-              follow={this.followTopUser}
-              isReblogged
-            />
-          ))
+              <DiscoverUser
+                user={expert}
+                key={expert.name}
+                unfollow={this.unfollowTopUser}
+                follow={this.followTopUser}
+                isReblogged
+              />
+            ))
           : noUserError;
       const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
 
