@@ -61,6 +61,7 @@ const CreateFormRenderer = props => {
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
+    compensationAccount,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
