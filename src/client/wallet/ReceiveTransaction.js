@@ -9,11 +9,13 @@ import Avatar from '../components/Avatar';
 import { isGuestUser } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
 
-const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
+const ReceiveTransaction = ({ from, memo, amount, timestamp, type, guestTransaction }) => {
+  const demoPost = type === 'demo_post';
   const isGuest = useSelector(isGuestUser);
+
   return (
     <div className="UserWalletTransactions__transaction">
-      {isGuest ? (
+      {isGuest || demoPost ? (
         <div className="UserWalletTransactions__icon-container">
           <i className="iconfont icon-success_fill UserWalletTransactions__icon" />
         </div>
@@ -25,21 +27,25 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
-            <FormattedMessage
-              id={isGuest ? 'author_rewards' : 'received_from'}
-              defaultMessage={isGuest ? 'Author rewards' : 'Received from {username}'}
-              values={{
-                username: (
-                  <Link to={`/@${from}`}>
-                    <span className="username">{from}</span>
-                  </Link>
-                ),
-              }}
-            />
+            {demoPost && isGuest ? (
+              <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />
+            ) : (
+              <FormattedMessage
+                id="received_from"
+                defaultMessage="Received from {username}"
+                values={{
+                  username: (
+                    <Link to={`/@${from}`}>
+                      <span className="username">{from}</span>
+                    </Link>
+                  ),
+                }}
+              />
+            )}
           </div>
           <div className={classNames(`UserWalletTransactions__received ${isGuest ? 'guest' : ''}`)}>
             {isGuest ? '' : '+ '}
-            {amount}
+            {demoPost ? guestTransaction.amount : amount}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">
@@ -66,6 +72,8 @@ ReceiveTransaction.propTypes = {
   memo: PropTypes.string,
   amount: PropTypes.element,
   timestamp: PropTypes.string,
+  type: PropTypes.string,
+  guestTransaction: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 ReceiveTransaction.defaultProps = {
@@ -73,6 +81,8 @@ ReceiveTransaction.defaultProps = {
   memo: '',
   amount: <span />,
   timestamp: '',
+  type: '',
+  guestTransaction: [],
 };
 
 export default ReceiveTransaction;

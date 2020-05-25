@@ -32,6 +32,7 @@ class UserWalletTransactions extends React.Component {
     currentUsername: '',
     transactions: [],
     hasMore: false,
+    usersTransactions: [],
   };
 
   componentDidMount() {
@@ -87,6 +88,16 @@ class UserWalletTransactions extends React.Component {
               totalVestingFundSteem={totalVestingFundSteem}
             />
           ))}
+
+          {/* {transactionsHistory.map(transactionHistory => ( */}
+          {/*  <WalletTransaction */}
+          {/*    key={`${transactionsHistory.trx_id}${transactionsHistory.actionCount}`} */}
+          {/*    transactionHistory={transactionHistory} */}
+          {/*    currentUsername={currentUsername} */}
+          {/*    totalVestingShares={totalVestingShares} */}
+          {/*    totalVestingFundSteem={totalVestingFundSteem} */}
+          {/*  /> */}
+          {/* ))} */}
         </ReduxInfiniteScroll>
       </div>
     );

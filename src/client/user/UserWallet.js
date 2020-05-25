@@ -21,10 +21,12 @@ import {
   getUser,
   getUserHasMoreAccountHistory,
   getUsersAccountHistoryLoading,
+  getUsersTransactions,
 } from '../reducers';
 import { getGlobalProperties, getMoreUserAccountHistory } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 @withRouter
 @connect(
@@ -48,6 +50,7 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
+    usersTransactions: getUsersTransactions(state),
   }),
   {
     getGlobalProperties,
@@ -73,12 +76,14 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
+    usersTransactions: PropTypes.shape(),
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
     guestBalance: null,
+    usersTransactions: [],
   };
 
   componentDidMount() {
@@ -115,7 +120,13 @@ class Wallet extends Component {
       cryptosPriceHistory,
       guestBalance,
       screenSize,
+      usersTransactions,
     } = this.props;
+
+    const userKey = getUserDetailsKey(user.name);
+    const transactionsHistory = get(usersTransactions, userKey, []);
+
+    console.log('transactionsHistory: ', transactionsHistory);
 
     const currentSteemRate = get(
       cryptosPriceHistory,
