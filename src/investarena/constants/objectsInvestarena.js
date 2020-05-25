@@ -39,12 +39,6 @@ export const discoverObjectsContentTypes = {
   crypto: {
     intl: { id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' },
   },
-  currencies: {
-    intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
-  },
-  indices: {
-    intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
-  },
   stocks: {
     intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' },
   },
