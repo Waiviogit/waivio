@@ -591,7 +591,6 @@ export const getPropositions = ({
       approved,
       requiredObject,
       sort,
-      userName,
     };
 
     if (!_.isEmpty(coordinates)) {
