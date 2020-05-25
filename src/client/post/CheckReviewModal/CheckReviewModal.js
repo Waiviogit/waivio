@@ -141,7 +141,7 @@ const CheckReviewModal = ({
               },
               {
                 minPhotos: postRequirements.minPhotos,
-                secondaryObjectName: secondaryObject.name,
+                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
               },
             )}
           </div>
@@ -153,7 +153,7 @@ const CheckReviewModal = ({
                 defaultMessage: 'Link to {secondaryObjectName}: {secondaryObjectUrl}',
               },
               {
-                secondaryObjectName: secondaryObject.name,
+                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
                 secondaryObjectUrl:
                   getObjectUrl(secondaryObject && secondaryObject.id) || 'not found',
               },
@@ -167,7 +167,7 @@ const CheckReviewModal = ({
                 defaultMessage: 'Link to {primaryObjectName}: {primaryObjectUrl}',
               },
               {
-                primaryObjectName: primaryObject.name,
+                primaryObjectName: primaryObject ? primaryObject.name : '',
                 primaryObjectUrl: getObjectUrl(primaryObject && primaryObject.id) || 'not found',
               },
             )}
