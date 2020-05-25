@@ -108,6 +108,9 @@ const feedCategory = (state = {}, action) => {
         failed: false,
         hasMore: Boolean(action.payload.length === action.meta.limit || action.meta.once),
         list: feedIdsList(state.list, action),
+        receivedListCount:
+          (typeof state.receivedListCount === 'number' ? state.receivedListCount : 0) +
+          action.payload.length,
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
     case feedTypes.GET_USER_FEED_CONTENT.ERROR:
