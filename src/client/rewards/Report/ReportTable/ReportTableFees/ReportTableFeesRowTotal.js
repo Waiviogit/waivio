@@ -4,8 +4,9 @@ import { injectIntl } from 'react-intl';
 import './ReportTableFees.less';
 
 const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) => {
-  const share = shareAmount ? `${(shareAmount / 100).toFixed(3)} %` : '';
-  const usd = usdAmount ? `$ ${usdAmount}` : '';
+  const share = shareAmount !== 0 ? `${(shareAmount / 100).toFixed(3)} %` : '';
+  const usd = usdAmount !== 0 ? `$ ${usdAmount.toFixed(3)}` : '';
+  const hive = hiveAmount !== 0 ? `$ ${hiveAmount.toFixed(3)}` : '';
   return (
     <tr>
       <td>
@@ -23,7 +24,7 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
         <div className="ReportTableFeesRow__amount">{share}</div>
       </td>
       <td>
-        <div className="ReportTableFeesRow__amount">{hiveAmount}</div>
+        <div className="ReportTableFeesRow__amount">{hive}</div>
       </td>
       <td>
         <div className="ReportTableFeesRow__amount">{usd}</div>
