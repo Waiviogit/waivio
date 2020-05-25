@@ -317,7 +317,7 @@ class Rewards extends React.Component {
       // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
-          if (object.author_permlink === objPermlink) {
+          if (object.object.author_permlink === objPermlink) {
             updatedProposition.objects[index].assigned = isAssign;
           } else {
             updatedProposition.objects[index].assigned = null;
@@ -387,7 +387,6 @@ class Rewards extends React.Component {
             ),
         );
       }
-      console.log('propositions', propositions);
 
       return map(propositions, proposition =>
         map(
