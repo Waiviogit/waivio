@@ -75,7 +75,7 @@ const StoryPreview = ({ post }) => {
 
     image: () => (
       <div key={imagePath} className="Story__content__img-container">
-         <LazyLoadImage src={imagePath} threshold={200} />
+        <LazyLoadImage src={imagePath} threshold={200} />
       </div>
     ),
   };

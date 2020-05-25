@@ -22,7 +22,6 @@ import {
   getTranslations,
   getUsedLocale,
   isGuestUser,
-  isGuestBalance,
 } from './reducers';
 import {
   busyLogin,
@@ -68,7 +67,6 @@ export const UsedLocaleContext = React.createContext('en-US');
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    balance: isGuestBalance(state),
   }),
   {
     login,
@@ -141,11 +139,11 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
-    balance: null,
     getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
   };
 
+  // eslint-disable-next-line react/sort-comp
   static async fetchData({ store, req }) {
     await store.dispatch(login());
 

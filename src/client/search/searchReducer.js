@@ -142,4 +142,3 @@ export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
-
