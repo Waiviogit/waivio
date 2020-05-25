@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty, uniqBy, map, get, reduce } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import config from '../../waivioApi/routes';
 
 export const displayLimit = 10;
 
@@ -22,11 +23,11 @@ export const preparePropositionReqData = ({
   const reqData = {
     limit: displayLimit,
     requiredObject: match.params.campaignParent || match.params.name,
-    currentUserName: username,
+    userName: username,
     sort,
+    match,
   };
 
-  if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
   }
@@ -41,19 +42,36 @@ export const preparePropositionReqData = ({
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
-      reqData.approved = false;
       break;
     case 'history':
       reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
       break;
     case 'reserved':
       reqData.userName = username;
-      reqData.approved = true;
       break;
     default:
       break;
   }
   return reqData;
+};
+
+export const getUrl = match => {
+  let url;
+  switch (match.params.filterKey) {
+    case 'active':
+      url = `${config.campaignApiPrefix}${config.campaigns}${config.eligible}`;
+      break;
+    case 'all':
+      url = `${config.campaignApiPrefix}${config.campaigns}${config.all}`;
+      break;
+    case 'reserved':
+      url = `${config.campaignApiPrefix}${config.campaigns}${config.reserved}`;
+      break;
+    default:
+      url = `${config.campaignApiPrefix}${config.campaigns}${config.all}`;
+      break;
+  }
+  return url;
 };
 
 export const getTextByFilterKey = (intl, filterKey) => {

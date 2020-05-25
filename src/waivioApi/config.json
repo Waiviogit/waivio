@@ -29,6 +29,7 @@
     "appendObject": "/append-object",
     "createObject": "/create-object"
   },
+  "all": "/all",
   "activation": "/validate_activation",
   "auth": "/auth",
   "blog": "/blog",
@@ -40,6 +41,7 @@
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
+  "eligible": "/eligible",
   "statistics": "/statistics",
   "matchBots": "/match_bots",
   "feed": "/feed",
@@ -62,6 +64,7 @@
   "posts": "/posts",
   "rejectReservation": "/validate_reject_reservation",
   "reservation": "/validate_reservation",
+  "reserved": "/reserved",
   "search": "/search",
   "searchObjects": "/wobjectSearch",
   "suitableUsers": "/suitable_users",

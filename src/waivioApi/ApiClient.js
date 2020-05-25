@@ -7,6 +7,7 @@ import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { message } from 'antd';
+import { getUrl } from '../client/rewards/rewardsHelper';
 
 let headers = {
   Accept: 'application/json',
@@ -580,6 +581,7 @@ export const getPropositions = ({
   area,
   coordinates,
   sort,
+  match,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -603,7 +605,9 @@ export const getPropositions = ({
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+    const url = getUrl(match);
+
+    fetch(url, {
       headers,
       method: 'POST',
       body: JSON.stringify(reqData),
