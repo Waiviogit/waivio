@@ -9,16 +9,19 @@ import './Reports.less';
 
 const Reports = ({ intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
+  const [isHive, setIsHive] = useState(true);
 
   const requestParams = {
     sponsor: userName,
     globalReport: true,
   };
 
-  const getHistories = params => {
+  const getHistories = (params, currency) => {
     getLenders(params)
       .then(data => {
         setSponsors(data.histories);
+        setIsHive(currency);
+        console.log('isHive', isHive);
       })
       .catch(e => console.log(e));
   };
@@ -40,7 +43,9 @@ const Reports = ({ intl, userName }) => {
           </div>
         </div>
         <WrappedNormalLoginForm intl={intl} userName={userName} getHistories={getHistories} />
-        {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isReports userName={userName} />}
+        {!isEmpty(sponsors) && (
+          <PaymentTable sponsors={sponsors} isReports userName={userName} isHive={isHive} />
+        )}
       </React.Fragment>
     </div>
   );

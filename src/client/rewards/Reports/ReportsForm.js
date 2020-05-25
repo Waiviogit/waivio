@@ -49,7 +49,8 @@ class ReportsForm extends Component {
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
+        const isHive = this.getIsHive();
+        this.props.getHistories(this.prepareSubmitData(values, this.props.userName), isHive);
         this.setState({
           updated: true,
         });
@@ -164,6 +165,12 @@ class ReportsForm extends Component {
     this.props.form.resetFields();
     this.removeSponsor();
     this.handleSetState({ objects: {} }, { objects: {} });
+  };
+
+  getIsHive = () => {
+    const currency = this.props.form.getFieldValue('currency');
+    const isHive = currency === 'HIVE';
+    return isHive;
   };
 
   render() {
