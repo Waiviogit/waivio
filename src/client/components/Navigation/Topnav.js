@@ -42,7 +42,6 @@ import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 import { getIsBeaxyUser } from '../../user/usersHelper';
-import MobileNavigation from './MobileNavigation/MobileNavigation';
 
 @injectIntl
 @withRouter
@@ -227,7 +226,7 @@ class Topnav extends React.Component {
   };
 
   content = () => {
-    const { username } = this.props;
+    const { location, username } = this.props;
     return username ? (
       <LoggedInMenu {...this.state} {...this.props} />
     ) : (
@@ -649,7 +648,7 @@ class Topnav extends React.Component {
                 {!isMobile && (
                   <TopNavigation
                     authenticated={isAuthenticated}
-                    location={this.props.history.location}
+                    location={this.props.location}
                     isMobile={isMobile || screenSize === 'medium'}
                   />
                 )}
@@ -662,7 +661,7 @@ class Topnav extends React.Component {
             >
               {!username ? (
                 <div className="mr2">
-                  <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+                  <LoggedOutMenu location={this.props.location} searchBarActive={this.state.searchBarActive} />
                 </div>
               ) : (
                 <Link
