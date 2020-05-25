@@ -3,6 +3,7 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
+import { get } from 'lodash';
 import {
   BENEFICIARY_ACCOUNT,
   BENEFICIARY_PERCENT,
@@ -16,6 +17,7 @@ import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { getAuthenticatedUserName } from '../../reducers';
 import { attachPostInfo } from '../../helpers/postHelpers';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -255,7 +257,6 @@ export function createPost(postData) {
           )
             // eslint-disable-next-line consistent-return
             .then(result => {
-              dispatch(notify('Your post will be posted soon', 'success'));
               if (isGuest) {
                 if (result.ok) {
                   if (draftId) {
@@ -268,8 +269,6 @@ export function createPost(postData) {
                     steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
                   }
 
-                  dispatch(push(`/@${authUser.name}`));
-
                   if (window.analytics) {
                     window.analytics.track('Post', {
                       category: 'post',
@@ -277,6 +276,21 @@ export function createPost(postData) {
                       value: 10,
                     });
                   }
+
+                  setTimeout(() => {
+                    getUserProfileBlog(authUser.name, {})
+                      .then(posts => {
+                        const lastPost = get(posts, '[0].permlink');
+                        if (lastPost === permlink) {
+                          dispatch(notify('Your post is published', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        } else {
+                          dispatch(notify('Your post will be posted soon', 'success'));
+                          dispatch(push(`/@${authUser.name}`));
+                        }
+                      })
+                      .catch(err => err);
+                  }, 6000);
 
                   return result;
                 }
