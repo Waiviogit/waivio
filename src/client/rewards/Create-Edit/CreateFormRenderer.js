@@ -236,7 +236,10 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.compensationAccount.label}>
-          {getFieldDecorator(fields.compensationAccount.name)(
+          {getFieldDecorator(fields.compensationAccount.name, {
+            rules: fields.compensationAccount.rules,
+            initialValue: compensationAccount,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}
