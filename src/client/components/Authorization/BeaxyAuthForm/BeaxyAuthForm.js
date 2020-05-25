@@ -133,7 +133,6 @@ const BeaxyAuthForm = ({
         )}
       </div>
       <Form
-        form={form}
         className="bxy-sing-in-form"
         layout="vertical"
         style={{ width: '100%' }}
@@ -261,4 +260,4 @@ BeaxyAuthForm.defaultProps = {
   hideForm: () => {},
 };
 
-export default Form.create({ name: 'username' })(injectIntl(BeaxyAuthForm));
+export default Form.create({ name: 'bxyLogin' })(injectIntl(BeaxyAuthForm));
