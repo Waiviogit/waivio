@@ -10,6 +10,7 @@ import { quoteFormat } from '../../../platform/parsingPrice';
 import quoteSettingsData from '../../../default/quoteSettingsData';
 
 const propTypes = {
+  intl: PropTypes.shape().isRequired,
   quoteSettings: PropTypes.shape(),
   quote: PropTypes.shape(),
   finalQuote: PropTypes.shape(),
@@ -71,21 +72,23 @@ class PostCurrentPrice extends Component {
     return (
       <div className="st-post-current-price-wrap">
         {this.state.quotePost.state === 'up' && !this.isPostExpires() ? (
-          <div className="st-post-current-price-triangle-up"></div>
+          <div className="st-post-current-price-triangle-up"/>
         ) : (
-          <div className="st-margin-arrow-top"></div>
+          <div className="st-margin-arrow-top"/>
         )}
         <Tooltip
           title={this.props.intl.formatMessage({
             id: this.isPostExpires() ? 'tips.currentPriceExpired' : 'tips.currentPrice',
           })}
         >
-          {this.getCurrentPrice()}
+          <span className={'st-post-current-price-value'}>
+            {this.getCurrentPrice()}
+          </span>
         </Tooltip>
         {this.state.quotePost.state === 'down' && !this.isPostExpires() ? (
-          <div className="st-post-current-price-triangle-down"></div>
+          <div className="st-post-current-price-triangle-down"/>
         ) : (
-          <div className="st-margin-arrow-bottom"></div>
+          <div className="st-margin-arrow-bottom"/>
         )}
       </div>
     );
