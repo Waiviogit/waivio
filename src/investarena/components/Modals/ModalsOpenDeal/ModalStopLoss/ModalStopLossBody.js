@@ -36,17 +36,17 @@ const ModalStopLossBody = ({
       {intl.formatMessage({ id: 'deals.stopLossForDeal', defaultMessage: 'Stop loss for deal' })}
       <span>&ensp;{`${openDeal.dealSequenceNumber}`} </span>
     </span>
-    <div className="st-margin-bottom-middle st-modal-sl">
+    <div className="mb2 st-modal-sl">
       <div className="st-modal-sl-line">
-        <div className="d-flex align-content-center st-modal-checkbox-wrap">
+        <div className="flex st-modal-checkbox-wrap">
           <span className={isAmountSL ? 'st-modals-value' : 'st-modals-title'}>
             {intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}
           </span>
-          <div className="st-margin-left-middle st-margin-right-middle">
+          <div className="mh2">
             <label className="toggle">
               <input
                 type="checkbox"
-                className="st-hidden"
+                className="hidden"
                 checked={!isAmountSL}
                 onChange={toggleSL}
               />
@@ -62,7 +62,7 @@ const ModalStopLossBody = ({
       </div>
       <input
         type="text"
-        className="st-sl st-modal-sl-input st-margin-top-small"
+        className="st-sl st-modal-sl-input mt1"
         placeholder={intl.formatMessage({
           id: 'deals.slIsNotSet',
           defaultMessage: 'SL is not set',
@@ -89,12 +89,12 @@ const ModalStopLossBody = ({
         </div>
       )}
     </div>
-    <div className="d-flex">
+    <div className="flex">
       <button className="btn st-open-deal-button-red" onClick={handleClickClear}>
         {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
       </button>
       <button
-        className="btn st-open-deal-button-blue st-margin-left-large"
+        className="btn st-open-deal-button-blue ml3"
         onClick={handleClickSetSL}
       >
         {intl.formatMessage({ id: 'deals.confirm', defaultMessage: 'Confirm' })}

@@ -101,6 +101,13 @@
           text-align: center;
           font-size: 20px;
           font-weight: bold;
+
+          &.st-quote-text-up {
+            color: @color-green;
+          }
+          &.st-quote-text-down {
+            color: @color-red;
+          }
         }
         .st-assets-chart-wrap {
           width: @chartWidht;
@@ -202,11 +209,11 @@
       }
     }
     .st-instrument-title {
-      .textStyle(@font-size-large, @color-black-blue, bold);
+      .textStyle(16px, @color-black-blue, bold);
     }
     .nav-link {
       height: 45px;
-      .textStyle(@font-size-medium, @color-darkest-gray, bold);
+      .textStyle(14px, @color-darkest-gray, bold);
       border-radius: 0;
     }
   }
@@ -245,7 +252,7 @@
   }
   .st-instr-column-wrap {
     .columnAssetsStyle (@width) {
-      .textStyle(@font-size-medium, @color-black-blue, bold);
+      .textStyle(14px, @color-black-blue, bold);
       margin: 15px 0;
       width: @width;
       text-align: center;

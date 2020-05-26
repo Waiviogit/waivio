@@ -246,7 +246,7 @@ class PostChart extends Component {
       <div
         className={`w-100 ${
           !expForecast && (!quote || !quoteSettings || !bars || !quoteSettings.tickSize)
-            ? 'st-hidden'
+            ? 'hidden'
             : ''
         }`}
       >

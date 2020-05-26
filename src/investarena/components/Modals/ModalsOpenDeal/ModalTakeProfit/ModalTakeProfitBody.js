@@ -40,17 +40,17 @@ const ModalTakeProfitBody = ({
         })}
         <span>&ensp;{`${openDeal.dealSequenceNumber}`} </span>
       </span>
-      <div className="st-margin-bottom-middle st-modal-tp">
+      <div className="mb2 st-modal-tp">
         <span className="st-modal-tp-line">
-          <div className="d-flex st-modal-checkbox-wrap">
+          <div className="flex st-modal-checkbox-wrap">
             <span className={isAmountTP ? 'st-modals-value' : 'st-modals-title'}>
               {intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}
             </span>
-            <div className="st-margin-left-middle st-margin-right-middle">
+            <div className="mh2">
               <label className="toggle">
                 <input
                   type="checkbox"
-                  className="st-hidden"
+                  className="hidden"
                   checked={!isAmountTP}
                   onChange={toggleTP}
                 />
@@ -67,7 +67,7 @@ const ModalTakeProfitBody = ({
         <input
           id="st-tp"
           type="text"
-          className="st-tp st-modal-tp-input st-margin-top-small"
+          className="st-tp st-modal-tp-input mt1"
           placeholder={intl.formatMessage({
             id: 'deals.tpIsNotSet',
             defaultMessage: 'TP is not set',
@@ -96,12 +96,12 @@ const ModalTakeProfitBody = ({
           </div>
         )}
       </div>
-      <div className="d-flex">
+      <div className="flex">
         <button className="btn st-open-deal-button-red" onClick={handleClickClear}>
           {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
         </button>
         <button
-          className="btn st-open-deal-button-blue st-margin-left-large"
+          className="btn st-open-deal-button-blue ml3"
           onClick={handleClickSetTP}
         >
           {intl.formatMessage({ id: 'deals.confirm', defaultMessage: 'Confirm' })}

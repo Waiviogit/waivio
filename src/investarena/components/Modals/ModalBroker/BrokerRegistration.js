@@ -358,7 +358,7 @@ class BrokerRegistration extends Component {
         )}
       </FormItem>
       <FormItem {...this.tailFormItemLayout}>
-        <Checkbox className="d-flex align-items-center" onClick={this.handleReadChange}>
+        <Checkbox className="flex items-center" onClick={this.handleReadChange}>
           {this.props.intl.formatMessage({
             id: 'broker_modal_i_have_read',
             defaultMessage: 'I have read the',
