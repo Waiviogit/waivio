@@ -1,4 +1,3 @@
-export const blackListQuotes = [
-];
+export const blackListQuotes = [];
 
 export default blackListQuotes;

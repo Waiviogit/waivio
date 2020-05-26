@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { getObjectTypesLoading } from '../reducers';
-import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import SidebarMenu from '../components/Sidebar/SidebarMenu/SidebarMenu';
+import SidenavDiscoverObjectsLoading from './SidenavDiscoverObjectsLoading';
 
 const objectsMenuSections = {
   HASHTAGS: 'Hashtags',
@@ -55,13 +55,7 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
         </div>
       )}
       {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
+        <SidenavDiscoverObjectsLoading />
       ) : (
         <SidebarMenu
           menuConfig={objectMenuConfig}
@@ -76,13 +70,7 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
         </div>
       )}
       {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
+        <SidenavDiscoverObjectsLoading />
       ) : (
         <SidebarMenu
           menuConfig={usersMenuConfig}

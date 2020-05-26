@@ -2,168 +2,168 @@ import Loadable from 'react-loadable';
 import URL from '../../src/common/constants/routing';
 import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
-import Loading from "../client/components/Icon/Loading";
+import Loading from '../client/components/Icon/Loading';
 
 const Search = Loadable({
   loader: () => import('../client/search/Search'),
-  loading: Loading
+  loading: Loading,
 });
 const Error404 = Loadable({
   loader: () => import('../client/statics/Error404'),
-  loading: Loading
+  loading: Loading,
 });
 const ExitPage = Loadable({
   loader: () => import('../client/statics/ExitPage'),
-  loading: Loading
+  loading: Loading,
 });
 const User = Loadable({
   loader: () => import('../client/user/User'),
-  loading: Loading
+  loading: Loading,
 });
 const Wobj = Loadable({
   loader: () => import('../client/object/Wobj'),
-  loading: Loading
+  loading: Loading,
 });
 const Post = Loadable({
   loader: () => import('../client/post/Post'),
-  loading: Loading
+  loading: Loading,
 });
 const Objects = Loadable({
   loader: () => import('../client/objects/Objects'),
-  loading: Loading
+  loading: Loading,
 });
 const UserProfile = Loadable({
   loader: () => import('../client/user/UserProfile'),
-  loading: Loading
+  loading: Loading,
 });
 const Discover = Loadable({
   loader: () => import('../client/discover/Discover'),
-  loading: Loading
+  loading: Loading,
 });
 const WobjFollowers = Loadable({
   loader: () => import('../client/object/WobjFollowers'),
-  loading: Loading
+  loading: Loading,
 });
 const ObjectProfile = Loadable({
   loader: () => import('../client/object/ObjectProfile'),
-  loading: Loading
+  loading: Loading,
 });
 const WobjHistory = Loadable({
   loader: () => import('../client/object/WobjHistory'),
-  loading: Loading
+  loading: Loading,
 });
 const UserExpertise = Loadable({
   loader: () => import('../client/user/UserExpertise'),
-  loading: Loading
+  loading: Loading,
 });
 const ObjectAbout = Loadable({
   loader: () => import('../client/object/ObjectAbout'),
-  loading: Loading
+  loading: Loading,
 });
 const WobjExpertise = Loadable({
   loader: () => import('../client/object/WobjExpertise'),
-  loading: Loading
+  loading: Loading,
 });
 const DiscoverObjects = Loadable({
   loader: () => import('../client/discoverObjects/DiscoverObjects'),
-  loading: Loading
+  loading: Loading,
 });
 const ObjectOfTypePage = Loadable({
   loader: () => import('../client/object/ObjectOfTypePage/ObjectOfTypePage'),
-  loading: Loading
+  loading: Loading,
 });
 const UserStatisticsContainer = Loadable({
   loader: () => import('../client/user/UserStatistics/UserStatisticsContainer'),
-  loading: Loading
+  loading: Loading,
 });
 
 const UserInfo = Loadable({
   loader: () => import('../client/app/Sidebar/UserInfo'),
-  loading: Loading
+  loading: Loading,
 });
 
 const EconomicalCalendar = Loadable({
   loader: () => import('../investarena/components/EconomicalCalendar/EconomicalCalendar'),
-  loading: Loading
+  loading: Loading,
 });
 
 const Settings = Loadable({
   loader: () => import('../client/settings/Settings'),
-  loading: Loading
+  loading: Loading,
 });
 const UserComments = Loadable({
   loader: () => import('../client/user/UserComments'),
-  loading: Loading
+  loading: Loading,
 });
 const ProfileSettings = Loadable({
   loader: () => import('../client/settings/ProfileSettings'),
-  loading: Loading
+  loading: Loading,
 });
 const Activity = Loadable({
   loader: () => import('../client/activity/Activity'),
-  loading: Loading
+  loading: Loading,
 });
 const Bookmarks = Loadable({
   loader: () => import('../client/bookmarks/Bookmarks'),
-  loading: Loading
+  loading: Loading,
 });
 const Drafts = Loadable({
   loader: () => import('../client/post/Write/Drafts'),
-  loading: Loading
+  loading: Loading,
 });
 const Replies = Loadable({
   loader: () => import('../client/replies/Replies'),
-  loading: Loading
+  loading: Loading,
 });
 const Editor = Loadable({
   loader: () => import('../client/post/EditPost/EditPost'),
-  loading: Loading
+  loading: Loading,
 });
 const Wallet = Loadable({
   loader: () => import('../client/wallet/Wallet'),
-  loading: Loading
+  loading: Loading,
 });
 const UserFollowers = Loadable({
   loader: () => import('../client/user/UserFollowers'),
-  loading: Loading
+  loading: Loading,
 });
 const UserFollowing = Loadable({
   loader: () => import('../client/user/UserFollowing'),
-  loading: Loading
+  loading: Loading,
 });
 const UserReblogs = Loadable({
   loader: () => import('../client/user/UserReblogs'),
-  loading: Loading
+  loading: Loading,
 });
 const UserWallet = Loadable({
   loader: () => import('../client/user/UserWallet'),
-  loading: Loading
+  loading: Loading,
 });
 const Invite = Loadable({
   loader: () => import('../client/invite/Invite'),
-  loading: Loading
+  loading: Loading,
 });
 const UserActivity = Loadable({
   loader: () => import('../client/activity/UserActivity'),
-  loading: Loading
+  loading: Loading,
 });
 const Notifications = Loadable({
   loader: () => import('../client/notifications/Notifications'),
-  loading: Loading
+  loading: Loading,
 });
 
 // not actual pages
 const ObjectGalleryAlbum = Loadable({
   loader: () => import('../client/object/ObjectGallery/ObjectGalleryAlbum'),
-  loading: Loading
+  loading: Loading,
 });
 const InstrumentsPage = Loadable({
   loader: () => import('../investarena/components/InstrumentsPage'),
-  loading: Loading
+  loading: Loading,
 });
 const CatalogWrap = Loadable({
   loader: () => import('../client/object/Catalog/CatalogWrap'),
-  loading: Loading
+  loading: Loading,
 });
 //
 const routes = [
