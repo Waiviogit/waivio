@@ -113,10 +113,10 @@ export default class ObjectFeed extends React.Component {
 
   componentDidUpdate() {
     const { needUpdate } = this.state;
-    const { userName, wobject } = this.props;
+    const { userName, wobject, match } = this.props;
     const requiredObject = get(wobject, ['parent', 'author_permlink']);
     if (needUpdate && requiredObject) {
-      this.getPropositions({ userName, requiredObject });
+      this.getPropositions({ userName, requiredObject, match });
     }
   }
 
@@ -133,9 +133,9 @@ export default class ObjectFeed extends React.Component {
     return currentUSDPrice;
   };
 
-  getPropositions = ({ userName, requiredObject }) => {
+  getPropositions = ({ userName, requiredObject, match }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
-    ApiClient.getPropositions({ currentUserName: userName, requiredObject }).then(data => {
+    ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
       this.setState({ allPropositions: data.campaigns, loadingPropositions: false });
     });
   };
@@ -270,7 +270,7 @@ export default class ObjectFeed extends React.Component {
 
   render() {
     const { feed, limit, handleCreatePost, wobject, currentProposition } = this.props;
-    const { allPropositions, loadingPropositions } = this.state;
+    const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
     const content = uniq(objectFeed);
@@ -286,7 +286,8 @@ export default class ObjectFeed extends React.Component {
       });
     };
     const goToProducts = () => {
-      this.props.history.push(`/rewards/All`);
+      const permlink = get(wobject, 'author_permlink');
+      this.props.history.push(`/rewards/All/${permlink}`);
     };
     const currentUSDPrice = this.getCurrentUSDPrice();
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;

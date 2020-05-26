@@ -40,7 +40,9 @@ const CheckReviewModal = ({
   onSubmit,
 }) => {
   const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
-  const secondaryObject = linkedObjects.find(obj => obj.id === postRequirements.secondaryObject);
+  const secondaryObject = linkedObjects.find(
+    obj => obj.id === get(postRequirements, ['secondaryObject', 'author_permlink']),
+  );
   const primaryObject = linkedObjects.find(obj => obj.id === postRequirements.primaryObject);
   const hasMinPhotos =
     (postBody.match(/(?:!\[(.*?)\]\((.*?)\))/gi) || []).length >= postRequirements.minPhotos;
@@ -139,7 +141,7 @@ const CheckReviewModal = ({
               },
               {
                 minPhotos: postRequirements.minPhotos,
-                secondaryObjectName: postRequirements.secondaryObject,
+                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
               },
             )}
           </div>
@@ -151,7 +153,7 @@ const CheckReviewModal = ({
                 defaultMessage: 'Link to {secondaryObjectName}: {secondaryObjectUrl}',
               },
               {
-                secondaryObjectName: postRequirements.secondaryObject,
+                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
                 secondaryObjectUrl:
                   getObjectUrl(secondaryObject && secondaryObject.id) || 'not found',
               },
@@ -165,7 +167,7 @@ const CheckReviewModal = ({
                 defaultMessage: 'Link to {primaryObjectName}: {primaryObjectUrl}',
               },
               {
-                primaryObjectName: postRequirements.primaryObject,
+                primaryObjectName: primaryObject ? primaryObject.name : '',
                 primaryObjectUrl: getObjectUrl(primaryObject && primaryObject.id) || 'not found',
               },
             )}

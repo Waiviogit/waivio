@@ -20,18 +20,13 @@ const Details = ({
   proposedWobj,
   isReviewDetails,
   requiredObjectName,
+  isEligible,
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const isCamaignReserved =
     !(assigned !== null && !assigned) || loading || objectDetails.isReservedSiblingObj;
-
-  const isEligible =
-    objectDetails.requirement_filters.expertise &&
-    objectDetails.requirement_filters.followers &&
-    objectDetails.requirement_filters.posts &&
-    objectDetails.requirement_filters.not_blacklisted;
 
   const isExpired = objectDetails.status === 'expired';
   const isInActive = objectDetails.status === 'inactive';
@@ -93,7 +88,7 @@ const Details = ({
             <Button
               type="primary"
               loading={loading}
-              disabled={(isCamaignReserved && !isEligible) || isInActive || isExpired}
+              disabled={!isEligible || isInActive || isExpired}
               onClick={reserveOnClickHandler}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
@@ -130,6 +125,7 @@ Details.propTypes = {
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
+  isEligible: PropTypes.bool.isRequired,
 };
 
 Details.defaultProps = {

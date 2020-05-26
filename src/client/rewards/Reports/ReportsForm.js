@@ -27,7 +27,7 @@ class ReportsForm extends Component {
     loading: false,
     openFrom: false,
     openTill: false,
-    currency: 'HIVE',
+    currency: 'hive',
     amount: 0,
     sponsor: {},
     object: {},
@@ -49,7 +49,10 @@ class ReportsForm extends Component {
     this.setState({ loading: true });
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.getHistories(this.prepareSubmitData(values, this.props.userName));
+        this.props.getHistories(
+          this.prepareSubmitData(values, this.props.userName),
+          this.state.currency,
+        );
         this.setState({
           updated: true,
         });
@@ -119,7 +122,7 @@ class ReportsForm extends Component {
 
   prepareSubmitData = (data, userName) => {
     const objects = get(data, ['objects']);
-    const objectsNames = map(objects, obj => getFieldWithMaxWeight(obj, 'name'));
+    const objectsNames = map(objects, obj => get(obj, 'author_permlink'));
     const startDate = data.from ? moment(data.from.format('X')) : '';
     const endDate = data.till ? moment(data.till.format('X')) : '';
     const objectsNamesAndPermlinks =
@@ -152,7 +155,7 @@ class ReportsForm extends Component {
 
   disabledStartDate = date => {
     const dateTill = this.props.form.getFieldValue('till');
-    return moment(date) > moment(dateTill).add(1, 'day');
+    return moment(date) > moment(dateTill);
   };
 
   disabledEndDate = date => {
@@ -318,6 +321,7 @@ class ReportsForm extends Component {
                       defaultMessage: 'Enter amount',
                     })}
                     onChange={this.handleInputChange}
+                    autoComplete="off"
                   />,
                 )}
               </Form.Item>
