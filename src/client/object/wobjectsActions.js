@@ -56,11 +56,13 @@ export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
 export const createWaivioObject = postData => (dispatch, getState) => {
   const { auth, settings } = getState();
+
   if (!auth.isAuthenticated) {
     return null;
   }
 
   const { votePower, follow, ...wobj } = postData;
+
   return dispatch({
     type: CREATE_WOBJECT,
     payload: {

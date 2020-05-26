@@ -73,7 +73,7 @@ class UserWalletTransactions extends React.Component {
           loadMore={this.handleLoadMore}
           hasMore={hasMore}
           elementIsScrollable={false}
-          threshold={5}
+          threshold={500}
           loader={
             <div className="UserWalletTransactions__loader">
               <Loading />
