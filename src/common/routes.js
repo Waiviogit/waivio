@@ -1,57 +1,171 @@
+import Loadable from 'react-loadable';
 import URL from '../../src/common/constants/routing';
-
 import Wrapper from '../client/Wrapper';
-import Bookmarks from '../client/bookmarks/Bookmarks';
-import Drafts from '../client/post/Write/Drafts';
-import Replies from '../client/replies/Replies';
-import Activity from '../client/activity/Activity';
-import Wallet from '../client/wallet/Wallet';
-import BusyEditor from '../client/post/Write/Write';
-import Editor from '../client/post/EditPost/EditPost';
-import Settings from '../client/settings/Settings';
-import ProfileSettings from '../client/settings/ProfileSettings';
-import Invite from '../client/invite/Invite';
-import User from '../client/user/User';
-import Wobj from '../client/object/Wobj';
-import UserProfile from '../client/user/UserProfile';
-import UserComments from '../client/user/UserComments';
-import UserFollowers from '../client/user/UserFollowers';
-import UserFollowing from '../client/user/UserFollowing';
-import UserReblogs from '../client/user/UserReblogs';
-import UserWallet from '../client/user/UserWallet';
-import UserActivity from '../client/activity/UserActivity';
-import Post from '../client/post/Post';
 import Page from '../client/feed/Page';
-import Discover from '../client/discover/Discover';
-import Objects from '../client/objects/Objects';
-import Search from '../client/search/Search';
-import Notifications from '../client/notifications/Notifications';
-import Error404 from '../client/statics/Error404';
-import ExitPage from '../client/statics/ExitPage';
-import ObjectProfile from '../client/object/ObjectProfile';
-import InstrumentsPage from '../investarena/components/InstrumentsPage';
-import WobjFollowers from '../client/object/WobjFollowers';
-import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
-import WobjHistory from '../client/object/WobjHistory';
-import ObjectAbout from '../client/object/ObjectAbout';
-import CatalogWrap from '../client/object/Catalog/CatalogWrap';
-import WobjExpertise from '../client/object/WobjExpertise';
-import UserExpertise from '../client/user/UserExpertise';
-import DiscoverObjects from '../client/discoverObjects/DiscoverObjects';
-import Rewards from '../client/rewards/Rewards';
-import CreateRewardForm from '../client/rewards/Create-Edit/CreateRewardForm';
-import FilteredRewardsList from '../client/rewards/FilteredRewardsList';
-import ManageCampaign from '../client/rewards/Manage/Manage';
-import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
-import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
-import PayablesCampaign from '../client/rewards/Payables/Payables';
-import PaymentCampaign from '../client/rewards/Payment/Payment';
-import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
-import UserStatisticsContainer from '../client/user/UserStatistics/UserStatisticsContainer';
-import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
-import UserInfo from '../client/app/Sidebar/UserInfo';
-import QuickForecastPage from '../investarena/components/QuickForecastPage/QuickForecastPage';
+import Loading from "../client/components/Icon/Loading";
 
+const Search = Loadable({
+  loader: () => import('../client/search/Search'),
+  loading: Loading
+});
+const Error404 = Loadable({
+  loader: () => import('../client/statics/Error404'),
+  loading: Loading
+});
+const ExitPage = Loadable({
+  loader: () => import('../client/statics/ExitPage'),
+  loading: Loading
+});
+const User = Loadable({
+  loader: () => import('../client/user/User'),
+  loading: Loading
+});
+const Wobj = Loadable({
+  loader: () => import('../client/object/Wobj'),
+  loading: Loading
+});
+const Post = Loadable({
+  loader: () => import('../client/post/Post'),
+  loading: Loading
+});
+const Objects = Loadable({
+  loader: () => import('../client/objects/Objects'),
+  loading: Loading
+});
+const UserProfile = Loadable({
+  loader: () => import('../client/user/UserProfile'),
+  loading: Loading
+});
+const Discover = Loadable({
+  loader: () => import('../client/discover/Discover'),
+  loading: Loading
+});
+const WobjFollowers = Loadable({
+  loader: () => import('../client/object/WobjFollowers'),
+  loading: Loading
+});
+const ObjectProfile = Loadable({
+  loader: () => import('../client/object/ObjectProfile'),
+  loading: Loading
+});
+const WobjHistory = Loadable({
+  loader: () => import('../client/object/WobjHistory'),
+  loading: Loading
+});
+const UserExpertise = Loadable({
+  loader: () => import('../client/user/UserExpertise'),
+  loading: Loading
+});
+const ObjectAbout = Loadable({
+  loader: () => import('../client/object/ObjectAbout'),
+  loading: Loading
+});
+const WobjExpertise = Loadable({
+  loader: () => import('../client/object/WobjExpertise'),
+  loading: Loading
+});
+const DiscoverObjects = Loadable({
+  loader: () => import('../client/discoverObjects/DiscoverObjects'),
+  loading: Loading
+});
+const ObjectOfTypePage = Loadable({
+  loader: () => import('../client/object/ObjectOfTypePage/ObjectOfTypePage'),
+  loading: Loading
+});
+const UserStatisticsContainer = Loadable({
+  loader: () => import('../client/user/UserStatistics/UserStatisticsContainer'),
+  loading: Loading
+});
+
+const UserInfo = Loadable({
+  loader: () => import('../client/app/Sidebar/UserInfo'),
+  loading: Loading
+});
+
+const EconomicalCalendar = Loadable({
+  loader: () => import('../investarena/components/EconomicalCalendar/EconomicalCalendar'),
+  loading: Loading
+});
+
+const Settings = Loadable({
+  loader: () => import('../client/settings/Settings'),
+  loading: Loading
+});
+const UserComments = Loadable({
+  loader: () => import('../client/user/UserComments'),
+  loading: Loading
+});
+const ProfileSettings = Loadable({
+  loader: () => import('../client/settings/ProfileSettings'),
+  loading: Loading
+});
+const Activity = Loadable({
+  loader: () => import('../client/activity/Activity'),
+  loading: Loading
+});
+const Bookmarks = Loadable({
+  loader: () => import('../client/bookmarks/Bookmarks'),
+  loading: Loading
+});
+const Drafts = Loadable({
+  loader: () => import('../client/post/Write/Drafts'),
+  loading: Loading
+});
+const Replies = Loadable({
+  loader: () => import('../client/replies/Replies'),
+  loading: Loading
+});
+const Editor = Loadable({
+  loader: () => import('../client/post/EditPost/EditPost'),
+  loading: Loading
+});
+const Wallet = Loadable({
+  loader: () => import('../client/wallet/Wallet'),
+  loading: Loading
+});
+const UserFollowers = Loadable({
+  loader: () => import('../client/user/UserFollowers'),
+  loading: Loading
+});
+const UserFollowing = Loadable({
+  loader: () => import('../client/user/UserFollowing'),
+  loading: Loading
+});
+const UserReblogs = Loadable({
+  loader: () => import('../client/user/UserReblogs'),
+  loading: Loading
+});
+const UserWallet = Loadable({
+  loader: () => import('../client/user/UserWallet'),
+  loading: Loading
+});
+const Invite = Loadable({
+  loader: () => import('../client/invite/Invite'),
+  loading: Loading
+});
+const UserActivity = Loadable({
+  loader: () => import('../client/activity/UserActivity'),
+  loading: Loading
+});
+const Notifications = Loadable({
+  loader: () => import('../client/notifications/Notifications'),
+  loading: Loading
+});
+
+// not actual pages
+const ObjectGalleryAlbum = Loadable({
+  loader: () => import('../client/object/ObjectGallery/ObjectGalleryAlbum'),
+  loading: Loading
+});
+const InstrumentsPage = Loadable({
+  loader: () => import('../investarena/components/InstrumentsPage'),
+  loading: Loading
+});
+const CatalogWrap = Loadable({
+  loader: () => import('../client/object/Catalog/CatalogWrap'),
+  loading: Loading
+});
+//
 const routes = [
   {
     component: Wrapper,
@@ -65,65 +179,6 @@ const routes = [
         path: '/economical-calendar',
         exact: true,
         component: EconomicalCalendar,
-      },
-      {
-        path: [
-          '/rewards/(create|manage|match-bot|edit)/:campaignId?',
-          '/rewards/payables',
-          '/rewards/receivables',
-          '/rewards/payables/@:userName',
-          '/rewards/receivables/@:userName',
-          '/rewards/:filterKey/:campaignParent?',
-        ],
-        exact: true,
-        component: Rewards,
-        routes: [
-          {
-            path: '/rewards/create',
-            exact: true,
-            component: CreateRewardForm,
-          },
-          {
-            path: '/rewards/manage',
-            exact: true,
-            component: ManageCampaign,
-          },
-          {
-            path: '/rewards/receivables',
-            exact: true,
-            component: ReceivablesCampaign,
-          },
-          {
-            path: '/rewards/payables',
-            exact: true,
-            component: PayablesCampaign,
-          },
-          {
-            path: '/rewards/payables/@:userName',
-            exact: true,
-            component: PaymentCampaign,
-          },
-          {
-            path: '/rewards/receivables/@:userName',
-            exact: true,
-            component: PaymentCampaign,
-          },
-          {
-            path: '/rewards/match-bot',
-            exact: true,
-            component: MatchBotCampaign,
-          },
-          {
-            path: '/rewards/edit/:campaignId',
-            exact: true,
-            component: CreateRewardForm,
-          },
-          {
-            path: '/rewards/:filterKey/:campaignParent?',
-            exact: true,
-            component: FilteredRewardsList,
-          },
-        ],
       },
       {
         path: '/drafts',
@@ -148,16 +203,6 @@ const routes = [
       {
         path: '/editor',
         component: Editor,
-        exact: true,
-      },
-      {
-        path: '/quickforecast',
-        component: QuickForecastPage,
-        exact: true,
-      },
-      {
-        path: '/edit',
-        component: BusyEditor,
         exact: true,
       },
       {
@@ -263,11 +308,6 @@ const routes = [
             exact: true,
             component: WobjFollowers,
           },
-          // {
-          //   path: `/object/:name/${URL.SEGMENT.GALLERY}`,
-          //   exact: true,
-          //   component: ObjectGallery,
-          // },
           {
             path: `/object/:name/${URL.SEGMENT.EXPERTISE}`,
             exact: true,
