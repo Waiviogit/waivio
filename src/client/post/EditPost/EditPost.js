@@ -36,7 +36,6 @@ import { getClientWObj } from '../../adapters';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
-import classNames from 'classnames';
 
 @injectIntl
 @requiresLogin

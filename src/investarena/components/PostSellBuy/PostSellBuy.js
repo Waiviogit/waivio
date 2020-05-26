@@ -1,8 +1,9 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { Tooltip } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Link } from 'react-router-dom';
 import InstrumentAvatar from '../InstrumentAvatar/InstrumentAvatar';
 import PostCurrentPrice from './PostCurrentPrice';
 import PostDifference from './PostDifference';
@@ -10,7 +11,6 @@ import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
 import './PostSellBuy.less';
-import { Tooltip } from 'antd';
 
 const propTypes = {
   quoteSettings: PropTypes.shape(),
@@ -90,7 +90,9 @@ const PostSellBuy = ({
           defaultMessage: 'Price at the beginning of the forecast',
         })}
       >
-        {quoteFormat(postPrice, quoteSettings)}
+        <span className={'st-post-start-price'}>
+          {quoteFormat(postPrice, quoteSettings)}
+        </span>
       </Tooltip>
     </div>
   );
@@ -112,13 +114,13 @@ const PostSellBuy = ({
       (quoteSettings && quoteSettings.defaultQuantity && wobj && wobj.author_permlink) ? (
         <React.Fragment>
           <div className="st-post-sell-buy-wrap">
-            <div className="d-flex align-items-center">
+            <div className="flex items-center">
               <InstrumentAvatar
                 avatarlink={wobj.avatarlink}
                 market={quoteSettings.market}
                 permlink={wobj.author_permlink}
               />
-              <div className="st-margin-left-small">
+              <div className="ml1">
                 {wobj.author_permlink ? (
                   <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
                     {quoteSettings.name}
@@ -129,9 +131,9 @@ const PostSellBuy = ({
               </div>
               {!isMobile && priceDirection()}
             </div>
-            <div className="d-flex align-items-center">
+            <div className="flex items-center">
               {!isMobile && priceCurrent()}
-              <div className="d-flex st-margin-left-large">
+              <div className="flex ml3">
                 <span
                   className="st-post-sell-buy-profitability"
                   title={intl.formatMessage({

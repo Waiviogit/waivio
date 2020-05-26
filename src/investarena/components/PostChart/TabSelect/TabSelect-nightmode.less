@@ -1,0 +1,29 @@
+@import (reference) '../../Common.less';
+
+.nightmode {
+  .st-tab-select-label {
+    background-color: @grey-nero;
+    //border-color: @normal-grey !important;
+
+    &.top {
+      border-top: 1px solid @normal-grey;
+
+      &.first {
+        border-left: 1px solid @normal-grey;
+      }
+    }
+
+    &.bottom {
+      border-bottom: 1px solid @normal-grey;
+
+      &.first {
+        border-left: 1px solid @normal-grey;
+      }
+    }
+    border-right: 1px solid @normal-grey;
+
+    &.selected {
+      background-color: @normal-grey;
+    }
+  }
+}

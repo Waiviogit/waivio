@@ -1,4 +1,5 @@
 import filesize from 'filesize';
+import base58 from 'bs58';
 
 const IMG_PREVIEW = '?width=800&height=600&format=webp&mode=fit';
 const IMG_PROXY_SMALL = 'https://images.hive.blog/p/';
@@ -8,16 +9,9 @@ export const MAXIMUM_UPLOAD_SIZE = 15728640;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
-  if (
-    url.includes('ipfs.io') ||
-    url.indexOf('https://ipfs.busy.org') === 0 ||
-    url.indexOf('https://img.esteem.ws') === 0
-  )
-    return `${IMG_PROXY}${url}`;
-  else if (type === 'preview') return `${url}${IMG_PREVIEW}`;
-  else if (type === 'small') return `${IMG_PROXY_SMALL}${url}`;
+  if (type === 'preview') return `${IMG_PROXY_SMALL}${base58.encode(new Buffer(url))}${IMG_PREVIEW}`;
 
-  return url;
+  return `${IMG_PROXY}${url}`;
 };
 
 export const isValidImage = (file, maxFileSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = null) => {
