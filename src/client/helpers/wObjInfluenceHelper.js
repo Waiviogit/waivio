@@ -5,11 +5,11 @@ export const setInitialObjPercents = (linkedObjects, percentage) => {
   if (!len) {
     return {};
   } else if (len === 1) {
-    return { [linkedObjects[0].id]: { percent: 100 } };
+    return { [linkedObjects[0].id || linkedObjects[0].author_permlink]: { percent: 100 } };
   }
   if (
     len === size(percentage) &&
-    linkedObjects.every(obj => Boolean(percentage[obj.id])) &&
+    linkedObjects.every(obj => Boolean(percentage[obj.id || obj.author_permlink])) &&
     Object.values(percentage).reduce((acc, curr) => acc + curr.percent, 0) === 100
   ) {
     const objPercentage = {};
@@ -22,12 +22,12 @@ export const setInitialObjPercents = (linkedObjects, percentage) => {
   const averagePercent = Math.floor(100 / len);
   const firstPercent = 100 - averagePercent * (len - 1);
   const objPercentage = {
-    [first.id]: {
+    [first.id || first.author_permlink]: {
       percent: firstPercent,
     },
   };
   rest.forEach(obj => {
-    objPercentage[obj.id] = { percent: averagePercent };
+    objPercentage[obj.id || first.author_permlink] = { percent: averagePercent };
   });
   return objPercentage;
 };
@@ -41,7 +41,6 @@ export const setObjPercents = (linkedObjects, percentage) => {
     },
     { linked: {}, zeroWeighted: {} },
   );
-
   return {
     ...setInitialObjPercents(
       linkedObjects.filter(o => !zeroWeighted[o.id]),
