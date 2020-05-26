@@ -42,7 +42,6 @@ import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
 import './Topnav.less';
 import { getIsBeaxyUser } from '../../user/usersHelper';
-import MobileNavigation from './MobileNavigation/MobileNavigation';
 
 @injectIntl
 @withRouter
@@ -227,7 +226,7 @@ class Topnav extends React.Component {
   };
 
   content = () => {
-    const { username } = this.props;
+    const { location, username } = this.props;
     return username ? (
       <LoggedInMenu {...this.state} {...this.props} />
     ) : (
@@ -284,9 +283,7 @@ class Topnav extends React.Component {
   debouncedSearchByObject = debounce((searchString, objType) =>
     this.props.searchObjectsAutoCompete(searchString, objType),
   );
-  debouncedSearchByUser = debounce(searchString =>
-    this.props.searchUsersAutoCompete(searchString),
-  );
+  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
   debouncedSearchByObjectTypes = debounce(searchString =>
     this.props.searchObjectTypesAutoCompete(searchString),
   );
@@ -515,7 +512,7 @@ class Topnav extends React.Component {
     this.setState({
       dropdownOpen: false,
     });
-  }
+  };
 
   handleClearSearchData = () =>
     this.setState(
@@ -562,7 +559,7 @@ class Topnav extends React.Component {
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const isBeaxyUser = getIsBeaxyUser(authUser);
-    const downBar =  (
+    const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
         <div
           className="search-btn"
@@ -578,10 +575,10 @@ class Topnav extends React.Component {
             { search: this.state.searchBarValue },
           )}
         </div>
-      </AutoComplete.Option>);
-    const formattedAutoCompleteDropdown = this.state.searchData.type !== 'user'
-      ? dropdownOptions
-      : dropdownOptions.concat([downBar]);
+      </AutoComplete.Option>
+    );
+    const formattedAutoCompleteDropdown =
+      this.state.searchData.type !== 'user' ? dropdownOptions : dropdownOptions.concat([downBar]);
 
     return (
       <React.Fragment>
@@ -649,7 +646,7 @@ class Topnav extends React.Component {
                 {!isMobile && (
                   <TopNavigation
                     authenticated={isAuthenticated}
-                    location={this.props.history.location}
+                    location={this.props.location}
                     isMobile={isMobile || screenSize === 'medium'}
                   />
                 )}
@@ -662,7 +659,7 @@ class Topnav extends React.Component {
             >
               {!username ? (
                 <div className="mr2">
-                  <LoggedOutMenu location={location} searchBarActive={this.state.searchBarActive} />
+                  <LoggedOutMenu location={this.props.location} searchBarActive={this.state.searchBarActive} />
                 </div>
               ) : (
                 <Link

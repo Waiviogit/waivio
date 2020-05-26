@@ -1,4 +1,5 @@
-@import (reference) '../Common.less';
+//@import (reference) '../Common.less';
+@import (reference) '../../../client/styles/custom';
 
 .st-post-sell-buy-wrap {
   width: 100%;
@@ -34,10 +35,14 @@
     }
   }
 
+  .st-post-start-price {
+    font-size: 12px;
+  }
+
   .st-post-sell-buy-icon-sell {
     display: block;
     background-color: @color-red;
-    color: @color-white;
+    color: @white;
     padding: 0 5px;
     border-radius: 5px;
     text-transform: uppercase;
@@ -51,7 +56,7 @@
   .st-post-sell-buy-icon-buy {
     display: block;
     background-color: @color-green;
-    color: @color-white;
+    color: @white;
     padding: 0 5px;
     border-radius: 5px;
     text-transform: uppercase;
@@ -66,7 +71,7 @@
     border-top-left-radius: 3px;
     height: 22px;
     width: min-content;
-    margin-left: @margin-middle;
+    margin-left: 10px;
 
     &::after {
       content: '';
@@ -82,7 +87,7 @@
     }
 
     span {
-      color: @color-white !important;
+      color: @white !important;
     }
   }
 
@@ -96,7 +101,7 @@
 
   .st-post-sell-buy-profitability {
     font-size: 11px;
-    color: @color-darkest-gray;
+    color: @grey-darkGrey;
     padding-top: 4px;
   }
 
@@ -119,3 +124,5 @@
 .StoryFull .st-post-sell-buy-wrap {
   padding: 0;
 }
+
+@import 'PostSellBuy-nightmode';

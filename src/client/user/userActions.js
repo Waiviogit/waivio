@@ -1,7 +1,6 @@
 import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { rewardPostContainerData } from '../rewards/rewardsHelper';
 
 require('isomorphic-fetch');
 
@@ -134,127 +133,6 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     payload: {
       promise: busyAPI.sendAsync('get_notifications', [targetUsername]),
     },
-  });
-};
-
-export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const username = getAuthenticatedUserName(getState());
-  const commentOp = [
-    'comment',
-    {
-      parent_author: companyAuthor,
-      parent_permlink: companyPermlink,
-      author: username,
-      permlink: resPermlink,
-      title: 'reserve topic for rewards',
-      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
-      json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_assign_campaign', approved_object: objPermlink },
-      }),
-    },
-  ];
-
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
-  });
-};
-
-export const declineProposition = ({
-  companyAuthor,
-  companyPermlink,
-  objPermlink,
-  unreservationPermlink,
-  reservationPermlink,
-}) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = getAuthenticatedUserName(getState());
-  const commentOp = [
-    'comment',
-    {
-      parent_author: companyAuthor,
-      parent_permlink: companyPermlink,
-      author: username,
-      permlink: unreservationPermlink,
-      title: 'reject topic for rewards',
-      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
-      json_metadata: JSON.stringify({
-        waivioRewards: {
-          type: 'waivio_reject_object_campaign',
-          reservation_permlink: reservationPermlink,
-        },
-      }),
-    },
-  ];
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
-  });
-};
-export const activateCampaign = (company, campaignPermlink) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const username = getAuthenticatedUserName(getState());
-  const commentOp = [
-    'comment',
-    {
-      parent_author: rewardPostContainerData.author,
-      parent_permlink: rewardPostContainerData.permlink,
-      author: username,
-      permlink: campaignPermlink,
-      title: 'activate topic for rewards',
-      body: `Campaign ${company.name} was activated by ${username} `,
-      json_metadata: JSON.stringify({
-        // eslint-disable-next-line no-underscore-dangle
-        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
-      }),
-    },
-  ];
-
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
-  });
-};
-
-export const inactivateCampaign = (company, inactivatePermlink) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const username = getAuthenticatedUserName(getState());
-  const commentOp = [
-    'comment',
-    {
-      parent_author: username,
-      parent_permlink: company.activation_permlink,
-      author: username,
-      permlink: inactivatePermlink,
-      title: 'unactivate topic for rewards',
-      body: `Campaign ${company.name} was inactivated by ${username} `,
-      json_metadata: JSON.stringify({
-        // eslint-disable-next-line no-underscore-dangle
-        waivioRewards: { type: 'waivio_stop_campaign', campaign_id: company._id },
-      }),
-    },
-  ];
-
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
   });
 };
 
