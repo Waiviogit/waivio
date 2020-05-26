@@ -16,10 +16,7 @@ const Reports = ({ intl, userName }) => {
     globalReport: true,
   };
 
-  const getIsHive = currency => {
-    if (currency === 'hive') return true;
-    return false;
-  };
+  const getIsHive = currency => currency === 'hive';
 
   const getHistories = (params, currency) => {
     getLenders(params)
