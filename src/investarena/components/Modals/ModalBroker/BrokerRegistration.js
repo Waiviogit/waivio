@@ -381,47 +381,12 @@ class BrokerRegistration extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // this.props.form.validateFieldsAndScroll((err, values) => {
-    //   if (!err) {
-    //     console.log('Received values of form: ', values);
-    //     values.phoneNumber = values.phone.substring(2, values.phone.length - 1);
-    //     values.phoneOperator = values.phone.substring(0, 2);
-    //     values.country = this.state.currentCountryValue;
-    //     values.platform = this.state.platformName;
-    //     this.props.changeEmail(values.email);
-    //     this.props.registerBroker(values);
-    //   }
-    // });
   };
 
   render() {
-    const { stepNumber } = this.state;
     return (
       <React.Fragment>
         <Form onSubmit={this.handleSubmit}>
-          {/*{stepNumber === 1 ? (*/}
-          {/*this.firstStepRenderer()*/}
-          {/*) : stepNumber === 2 ? (*/}
-          {/*this.secondStepRenderer()*/}
-          {/*) : stepNumber === 3 ? (*/}
-          {/*<React.Fragment>*/}
-          {/*{this.thirdStepRenderer()}*/}
-          {/*<FormItem {...this.tailFormItemLayout}>*/}
-          {/*<Button*/}
-          {/*className="w-100"*/}
-          {/*type="primary"*/}
-          {/*htmlType="submit"*/}
-          {/*disabled={!this.state.isAgreementRead}*/}
-          {/*loading={this.props.isLoading}*/}
-          {/*>*/}
-          {/*{this.props.intl.formatMessage({*/}
-          {/*id: 'broker_modal_register',*/}
-          {/*defaultMessage: 'Register',*/}
-          {/*})}*/}
-          {/*</Button>*/}
-          {/*</FormItem>*/}
-          {/*</React.Fragment>*/}
-          {/*) : null}*/}
         </Form>
         <div className="BrokerRegistration__buttons">
           <Button onClick={this.handleStepBack} disabled={this.state.stepNumber === 1}>
