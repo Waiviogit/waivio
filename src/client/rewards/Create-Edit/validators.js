@@ -59,6 +59,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   checkPrimaryObject: messageFactory('add_primary_object', 'Add primary object'),
   checkSecondaryObject: messageFactory('add_secondary_object', 'Add secondary object'),
+  checkCompensationAccount: messageFactory('add_compensation_account', 'Add compensation account'),
 });
 
 export const validatorsCreator = (
@@ -68,6 +69,7 @@ export const validatorsCreator = (
   getFieldValue,
   requiredObject,
   objectsToAction,
+  compensationAccount,
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
@@ -151,5 +153,10 @@ export const validatorsCreator = (
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);
     else callback();
+  },
+
+  checkCompensationAccount: (rule, value, callback) => {
+    // eslint-disable-next-line no-unused-expressions
+    isEmpty(compensationAccount) ? callback(messages.checkCompensationAccount) : callback();
   },
 });

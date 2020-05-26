@@ -32,7 +32,7 @@ const ReportTableRewards = ({ intl }) => {
 
   const totalUSD = Number(
     map(beneficiaries, benef => benef.payableInDollars).reduce((sum, usd) => sum + usd, 0),
-  ).toFixed(3);
+  );
   const totalVotesAmount = map(beneficiaries, benef => benef.votesAmount).reduce(
     (sum, amount) => sum + amount,
     0,
@@ -41,7 +41,7 @@ const ReportTableRewards = ({ intl }) => {
     (sum, amount) => sum + amount,
     0,
   );
-  const totalHive = Number(totalVotesAmount + totalAmount).toFixed(3);
+  const totalHive = Number(totalVotesAmount + totalAmount);
 
   return (
     <React.Fragment>

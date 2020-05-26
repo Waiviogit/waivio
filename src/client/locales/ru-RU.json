@@ -874,7 +874,7 @@
   "matchBot_cancel": "Отмена",
   "up_to_5_comma_delimited": "(до 5, через запятую)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значение лайков можно накапливать на специальном компенсационном счете.",
-  "compensation_account_optional": "Компенсационный счет (не обязательно)",
+  "compensation_account": "Компенсационный счет",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Накапливает значение лайков из зарегистрированных спонсорских аккаунтов",
   "users_auto_complete_placeholder": "Найти пользователя",
   "activate_campaign": "Активировать конмании с наградами",
@@ -1125,11 +1125,11 @@
   "fillOrder_wallet_get": "Вы получили {open_pays}",
   "hive_power": "Hive** Power",
   "services": "Сервисы",
-  "links": "Ссылки",
   "reject_update": "{voter} отклонил ваше обновление для '{object_name}'",
   "activation_campaign": "{author} запустил новую компанию для {object_name}",
   "links": "Ссылки",
   "note": "Примечание",
+  "count_towards_the_payment_of_rewards": "учитываются при оплыте вознаграждений. Стоимость всех остальных голосов не вычитается из указанной суммы вознаграждения.",
   "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки",
-  "count_towards_the_payment_of_rewards": "учитываются при оплыте вознаграждений. Стоимость всех остальных голосов не вычитается из указанной суммы вознаграждения."
+  "add_compensation_account": "Добавьте компенсационный счет"
 }
