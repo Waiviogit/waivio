@@ -46,7 +46,7 @@ const ModalStopLossBody = ({
             <label className="toggle">
               <input
                 type="checkbox"
-                className="hidden"
+                className="st-hidden"
                 checked={!isAmountSL}
                 onChange={toggleSL}
               />

@@ -50,7 +50,7 @@ const ModalTakeProfitBody = ({
               <label className="toggle">
                 <input
                   type="checkbox"
-                  className="hidden"
+                  className="st-hidden"
                   checked={!isAmountTP}
                   onChange={toggleTP}
                 />
