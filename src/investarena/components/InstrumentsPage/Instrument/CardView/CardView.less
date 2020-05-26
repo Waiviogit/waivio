@@ -1,5 +1,6 @@
-@import (reference) '../../../Common.less';
 @import (reference) '../../../../../client/styles/modules/variables.less';
+@import (reference) '../../../../../client/styles/custom.less';
+@import (reference) '../../../../../client/styles/mixins.less';
 
 .st-card {
   display: flex;
@@ -16,7 +17,7 @@
     align-items: center;
     padding-bottom: 5px;
     .st-instrument-name {
-      .textStyle(@font-size-medium, @color-black-blue, bold);
+      .textStyle(14px, @color-black-blue, bold);
       max-width: 340px;
       white-space: nowrap;
       overflow: hidden;
@@ -68,7 +69,7 @@
     }
     .st-instruments-progress-bar {
       span {
-        .textStyle(@font-size-medium, @color-darkest-gray, regular);
+        .textStyle(14px, @color-darkest-gray, regular);
       }
       .st-instruments-buy-count {
         color: @color-black-blue;

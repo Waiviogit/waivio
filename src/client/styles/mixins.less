@@ -71,3 +71,86 @@
     color: @color-hover;
   }
 }
+
+// region IA mixins
+.textStyle (@fontSize, @fontColor, @fontWeight) {
+  font-size: @fontSize;
+  color: @fontColor;
+  font-weight: @fontWeight;
+}
+
+.formStyle() {
+  .field {
+    width: 100%;
+    height: 35px;
+    font-size: 14px;
+    text-indent: 5px;
+    border: 1px solid @color-alto-gray;
+    border-radius: 2px;
+    padding: 0 6px;
+    box-sizing: border-box;
+    &:focus {
+      .input-selected-mixin();
+    }
+  }
+  .label {
+    color: @color-darkest-gray;
+  }
+  button {
+    text-transform: uppercase;
+  }
+  .Select {
+    margin-bottom: 15px;
+    .Select-control {
+      border-radius: 2px;
+      height: 35px;
+      .Select-input {
+        input {
+          line-height: 1.4rem; // vertical align works the same
+          height: 1.8rem; //  in FireFox and Chrome
+        }
+      }
+      &[disabled] {
+        background-color: #ebebe4;
+      }
+    }
+    &.is-disabled {
+      .Select-control {
+        cursor: default;
+      }
+    }
+  }
+  .is-focused > .Select-control {
+    .input-selected-mixin();
+  }
+  .is-disabled > .Select-control {
+    .input-disabled-mixin();
+  }
+}
+.input-selected-mixin() {
+  border-color: dodgerblue;
+  outline: none;
+}
+.input-disabled-mixin() {
+  background-color: #ebebe4;
+  cursor: none;
+  outline: none;
+}
+
+.fieldStyle (@height, @width, @padding-left, @font-size, @color) {
+  height: @height;
+  width: @width;
+  padding-left: @padding-left;
+  font-size: @font-size;
+  color: @color;
+}
+
+.st-icon-point (@color, @animation) {
+  height: 12px;
+  width: 12px;
+  display: block;
+  border-radius: 100%;
+  border: 3px solid @color;
+  animation: @animation 3s infinite ease-in-out;
+}
+// endregion

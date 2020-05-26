@@ -163,14 +163,17 @@ const ModalSignIn = ({ visible, next, isAuth, isLoaded, isAuthAction, hideModal 
 ModalSignIn.propTypes = {
   next: PropTypes.string,
   visible: PropTypes.bool,
-  isLoaded: PropTypes.bool.isRequired,
-  isAuth: PropTypes.bool.isRequired,
+  isLoaded: PropTypes.bool,
+  isAuth: PropTypes.bool,
   hideModal: PropTypes.func,
-  isAuthAction: PropTypes.bool.isRequired,
+  isAuthAction: PropTypes.bool,
 };
 
 ModalSignIn.defaultProps = {
+  isAuthAction: false,
+  isAuth: false,
   visible: false,
+  isLoaded: false,
   hideModal: () => {},
   next: '',
 };

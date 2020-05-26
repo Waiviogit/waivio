@@ -17,6 +17,23 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
   }
 };
 
+export const getReceivedFeedCount = (sortBy, category = 'all', state) => {
+  switch (sortBy) {
+    case 'feed':
+    case 'trending':
+    case 'created':
+    case 'comments':
+    case 'blog':
+    case 'bookmarks':
+    case 'replies':
+    case 'promoted':
+    case 'objectPosts':
+      return state[sortBy][category] ? state[sortBy][category].receivedListCount : 0;
+    default:
+      return [];
+  }
+};
+
 export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':

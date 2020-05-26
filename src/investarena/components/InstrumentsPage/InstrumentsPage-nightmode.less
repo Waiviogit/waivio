@@ -1,6 +1,6 @@
-@import (reference) '../Common.less';
 @import (reference) '../../../client/styles/modules/variables.less';
 @import (reference) '../../../client/styles/custom.less';
+@import (reference) '../../../client/styles/mixins.less';
 
 .nightmode {
   .st-instr-page {
@@ -20,7 +20,7 @@
       .st-signals-button {
         background: #1367b0;
         border: 1px solid @normal-grey;
-        color: @color-white;
+        color: @white;
         font-weight: bold;
       }
       .st-assets-wrap {
@@ -34,10 +34,10 @@
       }
       .st-instrument-info-wrap {
         .st-instrument-name {
-          .textStyle(@font-size-medium, @color-white, bold);
+          .textStyle(14px, @white, bold);
         }
         .st-instrument-description {
-          .textStyle(@font-size-small, @color-darkest-gray, bold);
+          .textStyle(12px, @color-darkest-gray, bold);
         }
       }
       .st-assets-avatar {
@@ -54,6 +54,6 @@
     }
   }
   .st-signal-interval {
-    color: @color-white;
+    color: @white;
   }
 }

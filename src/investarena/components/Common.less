@@ -49,15 +49,13 @@
 .w-30 {
   width: 30%;
 }
-.flex-column {
-  flex-direction: column;
-}
-.st-quote-text-up {
-  color: @color-green;
-}
-.st-quote-text-down {
-  color: @color-red;
-}
+
+//.st-quote-text-up {
+//  color: @color-green;
+//}
+//.st-quote-text-down {
+//  color: @color-red;
+//}
 .align-items-center {
   align-items: center;
 }
@@ -148,63 +146,63 @@
 .no-data-access-wrap {
   padding: 15px;
 }
-.formStyle() {
-  .field {
-    width: 100%;
-    height: 35px;
-    font-size: 14px;
-    text-indent: 5px;
-    border: 1px solid @color-alto-gray;
-    border-radius: 2px;
-    padding: 0 6px;
-    box-sizing: border-box;
-    &:focus {
-      .input-selected-mixin();
-    }
-  }
-  .label {
-    color: @color-darkest-gray;
-  }
-  button {
-    text-transform: uppercase;
-  }
-  .Select {
-    margin-bottom: 15px;
-    .Select-control {
-      border-radius: 2px;
-      height: 35px;
-      .Select-input {
-        input {
-          line-height: 1.4rem; // vertical align works the same
-          height: 1.8rem; //  in FireFox and Chrome
-        }
-      }
-      &[disabled] {
-        background-color: #ebebe4;
-      }
-    }
-    &.is-disabled {
-      .Select-control {
-        cursor: default;
-      }
-    }
-  }
-  .is-focused > .Select-control {
-    .input-selected-mixin();
-  }
-  .is-disabled > .Select-control {
-    .input-disabled-mixin();
-  }
-}
-.input-selected-mixin() {
-  border-color: dodgerblue;
-  outline: none;
-}
-.input-disabled-mixin() {
-  background-color: #ebebe4;
-  cursor: none;
-  outline: none;
-}
+//.formStyle() {
+//  .field {
+//    width: 100%;
+//    height: 35px;
+//    font-size: 14px;
+//    text-indent: 5px;
+//    border: 1px solid @color-alto-gray;
+//    border-radius: 2px;
+//    padding: 0 6px;
+//    box-sizing: border-box;
+//    &:focus {
+//      .input-selected-mixin();
+//    }
+//  }
+//  .label {
+//    color: @color-darkest-gray;
+//  }
+//  button {
+//    text-transform: uppercase;
+//  }
+//  .Select {
+//    margin-bottom: 15px;
+//    .Select-control {
+//      border-radius: 2px;
+//      height: 35px;
+//      .Select-input {
+//        input {
+//          line-height: 1.4rem; // vertical align works the same
+//          height: 1.8rem; //  in FireFox and Chrome
+//        }
+//      }
+//      &[disabled] {
+//        background-color: #ebebe4;
+//      }
+//    }
+//    &.is-disabled {
+//      .Select-control {
+//        cursor: default;
+//      }
+//    }
+//  }
+//  .is-focused > .Select-control {
+//    .input-selected-mixin();
+//  }
+//  .is-disabled > .Select-control {
+//    .input-disabled-mixin();
+//  }
+//}
+//.input-selected-mixin() {
+//  border-color: dodgerblue;
+//  outline: none;
+//}
+//.input-disabled-mixin() {
+//  background-color: #ebebe4;
+//  cursor: none;
+//  outline: none;
+//}
 .st-field-div {
   height: 35px;
   margin-bottom: 15px;
@@ -217,11 +215,11 @@
 .ant-select-dropdown {
   z-index: 1300 !important;
 }
-.textStyle (@fontSize, @fontColor, @fontWeight) {
-  font-size: @fontSize;
-  color: @fontColor;
-  font-weight: @fontWeight;
-}
+//.textStyle (@fontSize, @fontColor, @fontWeight) {
+//  font-size: @fontSize;
+//  color: @fontColor;
+//  font-weight: @fontWeight;
+//}
 .tabArrowStyle (@top, @left, @color) {
   display: block;
   position: relative;
@@ -242,100 +240,100 @@
   border: 3px solid @color;
   animation: @animation 3s infinite ease-in-out;
 }
-.sessionIndicator {
-  @-moz-keyframes rollGreen {
-    0% {
-      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
-    }
-    25% {
-      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
-    }
-    51% {
-      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
-    }
-    60% {
-      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
-    }
-    75% {
-      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
-    }
-  }
-  @keyframes rollGreen {
-    0% {
-      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
-    }
-    25% {
-      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
-    }
-    51% {
-      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
-    }
-    60% {
-      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
-    }
-    75% {
-      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
-    }
-  }
-  @-moz-keyframes rollRed {
-    0% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
-    }
-    25% {
-      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
-    }
-    51% {
-      box-shadow: 0 0 5px 4px rgba(233, 55, 0, 0.5);
-    }
-    60% {
-      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
-    }
-    75% {
-      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
-    }
-  }
-  @keyframes rollRed {
-    0% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
-    }
-    25% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
-    }
-    50% {
-      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
-    }
-    51% {
-      box-shadow: 0 0 5px 3px rgba(233, 55, 0, 0.5);
-    }
-    60% {
-      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
-    }
-    75% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
-    }
-  }
-}
+//.sessionIndicator {
+//  @-moz-keyframes rollGreen {
+//    0% {
+//      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+//    }
+//    25% {
+//      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+//    }
+//    50% {
+//      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+//    }
+//    51% {
+//      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+//    }
+//    60% {
+//      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+//    }
+//    75% {
+//      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+//    }
+//    100% {
+//      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+//    }
+//  }
+//  @keyframes rollGreen {
+//    0% {
+//      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+//    }
+//    25% {
+//      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+//    }
+//    50% {
+//      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+//    }
+//    51% {
+//      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+//    }
+//    60% {
+//      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+//    }
+//    75% {
+//      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+//    }
+//    100% {
+//      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+//    }
+//  }
+//  @-moz-keyframes rollRed {
+//    0% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+//    }
+//    25% {
+//      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+//    }
+//    50% {
+//      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+//    }
+//    51% {
+//      box-shadow: 0 0 5px 4px rgba(233, 55, 0, 0.5);
+//    }
+//    60% {
+//      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+//    }
+//    75% {
+//      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+//    }
+//    100% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+//    }
+//  }
+//  @keyframes rollRed {
+//    0% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+//    }
+//    25% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+//    }
+//    50% {
+//      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+//    }
+//    51% {
+//      box-shadow: 0 0 5px 3px rgba(233, 55, 0, 0.5);
+//    }
+//    60% {
+//      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+//    }
+//    75% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+//    }
+//    100% {
+//      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+//    }
+//  }
+//}
 .st-open-deal-buttonStyle (@height, @width, @fontWeight, @color, @backgroundColor, @hoverColor) {
   height: @height;
   width: @width;

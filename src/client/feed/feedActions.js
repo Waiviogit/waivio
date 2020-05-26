@@ -4,6 +4,7 @@ import {
   createAsyncActionType,
   getFeedFromState,
   getFeedLoadingFromState,
+  getReceivedFeedCount,
 } from '../helpers/stateHelpers';
 import {
   getAuthenticatedUserName,
@@ -84,8 +85,8 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const state = getState();
   const feed = getFeed(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
+  const receivedFeedCount = getReceivedFeedCount(sortBy, category, feed);
   const user_languages = getUserLocalesArray(getState);
-
   if (!feedContent.length) return Promise.resolve(null);
 
   const doApiRequest = () => {
@@ -100,7 +101,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
     const queryData = {
       category: sortBy,
       tag: category,
-      skip: feedContent.length,
+      skip: receivedFeedCount,
       limit,
       user_languages,
     };

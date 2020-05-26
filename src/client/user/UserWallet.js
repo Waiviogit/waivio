@@ -26,6 +26,8 @@ import {
   getPlatformName,
   getBeaxyWallet,
   getCurrenciesDescriptions,
+  isGuestBalance,
+  isGuestUser,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -68,6 +70,10 @@ const initWalletsQuantity = 5;
         ? getBeaxyWallet(state)
         : [],
     currenciesDescriptions: getCurrenciesDescriptions(state),
+    ownGuestBalance: isGuestBalance(state),
+    isGuest: isGuestUser(state),
+    ownPage:
+      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),
   }),
   {
     getGlobalProperties,
@@ -98,6 +104,9 @@ class Wallet extends Component {
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
+    ownGuestBalance: PropTypes.func,
+    isGuest: PropTypes.bool,
+    ownPage: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -107,6 +116,9 @@ class Wallet extends Component {
     platformName: '',
     beaxyBalance: [],
     currenciesDescriptions: {},
+    ownGuestBalance: null,
+    isGuest: false,
+    ownPage: false,
   };
 
   state = {
@@ -156,6 +168,21 @@ class Wallet extends Component {
     this.setState({ isShowMoreBeaxy: !this.state.isShowMoreBeaxy });
   };
 
+  selectUserBalance = () => {
+    const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
+
+    const isGuestWalletPage = guestUserRegex.test(user && user.name);
+
+    if (ownPage && isGuest) {
+      return ownGuestBalance;
+    } else if (isGuestWalletPage && !ownPage) {
+      return guestBalance;
+    } else if (!isGuestWalletPage) {
+      return user.balance;
+    }
+    return null;
+  };
+
   render() {
     const {
       user,
@@ -169,8 +196,8 @@ class Wallet extends Component {
       usersAccountHistory,
       cryptosPriceHistory,
       screenSize,
-      guestBalance,
     } = this.props;
+
     const { isShowMoreBeaxy } = this.state;
     const userKey = getUserDetailsKey(user.name);
     const transactions = get(usersTransactions, userKey, []);
@@ -213,7 +240,7 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
-          balance={isGuest ? guestBalance : user.balance}
+          balance={this.selectUserBalance()}
           beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
           hasMoreBalances={
