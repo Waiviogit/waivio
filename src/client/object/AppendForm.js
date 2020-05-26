@@ -81,7 +81,6 @@ export default class AppendForm extends Component {
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func,
-    followObject: PropTypes.func,
     rateObject: PropTypes.func,
     usedLocale: PropTypes.string,
     /* passed props */
@@ -921,30 +920,6 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             {combinedFieldValidationMsg}
-          </React.Fragment>
-        );
-      }
-      case objectFields.map: {
-        return (
-          <React.Fragment>
-            <Form.Item></Form.Item>
-            <Form.Item>
-              {getFieldDecorator(mapFields.longitude, {
-                rules: this.getFieldRules(mapFields.longitude),
-              })(
-                <Input
-                  onBlur={this.onUpdateCoordinate(mapFields.longitude)}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'location_longitude',
-                    defaultMessage: 'Longitude',
-                  })}
-                />,
-              )}
-            </Form.Item>
           </React.Fragment>
         );
       }

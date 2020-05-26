@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -10,7 +11,6 @@ import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
 import './PostSellBuy.less';
-import { Tooltip } from 'antd';
 
 const propTypes = {
   quoteSettings: PropTypes.shape(),

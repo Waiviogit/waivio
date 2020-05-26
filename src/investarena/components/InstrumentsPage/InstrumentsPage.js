@@ -3,8 +3,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
-import { getAllSignals } from '../../redux/actions/signalsActions';
-import { marketNames, typesWithChartId } from '../../constants/objectsInvestarena';
+import { marketNames } from '../../constants/objectsInvestarena';
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
@@ -43,12 +42,6 @@ class InstrumentsPage extends Component {
       const viewMode = getViewMode('instruments');
       if (viewMode) this.toggleViewMode(viewMode);
     } else this.toggleViewMode('cards');
-
-    getAllSignals().then(({ data, error }) => {
-      if (!error && data) {
-        this.setState({ signals: data });
-      }
-    });
   }
 
   toggleViewMode = viewMode => {
@@ -64,9 +57,6 @@ class InstrumentsPage extends Component {
   render() {
     const { intl, quoteSettings } = this.props;
     const paramMarket = this.props.match.params.marketType;
-    // const marketType = typesWithChartId.some(market => market === paramMarket)
-    //   ? paramMarket
-    //   : 'crypto';
     const quoteSettingsSorted = {};
     Object.entries(quoteSettings).forEach(([key, value]) => {
       if (value.wobjData && value.priceRounding) {
