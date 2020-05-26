@@ -25,7 +25,7 @@ const ReportFooter = ({ intl, toggleModal }) => {
           {intl.formatMessage({
             id: 'exchange_rate',
             defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${reservationRate ||
-              ''} USD).`,
+              'N/A'} USD).`,
           })}
         </div>
         <div>

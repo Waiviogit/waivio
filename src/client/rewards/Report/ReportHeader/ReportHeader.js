@@ -15,7 +15,7 @@ const ReportHeader = ({ intl }) => {
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive;
-  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(2) : 0;
+  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(3) : 'N/A';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;

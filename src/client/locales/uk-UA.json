@@ -732,7 +732,7 @@
   "users_auto_complete_placeholder": "Знайти користувачів",
   "up_to_5_comma_delimited": "(До 5, через кому)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значення лайків можна накопичувати на спеціальному компенсаційному рахунку.",
-  "compensation_account_optional": "Компенсаційний рахунок (необов'язково)",
+  "compensation_account": "Компенсаційний рахунок",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Накопичує значення лайків з зареєстрованих акаунтів upvoting",
   "compensation_account_auto_complete_placeholder": "Знайти компенсаційний аккаунт",
   "activate_campaign": "Активувати компанії з нагородами",
@@ -795,5 +795,6 @@
   "health": "здоров'я",
   "travel": "подорожі",
   "beneficiaries-weights": "Отримувачі",
-  "find_users_placeholder": "Знайти користувачів"
+  "find_users_placeholder": "Знайти користувачів",
+  "add_compensation_account": "Добавте компенсаційний рахунок"
 }
