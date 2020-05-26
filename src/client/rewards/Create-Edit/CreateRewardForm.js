@@ -80,6 +80,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
+      console.log('campaign', campaign);
 
       const isExpired = campaign.status === 'expired';
 
@@ -104,6 +105,7 @@ class CreateRewardForm extends React.Component {
             ...secondaryObjectsPermlinks,
           ],
         });
+        console.log('combinedObjects', combinedObjects);
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
           includes(campaign.sponsors, wobj.author_permlink),
@@ -183,6 +185,7 @@ class CreateRewardForm extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
+    console.log('data', data);
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const objects = map(data.secondaryObject, o => o.id);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
@@ -341,6 +344,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          console.log('values', values);
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(
