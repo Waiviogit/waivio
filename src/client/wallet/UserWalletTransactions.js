@@ -26,13 +26,14 @@ class UserWalletTransactions extends React.Component {
     transactions: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func.isRequired,
     hasMore: PropTypes.bool,
+    // transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     currentUsername: '',
     transactions: [],
     hasMore: false,
-    usersTransactions: [],
+    transactionsHistory: [],
   };
 
   componentDidMount() {
@@ -59,6 +60,7 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       transactions,
       hasMore,
+      // transactionsHistory,
     } = this.props;
 
     if (!transactions.length) {

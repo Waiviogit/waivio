@@ -126,7 +126,10 @@ class Wallet extends Component {
     const userKey = getUserDetailsKey(user.name);
     const transactionsHistory = get(usersTransactions, userKey, []);
 
-    console.log('transactionsHistory: ', transactionsHistory);
+    // eslint-disable-next-line array-callback-return
+    transactionsHistory.map(transfer => {
+      console.log('transfer: ', transfer.op[1]);
+    });
 
     const currentSteemRate = get(
       cryptosPriceHistory,
@@ -144,6 +147,7 @@ class Wallet extends Component {
       <Loading style={{ marginTop: '20px' }} />
     ) : (
       <UserWalletTransactions
+        transactionsHistory={transactionsHistory}
         currentUsername={user.name}
         totalVestingShares={totalVestingShares}
         totalVestingFundSteem={totalVestingFundSteem}
