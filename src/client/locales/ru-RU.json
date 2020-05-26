@@ -874,7 +874,7 @@
   "matchBot_cancel": "Отмена",
   "up_to_5_comma_delimited": "(до 5, через запятую)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значение лайков можно накапливать на специальном компенсационном счете.",
-  "compensation_account_optional": "Компенсационный счет (не обязательно)",
+  "compensation_account": "Компенсационный счет",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Накапливает значение лайков из зарегистрированных спонсорских аккаунтов",
   "users_auto_complete_placeholder": "Найти пользователя",
   "activate_campaign": "Активировать конмании с наградами",
@@ -1130,5 +1130,6 @@
   "activation_campaign": "{author} запустил новую компанию для {object_name}",
   "links": "Ссылки",
   "note": "Примечание",
-  "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки"
+  "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки",
+  "add_compensation_account": "Добавьте компенсационный счет"
 }

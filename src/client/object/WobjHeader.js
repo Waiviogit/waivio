@@ -67,7 +67,6 @@ const WobjHeader = ({
   };
   const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
-  const status = getApprovedField(wobject, 'status');
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -126,8 +125,8 @@ const WobjHeader = ({
                   fieldName={objectFields.title}
                   objName={wobject.name}
                 />
-              ) : status ? (
-                getStatusLayout(status)
+              ) : wobject.status ? (
+                getStatusLayout(wobject.status)
               ) : (
                 descriptionShort
               )}

@@ -272,18 +272,22 @@ export default class ObjectFeed extends React.Component {
     const { feed, limit, handleCreatePost, wobject, currentProposition } = this.props;
     const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
-    const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
+    const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
+    const content = uniq(objectFeed);
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wObjectName, feed);
+    const skip = content.length;
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: wObjectName,
         authorPermlink: wObjectName,
         limit,
+        skip,
       });
     };
     const goToProducts = () => {
-      this.props.history.push(`/rewards/All`);
+      const permlink = get(wobject, 'author_permlink');
+      this.props.history.push(`/rewards/All/${permlink}`);
     };
     const currentUSDPrice = this.getCurrentUSDPrice();
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;

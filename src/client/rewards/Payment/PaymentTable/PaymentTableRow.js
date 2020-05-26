@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { map, reduce } from 'lodash';
+import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
@@ -11,7 +12,7 @@ import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
 import './PaymentTable.less';
 
-const PaymentTableRow = ({ intl, sponsor }) => {
+const PaymentTableRow = ({ intl, sponsor, isReports }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
   const getConvertDidits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
@@ -38,9 +39,12 @@ const PaymentTableRow = ({ intl, sponsor }) => {
   const userWeight = `(${(10000 -
     reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
+  const time = isReports ? moment(sponsor.createdAt).format('h:mm:ss') : '';
   return (
     <tr>
-      <td>{formatDate(intl, sponsor.createdAt)}</td>
+      <td>
+        {formatDate(intl, sponsor.createdAt)} {time}
+      </td>
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">
@@ -166,6 +170,11 @@ const PaymentTableRow = ({ intl, sponsor }) => {
 PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,
+  isReports: PropTypes.bool,
+};
+
+PaymentTableRow.defaultProps = {
+  isReports: false,
 };
 
 export default injectIntl(PaymentTableRow);

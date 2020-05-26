@@ -347,6 +347,8 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         wobject: {
           ...state.wobject,
+          status: getApprovedField(state.wobject, 'status'),
+          background: getApprovedField(state.wobject, 'background'),
           fields: [...state.wobject.fields],
         },
       };
