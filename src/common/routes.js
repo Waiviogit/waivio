@@ -157,10 +157,6 @@ const ObjectGalleryAlbum = Loadable({
   loader: () => import('../client/object/ObjectGallery/ObjectGalleryAlbum'),
   loading: Loading
 });
-const InstrumentsPage = Loadable({
-  loader: () => import('../investarena/components/InstrumentsPage'),
-  loading: Loading
-});
 const CatalogWrap = Loadable({
   loader: () => import('../client/object/Catalog/CatalogWrap'),
   loading: Loading
@@ -344,11 +340,6 @@ const routes = [
       {
         path: '/objects',
         component: Objects,
-      },
-      {
-        path: '/markets/:marketType',
-        component: InstrumentsPage,
-        exact: true,
       },
       {
         path: '/:category?/@:author/:permlink',
