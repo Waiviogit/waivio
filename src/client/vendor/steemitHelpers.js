@@ -157,8 +157,8 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
 function createPatch(text1, text2) {
   if (!text1 && text1 === '') return undefined;
   const patches = dmp.patch_make(text1, text2);
-  const patch = dmp.patch_toText(patches);
-  return patch;
+
+  return dmp.patch_toText(patches);
 }
 
 /**

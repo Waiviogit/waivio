@@ -125,6 +125,6 @@ export default connect(state => ({
   userName: getAuthenticatedUserName(state),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
-  moderatorsList: getObjectAdmins(state),
-  adminsList: getObjectModerators(state),
+  moderatorsList: getObjectModerators(state),
+  adminsList: getObjectAdmins(state),
 }))(injectIntl(ApprovingCard));
