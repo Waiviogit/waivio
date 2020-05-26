@@ -1,9 +1,6 @@
 @import 'ForecastItem-nigthtmode';
 @import (reference) '../../styles/custom.less';
 
-@sell-color: #ee5451;
-@buy-color: #1ebea5;
-
 .quote(@quote-color) {
   background-color: @quote-color;
   color: @white;
@@ -97,11 +94,11 @@
       height: 22px;
 
       &-icon-sell {
-        .quote(@sell-color);
+        .quote(@soft-red);
       }
 
       &-icon-buy {
-        .quote(@buy-color);
+        .quote(@color-green);
       }
 
       &::after {
@@ -116,23 +113,27 @@
       }
 
       span {
-        color: #ffffff;
+        color: @white;
+      }
+
+      .st-forecast-start-price {
+        font-size: 12px;
       }
     }
 
     &-buy {
-      background-color: @buy-color;
+      background-color: @color-green;
 
       &::after {
-        border-left: 10px solid @buy-color;
+        border-left: 10px solid @color-green;
       }
     }
 
     &-sell {
-      background-color: @sell-color;
+      background-color: @soft-red;
 
       &::after {
-        border-left: 10px solid @sell-color;
+        border-left: 10px solid @soft-red;
       }
     }
 

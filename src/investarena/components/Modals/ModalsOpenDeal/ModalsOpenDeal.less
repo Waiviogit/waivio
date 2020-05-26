@@ -1,18 +1,19 @@
-@import (reference) '../../Common.less';
+@import (reference) '../../../../client/styles/custom.less';
+@import (reference) '../../../../client/styles/mixins.less';
 
 .modalOpenDealStyle () {
   .modal-content {
-    background-color: @color-white;
+    background-color: @white;
 
     .modal-header {
       background-color: #16254c;
-      color: @color-white;
+      color: @white;
       height: 40px;
 
       .close {
         outline: none;
         cursor: pointer;
-        color: @color-white;
+        color: @white;
       }
     }
 
@@ -21,16 +22,16 @@
     }
   }
   .modal-title {
-    .textStyle(@font-size-medium, @color-white, bold);
+    .textStyle(14px, @color-white, bold);
   }
   .modal-text {
     text-align: center;
-    .textStyle(@font-size-large, @color-black-blue, bold);
+    .textStyle(16px, @color-black-blue, bold);
     display: flex;
     justify-content: center;
   }
   .st-modals-value-amount {
-    .textStyle(@font-size-small, @tertiary-color, normal);
+    .textStyle(12px, @tertiary-color, normal);
     align-self: center;
     margin-top: 9px;
   }
@@ -61,7 +62,7 @@
     font-size: 0;
   }
   .st-modal-input {
-    .fieldStyle (35px, 50%, @margin-middle, @font-size-medium, @color-black-blue);
+    .fieldStyle (35px, 50%, 10px, 14px, @color-black-blue);
   }
   .st-modal-checkbox-wrap {
     line-height: 0;
@@ -90,7 +91,7 @@
     font-size: 1rem;
     position: absolute;
     right: 5px;
-    color: @color-white;
+    color: @white;
     top: 50%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
@@ -107,7 +108,7 @@
     color: @color-blue;
     -webkit-transform: translateX(calc(1 * 100% + 5px));
     transform: translateX(calc(1 * 100% + 5px));
-    background: @color-white;
+    background: @white;
   }
 
   .toggle input:checked + div:after {
@@ -121,23 +122,23 @@
 }
 
 .st-modals-title {
-  .textStyle(@font-size-small, @color-darkest-gray, normal);
+  .textStyle(12px, @color-darkest-gray, normal);
   align-self: center;
 }
 
 .st-modals-value {
-  .textStyle(@font-size-small, @color-black-blue, normal);
+  .textStyle(12px, @color-black-blue, normal);
   align-self: center;
 }
 
 .st-modals-header-value {
-  .textStyle(@font-size-small, @color-black-blue, bold);
+  .textStyle(12px, @color-black-blue, bold);
   align-self: center;
   text-align: right;
 }
 
 .st-modals-price {
-  .textStyle(@font-size-small, @color-black-blue, bold);
+  .textStyle(12px, @color-black-blue, bold);
   align-self: center;
   display: flex;
   justify-content: flex-end;

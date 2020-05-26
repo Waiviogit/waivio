@@ -30,7 +30,7 @@ class ModalCloseAll extends Component {
   };
   render() {
     return (
-      <div className="st-open-deal-button-wrap st-margin-left-large">
+      <div className="st-open-deal-button-wrap ml3">
         {_.size(this.props.openDeals) > 0 ? (
           <button className={this.props.buttonClass} onClick={this.toggle}>
             {`${this.props.intl.formatMessage({
@@ -57,13 +57,13 @@ class ModalCloseAll extends Component {
             onCancel={this.toggle}
             style={{ width: '250px' }}
           >
-            <span className="modal-text st-margin-bottom-large">
+            <span className="modal-text mb3">
               {`${this.props.intl.formatMessage({
                 id: 'deals.closeAll',
                 defaultMessage: 'Close all',
               })}: ${this.props.sumPnl}`}
             </span>
-            <div className="d-flex">
+            <div className="flex">
               <button className="btn st-open-deal-button-red" onClick={this.toggle}>
                 {this.props.intl.formatMessage({
                   id: 'modal.button.cancel',
@@ -71,7 +71,7 @@ class ModalCloseAll extends Component {
                 })}
               </button>
               <button
-                className="btn st-open-deal-button-blue st-margin-left-large"
+                className="btn st-open-deal-button-blue ml3"
                 onClick={this.handleClickConfirmCloseDeals.bind(
                   this,
                   this.props.openDeals,
