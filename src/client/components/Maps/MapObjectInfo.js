@@ -50,6 +50,10 @@ class MapObjectInfo extends React.Component {
     document.addEventListener('click', this.handleClick);
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick);
+  }
+
   handleClick = () => {
     if (!isEmpty(this.state.infoboxData)) {
       this.setState({ infoboxData: null });
@@ -81,7 +85,7 @@ class MapObjectInfo extends React.Component {
 
   getOverlayLayout = () => {
     const { infoboxData } = this.state;
-    const { usedLocale, isFullscreenMode } = this.props;
+    const { usedLocale } = this.props;
     const wobj = getClientWObj(infoboxData.wobject, usedLocale);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
@@ -89,7 +93,7 @@ class MapObjectInfo extends React.Component {
           role="presentation"
           className="MapOS__overlay-wrap"
           onMouseLeave={this.closeInfobox}
-          onClick={isFullscreenMode ? this.toggleModal : null}
+          onClick={this.closeModal}
         >
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div role="presentation" className="MapOS__overlay-wrap-name">
@@ -150,7 +154,10 @@ class MapObjectInfo extends React.Component {
     this.setState({ zoom, radius });
   };
 
-  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  closeModal = () => {
+    if (this.props.isFullscreenMode) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  };
+  openModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -176,7 +183,7 @@ class MapObjectInfo extends React.Component {
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
         {isFullscreenMode && (
@@ -184,7 +191,7 @@ class MapObjectInfo extends React.Component {
             title={null}
             footer={null}
             visible={isFullscreenMode}
-            onCancel={this.toggleModal}
+            onCancel={this.closeModal}
             style={{ top: 0 }}
             width={'100%'}
             wrapClassName={classNames('MapModal')}
@@ -204,7 +211,7 @@ class MapObjectInfo extends React.Component {
               >
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+              <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
             </div>
