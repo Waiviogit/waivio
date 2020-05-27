@@ -221,7 +221,9 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.sponsorsList.label}>
-          {getFieldDecorator(fields.sponsorsList.name)(
+          {getFieldDecorator(fields.sponsorsList.name, {
+            initialValue: sponsorsList,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}
