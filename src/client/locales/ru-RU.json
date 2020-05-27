@@ -1113,7 +1113,7 @@
   "share": "Доля",
   "usd": "USD",
   "exchange_rate": "Обменный курс записывается в момент резервирования вознаграждения (1 HIVE = {currentUSDPrice} USD).",
-  "only_upvotes_from_registered_accounts": "Только выплаты с зарегистрированных аккаунтов ({sponsor} {waivioMatch}) учитываются при оплыте вознаграждений. Стоимость всех остальных голосов не вычитается из указанной суммы вознаграждения.",
+  "only_upvotes_from_registered_accounts": "Только выплаты с зарегистрированных аккаунтов",
   "processing_fees_are_paid_by_campaign_sponsor": "Сборы за обработку оплачиваются спонсором кампании в дополнение к вознаграждениям пользователей.",
   "posted_on": "опубликовано",
   "profile_updated": "Профиль обновлен",
@@ -1125,11 +1125,11 @@
   "fillOrder_wallet_get": "Вы купили {open_pays} от {exchanger}",
   "hive_power": "Hive** Power",
   "services": "Сервисы",
-  "links": "Ссылки",
   "reject_update": "{voter} отклонил ваше обновление для '{object_name}'",
   "activation_campaign": "{author} запустил новую компанию для {object_name}",
   "links": "Ссылки",
   "note": "Примечание",
+  "count_towards_the_payment_of_rewards": "учитываются при оплыте вознаграждений. Стоимость всех остальных голосов не вычитается из указанной суммы вознаграждения.",
   "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки",
   "add_compensation_account": "Добавьте компенсационный счет"
 }
