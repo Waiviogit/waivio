@@ -3,14 +3,10 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
-  const currentUSDPrice = getCurrentUSDPrice();
-  const rewardPrise = currentUSDPrice
-    ? `${(currentUSDPrice * campaignData.reward).toFixed(2)} USD`
-    : `${campaignData.reward} HIVE`;
+const CampaignCardHeader = ({ intl, campaignData }) => {
+  const rewardPrise = `${campaignData.reward} USD`;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -27,26 +23,11 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
               defaultMessage: 'Earn',
             })}
           </span>
-          {!isDetails ? (
-            <React.Fragment>
-              <span className="CampaignCardHeader__data-colored">
-                <span className="fw6">{` ${rewardPrise} `}</span>
-              </span>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <span className="CampaignCardHeader__data-colored">
-                <span className="fw6">{` ${campaignData.reward} `}</span>
-                <span>HIVE</span>
-              </span>
-              {currentUSDPrice && (
-                <span className="CampaignCardHeader__rewardPriсe">
-                  {' '}
-                  (<span className="fw6">{rewardPrise}</span>)
-                </span>
-              )}
-            </React.Fragment>
-          )}
+          <React.Fragment>
+            <span className="CampaignCardHeader__data-colored">
+              <span className="fw6">{` ${rewardPrise} `}</span>
+            </span>
+          </React.Fragment>
         </div>
       </div>
       <div className="user-info">
@@ -66,7 +47,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
             <div className="total-paid__colon">:</div>
             <div>{`${
               campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-            } HIVE`}</div>
+            } USD`}</div>
           </div>
         </div>
       </div>
@@ -77,10 +58,6 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
-  isDetails: PropTypes.bool,
-};
-CampaignCardHeader.defaultProps = {
-  isDetails: false,
 };
 
 export default injectIntl(CampaignCardHeader);
