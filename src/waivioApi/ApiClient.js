@@ -763,7 +763,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
     if (!isEmpty(obj)) {
       return {
-        amount: obj.amount,
+        payable: obj.payable,
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
