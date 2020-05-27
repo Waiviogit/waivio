@@ -87,7 +87,7 @@ class Instrument extends Component {
                 market={quoteSettings.market}
                 avatarlink={quoteSettings.wobjData.avatarlink}
               />
-              <div className="d-flex flex-column align-items-center">
+              <div className="flex flex-column items-center">
                 {instrumentName}
                 {investments}
               </div>

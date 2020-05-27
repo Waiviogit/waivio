@@ -1,4 +1,6 @@
-@import (reference) '../../Common.less';
+@import (reference) '../../../../client/styles/common.less';
+@import (reference) '../../../../client/styles/custom.less';
+@import (reference) '../../../../client/styles/mixins.less';
 
 .st-trade-buttons-asset-page-wrap {
   .st-trade-buttons-wrap {
@@ -50,7 +52,7 @@
           align-items: center;
           width: 90px;
           cursor: pointer;
-          color: @color-white;
+          color: @white;
           &::after {
             content: '';
             position: absolute;
@@ -104,7 +106,7 @@
       border-radius: 3px;
       width: 50%;
       cursor: pointer;
-      color: @color-white;
+      color: @white;
     }
   }
 }

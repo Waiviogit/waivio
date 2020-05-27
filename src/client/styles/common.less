@@ -321,8 +321,100 @@ ul {
   display: none;
 }
 
-.d-flex {
-  display: flex;
+// animations
+.sessionIndicator {
+  @-moz-keyframes rollGreen {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+  }
+  @keyframes rollGreen {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+  }
+  @-moz-keyframes rollRed {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(233, 55, 0, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+  }
+  @keyframes rollRed {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 3px rgba(233, 55, 0, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+  }
 }
 
 @import 'common-nightmode';
