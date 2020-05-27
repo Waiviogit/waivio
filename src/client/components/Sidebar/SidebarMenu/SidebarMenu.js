@@ -59,7 +59,7 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
     ) : (
       <NavLink
         to={menuSection.linkTo}
-        className="collapsible-block__title"
+        className="collapsible-block__title ph2"
         isActive={checkIsActive}
       >
         <span
@@ -96,7 +96,7 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
   );
 
   return (
-    <div className="collapsible-block SidebarContentBlock__content">
+    <div className="collapsible-block SidebarContentBlock__content pa0">
       {Object.values(menuState).map(section =>
         !section.requireAuth || authenticated ? (
           <div className={`collapsible-block__${section.name}-section`} key={section.name}>

@@ -28,10 +28,13 @@
     &__content {
       .collapsible-block {
         &__title {
-          &.active > .collapsible-block__title-text {
+          &.active {
             background: @grey-nero;
             border: @border-width-base @border-style-base @normal-grey !important;
-            color: @white !important;
+
+            & > .collapsible-block__title-text {
+              color: @white !important;
+            }
           }
           span {
             transition: 0.5s;

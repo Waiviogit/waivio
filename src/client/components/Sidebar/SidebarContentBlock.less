@@ -53,16 +53,19 @@
         display: flex;
         align-items: center;
 
-        &.active > .collapsible-block__title-text {
+        &.active {
           background: white;
           border: @border-width-base @border-style-base @border-color-base !important;
           border-radius: @border-radius-base;
-          color: @blue-dodgerBlue;
-          padding: 0 10px;
-          &.mobileBlock {
-            background-color: @grey-nero;
-            color: @white !important;
-            border: @border-width-base @border-style-base @normal-grey !important;
+
+          & > .collapsible-block__title-text {
+            color: @blue-dodgerBlue;
+
+            &.mobileBlock {
+              background-color: @grey-nero;
+              color: @white !important;
+              border: @border-width-base @border-style-base @normal-grey !important;
+            }
           }
         }
 
