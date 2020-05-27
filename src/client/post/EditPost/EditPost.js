@@ -4,7 +4,18 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge, Icon } from 'antd';
-import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import {
+  get,
+  compact,
+  debounce,
+  has,
+  isEmpty,
+  isEqual,
+  kebabCase,
+  throttle,
+  uniqBy,
+  omit,
+} from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
 import {
@@ -119,14 +130,20 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
+    getObject('jyp-cryptoinvestarena').then(data => {
+      const cryptoObject = getClientWObj(data, this.props.locale);
+      this.setState({
+        defaultObjects: [cryptoObject],
+        objPercentage: setObjPercents([cryptoObject], this.state.objPercentage),
+      });
+    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
 
   getLinkedObjects = async contentStateRaw => {
-    const { forecastValues, linkedObjects, isRemovedCryptoObj } = this.state;
+    const { forecastValues, linkedObjects } = this.state;
     const { isValid, wobjData } = forecastValues;
-    const cryptoObject = await getObject('jyp-cryptoinvestarena');
     const objEntities = Object.values(contentStateRaw.entityMap).filter(
       entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
     );
@@ -137,21 +154,21 @@ class EditPost extends Component {
       const serverObject = await getObject(forecastObjectId);
       forecastObject = getClientWObj(serverObject, this.props.locale);
     }
-
-    let linkedList = [forecastObject, ...objEntities.map(entity => entity.data.object)];
-    if (!isRemovedCryptoObj) linkedList = [cryptoObject, ...linkedList];
-
-    return compact(uniqBy(linkedList, 'id'));
+    return compact(
+      uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'),
+    );
   };
 
   async handleChangeContent(rawContent) {
+    const { defaultObjects } = this.state;
     const nextState = { content: toMarkdown(rawContent) };
     this.getLinkedObjects(rawContent).then(linkedObjects => {
       const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
+      const linkedList = isLinkedObjectsChanged ? linkedObjects : this.state.linkedObjects;
+      const postObjects = [...defaultObjects, ...linkedList];
       if (isLinkedObjectsChanged) {
-        const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
         nextState.linkedObjects = linkedObjects;
-        nextState.objPercentage = objPercentage;
+        nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
       }
       if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
         this.setState(nextState, this.handleUpdateState);
@@ -174,7 +191,12 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
+    const { defaultObjects } = this.state;
     const postData = this.buildPost();
+    defaultObjects.forEach(obj => {
+      const objName = obj.name || obj.default_name;
+      postData.body += `\n[${objName}](${getObjectUrl(obj.id || obj.author_permlink)})&nbsp;\n`;
+    });
     this.props.createPost(postData);
   }
 
@@ -213,6 +235,7 @@ class EditPost extends Component {
       isUpdating,
       permlink,
       originalBody,
+      defaultObjects,
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
@@ -224,6 +247,7 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
+    const postObjects = [...defaultObjects, ...linkedObjects];
 
     if (campaign && campaign.alias) {
       postData.body += `\n***\n${this.props.intl.formatMessage({
@@ -240,7 +264,7 @@ class EditPost extends Component {
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
-      wobjects: linkedObjects.map(obj => ({
+      wobjects: postObjects.map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
         percent: objPercentage[obj.id].percent,
@@ -257,24 +281,24 @@ class EditPost extends Component {
     if (originalBody) {
       postData.originalBody = originalBody;
     }
-
     return postData;
   }
 
   handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
   handleForecastChange = (nextForecastValues, isReset) => {
-    const { linkedObjects, forecastValues } = this.state;
+    const { linkedObjects, forecastValues, defaultObjects } = this.state;
     const { isValid, wobjData } = nextForecastValues;
     if (isReset) {
       this.setState(prevState => {
         const filteredObjects = prevState.linkedObjects.filter(
           obj => obj.id !== get(prevState.forecastValues, ['wobjData', 'author_permlink'], ''),
         );
+        const postObjects = [...defaultObjects, ...filteredObjects];
         return {
           forecastValues: nextForecastValues,
           linkedObjects: filteredObjects,
-          objPercentage: setObjPercents(filteredObjects, this.state.objPercentage),
+          objPercentage: setObjPercents(postObjects, this.state.objPercentage),
         };
       });
     } else if (
@@ -289,10 +313,11 @@ class EditPost extends Component {
           '',
         );
         const nextLinkedObjects = [getClientWObj(serverObject, this.props.locale), ...filtered];
+        const postObjects = [...defaultObjects, ...nextLinkedObjects];
         this.setState({
           forecastValues: nextForecastValues,
           linkedObjects: nextLinkedObjects,
-          objPercentage: setObjPercents(nextLinkedObjects, this.state.objPercentage),
+          objPercentage: setObjPercents(postObjects, this.state.objPercentage),
         });
       });
     } else {
@@ -356,12 +381,6 @@ class EditPost extends Component {
     const isBodyItem = draftContent.body.includes(
       `\n[${objName}](${getObjectUrl(object.id || object.author_permlink)})`,
     );
-    if (object.author_permlink === 'jyp-cryptoinvestarena') {
-      const objectList = linkedObjects.filter(
-        item => item.author_permlink !== object.author_permlink,
-      );
-      this.setState({ linkedObjects: objectList, isRemovedCryptoObj: true });
-    }
     if (isBodyItem) this.removeBodyItem(object);
     if (
       object.type === 'cryptopairs' &&
@@ -374,6 +393,15 @@ class EditPost extends Component {
       );
       this.setState({ linkedObjects: objectList });
     }
+  };
+
+  removeDefaultObject = object => {
+    const { defaultObjects, objPercentage } = this.state;
+    const objectList = defaultObjects.filter(
+      item => item.author_permlink !== object.author_permlink,
+    );
+    const objectPercentageList = omit(objPercentage, object.author_permlink);
+    this.setState({ defaultObjects: objectList, objPercentage: objectPercentageList });
   };
 
   render() {
@@ -389,6 +417,7 @@ class EditPost extends Component {
       expForecast,
       isUpdating,
       isPreview,
+      defaultObjects,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts } = this.props;
     return (
@@ -443,7 +472,14 @@ class EditPost extends Component {
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
             <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
             <CreateObject onCreateObject={this.handleCreateObject} />
-
+            {defaultObjects.map(wObj => (
+              <div className="edit-post__object-card">
+                <div className="edit-post__object-card-icon">
+                  <Icon type="close-circle" onClick={() => this.removeDefaultObject(wObj)} />
+                </div>
+                <ObjectCardView wObject={wObj} key={wObj.id} />
+              </div>
+            ))}
             {linkedObjects.map(wObj => (
               <div className="edit-post__object-card">
                 <div className="edit-post__object-card-icon">
