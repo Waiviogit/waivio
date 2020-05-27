@@ -4,7 +4,18 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge, Icon } from 'antd';
-import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy, omit } from 'lodash';
+import {
+  get,
+  compact,
+  debounce,
+  has,
+  isEmpty,
+  isEqual,
+  kebabCase,
+  throttle,
+  uniqBy,
+  omit,
+} from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
 import {
@@ -80,10 +91,8 @@ class EditPost extends Component {
     publishing: false,
     saving: false,
     imageLoading: false,
-    createPost: () => {
-    },
-    saveDraft: () => {
-    },
+    createPost: () => {},
+    saveDraft: () => {},
   };
 
   constructor(props) {
@@ -121,9 +130,12 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
-    getObject('jyp-cryptoinvestarena')
-      .then(data => this.setState({ defaultObjects: [data], objPercentage : setObjPercents([data], this.state.objPercentage) }),
-      );
+    getObject('jyp-cryptoinvestarena').then(data =>
+      this.setState({
+        defaultObjects: [data],
+        objPercentage: setObjPercents([data], this.state.objPercentage),
+      }),
+    );
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
@@ -141,7 +153,9 @@ class EditPost extends Component {
       const serverObject = await getObject(forecastObjectId);
       forecastObject = getClientWObj(serverObject, this.props.locale);
     }
-    return compact(uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'));
+    return compact(
+      uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'),
+    );
   };
 
   async handleChangeContent(rawContent) {
@@ -150,13 +164,11 @@ class EditPost extends Component {
     this.getLinkedObjects(rawContent).then(linkedObjects => {
       const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
       const linkedList = isLinkedObjectsChanged ? linkedObjects : this.state.linkedObjects;
-      const postObjects = !isEmpty(defaultObjects) ? [...defaultObjects, ...linkedList] : linkedList;
+      const postObjects = [...defaultObjects, ...linkedList];
       if (isLinkedObjectsChanged) {
         nextState.linkedObjects = linkedObjects;
-        nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
-      } else {
-        nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
       }
+      nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
       if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
         this.setState(nextState, this.handleUpdateState);
       }
@@ -229,17 +241,14 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
-    const isSubmitPost =  isSubmit && !isEmpty(defaultObjects);
+    const isSubmitPost = isSubmit && !isEmpty(defaultObjects);
     const postObjects = isSubmitPost ? [...defaultObjects, ...linkedObjects] : linkedObjects;
 
     if (isSubmitPost) {
       defaultObjects.forEach(obj => {
-          const objName = obj.name || obj.default_name;
-          postData.body += `\n[${objName}](${getObjectUrl(
-            obj.id || obj.author_permlink,
-          )})&nbsp;\n`;
-        },
-      );
+        const objName = obj.name || obj.default_name;
+        postData.body += `\n[${objName}](${getObjectUrl(obj.id || obj.author_permlink)})&nbsp;\n`;
+      });
     }
 
     if (campaign && campaign.alias) {
@@ -287,7 +296,9 @@ class EditPost extends Component {
         const filteredObjects = prevState.linkedObjects.filter(
           obj => obj.id !== get(prevState.forecastValues, ['wobjData', 'author_permlink'], ''),
         );
-        const postObjects = !isEmpty(defaultObjects) ? [...defaultObjects, ...filteredObjects] : filteredObjects;
+        const postObjects = !isEmpty(defaultObjects)
+          ? [...defaultObjects, ...filteredObjects]
+          : filteredObjects;
         return {
           forecastValues: nextForecastValues,
           linkedObjects: filteredObjects,
@@ -306,7 +317,9 @@ class EditPost extends Component {
           '',
         );
         const nextLinkedObjects = [getClientWObj(serverObject, this.props.locale), ...filtered];
-        const postObjects = !isEmpty(defaultObjects) ? [...defaultObjects, ...nextLinkedObjects] : nextLinkedObjects;
+        const postObjects = !isEmpty(defaultObjects)
+          ? [...defaultObjects, ...nextLinkedObjects]
+          : nextLinkedObjects;
         this.setState({
           forecastValues: nextForecastValues,
           linkedObjects: nextLinkedObjects,
@@ -393,7 +406,7 @@ class EditPost extends Component {
     const objectList = defaultObjects.filter(
       item => item.author_permlink !== object.author_permlink,
     );
-    const objectPercentageList = omit(objPercentage, object.author_permlink );
+    const objectPercentageList = omit(objPercentage, object.author_permlink);
     this.setState({ defaultObjects: objectList, objPercentage: objectPercentageList });
   };
 
@@ -426,9 +439,9 @@ class EditPost extends Component {
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
-                  <Badge status="error" text="saving"/>
+                  <Badge status="error" text="saving" />
                 ) : (
-                  <Badge status="success" text="saved"/>
+                  <Badge status="success" text="saved" />
                 )}
               </div>
             )}
@@ -463,29 +476,29 @@ class EditPost extends Component {
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect}/>
-            <CreateObject onCreateObject={this.handleCreateObject}/>
+            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
+            <CreateObject onCreateObject={this.handleCreateObject} />
             {defaultObjects.map(wObj => (
               <div className="edit-post__object-card">
                 <div className="edit-post__object-card-icon">
-                  <Icon type="close-circle" onClick={() => this.removeDefaultObject(wObj)}/>
+                  <Icon type="close-circle" onClick={() => this.removeDefaultObject(wObj)} />
                 </div>
-                <ObjectCardView wObject={wObj} key={wObj.id}/>
+                <ObjectCardView wObject={wObj} key={wObj.id} />
               </div>
             ))}
             {linkedObjects.map(wObj => (
               <div className="edit-post__object-card">
                 <div className="edit-post__object-card-icon">
-                  <Icon type="close-circle" onClick={() => this.removeLinkedObject(wObj)}/>
+                  <Icon type="close-circle" onClick={() => this.removeLinkedObject(wObj)} />
                 </div>
-                <ObjectCardView wObject={wObj} key={wObj.id}/>
+                <ObjectCardView wObject={wObj} key={wObj.id} />
               </div>
             ))}
           </div>
           <div className="rightContainer">
             <div className="right">
-              <ObjectCreation/>
-              <LastDraftsContainer/>
+              <ObjectCreation />
+              <LastDraftsContainer />
             </div>
           </div>
         </div>
