@@ -26,14 +26,12 @@ class UserWalletTransactions extends React.Component {
     transactions: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func.isRequired,
     hasMore: PropTypes.bool,
-    transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     currentUsername: '',
     transactions: [],
     hasMore: false,
-    transactionsHistory: [],
   };
 
   componentDidMount() {
@@ -60,7 +58,6 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       transactions,
       hasMore,
-      transactionsHistory,
     } = this.props;
 
     if (!transactions.length) {
@@ -85,16 +82,6 @@ class UserWalletTransactions extends React.Component {
             <WalletTransaction
               key={transaction.timestamp}
               transaction={transaction}
-              currentUsername={currentUsername}
-              totalVestingShares={totalVestingShares}
-              totalVestingFundSteem={totalVestingFundSteem}
-            />
-          ))}
-
-          {transactionsHistory.map(transactionHistory => (
-            <WalletTransaction
-              key={`${transactionsHistory.trx_id}${transactionsHistory.actionCount}`}
-              transactionHistory={transactionHistory.op[1]}
               currentUsername={currentUsername}
               totalVestingShares={totalVestingShares}
               totalVestingFundSteem={totalVestingFundSteem}

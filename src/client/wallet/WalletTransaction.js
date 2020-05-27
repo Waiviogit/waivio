@@ -9,7 +9,6 @@ import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
 import './UserWalletTransactions.less';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
-import WalletGuestAuthorRewards from './WalletGuestAuthorRewards';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -35,17 +34,9 @@ const WalletTransaction = ({
   currentUsername,
   totalVestingShares,
   totalVestingFundSteem,
-  transactionHistory,
 }) => {
   const transactionType = transaction.type;
   const transactionDetails = transaction;
-
-  const guestTransaction = transactionHistory.amount;
-  const type = transaction.typeTransfer;
-
-  if (type === 'demo_post') {
-    return <WalletGuestAuthorRewards />;
-  }
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -61,8 +52,6 @@ const WalletTransaction = ({
       if (transactionDetails.to === currentUsername) {
         return (
           <ReceiveTransaction
-            type={type}
-            guestTransaction={guestTransaction}
             from={transactionDetails.from}
             memo={transactionDetails.memo}
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
@@ -117,7 +106,6 @@ WalletTransaction.propTypes = {
   currentUsername: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
-  transactionHistory: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 WalletTransaction.defaultProps = {

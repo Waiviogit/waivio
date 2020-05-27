@@ -26,7 +26,6 @@ import {
 import { getGlobalProperties, getMoreUserAccountHistory } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 @withRouter
 @connect(
@@ -76,7 +75,6 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
-    usersTransactions: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -120,16 +118,7 @@ class Wallet extends Component {
       cryptosPriceHistory,
       guestBalance,
       screenSize,
-      usersTransactions,
     } = this.props;
-
-    const userKey = getUserDetailsKey(user.name);
-    const transactionsHistory = get(usersTransactions, userKey, []);
-
-    // eslint-disable-next-line array-callback-return
-    transactionsHistory.map(transfer => {
-      console.log('transfer: ', transfer.op[1]);
-    });
 
     const currentSteemRate = get(
       cryptosPriceHistory,
@@ -147,7 +136,6 @@ class Wallet extends Component {
       <Loading style={{ marginTop: '20px' }} />
     ) : (
       <UserWalletTransactions
-        transactionsHistory={transactionsHistory}
         currentUsername={user.name}
         totalVestingShares={totalVestingShares}
         totalVestingFundSteem={totalVestingFundSteem}
