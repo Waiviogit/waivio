@@ -62,7 +62,6 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
         <SidenavDiscoverObjects
           withTitle={false}
           toggleMobileNavigation={toggleMobileNavMenu}
-          isMobile
         />
       );
       break;

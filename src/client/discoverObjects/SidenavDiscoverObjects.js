@@ -44,8 +44,7 @@ const usersMenuConfig = {
   },
 };
 
-const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile }) => {
-  return (
+const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation }) => (
     <div className="sidenav-discover-objects Sidenav">
       {withTitle && (
         <div className="Sidenav__section-title">
@@ -55,7 +54,6 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
       <SidebarMenu
         menuConfig={objectMenuConfig}
         toggleMobileNavigation={toggleMobileNavigation}
-        isMobile={isMobile}
         users
       />
       {withTitle && (
@@ -66,22 +64,18 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
       <SidebarMenu
         menuConfig={usersMenuConfig}
         toggleMobileNavigation={toggleMobileNavigation}
-        isMobile={isMobile}
         users
       />
     </div>
   );
-};
 
 SidenavDiscoverObjects.propTypes = {
   toggleMobileNavigation: PropTypes.func,
   withTitle: PropTypes.bool,
-  isMobile: PropTypes.bool,
 };
 SidenavDiscoverObjects.defaultProps = {
   toggleMobileNavigation: () => {},
   withTitle: true,
-  isMobile: false,
 };
 
 export default SidenavDiscoverObjects;

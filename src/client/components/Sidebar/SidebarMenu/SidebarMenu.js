@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames';
 import { getIsAuthenticated } from '../../../reducers';
 
 // todo: sync with dev branch
@@ -25,7 +24,7 @@ function sidebarMenuReducer(state, action) {
   }
 }
 
-const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => {
+const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
   // local state
@@ -63,7 +62,7 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
         isActive={checkIsActive}
       >
         <span
-          className={classNames('collapsible-block__title-text', { mobileBlock: isMobile })}
+          className={'collapsible-block__title-text'}
           onClick={toggleMobileNavigation}
           role="presentation"
         >
@@ -113,7 +112,6 @@ SidebarMenu.propTypes = {
   intl: PropTypes.shape().isRequired,
   toggleMobileNavigation: PropTypes.func,
   menuConfig: PropTypes.shape(),
-  isMobile: PropTypes.bool,
 };
 
 SidebarMenu.defaultProps = {
@@ -126,7 +124,6 @@ SidebarMenu.defaultProps = {
     },
   },
   toggleMobileNavigation: () => {},
-  isMobile: false,
 };
 
 export default injectIntl(SidebarMenu);
