@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get, memoize } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import { getObjectUrl } from '../../helpers/postHelpers';
 import './CheckReviewModal.less';
 
 const getReviewRequirements = memoize((campaign, authorName) => ({
@@ -147,30 +146,19 @@ const CheckReviewModal = ({
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(secondaryObject && secondaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_secondaryObject`,
-                defaultMessage: 'Link to {secondaryObjectName}: {secondaryObjectUrl}',
-              },
-              {
-                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
-                secondaryObjectUrl:
-                  getObjectUrl(secondaryObject && secondaryObject.id) || 'not found',
-              },
-            )}
+            {intl.formatMessage({
+              id: 'rewards_details_link_to',
+              defaultMessage: 'Link to',
+            })}{' '}
+            {<a href={`/object/${secondaryObject.author_permlink}`}>{secondaryObject.name}</a>}
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(primaryObject && primaryObject.id))}
-            {intl.formatMessage(
-              {
-                id: `check_review_primaryObject`,
-                defaultMessage: 'Link to {primaryObjectName}: {primaryObjectUrl}',
-              },
-              {
-                primaryObjectName: primaryObject ? primaryObject.name : '',
-                primaryObjectUrl: getObjectUrl(primaryObject && primaryObject.id) || 'not found',
-              },
-            )}
+            {intl.formatMessage({
+              id: 'rewards_details_link_to',
+              defaultMessage: 'Link to',
+            })}{' '}
+            {<a href={`/object/${primaryObject.author_permlink}`}>{primaryObject.name}</a>}
           </div>
         </div>
         <div className="check-review-modal__buttons">
