@@ -45,8 +45,6 @@ const usersMenuConfig = {
 };
 
 const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile }) => {
-  const isLoading = useSelector(getObjectTypesLoading);
-
   return (
     <div className="sidenav-discover-objects Sidenav">
       {withTitle && (
@@ -54,43 +52,23 @@ const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile })
           <FormattedMessage id="objects" defaultMessage="Objects" />:
         </div>
       )}
-      {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
-      ) : (
-        <SidebarMenu
-          menuConfig={objectMenuConfig}
-          toggleMobileNavigation={toggleMobileNavigation}
-          isMobile={isMobile}
-          users
-        />
-      )}
+      <SidebarMenu
+        menuConfig={objectMenuConfig}
+        toggleMobileNavigation={toggleMobileNavigation}
+        isMobile={isMobile}
+        users
+      />
       {withTitle && (
         <div className="Sidenav__section-title">
           <FormattedMessage id="users" defaultMessage="users" />:
         </div>
       )}
-      {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
-      ) : (
-        <SidebarMenu
-          menuConfig={usersMenuConfig}
-          toggleMobileNavigation={toggleMobileNavigation}
-          isMobile={isMobile}
-          users
-        />
-      )}
+      <SidebarMenu
+        menuConfig={usersMenuConfig}
+        toggleMobileNavigation={toggleMobileNavigation}
+        isMobile={isMobile}
+        users
+      />
     </div>
   );
 };

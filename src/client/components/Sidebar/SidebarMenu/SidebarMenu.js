@@ -69,9 +69,6 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
         >
           {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
         </span>
-        <span className="collapsible-block__title-icon hidden">
-          <i className="iconfont icon-addition" />
-        </span>
       </NavLink>
     );
 
