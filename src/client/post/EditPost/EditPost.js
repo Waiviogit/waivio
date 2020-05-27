@@ -168,8 +168,8 @@ class EditPost extends Component {
       const postObjects = [...defaultObjects, ...linkedList];
       if (isLinkedObjectsChanged) {
         nextState.linkedObjects = linkedObjects;
+        nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
       }
-      nextState.objPercentage = setObjPercents(postObjects, this.state.objPercentage);
       if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
         this.setState(nextState, this.handleUpdateState);
       }
