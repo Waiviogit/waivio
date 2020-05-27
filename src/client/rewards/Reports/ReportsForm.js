@@ -138,7 +138,7 @@ class ReportsForm extends Component {
       userName: userName || '',
       globalReport: true,
       filters: {
-        payable: get(data, ['amount']),
+        amount: get(data, ['amount']),
         // eslint-disable-next-line no-underscore-dangle
         endDate: endDate._i,
         // eslint-disable-next-line no-underscore-dangle
@@ -452,7 +452,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable}
+              {preparedObject.filters.amount}
             </div>
           </div>
         )}
