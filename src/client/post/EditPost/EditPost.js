@@ -130,12 +130,13 @@ class EditPost extends Component {
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
-    getObject('jyp-cryptoinvestarena').then(data =>
+    getObject('jyp-cryptoinvestarena').then(data => {
+      const cryptoObject = getClientWObj(data, this.props.locale);
       this.setState({
-        defaultObjects: [data],
-        objPercentage: setObjPercents([data], this.state.objPercentage),
-      }),
-    );
+        defaultObjects: [cryptoObject],
+        objPercentage: setObjPercents([cryptoObject], this.state.objPercentage),
+      });
+    });
   }
 
   setIsPreview = isPreview => this.setState({ isPreview });
@@ -190,7 +191,12 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const postData = this.buildPost(true);
+    const { defaultObjects } = this.state;
+    const postData = this.buildPost();
+    defaultObjects.forEach(obj => {
+      const objName = obj.name || obj.default_name;
+      postData.body += `\n[${objName}](${getObjectUrl(obj.id || obj.author_permlink)})&nbsp;\n`;
+    });
     this.props.createPost(postData);
   }
 
@@ -214,7 +220,7 @@ class EditPost extends Component {
     setTimeout(() => this.handleObjectSelect(object), 1200);
   }
 
-  buildPost(isSubmit) {
+  buildPost() {
     const {
       draftId,
       campaign,
@@ -241,15 +247,7 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
-    const isSubmitPost = isSubmit && !isEmpty(defaultObjects);
-    const postObjects = isSubmitPost ? [...defaultObjects, ...linkedObjects] : linkedObjects;
-
-    if (isSubmitPost) {
-      defaultObjects.forEach(obj => {
-        const objName = obj.name || obj.default_name;
-        postData.body += `\n[${objName}](${getObjectUrl(obj.id || obj.author_permlink)})&nbsp;\n`;
-      });
-    }
+    const postObjects = [...defaultObjects, ...linkedObjects];
 
     if (campaign && campaign.alias) {
       postData.body += `\n***\n${this.props.intl.formatMessage({
@@ -268,8 +266,8 @@ class EditPost extends Component {
     const waivioData = {
       wobjects: postObjects.map(obj => ({
         objectName: obj.name,
-        author_permlink: obj.id || obj.author_permlink,
-        percent: objPercentage[obj.id || obj.author_permlink].percent,
+        author_permlink: obj.id,
+        percent: objPercentage[obj.id].percent,
       })),
     };
 
@@ -296,9 +294,7 @@ class EditPost extends Component {
         const filteredObjects = prevState.linkedObjects.filter(
           obj => obj.id !== get(prevState.forecastValues, ['wobjData', 'author_permlink'], ''),
         );
-        const postObjects = !isEmpty(defaultObjects)
-          ? [...defaultObjects, ...filteredObjects]
-          : filteredObjects;
+        const postObjects = [...defaultObjects, ...filteredObjects];
         return {
           forecastValues: nextForecastValues,
           linkedObjects: filteredObjects,
@@ -317,9 +313,7 @@ class EditPost extends Component {
           '',
         );
         const nextLinkedObjects = [getClientWObj(serverObject, this.props.locale), ...filtered];
-        const postObjects = !isEmpty(defaultObjects)
-          ? [...defaultObjects, ...nextLinkedObjects]
-          : nextLinkedObjects;
+        const postObjects = [...defaultObjects, ...nextLinkedObjects];
         this.setState({
           forecastValues: nextForecastValues,
           linkedObjects: nextLinkedObjects,
