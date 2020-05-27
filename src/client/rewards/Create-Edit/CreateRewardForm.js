@@ -106,7 +106,7 @@ class CreateRewardForm extends React.Component {
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
-          includes(campaign.sponsors, wobj.author_permlink),
+          includes(campaign.match_bots, wobj.author_permlink),
         );
       } else {
         combinedObjects = await getObjectsByIds({
@@ -341,6 +341,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          console.log('values', values);
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(
