@@ -9,6 +9,7 @@ import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
 import './UserWalletTransactions.less';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
+import WalletGuestAuthorRewards from './WalletGuestAuthorRewards';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -38,8 +39,13 @@ const WalletTransaction = ({
 }) => {
   const transactionType = transaction.type;
   const transactionDetails = transaction;
+
   const guestTransaction = transactionHistory.amount;
   const type = transaction.typeTransfer;
+
+  if (type === 'demo_post') {
+    return <WalletGuestAuthorRewards />;
+  }
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
