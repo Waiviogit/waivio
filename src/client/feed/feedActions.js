@@ -204,24 +204,20 @@ export const getObjectPosts = ({ username, object, readLanguages, limit = 10 }) 
   });
 };
 
-export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => (
+export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10, skip }) => (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const feed = getFeed(state);
-  const posts = getPosts(state);
   const user_languages = getUserLocalesArray(getState);
   const lastId = getLastPostId(state);
-
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
   if (!feedContent.length || isLoading) {
     return null;
   }
-
-  const skip = Object.keys(posts).length;
 
   return dispatch({
     type: GET_MORE_OBJECT_POSTS.ACTION,

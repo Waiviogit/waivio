@@ -589,14 +589,19 @@ export default class AppendForm extends Component {
     }
 
     const currentValue = form.getFieldValue(currentField);
+
+    if (currentField === objectFields.name) {
+      return filtered.some(f => f.body === currentValue);
+    }
+
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
 
   getCurrentObjectBody = () => {
     const form = this.props.form;
     const formValues = form.getFieldsValue();
-
     const { currentLocale, currentField, like, follow, ...otherValues } = formValues;
+
     return omitBy(otherValues, isNil);
   };
 

@@ -53,7 +53,7 @@ class ReactionsModal extends React.Component {
           tab={
             <span>
               <i className="iconfont icon-praise_fill" />
-              <span className="StoryFooter__icon-text">
+              <span className="StoryFooter__icon-text StoryFooter__icon-text--margin">
                 <FormattedNumber value={upVotes.length} />
               </span>
             </span>
@@ -71,7 +71,7 @@ class ReactionsModal extends React.Component {
           tab={
             <span>
               <i className="iconfont icon-praise_fill StoryFooter__dislike" />
-              <span className="StoryFooter__icon-text StoryFooter__icon-text-dislike">
+              <span className="StoryFooter__icon-text StoryFooter__icon-text-dislike StoryFooter__icon-text--margin">
                 <FormattedNumber value={downVotes.length} />
               </span>
             </span>
