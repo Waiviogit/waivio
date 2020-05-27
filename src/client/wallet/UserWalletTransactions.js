@@ -26,7 +26,7 @@ class UserWalletTransactions extends React.Component {
     transactions: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func.isRequired,
     hasMore: PropTypes.bool,
-    // transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
+    transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -60,7 +60,7 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       transactions,
       hasMore,
-      // transactionsHistory,
+      transactionsHistory,
     } = this.props;
 
     if (!transactions.length) {
@@ -91,15 +91,15 @@ class UserWalletTransactions extends React.Component {
             />
           ))}
 
-          {/* {transactionsHistory.map(transactionHistory => ( */}
-          {/*  <WalletTransaction */}
-          {/*    key={`${transactionsHistory.trx_id}${transactionsHistory.actionCount}`} */}
-          {/*    transactionHistory={transactionHistory} */}
-          {/*    currentUsername={currentUsername} */}
-          {/*    totalVestingShares={totalVestingShares} */}
-          {/*    totalVestingFundSteem={totalVestingFundSteem} */}
-          {/*  /> */}
-          {/* ))} */}
+          {transactionsHistory.map(transactionHistory => (
+            <WalletTransaction
+              key={`${transactionsHistory.trx_id}${transactionsHistory.actionCount}`}
+              transactionHistory={transactionHistory.op[1]}
+              currentUsername={currentUsername}
+              totalVestingShares={totalVestingShares}
+              totalVestingFundSteem={totalVestingFundSteem}
+            />
+          ))}
         </ReduxInfiniteScroll>
       </div>
     );

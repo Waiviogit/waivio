@@ -38,8 +38,8 @@ const WalletTransaction = ({
 }) => {
   const transactionType = transaction.type;
   const transactionDetails = transaction;
-  const guestTransaction = transactionHistory.op[1];
-  const type = transaction.op[1].typeTransfer;
+  const guestTransaction = transactionHistory.amount;
+  const type = transaction.typeTransfer;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -112,12 +112,10 @@ WalletTransaction.propTypes = {
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   transactionHistory: PropTypes.arrayOf(PropTypes.shape()),
-  op: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 WalletTransaction.defaultProps = {
-  transactionHistory: [],
-  op: [],
+  transactionHistory: {},
 };
 
 export default WalletTransaction;

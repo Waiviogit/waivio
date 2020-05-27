@@ -27,7 +27,7 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp, type, guestTransact
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
-            {demoPost && isGuest ? (
+            {isGuest || demoPost ? (
               <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />
             ) : (
               <FormattedMessage
@@ -45,7 +45,7 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp, type, guestTransact
           </div>
           <div className={classNames(`UserWalletTransactions__received ${isGuest ? 'guest' : ''}`)}>
             {isGuest ? '' : '+ '}
-            {demoPost ? guestTransaction.amount : amount}
+            {demoPost ? guestTransaction : amount}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">
