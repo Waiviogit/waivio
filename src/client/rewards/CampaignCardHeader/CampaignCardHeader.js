@@ -47,7 +47,7 @@ const CampaignCardHeader = ({ intl, campaignData }) => {
             <div className="total-paid__colon">:</div>
             <div>{`${
               campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-            } USD`}</div>
+            } HIVE`}</div>
           </div>
         </div>
       </div>
