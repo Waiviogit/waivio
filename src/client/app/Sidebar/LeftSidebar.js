@@ -10,8 +10,7 @@ import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
 
-const LeftSidebar = ({ quoteSettingsSorted }) => {
-  return (
+const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Switch>
       <Route path="/@:name/wallet" component={TopInstruments} />
       <Route path="/my_feed" component={TopInstruments} />
@@ -43,7 +42,6 @@ const LeftSidebar = ({ quoteSettingsSorted }) => {
       <Route path="/" component={TopPerformers} />
     </Switch>
   );
-};
 
 LeftSidebar.propTypes = {
   quoteSettingsSorted: PropTypes.shape(),

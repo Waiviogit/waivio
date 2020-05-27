@@ -46,6 +46,7 @@ const NotificationVoteWitness = ({ notification, read, onClick }) => (
 NotificationVoteWitness.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
+    approve: PropTypes.bool,
     account: PropTypes.string,
     timestamp: PropTypes.number,
   }),

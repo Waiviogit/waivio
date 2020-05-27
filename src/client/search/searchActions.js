@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getSuitableLanguage } from '../reducers';
+import { getSuitableLanguage } from '../reducers';
 import { replacer } from '../helpers/parser';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');

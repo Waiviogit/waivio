@@ -8,7 +8,6 @@ import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
 import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
-import './ObjectExpertiseByType.less';
 
 const initialState = {
   experts: [],

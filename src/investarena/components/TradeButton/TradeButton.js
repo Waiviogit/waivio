@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './TradeButton.less';
 
-const TradeButton = ({ children, size, type, onClick }) => {
-  return (
+const TradeButton = ({ children, size, type, onClick }) => (
     <div
       role="presentation"
       className={classNames(`st-trade-button ${type}`, { large: size === 'large' })}
@@ -13,7 +12,6 @@ const TradeButton = ({ children, size, type, onClick }) => {
       {children || type}
     </div>
   );
-};
 
 TradeButton.propTypes = {
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
