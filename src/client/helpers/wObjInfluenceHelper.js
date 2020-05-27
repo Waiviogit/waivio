@@ -41,7 +41,6 @@ export const setObjPercents = (linkedObjects, percentage) => {
     },
     { linked: {}, zeroWeighted: {} },
   );
-
   return {
     ...setInitialObjPercents(
       linkedObjects.filter(o => !zeroWeighted[o.id]),
