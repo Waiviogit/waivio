@@ -37,7 +37,7 @@ class ModalStopLoss extends Component {
       buttonText = currencyFormat(this.props.openDeal.stopLossAmount / -1000000);
     }
     return (
-      <div className="st-open-deal-button-wrap st-margin-left-large">
+      <div className="st-open-deal-button-wrap ml3">
         <button
           id="modalStopLossOpen"
           className="btn st-open-deal-button-blue"

@@ -24,7 +24,7 @@ class ModalClose extends Component {
   };
   render() {
     return (
-      <div className="st-open-deal-button-wrap st-margin-left-large">
+      <div className="st-open-deal-button-wrap ml3">
         <button id="closeModalOpen" className="btn st-open-deal-button-red" onClick={this.toggle}>
           {this.props.intl.formatMessage({ id: 'deals.close', defaultMessage: 'Close' })}
         </button>
@@ -39,14 +39,14 @@ class ModalClose extends Component {
             onCancel={this.toggle}
             style={{ width: '250px' }}
           >
-            <span className="modal-text st-margin-bottom-large">
+            <span className="modal-text mb3">
               {this.props.intl.formatMessage({
                 id: 'modalClose.header.title',
                 defaultMessage: 'Close Deal',
               })}
               <span>&ensp;{`${this.props.openDealSequenceNumber}?`} </span>
             </span>
-            <div className="d-flex">
+            <div className="flex">
               <button className="btn st-open-deal-button-red" onClick={this.toggle}>
                 {this.props.intl.formatMessage({
                   id: 'modal.button.cancel',
@@ -54,7 +54,7 @@ class ModalClose extends Component {
                 })}
               </button>
               <button
-                className="btn st-open-deal-button-blue st-margin-left-large"
+                className="btn st-open-deal-button-blue ml3"
                 onClick={this.handleClickConfirmCloseDeal}
               >
                 {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}

@@ -73,7 +73,7 @@ const TradingForm = ({
         </div>
       </div>
 
-      <div className="st-trading-form-amount flex-info-block justify-content-center">
+      <div className="st-trading-form-amount flex-info-block justify-center">
         <FormattedMessage id="trading_form_amount" defaultMessage="Amount" />
         :&nbsp;
         <div className={classNames('st-trading-form-amount__input', { danger: !isAmountValid })}>
