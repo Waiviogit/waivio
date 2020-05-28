@@ -11,7 +11,6 @@ import { epochToUTC } from '../helpers/formatter';
 
 const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
   const isGuest = useSelector(isGuestUser);
-
   return (
     <div className="UserWalletTransactions__transaction">
       {isGuest ? (
@@ -26,21 +25,17 @@ const ReceiveTransaction = ({ from, memo, amount, timestamp }) => {
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
-            {isGuest ? (
-              <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />
-            ) : (
-              <FormattedMessage
-                id="received_from"
-                defaultMessage="Received from {username}"
-                values={{
-                  username: (
-                    <Link to={`/@${from}`}>
-                      <span className="username">{from}</span>
-                    </Link>
-                  ),
-                }}
-              />
-            )}
+            <FormattedMessage
+              id={isGuest ? 'author_rewards' : 'received_from'}
+              defaultMessage={isGuest ? 'Author rewards' : 'Received from {username}'}
+              values={{
+                username: (
+                  <Link to={`/@${from}`}>
+                    <span className="username">{from}</span>
+                  </Link>
+                ),
+              }}
+            />
           </div>
           <div className={classNames(`UserWalletTransactions__received ${isGuest ? 'guest' : ''}`)}>
             {isGuest ? '' : '+ '}
