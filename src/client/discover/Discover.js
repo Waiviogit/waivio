@@ -9,9 +9,9 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import { resetSearchUsersForDiscoverPage } from '../search/searchActions';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 import './Discover.less';
-import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const Discover = ({ intl, match, history, isMobileNavMenuOpen, toggleMobileNavMenu }) => {
   const dispatch = useDispatch();
