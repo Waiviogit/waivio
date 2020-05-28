@@ -1,4 +1,4 @@
-import { get, uniqBy, slice, filter, concat, last } from 'lodash';
+import { get, uniqBy, slice, filter, concat, last, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
 import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../helpers/accountHistoryHelper';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
@@ -128,9 +128,9 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         transactionsHistory: {
           ...state.transactionsHistory,
-          [usernameKey]: uniqBy(
+          [usernameKey]: uniqWith(
             userCurrentTransactions.concat(action.payload.transactionsHistory),
-            'timestamp',
+            isEqual,
           ),
         },
         hasMore: action.payload.hasMore,
