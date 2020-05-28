@@ -69,15 +69,6 @@ textarea.ant-input {
   z-index: @ant-tooltip-z-index !important;
 }
 
-div > .Notifications__popover-overlay {
-  top: 0 !important;
-  z-index: @ant-popover-notifications-z-index !important;
-  position: fixed;
-  @media @medium {
-    top: 46px !important;
-  }
-}
-
 .ant-modal-mask,
 .ant-modal-wrap {
   z-index: @ant-modal-z-index;
@@ -166,10 +157,6 @@ div[data-dir='rtl'] {
   direction: rtl;
 }
 
-.wv-break-word {
-  word-wrap: break-word;
-}
-
 .ant-modal-mask {
   background-color: rgba(242, 242, 242, 0.97) !important;
 }
@@ -195,10 +182,6 @@ div[data-dir='rtl'] {
 
 .ant-checkbox {
   top: -0.2em;
-}
-
-.ReactModal__Overlay.ReactModal__Overlay--after-open {
-  z-index: @react-modal-z-index !important;
 }
 
 .Popover__overlay {
@@ -338,8 +321,100 @@ ul {
   display: none;
 }
 
-.d-flex {
-  display: flex;
+// animations
+.sessionIndicator {
+  @-moz-keyframes rollGreen {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+  }
+  @keyframes rollGreen {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(59, 188, 83, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(59, 188, 83, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(59, 188, 83, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(59, 188, 83, 0);
+    }
+  }
+  @-moz-keyframes rollRed {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 4px rgba(233, 55, 0, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 3px rgba(233, 55, 0, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 2px rgba(233, 55, 0, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+  }
+  @keyframes rollRed {
+    0% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+    25% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+    }
+    51% {
+      box-shadow: 0 0 5px 3px rgba(233, 55, 0, 0.5);
+    }
+    60% {
+      box-shadow: 0 0 4px 2px rgba(233, 55, 0, 0.4);
+    }
+    75% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 3px 1px rgba(233, 55, 0, 0);
+    }
+  }
 }
 
 @import 'common-nightmode';

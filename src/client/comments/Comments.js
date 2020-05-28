@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { find, isEmpty, includes } from 'lodash';
+import { find, includes } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -17,7 +17,6 @@ import {
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
-import './Comments.less';
 
 @connect(
   state => ({

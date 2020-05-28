@@ -44,66 +44,38 @@ const usersMenuConfig = {
   },
 };
 
-const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation, isMobile }) => {
-  const isLoading = useSelector(getObjectTypesLoading);
-
-  return (
-    <div className="sidenav-discover-objects Sidenav">
-      {withTitle && (
-        <div className="Sidenav__section-title">
-          <FormattedMessage id="objects" defaultMessage="Objects" />:
-        </div>
-      )}
-      {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
-      ) : (
-        <SidebarMenu
-          menuConfig={objectMenuConfig}
-          toggleMobileNavigation={toggleMobileNavigation}
-          isMobile={isMobile}
-          users
-        />
-      )}
-      {withTitle && (
-        <div className="Sidenav__section-title">
-          <FormattedMessage id="users" defaultMessage="users" />:
-        </div>
-      )}
-      {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={10}
-          width={170}
-        />
-      ) : (
-        <SidebarMenu
-          menuConfig={usersMenuConfig}
-          toggleMobileNavigation={toggleMobileNavigation}
-          isMobile={isMobile}
-          users
-        />
-      )}
-    </div>
-  );
-};
+const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation }) => (
+  <div className="sidenav-discover-objects Sidenav">
+    {withTitle && (
+      <div className="Sidenav__section-title">
+        <FormattedMessage id="objects" defaultMessage="Objects" />:
+      </div>
+    )}
+    <SidebarMenu
+      menuConfig={objectMenuConfig}
+      toggleMobileNavigation={toggleMobileNavigation}
+      users
+    />
+    {withTitle && (
+      <div className="Sidenav__section-title">
+        <FormattedMessage id="users" defaultMessage="users" />:
+      </div>
+    )}
+    <SidebarMenu
+      menuConfig={usersMenuConfig}
+      toggleMobileNavigation={toggleMobileNavigation}
+      users
+    />
+  </div>
+);
 
 SidenavDiscoverObjects.propTypes = {
   toggleMobileNavigation: PropTypes.func,
   withTitle: PropTypes.bool,
-  isMobile: PropTypes.bool,
 };
 SidenavDiscoverObjects.defaultProps = {
   toggleMobileNavigation: () => {},
   withTitle: true,
-  isMobile: false,
 };
 
 export default SidenavDiscoverObjects;

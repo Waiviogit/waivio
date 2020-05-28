@@ -33,22 +33,20 @@ const UserProfitability = ({ statisticsData, isChart }) => {
           unsuccess: statisticsData.pips < 0,
         })}
       >
-        {isChart ? (
+        <SkeletonCustom
+          className="UserProfitability__loader"
+          isLoading={!isChart}
+          randomWidth
+          rows={2}
+          width={50}
+        >
           <React.Fragment>
             <div className="UserProfitability">
               <div className="UserProfitability__value">{`${statisticsData.pips}`}</div>
             </div>
             <div className="UserProfitability__profit">pips</div>
           </React.Fragment>
-        ) : (
-          <SkeletonCustom
-            className="UserProfitability__loader"
-            isLoading={!isChart}
-            randomWidth
-            rows={2}
-            width={50}
-          />
-        )}
+        </SkeletonCustom>
       </div>
     );
   };

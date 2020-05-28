@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { get, isEmpty } from 'lodash';
-import { jsonParse } from './formatter';
 
 export const isValidForecast = forecast => {
   let isValid = true;

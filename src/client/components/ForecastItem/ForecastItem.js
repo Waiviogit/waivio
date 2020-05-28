@@ -87,6 +87,7 @@ class ForecastItem extends React.Component {
                       />
                     </div>
                     <div
+                      className={'st-forecast-start-price'}
                       title={intl.formatMessage({
                         id: 'tips.recommendationPrice',
                         defaultMessage: 'Price at the beginning of the forecast',

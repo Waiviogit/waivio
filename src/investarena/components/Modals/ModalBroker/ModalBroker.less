@@ -1,5 +1,6 @@
-@import (reference) '../../Common.less';
 @import (reference) '../../../../client/styles/modules/variables.less';
+@import (reference) '../../../../client/styles/custom.less';
+@import (reference) '../../../../client/styles/mixins.less';
 
 .nav-item-mixin () {
   width: 50%;
@@ -8,11 +9,11 @@
 }
 .modal-header {
   background-color: #16254c;
-  color: #fff;
+  color: @white;
   height: 40px;
   .close {
     cursor: pointer;
-    color: #fff;
+    color: @white;
   }
   h4,
   .h4 {
@@ -27,9 +28,9 @@
     font-size: 18px;
     .nav-link.active {
       color: #07d;
-      background-color: #fff;
+      background-color: @white;
       font-weight: 800;
-      border-bottom-color: #fff;
+      border-bottom-color: @white;
     }
   }
 }
@@ -42,7 +43,7 @@
   .st-broker-authorization-form {
     .formStyle();
     .field:disabled {
-      background-color: #f9f9f9;
+      background-color: @white-darker;
     }
     .st-broker-text {
       text-align: center;
@@ -64,23 +65,8 @@
 .st-correct-wrapper {
   margin: 12px -5px 0 15px;
 }
-// todo: hided forgot password link
-//.st-modal-broker-authorization-text-click {
-//  color: #3a79e
-//  text-decoration: none;
-//  background-color: transparent;
-//  &:hover {
-//    cursor: pointer;
-//    text-decoration: underline;
-//    color: #3a79ae;
-//  }
-//}
 
 .BrokerRegistration__buttons {
   display: flex;
   justify-content: space-around;
-}
-
-.BrokerRegistration__radiogroup .BrokerRegistration__checkbox {
-  width: 100%;
 }
