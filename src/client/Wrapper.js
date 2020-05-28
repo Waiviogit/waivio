@@ -18,7 +18,6 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
-  isGuestBalance,
 } from './reducers';
 import {
   login,
@@ -55,7 +54,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
-    balance: isGuestBalance(state),
+    guestBalance: getGuestBalance(state),
   }),
   {
     login,
@@ -94,8 +93,8 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
-    getGuestBalance: PropTypes.func,
     guestBalanceOnReload: PropTypes.func,
+    guestBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -114,9 +113,8 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
-    balance: null,
-    getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
+    guestBalance: null,
   };
 
   static async fetchData({ store, req }) {
@@ -159,7 +157,6 @@ export default class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.getRebloggedList();
         this.props.getRate();
-        this.props.getGuestBalance();
       });
     });
 
@@ -171,16 +168,19 @@ export default class Wrapper extends React.PureComponent {
   }
 
   // eslint-disable-next-line consistent-return
-  componentWillReceiveProps(nextProps) {
+  shouldComponentUpdate(nextProps) {
     const { locale } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
     }
+
     if (this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
-          this.props.guestBalanceOnReload();
+          if (this.props.guestBalance !== nextProps.guestBalance) {
+            this.props.guestBalanceOnReload();
+          }
         } catch (e) {
           reject(e);
         }

@@ -24,6 +24,8 @@ import {
   getUserHasMoreAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
+  isGuestBalance,
+  isGuestUser,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -60,6 +62,10 @@ import { getUserDetailsKey } from '../helpers/stateHelpers';
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
+    ownGuestBalance: isGuestBalance(state),
+    isGuest: isGuestUser(state),
+    ownPage:
+      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),
   }),
   {
     getGlobalProperties,
@@ -91,6 +97,9 @@ class Wallet extends Component {
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
+    ownGuestBalance: PropTypes.func,
+    isGuest: PropTypes.bool,
+    ownPage: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -101,6 +110,9 @@ class Wallet extends Component {
     transactionsHistory: {},
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
+    ownGuestBalance: null,
+    isGuest: false,
+    ownPage: false,
   };
 
   componentDidMount() {
@@ -130,6 +142,22 @@ class Wallet extends Component {
     }
   }
 
+  selectUserBalance = () => {
+    const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
+
+    const isGuestWalletPage =
+      user.name.startsWith(GUEST_PREFIX) || user.name.startsWith(BXY_GUEST_PREFIX);
+
+    if (ownPage && isGuest) {
+      return ownGuestBalance;
+    } else if (isGuestWalletPage && !ownPage) {
+      return guestBalance;
+    } else if (!isGuestWalletPage) {
+      return user.balance;
+    }
+    return null;
+  };
+
   render() {
     const {
       user,
@@ -140,7 +168,6 @@ class Wallet extends Component {
       loadingMoreUsersAccountHistory,
       userHasMoreActions,
       cryptosPriceHistory,
-      guestBalance,
       screenSize,
       transactionsHistory,
       hasMore,
@@ -181,7 +208,7 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
-          balance={isGuest ? guestBalance : user.balance}
+          balance={this.selectUserBalance()}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
