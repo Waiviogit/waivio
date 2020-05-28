@@ -39,7 +39,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
   }, []);
   const pages = {
     discoverObjects: {
-      regExp: /(^\/discover-objects)\/?(.*)/,
+      regExpObj: /(^\/discover-objects)\/?(.*)/,
       id: 'objects',
     },
   };
@@ -55,11 +55,11 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
       pageId = 'my_feed';
       pageContent = <TopInstruments isMobile />;
       break;
-    case (url.match(pages.discoverObjects.regExp) || {}).input:
+    case url.match(pages.discoverObjects.regExp).input || '/discover':
       pageName = 'Discover';
       pageId = 'discover';
       pageContent = (
-        <SidenavDiscoverObjects withTitle={false} toggleMobileNavigation={toggleMobileNavMenu} />
+        <SidenavDiscoverObjects withTitle toggleMobileNavigation={toggleMobileNavMenu} />
       );
       break;
     case '/':

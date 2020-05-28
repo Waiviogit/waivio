@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .Sidenav {
   min-width: 150px;
@@ -52,11 +53,16 @@
   }
 
   .Sidenav__section-title {
-    color: @black;
+    color: @white-smoke;
     font-weight: 800;
     margin-bottom: 10px;
     text-transform: capitalize;
+
+    @media @small {
+      color: @black;
+    }
   }
+
   .anticon {
     font-size: 22px;
   }
@@ -80,9 +86,11 @@ div[data-dir='rtl'] .Sidenav {
   color: rgba(0, 0, 0, 0.65) !important;
 
   color: rgba(0, 0, 0, 0.75) !important;
+
   & > i {
     color: @primary-color;
   }
+
   &.sidenav-discover-objects__item {
     color: @primary-color !important;
   }

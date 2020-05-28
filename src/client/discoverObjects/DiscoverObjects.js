@@ -7,8 +7,8 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import './DiscoverObjects.less';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import './DiscoverObjects.less';
 
 const DiscoverObjects = ({ intl, history, match, isMobileNavMenuOpen, toggleMobileNavMenu }) => {
   const isTypeChosen = Boolean(match.params.typeName !== 'show_all');

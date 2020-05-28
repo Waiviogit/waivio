@@ -6,6 +6,7 @@
   .content-block();
   margin-bottom: 10px;
   padding-bottom: 16px;
+
   &.mobileBlock {
     border-color: @normal-grey !important;
   }
@@ -34,32 +35,46 @@
 
   &__content {
     padding: 0 16px;
+
     &.mobileContent {
       color: @white-smoke;
       background-color: @grey-nero;
+
       .st-card {
         padding-bottom: 5px;
         border-color: @normal-grey !important;
       }
+
       .st-instrument-name {
         color: @white-smoke;
       }
+
       .st-card__content {
         border-color: @normal-grey !important;
       }
     }
+
     .collapsible-block {
       &__title {
         display: flex;
         align-items: center;
 
         &.active {
-          background: white;
-          border: @border-width-base @border-style-base @border-color-base !important;
+          background: @grey-nero;
+          border: @border-width-base @border-style-base @normal-grey !important;
           border-radius: @border-radius-base;
 
           & > .collapsible-block__title-text {
-            color: @blue-dodgerBlue;
+            color: @white;
+
+            @media @small {
+              color: @blue-dodgerBlue;
+            }
+          }
+
+          @media @small {
+            background: @white;
+            border: @border-width-base @border-style-base @border-color-base !important;
           }
         }
 
