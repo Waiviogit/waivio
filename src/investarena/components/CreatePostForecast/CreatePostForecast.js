@@ -9,7 +9,6 @@ import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
 import {
   getQuotePrice,
-  isStopLossTakeProfitValid,
   getForecastState,
   getEditorForecast,
 } from './helpers';
