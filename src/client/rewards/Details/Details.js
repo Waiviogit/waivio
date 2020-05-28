@@ -65,7 +65,7 @@ const Details = ({
       footer={null}
       width={768}
     >
-      <CampaignCardHeader campaignData={objectDetails} isDetails />
+      <CampaignCardHeader campaignData={objectDetails} />
       {!isReviewDetails ? (
         <DetailsBody
           objectDetails={objectDetails}

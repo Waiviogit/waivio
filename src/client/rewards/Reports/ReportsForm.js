@@ -431,8 +431,8 @@ class ReportsForm extends Component {
                 {intl.formatMessage({
                   id: 'till',
                   defaultMessage: `Till`,
-                })}{' '}
-                {dateTill}
+                })}
+                : {dateTill}
               </div>
             </div>
             <div>
