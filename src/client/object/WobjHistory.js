@@ -30,11 +30,11 @@ import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
-import './WobjHistory.less';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
-import CreateImage from './ObjectGallery/CreateImage';
-import CreateAlbum from './ObjectGallery/CreateAlbum';
+import './WobjHistory.less';
+// import CreateImage from './ObjectGallery/CreateImage';
+// import CreateAlbum from './ObjectGallery/CreateAlbum';
 
 @connect(
   state => ({
@@ -55,7 +55,7 @@ export default class WobjHistory extends React.Component {
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    // albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     comments: PropTypes.shape(),
     isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
@@ -85,8 +85,8 @@ export default class WobjHistory extends React.Component {
     this.state = {
       field: props.match.params[1] || '',
       showModal: false,
-      showModalGalleryItem: false,
-      showModalGalleryAlbum: false,
+      // showModalGalleryItem: false,
+      // showModalGalleryAlbum: false,
       sort: 'recency',
     };
   }
@@ -113,19 +113,19 @@ export default class WobjHistory extends React.Component {
       toggleViewEditMode(true);
       history.push(`/object/${object.author_permlink}/${OBJECT_TYPE.PAGE}`);
     } else {
-      this.handleToggleModal();
-    }
-  };
-
-  handleToggleModal = () => {
-    if (this.state.field === objectFields.galleryItem) {
-      this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
-    } else if (this.state.field === objectFields.galleryAlbum) {
-      this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
-    } else {
       this.setState({ showModal: !this.state.showModal });
     }
   };
+
+  // handleToggleModal = () => {
+  // if (this.state.field === objectFields.galleryItem) {
+  //   this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
+  // } else if (this.state.field === objectFields.galleryAlbum) {
+  //   this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
+  // } else {
+  //   this.setState({ showModal: !this.state.showModal });
+  // }
+  // };
 
   handleSortChange = sort => this.setState({ sort });
 
@@ -134,11 +134,11 @@ export default class WobjHistory extends React.Component {
       field,
       locale,
       showModal,
-      showModalGalleryItem,
-      showModalGalleryAlbum,
+      // showModalGalleryItem,
+      // showModalGalleryAlbum,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
+    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
