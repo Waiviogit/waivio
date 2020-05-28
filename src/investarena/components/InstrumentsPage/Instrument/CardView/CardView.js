@@ -6,7 +6,6 @@ import { injectIntl } from 'react-intl';
 import InstrumentAvatar from '../../../InstrumentAvatar';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
 import InstrumentsChart from '../InstrumentChart';
-import Signals from '../Signals';
 import './CardView.less';
 
 @injectIntl
@@ -80,7 +79,6 @@ class InstrumentCard extends React.Component {
               >
                 {isNumber(quote.dailyChange) ? `${quote.dailyChange.toFixed(2)}%` : null}
               </div>
-              <Signals signals={signals} />
             </div>
             <div role="presentation" onClick={this.toggleModalInstrumentsChart}>
               <InstrumentsChart

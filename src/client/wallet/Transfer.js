@@ -69,7 +69,6 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    guestsBalance: PropTypes.number,
     authGuestBalance: PropTypes.number,
   };
 

@@ -59,11 +59,7 @@ const MobileNavigation = ({ match, toggleMobileNavMenu, isMobileNavMenuOpen }) =
       pageName = 'Discover';
       pageId = 'discover';
       pageContent = (
-        <SidenavDiscoverObjects
-          withTitle={false}
-          toggleMobileNavigation={toggleMobileNavMenu}
-          isMobile
-        />
+        <SidenavDiscoverObjects withTitle={false} toggleMobileNavigation={toggleMobileNavMenu} />
       );
       break;
     case '/':

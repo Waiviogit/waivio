@@ -37,6 +37,8 @@ const NotificationTransfer = ({ notification, read, onClick }) => (
 NotificationTransfer.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
+    from: PropTypes.string,
+    amount: PropTypes.number,
     follower: PropTypes.string,
     timestamp: PropTypes.number,
   }),

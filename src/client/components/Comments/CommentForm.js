@@ -41,13 +41,11 @@ class CommentForm extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       body: '',
       bodyHTML: '',
       isDisabledSubmit: false,
     };
-
     this.setInput = this.setInput.bind(this);
     this.setBodyAndRender = this.setBodyAndRender.bind(this);
     this.handleBodyUpdate = this.handleBodyUpdate.bind(this);

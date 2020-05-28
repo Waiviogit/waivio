@@ -70,6 +70,41 @@ class TopInstruments extends React.Component {
     this.prepareItems(nextProps);
   }
 
+  getInstruments = instruments => {
+    const { quotesSettings, charts, intl, isMobile } = this.props;
+    return (
+      <div
+        className={classNames('SidebarContentBlock top-instruments', {
+          mobileBlock: isMobile,
+        })}
+      >
+        <div
+          className={classNames('SidebarContentBlock__content', {
+            mobileContent: isMobile,
+          })}
+        >
+          {instruments.map(
+            instrumentName =>
+              quotesSettings[instrumentName] &&
+              quotesSettings[instrumentName].wobjData && (
+                <TopInstrumentsItem
+                  key={instrumentName}
+                  toggleModalTC={this.toggleModalInstrumentsChart}
+                  intl={intl}
+                  quoteSettings={quotesSettings[instrumentName]}
+                  quoteSecurity={instrumentName}
+                  chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
+                  showTradeBtn={false}
+                  chartHeight={60}
+                  chartWidth={160}
+                />
+              ),
+          )}
+        </div>
+      </div>
+    );
+  };
+
   prepareItems(props) {
     if (_.size(props.quotesSettings) > 0 && this.state.isLoading) {
       if (props.isAuthenticated) {
@@ -111,41 +146,6 @@ class TopInstruments extends React.Component {
 
   toggleModal = () => {
     this.setState({ isModalOpen: !this.state.isModalOpen });
-  };
-
-  getInstruments = instruments => {
-    const { quotesSettings, charts, intl, isMobile } = this.props;
-    return (
-      <div
-        className={classNames('SidebarContentBlock top-instruments', {
-          mobileBlock: isMobile,
-        })}
-      >
-        <div
-          className={classNames('SidebarContentBlock__content', {
-            mobileContent: isMobile,
-          })}
-        >
-          {instruments.map(
-            instrumentName =>
-              quotesSettings[instrumentName] &&
-              quotesSettings[instrumentName].wobjData && (
-                <TopInstrumentsItem
-                  key={instrumentName}
-                  toggleModalTC={this.toggleModalInstrumentsChart}
-                  intl={intl}
-                  quoteSettings={quotesSettings[instrumentName]}
-                  quoteSecurity={instrumentName}
-                  chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
-                  showTradeBtn={false}
-                  chartHeight={60}
-                  chartWidth={160}
-                />
-              ),
-          )}
-        </div>
-      </div>
-    );
   };
 
   render() {

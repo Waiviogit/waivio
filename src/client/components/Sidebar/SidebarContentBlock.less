@@ -50,22 +50,21 @@
     }
     .collapsible-block {
       &__title {
-        &.active > .collapsible-block__title-text {
+        display: flex;
+        align-items: center;
+
+        &.active {
           background: white;
           border: @border-width-base @border-style-base @border-color-base !important;
           border-radius: @border-radius-base;
-          color: @blue-dodgerBlue;
-          &.mobileBlock {
-            background-color: @grey-nero;
-            color: @white !important;
-            border: @border-width-base @border-style-base @normal-grey !important;
+
+          & > .collapsible-block__title-text {
+            color: @blue-dodgerBlue;
           }
         }
 
         span {
-          margin-bottom: -16px;
           display: block;
-          padding: 0 10px !important;
           color: @blue-baliHai;
           font-weight: 500;
           line-height: 2.3em;

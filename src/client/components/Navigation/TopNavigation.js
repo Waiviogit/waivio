@@ -56,16 +56,6 @@ const TopNavigation = ({ authenticated, location: { pathname }, onMenuClick }) =
         <FormattedMessage id="about" defaultMessage="About" />
       </Link>
     </li>
-    {/*<li className="TopNavigation__item">*/}
-    {/*<Link*/}
-    {/*to={LINKS.QUICK_FORECAST}*/}
-    {/*className={classNames('TopNavigation__link', {*/}
-    {/*'TopNavigation__link--active': pathname.includes(LINKS.QUICK_FORECAST),*/}
-    {/*})}*/}
-    {/*>*/}
-    {/*<FormattedMessage id="quick_forecast" defaultMessage="Forecast" />*/}
-    {/*</Link>*/}
-    {/*</li>*/}
   </ul>
 );
 
