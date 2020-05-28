@@ -18,14 +18,22 @@ import {
   getScreenSize,
   getTotalVestingFundSteem,
   getTotalVestingShares,
+  getTransactions,
   getUser,
+  getUserHasMore,
   getUserHasMoreAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
 } from '../reducers';
-import { getGlobalProperties, getMoreUserAccountHistory } from '../wallet/walletActions';
+import {
+  getGlobalProperties,
+  getMoreUserAccountHistory,
+  getUserTransactionHistory,
+  getMoreUserTransactionHistory,
+} from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 @withRouter
 @connect(
@@ -50,11 +58,15 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     guestBalance: getGuestUserBalance(state),
     usersTransactions: getUsersTransactions(state),
+    transactionsHistory: getTransactions(state),
+    hasMore: getUserHasMore(state),
   }),
   {
     getGlobalProperties,
     getMoreUserAccountHistory,
     getAccount,
+    getUserTransactionHistory,
+    getMoreUserTransactionHistory,
   },
 )
 class Wallet extends Component {
@@ -75,6 +87,10 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     guestBalance: PropTypes.number,
+    transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
+    getUserTransactionHistory: PropTypes.func.isRequired,
+    getMoreUserTransactionHistory: PropTypes.func,
+    hasMore: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -82,6 +98,9 @@ class Wallet extends Component {
     authenticatedUserName: '',
     guestBalance: null,
     usersTransactions: [],
+    transactionsHistory: {},
+    hasMore: false,
+    getMoreUserTransactionHistory: () => {},
   };
 
   componentDidMount() {
@@ -91,6 +110,7 @@ class Wallet extends Component {
       user,
       isCurrentUser,
       authenticatedUserName,
+      transactionsHistory,
     } = this.props;
 
     const username = isCurrentUser
@@ -103,6 +123,10 @@ class Wallet extends Component {
 
     if (isEmpty(user)) {
       this.props.getAccount(username);
+    }
+
+    if (isEmpty(transactionsHistory[getUserDetailsKey(username)])) {
+      this.props.getUserTransactionHistory(username);
     }
   }
 
@@ -118,7 +142,12 @@ class Wallet extends Component {
       cryptosPriceHistory,
       guestBalance,
       screenSize,
+      transactionsHistory,
+      hasMore,
     } = this.props;
+
+    const userKey = getUserDetailsKey(user.name);
+    const transactions = get(transactionsHistory, userKey, []);
 
     const currentSteemRate = get(
       cryptosPriceHistory,
@@ -136,6 +165,9 @@ class Wallet extends Component {
       <Loading style={{ marginTop: '20px' }} />
     ) : (
       <UserWalletTransactions
+        getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
+        transactions={transactions}
+        hasMore={hasMore}
         currentUsername={user.name}
         totalVestingShares={totalVestingShares}
         totalVestingFundSteem={totalVestingFundSteem}

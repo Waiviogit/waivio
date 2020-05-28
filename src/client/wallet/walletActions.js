@@ -22,6 +22,9 @@ export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
 export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
+);
 
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
   '@users/GET_USER_EST_ACCOUNT_VALUE',
@@ -232,7 +235,22 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
     payload: {
       promise: getTransferHistory(username, skip, limit)
         .then(data => ({
-          transactions: data.wallet,
+          username,
+          transactionsHistory: data.wallet,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => console.log(error)),
+    },
+  });
+
+export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch =>
+  dispatch({
+    type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistory(username, skip, limit)
+        .then(data => ({
+          username,
+          transactionsHistory: data.wallet,
           hasMore: data.hasMore,
         }))
         .catch(error => console.log(error)),

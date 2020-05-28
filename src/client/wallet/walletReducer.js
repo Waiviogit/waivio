@@ -20,7 +20,8 @@ const initialState = {
   accountHistoryFilter: [],
   currentDisplayedActions: [],
   currentFilteredActions: [],
-  transactions: [],
+  transactionsHistory: {},
+  loadingMoreTransactions: false,
   hasMore: false,
   transactionsHistoryLoading: false,
 };
@@ -103,12 +104,42 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         transactionsHistoryLoading: true,
       };
-    case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS:
+    case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS: {
+      const usernameKey = getUserDetailsKey(action.payload.username);
       return {
         ...state,
-        transactions: [...state.transactions, ...action.payload.transactions],
+        transactionsHistory: {
+          ...state.transactionsHistory,
+          [usernameKey]: action.payload.transactionsHistory,
+        },
         hasMore: action.payload.hasMore,
         transactionsHistoryLoading: false,
+      };
+    }
+    case walletActions.GET_MORE_TRANSACTIONS_HISTORY.START:
+      return {
+        ...state,
+        loadingMoreTransactions: true,
+      };
+    case walletActions.GET_MORE_TRANSACTIONS_HISTORY.SUCCESS: {
+      const usernameKey = getUserDetailsKey(action.payload.username);
+      const userCurrentTransactions = get(state.transactionsHistory, usernameKey, []);
+      return {
+        ...state,
+        transactionsHistory: {
+          ...state.transactionsHistory,
+          [usernameKey]: uniqBy(
+            userCurrentTransactions.concat(action.payload.transactionsHistory),
+            'timestamp',
+          ),
+        },
+        hasMore: action.payload.hasMore,
+        loadingMoreTransactions: false,
+      };
+    }
+    case walletActions.GET_MORE_TRANSACTIONS_HISTORY.ERROR:
+      return {
+        loadingMoreTransactions: false,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
       return {
@@ -223,7 +254,7 @@ export const getIsPowerDown = state => state.powerDown;
 export const getTotalVestingShares = state => state.totalVestingShares;
 export const getTotalVestingFundSteem = state => state.totalVestingFundSteem;
 export const getUsersTransactions = state => state.usersTransactions;
-export const getTransactions = state => state.transactions;
+export const getTransactions = state => state.transactionsHistory;
 export const getUserHasMore = state => state.hasMore;
 export const getUsersEstAccountsValues = state => state.usersEstAccountsValues;
 export const getUsersAccountHistoryLoading = state => state.usersAccountHistoryLoading;
