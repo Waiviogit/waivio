@@ -473,7 +473,7 @@ class EditPost extends Component {
             <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
             <CreateObject onCreateObject={this.handleCreateObject} />
             {defaultObjects.map(wObj => (
-              <div className="edit-post__object-card">
+              <div className="edit-post__object-card" key={wObj.id}>
                 <div className="edit-post__object-card-icon">
                   <Icon type="close-circle" onClick={() => this.removeDefaultObject(wObj)} />
                 </div>
@@ -481,7 +481,7 @@ class EditPost extends Component {
               </div>
             ))}
             {linkedObjects.map(wObj => (
-              <div className="edit-post__object-card">
+              <div className="edit-post__object-card" key={wObj.id}>
                 <div className="edit-post__object-card-icon">
                   <Icon type="close-circle" onClick={() => this.removeLinkedObject(wObj)} />
                 </div>
