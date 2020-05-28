@@ -212,6 +212,7 @@ export function getInitialState(props) {
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: [],
+      defaultObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),

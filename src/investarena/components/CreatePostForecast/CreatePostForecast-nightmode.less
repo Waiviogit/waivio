@@ -2,6 +2,16 @@
 
 .nightmode {
   .st-create-post-optional {
+    .st-create-post-dropdowns {
+      .clear-btn {
+        color: @blue-baliHai;
+
+        &:hover {
+          color: @white;
+        }
+      }
+    }
+
     .ant-collapse {
       background-color: @grey-nero;
       color: @white !important;
@@ -13,9 +23,18 @@
       border-radius: 4px;
     }
 
-    .st-create-post-optional-title,
-    .arrow {
+    .st-create-post-optional-title {
       color: @white;
+    }
+
+    .ant-select-arrow,
+    .ant-calendar-picker-icon {
+      color: @white;
+      opacity: .5;
+
+      &:hover {
+        opacity: .8;
+      }
     }
 
     .ant-collapse-content-box {
