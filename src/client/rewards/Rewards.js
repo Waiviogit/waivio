@@ -168,6 +168,7 @@ class Rewards extends React.Component {
   setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
 
   getRequiredObjects = () =>
+    this.state.propositions &&
     this.state.propositions
       .filter(proposition => proposition.required_object)
       .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker

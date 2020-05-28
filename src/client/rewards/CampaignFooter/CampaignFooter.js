@@ -13,6 +13,7 @@ import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
 import './CampaignFooter.less';
+import { getContent } from '../../../waivioApi/ApiClient';
 
 @injectIntl
 @withAuthActions
@@ -83,6 +84,7 @@ class CampaignFooter extends React.Component {
       reservedUser: {},
       daysLeft: 0,
       loading: false,
+      currentPost: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -106,6 +108,9 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition } = this.props;
+    getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
+      this.setState({ currentPost: res }),
+    );
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
@@ -137,12 +142,14 @@ class CampaignFooter extends React.Component {
     }
   };
 
-  handleFollowClick(post) {
+  handleFollowClick() {
     const { userFollowed } = this.props.postState;
+    const { proposition } = this.props;
+
     if (userFollowed) {
-      this.props.unfollowUser(post.parent_author);
+      this.props.unfollowUser(proposition.guideName);
     } else {
-      this.props.followUser(post.parent_author);
+      this.props.followUser(proposition.guideName);
     }
   }
 
@@ -273,7 +280,11 @@ class CampaignFooter extends React.Component {
           />
         )}
         {!singlePostVew && isComment && (
-          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={this.state.currentPost}
+          />
         )}
         <Modal
           closable
