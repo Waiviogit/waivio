@@ -649,7 +649,7 @@
   "campaign_type": "Тип кампанії",
   "select_campaign_type": "Будь ласка, виберіть тип вашої кампанії!",
   "select_campaign_type_option": "Оберіть тип кампанії",
-  "campaign_budget": "Бюджет кампанії (щомісячно, HIVE)",
+  "campaign_budget": "Бюджет кампанії (щомісячно, USD)",
   "set_monthly_budget": "Будь ласка, встановіть свій щомісячний бюджет!",
   "set_reward": "Будь ласка, встановіть нагороду!",
   "reservation_period": "Максимальний термін бронювання (днів)",
@@ -694,7 +694,7 @@
   "campaign_names_used_internal_reports": "Назви кампаній використовуються тільки для внутрішніх звітів",
   "specific_campaign_parameters_type": "Параметри кампанії залежать від типу кампанії",
   "unused_portion_not_accumulate": "Невикористану частину бюджету не накопичується",
-  "reward_per_review_STEEM": "Нагорода (за огляд, HIVE)",
+  "reward_per_review_STEEM": "Нагорода (за огляд, USD)",
   "reward_portion_using_upvotes_registered_accounts": "Частина винагороди може бути оплачена за допомогою голосів з зареєстрованих облікових записів",
   "budget_reduced_amount_rewards_reserved": "Доступний бюджет зменшується на суму зарезервованих нагород",
   "note_shown_to_users_of_reward": "Ця замітка буде показана користувачам при бронюванні нагороди",
@@ -732,7 +732,7 @@
   "users_auto_complete_placeholder": "Знайти користувачів",
   "up_to_5_comma_delimited": "(До 5, через кому)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значення лайків можна накопичувати на спеціальному компенсаційному рахунку.",
-  "compensation_account_optional": "Компенсаційний рахунок (необов'язково)",
+  "compensation_account": "Компенсаційний рахунок",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Накопичує значення лайків з зареєстрованих акаунтів upvoting",
   "compensation_account_auto_complete_placeholder": "Знайти компенсаційний аккаунт",
   "activate_campaign": "Активувати компанії з нагородами",
@@ -795,5 +795,6 @@
   "health": "здоров'я",
   "travel": "подорожі",
   "beneficiaries-weights": "Отримувачі",
-  "find_users_placeholder": "Знайти користувачів"
+  "find_users_placeholder": "Знайти користувачів",
+  "add_compensation_account": "Добавте компенсаційний рахунок"
 }

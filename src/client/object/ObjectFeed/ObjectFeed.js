@@ -113,10 +113,10 @@ export default class ObjectFeed extends React.Component {
 
   componentDidUpdate() {
     const { needUpdate } = this.state;
-    const { userName, wobject } = this.props;
+    const { userName, wobject, match } = this.props;
     const requiredObject = get(wobject, ['parent', 'author_permlink']);
     if (needUpdate && requiredObject) {
-      this.getPropositions({ userName, requiredObject });
+      this.getPropositions({ userName, requiredObject, match });
     }
   }
 
@@ -133,9 +133,9 @@ export default class ObjectFeed extends React.Component {
     return currentUSDPrice;
   };
 
-  getPropositions = ({ userName, requiredObject }) => {
+  getPropositions = ({ userName, requiredObject, match }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
-    ApiClient.getPropositions({ currentUserName: userName, requiredObject }).then(data => {
+    ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
       this.setState({ allPropositions: data.campaigns, loadingPropositions: false });
     });
   };
@@ -269,29 +269,30 @@ export default class ObjectFeed extends React.Component {
   // END Propositions
 
   render() {
-    const { feed, limit, handleCreatePost, wobject, currentProposition } = this.props;
-    const { allPropositions, loadingPropositions } = this.state;
+    const { feed, limit, handleCreatePost, wobject, currentProposition, intl } = this.props;
+    const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
-    const content = uniq(getFeedFromState('objectPosts', wObjectName, feed));
+    const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
+    const content = uniq(objectFeed);
     const isFetching = getFeedLoadingFromState('objectPosts', wObjectName, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wObjectName, feed);
+    const skip = content.length;
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: wObjectName,
         authorPermlink: wObjectName,
         limit,
+        skip,
       });
     };
     const goToProducts = () => {
-      this.props.history.push(`/rewards/All`);
+      const permlink = get(wobject, 'author_permlink');
+      this.props.history.push(`/rewards/All/${permlink}`);
     };
-    const currentUSDPrice = this.getCurrentUSDPrice();
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
     const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;
-    const rewardPrise = currentUSDPrice
-      ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
-      : `${maxReward} HIVE`;
-
+    const rewardPrise = `${minReward} USD`;
+    const rewardMax = maxReward !== minReward ? `${maxReward} USD` : '';
     const getFeedProposition = () => {
       if (wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
         return (
@@ -299,18 +300,33 @@ export default class ObjectFeed extends React.Component {
             <ObjectCardView wObject={wobject} passedParent={currentProposition} />
             <div className="Campaign__button" role="presentation" onClick={goToProducts}>
               <Button type="primary" size="large">
-                <React.Fragment>
-                  <span>
-                    {this.props.intl.formatMessage({
-                      id: 'rewards_details_earn',
-                      defaultMessage: 'Earn',
-                    })}
-                  </span>
-                  <span>
-                    <span className="fw6 ml1">{rewardPrise}</span>
-                    <Icon type="right" />
-                  </span>
-                </React.Fragment>
+                {!rewardMax ? (
+                  <React.Fragment>
+                    <span>
+                      {intl.formatMessage({
+                        id: 'rewards_details_earn',
+                        defaultMessage: 'Earn',
+                      })}
+                    </span>
+                    <span>
+                      <span className="fw6 ml1">{rewardPrise}</span>
+                      <Icon type="right" />
+                    </span>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <span>
+                      {intl.formatMessage({
+                        id: 'rewards_details_earn_up_to',
+                        defaultMessage: 'Earn up to',
+                      })}
+                    </span>
+                    <span>
+                      <span className="fw6 ml1">{`${rewardMax}`}</span>
+                      <Icon type="right" />
+                    </span>
+                  </React.Fragment>
+                )}
               </Button>
             </div>
           </div>

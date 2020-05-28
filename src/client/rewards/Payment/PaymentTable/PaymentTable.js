@@ -5,7 +5,7 @@ import _ from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsors, isReports }) => (
+const PaymentTable = ({ intl, sponsors, isReports, isHive }) => (
   <table className="PaymentTable">
     <thead>
       <tr>
@@ -23,14 +23,14 @@ const PaymentTable = ({ intl, sponsors, isReports }) => (
         </th>
         <th className="PaymentTable basicWidth">
           {intl.formatMessage({
-            id: `${isReports ? 'paymentTable_amount_USD' : 'paymentTable_amount'}`,
-            defaultMessage: `${isReports ? 'Amount USD' : 'Amount HIVE'}`,
+            id: `${isHive ? 'paymentTable_amount' : 'paymentTable_amount_USD'}`,
+            defaultMessage: `${isHive ? 'Amount HIVE' : 'Amount USD'}`,
           })}
         </th>
         <th className="PaymentTable basicWidth">
           {intl.formatMessage({
-            id: `${isReports ? 'paymentTable_balance_USD' : 'paymentTable_balance'}`,
-            defaultMessage: `${isReports ? 'Balance USD' : 'Balance HIVE'}`,
+            id: `${isHive ? 'paymentTable_balance' : 'paymentTable_balance_USD'}`,
+            defaultMessage: `${isHive ? 'Balance HIVE' : 'Balance USD'}`,
           })}
         </th>
       </tr>
@@ -38,7 +38,7 @@ const PaymentTable = ({ intl, sponsors, isReports }) => (
     <tbody>
       {_.map(sponsors, sponsor => (
         // eslint-disable-next-line no-underscore-dangle
-        <PaymentTableRow key={sponsor._id} sponsor={sponsor} />
+        <PaymentTableRow key={sponsor._id} sponsor={sponsor} isReports={isReports} />
       ))}
     </tbody>
   </table>
@@ -48,10 +48,12 @@ PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isReports: PropTypes.bool,
+  isHive: PropTypes.bool,
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
+  isHive: false,
 };
 
 export default injectIntl(PaymentTable);
