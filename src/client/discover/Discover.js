@@ -11,8 +11,9 @@ import Affix from '../components/Utils/Affix';
 import { resetSearchUsersForDiscoverPage } from '../search/searchActions';
 
 import './Discover.less';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
-const Discover = ({ intl, match, history }) => {
+const Discover = ({ intl, match, history, isMobileNavMenuOpen, toggleMobileNavMenu }) => {
   const dispatch = useDispatch();
   const handleDeleteTag = () => {
     history.push('/discover');
@@ -37,6 +38,10 @@ const Discover = ({ intl, match, history }) => {
           </div>
         </Affix>
         <div className="Discover">
+          <MobileNavigation
+            toggleMobileNavMenu={toggleMobileNavMenu}
+            isMobileNavMenuOpen={isMobileNavMenuOpen}
+          />
           <div className="Discover__title">
             <h1>
               <FormattedMessage id="discover_more_people" defaultMessage="Discover more people" />
@@ -70,6 +75,8 @@ Discover.propTypes = {
     }),
   }).isRequired,
   history: PropTypes.shape().isRequired,
+  isMobileNavMenuOpen: PropTypes.bool.isRequired,
+  toggleMobileNavMenu: PropTypes.func.isRequired,
 };
 
 export default injectIntl(Discover);
