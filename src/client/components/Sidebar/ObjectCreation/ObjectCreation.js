@@ -6,7 +6,6 @@ import _ from 'lodash';
 import { Icon } from 'antd';
 import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
 import { getObjectTypesList } from '../../../reducers';
-import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import './ObjectCreation.less';
 import ObjectCreationLoading from './ObjectCreationLoading';

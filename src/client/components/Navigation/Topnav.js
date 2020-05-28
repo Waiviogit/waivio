@@ -659,7 +659,10 @@ class Topnav extends React.Component {
             >
               {!username ? (
                 <div className="mr2">
-                  <LoggedOutMenu location={this.props.location} searchBarActive={this.state.searchBarActive} />
+                  <LoggedOutMenu
+                    location={this.props.location}
+                    searchBarActive={this.state.searchBarActive}
+                  />
                 </div>
               ) : (
                 <Link

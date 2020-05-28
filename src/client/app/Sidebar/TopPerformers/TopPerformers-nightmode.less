@@ -39,57 +39,39 @@
         }
       }
 
-      .tooltip-worse {
-        &:before {
-          content: '';
-          display: block;
-          background: repeating-linear-gradient(
-            -50deg,
-            @red,
-            @red 1px,
-            @grey-nero 2px,
-            @red-danger 4px
-          );
-          border: 1px solid @red;
-          width: 16px;
-          height: 16px;
-          float: left;
-        }
+      .color-text {
+        color: @red-light;
+        padding: 0 5px;
+      }
+    }
+  }
 
-        .color-text {
-          color: @red-light;
-          padding: 0 5px;
-        }
+  &__more {
+    color: @blue-botticelli;
+    transition: color 0.3s;
+    &:hover {
+      color: #4aa4ff;
+    }
+  }
+
+  .performer:extend(.User) {
+    &__avatar {
+      .ObjectAvatar {
+        border-color: @normal-grey;
+      }
+    }
+    &__stat-info:extend(.User__follow) {
+      &.success {
+        color: @green;
+      }
+      &.danger {
+        color: @red-light;
       }
     }
 
-    &__more {
-      color: @blue-botticelli;
-      transition: color 0.3s;
-      &:hover {
-        color: #4aa4ff;
-      }
-    }
-
-    .performer:extend(.User) {
-      &__avatar {
-        .ObjectAvatar {
-          border-color: @normal-grey;
-        }
-      }
-      &__stat-info:extend(.User__follow) {
-        &.success {
-          color: @green;
-        }
-        &.danger {
-          color: @red-light;
-        }
-      }
-
-      &__divider {
-        background-color: @normal-grey;
-        margin: 8px 0;
-      }
+    &__divider {
+      background-color: @normal-grey;
+      margin: 8px 0;
     }
   }
 

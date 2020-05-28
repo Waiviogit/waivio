@@ -36,16 +36,6 @@ import './AddItemModal.less';
 @injectIntl
 @Form.create()
 class AddItemModal extends Component {
-  static defaultProps = {
-    currentUserName: '',
-    locale: 'en-US',
-    loading: false,
-    wobject: {},
-    followingList: [],
-    itemsIdsToOmit: [],
-    onAddItem: () => {},
-  };
-
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
@@ -59,7 +49,15 @@ class AddItemModal extends Component {
     followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
   };
-
+  static defaultProps = {
+    currentUserName: '',
+    locale: 'en-US',
+    loading: false,
+    wobject: {},
+    followingList: [],
+    itemsIdsToOmit: [],
+    onAddItem: () => {},
+  };
   constructor(props) {
     super(props);
 

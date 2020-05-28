@@ -6,11 +6,7 @@ import api from '../../../../investarena/configApi/apiResources';
 import { initBrokerConnection } from '../../../redux/actions/brokersActions';
 
 const propTypes = {
-  // isLoading: PropTypes.bool.isRequired,
-  // platformName: PropTypes.string,
-  // authorizeBroker: PropTypes.func.isRequired,
   disconnectBroker: PropTypes.func.isRequired,
-  // brokerConnected: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 

@@ -1,4 +1,4 @@
-import { get, filter, size, some, sortBy } from 'lodash';
+import { get, filter, size, some } from 'lodash';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -16,13 +16,7 @@ import {
   getCurrencySettings,
   updateUserWallet,
 } from '../redux/actions/platformActions';
-import {
-  getOpenDealsSuccess,
-  getCloseDealsSuccess,
-  changeOpenDealPlatformSuccess,
-  closeOpenDealPlatformSuccess,
-  updateClosedDealsForStatistics,
-} from '../redux/actions/dealsActions';
+
 import { disconnectBroker, reconnectBroker } from '../redux/actions/brokersActions';
 import config from '../configApi/config';
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
@@ -189,20 +183,6 @@ export default class Umarkets {
     this.sendRequestToPlatform(CMD.getCrossStatistics, '[]');
   }
 
-  // getOpenDeals() {
-  //   this.sendRequestToPlatform(CMD.getOpenDeals, '[]');
-  // }
-
-  getClosedDeals(
-    period = 'LAST_7_DAYS',
-    getClosedDealsForStatistics = false,
-    lastClosedDealTime = null,
-  ) {
-    this.getClosedDealsForStatistics = getClosedDealsForStatistics;
-    this.lastClosedDealTime = lastClosedDealTime;
-    // this.sendRequestToPlatform(CMD.getClosedDeals, `[${period}, null, null]`);
-  }
-
   getAppIdentity(callerKey) {
     return JSON.stringify({
       OS: getOS(),
@@ -211,23 +191,6 @@ export default class Umarkets {
       Caller: CALLERS[callerKey],
     });
   }
-
-  // createOpenDeal(deal, dataDealToApi, callerKey) {
-  //   this.dataDealToApi = dataDealToApi;
-  //   this.sendRequestToPlatform(
-  //     CMD.sendOpenMarketOrder,
-  //     `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
-  //     this.getAppIdentity(callerKey),
-  //   );
-  // }
-  //
-  // closeOpenDeal(dealId, callerKey) {
-  //   this.sendRequestToPlatform(
-  //     CMD.sendCloseMarketOrder,
-  //     `["${dealId}","${config.appVersion}"]`,
-  //     this.getAppIdentity(callerKey),
-  //   );
-  // }
 
   createMarketOrder(deal, dataDealToApi, callerKey) {
     this.sendRequestToPlatform(
@@ -309,26 +272,12 @@ export default class Umarkets {
         case CMD.getCrossStatistics:
           this.parseCrossStatistics(result);
           break;
-        // *** UNSUPPORTED_COMMAND ***
-        // case CMD.getOpenDeals:
-        //   this.parseOpenDeals(result);
-        //   break;
-        // case CMD.getClosedDeals:
-        //   this.parseClosedDeals(result);
-        //   break;
         case CMD.getChartData:
           this.parseChartData(result);
           break;
-        // case CMD.sendCloseMarketOrder:
-        //   Umarkets.parseCloseMarketOrderResult(result);
-        //   break;
         case CMD.createMarketOrder:
           this.parseCreateMarketOrder(result);
           break;
-        case CMD.changeOpenDeal:
-          Umarkets.parseChangeMarketOrderResult(result);
-          break;
-        // case CMD.sendOpenMarketOrder:
         case CMD.openMarketOrderRejected:
         case CMD.duplicateOpenDeal:
           this.parseOpenMarketOrderResult(result);
@@ -354,10 +303,6 @@ export default class Umarkets {
         case 'open_deal_changed':
           this.parseChangeByMarketOrder(result);
           break;
-        case 'favorites_security_added':
-        case 'favorites_security_removed':
-          this.parseUpdateFavorites(result);
-          break;
       }
     }
   }
@@ -368,9 +313,6 @@ export default class Umarkets {
       this.accountCurrency = result.content.currency;
       this.getServerTime();
       this.getUserStatistics();
-      // unsupported commands
-      // this.getOpenDeals(); // unsupported command
-      // this.getClosedDeals();
     }
   }
 
@@ -485,8 +427,6 @@ export default class Umarkets {
         this.currentAccount = currentAccount[0].id;
       }
     }
-    // this.quotesSettings = sortedQuotesSettings;
-    // this.dispatch(updateQuotesSettings(this.quotesSettings));
   }
 
   parseChartData(result) {
@@ -500,73 +440,6 @@ export default class Umarkets {
         .sort((a, b) => a.time - b.time)
         .slice(-250);
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
-    // get chart data for tech chart via http
-    // if (this.hasOwnProperty('publish')) {
-    //   this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
-    // }
-  }
-
-  parseOpenDeals(result) {
-    const content = sortBy(result.content, 'dealSequenceNumber').reverse();
-    const openDeals = {};
-    const data = { open_deals: [] };
-    content.forEach(openDeal => {
-      openDeal.openPrice /= multiplier;
-      openDeal.amount /= multiplier;
-      openDeals[openDeal.dealId] = openDeal;
-      data.open_deals.push({
-        amount: openDeal.amount,
-        deal_id: openDeal.dealId,
-        deal_sequence_number: openDeal.dealSequenceNumber,
-        good_till_date: openDeal.goodTillDate,
-        open_price: openDeal.openPrice,
-        open_time: openDeal.openTime,
-        security: openDeal.security,
-        side: openDeal.side,
-      });
-    });
-    this.dispatch(getOpenDealsSuccess(openDeals));
-  }
-
-  parseClosedDeals(result) {
-    if (!this.getClosedDealsForStatistics) {
-      const content = sortBy(result.content.closedDeals, 'closeTime').reverse();
-      const closedDeals = {};
-      content.forEach(closeDeal => {
-        closeDeal.amount /= multiplier;
-        closeDeal.pnl /= multiplier;
-        closeDeal.openPrice /= multiplier;
-        closeDeal.closePrice /= multiplier;
-        closedDeals[closeDeal.dealId] = closeDeal;
-      });
-      this.dispatch(getCloseDealsSuccess(closedDeals));
-    } else {
-      this.getClosedDealsForStatistics = false;
-      const content = sortBy(result.content.closedDeals, 'closeTime');
-      const contentFilter = content.filter(
-        closedDeal => closedDeal.closeTime > this.lastClosedDealTime,
-      );
-      if (contentFilter.length > 0) {
-        const data = { closed_deals: [] };
-        content.map(closeDeal => {
-          data.closed_deals.push({
-            deal_id: closeDeal.dealId,
-            deal_sequence_number: closeDeal.dealSequenceNumber,
-            security: closeDeal.security,
-            side: closeDeal.side,
-            amount: closeDeal.amount / multiplier,
-            open_price: closeDeal.openPrice / multiplier,
-            open_time: closeDeal.openTime,
-            close_price: closeDeal.closePrice / multiplier,
-            close_time: closeDeal.closeTime,
-            rollover_commission: closeDeal.rolloverCommission,
-            pnl: closeDeal.pnl / multiplier,
-            broker_name: this.platformName,
-          });
-        });
-        this.dispatch(updateClosedDealsForStatistics(data));
-      }
-    }
   }
 
   parseUserStatistics(result) {
@@ -600,33 +473,6 @@ export default class Umarkets {
       this.dataDealToApi.deal_id = result.content.dealId;
       this.dataDealToApi = null;
     }
-  }
-
-  parseCloseByMarketOrder(result) {
-    message.success('Deal successfully closed');
-    this.dispatch(closeOpenDealPlatformSuccess(result.content.dealId));
-  }
-
-  parseChangeByMarketOrder(result) {
-    const content = result.content;
-    if (content.stopLossAmount) {
-      content.stopLossPrice = null;
-    } else if (content.stopLossPrice) {
-      content.stopLossAmount = null;
-    } else {
-      content.stopLossPrice = null;
-      content.stopLossAmount = null;
-    }
-    if (content.takeProfitAmount) {
-      content.takeProfitPrice = null;
-    } else if (content.takeProfitPrice) {
-      content.takeProfitAmount = null;
-    } else {
-      content.takeProfitPrice = null;
-      content.takeProfitAmount = null;
-    }
-    message.success('Deal successfully updated');
-    this.dispatch(changeOpenDealPlatformSuccess(content));
   }
 
   // bxy

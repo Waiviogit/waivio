@@ -69,15 +69,6 @@ textarea.ant-input {
   z-index: @ant-tooltip-z-index !important;
 }
 
-div > .Notifications__popover-overlay {
-  top: 0 !important;
-  z-index: @ant-popover-notifications-z-index !important;
-  position: fixed;
-  @media @medium {
-    top: 46px !important;
-  }
-}
-
 .ant-modal-mask,
 .ant-modal-wrap {
   z-index: @ant-modal-z-index;
@@ -166,10 +157,6 @@ div[data-dir='rtl'] {
   direction: rtl;
 }
 
-.wv-break-word {
-  word-wrap: break-word;
-}
-
 .ant-modal-mask {
   background-color: rgba(242, 242, 242, 0.97) !important;
 }
@@ -195,10 +182,6 @@ div[data-dir='rtl'] {
 
 .ant-checkbox {
   top: -0.2em;
-}
-
-.ReactModal__Overlay.ReactModal__Overlay--after-open {
-  z-index: @react-modal-z-index !important;
 }
 
 .Popover__overlay {

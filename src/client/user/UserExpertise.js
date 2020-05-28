@@ -12,13 +12,13 @@ export default class UserExpertise extends React.Component {
     match: PropTypes.shape().isRequired,
   };
 
-  static limit = 30;
-
   state = {
     objCount: 0,
     hashtagsCount: 0,
     tagCount: 0,
   };
+
+  static limit = 30;
 
   fetcher = (skip, isOnlyHashtags) => {
     const { match } = this.props;

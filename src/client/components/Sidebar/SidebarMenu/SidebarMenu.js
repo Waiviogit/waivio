@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames';
 import { getIsAuthenticated } from '../../../reducers';
 
 // todo: sync with dev branch
@@ -25,7 +24,7 @@ function sidebarMenuReducer(state, action) {
   }
 }
 
-const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => {
+const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
   // local state
@@ -59,18 +58,15 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
     ) : (
       <NavLink
         to={menuSection.linkTo}
-        className="collapsible-block__title"
+        className="collapsible-block__title ph2"
         isActive={checkIsActive}
       >
         <span
-          className={classNames('collapsible-block__title-text', { mobileBlock: isMobile })}
+          className={'collapsible-block__title-text'}
           onClick={toggleMobileNavigation}
           role="presentation"
         >
           {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
-        </span>
-        <span className="collapsible-block__title-icon hidden">
-          <i className="iconfont icon-addition" />
         </span>
       </NavLink>
     );
@@ -99,7 +95,7 @@ const SidebarMenu = ({ intl, menuConfig, toggleMobileNavigation, isMobile }) => 
   );
 
   return (
-    <div className="collapsible-block SidebarContentBlock__content">
+    <div className="collapsible-block SidebarContentBlock__content pa0">
       {Object.values(menuState).map(section =>
         !section.requireAuth || authenticated ? (
           <div className={`collapsible-block__${section.name}-section`} key={section.name}>
@@ -116,7 +112,6 @@ SidebarMenu.propTypes = {
   intl: PropTypes.shape().isRequired,
   toggleMobileNavigation: PropTypes.func,
   menuConfig: PropTypes.shape(),
-  isMobile: PropTypes.bool,
 };
 
 SidebarMenu.defaultProps = {
@@ -129,7 +124,6 @@ SidebarMenu.defaultProps = {
     },
   },
   toggleMobileNavigation: () => {},
-  isMobile: false,
 };
 
 export default injectIntl(SidebarMenu);
