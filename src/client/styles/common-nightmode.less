@@ -27,7 +27,7 @@ body.nightmode {
     border-bottom: @border-width-base @border-style-base @normal-grey;
 
     .ant-calendar-input {
-      background:@grey-nero;
+      background: @grey-nero;
       color: @white-smoke;
     }
   }
@@ -59,12 +59,14 @@ body.nightmode {
     .ant-calendar-next-month-btn,
     .ant-calendar-prev-year-btn,
     .ant-calendar-next-year-btn {
-      &::before, &::after {
+      &::before,
+      &::after {
         border-color: @grey-darkGrey;
       }
 
       &:hover {
-        &::before, &::after {
+        &::before,
+        &::after {
           border-color: @white-smoke;
         }
       }
@@ -101,7 +103,6 @@ body.nightmode {
     }
   }
 
-
   .ant-calendar-date {
     color: @white;
 
@@ -110,14 +111,17 @@ body.nightmode {
     }
   }
 
-  // Year panel
+  // Month/Year panels
+  .ant-calendar-month-panel,
   .ant-calendar-year-panel {
     background: @grey-nero;
   }
 
+  .ant-calendar-month-panel-header,
   .ant-calendar-year-panel-header {
     border-bottom: @border-width-base @border-style-base @normal-grey;
 
+    .ant-calendar-month-panel-year-select-content,
     .ant-calendar-year-panel-century-select,
     .ant-calendar-year-panel-decade-select,
     .ant-calendar-year-panel-year-select,
@@ -125,24 +129,33 @@ body.nightmode {
       color: @white-gainsboro;
     }
 
+    .ant-calendar-month-panel-prev-century-btn,
+    .ant-calendar-month-panel-prev-decade-btn,
+    .ant-calendar-month-panel-prev-year-btn,
+    .ant-calendar-month-panel-next-century-btn,
+    .ant-calendar-month-panel-next-decade-btn,
+    .ant-calendar-month-panel-next-year-btn,
     .ant-calendar-year-panel-prev-century-btn,
     .ant-calendar-year-panel-prev-decade-btn,
     .ant-calendar-year-panel-prev-year-btn,
     .ant-calendar-year-panel-next-century-btn,
     .ant-calendar-year-panel-next-decade-btn,
     .ant-calendar-year-panel-next-year-btn {
-      &::before, &::after {
+      &::before,
+      &::after {
         border-color: @grey-darkGrey;
       }
 
       &:hover {
-        &::before, &::after {
+        &::before,
+        &::after {
           border-color: @white-smoke;
         }
       }
     }
   }
 
+  .ant-calendar-month-panel-month,
   .ant-calendar-year-panel-year {
     color: @white;
 
