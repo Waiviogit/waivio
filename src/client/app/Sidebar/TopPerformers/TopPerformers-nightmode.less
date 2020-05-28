@@ -39,41 +39,41 @@
         }
       }
 
-        .color-text {
-          color: @red-light;
-          padding: 0 5px;
-        }
+      .color-text {
+        color: @red-light;
+        padding: 0 5px;
+      }
+    }
+  }
+
+  &__more {
+    color: @blue-botticelli;
+    transition: color 0.3s;
+    &:hover {
+      color: #4aa4ff;
+    }
+  }
+
+  .performer:extend(.User) {
+    &__avatar {
+      .ObjectAvatar {
+        border-color: @normal-grey;
+      }
+    }
+    &__stat-info:extend(.User__follow) {
+      &.success {
+        color: @green;
+      }
+      &.danger {
+        color: @red-light;
       }
     }
 
-    &__more {
-      color: @blue-botticelli;
-      transition: color 0.3s;
-      &:hover {
-        color: #4aa4ff;
-      }
+    &__divider {
+      background-color: @normal-grey;
+      margin: 8px 0;
     }
-
-    .performer:extend(.User) {
-      &__avatar {
-        .ObjectAvatar {
-          border-color: @normal-grey;
-        }
-      }
-      &__stat-info:extend(.User__follow) {
-        &.success {
-          color: @green;
-        }
-        &.danger {
-          color: @red-light;
-        }
-      }
-
-      &__divider {
-        background-color: @normal-grey;
-        margin: 8px 0;
-      }
-    }
+  }
 
   .top-performers.SidebarContentBlock {
     .SidebarContentBlock__title {

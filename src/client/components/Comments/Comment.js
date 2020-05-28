@@ -205,7 +205,8 @@ class Comment extends React.Component {
       });
   }
 
-  handleEditComment = (parentPost, commentValue) => this.handleSubmitComment(parentPost, commentValue, true, this.props.comment);
+  handleEditComment = (parentPost, commentValue) =>
+    this.handleSubmitComment(parentPost, commentValue, true, this.props.comment);
 
   handleShowHiddenComment = () => {
     this.setState({

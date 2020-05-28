@@ -386,8 +386,7 @@ class BrokerRegistration extends Component {
   render() {
     return (
       <React.Fragment>
-        <Form onSubmit={this.handleSubmit}>
-        </Form>
+        <Form onSubmit={this.handleSubmit}></Form>
         <div className="BrokerRegistration__buttons">
           <Button onClick={this.handleStepBack} disabled={this.state.stepNumber === 1}>
             Back

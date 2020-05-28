@@ -13,5 +13,3 @@ export function validateRegexWithTooltip(element, eventType, regex) {
     false,
   );
 }
-
-

@@ -475,7 +475,6 @@ export default class Umarkets {
     }
   }
 
-
   // bxy
   parseCreateMarketOrder({ response, content, msg, code }) {
     const { security } = content;

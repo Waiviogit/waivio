@@ -218,7 +218,7 @@ export class PlatformHelper {
     const rangesPrice = {};
     let takeProfitMin = 0;
     let takeProfitMax = 0;
-    if(dealParams.direction === 'SHORT'){
+    if (dealParams.direction === 'SHORT') {
       takeProfitMin = (dealParams.price * (100 - maxPercent / 1000000)) / 100 + flFix;
       takeProfitMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
     } else {
@@ -238,12 +238,12 @@ export class PlatformHelper {
     const rangesPrice = {};
     let stopLossMin = 0;
     let stopLossMax = 0;
-    if(dealParams.direction === 'SHORT') {
+    if (dealParams.direction === 'SHORT') {
       stopLossMin = (dealParams.price * (100 + minPercent / 1000000)) / 100 + flFix;
       stopLossMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100 - flFix;
     } else {
-        stopLossMin = (dealParams.price * (100 - maxPercent / 1000000)) / 100 + flFix;
-        stopLossMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
+      stopLossMin = (dealParams.price * (100 - maxPercent / 1000000)) / 100 + flFix;
+      stopLossMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
     }
     rangesPrice.min = stopLossMin.toFixed(dIndex);
     rangesPrice.max = stopLossMax.toFixed(dIndex);
@@ -263,7 +263,7 @@ export class PlatformHelper {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
     });
-    if(dealParams.direction === 'SHORT') {
+    if (dealParams.direction === 'SHORT') {
       stopLossMin = (dealParams.price * (100 + minPercent / 1000000)) / 100;
       stopLossMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
     } else {

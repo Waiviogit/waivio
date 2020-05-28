@@ -90,9 +90,7 @@ const PostSellBuy = ({
           defaultMessage: 'Price at the beginning of the forecast',
         })}
       >
-        <span className={'st-post-start-price'}>
-          {quoteFormat(postPrice, quoteSettings)}
-        </span>
+        <span className={'st-post-start-price'}>{quoteFormat(postPrice, quoteSettings)}</span>
       </Tooltip>
     </div>
   );

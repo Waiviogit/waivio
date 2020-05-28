@@ -45,29 +45,29 @@ const usersMenuConfig = {
 };
 
 const SidenavDiscoverObjects = ({ withTitle, toggleMobileNavigation }) => (
-    <div className="sidenav-discover-objects Sidenav">
-      {withTitle && (
-        <div className="Sidenav__section-title">
-          <FormattedMessage id="objects" defaultMessage="Objects" />:
-        </div>
-      )}
-      <SidebarMenu
-        menuConfig={objectMenuConfig}
-        toggleMobileNavigation={toggleMobileNavigation}
-        users
-      />
-      {withTitle && (
-        <div className="Sidenav__section-title">
-          <FormattedMessage id="users" defaultMessage="users" />:
-        </div>
-      )}
-      <SidebarMenu
-        menuConfig={usersMenuConfig}
-        toggleMobileNavigation={toggleMobileNavigation}
-        users
-      />
-    </div>
-  );
+  <div className="sidenav-discover-objects Sidenav">
+    {withTitle && (
+      <div className="Sidenav__section-title">
+        <FormattedMessage id="objects" defaultMessage="Objects" />:
+      </div>
+    )}
+    <SidebarMenu
+      menuConfig={objectMenuConfig}
+      toggleMobileNavigation={toggleMobileNavigation}
+      users
+    />
+    {withTitle && (
+      <div className="Sidenav__section-title">
+        <FormattedMessage id="users" defaultMessage="users" />:
+      </div>
+    )}
+    <SidebarMenu
+      menuConfig={usersMenuConfig}
+      toggleMobileNavigation={toggleMobileNavigation}
+      users
+    />
+  </div>
+);
 
 SidenavDiscoverObjects.propTypes = {
   toggleMobileNavigation: PropTypes.func,
