@@ -223,6 +223,8 @@ export function createPost(postData, beneficiaries) {
       }
     }
 
+    const getErrorText = msg => msg.split(':')[1];
+
     dispatch({
       type: CREATE_POST,
       payload: {
@@ -279,7 +281,14 @@ export function createPost(postData, beneficiaries) {
               return result;
             })
             .catch(err => {
-              dispatch(notify(err.error.message || err.error_description, 'error'));
+              dispatch(
+                notify(
+                  err.error.message || err.error_description
+                    ? getErrorText(err.error_description)
+                    : '',
+                  'error',
+                ),
+              );
             }),
         ),
       },
