@@ -1,7 +1,7 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
-import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   getAccountHistory,
   getDynamicGlobalProperties,
@@ -169,7 +169,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
   const { wallet } = getState();
   const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
-  const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
+  const currentUsersActions = get(usersAccountHistory, username, []);
   const lastDisplayedAction = last(currentDisplayedActions);
 
   if (isEmpty(lastDisplayedAction)) {

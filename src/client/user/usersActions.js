@@ -20,7 +20,9 @@ export const getUserAccount = name => (dispatch, getState) => {
 
   return dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser),
+    payload: {
+      promise: ApiClient.getUserAccount(name, false, authUser),
+    },
     meta: { username: name },
   }).catch(() => {});
 };

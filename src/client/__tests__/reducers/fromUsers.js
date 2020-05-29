@@ -11,8 +11,6 @@ import {
   getRandomExpertsLoading,
 } from '../../reducers';
 
-import { getUserDetailsKey } from '../../user/usersReducer';
-
 jest.mock('../../vendor/steemitHelpers.js', () => {});
 
 describe('fromUsers', () => {
@@ -40,7 +38,7 @@ describe('fromUsers', () => {
   };
 
   it('Should return formatted name', () => {
-    expect(getUserDetailsKey('username')).toBe('user-username');
+    expect('username').toBe('user-username');
   });
 
   it('Should return user', () => {
