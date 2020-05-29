@@ -18,6 +18,7 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
+  isGuestUser,
 } from './reducers';
 import {
   login,
@@ -55,6 +56,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     guestBalance: getGuestBalance(state),
+    isGuest: isGuestUser(state),
   }),
   {
     login,
@@ -95,6 +97,7 @@ export default class Wrapper extends React.PureComponent {
     isNewUser: PropTypes.bool.isRequired,
     guestBalanceOnReload: PropTypes.func,
     guestBalance: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -115,6 +118,7 @@ export default class Wrapper extends React.PureComponent {
     nightmode: false,
     guestBalanceOnReload: () => {},
     guestBalance: null,
+    isGuest: false,
   };
 
   static async fetchData({ store, req }) {
@@ -175,7 +179,7 @@ export default class Wrapper extends React.PureComponent {
       this.loadLocale(nextProps.locale);
     }
 
-    if (this.props.isAuthenticated) {
+    if (this.props.isGuest && this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
           if (this.props.guestBalance !== nextProps.guestBalance) {
