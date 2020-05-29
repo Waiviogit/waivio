@@ -1134,5 +1134,8 @@
   "add_compensation_account": "Добавьте компенсационный счет",
   "messages": "Сообщения",
   "inquiry_date": "Дата запроса",
-  "latest": "Самый последний"
+  "latest": "Самый последний",
+  "case_status": "Статус дела",
+  "open_cases": "Открытые",
+  "closed_cases": "Закрытые"
 }

@@ -47,6 +47,21 @@ const RewardsFiltersPanel = ({
     },
   ];
 
+  const campaignsTypesMessages = [
+    {
+      filterName: 'open',
+      value: 'Open',
+      defaultMessage: `{value} cases`,
+    },
+    {
+      filterName: 'closed',
+      value: 'Closed',
+      defaultMessage: `{value} cases`,
+    },
+  ];
+
+  const rewardsTypesMessages = ['Reserved', 'Completed', 'Released', 'Expired', 'Rejected'];
+
   return (
     <div className="RewardsFiltersPanel">
       <div className="RewardsFiltersPanel__container">
@@ -55,7 +70,8 @@ const RewardsFiltersPanel = ({
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
         {location.pathname !== '/rewards/payables' &&
-        location.pathname !== '/rewards/receivables' ? (
+        location.pathname !== '/rewards/receivables' &&
+        location.pathname !== '/rewards/messages' ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -77,18 +93,50 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         ) : (
+          location.pathname !== '/rewards/messages' && (
+            <React.Fragment>
+              <div className="RewardsFiltersPanel__title-text">
+                {location.pathname === '/rewards/payables'
+                  ? intl.formatMessage({
+                      id: 'payables',
+                      defaultMessage: 'Payables',
+                    })
+                  : intl.formatMessage({
+                      id: 'sidenav_rewards_receivables',
+                      defaultMessage: 'Receivables',
+                    })}
+              </div>
+              {_.map(payablesFilterData, payable =>
+                filterPaymentLayout(
+                  payable,
+                  activePayableFilters.some(f => f.filterName === payable.filterName),
+                ),
+              )}
+            </React.Fragment>
+          )
+        )}
+        {location.pathname === '/rewards/messages' && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
-                id: 'payables',
-                defaultMessage: 'Payables',
+                id: 'case_status',
+                defaultMessage: 'Case status',
               })}:`}
             </div>
-            {_.map(payablesFilterData, payable =>
+            {_.map(campaignsTypesMessages, type =>
               filterPaymentLayout(
-                payable,
-                activePayableFilters.some(f => f.filterName === payable.filterName),
+                type,
+                activePayableFilters.some(f => f.filterName === type.filterName),
               ),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {_.map(rewardsTypesMessages, type =>
+              filterLayout(type, 'types', _.includes(activeFilters.types, type)),
             )}
           </React.Fragment>
         )}

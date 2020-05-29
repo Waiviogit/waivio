@@ -68,6 +68,7 @@ const routes = [
           '/rewards/payables',
           '/rewards/reports',
           '/rewards/receivables',
+          '/rewards/messages',
           '/rewards/payables/@:userName',
           '/rewards/receivables/@:userName',
           '/rewards/:filterKey/:campaignParent?',

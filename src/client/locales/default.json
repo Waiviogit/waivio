@@ -1134,5 +1134,8 @@
   "add_compensation_account": "Add compensation account",
   "messages": "Messages",
   "inquiry_date": "Inquiry date",
-  "latest": "Latest"
+  "latest": "Latest",
+  "case_status": "Case status",
+  "open_cases": "Open cases",
+  "closed_cases": "Closed cases"
 }

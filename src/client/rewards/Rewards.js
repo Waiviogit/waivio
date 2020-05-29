@@ -102,6 +102,7 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
+    activeMessagesFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
     isAssign: false,
   };
@@ -201,6 +202,18 @@ class Rewards extends React.Component {
       activeFilters.push(filter);
       this.setState({ activePayableFilters: activeFilters });
     }
+  };
+
+  setMessagesFilterValue = (filter, key) => {
+    const activeFilters = this.state.activeMessagesFilters;
+    if (includes(activeFilters[key], filter)) {
+      remove(activeFilters[key], f => f === filter);
+      this.setState({ activeMessagesFilters: activeFilters });
+    } else {
+      activeFilters[key].push(filter);
+      this.setState({ activeMessagesFilters: activeFilters });
+    }
+    this.setState({ loadingCampaigns: true });
   };
 
   getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
@@ -462,8 +475,8 @@ class Rewards extends React.Component {
       activePayableFilters,
       sort,
       loadingCampaigns,
+      activeMessagesFilters,
     } = this.state;
-
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
@@ -570,6 +583,20 @@ class Rewards extends React.Component {
                       location={location}
                     />
                   )}
+                </div>
+              </Affix>
+            )}
+            {match.path === '/rewards/messages' && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
+                <div className="right">
+                  <RewardsFiltersPanel
+                    campaignsTypes={campaignsTypes}
+                    activeFilters={activeMessagesFilters}
+                    activePayableFilters={activePayableFilters}
+                    setFilterValue={this.setMessagesFilterValue}
+                    setPayablesFilterValue={this.setPayablesFilterValue}
+                    location={location}
+                  />
                 </div>
               </Affix>
             )}
