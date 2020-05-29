@@ -108,9 +108,11 @@ export default class WobjHistory extends React.Component {
       toggleViewEditMode(true);
       history.push(`/object/${object.author_permlink}/${OBJECT_TYPE.PAGE}`);
     } else {
-      this.setState({ showModal: !this.state.showModal });
+      this.handleToggleModal();
     }
   };
+
+  handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   handleSortChange = sort => this.setState({ sort });
 
