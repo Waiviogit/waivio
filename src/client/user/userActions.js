@@ -18,7 +18,7 @@ export const FOLLOW_USER_ERROR = '@user/FOLLOW_USER_ERROR';
 
 export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
-  console.log(username);
+
   if (!store.getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }

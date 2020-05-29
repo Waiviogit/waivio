@@ -12,8 +12,9 @@ import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
-import './CampaignFooter.less';
 import { getContent } from '../../../waivioApi/ApiClient';
+
+import './CampaignFooter.less';
 
 @injectIntl
 @withAuthActions

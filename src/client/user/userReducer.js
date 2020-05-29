@@ -10,7 +10,7 @@ const initialState = {
   recommendedExperts: [],
   location: {},
   following: {
-    list: [],
+    list: {},
     pendingFollows: [],
     isFetching: false,
     fetched: false,
