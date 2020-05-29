@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get, isEmpty, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
@@ -184,7 +183,7 @@ class Wallet extends Component {
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
-    const isGuest = user.name.startsWith(GUEST_PREFIX) || user.name.startsWith(BXY_GUEST_PREFIX);
+    const isGuest = guestUserRegex.test(user && user.name);
 
     const walletTransactions = usersAccountHistoryLoading ? (
       <Loading style={{ marginTop: '20px' }} />
