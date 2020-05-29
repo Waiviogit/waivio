@@ -69,7 +69,6 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    guestsBalance: PropTypes.number,
     authGuestBalance: PropTypes.number,
   };
 
@@ -365,7 +364,9 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentSelectedBalance = this.props.isGuest ? this.props.guestsBalance : selectedBalance;
+    const currentSelectedBalance = this.props.isGuest
+      ? this.props.authGuestBalance
+      : selectedBalance;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
