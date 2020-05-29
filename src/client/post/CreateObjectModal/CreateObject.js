@@ -139,7 +139,7 @@ class CreateObject extends React.Component {
                     locale: values.locale,
                   },
                 ),
-                { votePower: null, follow: false, notLike: true },
+                { votePower: null, follow: false, isLike: false },
               );
             }
             this.props.notify(
