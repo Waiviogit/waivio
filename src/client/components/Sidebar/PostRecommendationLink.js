@@ -13,11 +13,11 @@ const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }
   let imagePath = '';
 
   if (images && firstImage) {
-    imagePath = getProxyImageURL(firstImage, 'small');
+    imagePath = getProxyImageURL(firstImage, 'preview');
   } else {
     const contentImages = getContentImages(post.body);
     if (contentImages.length) {
-      imagePath = getProxyImageURL(contentImages[0], 'small');
+      imagePath = getProxyImageURL(contentImages[0], 'preview');
     }
   }
 
