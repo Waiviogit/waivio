@@ -250,7 +250,7 @@ export function createPost(postData) {
               }
               dispatch(push(`/@${authUser.name}`));
             })
-            .catch(err => err);
+            .catch(err => console.error(err));
         }, 6000);
       };
 
