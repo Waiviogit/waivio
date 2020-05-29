@@ -69,7 +69,6 @@ export const validatorsCreator = (
   getFieldValue,
   requiredObject,
   objectsToAction,
-  compensationAccount,
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
@@ -153,10 +152,5 @@ export const validatorsCreator = (
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);
     else callback();
-  },
-
-  checkCompensationAccount: (rule, value, callback) => {
-    // eslint-disable-next-line no-unused-expressions
-    isEmpty(compensationAccount) ? callback(messages.checkCompensationAccount) : callback();
   },
 });
