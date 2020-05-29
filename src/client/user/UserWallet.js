@@ -36,6 +36,7 @@ import {
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 @withRouter
 @connect(
@@ -144,10 +145,7 @@ class Wallet extends Component {
 
   selectUserBalance = () => {
     const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
-
-    const isGuestWalletPage =
-      user.name.startsWith(GUEST_PREFIX) || user.name.startsWith(BXY_GUEST_PREFIX);
-
+    const isGuestWalletPage = guestUserRegex.test(user && user.name);
     if (ownPage && isGuest) {
       return ownGuestBalance;
     } else if (isGuestWalletPage && !ownPage) {

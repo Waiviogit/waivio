@@ -172,7 +172,7 @@ export default class Wrapper extends React.PureComponent {
   }
 
   // eslint-disable-next-line consistent-return
-  shouldComponentUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
 
     if (locale !== nextProps.locale) {
