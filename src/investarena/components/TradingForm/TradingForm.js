@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, message, Tooltip } from 'antd';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import TradeButton from '../TradeButton';
 import withTrade from '../HOC/withTrade';
@@ -23,6 +23,7 @@ const TradingForm = ({
   handleKeyPressInput,
   handleChangeInput,
   createMarketOrder,
+  intl,
 }) => {
   const { baseCurrency, termCurrency } = quoteSettings;
   const feeCurrency = side === 'buy' ? baseCurrency : termCurrency;
@@ -35,13 +36,33 @@ const TradingForm = ({
       if (amountValue < quoteSettings.minimumQuantity) {
         message.error(`Minimum ${quoteSettings.minimumQuantity} ${baseCurrency}`);
       } else {
-        message.error('Available balance is insufficient');
+        message.error(intl.formatMessage({
+          id: 'modal_available_balance',
+          defaultMessage: "Available balance is insufficient",
+        }));
       }
     } else {
       const absentWallet = !isWalletsExist[baseCurrency] ? baseCurrency : termCurrency;
-      message.error(`You don't have a ${absentWallet} wallet`);
+      message.error(
+        intl.formatMessage({
+          id: 'modal_absent_wallet',
+          defaultMessage: `You don't have a ${absentWallet} wallet`,
+        })
+      )
     }
   };
+
+  const selectLocale = () => (
+      <FormattedMessage
+        id={`modal_button_${side}`}
+        defaultMessage={`{amount} {baseCurrency} ${side === 'buy' ? 'BUY' : 'SELL'}`}
+        values={{
+          amount,
+          baseCurrency,
+        }}
+      />
+    )
+
   return platformName !== 'widgets' ? (
     <div className={`st-trading-form ${side}`}>
       <div className="st-trading-form-header">
@@ -89,7 +110,7 @@ const TradingForm = ({
 
       <div className="st-trading-form__button-wrap">
         <TradeButton size="large" type={side} onClick={handleTradeButtonClick}>
-          {`${amount} ${baseCurrency} ${side}`}
+          {selectLocale()}
         </TradeButton>
       </div>
 
@@ -177,6 +198,11 @@ TradingForm.propTypes = {
   handleKeyPressInput: PropTypes.func.isRequired,
   handleChangeInput: PropTypes.func.isRequired,
   createMarketOrder: PropTypes.func.isRequired,
+  intl: PropTypes.shape(),
 };
 
-export default withTrade(TradingForm);
+TradingForm.defaultProps = {
+  intl: {},
+}
+
+export default injectIntl(withTrade(TradingForm));

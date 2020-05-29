@@ -1,4 +1,6 @@
 import { get, filter, size, some } from 'lodash';
+import {injectIntl, FormattedMessage} from 'react-intl';
+import PropTypes from 'prop-types';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -26,10 +28,11 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
+import React from "react";
 
 const multiplier = 1000000;
 
-export default class Umarkets {
+class Umarkets {
   constructor() {
     this.accountCurrency = 'USD';
     this.currentAccount = '';
@@ -53,6 +56,14 @@ export default class Umarkets {
     this.stompClient = null;
     this.platformName = null;
     this.hours = HOURS;
+  }
+
+  static propTypes = {
+    intl: PropTypes.shape(),
+  }
+
+  static defaultProps = {
+    intl: {},
   }
 
   static parseCloseMarketOrderResult(result) {
@@ -497,9 +508,26 @@ export default class Umarkets {
   parseNewOrder({ content }) {
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+
+    const messageOrderCreated = () => {
+      const sideAction = side.toLowerCase()
+      return (
+        <FormattedMessage
+          id="market_order_created"
+          defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
+          values={{
+            sideAction,
+            amount,
+            baseCurrency,
+          }}
+        />
+      )
+    }
+
     message.info(
-      `Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`,
+      messageOrderCreated()
     );
+
   }
   parseMarketOrderFilled({ content }) {
     const { amount, averagePrice, security, side } = content.order;
@@ -515,3 +543,5 @@ export default class Umarkets {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }
 }
+
+export default injectIntl(Umarkets);

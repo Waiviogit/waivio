@@ -759,7 +759,7 @@
   "compare": "Compare",
   "compare_profitability": "Compare Profitability",
   "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
-  "unavailableStatisticsUser": "User has no completed forecasts",
+  "unavailableStatisticsUser": "The user has no completed forecasts",
   "and": "and",
   "ignoreList": "Ignore list",
   "addNewRule": "Add new rule",
@@ -1156,5 +1156,10 @@
   "enter_nickname": "Enter nickname",
   "privacy_policy": "Privacy Policy",
   "cookies_policy": "Cookies Policy",
-  "topic_name": "Topic name"
+  "topic_name": "Topic name",
+  "modal_button_buy": "{amount} {baseCurrency} BUY",
+  "modal_button_sell": "{amount} {baseCurrency} SELL",
+  "modal_available_balance": "Available balance is insufficient",
+  "modal_absent_wallet": "You don't have a {absentWallet} wallet",
+  "market_order_created": "Market order created ({sideAction} {amount} {baseCurrency} at price Market)"
 }
