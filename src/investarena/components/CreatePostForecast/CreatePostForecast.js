@@ -7,11 +7,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
-import {
-  getQuotePrice,
-  getForecastState,
-  getEditorForecast,
-} from './helpers';
+import { getQuotePrice, getForecastState, getEditorForecast } from './helpers';
 import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import {

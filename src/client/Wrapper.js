@@ -23,13 +23,7 @@ import {
   getUsedLocale,
   isGuestUser,
 } from './reducers';
-import {
-  busyLogin,
-  login,
-  logout,
-  getGuestBalance,
-  guestBalanceOnReload,
-} from './auth/authActions';
+import { busyLogin, login, logout, guestBalanceOnReload } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -82,7 +76,6 @@ export const UsedLocaleContext = React.createContext('en-US');
     setUsedLocale,
     getChartsData,
     changeChatCondition,
-    getGuestBalance,
     guestBalanceOnReload,
   },
 )
@@ -139,7 +132,6 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
-    getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
   };
 
