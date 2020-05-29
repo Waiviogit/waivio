@@ -18,7 +18,7 @@ describe('fromUsers', () => {
   const state = {
     users: {
       users: {
-        'user-username': {
+        username: {
           fetching: 'fetching',
           loaded: 'loaded',
           failed: 'failed',
@@ -38,11 +38,11 @@ describe('fromUsers', () => {
   };
 
   it('Should return formatted name', () => {
-    expect('username').toBe('user-username');
+    expect('username').toBe('username');
   });
 
   it('Should return user', () => {
-    expect(getUser(state, username)).toEqual(state.users.users['user-username']);
+    expect(getUser(state, username)).toEqual(state.users.users.username);
   });
 
   it('Should return fetching', () => {
