@@ -93,6 +93,8 @@
   "post_reply_show_original_post": "Show original post",
   "post_reply_show_parent_discussion": "Show parent discussion",
   "post_deleted": "This post has been deleted",
+  "post_post_is_published": "Your post is published",
+  "post_post_will_published_soon": "Your post will be published soon",
   "comment": "Comment",
   "comment_placeholder": "Write a comment",
   "comment_collapsed": "Comment collapsed",
