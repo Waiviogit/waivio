@@ -15,8 +15,6 @@ const initialState = {
   },
 };
 
-// const getUserDetailsKey = username => `user-${username}`;
-
 export default function usersReducer(state = initialState, action) {
   switch (action.type) {
     case actions.GET_ACCOUNT.START:

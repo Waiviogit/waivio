@@ -100,8 +100,7 @@ class UserActivityActionsList extends Component {
       currentFilteredActions,
     } = this.props;
     const currentUsername = user.name;
-    const userKey = currentUsername;
-    const actions = get(usersAccountHistory, userKey, []);
+    const actions = get(usersAccountHistory, currentUsername, []);
     const displayedActions = isEmpty(accountHistoryFilter)
       ? currentDisplayedActions
       : currentFilteredActions;

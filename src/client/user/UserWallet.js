@@ -34,7 +34,6 @@ import {
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
 import { guestUserRegex } from '../helpers/regexHelpers';
 
 @withRouter
@@ -137,7 +136,7 @@ class Wallet extends Component {
       this.props.getAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[getUserDetailsKey(username)])) {
+    if (isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
   }
@@ -170,7 +169,7 @@ class Wallet extends Component {
       hasMore,
     } = this.props;
 
-    const userKey = getUserDetailsKey(user.name);
+    const userKey = user.name;
     const transactions = get(transactionsHistory, userKey, []);
 
     const currentSteemRate = get(

@@ -104,7 +104,7 @@ export default function walletReducer(state = initialState, action) {
         transactionsHistoryLoading: true,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       return {
         ...state,
         transactionsHistory: {
@@ -121,7 +121,7 @@ export default function walletReducer(state = initialState, action) {
         loadingMoreTransactions: true,
       };
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       const userCurrentTransactions = get(state.transactionsHistory, usernameKey, []);
       return {
         ...state,

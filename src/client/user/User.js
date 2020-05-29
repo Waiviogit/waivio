@@ -94,7 +94,7 @@ export default class User extends React.Component {
       match,
     } = this.props;
 
-    this.props.getUserAccount(this.props.match.params.name);
+    this.props.getUserAccount(match.params.name);
 
     if (authenticated) {
       currentUserFollowersUser(authenticatedUserName, match.params.name).then(resp => {
