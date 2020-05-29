@@ -36,13 +36,14 @@
       display: none;
     }
   }
+
   &__toggle-map {
     padding: 10px 0 5px 0;
   }
-  &__toggle-map,
-  &__tags-block {
+
+  &__toggle-map, {
     @media @small, @medium, @large {
-      display: none;
+      margin-bottom: 0;
     }
     &.common {
       display: none;
@@ -89,6 +90,10 @@
 }
 
 .discover-objects-header__tags-block {
-  margin-bottom: 20px;
+  margin: 0 0 10px;
+
+  @media @medium {
+    margin: 0 0 20px;
+  }
 }
 //endregion

@@ -723,7 +723,7 @@ class Topnav extends React.Component {
           <MobileMenu
             {...this.props}
             {...this.state}
-            searchOptions={this.prepareOptions(autoCompleteSearchResults)}
+            searchOptions={formattedAutoCompleteDropdown}
             onSearch={this.handleAutoCompleteSearch}
             onSelect={this.handleSelectOnAutoCompleteDropdown}
             onChange={this.handleOnChangeForAutoComplete}
