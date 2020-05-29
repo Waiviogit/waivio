@@ -236,6 +236,24 @@ export function createPost(postData) {
         }
       }
 
+      const dispatchPostNotification = () => {
+        setTimeout(() => {
+          getUserProfileBlog(authUser.name, {})
+            .then(posts => {
+              const lastPost = get(posts, '[0].permlink', '');
+              if (lastPost === permlink) {
+                const postIsPublishedMessage = getTranslations(state).post_post_is_published;
+                dispatch(notify(postIsPublishedMessage, 'success'));
+              } else {
+                const postWillPublishMessage = getTranslations(state).post_post_will_published_soon;
+                dispatch(notify(postWillPublishMessage, 'success'));
+              }
+              dispatch(push(`/@${authUser.name}`));
+            })
+            .catch(err => err);
+        }, 6000);
+      };
+
       dispatch({
         type: CREATE_POST,
         payload: {
@@ -276,6 +294,7 @@ export function createPost(postData) {
                       value: 10,
                     });
                   }
+                  dispatchPostNotification();
                   return result;
                 }
 
@@ -298,22 +317,7 @@ export function createPost(postData) {
                   });
                 }
               }
-              // setTimeout(() => {
-              //   getUserProfileBlog(authUser.name, {})
-              //     .then(posts => {
-              //       const lastPost = get(posts, '[0].permlink', '');
-              //       if (lastPost === permlink) {
-              //
-              //         const postIsPublishedMessage = getTranslations(state).post_post_is_published;
-              //         dispatch(notify(postIsPublishedMessage, 'success'));
-              //       } else {
-              //         const postWillPublishMessage = getTranslations(state).post_post_will_published_soon;
-              //         dispatch(notify(postWillPublishMessage, 'success'));
-              //       }
-              //       dispatch(push(`/@${authUser.name}`));
-              //     })
-              //     .catch(err => err);
-              // }, 6000);
+              dispatchPostNotification();
             })
             .catch(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));

@@ -73,7 +73,7 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         error: null,
-        loading: false,
+        loading: true,
         success: true,
       };
     case editorActions.SAVE_DRAFT_START:
