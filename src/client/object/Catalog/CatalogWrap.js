@@ -45,7 +45,8 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
-  const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
+  const type =
+    wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'recency';
   const order = type === 'custom' ? wobj[objectFields.sorting] : null;
   return { type, order };
 };

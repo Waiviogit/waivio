@@ -85,7 +85,9 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             if (follow) {
               dispatch(followObject(response.permlink));
             }
+
             dispatch(voteObject(response.author, response.permlink, votePower));
+
             return response;
           });
         },
