@@ -229,7 +229,6 @@ export const assignProposition = ({
     primaryObjectName,
     secondaryObjectName,
   );
-  console.log('proposition', proposition);
   const commentOp = [
     'comment',
     {
