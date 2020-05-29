@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { get } from 'lodash';
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -220,6 +221,7 @@ export const assignProposition = ({
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
+  const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
   const detailsBody = getDetailsBody(
     proposition,
     proposedWobjName,
@@ -227,6 +229,7 @@ export const assignProposition = ({
     primaryObjectName,
     secondaryObjectName,
   );
+  console.log('proposition', proposition);
   const commentOp = [
     'comment',
     {
@@ -240,7 +243,7 @@ export const assignProposition = ({
       proposition,
       proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'waivio_assign_campaign',
