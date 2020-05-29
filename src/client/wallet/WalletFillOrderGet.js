@@ -16,9 +16,10 @@ const WalletFillOrderGet = ({ transactionDetails, timestamp }) => (
           <div>
             <FormattedMessage
               id="fillOrder_wallet_get"
-              defaultMessage="You get {open_pays}"
+              defaultMessage="You bought {open_pays} from {exchanger}"
               values={{
                 open_pays: <span>{transactionDetails.open_pays}</span>,
+                exchanger: <span>{transactionDetails.exchanger}</span>,
               }}
             />
           </div>
