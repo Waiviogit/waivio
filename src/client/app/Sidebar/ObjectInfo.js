@@ -277,8 +277,7 @@ class ObjectInfo extends React.Component {
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
         : [];
       address = compact(addressArr).join(', ');
-
-      description = getFieldWithMaxWeight(wobject, objectFields.description);
+      description = getApprovedField(wobject, 'description', usedLocale);
       avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
       background = getFieldWithMaxWeight(wobject, objectFields.background);
 
@@ -359,6 +358,7 @@ class ObjectInfo extends React.Component {
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
       const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
+
       return shouldDisplay && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
@@ -511,7 +511,8 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+        {description &&
+          listItem(objectFields.description, <DescriptionInfo description={description} />)}
         {listItem(
           objectFields.rating,
           <RateInfo
@@ -564,14 +565,15 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ) : null,
         )}
-        {workTime &&
-          listItem(
-            objectFields.workTime,
+        {listItem(
+          objectFields.workTime,
+          workTime && (
             <div className="field-work-time">
               <Icon type="clock-circle-o" className="text-icon text-icon--time" />
               {workTime}
-            </div>,
-          )}
+            </div>
+          ),
+        )}
         {listItem(
           objectFields.address,
           address && (

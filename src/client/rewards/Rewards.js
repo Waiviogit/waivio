@@ -92,7 +92,7 @@ class Rewards extends React.Component {
     loading: false,
     loadingCampaigns: false,
     loadingAssignDiscard: false,
-    hasMore: true,
+    hasMore: false,
     propositions: [],
     sponsors: [],
     sort: 'reward',
@@ -112,6 +112,7 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
+    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
@@ -167,6 +168,7 @@ class Rewards extends React.Component {
   setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
 
   getRequiredObjects = () =>
+    this.state.propositions &&
     this.state.propositions
       .filter(proposition => proposition.required_object)
       .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
@@ -424,7 +426,7 @@ class Rewards extends React.Component {
   handleLoadMore = () => {
     const { propositions, hasMore, radius, coordinates, sort, activeFilters } = this.state;
     const { username, match } = this.props;
-    if (hasMore && username) {
+    if (hasMore) {
       this.setState(
         {
           loading: true,

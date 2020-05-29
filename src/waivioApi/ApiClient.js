@@ -7,6 +7,7 @@ import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { message } from 'antd';
+import { getUrl } from '../client/rewards/rewardsHelper';
 
 let headers = {
   Accept: 'application/json',
@@ -580,6 +581,7 @@ export const getPropositions = ({
   area,
   coordinates,
   sort,
+  match,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -603,7 +605,9 @@ export const getPropositions = ({
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+    const url = getUrl(match);
+
+    fetch(url, {
       headers,
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -759,6 +763,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
     if (!isEmpty(obj)) {
       return {
+        payable: obj.payable,
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
@@ -1122,7 +1127,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 20) => {
+export const getTransferHistory = (username, skip = 0, limit = 50) => {
   return fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {

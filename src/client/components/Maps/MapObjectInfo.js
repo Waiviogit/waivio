@@ -5,6 +5,8 @@ import Map from 'pigeon-maps';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
+import { isEmpty } from 'lodash';
+import { getRadius } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
 import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
@@ -13,7 +15,6 @@ import mapProvider from '../../helpers/mapProvider';
 import { setMapFullscreenMode } from './mapActions';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { RADIUS, ZOOM } from '../../../common/constants/map';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 
@@ -35,15 +36,29 @@ class MapObjectInfo extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: ZOOM,
+      zoom: 16,
       center: this.props.center,
       bounds: null,
       initial: true,
-      radius: RADIUS,
+      radius: 342,
     };
 
     this.mapRef = createRef();
   }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick = () => {
+    if (!isEmpty(this.state.infoboxData)) {
+      this.setState({ infoboxData: null });
+    }
+  };
 
   getMarkers = () => {
     const { wobject } = this.props;
@@ -74,7 +89,12 @@ class MapObjectInfo extends React.Component {
     const wobj = getClientWObj(infoboxData.wobject, usedLocale);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
-        <div role="presentation" className="MapOS__overlay-wrap" onMouseLeave={this.closeInfobox}>
+        <div
+          role="presentation"
+          className="MapOS__overlay-wrap"
+          onMouseLeave={this.closeInfobox}
+          onClick={this.closeModal}
+        >
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div role="presentation" className="MapOS__overlay-wrap-name">
             {wobj.name}
@@ -111,6 +131,13 @@ class MapObjectInfo extends React.Component {
     this.setState({ infoboxData: null });
   };
 
+  calculateRadius = zoom => {
+    const { width, isFullscreenMode } = this.props;
+    let radius = getRadius(zoom);
+    if (isFullscreenMode) radius = (radius * this.mapRef.current.state.width) / width;
+    return radius;
+  };
+
   // eslint-disable-next-line consistent-return
   incrementZoom = () => {
     if (this.state.zoom >= 18) return null;
@@ -127,7 +154,10 @@ class MapObjectInfo extends React.Component {
     this.setState({ zoom, radius });
   };
 
-  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  closeModal = () => {
+    if (this.props.isFullscreenMode) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  };
+  openModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -145,14 +175,7 @@ class MapObjectInfo extends React.Component {
     const markersLayout = this.getMarkers(wobject);
     return center ? (
       <div className="MapOS">
-        <Map
-          provider={mapProvider}
-          center={center}
-          zoom={zoom}
-          height={mapHeigth}
-          onClick={this.setCoordinates}
-          animate
-        >
+        <Map provider={mapProvider} center={center} zoom={zoom} height={mapHeigth} animate>
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
         </Map>
@@ -160,7 +183,7 @@ class MapObjectInfo extends React.Component {
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
         {isFullscreenMode && (
@@ -168,21 +191,14 @@ class MapObjectInfo extends React.Component {
             title={null}
             footer={null}
             visible={isFullscreenMode}
-            onCancel={this.toggleModal}
+            onCancel={this.closeModal}
             style={{ top: 0 }}
             width={'100%'}
             wrapClassName={classNames('MapModal')}
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
-              <Map
-                ref={this.mapRef}
-                center={center}
-                zoom={zoom}
-                provider={mapProvider}
-                onClick={this.setCoordinates}
-                animate
-              >
+              <Map ref={this.mapRef} center={center} zoom={zoom} provider={mapProvider} animate>
                 {markersLayout}
                 {infoboxData && this.getOverlayLayout()}
               </Map>
@@ -195,7 +211,7 @@ class MapObjectInfo extends React.Component {
               >
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+              <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
             </div>
@@ -216,6 +232,7 @@ MapObjectInfo.defaultProps = {
   isFullscreenMode: false,
   usedLocale: 'en-US',
   setMapFullscreenMode: () => {},
+  width: 0,
 };
 
 MapObjectInfo.propTypes = {
@@ -227,6 +244,7 @@ MapObjectInfo.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   wobject: PropTypes.object.isRequired,
   history: PropTypes.shape().isRequired,
+  width: PropTypes.number,
 };
 
 export default MapObjectInfo;

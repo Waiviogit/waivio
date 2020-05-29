@@ -45,7 +45,8 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
-  const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
+  const type =
+    wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'recency';
   const order = type === 'custom' ? wobj[objectFields.sorting] : null;
   return { type, order };
 };
@@ -80,14 +81,14 @@ class CatalogWrap extends React.Component {
     wobject: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    username: PropTypes.string,
+    userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
   };
   static defaultProps = {
     wobject: {},
     locale: 'en-US',
-    username: '',
+    userName: '',
   };
 
   constructor(props) {
@@ -105,12 +106,12 @@ class CatalogWrap extends React.Component {
   };
 
   componentDidMount() {
-    const { username, match, wobject } = this.props;
+    const { userName, match, wobject } = this.props;
     const { sort } = this.state;
     if (!isEmpty(wobject)) {
       const requiredObject = this.getRequiredObject(wobject, match);
       if (requiredObject) {
-        this.getPropositions({ username, match, requiredObject, sort });
+        this.getPropositions({ userName, match, requiredObject, sort });
       }
     }
   }
@@ -131,17 +132,6 @@ class CatalogWrap extends React.Component {
     }
     if (!isEqual(this.props.wobject.author_permlink, nextProps.wobject.author_permlink)) {
       this.setState(this.getNextStateFromProps(nextProps));
-    }
-  }
-
-  componentDidUpdate() {
-    const { needUpdate, sort } = this.state;
-    const { username, match, wobject } = this.props;
-    if (!isEmpty(wobject)) {
-      const requiredObject = this.getRequiredObject(wobject, match);
-      if (needUpdate && requiredObject) {
-        this.getPropositions({ username, match, requiredObject, sort });
-      }
     }
   }
 
@@ -275,13 +265,13 @@ class CatalogWrap extends React.Component {
     this.setState({ sort, listItems });
   };
 
-  getPropositions = ({ username, match, requiredObject, sort }) => {
+  getPropositions = ({ userName, match, requiredObject, sort }) => {
     this.setState({ loadingPropositions: true, needUpdate: false });
     ApiClient.getPropositions({
-      currentUserName: username,
+      userName,
       match,
       requiredObject,
-      sort,
+      sort: 'reward',
     }).then(data => {
       this.setState({
         propositions: data.campaigns,
@@ -310,7 +300,7 @@ class CatalogWrap extends React.Component {
               assignCommentPermlink={wobj.permlink}
               assignProposition={this.assignPropositionHandler}
               discardProposition={this.discardProposition}
-              authorizedUserName={this.props.username}
+              authorizedUserName={this.props.userName}
               loading={this.state.loadingAssignDiscard}
               key={`${wobj.object.author_permlink}`}
               assigned={wobj.assigned}

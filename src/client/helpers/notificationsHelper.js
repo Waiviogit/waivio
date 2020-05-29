@@ -127,7 +127,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
       return intl.formatMessage(
         {
           id: 'fill_order_notification',
-          defaultMessage: 'You bought {current_pays} and get {open_pays} from {exchanger}',
+          defaultMessage: 'You sold {current_pays} and bought {open_pays} from {exchanger}',
         },
         {
           current_pays: notification.current_pays,

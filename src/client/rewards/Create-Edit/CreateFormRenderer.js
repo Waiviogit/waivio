@@ -61,6 +61,7 @@ const CreateFormRenderer = props => {
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
+    compensationAccount,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
@@ -220,7 +221,9 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.sponsorsList.label}>
-          {getFieldDecorator(fields.sponsorsList.name)(
+          {getFieldDecorator(fields.sponsorsList.name, {
+            initialValue: sponsorsList,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}
@@ -236,7 +239,10 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.compensationAccount.label}>
-          {getFieldDecorator(fields.compensationAccount.name)(
+          {getFieldDecorator(fields.compensationAccount.name, {
+            rules: fields.compensationAccount.rules,
+            initialValue: compensationAccount,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}

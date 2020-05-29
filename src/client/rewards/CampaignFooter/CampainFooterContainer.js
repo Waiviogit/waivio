@@ -18,18 +18,15 @@ import { followUser, unfollowUser } from '../../user/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
 
-const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
+const mapStateToProps = (state, { post, requiredObjectPermlink, proposition }) => {
   const user = getAuthenticatedUser(state);
-
   const userVote = _.find(post.active_votes, { voter: user.name }) || {};
   const postState = {
     isLiked: userVote.percent > 0,
-    userFollowed: getFollowingList(state).includes(post.parent_author),
+    userFollowed: getFollowingList(state).includes(proposition.guideName),
     objectFollowed: getFollowingObjectsList(state).includes(requiredObjectPermlink),
   };
-
   const pendingVote = getCommentsPendingVotes(state).find(comment => comment.id === post.id);
-
   const pendingLike =
     pendingVote && (pendingVote.percent > 0 || (pendingVote.percent === 0 && postState.isLiked));
   const pendingFlag =
@@ -41,9 +38,9 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
     postState,
     pendingLike,
     pendingFlag,
-    pendingFollow: getPendingFollows(state).includes(post.parent_author),
+    pendingFollow: getPendingFollows(state).includes(proposition.guideName),
     pendingFollowObject: getPendingFollowingObjects(state).includes(requiredObjectPermlink),
-    ownPost: user.name === post.author,
+    ownPost: user.name === proposition.guideName,
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),

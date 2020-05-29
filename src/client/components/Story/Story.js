@@ -348,7 +348,7 @@ class Story extends React.Component {
 
     if (isPostDeleted(post)) return <div />;
 
-    if (post.checkForFollow) {
+    if (post.checkForFollow && post.checkForFollow.youFollows) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
@@ -365,9 +365,7 @@ class Story extends React.Component {
           />
         </div>
       );
-    }
-
-    if (postState.isReblogged && !post.checkForFollow) {
+    } else if (postState.isReblogged) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />

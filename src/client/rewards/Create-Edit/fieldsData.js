@@ -43,7 +43,7 @@ export default (messageFactory, validators, userName) => ({
   },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, HIVE)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, USD)'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators, userName) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, HIVE)'),
+    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, USD)'),
     rules: [
       {
         required: true,
@@ -89,7 +89,12 @@ export default (messageFactory, validators, userName) => ({
   },
   compensationAccount: {
     name: 'compensationAccount',
-    label: messageFactory('compensation_account_optional', 'Compensation account (optional)'),
+    label: messageFactory('compensation_account', 'Compensation account'),
+    rules: [
+      {
+        validator: validators.checkCompensationAccount,
+      },
+    ],
     placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),
     caption: messageFactory(
       'accumulates_value_of_upvotes_from_registered_upvoting_accounts',

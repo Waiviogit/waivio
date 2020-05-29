@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty, filter } from 'lodash';
+import { isEmpty, filter, get } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import { getIsAuthenticated, getSuitableLanguage } from '../../reducers';
 import IconButton from '../../components/IconButton';
@@ -25,9 +25,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   const [needUpdate, setNeedUpdate] = useState(true);
 
   const getPropositions = username => {
-    const reqData = { currentUserName: username };
     setNeedUpdate(false);
-    ApiClient.getPropositions(reqData).then(data => {
+    const requiredObject = wobject ? get(wobject, ['parent', 'author_permlink']) : '';
+    ApiClient.getPropositions({ userName: username, match, requiredObject }).then(data => {
       setAllPropositions(data.campaigns);
     });
   };

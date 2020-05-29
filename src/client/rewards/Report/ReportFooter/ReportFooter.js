@@ -3,19 +3,13 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { useSelector } from 'react-redux';
-import { get, isEmpty, reduce } from 'lodash';
+import { get, isEmpty, map } from 'lodash';
 import { getSingleReportData } from '../../../reducers';
 
 const ReportFooter = ({ intl, toggleModal }) => {
   const singleReportData = useSelector(getSingleReportData);
   const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
   const sponsor = get(singleReportData, ['sponsor', 'name']);
-
-  const getWaivioMatch = () =>
-    !isEmpty(singleReportData.match_bots)
-      ? reduce(singleReportData.match_bots, (acc, bot) => `${acc}, ${bot}`, '')
-      : '';
-  const matchBots = getWaivioMatch();
 
   return (
     <div className="Report__modal-footer">
@@ -25,22 +19,25 @@ const ReportFooter = ({ intl, toggleModal }) => {
           {intl.formatMessage({
             id: 'exchange_rate',
             defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${reservationRate ||
-              ''} USD).`,
+              'N/A'} USD).`,
           })}
         </div>
         <div>
           **{' '}
-          {intl.formatMessage(
-            {
-              id: 'only_upvotes_from_registered_accounts',
-              defaultMessage:
-                'Only upvotes from registered accounts ({sponsor} {waivioMatch}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
-            },
-            {
-              sponsor,
-              waivioMatch: matchBots,
-            },
-          )}
+          {intl.formatMessage({
+            id: 'only_upvotes_from_registered_accounts',
+            defaultMessage: 'Only upvotes from registered accounts',
+          })}
+          (<a href={`/@${sponsor}`}>{sponsor}</a>
+          {!isEmpty(singleReportData.match_bots)
+            ? map(singleReportData.match_bots, bot => <a href={`/@${bot}`}>, {bot}</a>)
+            : ''}
+          ){' '}
+          {intl.formatMessage({
+            id: 'count_towards_the_payment_of_rewards',
+            defaultMessage:
+              'count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
+          })}
         </div>
         <div>
           ***{' '}

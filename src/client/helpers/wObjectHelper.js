@@ -161,7 +161,7 @@ export const addActiveVotesInField = (wobj, field, category = '') => {
 };
 
 export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
-  const stringBodyFields = ['name', 'parent', 'avatar'];
+  const stringBodyFields = ['name', 'parent', 'avatar', 'description', 'background'];
   const localeIndependentFields = ['status', 'map'];
 
   if (!wobj || !wobj.fields || !fieldName) return null;

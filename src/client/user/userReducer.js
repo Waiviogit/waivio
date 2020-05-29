@@ -305,6 +305,56 @@ export default function userReducer(state = initialState, action) {
         pendingUpdate: false,
       };
 
+    case userActions.FOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER.START:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          pendingFollows: [...state.following.pendingFollows, action.meta.username],
+        },
+      };
+    case userActions.FOLLOW_USER_SUCCESS:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          list: { ...state.following.list, [action.meta.username]: true },
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
+    case userActions.UNFOLLOW_USER.SUCCESS: {
+      const followList = state.following.list;
+
+      delete followList[action.meta.username];
+
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          list: {
+            ...followList,
+          },
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
+    }
+    case userActions.FOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER.ERROR:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
+
     default: {
       return state;
     }
