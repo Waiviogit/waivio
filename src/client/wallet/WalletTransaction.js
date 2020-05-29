@@ -108,4 +108,8 @@ WalletTransaction.propTypes = {
   totalVestingFundSteem: PropTypes.string.isRequired,
 };
 
+WalletTransaction.defaultProps = {
+  transactionHistory: {},
+};
+
 export default WalletTransaction;

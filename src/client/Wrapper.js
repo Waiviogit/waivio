@@ -18,7 +18,6 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
-  isGuestBalance,
   isGuestUser,
 } from './reducers';
 import {
@@ -56,7 +55,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
-    balance: isGuestBalance(state),
+    guestBalance: getGuestBalance(state),
     isGuest: isGuestUser(state),
   }),
   {
@@ -96,8 +95,8 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
-    getGuestBalance: PropTypes.func,
     guestBalanceOnReload: PropTypes.func,
+    guestBalance: PropTypes.number,
     isGuest: PropTypes.bool,
   };
 
@@ -117,9 +116,8 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
-    balance: null,
-    getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
+    guestBalance: null,
     isGuest: false,
   };
 
@@ -163,7 +161,6 @@ export default class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.getRebloggedList();
         this.props.getRate();
-        this.props.getGuestBalance();
       });
     });
 
@@ -181,10 +178,13 @@ export default class Wrapper extends React.PureComponent {
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
     }
-    if (this.props.isAuthenticated && this.props.isGuest) {
+
+    if (this.props.isGuest && this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
-          this.props.guestBalanceOnReload();
+          if (this.props.guestBalance !== nextProps.guestBalance) {
+            this.props.guestBalanceOnReload();
+          }
         } catch (e) {
           reject(e);
         }

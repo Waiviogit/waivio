@@ -116,6 +116,12 @@ class BeneficiariesFindUsers extends React.Component {
     this.setState({ dropdownOpen: false });
   };
 
+  handleOnFocus = () => {
+    if (this.state.searchString) {
+      this.setState({ dropdownOpen: true });
+    }
+  };
+
   render() {
     const { intl, autoCompleteSearchResults } = this.props;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
@@ -137,6 +143,7 @@ class BeneficiariesFindUsers extends React.Component {
               open={this.state.dropdownOpen}
               onFocus={this.handleOnFocus}
               onBlur={this.handleOnBlure}
+              optionLabelProp="value"
             >
               <Input
                 onPressEnter={this.handleSearchForInput}

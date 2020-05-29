@@ -43,7 +43,7 @@ export default (messageFactory, validators, userName) => ({
   },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, HIVE)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, USD)'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators, userName) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, HIVE)'),
+    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, USD)'),
     rules: [
       {
         required: true,

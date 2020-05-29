@@ -763,6 +763,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
     if (!isEmpty(obj)) {
       return {
+        payable: obj.payable,
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
@@ -1126,7 +1127,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 20) => {
+export const getTransferHistory = (username, skip = 0, limit = 50) => {
   return fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
