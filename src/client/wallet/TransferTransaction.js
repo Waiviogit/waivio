@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
-const TransferTransaction = ({ to, memo, amount, timestamp }) => (
+const TransferTransaction = ({ to, memo, amount, timestamp, isGuestPage }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__avatar">
       <Avatar username={to} size={40} />
@@ -32,17 +32,31 @@ const TransferTransaction = ({ to, memo, amount, timestamp }) => (
         </div>
       </div>
       <span className="UserWalletTransactions__timestamp">
-        <BTooltip
-          title={
+        {isGuestPage ? (
+          <BTooltip
+            title={
+              <span>
+                <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              </span>
+            }
+          >
+            <span>
+              <FormattedRelative value={`${timestamp}Z`} />
+            </span>
+          </BTooltip>
+        ) : (
+          <BTooltip
+            title={
+              <span>
+                <FormattedRelative value={epochToUTC(timestamp)} />
+              </span>
+            }
+          >
             <span>
               <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
-          }
-        >
-          <span>
-            <FormattedRelative value={epochToUTC(timestamp)} />
-          </span>
-        </BTooltip>
+          </BTooltip>
+        )}
       </span>
       <span className="UserWalletTransactions__memo">{memo}</span>
     </div>
@@ -54,6 +68,7 @@ TransferTransaction.propTypes = {
   memo: PropTypes.string,
   amount: PropTypes.element,
   timestamp: PropTypes.string,
+  isGuestPage: PropTypes.bool,
 };
 
 TransferTransaction.defaultProps = {
@@ -61,6 +76,7 @@ TransferTransaction.defaultProps = {
   memo: '',
   amount: <span />,
   timestamp: '',
+  isGuestPage: false,
 };
 
 export default TransferTransaction;
