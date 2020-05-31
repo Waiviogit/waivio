@@ -13,16 +13,19 @@ const rewardText = {
   reserved: { id: 'reserved', defaultMessage: 'reserved' },
   history: { id: 'history', defaultMessage: 'history' },
   created: { id: 'created', defaultMessage: 'created' },
+  messages: { id: 'messages', defaultMessage: 'messages' },
 };
 const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
-  const breadCrumbText = `${
-    isCorrectFilter ? intl.formatMessage(rewardText[filterKey]) : ''
-  } ${intl.formatMessage({
-    id: 'rewards',
-    defaultMessage: 'rewards',
-  })}`;
+  const breadCrumbText = `${isCorrectFilter ? intl.formatMessage(rewardText[filterKey]) : ''} ${
+    filterKey !== 'messages'
+      ? intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'rewards',
+        })
+      : ''
+  }`;
   return (
     <div className={classNames('RewardBreadcrumb', { 'ml3 mb3': !isEmpty(reqObject) })}>
       <Breadcrumb separator={'>'}>

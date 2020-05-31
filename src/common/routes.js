@@ -51,7 +51,6 @@ import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import SubFeed from '../client/feed/SubFeed';
 import UserInfo from '../client/app/Sidebar/UserInfo';
-import Messages from '../client/rewards/Messages/Messages';
 
 const routes = [
   {
@@ -68,7 +67,6 @@ const routes = [
           '/rewards/payables',
           '/rewards/reports',
           '/rewards/receivables',
-          '/rewards/messages',
           '/rewards/payables/@:userName',
           '/rewards/receivables/@:userName',
           '/rewards/:filterKey/:campaignParent?',
@@ -110,11 +108,6 @@ const routes = [
             path: '/rewards/receivables/@:userName',
             exact: true,
             component: PaymentCampaign,
-          },
-          {
-            path: '/rewards/messages',
-            exact: true,
-            component: Messages,
           },
           {
             path: '/rewards/match-bot',

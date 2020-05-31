@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { map } from 'lodash';
 import { getTextByFilterKey } from './rewardsHelper';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
@@ -27,6 +28,59 @@ const FilteredRewardsList = props => {
     campaignsLayoutWrapLayout,
     handleLoadMore,
   } = props;
+
+  const sortRewards = useMemo(() => {
+    if (filterKey === 'messages') {
+      return [
+        {
+          key: 'inquiry',
+          id: 'inquiry_date',
+          defaultMessage: 'Inquiry date',
+        },
+        {
+          key: 'date',
+          id: 'latest',
+          defaultMessage: 'Latest',
+        },
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+      ];
+    }
+    if (filterKey === 'history') {
+      return [
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+        {
+          key: 'date',
+          id: 'action_date',
+          defaultMessage: 'Action (date)',
+        },
+      ];
+    }
+    return [
+      {
+        key: 'reward',
+        id: 'amount_sort',
+        defaultMessage: 'amount',
+      },
+      {
+        key: 'date',
+        id: 'expiry_sort',
+        defaultMessage: 'expiry',
+      },
+      {
+        key: 'proximity',
+        id: 'proximity_sort',
+        defaultMessage: 'proximity',
+      },
+    ];
+  }, [filterKey]);
 
   return !loadingCampaigns ? (
     <React.Fragment>
@@ -55,21 +109,13 @@ const FilteredRewardsList = props => {
         </div>
       ) : (
         <SortSelector sort={sort} onChange={handleSortChange}>
-          <SortSelector.Item key="reward">
-            <FormattedMessage id="amount_sort" defaultMessage="amount">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="date">
-            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="proximity">
-            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
+          {map(sortRewards, item => (
+            <SortSelector.Item key={item.key}>
+              <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
+                {msg => msg}
+              </FormattedMessage>
+            </SortSelector.Item>
+          ))}
         </SortSelector>
       )}
       <div className="FilteredRewardsList">

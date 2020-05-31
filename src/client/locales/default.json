@@ -1137,5 +1137,6 @@
   "latest": "Latest",
   "case_status": "Case status",
   "open_cases": "Open cases",
-  "closed_cases": "Closed cases"
+  "closed_cases": "Closed cases",
+  "action_date": "Action (date)"
 }

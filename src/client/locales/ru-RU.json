@@ -1137,5 +1137,6 @@
   "latest": "Самый последний",
   "case_status": "Статус дела",
   "open_cases": "Открытые",
-  "closed_cases": "Закрытые"
+  "closed_cases": "Закрытые",
+  "action_date": "Действие (дата)"
 }

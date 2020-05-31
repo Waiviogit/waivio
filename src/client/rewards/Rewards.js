@@ -109,10 +109,13 @@ class Rewards extends React.Component {
 
   componentDidMount() {
     const { username, match, userLocation, history } = this.props;
-    const { radius, coordinates, sort, activeFilters } = this.state;
+    const { radius, coordinates, activeFilters } = this.state;
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
+    let sort = this.state.sort;
+    if (match.params.filterKey === 'history') sort = 'reservation';
+    if (match.params.filterKey === 'messages') sort = 'inquiry';
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
@@ -124,12 +127,20 @@ class Rewards extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
+    let sort = this.state.sort;
+    if (match.params.filterKey === 'messages') sort = 'inquiry';
+    if (match.params.filterKey === 'history') sort = 'reservation';
+    if (
+      (this.props.match.params.filterKey === 'messages' && match.params.filterKey !== 'history') ||
+      (this.props.match.params.filterKey === 'history' && match.params.filterKey !== 'messages')
+    )
+      sort = 'reward';
 
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
     if (match.params.filterKey !== 'create') {
-      const { radius, coordinates, sort, activeFilters } = this.state;
+      const { radius, coordinates, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
@@ -476,7 +487,6 @@ class Rewards extends React.Component {
       activePayableFilters,
       sort,
       loadingCampaigns,
-      activeMessagesFilters,
     } = this.state;
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
@@ -564,15 +574,17 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && !isCreate && (
-                    <MapWrap
-                      setMapArea={this.setMapArea}
-                      wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                    />
-                  )}
+                  {!isEmpty(this.props.userLocation) &&
+                    !isCreate &&
+                    !includes(match.url, 'messages') && (
+                      <MapWrap
+                        setMapArea={this.setMapArea}
+                        wobjects={this.getRequiredObjects()}
+                        userLocation={this.props.userLocation}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                      />
+                    )}
                   {!isEmpty(sponsors) && !isCreate && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
@@ -584,20 +596,6 @@ class Rewards extends React.Component {
                       location={location}
                     />
                   )}
-                </div>
-              </Affix>
-            )}
-            {match.path === '/rewards/messages' && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
-                <div className="right">
-                  <RewardsFiltersPanel
-                    campaignsTypes={campaignsTypes}
-                    activeFilters={activeMessagesFilters}
-                    activePayableFilters={activePayableFilters}
-                    setFilterValue={this.setMessagesFilterValue}
-                    setPayablesFilterValue={this.setPayablesFilterValue}
-                    location={location}
-                  />
                 </div>
               </Affix>
             )}
