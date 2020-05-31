@@ -9,6 +9,8 @@ import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
 import './UserWalletTransactions.less';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
+import WalletLimitOrder from './WalletLimitOrder';
+import WalletCancelOrder from './WalletCancelOrder';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -89,9 +91,23 @@ const WalletTransaction = ({
           timestamp={transaction.timestamp}
         />
       );
+    case accountHistoryConstants.LIMIT_ORDER:
+      return (
+        <WalletLimitOrder
+          transactionDetails={transactionDetails}
+          timestamp={transaction.timestamp}
+        />
+      );
     case accountHistoryConstants.FILL_ORDER:
       return (
         <WalletFillOrderTransferred
+          transactionDetails={transactionDetails}
+          timestamp={transaction.timestamp}
+        />
+      );
+    case accountHistoryConstants.CANCEL_ORDER:
+      return (
+        <WalletCancelOrder
           transactionDetails={transactionDetails}
           timestamp={transaction.timestamp}
         />
