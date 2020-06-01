@@ -34,9 +34,10 @@ const WalletTransaction = ({
   currentUsername,
   totalVestingShares,
   totalVestingFundSteem,
+  isGuestPage,
 }) => {
-  const transactionType = transaction.type;
-  const transactionDetails = transaction;
+  const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
+  const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -52,6 +53,7 @@ const WalletTransaction = ({
       if (transactionDetails.to === currentUsername) {
         return (
           <ReceiveTransaction
+            isGuestPage={isGuestPage}
             from={transactionDetails.from}
             memo={transactionDetails.memo}
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
@@ -61,6 +63,7 @@ const WalletTransaction = ({
       }
       return (
         <TransferTransaction
+          isGuestPage={isGuestPage}
           to={transactionDetails.to}
           memo={transactionDetails.memo}
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
@@ -106,10 +109,12 @@ WalletTransaction.propTypes = {
   currentUsername: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
+  isGuestPage: PropTypes.bool,
 };
 
 WalletTransaction.defaultProps = {
   transactionHistory: {},
+  isGuestPage: false,
 };
 
 export default WalletTransaction;
