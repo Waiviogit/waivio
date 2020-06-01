@@ -1,6 +1,6 @@
+import React from "react";
 import { get, filter, size, some } from 'lodash';
-import {injectIntl, FormattedMessage} from 'react-intl';
-import PropTypes from 'prop-types';
+import {FormattedMessage, injectIntl} from 'react-intl';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -28,11 +28,10 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
-import React from "react";
 
 const multiplier = 1000000;
 
-class Umarkets {
+export default class Umarkets {
   constructor() {
     this.accountCurrency = 'USD';
     this.currentAccount = '';
@@ -57,15 +56,6 @@ class Umarkets {
     this.platformName = null;
     this.hours = HOURS;
   }
-
-  static propTypes = {
-    intl: PropTypes.shape(),
-  }
-
-  static defaultProps = {
-    intl: {},
-  }
-
   static parseCloseMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
@@ -508,24 +498,25 @@ class Umarkets {
   parseNewOrder({ content }) {
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
+    const sideAction = side.toLowerCase();
 
-    const messageOrderCreated = () => {
-      const sideAction = side.toLowerCase()
-      return (
-        <FormattedMessage
-          id="market_order_created"
-          defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
-          values={{
-            sideAction,
-            amount,
-            baseCurrency,
-          }}
-        />
-      )
-    }
+    // message.success(
+    //   this.props.intl.formatMessage({
+    //     id: 'market_order_created',
+    //     defaultMessage: `Market order created (${sideAction} ${amount} ${baseCurrency} at price Market)`,
+    //   })
+    // )
 
     message.info(
-      messageOrderCreated()
+      <FormattedMessage
+        id="market_order_created"
+        defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
+        values={{
+          sideAction,
+          amount,
+          baseCurrency,
+        }}
+      />
     );
 
   }
@@ -534,14 +525,27 @@ class Umarkets {
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
     const price = PlatformHelper.exponentialToDecimal(averagePrice);
+    // const sideAction = side.toLowerCase()
     message.success(
       `Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`,
       4,
     );
+
+    // message.success(
+    //   <FormattedMessage
+    //     id="market_order_created"
+    //     defaultMessage={`Market order filled ({sideAction} {amount} {baseCurrency} at price {price} {termCurrency})`}
+    //     values={{
+    //       sideAction,
+    //       amount,
+    //       baseCurrency,
+    //       price,
+    //       termCurrency,
+    //     }}
+    //   />
+    // );
   }
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }
 }
-
-export default injectIntl(Umarkets);

@@ -1130,5 +1130,6 @@
   "modal_button_sell": "{amount} {baseCurrency} ПРОДАТЬ",
   "modal_available_balance": "Недостаточно средств на балансе",
   "modal_absent_wallet": "У вас нет кошелька {absentWallet}",
-  "market_order_created": "Market order created ({sideAction} {amount} {baseCurrency} at price Market)"
+  "market_order_created": "Рыночный ордер открыт (купить {sideAction} {amount} по цене {baseCurrency})",
+  "market_order_filled": "Рыночный ордер выполнен (купить {sideAction} {amount} {baseCurrency} по цене {price} {termCurrency})"
 }
