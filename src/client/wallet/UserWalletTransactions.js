@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { last } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
-import './UserWalletTransactions.less';
 import WalletTransaction from './WalletTransaction';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import { defaultAccountLimit } from '../helpers/apiHelpers';
+import './UserWalletTransactions.less';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class UserWalletTransactions extends React.Component {

@@ -101,7 +101,7 @@ class Wallet extends Component {
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
-    ownGuestBalance: PropTypes.func,
+    ownGuestBalance: PropTypes.number,
     isGuest: PropTypes.bool,
     ownPage: PropTypes.bool,
     usersTransactions: PropTypes.shape().isRequired,
@@ -117,7 +117,7 @@ class Wallet extends Component {
     transactionsHistory: {},
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
-    ownGuestBalance: () => {},
+    ownGuestBalance: null,
     isGuest: false,
     ownPage: false,
   };
