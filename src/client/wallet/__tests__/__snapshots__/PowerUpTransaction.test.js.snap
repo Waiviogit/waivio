@@ -62,12 +62,9 @@ ShallowWrapper {
             <BTooltip
               title={
                 <span>
-                  <FormattedDate
-                    value="0Z"
-                  />
-                   
-                  <FormattedTime
-                    value="0Z"
+                  <FormattedRelative
+                    updateInterval={10000}
+                    value={0}
                   />
                 </span>
               }
@@ -75,7 +72,7 @@ ShallowWrapper {
               <span>
                 <FormattedRelative
                   updateInterval={10000}
-                  value="0Z"
+                  value={0}
                 />
               </span>
             </BTooltip>
@@ -140,12 +137,9 @@ ShallowWrapper {
               <BTooltip
                 title={
                   <span>
-                    <FormattedDate
-                      value="0Z"
-                    />
-                     
-                    <FormattedTime
-                      value="0Z"
+                    <FormattedRelative
+                      updateInterval={10000}
+                      value={0}
                     />
                   </span>
                 }
@@ -153,7 +147,7 @@ ShallowWrapper {
                 <span>
                   <FormattedRelative
                     updateInterval={10000}
-                    value="0Z"
+                    value={0}
                   />
                 </span>
               </BTooltip>
@@ -250,12 +244,9 @@ ShallowWrapper {
               "children": <BTooltip
                 title={
                   <span>
-                    <FormattedDate
-                      value="0Z"
-                    />
-                     
-                    <FormattedTime
-                      value="0Z"
+                    <FormattedRelative
+                      updateInterval={10000}
+                      value={0}
                     />
                   </span>
                 }
@@ -263,7 +254,7 @@ ShallowWrapper {
                 <span>
                   <FormattedRelative
                     updateInterval={10000}
-                    value="0Z"
+                    value={0}
                   />
                 </span>
               </BTooltip>,
@@ -278,16 +269,13 @@ ShallowWrapper {
                 "children": <span>
                   <FormattedRelative
                     updateInterval={10000}
-                    value="0Z"
+                    value={0}
                   />
                 </span>,
                 "title": <span>
-                  <FormattedDate
-                    value="0Z"
-                  />
-                   
-                  <FormattedTime
-                    value="0Z"
+                  <FormattedRelative
+                    updateInterval={10000}
+                    value={0}
                   />
                 </span>,
               },
@@ -299,7 +287,7 @@ ShallowWrapper {
                 "props": Object {
                   "children": <FormattedRelative
                     updateInterval={10000}
-                    value="0Z"
+                    value={0}
                   />,
                 },
                 "ref": null,
@@ -309,7 +297,7 @@ ShallowWrapper {
                   "nodeType": "class",
                   "props": Object {
                     "updateInterval": 10000,
-                    "value": "0Z",
+                    "value": 0,
                   },
                   "ref": null,
                   "rendered": null,
@@ -368,12 +356,9 @@ ShallowWrapper {
               <BTooltip
                 title={
                   <span>
-                    <FormattedDate
-                      value="0Z"
-                    />
-                     
-                    <FormattedTime
-                      value="0Z"
+                    <FormattedRelative
+                      updateInterval={10000}
+                      value={0}
                     />
                   </span>
                 }
@@ -381,7 +366,7 @@ ShallowWrapper {
                 <span>
                   <FormattedRelative
                     updateInterval={10000}
-                    value="0Z"
+                    value={0}
                   />
                 </span>
               </BTooltip>
@@ -446,12 +431,9 @@ ShallowWrapper {
                 <BTooltip
                   title={
                     <span>
-                      <FormattedDate
-                        value="0Z"
-                      />
-                       
-                      <FormattedTime
-                        value="0Z"
+                      <FormattedRelative
+                        updateInterval={10000}
+                        value={0}
                       />
                     </span>
                   }
@@ -459,7 +441,7 @@ ShallowWrapper {
                   <span>
                     <FormattedRelative
                       updateInterval={10000}
-                      value="0Z"
+                      value={0}
                     />
                   </span>
                 </BTooltip>
@@ -556,12 +538,9 @@ ShallowWrapper {
                 "children": <BTooltip
                   title={
                     <span>
-                      <FormattedDate
-                        value="0Z"
-                      />
-                       
-                      <FormattedTime
-                        value="0Z"
+                      <FormattedRelative
+                        updateInterval={10000}
+                        value={0}
                       />
                     </span>
                   }
@@ -569,7 +548,7 @@ ShallowWrapper {
                   <span>
                     <FormattedRelative
                       updateInterval={10000}
-                      value="0Z"
+                      value={0}
                     />
                   </span>
                 </BTooltip>,
@@ -584,16 +563,13 @@ ShallowWrapper {
                   "children": <span>
                     <FormattedRelative
                       updateInterval={10000}
-                      value="0Z"
+                      value={0}
                     />
                   </span>,
                   "title": <span>
-                    <FormattedDate
-                      value="0Z"
-                    />
-                     
-                    <FormattedTime
-                      value="0Z"
+                    <FormattedRelative
+                      updateInterval={10000}
+                      value={0}
                     />
                   </span>,
                 },
@@ -605,7 +581,7 @@ ShallowWrapper {
                   "props": Object {
                     "children": <FormattedRelative
                       updateInterval={10000}
-                      value="0Z"
+                      value={0}
                     />,
                   },
                   "ref": null,
@@ -615,7 +591,7 @@ ShallowWrapper {
                     "nodeType": "class",
                     "props": Object {
                       "updateInterval": 10000,
-                      "value": "0Z",
+                      "value": 0,
                     },
                     "ref": null,
                     "rendered": null,
