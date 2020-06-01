@@ -159,7 +159,7 @@ export function splitPostContent(
 
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
-  return `${baseUrl}/object/${objPermlink}`;
+  return `${invArena.baseUrl}object/${objPermlink}`;
 }
 
 export function getInitialState(props) {
