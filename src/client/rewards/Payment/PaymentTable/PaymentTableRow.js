@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { map, reduce } from 'lodash';
+import { map, reduce, get } from 'lodash';
 import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
@@ -34,8 +34,11 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
-  const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
+  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, ['details', 'main_object']), 'name');
+  const reviewObjectName = getFieldWithMaxWeight(
+    get(sponsor, ['details', 'review_object']),
+    'name',
+  );
   const userWeight = `(${(10000 -
     reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
@@ -99,11 +102,13 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
                   })}
                 </Link>
                 :{' '}
-                <Link to={`/object/${sponsor.details.main_object.author_permlink}`}>
+                <Link to={`/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`}>
                   {prymaryObjectName}
                 </Link>
                 ,{' '}
-                <Link to={`/object/${sponsor.details.review_object.author_permlink}`}>
+                <Link
+                  to={`/object/${get(sponsor, ['details', 'review_object', 'author_permlink'])}`}
+                >
                   {reviewObjectName}
                 </Link>
               </div>
@@ -113,12 +118,14 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
                   defaultMessage: `Beneficiaries`,
                 })}
                 :{' '}
-                {map(sponsor.details.beneficiaries, benef => (
-                  <React.Fragment>
-                    <Link to={`/@${benef.account}`}>{benef.account}</Link>
-                    <span>{` (${benef.weight / 100}%), `}</span>
-                  </React.Fragment>
-                ))}{' '}
+                {sponsor.details.beneficiaries
+                  ? map(sponsor.details.beneficiaries, benef => (
+                      <React.Fragment>
+                        <Link to={`/@${benef.account}`}>{benef.account}</Link>
+                        <span>{` (${benef.weight / 100}%), `}</span>
+                      </React.Fragment>
+                    ))
+                  : []}{' '}
                 <Link to={`/@${sponsor.userName}`}>{sponsor.userName}</Link> {userWeight}
               </div>
             </div>
@@ -136,7 +143,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
         ) : (
           <React.Fragment>
             <p>
-              <Link to={`/@${sponsor.userName}/${sponsor.details.reservation_permlink}`}>
+              <Link
+                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink'])}`}
+              >
                 {intl.formatMessage({
                   id: 'paymentTable_reservation',
                   defaultMessage: `Reservation`,

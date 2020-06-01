@@ -14,7 +14,7 @@ const ReportHeader = ({ intl }) => {
   const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
-  const rewardHive = singleReportData.rewardHive;
+  const rewardHive = singleReportData.rewardHive ? singleReportData.rewardHive.toFixed(3) : 0;
   const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(3) : 'N/A';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
