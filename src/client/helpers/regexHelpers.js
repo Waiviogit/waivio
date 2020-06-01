@@ -17,4 +17,6 @@ export const mobileUserAgents = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|Pl
 
 export const videoPreviewRegex = /<center>[\s\S]+<\/center>/g;
 
+export const guestUserRegex = /(waivio_|bxy_)([\w-.]+)/;
+
 export default null;
