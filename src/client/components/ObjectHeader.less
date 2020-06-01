@@ -38,10 +38,7 @@
 
     .ObjectHeader__info,
     .ObjectHeader__info & > i,
-    .ObjectHeader__handle,
-    .ObjectHeader__more,
     .ObjectHeader__user__username,
-    .ObjectHeader__follows-you,
     .ObjectHeader__descriptionShort {
       color: @white !important;
       text-shadow: 0 0 4px @black-text;
@@ -53,19 +50,6 @@
     position: absolute;
     top: 30px;
     right: 30px;
-  }
-
-  &__handle {
-    .ObjectHeader__follows-you {
-      display: none;
-    }
-
-    @media @small {
-      .ObjectHeader__follows-you {
-        display: inline-block;
-        margin-left: 5px;
-      }
-    }
   }
 
   &__follows-you--mobile {
@@ -141,18 +125,6 @@
   flex-direction: column;
 }
 
-.ObjectHeader__handle {
-  position: relative;
-  top: -30px;
-  color: @blue-botticelli;
-
-  &-rank-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-}
-
 .ObjectHeader__user__username {
   width: 100%;
   padding-bottom: 8px;
@@ -169,20 +141,6 @@
     margin-left: 0;
     vertical-align: 4px;
     text-shadow: none;
-  }
-}
-
-.ObjectHeader__user__buttons {
-  display: flex;
-}
-
-.ObjectHeader__user__button {
-  position: relative;
-  top: 40px;
-  margin-left: 10px;
-
-  &-follows-you {
-    top: 52px;
   }
 }
 
@@ -235,33 +193,6 @@
   .ObjectHeader__row {
     align-items: initial;
     flex-direction: initial;
-  }
-
-  .ObjectHeader__extend {
-    margin-left: 10px;
-  }
-
-  .ObjectHeader__rank {
-    margin-top: 0;
-    margin-left: 0;
-  }
-
-  .ObjectHeader__handle {
-    top: -8px;
-
-    &-rank-container {
-      display: block;
-      flex-direction: initial;
-      justify-content: initial;
-    }
-  }
-
-  .ObjectHeader__more {
-    position: static;
-  }
-
-  .ObjectHeader__user__button {
-    top: 12px;
   }
 }
 
