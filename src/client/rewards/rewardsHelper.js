@@ -342,3 +342,191 @@ export const getProcessingFee = data => {
       return null;
   }
 };
+
+export const popoverDataHistory = {
+  reserved: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'release',
+      id: 'campaign_buttons_release',
+      defaultMessage: 'Release reservation',
+    },
+  ],
+  completed: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'completed',
+      id: 'open_review',
+      defaultMessage: 'Open review',
+    },
+    {
+      key: 'show',
+      id: 'show_report',
+      defaultMessage: 'Show report',
+    },
+  ],
+  rejected: [
+    {
+      key: 'rejected',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'rejected',
+      id: 'open_review',
+      defaultMessage: 'Open review',
+    },
+    {
+      key: 'rejected',
+      id: 'rejection_note',
+      defaultMessage: 'Rejection note',
+    },
+  ],
+  expired: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+  ],
+  released: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+  ],
+};
+
+export const popoverDataMessages = {
+  reserved: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'release',
+      id: 'campaign_buttons_release',
+      defaultMessage: 'Release reservation',
+    },
+    {
+      key: 'add',
+      id: 'add_to_blacklist',
+      defaultMessage: 'Add to blacklist',
+    },
+  ],
+  completed: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'completed',
+      id: 'open_review',
+      defaultMessage: 'Open review',
+    },
+    {
+      key: 'completed',
+      id: 'show_report',
+      defaultMessage: 'Show report',
+    },
+    {
+      key: 'reject',
+      id: 'reject_review',
+      defaultMessage: 'Reject review',
+    },
+    {
+      key: 'add',
+      id: 'add_to_blacklist',
+      defaultMessage: 'Add to blacklist',
+    },
+  ],
+  rejected: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'rejected',
+      id: 'open_review',
+      defaultMessage: 'Open review',
+    },
+    {
+      key: 'rejected',
+      id: 'rejection_note',
+      defaultMessage: 'Rejection note',
+    },
+    {
+      key: 'reinstate',
+      id: 'reinstate_reward',
+      defaultMessage: 'Reinstate reward',
+    },
+    {
+      key: 'add',
+      id: 'add_to_blacklist',
+      defaultMessage: 'Add to blacklist',
+    },
+  ],
+  expired: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'add',
+      id: 'add_to_blacklist',
+      defaultMessage: 'Add to blacklist',
+    },
+  ],
+  released: [
+    {
+      key: 'reserved',
+      id: 'view_reservation',
+      defaultMessage: 'View reservation',
+    },
+    {
+      key: 'add',
+      id: 'add_to_blacklist',
+      defaultMessage: 'Add to blacklist',
+    },
+  ],
+};
+
+export const buttonsTitle = {
+  expired: {
+    id: 'expired',
+    defaultMessage: 'Expired',
+  },
+  released: {
+    id: 'released',
+    defaultMessage: 'Released',
+  },
+  completed: {
+    id: 'completed',
+    defaultMessage: 'Completed',
+  },
+  rejected: {
+    id: 'rejected',
+    defaultMessage: 'Rejected',
+  },
+  reserved: {
+    id: 'campaign_buttons_reserved',
+    defaultMessage: 'Reserved',
+  },
+  default: {
+    id: 'campaign_buttons_reserved',
+    defaultMessage: 'Reserved',
+  },
+};
