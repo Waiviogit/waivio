@@ -1,4 +1,5 @@
 import filesize from 'filesize';
+import { unescape } from 'he';
 import base58 from 'bs58';
 
 const IMG_PREVIEW = '?width=800&height=600&format=webp&mode=fit';
@@ -9,7 +10,14 @@ export const MAXIMUM_UPLOAD_SIZE = 15728640;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
-  if (type === 'preview') return `${IMG_PROXY_SMALL}${base58.encode(new Buffer(url))}${IMG_PREVIEW}`;
+  if (type === 'preview') {
+    try {
+      const urlEncoded = base58.encode(new Buffer(unescape(url)));
+      return `${IMG_PROXY_SMALL}${urlEncoded}${IMG_PREVIEW}`;
+    } catch (e) {
+      console.warn('\tEncode img url error. Image url:', url);
+    }
+  }
 
   return `${IMG_PROXY}${url}`;
 };

@@ -23,13 +23,7 @@ import {
   getUsedLocale,
   isGuestUser,
 } from './reducers';
-import {
-  busyLogin,
-  login,
-  logout,
-  getGuestBalance,
-  guestBalanceOnReload,
-} from './auth/authActions';
+import { busyLogin, login, logout, guestBalanceOnReload } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -82,7 +76,6 @@ export const UsedLocaleContext = React.createContext('en-US');
     setUsedLocale,
     getChartsData,
     changeChatCondition,
-    getGuestBalance,
     guestBalanceOnReload,
   },
 )
@@ -113,8 +106,8 @@ export default class Wrapper extends React.PureComponent {
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
-    getGuestBalance: PropTypes.func,
     guestBalanceOnReload: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -139,7 +132,6 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
-    getGuestBalance: () => {},
     guestBalanceOnReload: () => {},
   };
 
@@ -186,7 +178,6 @@ export default class Wrapper extends React.PureComponent {
         this.props.getPerformersStatistic();
         this.props.getNotifications();
         this.props.busyLogin();
-        this.props.getGuestBalance();
       });
       // if (this.props.username) {
       //   getMessagesQuantity(this.props.username).then(data =>
@@ -202,7 +193,7 @@ export default class Wrapper extends React.PureComponent {
       this.props.getChartsData();
     });
 
-    if (this.props.isAuthenticated) {
+    if (this.props.isGuest && this.props.isAuthenticated) {
       return new Promise(async (resolve, reject) => {
         try {
           this.props.guestBalanceOnReload();
