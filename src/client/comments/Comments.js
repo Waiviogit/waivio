@@ -17,7 +17,6 @@ import {
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
-import './Comments.less';
 
 @connect(
   state => ({
