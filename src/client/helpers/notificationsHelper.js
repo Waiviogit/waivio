@@ -183,7 +183,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.STATUS_CHANGE:
       return `/object/${notification.author_permlink}/updates/status`;
     case notificationConstants.POWER_DOWN:
-      return `/@${notification.from}/transfers`;
+      return `/@${notification.account}/transfers`;
     case notificationConstants.FILL_ORDER:
       return `/@${notification.account}/transfers`;
     case notificationConstants.REJECT_UPDATE:
