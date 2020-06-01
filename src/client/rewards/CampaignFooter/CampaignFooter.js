@@ -53,6 +53,7 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -245,6 +246,7 @@ class CampaignFooter extends React.Component {
       requiredObjectName,
       loading,
       proposition,
+      match,
     } = this.props;
     return (
       <div className="CampaignFooter">
@@ -270,6 +272,8 @@ class CampaignFooter extends React.Component {
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
+              propositionStatus={proposition.status}
+              match={match}
             />
           )}
         </div>

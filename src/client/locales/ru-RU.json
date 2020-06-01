@@ -1138,5 +1138,15 @@
   "case_status": "Статус дела",
   "open_cases": "Открытые",
   "closed_cases": "Закрытые",
-  "action_date": "Действие (дата)"
+  "action_date": "Действие (дата)",
+  "view_reservation": "Посмотреть резервацию",
+  "open_review": "Открыть отзыв",
+  "show_report": "Показать отчет",
+  "rejection_note": "Примечание об отказе",
+  "expired": "Истекшая",
+  "released": "Отмененная",
+  "rejected": "Отклоненная",
+  "add_to_blacklist": "Добавить в черный список",
+  "reject_review": "Отклонить отзыв",
+  "reinstate_reward": "Восстановить награду"
 }

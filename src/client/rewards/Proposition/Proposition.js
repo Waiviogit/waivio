@@ -30,6 +30,7 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
+  match,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -138,6 +139,7 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
+            match={match}
           />
         ) : (
           <React.Fragment>

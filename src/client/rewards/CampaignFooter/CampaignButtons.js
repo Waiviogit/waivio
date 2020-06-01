@@ -26,6 +26,8 @@ export default class CampaignButtons extends React.Component {
     toggleModalDetails: PropTypes.func,
     requiredObjectName: PropTypes.bool.isRequired,
     propositionGuideName: PropTypes.string.isRequired,
+    propositionStatus: PropTypes.string.isRequired,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -109,6 +111,218 @@ export default class CampaignButtons extends React.Component {
     this.props.toggleModalDetails({ value: true });
   };
 
+  getPopoverMenuHistory = () => {
+    const { propositionStatus, intl } = this.props;
+
+    switch (propositionStatus) {
+      case 'reserved':
+        return [
+          <PopoverMenuItem key="reserved">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="release">
+            {intl.formatMessage({
+              id: 'campaign_buttons_release',
+              defaultMessage: 'Release reservation',
+            })}
+          </PopoverMenuItem>,
+        ];
+      case 'completed':
+        return [
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'open_review',
+              defaultMessage: 'Open review',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'show_report',
+              defaultMessage: 'Show report',
+            })}
+          </PopoverMenuItem>,
+        ];
+      case 'rejected':
+        return [
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'open_review',
+              defaultMessage: 'Open review',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'rejection_note',
+              defaultMessage: 'Rejection note',
+            })}
+          </PopoverMenuItem>,
+        ];
+      default:
+        return [
+          <PopoverMenuItem key="reserved">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+        ];
+    }
+  };
+
+  getPopoverMenuMessages = () => {
+    const { propositionStatus, intl } = this.props;
+    switch (propositionStatus) {
+      case 'reserved':
+        return [
+          <PopoverMenuItem key="reserved">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="release">
+            {intl.formatMessage({
+              id: 'campaign_buttons_release',
+              defaultMessage: 'Release reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="add">
+            {intl.formatMessage({
+              id: 'add_to_blacklist',
+              defaultMessage: 'Add to blacklist',
+            })}
+          </PopoverMenuItem>,
+        ];
+      case 'completed':
+        return [
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'open_review',
+              defaultMessage: 'Open review',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="completed">
+            {intl.formatMessage({
+              id: 'show_report',
+              defaultMessage: 'Show report',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="reject">
+            {intl.formatMessage({
+              id: 'reject_review',
+              defaultMessage: 'Reject review',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="add">
+            {intl.formatMessage({
+              id: 'add_to_blacklist',
+              defaultMessage: 'Add to blacklist',
+            })}
+          </PopoverMenuItem>,
+        ];
+      case 'rejected':
+        return [
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'open_review',
+              defaultMessage: 'Open review',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="rejected">
+            {intl.formatMessage({
+              id: 'rejection_note',
+              defaultMessage: 'Rejection note',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="reinstate">
+            {intl.formatMessage({
+              id: 'reinstate_reward',
+              defaultMessage: 'Reinstate reward',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="add">
+            {intl.formatMessage({
+              id: 'add_to_blacklist',
+              defaultMessage: 'Add to blacklist',
+            })}
+          </PopoverMenuItem>,
+        ];
+      default:
+        return [
+          <PopoverMenuItem key="reserved">
+            {intl.formatMessage({
+              id: 'view_reservation',
+              defaultMessage: 'View reservation',
+            })}
+          </PopoverMenuItem>,
+          <PopoverMenuItem key="add">
+            {intl.formatMessage({
+              id: 'add_to_blacklist',
+              defaultMessage: 'Add to blacklist',
+            })}
+          </PopoverMenuItem>,
+        ];
+    }
+  };
+
+  getButtonsTitle = () => {
+    const { propositionStatus, intl } = this.props;
+    switch (propositionStatus) {
+      case 'expired':
+        return intl.formatMessage({
+          id: 'expired',
+          defaultMessage: 'Expired',
+        });
+      case 'released':
+        return intl.formatMessage({
+          id: 'released',
+          defaultMessage: 'Released',
+        });
+      case 'completed':
+        return intl.formatMessage({
+          id: 'completed',
+          defaultMessage: 'Completed',
+        });
+      case 'rejected':
+        return intl.formatMessage({
+          id: 'rejected',
+          defaultMessage: 'Rejected',
+        });
+      default:
+        return intl.formatMessage({
+          id: 'campaign_buttons_reserved',
+          defaultMessage: 'Reserved',
+        });
+    }
+  };
+
   renderPostPopoverMenu() {
     const {
       pendingFollow,
@@ -117,7 +331,9 @@ export default class CampaignButtons extends React.Component {
       handlePostPopoverMenuClick,
       requiredObjectName,
       propositionGuideName,
+      match,
     } = this.props;
+
     const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
 
     const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
@@ -158,13 +374,26 @@ export default class CampaignButtons extends React.Component {
         })}
       </PopoverMenuItem>,
     ];
+
+    const popoverMenuHistory = this.getPopoverMenuHistory();
+    const popoverMenuMessages = this.getPopoverMenuMessages();
+    const getPopoverMenu = () => {
+      if (match.params.filterKey === 'messages') {
+        return popoverMenuMessages;
+      }
+      if (match.params.filterKey === 'reserved') {
+        return popoverMenu;
+      }
+      return popoverMenuHistory;
+    };
+
     return (
       <Popover
         placement="bottomRight"
         trigger="click"
         content={
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {popoverMenu}
+            {getPopoverMenu()}
           </PopoverMenu>
         }
       >
@@ -174,19 +403,20 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, daysLeft } = this.props;
+    const { intl, post, daysLeft, match } = this.props;
+    const buttonsTitle = this.getButtonsTitle();
 
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
           <div>
-            {`${intl.formatMessage({
-              id: 'campaign_buttons_reserved',
-              defaultMessage: 'Reserved',
-            })} - ${daysLeft} ${intl.formatMessage({
-              id: 'campaign_buttons_days_left',
-              defaultMessage: 'days left',
-            })}`}
+            {buttonsTitle}
+            {match.params.filterKey === 'reserved'
+              ? `- ${daysLeft} ${intl.formatMessage({
+                  id: 'campaign_buttons_days_left',
+                  defaultMessage: 'days left',
+                })} `
+              : ''}
           </div>
           <BTooltip
             title={intl.formatMessage({

@@ -1138,5 +1138,15 @@
   "case_status": "Case status",
   "open_cases": "Open cases",
   "closed_cases": "Closed cases",
-  "action_date": "Action (date)"
+  "action_date": "Action (date)",
+  "view_reservation": "View reservation",
+  "open_review": "Open review",
+  "show_report": "Show report",
+  "rejection_note": "Rejection note",
+  "expired": "Expired",
+  "released": "Released",
+  "rejected": "Rejected",
+  "add_to_blacklist": "Add to blacklist",
+  "reject_review": "Reject review",
+  "reinstate_reward": "Reinstate reward"
 }

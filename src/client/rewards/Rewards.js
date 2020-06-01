@@ -432,6 +432,7 @@ class Rewards extends React.Component {
                 assigned={wobj.assigned}
                 history={this.props.history}
                 isAssign={isAssign}
+                match={this.props.match}
               />
             ),
         ),
