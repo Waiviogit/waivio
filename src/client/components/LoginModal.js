@@ -13,8 +13,8 @@ import { getUserAccount, isUserRegistered } from '../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../user/userActions';
 import { notify } from '../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
-import { getRate, getRewardFund } from './../app/appActions';
-import { getRebloggedList } from './../app/Reblog/reblogActions';
+import { getRate, getRewardFund } from '../app/appActions';
+import { getRebloggedList } from '../app/Reblog/reblogActions';
 import './Navigation/ModalSignUp/ModalSignUp.less';
 
 const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
