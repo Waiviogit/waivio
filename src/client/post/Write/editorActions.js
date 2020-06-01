@@ -15,7 +15,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getAuthenticatedUserName, getTranslations } from '../../reducers';
 import { attachPostInfo } from '../../helpers/postHelpers';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
@@ -236,6 +236,24 @@ export function createPost(postData) {
         }
       }
 
+      const dispatchPostNotification = () => {
+        setTimeout(() => {
+          getUserProfileBlog(authUser.name, {})
+            .then(posts => {
+              const lastPost = get(posts, '[0].permlink', '');
+              if (lastPost === permlink) {
+                const postIsPublishedMessage = getTranslations(state).post_post_is_published;
+                dispatch(notify(postIsPublishedMessage, 'success'));
+              } else {
+                const postWillPublishedMessage = getTranslations(state).post_post_will_published_soon;
+                dispatch(notify(postWillPublishMessage, 'success'));
+              }
+              dispatch(push(`/@${authUser.name}`));
+            })
+            .catch(err => console.error(err));
+        }, 6000);
+      };
+
       dispatch({
         type: CREATE_POST,
         payload: {
@@ -276,22 +294,7 @@ export function createPost(postData) {
                       value: 10,
                     });
                   }
-
-                  setTimeout(() => {
-                    getUserProfileBlog(authUser.name, {})
-                      .then(posts => {
-                        const lastPost = get(posts, '[0].permlink');
-                        if (lastPost === permlink) {
-                          dispatch(notify('Your post is published', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        } else {
-                          dispatch(notify('Your post will be posted soon', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        }
-                      })
-                      .catch(err => err);
-                  }, 6000);
-
+                  dispatchPostNotification();
                   return result;
                 }
 
@@ -313,9 +316,8 @@ export function createPost(postData) {
                     value: 10,
                   });
                 }
-
-                dispatch(push(`/@${authUser.name}`));
               }
+              dispatchPostNotification();
             })
             .catch(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
