@@ -495,29 +495,29 @@ export default class Umarkets {
     }
   }
 
-  parseNewOrder({ content }) {
+  parseNewOrder = ({ content }) => intl => {
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const sideAction = side.toLowerCase();
 
-    // message.success(
-    //   this.props.intl.formatMessage({
-    //     id: 'market_order_created',
-    //     defaultMessage: `Market order created (${sideAction} ${amount} ${baseCurrency} at price Market)`,
-    //   })
-    // )
+    message.success(
+      intl.formatMessage({
+        id: 'market_order_created',
+        defaultMessage: `Market order created (${sideAction} ${amount} ${baseCurrency} at price Market)`,
+      })
+    )
 
-    message.info(
-      <FormattedMessage
-        id="market_order_created"
-        defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
-        values={{
-          sideAction,
-          amount,
-          baseCurrency,
-        }}
-      />
-    );
+    // message.info(
+    //   <FormattedMessage
+    //     id="market_order_created"
+    //     defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
+    //     values={{
+    //       sideAction,
+    //       amount,
+    //       baseCurrency,
+    //     }}
+    //   />
+    // );
 
   }
   parseMarketOrderFilled({ content }) {
