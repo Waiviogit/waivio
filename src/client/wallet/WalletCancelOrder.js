@@ -7,7 +7,7 @@ import { epochToUTC } from '../helpers/formatter';
 const WalletCancelOrder = ({ transactionDetails, timestamp }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-container">
-      <i className="iconfont icon-close UserWalletTransactions__icon" />
+      <i className="iconfont icon-close-big UserWalletTransactions__icon" />
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
