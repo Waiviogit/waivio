@@ -1,6 +1,4 @@
-import React from "react";
 import { get, filter, size, some } from 'lodash';
-import {FormattedMessage, injectIntl} from 'react-intl';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import store from 'store';
@@ -56,6 +54,7 @@ export default class Umarkets {
     this.platformName = null;
     this.hours = HOURS;
   }
+
   static parseCloseMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
@@ -495,55 +494,22 @@ export default class Umarkets {
     }
   }
 
-  parseNewOrder = ({ content }) => intl => {
+  parseNewOrder({ content }) {
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
-    const sideAction = side.toLowerCase();
-
-    message.success(
-      intl.formatMessage({
-        id: 'market_order_created',
-        defaultMessage: `Market order created (${sideAction} ${amount} ${baseCurrency} at price Market)`,
-      })
-    )
-
-    // message.info(
-    //   <FormattedMessage
-    //     id="market_order_created"
-    //     defaultMessage={`Market order created ({sideAction} {amount} {baseCurrency} at price Market)`}
-    //     values={{
-    //       sideAction,
-    //       amount,
-    //       baseCurrency,
-    //     }}
-    //   />
-    // );
-
+    message.info(
+      `Market order created (${side.toLowerCase()} ${amount} ${baseCurrency} at price Market)`,
+    );
   }
   parseMarketOrderFilled({ content }) {
     const { amount, averagePrice, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
     const price = PlatformHelper.exponentialToDecimal(averagePrice);
-    // const sideAction = side.toLowerCase()
     message.success(
       `Market order filled (${side.toLowerCase()} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`,
       4,
     );
-
-    // message.success(
-    //   <FormattedMessage
-    //     id="market_order_created"
-    //     defaultMessage={`Market order filled ({sideAction} {amount} {baseCurrency} at price {price} {termCurrency})`}
-    //     values={{
-    //       sideAction,
-    //       amount,
-    //       baseCurrency,
-    //       price,
-    //       termCurrency,
-    //     }}
-    //   />
-    // );
   }
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
