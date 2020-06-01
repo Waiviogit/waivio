@@ -175,11 +175,14 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
       })
-      .then(() => this.props.notify(
-        this.props.locale === 'en-US' ? 'Saved' : 'Сохранено',
-        'success',
-        )
-      )
+      .then(() =>
+        setTimeout(() => {
+          this.props.notify(
+            this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
+            'success',
+          )
+        }, 500)
+      );
   };
 
   handleLocaleChange = locale => this.setState({ locale });
