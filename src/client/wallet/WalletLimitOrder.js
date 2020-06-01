@@ -5,11 +5,11 @@ import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 
 const WalletLimitOrder = ({ transactionDetails, timestamp }) => {
-  const arrows = '\u21C6';
+  const arrowsIcon = '\u21C6';
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">
-        <i className="arrows UserWalletTransactions__icon">{arrows}</i>
+        <i className="arrows UserWalletTransactions__icon">{arrowsIcon}</i>
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
