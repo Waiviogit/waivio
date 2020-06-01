@@ -21,6 +21,7 @@ import {
   getUser,
   getUserHasMore,
   getUserHasMoreAccountHistory,
+  getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
   isGuestBalance,
@@ -31,6 +32,7 @@ import {
   getMoreUserAccountHistory,
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
+  getUserAccountHistory,
 } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
@@ -46,11 +48,12 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     authenticatedUserName: getAuthenticatedUserName(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
+    usersAccountHistory: getUsersAccountHistory(state),
     usersAccountHistoryLoading: getUsersAccountHistoryLoading(state),
     loadingGlobalProperties: getLoadingGlobalProperties(state),
     loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
     screenSize: getScreenSize(state),
-    userHasMoreActions: getUserHasMoreAccountHistory(
+    demoHasMoreActions: getUserHasMoreAccountHistory(
       state,
       ownProps.isCurrentUser
         ? getAuthenticatedUserName(state)
@@ -72,6 +75,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     getUserAccount,
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
+    getUserAccountHistory,
   },
 )
 class Wallet extends Component {
@@ -87,7 +91,7 @@ class Wallet extends Component {
     usersAccountHistoryLoading: PropTypes.bool.isRequired,
     loadingGlobalProperties: PropTypes.bool.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
-    userHasMoreActions: PropTypes.bool.isRequired,
+    demoHasMoreActions: PropTypes.bool.isRequired,
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
@@ -96,9 +100,12 @@ class Wallet extends Component {
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
-    ownGuestBalance: PropTypes.func,
+    ownGuestBalance: PropTypes.number,
     isGuest: PropTypes.bool,
     ownPage: PropTypes.bool,
+    usersTransactions: PropTypes.shape().isRequired,
+    getUserAccountHistory: PropTypes.func.isRequired,
+    usersAccountHistory: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -122,6 +129,7 @@ class Wallet extends Component {
       isCurrentUser,
       authenticatedUserName,
       transactionsHistory,
+      usersTransactions,
     } = this.props;
 
     const username = isCurrentUser
@@ -138,6 +146,10 @@ class Wallet extends Component {
 
     if (isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
+    }
+
+    if (isEmpty(usersTransactions[username])) {
+      this.props.getUserAccountHistory(username);
     }
   }
 
@@ -162,14 +174,18 @@ class Wallet extends Component {
       loadingGlobalProperties,
       usersAccountHistoryLoading,
       loadingMoreUsersAccountHistory,
-      userHasMoreActions,
+      demoHasMoreActions,
       cryptosPriceHistory,
       screenSize,
       transactionsHistory,
       hasMore,
+      usersTransactions,
+      usersAccountHistory,
     } = this.props;
 
     const userKey = user.name;
+    const demoTransactions = get(usersTransactions, userKey, []);
+    const actions = get(usersAccountHistory, userKey, []);
     const transactions = get(transactionsHistory, userKey, []);
 
     const currentSteemRate = get(
@@ -188,6 +204,7 @@ class Wallet extends Component {
       <Loading style={{ marginTop: '20px' }} />
     ) : (
       <UserWalletTransactions
+        user={user}
         getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
         transactions={transactions}
         hasMore={hasMore}
@@ -196,7 +213,9 @@ class Wallet extends Component {
         totalVestingFundSteem={totalVestingFundSteem}
         getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
         loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-        userHasMoreActions={userHasMoreActions}
+        demoTransactions={demoTransactions}
+        demoHasMoreActions={demoHasMoreActions}
+        actions={actions}
       />
     );
 
