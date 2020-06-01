@@ -19,6 +19,7 @@ const GuestSignUpFormContent = ({
   getAvatar,
   setIsLoading,
   image,
+  appUrl,
   initialLanguages,
   socialNetwork,
   intl,
@@ -163,7 +164,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
+                      href={`${appUrl}/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}
                     >
                       {intl.formatMessage({
                         id: 'terms_and_conditions',
@@ -175,7 +176,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
+                      href={`${appUrl}/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy`}
                     >
                       {intl.formatMessage({
                         id: 'privacy_policy',
@@ -187,7 +188,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
+                      href={`${appUrl}/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy`}
                     >
                       {intl.formatMessage({
                         id: 'cookies_policy',
@@ -228,6 +229,7 @@ GuestSignUpFormContent.propTypes = {
   getAvatar: PropTypes.func,
   setIsLoading: PropTypes.func,
   image: PropTypes.string,
+  appUrl: PropTypes.string.isRequired,
   initialLanguages: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
