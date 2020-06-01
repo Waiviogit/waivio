@@ -94,44 +94,54 @@ const ReportHeader = ({ intl }) => {
         </div>
       </div>
       <div className="ReportHeader__campaignInfo" role="presentation">
-        <span>
-          {intl.formatMessage({
-            id: 'campaign_announcement',
-            defaultMessage: 'Campaign announcement:',
-          })}{' '}
+        <div>
+          <span className="ReportHeader__campaignInfo-name">
+            {intl.formatMessage({
+              id: 'campaign_announcement',
+              defaultMessage: 'Campaign announcement:',
+            })}{' '}
+          </span>
           <a href={`/@${sponsorName}/${activationPermlink}`}>
             <span className="ReportHeader__campaignInfo-date">
               {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
               {createCampaignDate}
             </span>
           </a>
-        </span>
-        <span>
-          {intl.formatMessage({
-            id: 'rewards_reservation',
-            defaultMessage: 'Rewards reservation:',
-          })}{' '}
+        </div>
+        <div>
+          <span className="ReportHeader__campaignInfo-name">
+            {intl.formatMessage({
+              id: 'rewards_reservation',
+              defaultMessage: 'Rewards reservation:',
+            })}{' '}
+          </span>
           <a href={`/@${userName}/${reservationPermlink}`}>
             <span className="ReportHeader__campaignInfo-date">
               {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
               {reservationDate}
             </span>
           </a>
-        </span>
-        <span>
-          {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
+        </div>
+        <div>
+          <span className="ReportHeader__campaignInfo-name">
+            {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
+          </span>
           <a href={`/@${userName}/${reviewPermlink}`}>
             <span className="ReportHeader__campaignInfo-date">
               {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })} {reviewDate}
             </span>
           </a>
-        </span>
-        <span>
-          {intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}{' '}
+        </div>
+        <div>
+          <span className="ReportHeader__campaignInfo-name">
+            {intl.formatMessage({ id: 'review_title', defaultMessage: 'Review title:' })}{' '}
+          </span>
           <span className="ReportHeader__campaignInfo-title">{title}</span>
-        </span>
-        <span>
-          {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
+        </div>
+        <div>
+          <span className="ReportHeader__campaignInfo-name">
+            {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
+          </span>
           <a href={`/object/${primaryObjectPermlink}`}>
             <span className="ReportHeader__campaignInfo-links">{primaryObjectName}</span>
           </a>
@@ -141,7 +151,7 @@ const ReportHeader = ({ intl }) => {
               <span className="ReportHeader__campaignInfo-links">{object.name}</span>
             </a>
           ))}
-        </span>
+        </div>
       </div>
     </React.Fragment>
   );
