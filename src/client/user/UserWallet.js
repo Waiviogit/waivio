@@ -32,7 +32,7 @@ import {
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
 } from '../wallet/walletActions';
-import { getAccount } from './usersActions';
+import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
 
@@ -69,7 +69,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
   {
     getGlobalProperties,
     getMoreUserAccountHistory,
-    getAccount,
+    getUserAccount,
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
   },
@@ -82,7 +82,7 @@ class Wallet extends Component {
     user: PropTypes.shape().isRequired,
     getGlobalProperties: PropTypes.func.isRequired,
     getMoreUserAccountHistory: PropTypes.func.isRequired,
-    getAccount: PropTypes.func.isRequired,
+    getUserAccount: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     usersAccountHistoryLoading: PropTypes.bool.isRequired,
     loadingGlobalProperties: PropTypes.bool.isRequired,
@@ -133,7 +133,7 @@ class Wallet extends Component {
     }
 
     if (isEmpty(user)) {
-      this.props.getAccount(username);
+      this.props.getUserAccount(username);
     }
 
     if (isEmpty(transactionsHistory[username])) {

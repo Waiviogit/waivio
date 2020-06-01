@@ -24,7 +24,7 @@ import { getMetadata } from '../../helpers/postingMetadata';
   rewardFund: getRewardFund(state),
   rate: getRate(state),
   isGuest: isGuestUser(state),
-  allUsers: getAllUsers(state), // НЕ УДАЛЯТЬ! Вспомогательный. Без него не всегда обновляется user
+  allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
 }))
 class UserInfo extends React.Component {
   static propTypes = {

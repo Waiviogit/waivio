@@ -42,7 +42,7 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
     usersAccountHistory: getUsersAccountHistory(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
-    allUsers: getAllUsers(state), // НЕ УДАЛЯТЬ! Вспомогательный. Без него не всегда обновляется user
+    allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
   }),
   {
     getUserAccount,

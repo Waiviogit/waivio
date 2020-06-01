@@ -24,7 +24,7 @@ import {
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
 } from '../wallet/walletActions';
-import { getAccount } from '../user/usersActions';
+import { getUserAccount } from '../user/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
 
@@ -48,7 +48,7 @@ import UserActivityActions from './UserActivityActions';
     getGlobalProperties,
     getUserAccountHistory,
     getMoreUserAccountHistory,
-    getAccount,
+    getUserAccount,
     getUserEstAccountValue,
     updateAccountHistoryFilter,
     setInitialCurrentDisplayedActions,
@@ -61,7 +61,7 @@ class UserActivity extends React.Component {
     getGlobalProperties: PropTypes.func.isRequired,
     getUserAccountHistory: PropTypes.func.isRequired,
     getUserEstAccountValue: PropTypes.func.isRequired,
-    getAccount: PropTypes.func.isRequired,
+    getUserAccount: PropTypes.func.isRequired,
     updateAccountHistoryFilter: PropTypes.func.isRequired,
     setInitialCurrentDisplayedActions: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
@@ -111,7 +111,7 @@ class UserActivity extends React.Component {
     }, 2000);
 
     if (isEmpty(user)) {
-      this.props.getAccount(username);
+      this.props.getUserAccount(username);
     }
 
     if (isEmpty(usersEstAccountsValues[username]) && !isEmpty(user.name)) {
