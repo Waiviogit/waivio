@@ -11,7 +11,7 @@ const initialState = {
   trendingTopics: [],
   rewardFund: {},
   bannerClosed: false,
-  appUrl: 'https://waiviodev.com',
+  appUrl: 'https://crypto.investarena.com',
   usedLocale: null,
   translations: {},
   cryptosPriceHistory: {},

@@ -97,6 +97,8 @@
   "post_reply_show_original_post": "Показать оригинальный пост",
   "post_reply_show_parent_discussion": "Показать предыдущее обсуждение",
   "post_deleted": "Этот пост был удален",
+  "post_post_is_published": "Ваш пост опубликован",
+  "post_post_will_published_soon": "Ваш пост будет опубликован вскоре",
   "comment": "Комментировать",
   "comment_placeholder": "Написать комментарий",
   "comment_collapsed": "Комментарий скрыт",

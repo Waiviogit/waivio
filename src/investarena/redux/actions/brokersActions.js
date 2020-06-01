@@ -153,7 +153,7 @@ export const disconnectBroker = (isReconnect = false) => (dispatch, getState) =>
     if (isBeaxyUser) dispatch(logoutWithoutBroker());
     dispatch(cleanUserStatisticsData());
     dispatch(disconnectTokenSuccess());
-    if (singleton.platform && singleton.platform.platformName) {
+    if (singleton.platform && singleton.platform.platformName && !isReconnect) {
       const disconnectMessage = getTranslations(state).broker_modal_broker_disconnect_successfully;
       dispatch(notify(disconnectMessage, 'success'));
     }
