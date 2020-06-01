@@ -577,7 +577,8 @@ class Rewards extends React.Component {
                 <div className="right">
                   {!isEmpty(this.props.userLocation) &&
                     !isCreate &&
-                    !includes(match.url, 'messages') && (
+                    !includes(match.url, 'messages') &&
+                    !includes(match.url, 'history') && (
                       <MapWrap
                         setMapArea={this.setMapArea}
                         wobjects={this.getRequiredObjects()}

@@ -69,9 +69,9 @@ const RewardsFiltersPanel = ({
           <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
-        {location.pathname !== '/rewards/payables' &&
-        location.pathname !== '/rewards/receivables' &&
-        location.pathname !== '/rewards/messages' ? (
+        {location.pathname === '/rewards/all' ||
+        location.pathname === '/rewards/active' ||
+        location.pathname === '/rewards/reserved' ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -93,7 +93,8 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         ) : (
-          location.pathname !== '/rewards/messages' && (
+          location.pathname !== '/rewards/messages' &&
+          location.pathname !== '/rewards/history' && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
                 {location.pathname === '/rewards/payables'
@@ -115,20 +116,8 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' && (
+        {location.pathname === '/rewards/messages' || location.pathname === '/rewards/history' ? (
           <React.Fragment>
-            <div className="RewardsFiltersPanel__title-text">
-              {`${intl.formatMessage({
-                id: 'case_status',
-                defaultMessage: 'Case status',
-              })}:`}
-            </div>
-            {_.map(campaignsTypesMessages, type =>
-              filterPaymentLayout(
-                type,
-                activePayableFilters.some(f => f.filterName === type.filterName),
-              ),
-            )}
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
                 id: 'mobnav_rewards',
@@ -138,7 +127,34 @@ const RewardsFiltersPanel = ({
             {_.map(rewardsTypesMessages, type =>
               filterLayout(type, 'types', _.includes(activeFilters.types, type)),
             )}
+            <div className="RewardsFiltersPanel__title-text">
+              {location.pathname === '/rewards/messages'
+                ? intl.formatMessage({
+                    id: 'case_status',
+                    defaultMessage: 'Case status',
+                  })
+                : intl.formatMessage({
+                    id: 'sponsors',
+                    defaultMessage: 'Sponsors',
+                  })}
+            </div>
+            {location.pathname === '/rewards/messages'
+              ? _.map(campaignsTypesMessages, type =>
+                  filterPaymentLayout(
+                    type,
+                    activePayableFilters.some(f => f.filterName === type.filterName),
+                  ),
+                )
+              : _.map(sponsors, sponsor =>
+                  filterLayout(
+                    sponsor,
+                    'guideNames',
+                    _.includes(activeFilters.guideNames, sponsor),
+                  ),
+                )}
           </React.Fragment>
+        ) : (
+          ''
         )}
       </div>
     </div>
