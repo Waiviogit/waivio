@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { TOGGLE_MODAL } from '../actions/modalsActions';
 import { LOGOUT } from '../../../client/auth/authActions';
 
-const initialState = { modals: [], modalsInfo: {}};
+const initialState = { modals: [], modalsInfo: {} };
 
 function toggleModal(state, action) {
   if (state.modals.includes(action.payload.type)) {
