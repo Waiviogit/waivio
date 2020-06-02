@@ -233,20 +233,24 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta property="description" content={desc} />
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image} />
-          <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="InvestArena" />
-          <meta property="article:tag" content={category} />
-          <meta property="article:published_time" content={created} />
-          <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@investArena'} />
-          <meta property="twitter:title" content={metaTitle} />
-          <meta property="twitter:description" content={desc} />
-          <meta property="twitter:image" content={image} />
+          <meta name="description" property="description" content={desc} />
+          <meta name="og:title" property="og:title" content={metaTitle} />
+          <meta name="og:type" property="og:type" content="article" />
+          <meta name="og:url" property="og:url" content={url} />
+          <meta name="og:image" property="og:image" content={image} />
+          <meta name="og:description" property="og:description" content={desc} />
+          <meta name="og:site_name" property="og:site_name" content="InvestArena" />
+          <meta name="article:tag" property="article:tag" content={category} />
+          <meta name="article:published_time" property="article:published_time" content={created} />
+          <meta
+            name="twitter:card"
+            property="twitter:card"
+            content={image ? 'summary_large_image' : 'summary'}
+          />
+          <meta name="twitter:site" property="twitter:site" content={'@investArena'} />
+          <meta name="twitter:title" property="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta name="twitter:image" property="twitter:image" content={image} />
         </Helmet>
         <StoryFull
           user={user}
