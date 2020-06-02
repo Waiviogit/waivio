@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch';
 import { handleErrors } from '../../../waivioApi/ApiClient';
 
-export const regexCoordsLatitude = /^(\+|-)?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
-export const regexCoordsLongitude = /^(\+|-)?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
+export const regexCoordsLatitude = /^([+-])?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
+export const regexCoordsLongitude = /^([+-])?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
 // const zeroZoomInPixel = 78206; //  metres/pixel
 const earthAraund = 40075016.686;
 const INITIAL_RADIUS = 12100000;
