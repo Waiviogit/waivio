@@ -7,10 +7,10 @@ import TransferTransaction from './TransferTransaction';
 import SavingsTransaction from './SavingsTransaction';
 import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
-import './UserWalletTransactions.less';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
+import './UserWalletTransactions.less';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
