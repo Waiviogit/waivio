@@ -143,9 +143,8 @@ const ReportHeader = ({ intl }) => {
             {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
           </span>
           <a href={`/object/${primaryObjectPermlink}`}>
-            <span className="ReportHeader__campaignInfo-links">{primaryObjectName}</span>
+            <span className="ReportHeader__campaignInfo-links">{`${primaryObjectName}, `}</span>
           </a>
-          {', '}
           {map(secondaryObjects, object => (
             <a href={`/object/${object.permlink}`}>
               <span className="ReportHeader__campaignInfo-links">{object.name}</span>
