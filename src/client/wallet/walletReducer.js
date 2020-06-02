@@ -1,7 +1,6 @@
 import { get, uniqBy, slice, filter, concat, last, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
 import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../helpers/accountHistoryHelper';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 const initialState = {
   transferVisible: false,
@@ -78,7 +77,7 @@ export default function walletReducer(state = initialState, action) {
         usersAccountHistoryLoading: true,
       };
     case walletActions.GET_USER_ACCOUNT_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
 
       return {
         ...state,
@@ -105,7 +104,7 @@ export default function walletReducer(state = initialState, action) {
         transactionsHistoryLoading: true,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       return {
         ...state,
         transactionsHistory: {
@@ -122,7 +121,7 @@ export default function walletReducer(state = initialState, action) {
         loadingMoreTransactions: true,
       };
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       const userCurrentTransactions = get(state.transactionsHistory, usernameKey, []);
       return {
         ...state,
@@ -151,7 +150,7 @@ export default function walletReducer(state = initialState, action) {
         loadingMoreUsersAccountHistory: true,
       };
     case walletActions.GET_MORE_USER_ACCOUNT_HISTORY.SUCCESS: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       const userCurrentWalletTransactions = get(state.usersTransactions, usernameKey, []);
       const userCurrentAccountHistory = get(state.usersAccountHistory, usernameKey, []);
 
@@ -189,7 +188,7 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         usersEstAccountsValues: {
           ...state.usersEstAccountsValues,
-          [getUserDetailsKey(action.payload.username)]: action.payload.value,
+          [action.payload.username]: action.payload.value,
         },
         loadingEstAccountValue: false,
       };
@@ -199,7 +198,7 @@ export default function walletReducer(state = initialState, action) {
         loadingEstAccountValue: false,
       };
     case walletActions.UPDATE_ACCOUNT_HISTORY_FILTER: {
-      const usernameKey = getUserDetailsKey(action.payload.username);
+      const usernameKey = action.payload.username;
       const currentUserActions = state.usersAccountHistory[usernameKey];
       const initialActions = slice(currentUserActions, 0, ACTIONS_DISPLAY_LIMIT);
       const initialFilteredActions = filter(initialActions, userAction =>
@@ -213,7 +212,7 @@ export default function walletReducer(state = initialState, action) {
       };
     }
     case walletActions.SET_INITIAL_CURRENT_DISPLAYED_ACTIONS: {
-      const currentUserActions = state.usersAccountHistory[getUserDetailsKey(action.payload)];
+      const currentUserActions = state.usersAccountHistory[action.payload];
       return {
         ...state,
         currentDisplayedActions: slice(currentUserActions, 0, ACTIONS_DISPLAY_LIMIT),
@@ -263,7 +262,7 @@ export const getLoadingGlobalProperties = state => state.loadingGlobalProperties
 export const getUsersAccountHistory = state => state.usersAccountHistory;
 export const getLoadingMoreUsersAccountHistory = state => state.loadingMoreUsersAccountHistory;
 export const getUserHasMoreAccountHistory = (state, username) => {
-  const lastAction = last(state.usersAccountHistory[getUserDetailsKey(username)]) || {};
+  const lastAction = last(state.usersAccountHistory[username]) || {};
   return lastAction.actionCount !== 1 && lastAction.actionCount !== 0;
 };
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;
