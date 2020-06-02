@@ -5,10 +5,7 @@ import { getVotePercent } from '../reducers';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
-export const appendObject = (postData, { follow, isLike = true } = {}) => (
-  dispatch,
-  getState,
-) => {
+export const appendObject = (postData, { follow, isLike = true } = {}) => (dispatch, getState) => {
   const state = getState();
   return dispatch({
     type: APPEND_WAIVIO_OBJECT.ACTION,
