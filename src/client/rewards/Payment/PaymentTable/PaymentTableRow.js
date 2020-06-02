@@ -34,11 +34,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, ['details', 'main_object']), 'name');
-  const reviewObjectName = getFieldWithMaxWeight(
-    get(sponsor, ['details', 'review_object']),
-    'name',
-  );
+  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, 'details.main_object', {}), 'name');
+  const reviewObjectName = getFieldWithMaxWeight(get(sponsor, 'details.review_object', {}), 'name');
   const userWeight = `(${(10000 -
     reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
@@ -125,7 +122,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
                         <span>{` (${benef.weight / 100}%), `}</span>
                       </React.Fragment>
                     ))
-                  : []}{' '}
+                  : null}{' '}
                 <Link to={`/@${sponsor.userName}`}>{sponsor.userName}</Link> {userWeight}
               </div>
             </div>
