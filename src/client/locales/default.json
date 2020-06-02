@@ -1158,5 +1158,7 @@
   "enter_nickname": "Enter nickname",
   "privacy_policy": "Privacy Policy",
   "cookies_policy": "Cookies Policy",
-  "topic_name": "Topic name"
+  "topic_name": "Topic name",
+  "market_order_created": "Market order created (buy {sideCase} {amount} {baseCurrency} at price Market)",
+  "market_order_filled": "Market order filled (buy {sideCase} {amount} {baseCurrency} at price {price} {termCurrency})"
 }
