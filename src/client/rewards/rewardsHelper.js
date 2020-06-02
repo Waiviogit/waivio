@@ -30,6 +30,7 @@ export const preparePropositionReqData = ({
 
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
+    reqData.radius = radius;
   }
   if (area && area.length > 0 && radius) {
     reqData.area = area;

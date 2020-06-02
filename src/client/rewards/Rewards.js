@@ -41,6 +41,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
 import { delay } from './rewardsHelpers';
+import { RADIUS } from '../../common/constants/map';
 
 @withRouter
 @injectIntl
@@ -95,8 +96,8 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'proximity',
-    radius: 50000000,
+    sort: 'reward',
+    radius: RADIUS,
     coordinates: [],
     campaignsTypes: [],
     objectDetails: {},
@@ -112,7 +113,6 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
@@ -122,13 +122,23 @@ class Rewards extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match } = nextProps;
-
+    const { match, userLocation } = nextProps;
+    const { username } = this.props;
+    const { radius, coordinates, sort, activeFilters } = this.state;
+    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation)) {
+      this.getPropositions({
+        username,
+        match,
+        coordinates: [+userLocation.lat, +userLocation.lon],
+        radius,
+        sort,
+        activeFilters,
+      });
+    }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
     if (match.params.filterKey !== 'create') {
-      const { radius, coordinates, sort, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent

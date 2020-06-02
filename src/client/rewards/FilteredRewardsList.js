@@ -93,7 +93,7 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'proximity',
+  sort: 'reward',
   loadingCampaigns: false,
   loading: false,
 };
