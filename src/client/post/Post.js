@@ -84,8 +84,8 @@ export default class Post extends React.Component {
   componentDidMount() {
     const { match, edited, fetching, loaded, failed, content } = this.props;
     const { author, permlink } = match.params;
-
     const shouldUpdate = (!loaded && !failed) || edited;
+
     if (shouldUpdate && !fetching) {
       this.props.getContent(author, permlink);
       this.props.getAccount(author);
