@@ -107,7 +107,6 @@ const TradingForm = ({
       <div className="st-trading-form__button-wrap">
         <TradeButton size="large" type={side} onClick={handleTradeButtonClick}>
           {`${amount} ${baseCurrency} ${selectedSide}`}
-          {/* {selectLocale()} */}
         </TradeButton>
       </div>
 
