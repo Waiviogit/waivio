@@ -1131,5 +1131,6 @@
   "modal_button_buy": "КУПИТЬ",
   "modal_button_sell": "ПРОДАТЬ",
   "modal_available_balance": "Недостаточно средств на балансе",
-  "modal_absent_wallet": "У вас нет кошелька {absentWallet}"
+  "modal_absent_wallet": "У вас нет кошелька {absentWallet}",
+  "profile_updated": "Профиль обновлен"
   }
