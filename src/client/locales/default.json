@@ -834,7 +834,7 @@
   "users_auto_complete_placeholder": "Find users",
   "up_to_5_comma_delimited": "(up to 5, comma delimited)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "The value of upvotes can be accumulated on a dedicated compensation account",
-  "compensation_account": "Compensation account",
+  "compensation_account_optional": "Compensation account (optional)",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Accumulates the value of upvotes from registered upvoting accounts",
   "activate_campaign": "Activate rewards campaign",
   "amount_sort": "amount",
@@ -1131,5 +1131,7 @@
   "note": "Note",
   "count_towards_the_payment_of_rewards": "count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.",
   "guest_accounts": "Guest accounts can not change these settings",
-  "add_compensation_account": "Add compensation account"
+  "add_compensation_account": "Add compensation account",
+  "limit_order": "Limit order to buy {open_pays}",
+  "cancel_order": "Cancel order to buy {open_pays}"
 }
