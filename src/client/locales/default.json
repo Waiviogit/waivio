@@ -1159,10 +1159,8 @@
   "privacy_policy": "Privacy Policy",
   "cookies_policy": "Cookies Policy",
   "topic_name": "Topic name",
-  "modal_button_buy": "{amount} {baseCurrency} BUY",
-  "modal_button_sell": "{amount} {baseCurrency} SELL",
+  "modal_button_buy": "BUY",
+  "modal_button_sell": "SELL",
   "modal_available_balance": "Available balance is insufficient",
-  "modal_absent_wallet": "You don't have a {absentWallet} wallet",
-  "market_order_created": "Market order created ({sideAction} {amount} {baseCurrency} at price Market)",
-  "market_order_filled": "Market order filled ({sideAction} {amount} {baseCurrency} at price {price} {termCurrency})"
+  "modal_absent_wallet": "You don't have a {absentWallet} wallet"
 }

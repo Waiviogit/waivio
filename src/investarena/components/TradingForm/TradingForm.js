@@ -36,10 +36,12 @@ const TradingForm = ({
       if (amountValue < quoteSettings.minimumQuantity) {
         message.error(`Minimum ${quoteSettings.minimumQuantity} ${baseCurrency}`);
       } else {
-        message.error(intl.formatMessage({
-          id: 'modal_available_balance',
-          defaultMessage: "Available balance is insufficient",
-        }));
+        message.error(
+          intl.formatMessage({
+            id: 'modal_available_balance',
+            defaultMessage: 'Available balance is insufficient',
+          }),
+        );
       }
     } else {
       const absentWallet = !isWalletsExist[baseCurrency] ? baseCurrency : termCurrency;
@@ -47,21 +49,15 @@ const TradingForm = ({
         intl.formatMessage({
           id: 'modal_absent_wallet',
           defaultMessage: `You don't have a ${absentWallet} wallet`,
-        })
-      )
+        }),
+      );
     }
   };
 
-  const selectLocale = () => (
-      <FormattedMessage
-        id={`modal_button_${side}`}
-        defaultMessage={`{amount} {baseCurrency} ${side === 'buy' ? 'BUY' : 'SELL'}`}
-        values={{
-          amount,
-          baseCurrency,
-        }}
-      />
-    )
+  const selectedSide = intl.formatMessage({
+    id: `modal_button_${side}`,
+    defaultMessage: `${side === 'buy' ? 'BUY' : 'SELL'}`,
+  });
 
   return platformName !== 'widgets' ? (
     <div className={`st-trading-form ${side}`}>
@@ -110,7 +106,8 @@ const TradingForm = ({
 
       <div className="st-trading-form__button-wrap">
         <TradeButton size="large" type={side} onClick={handleTradeButtonClick}>
-          {selectLocale()}
+          {`${amount} ${baseCurrency} ${selectedSide}`}
+          {/* {selectLocale()} */}
         </TradeButton>
       </div>
 
@@ -203,6 +200,6 @@ TradingForm.propTypes = {
 
 TradingForm.defaultProps = {
   intl: {},
-}
+};
 
 export default injectIntl(withTrade(TradingForm));
