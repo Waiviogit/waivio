@@ -16,7 +16,7 @@ import {
   getIsAuthFetching,
 } from '../reducers';
 import { getContent } from './postActions';
-import { getAccount } from '../user/usersActions';
+import { getUserAccount } from '../user/usersActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 import Loading from '../components/Icon/Loading';
@@ -41,7 +41,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     failed: getIsPostFailed(state, ownProps.match.params.author, ownProps.match.params.permlink),
     user: getUser(state, ownProps.match.params.author),
   }),
-  { getContent, getAccount },
+  { getContent, getUserAccount },
 )
 export default class Post extends React.Component {
   static propTypes = {
@@ -54,7 +54,7 @@ export default class Post extends React.Component {
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getContent: PropTypes.func,
-    getAccount: PropTypes.func,
+    getUserAccount: PropTypes.func,
   };
 
   static defaultProps = {
@@ -65,13 +65,13 @@ export default class Post extends React.Component {
     loaded: false,
     failed: false,
     getContent: () => {},
-    getAccount: () => {},
+    getUserAccount: () => {},
   };
 
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
     return Promise.all([
-      store.dispatch(getAccount(author)),
+      store.dispatch(getUserAccount(author)),
       store.dispatch(getContent(author, permlink)),
     ]);
   }
@@ -88,7 +88,7 @@ export default class Post extends React.Component {
 
     if (shouldUpdate && !fetching) {
       this.props.getContent(author, permlink);
-      this.props.getAccount(author);
+      this.props.getUserAccount(author);
     }
 
     if (!!content && match.params.category && typeof window !== 'undefined') {
@@ -108,7 +108,7 @@ export default class Post extends React.Component {
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
         this.props.getContent(author, permlink);
-        this.props.getAccount(author);
+        this.props.getUserAccount(author);
       });
     }
   }

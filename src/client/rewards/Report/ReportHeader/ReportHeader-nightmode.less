@@ -4,6 +4,39 @@
   .ReportHeader {
     border-color: @normal-grey;
 
+    &__data {
+      &-colored {
+        .usd {
+          color: @white-smoke;
+        }
+      }
+    }
+
+    &__user-info {
+      &__user-header,
+      &__sponsor-header {
+        color: @white-smoke;
+      }
+
+      &__sponsor-name-wrap-alias {
+        color: @blue-linkWater;
+      }
+
+      &__user-name-wrap-alias {
+        color: @blue-linkWater;
+      }
+    }
+
+    &__campaignInfo {
+      &-name {
+        color: @white-smoke;
+      }
+
+      &-title {
+        color: @blue-botticelli;
+      }
+    }
+
     &__name {
       color: @white-smoke;
 
@@ -14,6 +47,32 @@
 
     &__rewardPriсe {
       color: @white;
+    }
+  }
+
+  .ReportTableRewards {
+    &__header {
+      color: @white-smoke;
+    }
+
+    .ReportTableRewardsRow {
+      &__total,
+      &__amount {
+        color: @blue-linkWater;
+      }
+    }
+  }
+
+  .ReportTableFees {
+    &__header {
+      color: @white-smoke;
+    }
+
+    .ReportTableFeesRow {
+      &__total,
+      &__amount {
+        color: @blue-linkWater;
+      }
     }
   }
 }

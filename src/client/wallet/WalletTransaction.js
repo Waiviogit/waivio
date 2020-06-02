@@ -7,8 +7,10 @@ import TransferTransaction from './TransferTransaction';
 import SavingsTransaction from './SavingsTransaction';
 import PowerUpTransaction from './PowerUpTransaction';
 import ClaimReward from './ClaimReward';
-import './UserWalletTransactions.less';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
+import WalletLimitOrder from './WalletLimitOrder';
+import WalletCancelOrder from './WalletCancelOrder';
+import './UserWalletTransactions.less';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -34,9 +36,10 @@ const WalletTransaction = ({
   currentUsername,
   totalVestingShares,
   totalVestingFundSteem,
+  isGuestPage,
 }) => {
-  const transactionType = transaction.type;
-  const transactionDetails = transaction;
+  const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
+  const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -52,6 +55,7 @@ const WalletTransaction = ({
       if (transactionDetails.to === currentUsername) {
         return (
           <ReceiveTransaction
+            isGuestPage={isGuestPage}
             from={transactionDetails.from}
             memo={transactionDetails.memo}
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
@@ -61,6 +65,7 @@ const WalletTransaction = ({
       }
       return (
         <TransferTransaction
+          isGuestPage={isGuestPage}
           to={transactionDetails.to}
           memo={transactionDetails.memo}
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
@@ -89,9 +94,23 @@ const WalletTransaction = ({
           timestamp={transaction.timestamp}
         />
       );
+    case accountHistoryConstants.LIMIT_ORDER:
+      return (
+        <WalletLimitOrder
+          transactionDetails={transactionDetails}
+          timestamp={transaction.timestamp}
+        />
+      );
     case accountHistoryConstants.FILL_ORDER:
       return (
         <WalletFillOrderTransferred
+          transactionDetails={transactionDetails}
+          timestamp={transaction.timestamp}
+        />
+      );
+    case accountHistoryConstants.CANCEL_ORDER:
+      return (
+        <WalletCancelOrder
           transactionDetails={transactionDetails}
           timestamp={transaction.timestamp}
         />
@@ -106,10 +125,12 @@ WalletTransaction.propTypes = {
   currentUsername: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
+  isGuestPage: PropTypes.bool,
 };
 
 WalletTransaction.defaultProps = {
   transactionHistory: {},
+  isGuestPage: false,
 };
 
 export default WalletTransaction;
