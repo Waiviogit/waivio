@@ -207,6 +207,7 @@ class Notifications extends React.Component {
                   <NotificationTransfer
                     key={key}
                     notification={notification}
+                    currentAuthUsername={currentAuthUsername}
                     read={read}
                     onClick={this.handleNotificationsClick}
                   />
