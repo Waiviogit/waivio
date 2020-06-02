@@ -180,8 +180,8 @@ export default class Settings extends React.Component {
           this.props.notify(
             this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
             'success',
-          )
-        }, 500)
+          );
+        }, 500),
       );
   };
 
