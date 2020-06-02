@@ -27,7 +27,6 @@ import { CHART_ID } from '../constants/objectsInvestarena';
 import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
 import { getTranslations } from '../../client/reducers';
-import { notify } from '../../client/app/Notification/notificationActions';
 
 const multiplier = 1000000;
 
