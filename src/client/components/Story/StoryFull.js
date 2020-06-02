@@ -29,7 +29,7 @@ import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
-import PostForecast from './Story';
+import PostForecast from '../../../investarena/components/PostForecast';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { getForecastData } from '../../helpers/forecastHelper';
 import PostQuotation from '../../../investarena/components/PostQuotation';
@@ -464,7 +464,7 @@ class StoryFull extends React.Component {
           </PopoverContainer>
         </div>
         {isForecastValid && (
-          <div className="Story__forecast">
+          <div className="StoryFull__forecast">
             <PostForecast
               quoteSecurity={quoteSecurity}
               postForecast={predictedEndDate}
