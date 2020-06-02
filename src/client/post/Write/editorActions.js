@@ -245,8 +245,9 @@ export function createPost(postData) {
                 const postIsPublishedMessage = getTranslations(state).post_post_is_published;
                 dispatch(notify(postIsPublishedMessage, 'success'));
               } else {
-                const postWillPublishedMessage = getTranslations(state).post_post_will_published_soon;
-                dispatch(notify(postWillPublishMessage, 'success'));
+                const postWillPublishedMessage = getTranslations(state)
+                  .post_post_will_published_soon;
+                dispatch(notify(postWillPublishedMessage, 'success'));
               }
               dispatch(push(`/@${authUser.name}`));
             })
