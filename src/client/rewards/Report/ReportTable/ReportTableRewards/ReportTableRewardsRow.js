@@ -7,7 +7,7 @@ const ReportTableRewardsRow = beneficiary => {
   const amount = beneficiary.amount ? beneficiary.amount.toFixed(3) : '';
   const totalHive = Number(votesAmount) + Number(amount);
   const payableInDollars = beneficiary.payableInDollars
-    ? `$ ${beneficiary.payableInDollars.toFixed(3)}`
+    ? `${beneficiary.payableInDollars.toFixed(2)}`
     : '';
 
   return (
