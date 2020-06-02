@@ -26,7 +26,8 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
-import {getTranslations} from "../../client/reducers";
+import { getTranslations } from '../../client/reducers';
+import { notify } from '../../client/app/Notification/notificationActions';
 
 const multiplier = 1000000;
 
@@ -496,26 +497,34 @@ export default class Umarkets {
   }
 
   parseNewOrder({ content }) {
-    // const state = this.store.getState();
+    const state = this.store.getState();
     const { amount, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const sideCase = side.toLowerCase();
-    // const publishInfo = getTranslations(state).market_order_created;
-    // this.dispatch(message.info(publishInfo))
-    message.info(
-      `Market order created (buy ${sideCase} ${amount} ${baseCurrency} at price Market)`,
-    );
+
+    const marketOrderCreated = getTranslations(state).market_order_created_first;
+    const currencyValue = `${sideCase} ${amount} ${baseCurrency}`;
+    const priceMarket = getTranslations(state).market_order_created_last;
+    const notifyMessageInfo = `${marketOrderCreated} ${currencyValue} ${priceMarket}`;
+
+    message.info(notifyMessageInfo);
   }
+
   parseMarketOrderFilled({ content }) {
+    const state = this.store.getState();
     const { amount, averagePrice, security, side } = content.order;
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const termCurrency = get(this.quotesSettings, [security, 'termCurrency'], '');
     const price = PlatformHelper.exponentialToDecimal(averagePrice);
     const sideCase = side.toLowerCase();
-    message.success(
-      `Market order filled (buy ${sideCase} ${amount} ${baseCurrency} at price ${price} ${termCurrency})`,
-      4,
-    );
+
+    const marketFilledCreated = getTranslations(state).market_order_filled_first;
+    const currencyValue = `${sideCase} ${amount} ${baseCurrency}`;
+    const atPriceMarket = getTranslations(state).market_order_filled_last;
+    const termCurrencyPrice = `${price} ${termCurrency}`;
+    const notifyMessageSuccess = `${marketFilledCreated} ${currencyValue} ${atPriceMarket} ${termCurrencyPrice}`;
+
+    message.success(notifyMessageSuccess);
   }
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);

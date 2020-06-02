@@ -1159,6 +1159,8 @@
   "privacy_policy": "Privacy Policy",
   "cookies_policy": "Cookies Policy",
   "topic_name": "Topic name",
-  "market_order_created": "Market order created (buy {sideCase} {amount} {baseCurrency} at price Market)",
-  "market_order_filled": "Market order filled (buy {sideCase} {amount} {baseCurrency} at price {price} {termCurrency})"
+  "market_order_created_first": "Market order created (buy ",
+  "market_order_created_last": "at price Market)",
+  "market_order_filled_first": "Market order filled (buy ",
+  "market_order_filled_last": "at price "
 }

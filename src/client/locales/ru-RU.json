@@ -1128,6 +1128,8 @@
   "privacy_policy": "Политикой конфиденциальности",
   "cookies_policy": "Политикой в отношении файлов cookie",
   "topic_name": "Название темы",
-  "market_order_created": "Рыночный ордер открыт (купить {sideCase} {amount} {baseCurrency} по рыночной цене)",
-  "market_order_filled": "Рыночный ордер выполнен (купить {sideCase} {amount} {baseCurrency} по цене {price} {termCurrency})"
+  "market_order_created_first": "Рыночный ордер открыт (купить ",
+  "market_order_created_last": "по рыночной цене)",
+  "market_order_filled_first": "Рыночный ордер выполнен (купить ",
+  "market_order_filled_last": "по цене "
 }
