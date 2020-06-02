@@ -22,6 +22,7 @@ import {
   getTranslations,
   getUsedLocale,
   isGuestUser,
+  activeModal,
 } from './reducers';
 import { busyLogin, login, logout, guestBalanceOnReload } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
@@ -61,6 +62,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
+    isActiveModal: activeModal(state),
   }),
   {
     login,
@@ -108,6 +110,7 @@ export default class Wrapper extends React.PureComponent {
     // screenSize: PropTypes.string.isRequired,
     guestBalanceOnReload: PropTypes.func,
     isGuest: PropTypes.bool,
+    isActiveModal: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -133,6 +136,7 @@ export default class Wrapper extends React.PureComponent {
     getMessagesQuantity: () => {},
     isGuest: false,
     guestBalanceOnReload: () => {},
+    isActiveModal: false,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -303,6 +307,7 @@ export default class Wrapper extends React.PureComponent {
       usedLocale,
       translations,
       platformName,
+      isActiveModal,
       // username,
       // isChat,
       // isAuthenticated,
@@ -335,7 +340,7 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                {!isMobileMenuOpen && <BBackTop className="primary-modal" />}
+                {!isActiveModal && <BBackTop className="primary-modal" />}
                 {/* <ChatButton */}
                 {/*  openChat={this.props.changeChatCondition} */}
                 {/*  isChat={isChat} */}
