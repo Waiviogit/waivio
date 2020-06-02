@@ -30,3 +30,5 @@ export default function(state = initialState, action) {
       return state;
   }
 }
+
+export const activeModal = state => Boolean(state.modals.length);
