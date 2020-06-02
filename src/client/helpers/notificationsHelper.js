@@ -177,7 +177,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.REBLOG:
       return `/@${currentAuthUsername}/${notification.permlink}`;
     case notificationConstants.TRANSFER:
-      return `/@${notification.from}`;
+      return `/@${notification.account}/transfers`;
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
     case notificationConstants.STATUS_CHANGE:
