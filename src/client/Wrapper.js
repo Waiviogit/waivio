@@ -340,7 +340,7 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                {!isActiveModal && <BBackTop className="primary-modal" />}
+                {!isActiveModal && !isMobileMenuOpen && <BBackTop className="primary-modal" />}
                 {/* <ChatButton */}
                 {/*  openChat={this.props.changeChatCondition} */}
                 {/*  isChat={isChat} */}

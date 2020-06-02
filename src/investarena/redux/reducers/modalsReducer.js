@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { TOGGLE_MODAL } from '../actions/modalsActions';
 import { LOGOUT } from '../../../client/auth/authActions';
 
-const initialState = { modals: [], modalsInfo: {}, activeModal: false };
+const initialState = { modals: [], modalsInfo: {}};
 
 function toggleModal(state, action) {
   if (state.modals.includes(action.payload.type)) {
@@ -10,7 +10,6 @@ function toggleModal(state, action) {
       ...state,
       modals: _.remove(state.modals, action.payload.type),
       modalsInfo: _.omit(state.modalsInfo, [action.payload.type]),
-      activeModal: false,
     };
   }
 
@@ -18,7 +17,6 @@ function toggleModal(state, action) {
     ...state,
     modals: [...state.modals, action.payload.type],
     modalsInfo: { ...state.modalsInfo, [action.payload.type]: action.payload.modalInfo },
-    activeModal: true,
   };
 }
 
@@ -33,4 +31,4 @@ export default function(state = initialState, action) {
   }
 }
 
-export const activeModal = state => state.activeModal;
+export const activeModal = state => Boolean(state.modals.length);
