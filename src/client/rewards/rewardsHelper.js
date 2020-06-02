@@ -168,7 +168,8 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));
+export const convertDigits = (number, isHive) =>
+  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);

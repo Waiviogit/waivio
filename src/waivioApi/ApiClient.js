@@ -762,8 +762,7 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
 export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
     if (!isEmpty(obj)) {
-      return {
-        payable: obj.payable,
+      let preparedObject = {
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
@@ -772,6 +771,13 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
         currency: obj.currency,
         processingFees: obj.processingFees,
       };
+      if (obj.payable) {
+        preparedObject = {
+          ...preparedObject,
+          payable: obj.payable,
+        };
+      }
+      return preparedObject;
     }
     return {
       userName: user,
