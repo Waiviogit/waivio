@@ -5,9 +5,9 @@ import { attempt, get, isEmpty, isError, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Avatar, Button, Form, Input, Modal, message } from 'antd';
-import { encodeOp } from 'steem-uri';
 import moment from 'moment';
-import { updateProfile } from '../auth/authActions';
+import SteemConnectAPI from '../steemConnectAPI';
+import { updateProfile, reload } from '../auth/authActions';
 import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
 import postingMetadataHelper from '../helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
@@ -63,6 +63,7 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    reload,
   },
 )
 @Form.create({
@@ -79,6 +80,8 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     userName: PropTypes.string,
+    reload: PropTypes.func,
+    reloading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -88,6 +91,8 @@ export default class ProfileSettings extends React.Component {
     user: '',
     isGuest: false,
     updateProfile: () => {},
+    reload: () => {},
+    reloading: false,
   };
 
   constructor(props) {
@@ -152,7 +157,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, user, userName, updateProfile, intl } = this.props;
+    const { form, isGuest, userName, updateProfile, intl, reload } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -187,21 +192,28 @@ export default class ProfileSettings extends React.Component {
             }
           });
         } else {
-          const profileDateEncoded = encodeOp(
-            [
-              ACCOUNT_UPDATE,
-              {
-                account: userName,
-                extensions: [],
-                memo_key: user.memo_key,
-                json_metadata: '',
-                posting_json_metadata: JSON.stringify({
-                  profile: { ...profileData, ...cleanValues },
+          const profileDateEncoded = [
+            ACCOUNT_UPDATE,
+            {
+              account: userName,
+              extensions: [],
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify({
+                profile: { ...profileData, ...cleanValues },
+              }),
+            },
+          ];
+          SteemConnectAPI.broadcast([profileDateEncoded])
+            .then(() => {
+              reload();
+              message.success(
+                intl.formatMessage({
+                  id: 'profile_updated',
+                  defaultMessage: 'Profile updated',
                 }),
-              },
-            ],
-            { callback: window.location.href },
-          );
+              );
+            })
+            .catch(e => message.error(e.message));
           const win = window.open(
             profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
             '_blank',
@@ -241,7 +253,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   render() {
-    const { intl, form } = this.props;
+    const { intl, form, reloading } = this.props;
     const {
       bodyHTML,
       isAvatar,
@@ -460,6 +472,7 @@ export default class ProfileSettings extends React.Component {
                     disabled ||
                     (!form.isFieldsTouched() && !avatarImage.length && !coverImage.length)
                   }
+                  loading={reloading}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
