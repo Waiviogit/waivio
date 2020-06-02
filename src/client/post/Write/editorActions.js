@@ -281,7 +281,7 @@ export function createPost(postData, beneficiaries) {
               return result;
             })
             .catch(err => {
-              let errorText = '';
+              let errorText = 'Error';
 
               if (err.error.message) {
                 errorText = err.error.message;
