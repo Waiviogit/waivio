@@ -281,14 +281,14 @@ export function createPost(postData, beneficiaries) {
               return result;
             })
             .catch(err => {
-              dispatch(
-                notify(
-                  err.error.message || err.error_description
-                    ? getErrorText(err.error_description)
-                    : '',
-                  'error',
-                ),
-              );
+              let errorText = '';
+
+              if (err.error.message) {
+                errorText = err.error.message;
+              } else if (err.error_description) {
+                errorText = getErrorText(err.error_description);
+              }
+              dispatch(notify(errorText, 'error'));
             }),
         ),
       },
