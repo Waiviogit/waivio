@@ -39,7 +39,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getObjectTypeMap, changeUpdate } from '../objectTypes/objectTypeActions';
+import { getObjectTypeMap, resetUpdatedFlag } from '../objectTypes/objectTypeActions';
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 
@@ -63,13 +63,12 @@ import { RADIUS } from '../../common/constants/map';
     activateCampaign,
     getObjectTypeMap,
     pendingUpdateSuccess,
-    changeUpdate,
+    resetUpdatedFlag,
   },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
-    // activateCampaign: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     getCoordinates: PropTypes.func.isRequired,
@@ -83,7 +82,7 @@ class Rewards extends React.Component {
     getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
-    changeUpdate: PropTypes.func.isRequired,
+    resetUpdatedFlag: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -152,7 +151,7 @@ class Rewards extends React.Component {
       match.path !== this.props.match.path ||
       match.params.filterKey !== this.props.match.params.filterKey
     ) {
-      this.props.changeUpdate();
+      this.props.resetUpdatedFlag();
     }
     if (match.params.filterKey !== 'create') {
       if (

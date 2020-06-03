@@ -94,7 +94,7 @@ const objectType = (state = initialState, action) => {
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
-    case wobjTypeActions.CHANGE_UPDATE:
+    case wobjTypeActions.RESET_UPDATED_STATE:
       return {
         ...state,
         updated: false,

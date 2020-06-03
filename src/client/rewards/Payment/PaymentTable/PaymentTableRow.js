@@ -14,7 +14,7 @@ import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
-  const getConvertDidits = obj =>
+  const getConvertDigits = obj =>
     obj.type === 'transfer'
       ? `-${convertDigits(obj.amount, isHive)}`
       : convertDigits(obj.amount, isHive);
@@ -167,7 +167,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
           sponsor={sponsor}
         />
       </td>
-      <td>{sponsor.amount ? getConvertDidits(sponsor) : 0}</td>
+      <td>{sponsor.amount ? getConvertDigits(sponsor) : 0}</td>
       <td className="PaymentTable__balance-column">
         {convertDigits(sponsor.balance, isHive) ? convertDigits(sponsor.balance, isHive) : 0}
       </td>
