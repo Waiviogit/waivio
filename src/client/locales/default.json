@@ -1133,5 +1133,11 @@
   "guest_accounts": "Guest accounts can not change these settings",
   "add_compensation_account": "Add compensation account",
   "limit_order": "Limit order to buy {open_pays}",
-  "cancel_order": "Cancel order to buy {open_pays}"
+  "cancel_order": "Cancel order to buy {open_pays}",
+  "date_picker_placeholder": "Select date",
+  "balance_more_than_zero": "Campaign could not be created. Your balance should be more than zero.",
+  "sidenav_rewards_reports": "Reports",
+  "reserve_period_thirty_days": "The reservation period must not exceed thirty days",
+  "edit_button_span_text": "Once saved, the campaign can be activated in the Campaigns/Manage tab.",
+  "create_duplicate": "create a duplicate"
 }
