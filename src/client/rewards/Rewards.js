@@ -213,7 +213,6 @@ class Rewards extends React.Component {
     } else {
       activeFilters[key].push(filter);
     }
-    this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
@@ -476,7 +475,7 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
+    const { location, intl, match, username, cryptosPriceHistory, user, userLocation } = this.props;
     const {
       sponsors,
       campaignsTypes,
@@ -520,6 +519,12 @@ class Rewards extends React.Component {
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
+      userLocation,
+      sponsors,
+      campaignsTypes,
+      activeFilters,
+      setFilterValue: this.setFilterValue,
+      setPayablesFilterValue: this.setPayablesFilterValue,
     });
 
     return (
@@ -576,11 +581,11 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && !isCreate && (
+                  {!isEmpty(userLocation) && !isCreate && (
                     <MapWrap
                       setMapArea={this.setMapArea}
                       wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
+                      userLocation={userLocation}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                     />
