@@ -114,7 +114,6 @@ class Wallet extends Component {
       isCurrentUser,
       authenticatedUserName,
       transactionsHistory,
-      usersTransactions,
     } = this.props;
 
     const username = isCurrentUser
@@ -133,9 +132,7 @@ class Wallet extends Component {
       this.props.getUserTransactionHistory(username);
     }
 
-    if (isEmpty(usersTransactions[username])) {
-      this.props.getUserAccountHistory(username);
-    }
+    this.props.getUserAccountHistory(username);
   }
 
   render() {

@@ -304,6 +304,7 @@ export default function usersReducer(state = initialState, action) {
     }
 
     case GET_USER_ACCOUNT_HISTORY.SUCCESS: {
+      // we get balance in payload only for guest users
       const { username, balance } = action.payload;
       return {
         ...state,
@@ -311,7 +312,7 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [username]: {
             ...state.users[username],
-            balance,
+            balance: get(state, ['users', username, 'balance'], balance),
           },
         },
       };
