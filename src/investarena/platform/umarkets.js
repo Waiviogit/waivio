@@ -26,7 +26,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { PlatformHelper, mutateObject, getOS } from './platformHelper';
 import { CALLERS } from '../constants/platform';
-import { getTranslations } from '../../client/reducers';
+import { getTranslationByKey } from '../../client/reducers';
 
 const multiplier = 1000000;
 
@@ -501,9 +501,9 @@ export default class Umarkets {
     const baseCurrency = get(this.quotesSettings, [security, 'baseCurrency'], '');
     const sideCase = side.toLowerCase();
 
-    const marketOrderCreated = getTranslations(state).market_order_created_first;
+    const marketOrderCreated = getTranslationByKey(state, 'market_order_created_first');
     const currencyValue = `${sideCase} ${amount} ${baseCurrency}`;
-    const priceMarket = getTranslations(state).market_order_created_last;
+    const priceMarket = getTranslationByKey(state, 'market_order_created_last');
     const notifyMessageInfo = `${marketOrderCreated} ${currencyValue} ${priceMarket}`;
 
     message.info(notifyMessageInfo);
@@ -517,14 +517,15 @@ export default class Umarkets {
     const price = PlatformHelper.exponentialToDecimal(averagePrice);
     const sideCase = side.toLowerCase();
 
-    const marketFilledCreated = getTranslations(state).market_order_filled_first;
+    const marketFilledCreated = getTranslationByKey(state, 'market_order_filled_first');
     const currencyValue = `${sideCase} ${amount} ${baseCurrency}`;
-    const atPriceMarket = getTranslations(state).market_order_filled_last;
+    const atPriceMarket = getTranslationByKey(state, 'market_order_filled_last');
     const termCurrencyPrice = `${price} ${termCurrency}`;
     const notifyMessageSuccess = `${marketFilledCreated} ${currencyValue} ${atPriceMarket} ${termCurrencyPrice}`;
 
     message.success(notifyMessageSuccess);
   }
+
   parseOrderRejected({ content }) {
     message.error(`${content.order.orderStatus} (${content.order.reason})`);
   }

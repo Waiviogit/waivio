@@ -1,5 +1,5 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
-import {get} from 'lodash';
+import { get } from 'lodash';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { GET_USER_METADATA } from '../user/usersActions';
@@ -157,6 +157,6 @@ export const getCurrentShownPost = state => state.currentShownPost;
 export const getIsMobile = state => state.isMobile;
 export const getTranslationByKey = (state, key, defaultMessage) => {
   const foundTranslation = get(getTranslations(state), key);
-  if (foundTranslation) return {id: key, defaultMessage: foundTranslation,}
-  return {id: key, defaultMessage,}
-}
+  if (foundTranslation) return foundTranslation;
+  return defaultMessage;
+};
