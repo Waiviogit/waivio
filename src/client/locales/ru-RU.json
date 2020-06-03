@@ -1132,5 +1132,9 @@
   "modal_button_sell": "ПРОДАТЬ",
   "modal_available_balance": "Недостаточно средств на балансе",
   "modal_absent_wallet": "У вас нет кошелька {absentWallet}",
+  "market_order_created_first": "Рыночный ордер открыт (купить ",
+  "market_order_created_last": "по рыночной цене)",
+  "market_order_filled_first": "Рыночный ордер выполнен (купить ",
+  "market_order_filled_last": "по цене ",
   "profile_updated": "Профиль обновлен"
-  }
+}
