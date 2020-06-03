@@ -23,7 +23,7 @@ export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
 export const CREATE_POST_SUCCESS = '@editor/CREATE_POST_SUCCESS';
 export const CREATE_POST_ERROR = '@editor/CREATE_POST_ERROR';
-export const CREATE_POST_COMPLETED = '@editor/CREATE_POST_COMPLETED';
+export const CREATE_POST_COMPLETE = '@editor/CREATE_POST_COMPLETE';
 
 export const NEW_POST = '@editor/NEW_POST';
 export const newPost = createAction(NEW_POST);
@@ -196,7 +196,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
-export const postCreationCompleted = () => dispatch => dispatch({ type: CREATE_POST_COMPLETED });
+export const postCreationCompleted = () => dispatch => dispatch({ type: CREATE_POST_COMPLETE });
 
 export function createPost(postData) {
   requiredFields.forEach(field => {

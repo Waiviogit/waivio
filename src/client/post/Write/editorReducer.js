@@ -75,7 +75,7 @@ const editor = (state = defaultState, action) => {
         error: null,
         success: true,
       };
-    case editorActions.CREATE_POST_COMPLETED:
+    case editorActions.CREATE_POST_COMPLETE:
       return {
         ...state,
         loading: false,
