@@ -226,72 +226,77 @@ export function createPost(postData, beneficiaries) {
     const getErrorText = msg => msg.split(':')[1];
 
     dispatch({
-      type: CREATE_POST,
-      payload: {
-        promise: getPermLink.then(permlink =>
-          broadcastComment(
-            steemConnectAPI,
-            isUpdating,
-            parentAuthor,
-            parentPermlink,
-            author,
-            title,
-            newBody,
-            jsonMetadata,
-            reward,
-            beneficiary,
-            !isUpdating && !isGuest && upvote,
-            permlink,
-            referral,
-            authUser.name,
-            beneficiaries,
-          )
-            .then(result => {
-              if (draftId) {
-                batch(() => {
-                  dispatch(deleteDraft(draftId));
-                  dispatch(addEditedPost(permlink));
-                });
-              }
-              if (isGuest) {
-                if (upvote) {
-                  steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-                }
-                if (result.status === 200) {
-                  dispatch(notify('Your post will be posted soon', 'success'));
-                  dispatch(push('/'));
-                }
-              } else {
-                dispatch(push(`/@${author}/${permlink}`));
-              }
-
-              if (window.analytics) {
-                window.analytics.track('Post', {
-                  category: 'post',
-                  label: 'submit',
-                  value: 10,
-                });
-              }
-
-              if (result.status === 429) {
-                dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
-              }
-
-              dispatch(clearBeneficiariesUsers());
-              return result;
-            })
-            .catch(err => {
-              let errorText = 'Error';
-
-              if (err.error && err.error.message) {
-                errorText = err.error.message;
-              } else if (err.error_description) {
-                errorText = getErrorText(err.error_description);
-              }
-              dispatch(notify(errorText, 'error'));
-            }),
-        ),
-      },
+      type: CREATE_POST_START,
     });
+
+    getPermLink.then(permlink =>
+      broadcastComment(
+        steemConnectAPI,
+        isUpdating,
+        parentAuthor,
+        parentPermlink,
+        author,
+        title,
+        newBody,
+        jsonMetadata,
+        reward,
+        beneficiary,
+        !isUpdating && !isGuest && upvote,
+        permlink,
+        referral,
+        authUser.name,
+        beneficiaries,
+      )
+        .then(result => {
+          if (draftId) {
+            batch(() => {
+              dispatch(deleteDraft(draftId));
+              dispatch(addEditedPost(permlink));
+            });
+          }
+          if (isGuest) {
+            if (upvote) {
+              steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+            }
+            if (result.status === 200) {
+              dispatch(notify('Your post will be posted soon', 'success'));
+              dispatch(push('/'));
+            }
+          } else {
+            setTimeout(() => dispatch(push(`/@${author}/${permlink}`)), 3000);
+          }
+
+          if (window.analytics) {
+            window.analytics.track('Post', {
+              category: 'post',
+              label: 'submit',
+              value: 10,
+            });
+          }
+
+          if (result.status === 429) {
+            dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            dispatch({
+              type: CREATE_POST_ERROR,
+            });
+          }
+
+          dispatch(clearBeneficiariesUsers());
+          return result;
+        })
+        .catch(err => {
+          let errorText = 'Error';
+          dispatch({
+            type: CREATE_POST_ERROR,
+            payload: err,
+          });
+          if (err.error && err.error.message) {
+            errorText = err.error.message;
+          } else if (err.error_description) {
+            errorText = getErrorText(err.error_description);
+          }
+          dispatch(notify(errorText, 'error'));
+        }),
+    );
   };
 }
