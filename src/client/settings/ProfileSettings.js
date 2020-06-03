@@ -82,6 +82,7 @@ export default class ProfileSettings extends React.Component {
     userName: PropTypes.string,
     reload: PropTypes.func,
     reloading: PropTypes.bool,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -199,26 +200,28 @@ export default class ProfileSettings extends React.Component {
               extensions: [],
               json_metadata: '',
               posting_json_metadata: JSON.stringify({
-                profile: { ...profileData, ...cleanValues },
+                profile: { ...profileData, ...cleanValues, version: 2 },
               }),
             },
           ];
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
               reload();
-              message.success(
-                intl.formatMessage({
-                  id: 'profile_updated',
-                  defaultMessage: 'Profile updated',
-                }),
-              );
+
+              setTimeout(() => {
+                message.success(
+                  intl.formatMessage({
+                    id: 'profile_updated',
+                    defaultMessage: 'Profile updated',
+                  }),
+                );
+                this.props.history.push(`/@${userName}`);
+              }, 2000);
             })
-            .catch(e => message.error(e.message));
-          const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://hivesigner.com/'),
-            '_blank',
-          );
-          win.focus();
+            .catch(e => {
+              this.setState({ isLoading: false });
+              message.error(e.message);
+            });
         }
       }
     });
@@ -226,7 +229,6 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
 
