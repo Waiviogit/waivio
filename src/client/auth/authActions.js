@@ -1,7 +1,11 @@
 import Cookie from 'js-cookie';
-import { get } from 'lodash';
 import { createAction } from 'redux-actions';
-import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+  isGuestUser,
+} from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
@@ -34,27 +38,17 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
-const getGuestBalance = async username =>
-  getGuestPaymentsHistory(username, {})
-    .then(result => get(result, ['payable'], null))
-    .catch(err => err);
-
-export const guestBalanceOnReload = () => (dispatch, getState) => {
+export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
-  const username = state.auth.user.name;
-  const promise = new Promise(async (resolve, reject) => {
-    try {
-      const getBalance = await getGuestBalance(username);
-      resolve({ guestBalance: getBalance });
-    } catch (e) {
-      reject(e);
-    }
-  });
-
-  return dispatch({
-    type: UPDATE_GUEST_BALANCE.ACTION,
-    payload: promise,
-  });
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  if (isGuest) {
+    return dispatch({
+      type: UPDATE_GUEST_BALANCE.ACTION,
+      payload: getGuestPaymentsHistory(userName),
+    });
+  }
+  return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
 };
 
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
@@ -63,7 +57,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   { steemConnectAPI, waivioAPI },
 ) => {
   const state = getState();
-  let username = null;
   let promise = Promise.resolve(null);
   let isGuest = null;
 
@@ -80,15 +73,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        username = tokenData.userData.name;
-        const getBalance = await getGuestBalance(username);
 
         resolve({
           account: tokenData.userData,
           userMetaData,
           socialNetwork,
           isGuestUser: true,
-          guestBalance: getBalance,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -102,8 +92,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        const getBalance = await getGuestBalance(username);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest, guestBalance: getBalance });
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
       }

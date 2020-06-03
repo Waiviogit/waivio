@@ -10,7 +10,6 @@ const initialState = {
   user: {},
   userMetaData: {},
   isGuestUser: false,
-  isGuestBalance: null,
 };
 
 export default (state = initialState, action) => {
@@ -68,7 +67,10 @@ export default (state = initialState, action) => {
     case types.UPDATE_GUEST_BALANCE.SUCCESS:
       return {
         ...state,
-        guestBalance: action.payload.guestBalance,
+        user: {
+          ...state.user,
+          balance: get(action.payload, ['payable'], null),
+        },
       };
 
     case types.LOGOUT:
@@ -125,4 +127,3 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
-export const getAuthGuestBalance = state => state.guestBalance;
