@@ -15,8 +15,8 @@ class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
     onContextMenu: PropTypes.func,
-    onMouseOver: PropTypes.func.isRequired,
-    onMouseOut: PropTypes.func.isRequired,
+    onMouseOver: PropTypes.func,
+    onMouseOut: PropTypes.func,
     left: PropTypes.number,
     top: PropTypes.number,
     anchor: PropTypes.arrayOf(PropTypes.number).isRequired,
@@ -31,6 +31,8 @@ class CustomMarker extends React.Component {
     left: 0,
     top: 0,
     hover: false,
+    onMouseOver: () => {},
+    onMouseOut: () => {},
   };
 
   constructor(props) {

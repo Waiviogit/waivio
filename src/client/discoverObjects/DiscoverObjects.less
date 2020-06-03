@@ -1,25 +1,42 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables';
+@import (reference) '../styles/mixins.less';
 
 //region DiscoverObjectsContent
-.discover-filters-modal.ant-modal {
-  min-width: 100vw;
-  .ant-modal-content {
-    min-height: 100vh;
-  }
-  @media @small {
-    position: absolute;
-    left: 0;
-    min-width: unset;
-    max-width: 240px;
-  }
+.discover-filters-modal {
+  .filters-ant-modal();
 }
 
 .discover-objects-header {
   &__tags-block {
-    padding-left: 0 !important;
-    padding-right: 60% !important;
+    .filters-tags-block();
   }
+
+  &__topic {
+    .filters-topic();
+  }
+
+  &__selector {
+    .filters-selector();
+  }
+
+  &__toggle-map {
+    .filters-toggle-map();
+  }
+
+  &__selection-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media @medium {
+      justify-content: flex-end;
+    }
+  }
+}
+
+.filter-highlighted {
+  color: @primary-color;
 }
 //endregion
 
@@ -30,6 +47,7 @@
     text-transform: lowercase;
     text-decoration: underline;
     padding-left: 10px;
+
     &:hover {
       color: @primary-color;
       cursor: pointer;
@@ -38,6 +56,7 @@
 
   &__loading {
     padding-top: 10px;
+
     .ant-skeleton-content .ant-skeleton-paragraph > li {
       height: 22px;
       padding-top: 16px;

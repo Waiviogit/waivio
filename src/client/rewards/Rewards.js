@@ -487,6 +487,7 @@ class Rewards extends React.Component {
       username,
       cryptosPriceHistory,
       user,
+      userLocation,
       wobjects,
       usedLocale,
     } = this.props;
@@ -592,11 +593,11 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && !isCreate && (
+                  {!isEmpty(userLocation) && !isCreate && (
                     <MapWrap
                       setMapArea={this.setMapArea}
+                      userLocation={userLocation}
                       wobjects={mapWobjects}
-                      userLocation={this.props.userLocation}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                     />
