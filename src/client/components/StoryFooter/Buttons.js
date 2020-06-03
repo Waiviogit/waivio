@@ -446,8 +446,10 @@ export default class Buttons extends React.Component {
           </React.Fragment>
         )}
         {this.renderPostPopoverMenu()}
-        {this.props.post.reblogged_users &&
-          !this.props.post.reblogged_users.includes(this.props.username) &&
+        {!(
+          this.props.post.reblogged_users &&
+          this.props.post.reblogged_users.includes(this.props.username)
+        ) &&
           this.state.shareModalVisible && (
             <Modal
               title={intl.formatMessage({

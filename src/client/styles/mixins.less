@@ -28,7 +28,7 @@
   &.active {
     border-color: @color !important;
     background-color: @color !important;
-    color: white !important;
+    color: @white !important;
   }
 }
 
@@ -51,7 +51,70 @@
   outline: none;
   cursor: pointer;
   transition: color 0.3s;
+
   &:hover {
     color: @color-hover;
+  }
+}
+
+// Mobile filters
+.filters-tags-block () {
+  padding-left: 15px;
+  padding-right: 50%;
+
+  @media @small, @medium, @large {
+    display: none;
+  }
+
+  &.common {
+    display: none;
+
+    @media @small, @medium, @large {
+      display: block;
+    }
+  }
+}
+
+.filters-topic () {
+  font-weight: 600;
+  padding-right: 5px;
+}
+
+.filters-selector () {
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: capitalize;
+
+  & > span {
+    color: @primary-color;
+  }
+
+  &:hover {
+    color: @primary-color;
+  }
+}
+
+.filters-toggle-map () {
+  padding: 10px 0 5px 15px;
+
+  @media @small, @medium, @large {
+    display: none;
+  }
+}
+
+.filters-ant-modal () {
+  &.ant-modal {
+    min-width: 100vw;
+
+    .ant-modal-content {
+      min-height: 100vh;
+    }
+
+    @media @small {
+      position: absolute;
+      left: 0;
+      min-width: unset;
+      max-width: 240px;
+    }
   }
 }

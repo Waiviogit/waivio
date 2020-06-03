@@ -239,8 +239,6 @@ export const assignProposition = ({
       primaryObjectName,
       secondaryObjectName,
       amount,
-      proposition,
-      proposedWobj,
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
