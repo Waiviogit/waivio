@@ -207,11 +207,7 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? reduce(
-        objectDetails.match_bots,
-        (acc, bot) => `${acc}, <a href='/object/${bot}/page'>${bot}</a>`,
-        '',
-      )
+    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, '')
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
