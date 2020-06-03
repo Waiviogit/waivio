@@ -72,8 +72,8 @@ const Debts = ({
           </div>
         </div>
         <div className="Debts__sort">{sortSelector}</div>
-        <div className="discover-objects-header__tags-block">
-          <span className="discover-objects-header__topic ttc">
+        <div className="Debts__filters-tags-block">
+          <span className="Debts__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
           </span>
           {map(activeFilters, filter => (
@@ -90,7 +90,7 @@ const Debts = ({
             </Tag>
           ))}
           <span
-            className="discover-objects-header__selector underline ttl"
+            className="Debts__filters-selector underline ttl"
             role="presentation"
             onClick={() => setIsModalOpen(true)}
           >
@@ -115,7 +115,7 @@ const Debts = ({
       </div>
 
       <Modal
-        className="discover-filters-modal"
+        className="Debts__filters-modal"
         footer={null}
         title={intl.formatMessage({
           id: 'filter_rewards',

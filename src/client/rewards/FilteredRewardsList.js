@@ -30,7 +30,6 @@ const FilteredRewardsList = props => {
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
-    userLocation,
     sponsors,
     activeFilters,
     setFilterValue,
@@ -87,8 +86,8 @@ const FilteredRewardsList = props => {
         </SortSelector>
       )}
       {!isEmpty(sponsors) && (
-        <div className="discover-objects-header__tags-block">
-          <span className="discover-objects-header__topic ttc">
+        <div className="FilteredRewardsList__filters-tags-block">
+          <span className="FilteredRewardsList__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
           </span>
           {map(activeFilters, (filterValues, filterName) =>
@@ -103,7 +102,7 @@ const FilteredRewardsList = props => {
             )),
           )}
           <span
-            className="discover-objects-header__selector underline ttl"
+            className="FilteredRewardsList__filters-selector underline ttl"
             role="presentation"
             onClick={() => setIsModalOpen(true)}
           >
@@ -111,8 +110,8 @@ const FilteredRewardsList = props => {
           </span>
         </div>
       )}
-      {!isEmpty(userLocation) && (
-        <div className="discover-objects-header__toggle-map tc">
+      {!isEmpty(sponsors) && (
+        <div className="FilteredRewardsList__filters-toggle-map tc">
           <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
             {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
           </Button>
@@ -131,7 +130,7 @@ const FilteredRewardsList = props => {
       </div>
 
       <Modal
-        className="discover-filters-modal"
+        className="FilteredRewardsList__filters-modal"
         footer={null}
         title={intl.formatMessage({
           id: 'filter_rewards',
@@ -179,7 +178,6 @@ FilteredRewardsList.propTypes = {
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
-  userLocation: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,

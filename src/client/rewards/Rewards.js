@@ -188,7 +188,6 @@ class Rewards extends React.Component {
     } else {
       activeFilters[key].push(filter);
     }
-    this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
