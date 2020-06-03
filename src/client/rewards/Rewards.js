@@ -39,7 +39,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import { getObjectTypeMap, changeUpdate } from '../objectTypes/objectTypeActions';
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 
@@ -63,6 +63,7 @@ import { RADIUS } from '../../common/constants/map';
     activateCampaign,
     getObjectTypeMap,
     pendingUpdateSuccess,
+    changeUpdate,
   },
 )
 class Rewards extends React.Component {
@@ -82,6 +83,7 @@ class Rewards extends React.Component {
     getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
+    changeUpdate: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -113,6 +115,14 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
+    this.getPropositions({
+      username,
+      match,
+      coordinates: [+userLocation.lat, +userLocation.lon],
+      radius,
+      sort,
+      activeFilters,
+    });
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
@@ -137,6 +147,12 @@ class Rewards extends React.Component {
     }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
+    }
+    if (
+      match.path !== this.props.match.path ||
+      match.params.filterKey !== this.props.match.params.filterKey
+    ) {
+      this.props.changeUpdate();
     }
     if (match.params.filterKey !== 'create') {
       if (

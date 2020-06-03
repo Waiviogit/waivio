@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const ReportTableFeesRow = fee => {
   const hive = fee.hive ? fee.hive.toFixed(3) : '';
-  const usd = fee.usd ? `${fee.usd.toFixed(2)}` : '';
+  const usd = fee.usd ? `$ ${fee.usd.toFixed(2)}` : '';
   const share = fee.share ? `${(fee.share / 100).toFixed(2)}%` : '';
   return (
     <tr>
