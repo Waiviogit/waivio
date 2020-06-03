@@ -191,7 +191,6 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
-export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
