@@ -15,7 +15,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { getAuthenticatedUserName, getTranslations } from '../../reducers';
+import { getAuthenticatedUserName, getTranslationByKey } from '../../reducers';
 import { attachPostInfo } from '../../helpers/postHelpers';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
@@ -242,11 +242,10 @@ export function createPost(postData) {
             .then(posts => {
               const lastPost = get(posts, '[0].permlink', '');
               if (lastPost === permlink) {
-                const postIsPublishedMessage = getTranslations(state).post_post_is_published;
+                const postIsPublishedMessage = getTranslationByKey(state, 'post_post_is_published');
                 dispatch(notify(postIsPublishedMessage, 'success'));
               } else {
-                const postWillPublishedMessage = getTranslations(state)
-                  .post_post_will_published_soon;
+                const postWillPublishedMessage = getTranslationByKey(state, 'post_post_will_published_soon');
                 dispatch(notify(postWillPublishedMessage, 'success'));
               }
               dispatch(push(`/@${authUser.name}`));

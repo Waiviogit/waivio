@@ -154,8 +154,8 @@ export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
 export const getShowPostModal = state => state.showPostModal;
 export const getCurrentShownPost = state => state.currentShownPost;
 export const getIsMobile = state => state.isMobile;
-export const getTranslationByKey = (state, key, defaultMessage) => {
-  const foundTranslation = get(getTranslations(state), key);
+export const getTranslationByKey = (state, key, defaultMessage = '') => {
+  const foundTranslation = get(getTranslations(state), key, defaultMessage);
   if (foundTranslation) return foundTranslation;
   return defaultMessage;
 };
