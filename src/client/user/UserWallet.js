@@ -24,7 +24,7 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
-  isGuestBalance,
+  getAuthGuestBalance,
   isGuestUser,
 } from '../reducers';
 import {
@@ -64,7 +64,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
-    ownGuestBalance: isGuestBalance(state),
+    ownGuestBalance: getAuthGuestBalance(state),
     isGuest: isGuestUser(state),
     ownPage:
       ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),

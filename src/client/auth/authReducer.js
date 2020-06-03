@@ -35,7 +35,7 @@ export default (state = initialState, action) => {
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
-        isGuestBalance: action.payload.isGuestBalance,
+        guestBalance: action.payload.guestBalance,
       };
 
     case types.LOGIN_ERROR:
@@ -68,7 +68,7 @@ export default (state = initialState, action) => {
     case types.UPDATE_GUEST_BALANCE.SUCCESS:
       return {
         ...state,
-        isGuestBalance: action.payload.isGuestBalance,
+        guestBalance: action.payload.guestBalance,
       };
 
     case types.LOGOUT:
@@ -125,4 +125,4 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
-export const isGuestBalance = state => state.isGuestBalance;
+export const getAuthGuestBalance = state => state.guestBalance;

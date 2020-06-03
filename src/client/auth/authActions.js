@@ -34,7 +34,7 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const getGuestBalance = async username =>
+const getGuestBalance = async username =>
   getGuestPaymentsHistory(username, {})
     .then(result => get(result, ['payable'], null))
     .catch(err => err);
@@ -45,7 +45,7 @@ export const guestBalanceOnReload = () => (dispatch, getState) => {
   const promise = new Promise(async (resolve, reject) => {
     try {
       const getBalance = await getGuestBalance(username);
-      resolve({ isGuestBalance: getBalance });
+      resolve({ guestBalance: getBalance });
     } catch (e) {
       reject(e);
     }
@@ -88,7 +88,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           userMetaData,
           socialNetwork,
           isGuestUser: true,
-          isGuestBalance: getBalance,
+          guestBalance: getBalance,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -103,7 +103,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const getBalance = await getGuestBalance(username);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest, isGuestBalance: getBalance });
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest, guestBalance: getBalance });
       } catch (e) {
         reject(e);
       }

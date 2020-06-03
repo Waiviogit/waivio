@@ -21,10 +21,11 @@ import {
   getTransferTo,
   isGuestUser,
   getGuestUserBalance,
-  isGuestBalance,
+  getAuthGuestBalance,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
 import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -43,7 +44,7 @@ const InputGroup = Input.Group;
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     guestsBalance: getGuestUserBalance(state),
-    authGuestBalance: isGuestBalance(state),
+    authGuestBalance: getAuthGuestBalance(state),
   }),
   {
     closeTransfer,
@@ -310,10 +311,7 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (
-      this.props.isGuest &&
-      (value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX))
-    ) {
+    if (this.props.isGuest && guestUserRegex.test(value)) {
       callback([
         new Error(
           intl.formatMessage({
@@ -388,7 +386,6 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
-
       authGuestBalance,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
