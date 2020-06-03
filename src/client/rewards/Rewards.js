@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import { isEmpty, map, size, includes, remove, find, filter } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
@@ -18,6 +18,7 @@ import {
   getUserLocation,
   getPendingUpdate,
   getIsMapModalOpen,
+  getSuitableLanguage,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -42,6 +43,7 @@ import * as apiConfig from '../../waivioApi/config';
 import { getObjectTypeMap, resetUpdatedFlag } from '../objectTypes/objectTypeActions';
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
+import { getClientWObj } from '../adapters';
 
 @withRouter
 @injectIntl
@@ -55,6 +57,7 @@ import { RADIUS } from '../../common/constants/map';
     wobjects: getFilteredObjectsMap(state),
     pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     assignProposition,
@@ -83,6 +86,7 @@ class Rewards extends React.Component {
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
     resetUpdatedFlag: PropTypes.func.isRequired,
+    wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
@@ -204,26 +208,27 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
-  setFilterValue = (filter, key) => {
+  setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
     const { radius, coordinates, sort } = this.state;
     const activeFilters = this.state.activeFilters;
-    if (includes(activeFilters[key], filter)) {
-      remove(activeFilters[key], f => f === filter);
+    if (includes(activeFilters[key], filterValue)) {
+      remove(activeFilters[key], f => f === filterValue);
     } else {
-      activeFilters[key].push(filter);
+      activeFilters[key].push(filterValue);
     }
+    this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
-  setPayablesFilterValue = filter => {
+  setPayablesFilterValue = filterValue => {
     const activeFilters = [...this.state.activePayableFilters];
-    if (find(activeFilters, ['filterName', filter.filterName])) {
+    if (find(activeFilters, ['filterName', filterValue.filterName])) {
       this.setState({
-        activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
+        activePayableFilters: activeFilters.filter(f => f.filterName !== filterValue.filterName),
       });
     } else {
-      activeFilters.push(filter);
+      activeFilters.push(filterValue);
       this.setState({ activePayableFilters: activeFilters });
     }
   };
@@ -475,7 +480,17 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, intl, match, username, cryptosPriceHistory, user, userLocation } = this.props;
+    const {
+      location,
+      intl,
+      match,
+      username,
+      cryptosPriceHistory,
+      user,
+      userLocation,
+      wobjects,
+      usedLocale,
+    } = this.props;
     const {
       sponsors,
       campaignsTypes,
@@ -489,6 +504,9 @@ class Rewards extends React.Component {
       loadingCampaigns,
     } = this.state;
 
+    const mapWobjects = filter(wobjects, wobject => wobject.campaigns).map(wObj =>
+      getClientWObj(wObj, usedLocale),
+    );
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
@@ -584,8 +602,8 @@ class Rewards extends React.Component {
                   {!isEmpty(userLocation) && !isCreate && (
                     <MapWrap
                       setMapArea={this.setMapArea}
-                      wobjects={this.getRequiredObjects()}
                       userLocation={userLocation}
+                      wobjects={mapWobjects}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                     />
@@ -614,10 +632,12 @@ class Rewards extends React.Component {
 Rewards.propTypes = {
   route: PropTypes.shape().isRequired,
   isFullscreenMode: PropTypes.bool,
+  usedLocale: PropTypes.string,
 };
 
 Rewards.defaultProps = {
   isFullscreenMode: false,
+  usedLocale: 'en-US',
 };
 
 export default Rewards;
