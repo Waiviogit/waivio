@@ -1,4 +1,5 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
+import { get } from 'lodash';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { GET_USER_METADATA } from '../user/usersActions';
@@ -153,3 +154,4 @@ export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
 export const getShowPostModal = state => state.showPostModal;
 export const getCurrentShownPost = state => state.currentShownPost;
 export const getIsMobile = state => state.isMobile;
+export const getTranslationByKey = (state, key, defaultMessage = '') => get(getTranslations(state), key, defaultMessage);
