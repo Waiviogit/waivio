@@ -34,7 +34,6 @@ export default (state = initialState, action) => {
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
-        guestBalance: action.payload.guestBalance,
       };
 
     case types.LOGIN_ERROR:
