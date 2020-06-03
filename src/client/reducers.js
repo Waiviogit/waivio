@@ -21,7 +21,7 @@ import quotesReducer from '../investarena/redux/reducers/quotesReducer';
 import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
 import platformReducer, * as fromPlatformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
-import modalsReducer from '../investarena/redux/reducers/modalsReducer';
+import modalsReducer, * as fromModal from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import forecastReducer, * as fromForecastReducer from '../investarena/redux/reducers/forecastReducer';
 import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
@@ -106,6 +106,8 @@ export const getAppUrl = state => fromApp.getAppUrl(state.app);
 export const getUsedLocale = state => fromApp.getUsedLocale(state.app);
 export const getScreenSize = state => fromApp.getScreenSize(state.app);
 export const getTranslations = state => fromApp.getTranslations(state.app);
+export const getTranslationByKey = (state, key, defaultMessage) =>
+  fromApp.getTranslationByKey(state.app, key, defaultMessage);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
@@ -272,3 +274,5 @@ export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.
 export const getCurrenciesDescriptions = state =>
   fromPlatformReducer.getCurrenciesDescriptions(state.platform);
 export const getIsBrokerConnected = state => fromPlatformReducer.getPlatformName(state.platform);
+
+export const activeModal = state => fromModal.activeModal(state.modals);

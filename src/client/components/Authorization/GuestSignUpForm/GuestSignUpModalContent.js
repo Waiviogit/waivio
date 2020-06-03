@@ -103,7 +103,9 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        const userAvatar = isEmpty(values.avatar) ? '' : values.avatar[0].src;
+        const userAvatar = isEmpty(values.avatar)
+          ? 'https://images.hive.blog/u/undefined/avatar/large'
+          : values.avatar[0].src;
         const userAlias = values.alias || '';
         const regData =
           userData.socialNetwork === 'beaxy'
