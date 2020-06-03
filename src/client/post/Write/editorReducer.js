@@ -73,8 +73,12 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         error: null,
-        loading: true,
         success: true,
+      };
+    case editorActions.CREATE_POST_COMPLETED:
+      return {
+        ...state,
+        loading: false,
       };
     case editorActions.SAVE_DRAFT_START:
       return {

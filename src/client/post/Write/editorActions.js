@@ -23,6 +23,7 @@ export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
 export const CREATE_POST_SUCCESS = '@editor/CREATE_POST_SUCCESS';
 export const CREATE_POST_ERROR = '@editor/CREATE_POST_ERROR';
+export const CREATE_POST_COMPLETED = '@editor/CREATE_POST_COMPLETED';
 
 export const NEW_POST = '@editor/NEW_POST';
 export const newPost = createAction(NEW_POST);
@@ -195,6 +196,8 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
+export const postCreationCompleted = () => dispatch => dispatch({ type: CREATE_POST_COMPLETED });
+
 export function createPost(postData) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
@@ -245,10 +248,14 @@ export function createPost(postData) {
                 const postIsPublishedMessage = getTranslationByKey(state, 'post_post_is_published');
                 dispatch(notify(postIsPublishedMessage, 'success'));
               } else {
-                const postWillPublishedMessage = getTranslationByKey(state, 'post_post_will_published_soon');
+                const postWillPublishedMessage = getTranslationByKey(
+                  state,
+                  'post_post_will_published_soon',
+                );
                 dispatch(notify(postWillPublishedMessage, 'success'));
               }
               dispatch(push(`/@${authUser.name}`));
+              dispatch(postCreationCompleted());
             })
             .catch(err => console.error(err));
         }, 6000);
@@ -300,6 +307,7 @@ export function createPost(postData) {
 
                 result.json().then(err => {
                   dispatch(notify(err.error.message || err.error_description, 'error'));
+                  dispatch(postCreationCompleted());
                 });
               } else {
                 if (draftId) {
@@ -321,6 +329,7 @@ export function createPost(postData) {
             })
             .catch(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
+              dispatch(postCreationCompleted());
             }),
         },
       });
