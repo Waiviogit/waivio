@@ -82,13 +82,12 @@ export default (state = initialState, action) => {
         ...state,
         appUrl: action.payload,
       };
-    case appTypes.SET_USED_LOCALE: {
+    case appTypes.SET_USED_LOCALE:
       return {
         ...state,
         usedLocale: action.payload.id,
         translations: action.payload.translations,
       };
-    }
     case appTypes.SET_SCREEN_SIZE:
       return {
         ...state,
