@@ -21,7 +21,7 @@ import quotesReducer from '../investarena/redux/reducers/quotesReducer';
 import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
 import platformReducer, * as fromPlatformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
-import modalsReducer from '../investarena/redux/reducers/modalsReducer';
+import modalsReducer, * as fromModal from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import forecastReducer, * as fromForecastReducer from '../investarena/redux/reducers/forecastReducer';
 import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
@@ -272,3 +272,5 @@ export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.
 export const getCurrenciesDescriptions = state =>
   fromPlatformReducer.getCurrenciesDescriptions(state.platform);
 export const getIsBrokerConnected = state => fromPlatformReducer.getPlatformName(state.platform);
+
+export const activeModal = state => fromModal.activeModal(state.modals);

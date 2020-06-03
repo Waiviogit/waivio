@@ -33,7 +33,6 @@ const Avatar = ({ username, size }) => {
 
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const url = getAvatarURL(username, size, authenticatedUser);
-
   if (username) {
     style = {
       ...style,
