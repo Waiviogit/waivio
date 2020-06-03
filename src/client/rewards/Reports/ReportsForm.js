@@ -452,7 +452,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable}
+              {preparedObject.filters.payable || 0}
             </div>
           </div>
         )}

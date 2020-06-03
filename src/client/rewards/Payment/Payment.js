@@ -94,7 +94,7 @@ const Payment = ({ match, intl, userName }) => {
             'Only transfer with {"id":"user_reward"} instructions are processed as rewards payments',
         })}
       </div>
-      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
     </div>
   );
 };

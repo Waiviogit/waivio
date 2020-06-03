@@ -12,10 +12,12 @@ import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
 import './PaymentTable.less';
 
-const PaymentTableRow = ({ intl, sponsor, isReports }) => {
+const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
-  const getConvertDidits = obj =>
-    obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
+  const getConvertDigits = obj =>
+    obj.type === 'transfer'
+      ? `-${convertDigits(obj.amount, isHive)}`
+      : convertDigits(obj.amount, isHive);
   const dispatch = useDispatch();
   const toggleModalReport = () => {
     const requestParams = {
@@ -165,9 +167,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
           sponsor={sponsor}
         />
       </td>
-      <td>{sponsor.amount ? getConvertDidits(sponsor) : 0}</td>
+      <td>{sponsor.amount ? getConvertDigits(sponsor) : 0}</td>
       <td className="PaymentTable__balance-column">
-        {convertDigits(sponsor.balance) ? convertDigits(sponsor.balance) : 0}
+        {convertDigits(sponsor.balance, isHive) ? convertDigits(sponsor.balance, isHive) : 0}
       </td>
     </tr>
   );
@@ -177,10 +179,12 @@ PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,
   isReports: PropTypes.bool,
+  isHive: PropTypes.bool,
 };
 
 PaymentTableRow.defaultProps = {
   isReports: false,
+  isHive: false,
 };
 
 export default injectIntl(PaymentTableRow);
