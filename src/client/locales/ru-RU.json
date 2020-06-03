@@ -1133,5 +1133,12 @@
   "guest_accounts": "Гостевые учетные записи не могут изменить эти настройки",
   "add_compensation_account": "Добавьте компенсационный счет",
   "limit_order": "Лимитный заказ на покупку {open_pays}",
-  "cancel_order": "Отмененный заказ на покупку {open_pays}"
+  "cancel_order": "Отмененный заказ на покупку {open_pays}",
+  "date_picker_placeholder": "Выберите дату",
+  "balance_more_than_zero": "Кампания не может быть создана. Ваш баланс должен быть больше нуля.",
+  "sidenav_rewards_reports": "Отчеты",
+  "reserve_period_thirty_days": "Срок бронирования не должен превышать тридцать дней",
+  "compensation_account_optional": "Компенсационный счет (необязательно)",
+  "edit_button_span_text": "После сохранения кампанию можно активировать на вкладке Кампании/Управлять.",
+  "create_duplicate": "создать дубликат"
 }
