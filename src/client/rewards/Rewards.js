@@ -537,6 +537,12 @@ class Rewards extends React.Component {
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
+      userLocation,
+      sponsors,
+      campaignsTypes,
+      activeFilters,
+      setFilterValue: this.setFilterValue,
+      setPayablesFilterValue: this.setPayablesFilterValue,
     });
 
     return (
