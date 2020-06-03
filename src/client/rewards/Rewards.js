@@ -39,8 +39,9 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import { getObjectTypeMap, resetUpdatedFlag } from '../objectTypes/objectTypeActions';
 import { delay } from './rewardsHelpers';
+import { RADIUS } from '../../common/constants/map';
 
 @withRouter
 @injectIntl
@@ -62,12 +63,12 @@ import { delay } from './rewardsHelpers';
     activateCampaign,
     getObjectTypeMap,
     pendingUpdateSuccess,
+    resetUpdatedFlag,
   },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
-    // activateCampaign: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     getCoordinates: PropTypes.func.isRequired,
@@ -81,6 +82,7 @@ class Rewards extends React.Component {
     getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
+    resetUpdatedFlag: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -96,7 +98,7 @@ class Rewards extends React.Component {
     propositions: [],
     sponsors: [],
     sort: 'reward',
-    radius: 50000000,
+    radius: RADIUS,
     coordinates: [],
     campaignsTypes: [],
     objectDetails: {},
@@ -112,7 +114,14 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({
+      username,
+      match,
+      coordinates: [+userLocation.lat, +userLocation.lon],
+      radius,
+      sort,
+      activeFilters,
+    });
     if (!username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
@@ -122,13 +131,29 @@ class Rewards extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match } = nextProps;
-
+    const { match, userLocation } = nextProps;
+    const { username } = this.props;
+    const { radius, coordinates, sort, activeFilters } = this.state;
+    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation)) {
+      this.getPropositions({
+        username,
+        match,
+        coordinates: [+userLocation.lat, +userLocation.lon],
+        radius,
+        sort,
+        activeFilters,
+      });
+    }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
+    if (
+      match.path !== this.props.match.path ||
+      match.params.filterKey !== this.props.match.params.filterKey
+    ) {
+      this.props.resetUpdatedFlag();
+    }
     if (match.params.filterKey !== 'create') {
-      const { radius, coordinates, sort, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
@@ -188,7 +213,6 @@ class Rewards extends React.Component {
     } else {
       activeFilters[key].push(filter);
     }
-    this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
@@ -451,7 +475,7 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
+    const { location, intl, match, username, cryptosPriceHistory, user, userLocation } = this.props;
     const {
       sponsors,
       campaignsTypes,
@@ -495,6 +519,12 @@ class Rewards extends React.Component {
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
+      userLocation,
+      sponsors,
+      campaignsTypes,
+      activeFilters,
+      setFilterValue: this.setFilterValue,
+      setPayablesFilterValue: this.setPayablesFilterValue,
     });
 
     return (
@@ -551,11 +581,11 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && !isCreate && (
+                  {!isEmpty(userLocation) && !isCreate && (
                     <MapWrap
                       setMapArea={this.setMapArea}
                       wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
+                      userLocation={userLocation}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                     />

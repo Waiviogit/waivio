@@ -152,16 +152,16 @@ const MobileNavigation = ({ location, match }) => {
 
   return (
     <React.Fragment>
-      <div className="discover-objects-header">
-        <span className="discover-objects-header__title">
+      <div className="MobileNavigation">
+        <span className="MobileNavigation__title">
           {pageName && (
-            <span className="discover-objects-header__topic ttc">
+            <span className="MobileNavigation__topic ttc">
               <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />
               &nbsp; &gt; &nbsp;
             </span>
           )}
           <span
-            className="discover-objects-header__selector"
+            className="MobileNavigation__selector"
             role="presentation"
             onClick={() => setModalVisibility(true)}
           >
@@ -173,7 +173,7 @@ const MobileNavigation = ({ location, match }) => {
       </div>
 
       <Modal
-        className="discover-filters-modal"
+        className="MobileNavigation__filters-modal"
         footer={null}
         title={pageName.toUpperCase()}
         closable

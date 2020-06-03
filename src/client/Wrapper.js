@@ -96,7 +96,7 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
     guestBalanceOnReload: PropTypes.func,
-    guestBalance: PropTypes.number,
+    guestBalance: PropTypes.shape(),
     isGuest: PropTypes.bool,
   };
 
