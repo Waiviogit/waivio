@@ -142,6 +142,7 @@ class CreateRewardForm extends React.Component {
             : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
+          minExpertise: campaign.userRequirements.minExpertise,
           minFollowers: campaign.userRequirements.minFollowers,
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservation_timetable,
@@ -188,6 +189,7 @@ class CreateRewardForm extends React.Component {
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    const minExpertise = Math.round(Number(data.minExpertise) * 100) / 100;
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -206,7 +208,7 @@ class CreateRewardForm extends React.Component {
       userRequirements: {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
-        minExpertise: data.minExpertise,
+        minExpertise,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
