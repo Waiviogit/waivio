@@ -1166,5 +1166,6 @@
   "market_order_created_first": "Market order created (buy ",
   "market_order_created_last": "at price Market)",
   "market_order_filled_first": "Market order filled (buy ",
-  "market_order_filled_last": "at price "
+  "market_order_filled_last": "at price ",
+  "profile_updated": "Profile updated"
 }
