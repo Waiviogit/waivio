@@ -11,6 +11,7 @@ import {
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getTransferHistory } from '../../waivioApi/ApiClient';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -211,7 +212,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
 };
 
 export const getUserAccountHistory = username => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
+  const isGuest = guestUserRegex.test(username);
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {

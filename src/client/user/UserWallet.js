@@ -11,7 +11,6 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getGuestUserBalance,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
   getScreenSize,
@@ -24,8 +23,6 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
-  isGuestBalance,
-  isGuestUser,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -60,14 +57,9 @@ import { guestUserRegex } from '../helpers/regexHelpers';
         : getUser(state, ownProps.match.params.name).name,
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
-    guestBalance: getGuestUserBalance(state),
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
-    ownGuestBalance: isGuestBalance(state),
-    isGuest: isGuestUser(state),
-    ownPage:
-      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),
   }),
   {
     getGlobalProperties,
@@ -95,14 +87,10 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    guestBalance: PropTypes.number,
     transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
-    ownGuestBalance: PropTypes.number,
-    isGuest: PropTypes.bool,
-    ownPage: PropTypes.bool,
     usersTransactions: PropTypes.shape().isRequired,
     getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
@@ -111,13 +99,10 @@ class Wallet extends Component {
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
-    guestBalance: null,
     usersTransactions: [],
     transactionsHistory: {},
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
-    ownGuestBalance: null,
-    isGuest: false,
     ownPage: false,
   };
 
@@ -129,7 +114,6 @@ class Wallet extends Component {
       isCurrentUser,
       authenticatedUserName,
       transactionsHistory,
-      usersTransactions,
     } = this.props;
 
     const username = isCurrentUser
@@ -148,23 +132,8 @@ class Wallet extends Component {
       this.props.getUserTransactionHistory(username);
     }
 
-    if (isEmpty(usersTransactions[username])) {
-      this.props.getUserAccountHistory(username);
-    }
+    this.props.getUserAccountHistory(username);
   }
-
-  selectUserBalance = () => {
-    const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
-    const isGuestWalletPage = guestUserRegex.test(user && user.name);
-    if (ownPage && isGuest) {
-      return ownGuestBalance;
-    } else if (isGuestWalletPage && !ownPage) {
-      return guestBalance;
-    } else if (!isGuestWalletPage) {
-      return user.balance;
-    }
-    return null;
-  };
 
   render() {
     const {
@@ -223,7 +192,6 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
-          balance={this.selectUserBalance()}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}

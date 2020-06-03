@@ -24,8 +24,7 @@ import {
   login,
   logout,
   busyLogin,
-  getGuestBalance,
-  guestBalanceOnReload,
+  getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
@@ -36,7 +35,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
-import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../common/constants/waivio';
+import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -55,7 +54,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
-    guestBalance: getGuestBalance(state),
     isGuest: isGuestUser(state),
   }),
   {
@@ -69,8 +67,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
-    getGuestBalance,
-    guestBalanceOnReload,
+    dispatchGetAuthGuestBalance,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -95,9 +92,7 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
-    guestBalanceOnReload: PropTypes.func,
-    guestBalance: PropTypes.shape(),
-    isGuest: PropTypes.bool,
+    dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
   static defaultProps = {
@@ -116,8 +111,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
-    guestBalanceOnReload: () => {},
-    guestBalance: null,
+    dispatchGetAuthGuestBalance: () => {},
     isGuest: false,
   };
 
@@ -161,6 +155,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.getRebloggedList();
         this.props.getRate();
+        this.props.dispatchGetAuthGuestBalance();
       });
     });
 
@@ -177,18 +172,6 @@ export default class Wrapper extends React.PureComponent {
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
-    }
-
-    if (this.props.isGuest && this.props.isAuthenticated) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          if (this.props.guestBalance !== nextProps.guestBalance) {
-            this.props.guestBalanceOnReload();
-          }
-        } catch (e) {
-          reject(e);
-        }
-      });
     }
   }
 
@@ -271,9 +254,7 @@ export default class Wrapper extends React.PureComponent {
           <AppSharedContext.Provider
             value={{
               usedLocale,
-              isGuestUser:
-                username &&
-                (username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX)),
+              isGuestUser: username && guestUserRegex.test(username),
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
