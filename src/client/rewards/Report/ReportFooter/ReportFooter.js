@@ -27,7 +27,7 @@ const ReportFooter = ({ intl, toggleModal }) => {
           {intl.formatMessage({
             id: 'only_upvotes_from_registered_accounts',
             defaultMessage: 'Only upvotes from registered accounts',
-          })}
+          })}{' '}
           (<a href={`/@${sponsor}`}>{sponsor}</a>
           {!isEmpty(singleReportData.match_bots)
             ? map(singleReportData.match_bots, bot => <a href={`/@${bot}`}>, {bot}</a>)

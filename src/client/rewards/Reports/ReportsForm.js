@@ -452,7 +452,7 @@ class ReportsForm extends Component {
                 id: 'total_amount',
                 defaultMessage: 'Total amount:',
               })}{' '}
-              {preparedObject.filters.payable}
+              {preparedObject.filters.payable || 0}
             </div>
           </div>
         )}
@@ -466,7 +466,7 @@ const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(ReportsForm
 ReportsForm.propTypes = {
   form: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
-  user: PropTypes.shape().isRequired,
+  user: PropTypes.shape(),
   userName: PropTypes.string.isRequired,
   getHistories: PropTypes.func,
 };
@@ -475,6 +475,7 @@ ReportsForm.defaultProps = {
   form: {},
   setDataForGlobalReport: () => {},
   getHistories: () => {},
+  user: {},
 };
 
 export default WrappedNormalLoginForm;
