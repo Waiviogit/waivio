@@ -18,7 +18,7 @@ import {
   getRate,
   isGuestUser,
   getAllUsers,
-  getCurrentFilteredActions,
+  getUsersAccountHistory,
 } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import {
@@ -40,7 +40,7 @@ import BTooltip from '../../components/BTooltip';
   rate: getRate(state),
   isGuest: isGuestUser(state),
   allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
-  currentFilteredActions: getCurrentFilteredActions(state),
+  usersAccountHistory: getUsersAccountHistory(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -49,7 +49,7 @@ class UserInfo extends React.Component {
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     isGuest: PropTypes.bool,
-    currentFilteredActions: PropTypes.shape(),
+    usersAccountHistory: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -57,17 +57,18 @@ class UserInfo extends React.Component {
     user: {},
     rewardFund: {},
     rate: 0,
-    currentFilteredActions: [],
+    usersAccountHistory: {},
   };
   state = {
     rc_percentage: 0,
   };
 
   getTimeFromLastAction = () => {
-    const { user, currentFilteredActions, intl } = this.props;
+    const { user, usersAccountHistory } = this.props;
+    const userKey = user.name;
+    const actionsHistory = get(usersAccountHistory, userKey, []);
     const actions = [];
-    currentFilteredActions.map(action => {
-      const defaultActive = intl.formatRelative(Date.parse(user.updatedAt));
+    actionsHistory.map(action => {
       const type = action.op[0];
       switch (type) {
         case 'account_create':
@@ -85,7 +86,7 @@ class UserInfo extends React.Component {
         case 'fill_vesting_withdraw':
           return actions.push(action);
         default:
-          return defaultActive;
+          return '';
       }
     });
     const lastActionElement = first(actions);
@@ -112,13 +113,10 @@ class UserInfo extends React.Component {
     let profile = {};
     let website = null;
     let about = null;
-    let lastActive;
+    let lastActive = null;
     let email;
 
-    // console.log('filterTypeAction: ', this.getTimeFromLastAction())
-
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      // lastActive = intl.formatRelative(Date.parse(user.updatedAt));
       lastActive = this.getTimeFromLastAction();
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
