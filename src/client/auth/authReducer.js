@@ -11,7 +11,6 @@ const initialState = {
   user: {},
   userMetaData: {},
   isGuestUser: false,
-  isGuestBalance: null,
 };
 
 export default (state = initialState, action) => {
@@ -35,7 +34,6 @@ export default (state = initialState, action) => {
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
         isGuestUser: action.payload.isGuestUser,
-        isGuestBalance: action.payload.isGuestBalance,
       };
     case types.LOGIN_ERROR:
       return {
@@ -63,8 +61,12 @@ export default (state = initialState, action) => {
     case types.UPDATE_GUEST_BALANCE.SUCCESS:
       return {
         ...state,
-        isGuestBalance: action.payload.isGuestBalance,
+        user: {
+          ...state.user,
+          balance: get(action.payload, ['payable'], null),
+        },
       };
+
     case types.LOGOUT:
       return initialState;
     case GET_USER_METADATA.SUCCESS:
@@ -115,4 +117,3 @@ export const getAuthenticatedUserAvatar = state => {
   return undefined;
 };
 export const isGuestUser = state => state.isGuestUser;
-export const isGuestBalance = state => state.isGuestBalance;

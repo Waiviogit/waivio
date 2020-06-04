@@ -1,6 +1,7 @@
-import _ from 'lodash';
+import { get } from 'lodash';
 import * as actions from './usersActions';
 import { LOGOUT } from '../auth/authActions';
+import { GET_USER_ACCOUNT_HISTORY } from '../wallet/walletActions';
 
 const initialState = {
   users: {},
@@ -113,6 +114,21 @@ export default function usersReducer(state = initialState, action) {
           hasMore: false,
         },
       };
+    case GET_USER_ACCOUNT_HISTORY.SUCCESS: {
+      // we get balance in payload only for guest users
+      const { username, balance } = action.payload;
+      const usernameKey = getUserDetailsKey(username);
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [usernameKey]: {
+            ...state.users[usernameKey],
+            balance: get(state, ['users', usernameKey, 'balance'], balance),
+          },
+        },
+      };
+    }
     case LOGOUT:
       return initialState;
     default: {
@@ -121,7 +137,7 @@ export default function usersReducer(state = initialState, action) {
   }
 }
 
-export const getUser = (state, username) => _.get(state.users, getUserDetailsKey(username), {});
+export const getUser = (state, username) => get(state.users, getUserDetailsKey(username), {});
 export const getIsUserFetching = (state, username) => getUser(state, username).fetching || false;
 export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;

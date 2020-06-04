@@ -82,7 +82,6 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
 
 const UserWalletSummary = ({
   user,
-  balance,
   loading,
   totalVestingShares,
   totalVestingFundSteem,
@@ -144,7 +143,7 @@ const UserWalletSummary = ({
             <UserWalletSummaryLoading />
           ) : (
             <span>
-              <FormattedNumber value={balance ? parseFloat(balance) : 0} />
+              <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
               {' HIVE'}
             </span>
           )}
@@ -214,15 +213,15 @@ const UserWalletSummary = ({
           </div>
         </React.Fragment>
       )}
-      {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
+      {!(loading || loadingGlobalProperties || steemRateLoading) && (
         <div className="UserWalletSummary__item">
           <i className="iconfont icon-people_fill UserWalletSummary__icon" />
           <div className="UserWalletSummary__label">
             <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
           </div>
           <div className="UserWalletSummary__value">
-            {loading || loadingGlobalProperties || steemRateLoading ? (
-              <UserWalletSummaryLoading />
+            {isGuest ? (
+              <USDDisplay value={user.balance * steemRate} />
             ) : (
               <USDDisplay
                 value={calculateEstAccountValue(
@@ -244,7 +243,6 @@ const UserWalletSummary = ({
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
-  balance: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
@@ -264,7 +262,6 @@ UserWalletSummary.defaultProps = {
   loading: false,
   steemRateLoading: false,
   isGuest: false,
-  balance: 0,
   beaxyBalance: [],
   isShowMore: false,
   hasMoreBalances: false,

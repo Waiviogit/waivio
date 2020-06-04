@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// noinspection ES6CheckImport
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -12,7 +13,6 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getGuestUserBalance,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
   getScreenSize,
@@ -26,8 +26,6 @@ import {
   getPlatformName,
   getBeaxyWallet,
   getCurrenciesDescriptions,
-  isGuestBalance,
-  isGuestUser,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -63,17 +61,12 @@ const initWalletsQuantity = 5;
         : getUser(state, ownProps.match.params.name).name,
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
-    guestBalance: getGuestUserBalance(state),
     platformName: getPlatformName(state),
     beaxyBalance:
       ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state)
         ? getBeaxyWallet(state)
         : [],
     currenciesDescriptions: getCurrenciesDescriptions(state),
-    ownGuestBalance: isGuestBalance(state),
-    isGuest: isGuestUser(state),
-    ownPage:
-      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),
   }),
   {
     getGlobalProperties,
@@ -102,11 +95,7 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    guestBalance: PropTypes.number,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
-    ownGuestBalance: PropTypes.func,
-    isGuest: PropTypes.bool,
-    ownPage: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -116,9 +105,6 @@ class Wallet extends Component {
     platformName: '',
     beaxyBalance: [],
     currenciesDescriptions: {},
-    ownGuestBalance: null,
-    isGuest: false,
-    ownPage: false,
   };
 
   state = {
@@ -129,7 +115,6 @@ class Wallet extends Component {
     const {
       totalVestingShares,
       totalVestingFundSteem,
-      usersTransactions,
       user,
       isCurrentUser,
       authenticatedUserName,
@@ -142,9 +127,7 @@ class Wallet extends Component {
       this.props.getGlobalProperties();
     }
 
-    if (isEmpty(usersTransactions[getUserDetailsKey(username)])) {
-      this.props.getUserAccountHistory(username);
-    }
+    this.props.getUserAccountHistory(username);
 
     if (isEmpty(user)) {
       this.props.getAccount(username);
@@ -166,21 +149,6 @@ class Wallet extends Component {
 
   showMoreToggler = () => {
     this.setState({ isShowMoreBeaxy: !this.state.isShowMoreBeaxy });
-  };
-
-  selectUserBalance = () => {
-    const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
-
-    const isGuestWalletPage = guestUserRegex.test(user && user.name);
-
-    if (ownPage && isGuest) {
-      return ownGuestBalance;
-    } else if (isGuestWalletPage && !ownPage) {
-      return guestBalance;
-    } else if (!isGuestWalletPage) {
-      return user.balance;
-    }
-    return null;
   };
 
   render() {
@@ -240,8 +208,6 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
-          balance={this.selectUserBalance()}
-          beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
           hasMoreBalances={
             !isZeroBalancesOnly || this.props.beaxyBalance.length > initWalletsQuantity
