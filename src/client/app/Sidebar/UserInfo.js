@@ -2,10 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { get, truncate } from 'lodash';
+import {
+  injectIntl,
+  FormattedMessage,
+  FormattedNumber,
+  FormattedTime,
+  FormattedDate,
+  FormattedRelative,
+} from 'react-intl';
+import { get, truncate, first } from 'lodash';
 import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate, isGuestUser, getAllUsers } from '../../reducers';
+import {
+  getUser,
+  getRewardFund,
+  getRate,
+  isGuestUser,
+  getAllUsers,
+  getCurrentFilteredActions,
+} from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import {
   calculateDownVote,
@@ -17,6 +31,7 @@ import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
+import BTooltip from '../../components/BTooltip';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -25,6 +40,7 @@ import { getMetadata } from '../../helpers/postingMetadata';
   rate: getRate(state),
   isGuest: isGuestUser(state),
   allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
+  currentFilteredActions: getCurrentFilteredActions(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -33,6 +49,7 @@ class UserInfo extends React.Component {
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     isGuest: PropTypes.bool,
+    currentFilteredActions: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -40,9 +57,52 @@ class UserInfo extends React.Component {
     user: {},
     rewardFund: {},
     rate: 0,
+    currentFilteredActions: [],
   };
   state = {
     rc_percentage: 0,
+  };
+
+  getTimeFromLastAction = () => {
+    const { user, currentFilteredActions, intl } = this.props;
+    const actions = [];
+    currentFilteredActions.map(action => {
+      const defaultActive = intl.formatRelative(Date.parse(user.updatedAt));
+      const type = action.op[0];
+      switch (type) {
+        case 'account_create':
+        case 'account_create_with_delegation':
+        case 'vote':
+        case 'account_update2':
+        case 'comment':
+        case 'delete_comment':
+        case 'custom_json':
+        case 'follow':
+        case 'reblog':
+        case 'curation_reward':
+        case 'author_reward':
+        case 'account_witness_vote':
+        case 'fill_vesting_withdraw':
+          return actions.push(action);
+        default:
+          return defaultActive;
+      }
+    });
+    const lastActionElement = first(actions);
+    const time = get(lastActionElement, 'timestamp');
+    return (
+      <BTooltip
+        title={
+          <span>
+            <FormattedDate value={`${time}Z`} /> <FormattedTime value={`${time}Z`} />
+          </span>
+        }
+      >
+        <span>
+          <FormattedRelative value={`${time}Z`} />
+        </span>
+      </BTooltip>
+    );
   };
 
   render() {
@@ -55,8 +115,11 @@ class UserInfo extends React.Component {
     let lastActive;
     let email;
 
+    // console.log('filterTypeAction: ', this.getTimeFromLastAction())
+
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = intl.formatRelative(Date.parse(user.updatedAt));
+      // lastActive = intl.formatRelative(Date.parse(user.updatedAt));
+      lastActive = this.getTimeFromLastAction();
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');
