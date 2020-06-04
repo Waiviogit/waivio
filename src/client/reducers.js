@@ -76,7 +76,6 @@ export const getAuthenticateduserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
@@ -205,7 +204,6 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
-export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);

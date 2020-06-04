@@ -24,7 +24,12 @@ import {
   isGuestUser,
   activeModal,
 } from './reducers';
-import { busyLogin, login, logout, guestBalanceOnReload } from './auth/authActions';
+import {
+  busyLogin,
+  login,
+  logout,
+  getAuthGuestBalance as dispatchGetAuthGuestBalance,
+} from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
   changeChatCondition,
@@ -78,7 +83,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     setUsedLocale,
     getChartsData,
     changeChatCondition,
-    guestBalanceOnReload,
+    dispatchGetAuthGuestBalance,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -104,12 +109,10 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
-    isAuthenticated: PropTypes.bool.isRequired,
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
-    guestBalanceOnReload: PropTypes.func,
-    isGuest: PropTypes.bool,
+    dispatchGetAuthGuestBalance: PropTypes.func.isRequired,
     isActiveModal: PropTypes.bool,
   };
 
@@ -135,7 +138,6 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
-    guestBalanceOnReload: () => {},
     isActiveModal: false,
   };
 
@@ -182,6 +184,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.getPerformersStatistic();
         this.props.getNotifications();
         this.props.busyLogin();
+        this.props.dispatchGetAuthGuestBalance();
       });
       // if (this.props.username) {
       //   getMessagesQuantity(this.props.username).then(data =>
@@ -196,16 +199,6 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRate();
       this.props.getChartsData();
     });
-
-    if (this.props.isGuest && this.props.isAuthenticated) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          this.props.guestBalanceOnReload();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {

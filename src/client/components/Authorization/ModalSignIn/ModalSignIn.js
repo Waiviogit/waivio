@@ -5,7 +5,7 @@ import { batch, useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { get } from 'lodash';
 import SteemConnect from '../../../steemConnectAPI';
-import { login, beaxyLogin, busyLogin } from '../../../auth/authActions';
+import { login, beaxyLogin, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import {
   isUserRegistered,
   beaxyLoginByCredentials,
@@ -46,6 +46,7 @@ const ModalSignIn = ({ visible, next, isAuth, isLoaded, isAuthAction, hideModal 
             dispatch(getRewardFund());
             dispatch(getRebloggedList());
             dispatch(getRate());
+            dispatch(getAuthGuestBalance());
           });
         });
       } else {
