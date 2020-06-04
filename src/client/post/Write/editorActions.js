@@ -255,7 +255,7 @@ export function createPost(postData) {
               dispatch({ type: CREATE_POST_SUCCESS });
             })
             .catch(err => console.error(err));
-        }, 6000);
+        }, 8000);
       };
 
       dispatch({ type: CREATE_POST_START });
