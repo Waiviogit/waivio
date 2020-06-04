@@ -17,6 +17,7 @@ import {
   getIsMapModalOpen,
   getSuitableLanguage,
   getUpdatedMap,
+  getUpdatedMapDiscover,
 } from '../../reducers';
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
@@ -33,7 +34,7 @@ const defaultCoords = {
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
     mapWobjects: getFilteredObjectsMap(state),
-    updated: getUpdatedMap(state),
+    updated: getUpdatedMap(state) || getUpdatedMapDiscover(state),
   }),
   {
     setMapFullscreenMode,

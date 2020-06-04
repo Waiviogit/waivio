@@ -222,6 +222,8 @@ export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
 export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
 export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
+export const getUpdatedMapDiscover = state =>
+  fromObjectType.getUpdatedMapDiscover(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
