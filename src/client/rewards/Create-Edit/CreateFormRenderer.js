@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { isEmpty, map, get } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
@@ -49,6 +50,7 @@ const CreateFormRenderer = props => {
     iAgree,
     isPending,
     isDuplicate,
+    intl,
   } = props;
 
   const currentItemId = get(match, ['params', 'campaignId']);
@@ -290,7 +292,7 @@ const CreateFormRenderer = props => {
             valuePropName: fields.checkboxReceiptPhoto.valuePropName,
             initialValue: receiptPhoto,
           })(
-            <Checkbox defaultChecked={receiptPhoto} disabled={disabled}>
+            <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title huge-text">
                 {fields.checkboxReceiptPhoto.title}
               </span>
@@ -388,7 +390,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.eligibleDays.name, {
             rules: fields.eligibleDays.rules,
             initialValue: eligibleDays,
-          })(<Input type="number" disabled={disabled} defaultValue={eligibleDays} />)}
+          })(<Input type="number" disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
         </Form.Item>
 
@@ -418,7 +420,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.usersLegalNotice.name, {
             rules: fields.usersLegalNotice.rules,
             initialValue: usersLegalNotice,
-          })(<Input.TextArea disabled={disabled} defaultValue={usersLegalNotice} />)}
+          })(<Input.TextArea disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
 
@@ -441,7 +443,16 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,
             initialValue: expiredAt,
-          })(<DatePicker allowClear={false} disabled={disabled} />)}
+          })(
+            <DatePicker
+              allowClear={false}
+              disabled={disabled}
+              placeholder={intl.formatMessage({
+                id: 'date_picker_placeholder',
+                defaultMessage: 'Select date',
+              })}
+            />,
+          )}
         </Form.Item>
 
         <Form.Item label={fields.commissionAgreement.label}>
@@ -504,6 +515,7 @@ CreateFormRenderer.defaultProps = {
   commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
+  isPending: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -553,10 +565,11 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
-  isPending: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool,
   isDuplicate: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
   match: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default CreateFormRenderer;
+export default injectIntl(CreateFormRenderer);

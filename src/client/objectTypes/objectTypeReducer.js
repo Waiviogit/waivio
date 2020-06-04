@@ -62,15 +62,11 @@ const objectType = (state = initialState, action) => {
       };
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
-      const { locale } = action.meta;
       const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
-      const filteredObjects = relatedWobjects
-        .filter(
-          wObj =>
-            !wObj.status ||
-            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-        )
-        .map(wObj => getClientWObj(wObj, locale));
+      const filteredObjects = relatedWobjects.filter(
+        wObj =>
+          !wObj.status || (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+      );
       return {
         ...state,
         data,

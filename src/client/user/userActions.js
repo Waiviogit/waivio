@@ -242,10 +242,10 @@ export const assignProposition = ({
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
+        app: appName,
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
-          app: appName,
         },
       }),
     },
