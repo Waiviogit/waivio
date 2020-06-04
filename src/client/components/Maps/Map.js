@@ -18,7 +18,7 @@ import {
   getSuitableLanguage,
   getUpdatedMap,
 } from '../../reducers';
-import { setMapFullscreenMode } from './mapActions';
+import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
 import './Map.less';
@@ -37,6 +37,7 @@ const defaultCoords = {
   }),
   {
     setMapFullscreenMode,
+    resetUpdatedFlag,
   },
 )
 class MapOS extends React.Component {
@@ -63,24 +64,38 @@ class MapOS extends React.Component {
   componentDidMount() {
     const { radius, center } = this.state;
     const { setMapArea } = this.props;
-    setMapArea({ radius, coordinates: center });
+    setMapArea({ radius, coordinates: center }, { isMap: true });
     document.addEventListener('click', this.handleClick);
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { zoom, center } = this.state;
-    const { mapWobjects, updated } = this.props;
+    const { mapWobjects, updated, match } = this.props;
+    const propsMatch = get(match, ['params', ['filterKey']]);
+    const prevPropsMatch = get(prevProps.match, ['params', ['filterKey']]);
+    if (propsMatch !== prevPropsMatch) {
+      this.updateMap();
+    }
     if (prevProps.updated !== updated) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ needUpdate: false, zoom: mapWobjects.length < 6 ? 3 : zoom });
     }
 
     if (prevState.zoom !== zoom || !isEqual(prevState.center, center)) {
-      const { setMapArea } = this.props;
-      const newRadius = this.calculateRadius(zoom);
-      setMapArea({ radius: newRadius, coordinates: center });
+      this.updateMap();
     }
   }
+
+  componentWillUnmount() {
+    this.props.resetUpdatedFlag();
+  }
+
+  updateMap = () => {
+    const { center, zoom } = this.state;
+    const { setMapArea } = this.props;
+    const newRadius = this.calculateRadius(zoom);
+    setMapArea({ radius: newRadius, coordinates: center }, { isMap: true });
+  };
 
   onBoundsChanged = ({ center, zoom }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
@@ -103,7 +118,7 @@ class MapOS extends React.Component {
   };
 
   getMarkers = () => {
-    const { wobjects } = this.props;
+    const { wobjects, match } = this.props;
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
@@ -113,7 +128,7 @@ class MapOS extends React.Component {
         const lng =
           getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
           get(wobject, 'map.coordinates[0]');
-        const isMarked = Boolean(wobject && wobject.campaigns);
+        const isMarked = Boolean(wobject && wobject.campaigns) || match.path.includes('rewards');
         return lat && lng ? (
           <CustomMarker
             key={`obj${wobject.author_permlink}`}
@@ -203,7 +218,7 @@ class MapOS extends React.Component {
     this.toggleModal().then(() => {
       const { setMapArea } = this.props;
       const { radius, center } = this.state;
-      setMapArea({ radius, coordinates: center });
+      setMapArea({ radius, coordinates: center }, { isMap: true });
     });
   };
 
@@ -332,6 +347,8 @@ MapOS.propTypes = {
   getAreaSearchData: PropTypes.func,
   mapWobjects: PropTypes.arrayOf(PropTypes.shape()),
   updated: PropTypes.bool,
+  match: PropTypes.shape().isRequired,
+  resetUpdatedFlag: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

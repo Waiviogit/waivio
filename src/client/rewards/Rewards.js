@@ -197,11 +197,14 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates }) => {
+  setMapArea = ({ radius, coordinates }, options) => {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    this.getPropositions({ username, match, area: coordinates, radius, activeFilters, limit });
+    this.getPropositions(
+      { username, match, area: coordinates, radius, activeFilters, limit },
+      options,
+    );
   };
 
   getRequiredObjects = () =>
@@ -211,7 +214,7 @@ class Rewards extends React.Component {
       .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
 
   getAreaSearchData = ({ radius, coordinates }) => {
-    this.setState({ isSearchAreaFilter: true });
+    this.setState({ isSearchAreaFilter: true, loadingCampaigns: true });
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
@@ -242,7 +245,7 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }) => {
+  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }, options) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -256,19 +259,23 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
-      this.props.getPropositionsForMap(data.campaigns);
       this.setState({
-        propositions: data.campaigns,
-        hasMore: data.hasMore,
         sponsors: data.sponsors,
         campaignsTypes: data.campaigns_types,
         area,
         radius,
         sort,
-        loadingCampaigns: false,
         loading: false,
-        isSearchAreaFilter: false,
       });
+      if (options) {
+        this.props.getPropositionsForMap(data.campaigns);
+      } else {
+        this.setState({
+          propositions: data.campaigns,
+          hasMore: data.hasMore,
+          loadingCampaigns: false,
+        });
+      }
     });
   };
 
@@ -612,6 +619,7 @@ class Rewards extends React.Component {
                       wobjects={mapWobjects}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
+                      match={match}
                     />
                   )}
                   {!isEmpty(sponsors) && !isCreate && (

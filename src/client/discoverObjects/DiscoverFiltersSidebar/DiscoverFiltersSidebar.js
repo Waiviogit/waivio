@@ -62,6 +62,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
           userLocation={userLocation}
           customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
           onCustomControlClick={handleMapSearchClick}
+          match={match}
         />
       ) : null}
       {!isEmpty(filters) ? (
