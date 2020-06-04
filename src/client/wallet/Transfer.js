@@ -20,11 +20,10 @@ import {
   getTransferMemo,
   getTransferTo,
   isGuestUser,
-  getGuestUserBalance,
-  isGuestBalance,
 } from '../reducers';
 import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, GUEST_PREFIX, WAIVIO_GUEST_PREFIX } from '../../common/constants/waivio';
+import { BANK_ACCOUNT } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -42,8 +41,6 @@ const InputGroup = Input.Group;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    guestsBalance: getGuestUserBalance(state),
-    authGuestBalance: isGuestBalance(state),
   }),
   {
     closeTransfer,
@@ -69,7 +66,6 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    authGuestBalance: PropTypes.number,
   };
 
   static defaultProps = {
@@ -82,8 +78,6 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
-    guestsBalance: 0,
-    authGuestBalance: 0,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -180,7 +174,7 @@ export default class Transfer extends React.Component {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
 
-        if (values.to.startsWith(GUEST_PREFIX)) {
+        if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
@@ -264,8 +258,6 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl, isGuest } = this.props;
-    const guestName = value.startsWith(GUEST_PREFIX);
-    const guestNameWaivio = value.startsWith(WAIVIO_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -273,7 +265,7 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    if ((isGuest && guestName) || guestNameWaivio) {
+    if (isGuest && guestUserRegex.test(value)) {
       callback([
         new Error(
           intl.formatMessage({
@@ -357,9 +349,7 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentSelectedBalance = this.props.isGuest
-      ? this.props.authGuestBalance
-      : selectedBalance;
+    const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
         new Error(
@@ -372,25 +362,16 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const {
-      intl,
-      visible,
-      authenticated,
-      user,
-      memo,
-      screenSize,
-      isGuest,
-      authGuestBalance,
-    } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
-    const guestName = to && to.startsWith(GUEST_PREFIX);
+    const guestName = to && guestUserRegex.test(to);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const isChangesDisabled = !!memo;
-    const currentBalance = isGuest ? `${authGuestBalance} HIVE` : balance;
+    const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
