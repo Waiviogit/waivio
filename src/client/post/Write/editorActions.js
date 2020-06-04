@@ -245,85 +245,93 @@ export function createPost(postData) {
                 const postIsPublishedMessage = getTranslationByKey(state, 'post_post_is_published');
                 dispatch(notify(postIsPublishedMessage, 'success'));
               } else {
-                const postWillPublishedMessage = getTranslationByKey(state, 'post_post_will_published_soon');
+                const postWillPublishedMessage = getTranslationByKey(
+                  state,
+                  'post_post_will_published_soon',
+                );
                 dispatch(notify(postWillPublishedMessage, 'success'));
               }
               dispatch(push(`/@${authUser.name}`));
+              dispatch({ type: CREATE_POST_SUCCESS });
             })
             .catch(err => console.error(err));
         }, 6000);
       };
 
-      dispatch({
-        type: CREATE_POST,
-        payload: {
-          promise: broadcastComment(
-            steemConnectAPI,
-            isUpdating,
-            parentAuthor,
-            parentPermlink,
-            author,
-            title,
-            newBody,
-            jsonMetadata,
-            reward,
-            beneficiary,
-            !isUpdating && !isGuest && upvote,
-            permlink,
-            referral,
-            authUser.name,
-          )
-            // eslint-disable-next-line consistent-return
-            .then(result => {
-              if (isGuest) {
-                if (result.ok) {
-                  if (draftId) {
-                    batch(() => {
-                      dispatch(deleteDraft(draftId));
-                      dispatch(addEditedPost(permlink));
-                    });
-                  }
-                  if (upvote) {
-                    steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-                  }
-
-                  if (window.analytics) {
-                    window.analytics.track('Post', {
-                      category: 'post',
-                      label: 'submit',
-                      value: 10,
-                    });
-                  }
-                  dispatchPostNotification();
-                  return result;
-                }
-
-                result.json().then(err => {
-                  dispatch(notify(err.error.message || err.error_description, 'error'));
+      dispatch({ type: CREATE_POST_START });
+      broadcastComment(
+        steemConnectAPI,
+        isUpdating,
+        parentAuthor,
+        parentPermlink,
+        author,
+        title,
+        newBody,
+        jsonMetadata,
+        reward,
+        beneficiary,
+        !isUpdating && !isGuest && upvote,
+        permlink,
+        referral,
+        authUser.name,
+      )
+        // eslint-disable-next-line consistent-return
+        .then(result => {
+          if (isGuest) {
+            if (result.ok) {
+              if (draftId) {
+                batch(() => {
+                  dispatch(deleteDraft(draftId));
+                  dispatch(addEditedPost(permlink));
                 });
-              } else {
-                if (draftId) {
-                  batch(() => {
-                    dispatch(deleteDraft(draftId));
-                    dispatch(addEditedPost(permlink));
-                  });
-                }
+              }
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
 
-                if (window.analytics) {
-                  window.analytics.track('Post', {
-                    category: 'post',
-                    label: 'submit',
-                    value: 10,
-                  });
-                }
+              if (window.analytics) {
+                window.analytics.track('Post', {
+                  category: 'post',
+                  label: 'submit',
+                  value: 10,
+                });
               }
               dispatchPostNotification();
-            })
-            .catch(err => {
+              return result;
+            }
+
+            result.json().then(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
-            }),
-        },
-      });
+              dispatch({
+                type: CREATE_POST_ERROR,
+                payload: err.error.message || err.error_description,
+              });
+            });
+          } else {
+            if (draftId) {
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
+            }
+
+            if (window.analytics) {
+              window.analytics.track('Post', {
+                category: 'post',
+                label: 'submit',
+                value: 10,
+              });
+            }
+          }
+          dispatchPostNotification();
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
+          dispatch({
+            type: CREATE_POST_ERROR,
+            payload: err.error.message || err.error_description,
+          });
+        });
     });
   };
 }
