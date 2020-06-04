@@ -597,9 +597,9 @@ export const getPropositions = ({
       reqData.coordinates = coordinates;
       reqData.radius = radius;
     }
-    if (!_.isEmpty(area) && radius) {
-      reqData.radius = radius;
+    if (!_.isEmpty(area)) {
       reqData.area = area;
+      if (radius) reqData.radius = radius;
     }
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;

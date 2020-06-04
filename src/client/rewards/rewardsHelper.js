@@ -32,9 +32,9 @@ export const preparePropositionReqData = ({
     reqData.coordinates = coordinates;
     reqData.radius = radius;
   }
-  if (area && area.length > 0 && radius) {
+  if (area && area.length > 0) {
     reqData.area = area;
-    reqData.radius = radius;
+    if (radius) reqData.radius = radius;
   }
   if (types && guideNames) {
     reqData.types = types;

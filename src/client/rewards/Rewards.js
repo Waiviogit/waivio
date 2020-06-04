@@ -103,7 +103,7 @@ class Rewards extends React.Component {
     sponsors: [],
     sort: 'reward',
     radius: RADIUS,
-    coordinates: [],
+    area: [],
     campaignsTypes: [],
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
@@ -114,20 +114,21 @@ class Rewards extends React.Component {
 
   componentDidMount() {
     const { username, match, userLocation, history } = this.props;
-    const { radius, coordinates, sort, activeFilters } = this.state;
+    const { area, sort, activeFilters } = this.state;
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    this.getPropositions({
-      username,
-      match,
-      coordinates: [+userLocation.lat, +userLocation.lon],
-      radius,
-      sort,
-      activeFilters,
-    });
+    if (!isEmpty(userLocation)) {
+      this.getPropositions({
+        username,
+        match,
+        area: [+userLocation.lat, +userLocation.lon],
+        sort,
+        activeFilters,
+      });
+    }
     if (!username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.getPropositions({ username, match, area, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
         history.push(`/rewards/all`);
       }
@@ -137,13 +138,12 @@ class Rewards extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { match, userLocation } = nextProps;
     const { username } = this.props;
-    const { radius, coordinates, sort, activeFilters } = this.state;
+    const { area, sort, activeFilters } = this.state;
     if (isEmpty(this.props.userLocation) && !isEmpty(userLocation)) {
       this.getPropositions({
         username,
         match,
-        coordinates: [+userLocation.lat, +userLocation.lon],
-        radius,
+        area: [+userLocation.lat, +userLocation.lon],
         sort,
         activeFilters,
       });
@@ -166,8 +166,7 @@ class Rewards extends React.Component {
           this.getPropositions({
             username: nextProps.username,
             match,
-            coordinates,
-            radius,
+            area,
             sort,
             activeFilters,
           });
@@ -176,20 +175,17 @@ class Rewards extends React.Component {
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { username, match, pendingUpdate } = this.props;
-    const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
-    }
+    const { area, sort, activeFilters } = this.state;
     if (prevProps.username !== username && !username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.getPropositions({ username, match, area, sort, activeFilters });
       this.props.history.push(`/rewards/all`);
     }
     if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
       this.props.pendingUpdateSuccess();
       delay(6000).then(() => {
-        this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+        this.getPropositions({ username, match, area, sort, activeFilters });
       });
     }
   }
@@ -210,7 +206,7 @@ class Rewards extends React.Component {
 
   setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
-    const { radius, coordinates, sort } = this.state;
+    const { radius, area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -218,7 +214,7 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
@@ -233,12 +229,11 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
+  getPropositions = ({ username, match, area, radius, sort, activeFilters }) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
         match,
-        coordinates,
         area,
         radius,
         sort,
@@ -251,9 +246,9 @@ class Rewards extends React.Component {
         hasMore: data.hasMore,
         sponsors: data.sponsors,
         campaignsTypes: data.campaigns_types,
-        coordinates,
+        area,
         radius,
-        isSearchAreaFilter: Boolean(area),
+        isSearchAreaFilter: Boolean(radius),
         sort,
         loadingCampaigns: false,
         loading: false,
@@ -263,15 +258,12 @@ class Rewards extends React.Component {
 
   resetMapFilter = () => {
     const { username, match } = this.props;
-    const { radius, coordinates, sort, activeFilters } = this.state;
+    const { area, sort, activeFilters } = this.state;
     this.setState({ loadingCampaigns: true });
     this.getPropositions({
       username,
       match,
-      coordinates: isEmpty(coordinates)
-        ? [+this.props.userLocation.lat, +this.props.userLocation.lon]
-        : coordinates,
-      radius,
+      area: isEmpty(area) ? [+this.props.userLocation.lat, +this.props.userLocation.lon] : area,
       sort,
       activeFilters,
     });
@@ -279,10 +271,10 @@ class Rewards extends React.Component {
   };
 
   handleSortChange = sort => {
-    const { radius, coordinates, activeFilters } = this.state;
+    const { radius, area, activeFilters } = this.state;
     const { username, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
   // Propositions
@@ -453,7 +445,7 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, radius, coordinates, sort, activeFilters } = this.state;
+    const { propositions, hasMore, radius, area, sort, activeFilters } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -461,7 +453,7 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, coordinates, radius, sort });
+          const reqData = preparePropositionReqData({ username, match, area, radius, sort });
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
