@@ -65,7 +65,7 @@ const editor = (state = defaultState, action) => {
     case editorActions.CREATE_POST_ERROR:
       return {
         ...state,
-        error: action.payload.result,
+        error: action.payload,
         loading: false,
         success: false,
       };
@@ -74,10 +74,6 @@ const editor = (state = defaultState, action) => {
         ...state,
         error: null,
         success: true,
-      };
-    case editorActions.CREATE_POST_COMPLETE:
-      return {
-        ...state,
         loading: false,
       };
     case editorActions.SAVE_DRAFT_START:

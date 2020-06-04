@@ -23,7 +23,6 @@ export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
 export const CREATE_POST_SUCCESS = '@editor/CREATE_POST_SUCCESS';
 export const CREATE_POST_ERROR = '@editor/CREATE_POST_ERROR';
-export const CREATE_POST_COMPLETE = '@editor/CREATE_POST_COMPLETE';
 
 export const NEW_POST = '@editor/NEW_POST';
 export const newPost = createAction(NEW_POST);
@@ -196,8 +195,6 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations);
 };
 
-export const postCreationCompleted = () => dispatch => dispatch({ type: CREATE_POST_COMPLETE });
-
 export function createPost(postData) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
@@ -255,84 +252,86 @@ export function createPost(postData) {
                 dispatch(notify(postWillPublishedMessage, 'success'));
               }
               dispatch(push(`/@${authUser.name}`));
-              dispatch(postCreationCompleted());
+              dispatch({ type: CREATE_POST_SUCCESS });
             })
             .catch(err => console.error(err));
         }, 6000);
       };
 
-      dispatch({
-        type: CREATE_POST,
-        payload: {
-          promise: broadcastComment(
-            steemConnectAPI,
-            isUpdating,
-            parentAuthor,
-            parentPermlink,
-            author,
-            title,
-            newBody,
-            jsonMetadata,
-            reward,
-            beneficiary,
-            !isUpdating && !isGuest && upvote,
-            permlink,
-            referral,
-            authUser.name,
-          )
-            // eslint-disable-next-line consistent-return
-            .then(result => {
-              if (isGuest) {
-                if (result.ok) {
-                  if (draftId) {
-                    batch(() => {
-                      dispatch(deleteDraft(draftId));
-                      dispatch(addEditedPost(permlink));
-                    });
-                  }
-                  if (upvote) {
-                    steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-                  }
-
-                  if (window.analytics) {
-                    window.analytics.track('Post', {
-                      category: 'post',
-                      label: 'submit',
-                      value: 10,
-                    });
-                  }
-                  dispatchPostNotification();
-                  return result;
-                }
-
-                result.json().then(err => {
-                  dispatch(notify(err.error.message || err.error_description, 'error'));
-                  dispatch(postCreationCompleted());
+      dispatch({ type: CREATE_POST_START });
+      broadcastComment(
+        steemConnectAPI,
+        isUpdating,
+        parentAuthor,
+        parentPermlink,
+        author,
+        title,
+        newBody,
+        jsonMetadata,
+        reward,
+        beneficiary,
+        !isUpdating && !isGuest && upvote,
+        permlink,
+        referral,
+        authUser.name,
+      )
+        // eslint-disable-next-line consistent-return
+        .then(result => {
+          if (isGuest) {
+            if (result.ok) {
+              if (draftId) {
+                batch(() => {
+                  dispatch(deleteDraft(draftId));
+                  dispatch(addEditedPost(permlink));
                 });
-              } else {
-                if (draftId) {
-                  batch(() => {
-                    dispatch(deleteDraft(draftId));
-                    dispatch(addEditedPost(permlink));
-                  });
-                }
+              }
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
 
-                if (window.analytics) {
-                  window.analytics.track('Post', {
-                    category: 'post',
-                    label: 'submit',
-                    value: 10,
-                  });
-                }
+              if (window.analytics) {
+                window.analytics.track('Post', {
+                  category: 'post',
+                  label: 'submit',
+                  value: 10,
+                });
               }
               dispatchPostNotification();
-            })
-            .catch(err => {
+              return result;
+            }
+
+            result.json().then(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
-              dispatch(postCreationCompleted());
-            }),
-        },
-      });
+              dispatch({
+                type: CREATE_POST_ERROR,
+                payload: err.error.message || err.error_description,
+              });
+            });
+          } else {
+            if (draftId) {
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
+            }
+
+            if (window.analytics) {
+              window.analytics.track('Post', {
+                category: 'post',
+                label: 'submit',
+                value: 10,
+              });
+            }
+          }
+          dispatchPostNotification();
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
+          dispatch({
+            type: CREATE_POST_ERROR,
+            payload: err.error.message || err.error_description,
+          });
+        });
     });
   };
 }
