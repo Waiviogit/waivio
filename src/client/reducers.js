@@ -220,7 +220,8 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
-export const getUpdatedMap = state => fromObjectType.getUpdatedMap(state.objectType);
+export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
+export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);

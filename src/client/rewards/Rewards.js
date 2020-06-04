@@ -7,13 +7,13 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, size, includes, remove, find, filter } from 'lodash';
+import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getFilteredObjectsMap,
+  getObjectsMap,
   getIsLoaded,
   getUserLocation,
   getPendingUpdate,
@@ -40,7 +40,11 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getObjectTypeMap, resetUpdatedFlag } from '../objectTypes/objectTypeActions';
+import {
+  setUpdatedFlag,
+  resetUpdatedFlag,
+  getPropositionsForMap,
+} from '../components/Maps/mapActions';
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
@@ -54,7 +58,7 @@ import { getClientWObj } from '../adapters';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
-    wobjects: getFilteredObjectsMap(state),
+    wobjects: getObjectsMap(state),
     pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
@@ -64,9 +68,11 @@ import { getClientWObj } from '../adapters';
     declineProposition,
     getCoordinates,
     activateCampaign,
-    getObjectTypeMap,
+    getObjectsMap,
     pendingUpdateSuccess,
     resetUpdatedFlag,
+    setUpdatedFlag,
+    getPropositionsForMap,
   },
 )
 class Rewards extends React.Component {
@@ -82,10 +88,11 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
     resetUpdatedFlag: PropTypes.func.isRequired,
+    setUpdatedFlag: PropTypes.func.isRequired,
+    getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
@@ -190,7 +197,12 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
+  setMapArea = ({ radius, coordinates }) => {
+    const { username, match, isFullscreenMode } = this.props;
+    const limit = isFullscreenMode ? 200 : 50;
+    const { activeFilters } = this.state;
+    this.getPropositions({ username, match, area: coordinates, radius, activeFilters, limit });
+  };
 
   getRequiredObjects = () =>
     this.state.propositions &&
@@ -199,6 +211,7 @@ class Rewards extends React.Component {
       .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
 
   getAreaSearchData = ({ radius, coordinates }) => {
+    this.setState({ isSearchAreaFilter: true });
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
@@ -229,7 +242,7 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, area, radius, sort, activeFilters }) => {
+  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -239,8 +252,11 @@ class Rewards extends React.Component {
         sort,
         guideNames: activeFilters.guideNames,
         types: activeFilters.types,
+        limit,
       }),
     ).then(data => {
+      this.props.setUpdatedFlag();
+      this.props.getPropositionsForMap(data.campaigns);
       this.setState({
         propositions: data.campaigns,
         hasMore: data.hasMore,
@@ -248,10 +264,10 @@ class Rewards extends React.Component {
         campaignsTypes: data.campaigns_types,
         area,
         radius,
-        isSearchAreaFilter: Boolean(radius),
         sort,
         loadingCampaigns: false,
         loading: false,
+        isSearchAreaFilter: false,
       });
     });
   };
@@ -496,9 +512,7 @@ class Rewards extends React.Component {
       loadingCampaigns,
     } = this.state;
 
-    const mapWobjects = filter(wobjects, wobject => wobject.campaigns).map(wObj =>
-      getClientWObj(wObj, usedLocale),
-    );
+    const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';

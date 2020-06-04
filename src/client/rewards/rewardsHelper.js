@@ -19,6 +19,7 @@ export const preparePropositionReqData = ({
   sort,
   types,
   guideNames,
+  limit,
 }) => {
   const reqData = {
     limit: displayLimit,
@@ -40,6 +41,8 @@ export const preparePropositionReqData = ({
     reqData.types = types;
     reqData.guideNames = guideNames;
   }
+  if (limit) reqData.limit = limit;
+
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
