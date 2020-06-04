@@ -208,6 +208,7 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
+          beaxyBalance={beaxyBalance}
           isShowMore={isShowMoreBeaxy}
           hasMoreBalances={
             !isZeroBalancesOnly || this.props.beaxyBalance.length > initWalletsQuantity
