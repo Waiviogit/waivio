@@ -121,8 +121,6 @@ class Rewards extends React.Component {
     this.getPropositions({
       username,
       match,
-      coordinates: [+userLocation.lat, +userLocation.lon],
-      radius,
       sort,
       activeFilters,
     });
@@ -142,8 +140,6 @@ class Rewards extends React.Component {
       this.getPropositions({
         username,
         match,
-        coordinates: [+userLocation.lat, +userLocation.lon],
-        radius,
         sort,
         activeFilters,
       });
