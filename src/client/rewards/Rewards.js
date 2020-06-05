@@ -477,7 +477,12 @@ class Rewards extends React.Component {
   };
 
   goToCampaign = wobjPermlink => {
-    this.props.history.push(`/object/${wobjPermlink}`);
+    const { match } = this.props;
+    const campaignParent = get(match, ['params', 'campaignParent']);
+    const filterKey = get(match, ['params', 'filterKey']);
+    this.props.history.push(
+      campaignParent ? `/object/${wobjPermlink}` : `/rewards/${filterKey}/${wobjPermlink}`,
+    );
   };
 
   handleLoadMore = () => {

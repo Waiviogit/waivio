@@ -71,9 +71,18 @@ class MapOS extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { zoom, center } = this.state;
-    const { mapWobjects, updated, match } = this.props;
-    const propsMatch = get(match, ['params', ['filterKey']]);
-    const prevPropsMatch = get(prevProps.match, ['params', ['filterKey']]);
+    const { mapWobjects, updated, match, wobjects } = this.props;
+    console.log('wobjects', wobjects);
+    const propsMatch = get(match, ['params', 'filterKey']);
+    const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
+    const propscampaignParent = get(match, ['params', 'filterKey', 'campaignParent']);
+    const prevPropscampaignParent = get(prevProps.match, ['params', 'filterKey', 'campaignParent']);
+    const coordinates = get(wobjects, ['0', 'map', 'coordinates']);
+
+    if (propscampaignParent !== prevPropscampaignParent) {
+      this.onBoundsChanged({ center: coordinates, zoom });
+    }
+
     if (propsMatch !== prevPropsMatch) {
       this.updateMap();
     }
