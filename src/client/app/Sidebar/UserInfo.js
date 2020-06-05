@@ -10,7 +10,7 @@ import {
   FormattedDate,
   FormattedRelative,
 } from 'react-intl';
-import { get, truncate, first } from 'lodash';
+import { get, truncate } from 'lodash';
 import urlParse from 'url-parse';
 import {
   getUser,
@@ -32,6 +32,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
 import BTooltip from '../../components/BTooltip';
+import { getTimeFromLastAction } from '../../helpers/postHelpers';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -63,51 +64,8 @@ class UserInfo extends React.Component {
     rc_percentage: 0,
   };
 
-  getTimeFromLastAction = () => {
-    const { user, usersAccountHistory } = this.props;
-    const userKey = user.name;
-    const actionsHistory = get(usersAccountHistory, userKey, []);
-    const actions = [];
-    actionsHistory.map(action => {
-      const type = action.op[0];
-      switch (type) {
-        case 'account_create':
-        case 'account_create_with_delegation':
-        case 'vote':
-        case 'account_update2':
-        case 'comment':
-        case 'delete_comment':
-        case 'custom_json':
-        case 'follow':
-        case 'reblog':
-        case 'curation_reward':
-        case 'author_reward':
-        case 'account_witness_vote':
-        case 'fill_vesting_withdraw':
-          return actions.push(action);
-        default:
-          return '';
-      }
-    });
-    const lastActionElement = first(actions);
-    const time = get(lastActionElement, 'timestamp');
-    return (
-      <BTooltip
-        title={
-          <span>
-            <FormattedDate value={`${time}Z`} /> <FormattedTime value={`${time}Z`} />
-          </span>
-        }
-      >
-        <span>
-          <FormattedRelative value={`${time}Z`} />
-        </span>
-      </BTooltip>
-    );
-  };
-
   render() {
-    const { intl, user, rewardFund, rate, isGuest } = this.props;
+    const { intl, user, rewardFund, rate, isGuest, usersAccountHistory } = this.props;
     let metadata = {};
     let location = null;
     let profile = {};
@@ -117,7 +75,7 @@ class UserInfo extends React.Component {
     let email;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = this.getTimeFromLastAction();
+      lastActive = getTimeFromLastAction(user.name, usersAccountHistory);
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');
@@ -228,7 +186,19 @@ class UserInfo extends React.Component {
                     </div>
                     <div>
                       <i className="iconfont icon-time text-icon" />
-                      <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+                      <FormattedMessage id="active_info" defaultMessage="Active" />:
+                      <BTooltip
+                        title={
+                          <span>
+                            <FormattedDate value={`${lastActive}Z`} />{' '}
+                            <FormattedTime value={`${lastActive}Z`} />
+                          </span>
+                        }
+                      >
+                        <span>
+                          <FormattedRelative value={`${lastActive}Z`} />
+                        </span>
+                      </BTooltip>
                     </div>
                     <div>
                       <i className="iconfont icon-dollar text-icon" />

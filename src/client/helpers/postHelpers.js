@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import { fromPairs, get, attempt, isError, includes, unescape, split } from 'lodash';
+import { fromPairs, get, attempt, isError, includes, unescape, split, first } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
@@ -13,6 +13,7 @@ import {
 } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
+import * as activityType from '../../common/constants/accountHistory';
 
 const appVersion = require('../../../package.json').version;
 
@@ -222,3 +223,31 @@ export function isContentValid(markdownContent) {
   const { postTitle, postBody } = splitPostContent(markdownContent);
   return Boolean(postTitle && postBody.trim());
 }
+
+export const getTimeFromLastAction = (username, accountHistory) => {
+  const actionsHistory = get(accountHistory, username, []);
+  const actions = [];
+  actionsHistory.map(action => {
+    const type = action.op[0];
+    switch (type) {
+      case activityType.ACCOUNT_CREATE:
+      case activityType.ACCOUNT_CREATE_WITH_DELEGATION:
+      case activityType.VOTE:
+      case activityType.ACCOUNT_UPDATE:
+      case activityType.COMMENT:
+      case activityType.DELETE_COMMENT:
+      case activityType.CUSTOM_JSON:
+      case activityType.FOLLOW:
+      case activityType.REBLOG:
+      case activityType.CURATION_REWARD:
+      case activityType.AUTHOR_REWARD:
+      case activityType.ACCOUNT_WITNESS_VOTE:
+      case activityType.FILL_VESTING_WITHDRAW:
+        return actions.push(action);
+      default:
+        return '';
+    }
+  });
+  const lastActionElement = first(actions);
+  return get(lastActionElement, 'timestamp', null);
+};
