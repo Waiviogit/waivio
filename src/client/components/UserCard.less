@@ -18,7 +18,7 @@
   }
 
   & > &__left {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -28,20 +28,30 @@
     }
 
     .username {
-      margin-left: 8px;
+      margin-left: 0;
     }
 
     .ant-tag {
       margin-right: 0;
     }
+
+    @media @usmall {
+      display: flex;
+    }
+
+    @media @xsmall {
+      .username {
+        margin-left: 8px;
+      }
+    }
   }
 
   &__wrap {
-    display: flex;
+    display: block;
     align-items: center;
 
-    @media @xsmall-bp {
-      display: block;
+    @media @xsmall {
+      display: flex;
     }
   }
 

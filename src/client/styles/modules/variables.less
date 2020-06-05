@@ -5,11 +5,13 @@
 @right-width: 270px;
 
 // Responsive design
+@usmall-bp: 370px;
 @xsmall-bp: 400px;
 @small-bp: 768px;
 @medium-bp: 998px;
 @large-bp: 1200px;
 
+@usmall: ~'only screen and (min-width: @{usmall-bp})';
 @xsmall: ~'only screen and (min-width: @{xsmall-bp})';
 @small: ~'only screen and (min-width: @{small-bp})';
 @medium: ~'only screen and (min-width: @{medium-bp})';
