@@ -7,7 +7,19 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import {
+  isEmpty,
+  map,
+  size,
+  includes,
+  remove,
+  find,
+  flatten,
+  uniqBy,
+  get,
+  filter,
+  isEqual,
+} from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
@@ -495,6 +507,22 @@ class Rewards extends React.Component {
     }
   };
 
+  getCampaignsObjectsForMap = () => {
+    const { propositions } = this.state;
+    const secondaryObjects = flatten(
+      map(propositions, proposition => map(proposition.objects, object => object.object)),
+    );
+    const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
+    const primaryObjectForMap = get(propositions, ['0', 'required_object']);
+    const secondaryObjectsWithUniqueCoordinates = filter(
+      secondaryObjectsForMap,
+      object => !isEqual(object.map, primaryObjectForMap.map),
+    );
+    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
+
+    return campaignsObjectsForMap;
+  };
+
   render() {
     const {
       location,
@@ -559,6 +587,9 @@ class Rewards extends React.Component {
       setPayablesFilterValue: this.setPayablesFilterValue,
     });
 
+    const campaignParent = get(match, ['params', 'campaignParent']);
+    const campaignsObjectsForMap = this.getCampaignsObjectsForMap();
+
     return (
       <div className="Rewards">
         <div className="shifted">
@@ -617,7 +648,7 @@ class Rewards extends React.Component {
                     <MapWrap
                       setMapArea={this.setMapArea}
                       userLocation={userLocation}
-                      wobjects={mapWobjects}
+                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                       match={match}
