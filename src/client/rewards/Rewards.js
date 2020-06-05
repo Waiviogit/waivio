@@ -256,6 +256,7 @@ class Rewards extends React.Component {
         guideNames: activeFilters.guideNames,
         types: activeFilters.types,
         limit,
+        simplified: !!options,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();

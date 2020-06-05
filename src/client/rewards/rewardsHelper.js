@@ -20,6 +20,7 @@ export const preparePropositionReqData = ({
   types,
   guideNames,
   limit,
+  simplified,
 }) => {
   const reqData = {
     limit: displayLimit,
@@ -42,6 +43,7 @@ export const preparePropositionReqData = ({
     reqData.guideNames = guideNames;
   }
   if (limit) reqData.limit = limit;
+  if (simplified) reqData.simplified = simplified;
 
   switch (match.params.filterKey) {
     case 'active':

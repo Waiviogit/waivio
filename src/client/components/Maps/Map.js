@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, get, map, isEqual } from 'lodash';
+import { isEmpty, get, map, isEqual, debounce } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -98,12 +98,12 @@ class MapOS extends React.Component {
     setMapArea({ radius: newRadius, coordinates: center }, { isMap: true });
   };
 
-  onBoundsChanged = ({ center, zoom }) => {
+  onBoundsChanged = debounce(({ center, zoom }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
-  };
+  }, 1000);
 
   handleClick = () => {
     if (!isEmpty(this.state.infoboxData)) {

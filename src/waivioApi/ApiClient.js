@@ -582,6 +582,7 @@ export const getPropositions = ({
   coordinates,
   sort,
   match,
+  simplified,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -605,6 +606,7 @@ export const getPropositions = ({
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
+    if (simplified) reqData.simplified = simplified;
 
     const url = getUrl(match);
 
