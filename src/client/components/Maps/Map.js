@@ -73,14 +73,20 @@ class MapOS extends React.Component {
     const { zoom, center } = this.state;
     const { mapWobjects, updated, match, wobjects } = this.props;
     console.log('wobjects', wobjects);
+    console.log('match', match);
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
-    const propscampaignParent = get(match, ['params', 'filterKey', 'campaignParent']);
-    const prevPropscampaignParent = get(prevProps.match, ['params', 'filterKey', 'campaignParent']);
+    const propscampaignParent = get(match, ['params', 'campaignParent']);
+    const prevPropscampaignParent = get(prevProps.match, ['params', 'campaignParent']);
+    console.log('propscampaignParent', propscampaignParent);
+    console.log('prevPropscampaignParent', prevPropscampaignParent);
     const coordinates = get(wobjects, ['0', 'map', 'coordinates']);
 
+    console.log('coordinates', coordinates);
+
     if (propscampaignParent !== prevPropscampaignParent) {
-      this.onBoundsChanged({ center: coordinates, zoom });
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ center: coordinates ? [coordinates[1], coordinates[0]] : [] });
     }
 
     if (propsMatch !== prevPropsMatch) {
@@ -261,6 +267,7 @@ class MapOS extends React.Component {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, zoom, center } = this.state;
     const markersLayout = this.getMarkers(wobjects);
+
     return center ? (
       <div className="MapOS">
         <Map
@@ -269,7 +276,6 @@ class MapOS extends React.Component {
           center={center}
           zoom={zoom}
           height={heigth}
-          animate
         >
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
