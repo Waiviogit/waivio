@@ -32,7 +32,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
 import BTooltip from '../../components/BTooltip';
-import { getTimeFromLastAction } from '../../helpers/postHelpers';
+import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
 
 @injectIntl
 @connect((state, ownProps) => ({
