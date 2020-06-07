@@ -19,6 +19,8 @@ import {
   get,
   filter,
   isEqual,
+  reduce,
+  findIndex,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -525,7 +527,21 @@ class Rewards extends React.Component {
       secondaryObjectsForMap,
       object => object.map && !isEqual(object.map, primaryObjectForMap.map),
     );
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
+    const secondaryObjectsWithWheight = reduce(
+      secondaryObjectsWithUniqueCoordinates,
+      (acc, object) => {
+        const idx = findIndex(acc, o => isEqual(o.map, object.map));
+        if (idx === -1) {
+          return [...acc, object];
+        }
+        acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
+
+        return acc;
+      },
+      [],
+    );
+
+    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWheight];
 
     return campaignsObjectsForMap;
   };
