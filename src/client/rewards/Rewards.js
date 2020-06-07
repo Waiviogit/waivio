@@ -518,14 +518,28 @@ class Rewards extends React.Component {
       map(propositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
-    const primaryObjectForMap = get(propositions, ['0', 'required_object']);
+    const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
+      ? get(propositions, ['0', 'required_object'])
+      : {};
     const secondaryObjectsWithUniqueCoordinates = filter(
       secondaryObjectsForMap,
-      object => !isEqual(object.map, primaryObjectForMap.map),
+      object => object.map && !isEqual(object.map, primaryObjectForMap.map),
     );
     const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
 
     return campaignsObjectsForMap;
+  };
+
+  moveToCoordinates = objects => {
+    const { userLocation } = this.props;
+
+    if (!isEmpty(objects)) {
+      return get(objects, ['0', 'map', 'coordinates']) || get(objects, ['1', 'map', 'coordinates']);
+    }
+    if (userLocation.lat && userLocation.lon) {
+      return [Number(userLocation.lon), Number(userLocation.lat)];
+    }
+    return [];
   };
 
   render() {
@@ -593,7 +607,8 @@ class Rewards extends React.Component {
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const campaignsObjectsForMap = this.getCampaignsObjectsForMap();
+    const campaignsObjectsForMap = campaignParent ? this.getCampaignsObjectsForMap() : [];
+    const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
 
     return (
       <div className="Rewards">
@@ -657,6 +672,7 @@ class Rewards extends React.Component {
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                       match={match}
+                      primaryObjectCoordinates={primaryObjectCoordinates}
                     />
                   )}
                   {!isEmpty(sponsors) && !isCreate && (

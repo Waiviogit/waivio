@@ -69,25 +69,24 @@ class MapOS extends React.Component {
     document.addEventListener('click', this.handleClick);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { primaryObjectCoordinates } = this.props;
+    if (
+      !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
+      !isEmpty(nextProps.primaryObjectCoordinates)
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        center: [nextProps.primaryObjectCoordinates[1], nextProps.primaryObjectCoordinates[0]],
+      });
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { zoom, center } = this.state;
-    const { mapWobjects, updated, match, wobjects } = this.props;
-    console.log('wobjects', wobjects);
-    console.log('match', match);
+    const { mapWobjects, updated, match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
-    const propscampaignParent = get(match, ['params', 'campaignParent']);
-    const prevPropscampaignParent = get(prevProps.match, ['params', 'campaignParent']);
-    console.log('propscampaignParent', propscampaignParent);
-    console.log('prevPropscampaignParent', prevPropscampaignParent);
-    const coordinates = get(wobjects, ['0', 'map', 'coordinates']);
-
-    console.log('coordinates', coordinates);
-
-    if (propscampaignParent !== prevPropscampaignParent) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ center: coordinates ? [coordinates[1], coordinates[0]] : [] });
-    }
 
     if (propsMatch !== prevPropsMatch) {
       this.updateMap();
@@ -96,7 +95,6 @@ class MapOS extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ needUpdate: false, zoom: mapWobjects.length < 6 ? 3 : zoom });
     }
-
     if (prevState.zoom !== zoom || !isEqual(prevState.center, center)) {
       this.updateMap();
     }
@@ -365,6 +363,7 @@ MapOS.propTypes = {
   updated: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   resetUpdatedFlag: PropTypes.func.isRequired,
+  primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
 };
 
 MapOS.defaultProps = {
@@ -381,6 +380,7 @@ MapOS.defaultProps = {
   setArea: () => {},
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},
+  primaryObjectCoordinates: [],
 };
 
 export default MapOS;
