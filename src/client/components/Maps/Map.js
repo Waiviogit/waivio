@@ -65,7 +65,7 @@ class MapOS extends React.Component {
   componentDidMount() {
     const { radius, center } = this.state;
     const { setMapArea } = this.props;
-    setMapArea({ radius, coordinates: center }, { isMap: true });
+    setMapArea({ radius, coordinates: center, isMap: true });
     document.addEventListener('click', this.handleClick);
   }
 
@@ -108,7 +108,7 @@ class MapOS extends React.Component {
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({ radius: newRadius, coordinates: center }, { isMap: true });
+    setMapArea({ radius: newRadius, coordinates: center, isMap: true });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
@@ -232,7 +232,7 @@ class MapOS extends React.Component {
     this.toggleModal().then(() => {
       const { setMapArea } = this.props;
       const { radius, center } = this.state;
-      setMapArea({ radius, coordinates: center }, { isMap: true });
+      setMapArea({ radius, coordinates: center, isMap: true });
     });
   };
 

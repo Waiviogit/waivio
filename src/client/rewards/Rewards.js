@@ -211,13 +211,13 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates }, options) => {
+  setMapArea = ({ radius, coordinates, isMap }) => {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     this.getPropositions(
       { username, match, area: coordinates, radius, activeFilters, limit },
-      options,
+      isMap,
     );
   };
 
@@ -259,7 +259,7 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }, options) => {
+  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }, isMap) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -270,7 +270,7 @@ class Rewards extends React.Component {
         guideNames: activeFilters.guideNames,
         types: activeFilters.types,
         limit,
-        simplified: !!options,
+        simplified: !!isMap,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -282,7 +282,7 @@ class Rewards extends React.Component {
         sort,
         loading: false,
       });
-      if (options) {
+      if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
       } else {
         this.setState({
