@@ -106,7 +106,7 @@ export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
 export const getFilteredObjectsMap = state => state.mapWobjects;
-export const getUpdatedMap = state => state.updated;
+export const getUpdatedMapDiscover = state => state.updated;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
 export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;
