@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, debounce, size, map } from 'lodash';
+import { get, isNull, isEmpty, debounce, map } from 'lodash';
 import { AutoComplete, Form, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
@@ -89,7 +89,6 @@ export default class Transfer extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
-    searchByUser: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -159,15 +158,6 @@ export default class Transfer extends React.Component {
         currency: HIVE.symbol,
       });
     }
-
-    // if (!this.props.visible) {
-    //   this.setState({
-    //     searchBarValue: '',
-    //     searchData: '',
-    //     currentItem: 'All',
-    //     dropdownOpen: false,
-    //   })
-    // }
   }
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
@@ -194,54 +184,6 @@ export default class Transfer extends React.Component {
     }
     this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
   }
-
-  usersSearchLayout(accounts) {
-    return (
-      <AutoComplete.OptGroup
-        key="usersTitle"
-        label={this.renderTitle(
-          this.props.intl.formatMessage({
-            id: 'users_search_title',
-            defaultMessage: 'Users',
-          }),
-          size(accounts),
-        )}
-      >
-        {map(
-          accounts,
-          option =>
-            option && (
-              <AutoComplete.Option
-                marker={Transfer.markers.USER}
-                key={option.account}
-                value={option.account}
-                className="Topnav__search-autocomplete"
-              >
-                <div className="Topnav__search-content-wrap">
-                  <Avatar username={option.account} size={40} />
-                  <div className="Topnav__search-content">{option.account}</div>
-                </div>
-              </AutoComplete.Option>
-            ),
-        )}
-      </AutoComplete.OptGroup>
-    );
-  }
-
-  prepareOptions(searchResults) {
-    const { searchData } = this.state;
-    const { searchByUser } = this.props;
-    const dataSource = [];
-
-    if (!searchData) {
-      dataSource.push(this.usersSearchLayout(searchResults.users));
-    } else {
-      dataSource.push(this.usersSearchLayout(searchByUser.slice(0, 15)));
-    }
-    return dataSource;
-  }
-
-  renderTitle = title => <span>{title}</span>;
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -503,6 +445,8 @@ export default class Transfer extends React.Component {
       isGuest,
       autoCompleteSearchResults,
     } = this.props;
+    const foundUsers = autoCompleteSearchResults.users;
+    const { Option } = AutoComplete;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
@@ -536,23 +480,6 @@ export default class Transfer extends React.Component {
 
     const usdValue = this.getUSDValue();
 
-    const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-        <div
-          className="search-btn"
-          role="presentation"
-          title={this.state.searchBarValue.length > 60 ? this.state.searchBarValue : ''}
-        />
-      </AutoComplete.Option>
-    );
-
-    const formattedAutoCompleteDropdown = isEmpty(dropdownOptions)
-      ? dropdownOptions
-      : dropdownOptions.concat([downBar]);
-    console.log('autoCompleteSearchResults: ', autoCompleteSearchResults);
-
     return (
       <Modal
         visible={visible}
@@ -578,7 +505,6 @@ export default class Transfer extends React.Component {
             })(
               <AutoComplete
                 dropdownClassName="Transfer__search-dropdown-container"
-                dataSource={formattedAutoCompleteDropdown}
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.hideAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}
@@ -592,7 +518,21 @@ export default class Transfer extends React.Component {
                   id: 'to_placeholder',
                   defaultMessage: 'Payment recipient',
                 })}
-              />,
+              >
+                {map(foundUsers, option => (
+                  <Option
+                    marker={Transfer.markers.USER}
+                    key={option.account}
+                    value={option.account}
+                    className="Topnav__search-autocomplete"
+                  >
+                    <div className="Topnav__search-content-wrap">
+                      <Avatar username={option.account} size={40} />
+                      <div className="Topnav__search-content">{option.account}</div>
+                    </div>
+                  </Option>
+                ))}
+              </AutoComplete>,
             )}
           </Form.Item>
           {guestName && (
