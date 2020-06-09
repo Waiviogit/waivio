@@ -1139,5 +1139,6 @@
   "sidenav_rewards_reports": "Reports",
   "reserve_period_thirty_days": "The reservation period must not exceed thirty days",
   "edit_button_span_text": "Once saved, the campaign can be activated in the Campaigns/Manage tab.",
-  "create_duplicate": "create a duplicate"
+  "create_duplicate": "create a duplicate",
+  "date_and_time_picker_placeholder": "Select date and time"
 }

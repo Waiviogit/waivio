@@ -273,8 +273,8 @@ class ReportsForm extends Component {
                     disabled={false}
                     onChange={this.setDateFrom}
                     placeholder={intl.formatMessage({
-                      id: 'date_picker_placeholder',
-                      defaultMessage: 'Select date',
+                      id: 'date_and_time_picker_placeholder',
+                      defaultMessage: 'Select date and time',
                     })}
                   />,
                 )}
@@ -302,6 +302,10 @@ class ReportsForm extends Component {
                     allowClear={false}
                     disabled={false}
                     onChange={this.setDateTill}
+                    placeholder={intl.formatMessage({
+                      id: 'date_and_time_picker_placeholder',
+                      defaultMessage: 'Select date and time',
+                    })}
                   />,
                 )}
               </Form.Item>
