@@ -582,6 +582,7 @@ export const getPropositions = ({
   coordinates,
   sort,
   match,
+  simplified,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -597,14 +598,15 @@ export const getPropositions = ({
       reqData.coordinates = coordinates;
       reqData.radius = radius;
     }
-    if (!_.isEmpty(area) && radius) {
-      reqData.radius = radius;
+    if (!_.isEmpty(area) && _.isEmpty(requiredObject)) {
       reqData.area = area;
+      if (radius) reqData.radius = radius;
     }
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
+    if (simplified) reqData.simplified = simplified;
 
     const url = getUrl(match);
 
