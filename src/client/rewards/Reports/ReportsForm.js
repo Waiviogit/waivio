@@ -272,6 +272,10 @@ class ReportsForm extends Component {
                     allowClear={false}
                     disabled={false}
                     onChange={this.setDateFrom}
+                    placeholder={intl.formatMessage({
+                      id: 'date_picker_placeholder',
+                      defaultMessage: 'Select date',
+                    })}
                   />,
                 )}
               </Form.Item>
@@ -290,7 +294,7 @@ class ReportsForm extends Component {
               >
                 {form.getFieldDecorator('till', {
                   rules: [{ required: false }],
-                  initialValue: moment(),
+                  // initialValue: moment(),
                 })(
                   <DatePicker
                     disabledDate={this.disabledEndDate}
