@@ -508,11 +508,8 @@ export default class Transfer extends React.Component {
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.hideAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}
-                defaultActiveFirstOption={false}
-                dropdownMatchSelectWidth={false}
                 optionLabelProp="value"
                 dropdownStyle={{ color: 'red' }}
-                value={this.state.searchBarValue}
                 open={this.state.dropdownOpen && visible}
                 placeholder={intl.formatMessage({
                   id: 'to_placeholder',
