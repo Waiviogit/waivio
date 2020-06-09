@@ -926,17 +926,29 @@ export const isUserRegistered = (id, socialNetwork) => {
     .then(data => data.result);
 };
 
-export const broadcastGuestOperation = async (operationId, data) => {
+export const broadcastGuestOperation = async (operationId, isReview, data) => {
   const userData = await getValidTokenData();
   if (userData.token) {
-    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
-      method: 'POST',
-      headers: { ...headers, 'access-token': userData.token },
-      body: JSON.stringify({
+    let body;
+    if (isReview) {
+      body = {
         id: operationId,
         data: { operations: data },
         userName: userData.userData.name,
-      }),
+        guestReview: true,
+      };
+    } else {
+      body = {
+        id: operationId,
+        data: { operations: data },
+        userName: userData.userData.name,
+      };
+    }
+
+    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+      method: 'POST',
+      headers: { ...headers, 'access-token': userData.token },
+      body: JSON.stringify(body),
     }).then(data => data);
   }
 };
