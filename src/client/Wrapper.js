@@ -6,7 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-import moment from 'moment';
+import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
@@ -247,11 +247,10 @@ export default class Wrapper extends React.PureComponent {
     } = this.props;
 
     const language = findLanguage(usedLocale);
-    moment.locale(language.localeData);
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <ConfigProvider locale={language.localeData}>
+        <ConfigProvider locale={enUS}>
           <AppSharedContext.Provider
             value={{
               usedLocale,
