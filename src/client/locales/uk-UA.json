@@ -796,5 +796,14 @@
   "travel": "подорожі",
   "beneficiaries-weights": "Отримувачі",
   "find_users_placeholder": "Знайти користувачів",
-  "add_compensation_account": "Добавте компенсаційний рахунок"
+  "add_compensation_account": "Добавте компенсаційний рахунок",
+  "sidenav_rewards_reports": "Звіти",
+  "date_and_time_picker_placeholder": "Оберіть дату та час",
+  "reports": "Звіти",
+  "with_links_to_object": "З посиланнями на об'єкт",
+  "or_total_amount": "Або загальна сума:",
+  "include_processing_fees": "Включити збори",
+  "enter_amount": "Введіть суму",
+  "from": "Від",
+  "till": "До"
 }
