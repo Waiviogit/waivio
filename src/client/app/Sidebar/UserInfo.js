@@ -33,6 +33,7 @@ import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio
 import { getMetadata } from '../../helpers/postingMetadata';
 import BTooltip from '../../components/BTooltip';
 import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -74,8 +75,10 @@ class UserInfo extends React.Component {
     let lastActive = null;
     let email;
 
+    const isGuestPage = guestUserRegex.test(user && user.name);
+
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = getTimeFromLastAction(user.name, usersAccountHistory);
+      lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');

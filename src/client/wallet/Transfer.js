@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import classNames from 'classnames';
-import { get, isNull, isEmpty, debounce, size, map, forEach } from 'lodash';
+import { get, isNull, isEmpty, debounce, size, map } from 'lodash';
 import { AutoComplete, Form, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
@@ -35,7 +34,6 @@ import {
 import { BANK_ACCOUNT } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
-import listOfObjectTypes from '../../common/constants/listOfObjectTypes';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -86,9 +84,6 @@ export default class Transfer extends React.Component {
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
     searchAutoComplete: PropTypes.func.isRequired,
-    searchObjectsAutoCompete: PropTypes.func.isRequired,
-    searchUsersAutoCompete: PropTypes.func.isRequired,
-    searchObjectTypesAutoCompete: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
     autoCompleteSearchResults: PropTypes.oneOfType([
       PropTypes.shape(),
@@ -124,16 +119,12 @@ export default class Transfer extends React.Component {
 
   static markers = {
     USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
     SELECT_BAR: 'searchSelectBar',
   };
 
   constructor(props) {
     super(props);
-
     this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
-    this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
@@ -168,94 +159,32 @@ export default class Transfer extends React.Component {
         currency: HIVE.symbol,
       });
     }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
-    }
+    // if (!this.props.visible) {
+    //   this.setState({
+    //     searchBarValue: '',
+    //     searchData: '',
+    //     currentItem: 'All',
+    //     dropdownOpen: false,
+    //   })
+    // }
   }
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
-
-  debouncedSearchByObject = debounce((searchString, objType) =>
-    this.props.searchObjectsAutoCompete(searchString, objType),
-  );
-
-  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
-
-  debouncedSearchByObjectTypes = debounce(searchString =>
-    this.props.searchObjectTypesAutoCompete(searchString),
-  );
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
     this.setState({ dropdownOpen: true });
   }
 
-  handleSelectOnAutoCompleteDropdown(value, data) {
-    if (data.props.marker === Transfer.markers.SELECT_BAR) {
-      const optionValue = value.split('#')[1];
-
-      if (value === `${Transfer.markers.SELECT_BAR}#All`) {
-        this.setState({
-          searchData: '',
-          dropdownOpen: true,
-          currentItem: optionValue,
-        });
-
-        return;
-      }
-      const nextState = {
-        searchData: {
-          subtype: optionValue,
-          type: data.props.type,
-        },
-        dropdownOpen: true,
-        currentItem: optionValue,
-      };
-
-      if (data.props.type === 'wobject') {
-        this.setState(nextState);
-        this.debouncedSearchByObject(this.state.searchBarValue, optionValue);
-
-        return;
-      }
-
-      if (data.props.type === 'user' || data.props.type === 'type') {
-        this.setState(nextState);
-
-        return;
-      }
-    }
-    // eslint-disable-next-line no-unused-vars
-    let redirectUrl = '';
-
-    switch (data.props.marker) {
-      case Transfer.markers.USER:
-        redirectUrl = `/@${value.replace('user', '')}`;
-        break;
-      case Transfer.markers.WOBJ:
-        redirectUrl = `/object/${value.replace('wobj', '')}`;
-        break;
-      default:
-        redirectUrl = `/discover-objects/${value.replace('type', '')}`;
-    }
-
-    // this.props.history.push(redirectUrl);
-    this.setState({ dropdownOpen: false });
-    this.hideAutoCompleteDropdown();
-  }
-
   hideAutoCompleteDropdown() {
-    this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
+    this.setState(
+      { searchBarActive: false, dropdownOpen: false },
+      this.props.resetSearchAutoCompete,
+    );
   }
 
-  handleOnChangeForAutoComplete(value, data) {
+  handleOnChangeForAutoComplete(value) {
     if (!value) {
       this.setState({
         searchBarValue: '',
@@ -263,25 +192,7 @@ export default class Transfer extends React.Component {
         currentItem: '',
       });
     }
-
-    if (value[0] === '@') {
-      this.setState({
-        searchBarValue: value,
-        searchData: {
-          subtype: 'Users',
-          type: 'user',
-        },
-        currentItem: 'Users',
-      });
-    } else if (
-      data.props.marker === Transfer.markers.TYPE ||
-      data.props.marker === Transfer.markers.USER ||
-      data.props.marker === Transfer.markers.WOBJ
-    )
-      this.setState({ searchBarValue: '' });
-    else if (data.props.marker !== Transfer.markers.SELECT_BAR) {
-      this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
-    }
+    this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
   }
 
   usersSearchLayout(accounts) {
@@ -322,106 +233,15 @@ export default class Transfer extends React.Component {
     const { searchByUser } = this.props;
     const dataSource = [];
 
-    if (!isEmpty(searchResults)) {
-      dataSource.push(this.searchSelectBar(searchResults));
-    }
     if (!searchData) {
-      if (!isEmpty(searchResults.users))
-        dataSource.push(this.usersSearchLayout(searchResults.users));
-    } else if (searchData.type === 'user') {
+      dataSource.push(this.usersSearchLayout(searchResults.users));
+    } else {
       dataSource.push(this.usersSearchLayout(searchByUser.slice(0, 15)));
     }
-
     return dataSource;
   }
 
-  searchSelectBar = searchResults => {
-    const options = this.getTranformSearchCountData(searchResults);
-
-    return (
-      <AutoComplete.OptGroup key={Transfer.markers.SELECT_BAR} label=" ">
-        {map(options, option => (
-          <AutoComplete.Option
-            marker={Transfer.markers.SELECT_BAR}
-            key={`type${option.name}`}
-            value={`${Transfer.markers.SELECT_BAR}#${option.name}`}
-            type={option.type}
-            className={this.changeItemClass(option.name)}
-          >
-            {`${option.name}(${option.count})`}
-          </AutoComplete.Option>
-        ))}
-      </AutoComplete.OptGroup>
-    );
-  };
-
   renderTitle = title => <span>{title}</span>;
-
-  getTranformSearchCountData = searchResults => {
-    const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
-
-    const wobjectAllCount = wobjectsCounts
-      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-      : null;
-    const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
-    const countArr = [{ name: 'All', count: countAllSearch }];
-
-    if (!isEmpty(wobjectsCounts)) {
-      const wobjList = listOfObjectTypes.reduce((acc, i) => {
-        const index = wobjectsCounts.findIndex(obj => obj.object_type === i);
-
-        if (index >= 0) {
-          acc.push(wobjectsCounts[index]);
-        }
-
-        return acc;
-      }, []);
-
-      forEach(wobjList, current => {
-        const obj = {};
-
-        obj.name = current.object_type;
-        obj.count = current.count;
-        obj.type = 'wobject';
-        countArr.push(obj);
-      });
-    }
-    if (usersCount) {
-      countArr.push({ name: 'Users', count: usersCount, type: 'user' });
-    }
-  };
-
-  changeItemClass = key =>
-    classNames('ant-select-dropdown-menu-item', {
-      'Topnav__search-selected-active': this.state.currentItem === key,
-    });
-
-  handleSearchAllResultsClick = () => {
-    const { searchData, searchBarValue } = this.state;
-
-    this.handleOnBlur();
-    let redirectUrl = '';
-
-    switch (searchData.type) {
-      case 'wobject':
-        redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
-        break;
-      case 'user':
-        redirectUrl = `/discover/${searchBarValue.replace('@', '')}`;
-        break;
-      case 'type':
-      default:
-        redirectUrl = `/discover-objects?search=${searchBarValue}`;
-        break;
-    }
-    return redirectUrl;
-  };
-
-  handleOnBlur = () => {
-    this.setState({
-      dropdownOpen: false,
-    });
-  };
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -722,7 +542,6 @@ export default class Transfer extends React.Component {
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
         <div
           className="search-btn"
-          onClick={this.handleSearchAllResultsClick}
           role="presentation"
           title={this.state.searchBarValue.length > 60 ? this.state.searchBarValue : ''}
         />
@@ -732,6 +551,7 @@ export default class Transfer extends React.Component {
     const formattedAutoCompleteDropdown = isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
+    console.log('autoCompleteSearchResults: ', autoCompleteSearchResults);
 
     return (
       <Modal
@@ -760,15 +580,14 @@ export default class Transfer extends React.Component {
                 dropdownClassName="Transfer__search-dropdown-container"
                 dataSource={formattedAutoCompleteDropdown}
                 onSearch={this.handleAutoCompleteSearch}
-                onSelect={this.handleSelectOnAutoCompleteDropdown}
+                onSelect={this.hideAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}
                 defaultActiveFirstOption={false}
                 dropdownMatchSelectWidth={false}
                 optionLabelProp="value"
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
-                open={this.state.dropdownOpen}
-                onFocus={this.handleOnFocus}
+                open={this.state.dropdownOpen && visible}
                 placeholder={intl.formatMessage({
                   id: 'to_placeholder',
                   defaultMessage: 'Payment recipient',
