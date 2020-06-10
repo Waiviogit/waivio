@@ -166,6 +166,10 @@ const createFormatter = api => {
       );
     },
 
+    vestToHP(vesting) {
+      return console.log('vesting: ', vesting);
+    },
+
     commentPermlink(parentAuthor, parentPermlink) {
       const timeStr = new Date()
         .toISOString()

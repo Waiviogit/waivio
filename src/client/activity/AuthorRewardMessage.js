@@ -17,6 +17,8 @@ const AuthorRewardMessage = ({
     { payout: actionDetails.vesting_payout, currency: 'HP' },
   ];
 
+  console.log('actionDetails: ', actionDetails);
+
   const parsedRewards = reduce(
     rewards,
     (array, reward) => {
@@ -34,6 +36,9 @@ const AuthorRewardMessage = ({
             minimumFractionDigits: 3,
             maximumFractionDigits: 3,
           });
+        } else if (reward.currency === 'HP') {
+          const vesting = reward.vesting_payout;
+          formatter.vestToHP(vesting);
         } else {
           rewardsStr = intl.formatNumber(parsedPayout, {
             minimumFractionDigits: 3,
