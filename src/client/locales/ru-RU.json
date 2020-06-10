@@ -1141,5 +1141,6 @@
   "compensation_account_optional": "Компенсационный счет (необязательно)",
   "edit_button_span_text": "После сохранения кампанию можно активировать в разделе 'Управлять'",
   "create_duplicate": "создать дубликат",
-  "date_and_time_picker_placeholder": "Выберите дату и время"
+  "date_and_time_picker_placeholder": "Выберите дату и время",
+  "paymentTable_data_time": "Дата & время (GMT)"
 }

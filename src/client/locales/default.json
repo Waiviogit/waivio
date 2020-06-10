@@ -1092,7 +1092,7 @@
   "with_links_to_object": "With links to an object",
   "choose_sponsor_name": "Please choose sponsor name",
   "select_date": "Please select date",
-  "paymentTable_data_time": "Date Time (GMT)",
+  "paymentTable_data_time": "Date & Time (GMT)",
   "paymentTable_amount_USD": "Amount USD",
   "paymentTable_balance_USD": "Balance USD",
   "reviews_sponsor": "Reviews sponsored by",

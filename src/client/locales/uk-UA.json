@@ -370,8 +370,8 @@
   "paymentTable_data": "Дата",
   "paymentTable_action": "Дія",
   "paymentTable_details": "Деталі",
-  "paymentTable_amount": "Сума HBD",
-  "paymentTable_balance": "Баланс HBD",
+  "paymentTable_amount": "Сума HIVE",
+  "paymentTable_balance": "Баланс HIVE",
   "paymentTable_review": "Огляд",
   "paymentTable_review_by_user": "Від @{userName} (на запит @{sponsorName})",
   "paymentTable_reservation": "Резервування",
@@ -805,5 +805,6 @@
   "include_processing_fees": "Включити збори",
   "enter_amount": "Введіть суму",
   "from": "Від",
-  "till": "До"
+  "till": "До",
+  "paymentTable_data_time": "Дата & час (GMT)"
 }
