@@ -8,8 +8,9 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, getRate, isGuestUser } from '../../reducers';
-import './StoryFooter.less';
 import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
+
+import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),

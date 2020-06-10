@@ -117,9 +117,8 @@ export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeig
 
   const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
   const postValue = tClaims * rewards * price;
-  const voteValue = postValue * (rShares / tRShares);
 
-  return voteValue;
+  return postValue * (rShares / tRShares);
 };
 
 function checkPermLinkLength(permlink) {
