@@ -512,8 +512,8 @@ export default class Transfer extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 open={this.state.dropdownOpen && visible}
                 placeholder={intl.formatMessage({
-                  id: 'to_placeholder',
-                  defaultMessage: 'Payment recipient',
+                  id: 'find_user',
+                  defaultMessage: 'Find user',
                 })}
               >
                 {map(foundUsers, option => (
@@ -601,7 +601,9 @@ export default class Transfer extends React.Component {
               />
             )}
           </Form.Item>
-          <Form.Item label={<FormattedMessage id="memo" defaultMessage="Memo" />}>
+          <Form.Item
+            label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
+          >
             {getFieldDecorator('memo', {
               rules: [{ validator: this.validateMemo }],
             })(
