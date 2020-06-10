@@ -194,6 +194,7 @@ export const calculateVoteValue = (
 export const calculateDownVote = user => {
   const currentMana = user.voting_manabar.current_mana;
   const downvoteMana = user.downvote_manabar.current_mana;
+  var pow = downvote_per * 100 + (10000 * secondsago) / 432000;
 
   if (currentMana && downvoteMana) {
     const downvoteUpdate = user.downvote_manabar.last_update_time;

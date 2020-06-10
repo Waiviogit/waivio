@@ -38,6 +38,7 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../common/constants/waivio';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import ErrorBoundary from './ErrorBoundary';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -73,7 +74,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     guestBalanceOnReload,
   },
 )
-export default class Wrapper extends React.PureComponent {
+class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
@@ -300,3 +301,5 @@ export default class Wrapper extends React.PureComponent {
     );
   }
 }
+
+export default ErrorBoundary(Wrapper);

@@ -195,7 +195,7 @@ class StoryFull extends React.Component {
 
     this.images = extractImageTags(parsedBody);
     const body = this.images.reduce(
-      (acc, item) => acc.replace(`<center>${item.alt} || 'image'</center>`, ''),
+      (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
       post.body,
     );
 
