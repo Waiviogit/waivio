@@ -50,39 +50,38 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">
-            <span className="PaymentTable__action-item fw6">
-              {sponsor.type === 'transfer'
-                ? intl.formatMessage({
-                    id: 'paymentTable_transfer',
-                    defaultMessage: `Transfer`,
-                  })
-                : intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: 'Review',
-                  })}
-            </span>{' '}
-            {sponsor.type === 'transfer'
-              ? intl.formatMessage({
-                  id: 'paymentTable_from',
-                  defaultMessage: 'from',
-                })
-              : intl.formatMessage({
-                  id: 'paymentTable_review_by',
-                  defaultMessage: 'by',
-                })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>{' '}
             {sponsor.type === 'transfer' ? (
               <React.Fragment>
-                {' '}
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'paymentTable_transfer',
+                    defaultMessage: `Transfer`,
+                  })}{' '}
+                </span>
+                {intl.formatMessage({
+                  id: 'paymentTable_from',
+                  defaultMessage: 'from',
+                })}{' '}
+                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
                 {intl.formatMessage({
                   id: 'paymentTable_review_to',
                   defaultMessage: 'to',
-                })}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>
+                })}{' '}
+                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                (
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'paymentTable_review',
+                    defaultMessage: 'Review',
+                  })}
+                </span>{' '}
+                {intl.formatMessage({
+                  id: 'paymentTable_review_by',
+                  defaultMessage: 'by',
+                })}{' '}
+                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
                 {intl.formatMessage({
                   id: 'paymentTable_requested_by',
                   defaultMessage: `requested by`,

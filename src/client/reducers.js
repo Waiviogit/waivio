@@ -201,6 +201,7 @@ export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(s
 export const getSearchUsersResultsForDiscoverPage = state =>
   fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
+export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -220,7 +221,9 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
-export const getUpdatedMap = state => fromObjectType.getUpdatedMap(state.objectType);
+
+export const getUpdatedMapDiscover = state =>
+  fromObjectType.getUpdatedMapDiscover(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
@@ -236,7 +239,8 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
-export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
+export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
