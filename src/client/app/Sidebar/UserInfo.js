@@ -7,11 +7,7 @@ import { ceil, get, truncate } from 'lodash';
 import urlParse from 'url-parse';
 import { getUser, getRewardFund, getRate, getAllUsers } from '../../reducers';
 import { calculateVotePower } from '../../helpers/user';
-import {
-  calculateDownVote,
-  calcReputation,
-  dSteem,
-} from '../../vendor/steemitHelpers';
+import { calculateDownVote, calcReputation, dSteem } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
@@ -24,7 +20,6 @@ import { getMetadata } from '../../helpers/postingMetadata';
   rate: getRate(state),
   allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
 }))
-
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
