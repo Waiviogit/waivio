@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, message } from 'antd';
 import Feed from '../../feed/Feed';
-import { getFeed, getReadLanguages, getCryptosPriceHistory } from '../../reducers';
+import { getFeed, getPostsLocale, getCryptosPriceHistory } from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
 import {
   getFeedLoadingFromState,
@@ -26,7 +26,7 @@ import './ObjectFeed.less';
 @connect(
   state => ({
     feed: getFeed(state),
-    readLocales: getReadLanguages(state),
+    readLocales: getPostsLocale(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
   {

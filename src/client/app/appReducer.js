@@ -14,6 +14,7 @@ const initialState = {
   bannerClosed: false,
   appUrl: 'https://waivio.com',
   usedLocale: null,
+  postLocales: [],
   translations: {},
   cryptosPriceHistory: {},
   showPostModal: false,
@@ -87,6 +88,7 @@ export default (state = initialState, action) => {
         ...state,
         usedLocale: action.payload.id,
         translations: action.payload.translations,
+        postLocales: [...state.postLocales, action.payload.id],
       };
     case appTypes.SET_SCREEN_SIZE:
       return {
@@ -149,6 +151,7 @@ export const getIsFetching = state => state.isFetching;
 export const getIsBannerClosed = state => state.bannerClosed;
 export const getAppUrl = state => state.appUrl;
 export const getUsedLocale = state => state.usedLocale;
+export const getPostsLocale = state => state.postLocales;
 export const getScreenSize = state => state.screenSize;
 export const getTranslations = state => state.translations;
 export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
