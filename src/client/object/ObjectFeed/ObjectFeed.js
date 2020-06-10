@@ -269,16 +269,7 @@ export default class ObjectFeed extends React.Component {
   // END Propositions
 
   render() {
-    const {
-      feed,
-      limit,
-      handleCreatePost,
-      wobject,
-      currentProposition,
-      intl,
-      readLocales,
-    } = this.props;
-    console.log('readLocales', readLocales);
+    const { feed, limit, handleCreatePost, wobject, currentProposition, intl } = this.props;
     const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
