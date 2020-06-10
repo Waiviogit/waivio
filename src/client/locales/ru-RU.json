@@ -1141,5 +1141,6 @@
   "compensation_account_optional": "Компенсационный счет (необязательно)",
   "edit_button_span_text": "После сохранения кампанию можно активировать в разделе 'Управлять'",
   "create_duplicate": "создать дубликат",
-  "memo_optional": "Примечание (необязательно)"
+  "memo_optional": "Примечание (необязательно)",
+  "estimated_value": "Расчетная стоимость сделки: {estimate} USD"
 }

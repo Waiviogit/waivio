@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, debounce, map } from 'lodash';
+import { get, isNull, isEmpty, debounce, map, isNaN } from 'lodash';
 import { AutoComplete, Form, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
@@ -22,6 +22,8 @@ import {
   isGuestUser,
   getAutoCompleteSearchResults,
   getSearchUsersResults,
+  getTotalVestingShares,
+  getTotalVestingFundSteem,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
 import {
@@ -34,6 +36,8 @@ import {
 import { BANK_ACCOUNT } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
+import USDDisplay from '../components/Utils/USDDisplay';
+import formatter from '../helpers/steemitFormatter';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -53,6 +57,8 @@ const InputGroup = Input.Group;
     isGuest: isGuestUser(state),
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
     searchByUser: getSearchUsersResults(state),
+    totalVestingShares: getTotalVestingShares(state),
+    totalVestingFundSteem: getTotalVestingFundSteem(state),
   }),
   {
     closeTransfer,
@@ -89,6 +95,8 @@ export default class Transfer extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
+    totalVestingShares: PropTypes.string.isRequired,
+    totalVestingFundSteem: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -135,19 +143,19 @@ export default class Transfer extends React.Component {
     searchData: '',
     currentItem: 'All',
     dropdownOpen: false,
+    currentEstimate: 0,
   };
 
   componentDidMount() {
     const { cryptosPriceHistory, getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
-
     if (isNull(currentHiveRate) || isNull(currentHBDRate))
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to, amount, currency } = this.props;
+    const { form, to, amount, currency, visible } = this.props;
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
         to: nextProps.to,
@@ -156,6 +164,16 @@ export default class Transfer extends React.Component {
       });
       this.setState({
         currency: HIVE.symbol,
+      });
+    }
+
+    if (!visible) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: 'All',
+        dropdownOpen: false,
+        currentEstimate: 0,
       });
     }
   }
@@ -285,13 +303,43 @@ export default class Transfer extends React.Component {
 
   handleCancelClick = () => this.props.closeTransfer();
 
+  getCurrentEstDollar = value => {
+    const {
+      user,
+      cryptosPriceHistory,
+      totalVestingShares,
+      totalVestingFundSteem,
+      isGuest,
+    } = this.props;
+
+    const steemRate = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null);
+
+    const sbdRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
+
+    const steemPower = formatter.vestToSteem(
+      user.vesting_shares,
+      totalVestingShares,
+      totalVestingFundSteem,
+    );
+
+    const currentEstDollar =
+      parseFloat(steemRate) * (parseFloat(value) + parseFloat(steemPower)) +
+      parseFloat(user.sbd_balance) * parseFloat(sbdRate);
+
+    const currentEst = isGuest ? steemRate * value : currentEstDollar;
+
+    return isNaN(currentEst) ? null : currentEst;
+  };
+
   handleAmountChange = event => {
     const { value } = event.target;
     const { oldAmount } = this.state;
 
     this.setState({
       oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
+      currentEstimate: this.getCurrentEstDollar(value),
     });
+
     this.props.form.setFieldsValue({
       amount: Transfer.amountRegex.test(value) ? value : oldAmount,
     });
@@ -595,6 +643,19 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
+            <div>
+              <FormattedMessage
+                id="estimated_value"
+                defaultMessage="Estimated transaction value: {estimate} USD"
+                values={{
+                  estimate: (
+                    <span role="presentation" className="estimate">
+                      <USDDisplay value={this.state.currentEstimate} />
+                    </span>
+                  ),
+                }}
+              />
+            </div>
           </Form.Item>
           <Form.Item
             label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}

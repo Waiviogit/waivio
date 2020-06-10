@@ -1140,5 +1140,6 @@
   "reserve_period_thirty_days": "The reservation period must not exceed thirty days",
   "edit_button_span_text": "Once saved, the campaign can be activated in the Campaigns/Manage tab.",
   "create_duplicate": "create a duplicate",
-  "memo_optional": "Memo (optional)"
+  "memo_optional": "Memo (optional)",
+  "estimated_value": "Estimated transaction value: {estimate} USD"
 }
