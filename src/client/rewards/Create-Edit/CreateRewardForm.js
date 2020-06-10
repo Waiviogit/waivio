@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import { Form, message } from 'antd';
@@ -12,11 +13,19 @@ import { getClientWObj } from '../../adapters';
 import { AppSharedContext } from '../../Wrapper';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../../waivioApi/config';
+import { getRate, getRewardFund } from '../../reducers';
 import './CreateReward.less';
 
 @withRouter
 @Form.create()
 @injectIntl
+@connect(
+  state => ({
+    rate: getRate(state),
+    rewardFund: getRewardFund(state),
+  }),
+  {},
+)
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
@@ -28,6 +37,8 @@ class CreateRewardForm extends React.Component {
     currentSteemDollarPrice: PropTypes.number,
     /* from context */
     usedLocale: PropTypes.string,
+    rate: PropTypes.number.isRequired,
+    rewardFund: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -75,6 +86,7 @@ class CreateRewardForm extends React.Component {
   };
 
   componentDidMount = async () => {
+    const { rate, rewardFund } = this.props;
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -122,6 +134,13 @@ class CreateRewardForm extends React.Component {
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
+      const minExpertise = (
+        (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
+        rewardFund.reward_balance.replace(' HIVE', '') *
+        rate *
+        1000000
+      ).toFixed(4);
+
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
@@ -142,7 +161,7 @@ class CreateRewardForm extends React.Component {
             : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
-          minExpertise: campaign.userRequirements.minExpertise,
+          minExpertise,
           minFollowers: campaign.userRequirements.minFollowers,
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservation_timetable,
@@ -185,11 +204,18 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
+    const { rate, rewardFund } = this.props;
     const objects = map(data.secondaryObject, o => o.id);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-    const minExpertise = Math.round(Number(data.minExpertise) * 100) / 100;
+    const minExpertise = Number(data.minExpertise);
+    const minExpertisePrepared =
+      (minExpertise * rewardFund.recent_claims) /
+      rewardFund.reward_balance.replace(' HIVE', '') /
+      rate /
+      1000000;
+
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -208,7 +234,7 @@ class CreateRewardForm extends React.Component {
       userRequirements: {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
-        minExpertise,
+        minExpertise: minExpertisePrepared,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
@@ -343,7 +369,6 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          console.log('values', values);
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(

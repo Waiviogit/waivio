@@ -370,8 +370,8 @@
   "paymentTable_data": "Дата",
   "paymentTable_action": "Дія",
   "paymentTable_details": "Деталі",
-  "paymentTable_amount": "Сума HBD",
-  "paymentTable_balance": "Баланс HBD",
+  "paymentTable_amount": "Сума HIVE",
+  "paymentTable_balance": "Баланс HIVE",
   "paymentTable_review": "Огляд",
   "paymentTable_review_by_user": "Від @{userName} (на запит @{sponsorName})",
   "paymentTable_reservation": "Резервування",
@@ -797,5 +797,15 @@
   "beneficiaries-weights": "Отримувачі",
   "find_users_placeholder": "Знайти користувачів",
   "add_compensation_account": "Добавте компенсаційний рахунок",
-  "total_paid_liquid": "Всього сплачено (liquid)"
+  "total_paid_liquid": "Всього сплачено (liquid)",
+  "sidenav_rewards_reports": "Звіти",
+  "date_and_time_picker_placeholder": "Оберіть дату та час",
+  "reports": "Звіти",
+  "with_links_to_object": "З посиланнями на об'єкт",
+  "or_total_amount": "Або загальна сума:",
+  "include_processing_fees": "Включити збори",
+  "enter_amount": "Введіть суму",
+  "from": "Від",
+  "till": "До",
+  "paymentTable_data_time": "Дата & час (GMT)"
 }

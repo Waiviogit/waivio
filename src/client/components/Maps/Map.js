@@ -150,6 +150,7 @@ class MapOS extends React.Component {
             anchor={[+lat, +lng]}
             payload={wobject}
             onClick={this.handleMarkerClick}
+            onDoubleClick={this.closeInfobox}
           />
         ) : null;
       })
