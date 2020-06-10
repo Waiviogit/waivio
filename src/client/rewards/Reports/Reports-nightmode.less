@@ -3,10 +3,15 @@
 .nightmode {
   .ant-calendar-time-picker-btn-disabled {
     color: #f5f5f5 !important;
+    cursor: not-allowed;
+  }
+
+  .ant-calendar-ok-btn-disabled {
+    cursor: not-allowed !important;
   }
 
   .ant-calendar-today-btn-disabled {
-    color: @grey-nero;
+    color: transparent !important;
   }
 
   .ant-calendar-day-select {
@@ -25,5 +30,47 @@
 
   .ant-calendar-time-picker-select li:hover {
     background-color: @grey-empress;
+  }
+
+  .ant-calendar-year-panel-header,
+  .ant-calendar-month-panel-header,
+  .ant-calendar-decade-panel-header,
+  .ant-calendar-year-panel-tbody,
+  .ant-calendar-month-panel-tbody,
+  .ant-calendar-decade-panel-tbody {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-year-panel-decade-select-content,
+  .ant-calendar-month-panel-year-select-content,
+  .ant-calendar-decade-panel-decade,
+  .ant-calendar-year-panel-year,
+  .ant-calendar-month-panel-month,
+  .ant-calendar-decade-panel-century {
+    color: @white-smoke;
+  }
+
+  .ant-calendar-year-panel-last-decade-cell,
+  .ant-calendar-year-panel-next-decade-cell {
+    .ant-calendar-year-panel-year {
+      color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-year-panel-year:hover,
+  .ant-calendar-month-panel-month:hover,
+  .ant-calendar-decade-panel-decade:hover {
+    background: @grey-empress !important;
+  }
+
+  .ant-calendar-month-panel-header a:hover::before {
+    color: @white-smoke;
+  }
+
+  .ant-calendar-decade-panel-last-century-cell,
+  .ant-calendar-decade-panel-next-century-cell {
+    .ant-calendar-decade-panel-decade {
+      color: @white-smoke;
+    }
   }
 }
