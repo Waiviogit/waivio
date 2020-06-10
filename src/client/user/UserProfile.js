@@ -4,13 +4,19 @@ import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
+import {
+  getIsAuthenticated,
+  getAuthenticatedUser,
+  getFeed,
+  getUsersAccountHistory,
+} from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
+import { getUserAccountHistory } from '../wallet/walletActions';
 import { getUserProfileBlogPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
@@ -23,10 +29,12 @@ import PostModal from '../post/PostModalContainer';
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
+    usersAccountHistory: getUsersAccountHistory(state),
   }),
   {
     getUserProfileBlogPosts,
     showPostModal,
+    getUserAccountHistory,
   },
 )
 export default class UserProfile extends React.Component {
@@ -38,19 +46,25 @@ export default class UserProfile extends React.Component {
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
+    getUserAccountHistory: PropTypes.func,
+    usersAccountHistory: PropTypes.shape(),
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     getUserProfileBlogPosts: () => {},
+    getUserAccountHistory: () => {},
+    usersAccountHistory: {},
   };
 
   componentDidMount() {
-    const { match, limit } = this.props;
+    const { match, limit, usersAccountHistory } = this.props;
     const { name } = match.params;
-
     this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (isEmpty(usersAccountHistory[name])) {
+      this.props.getUserAccountHistory(name);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

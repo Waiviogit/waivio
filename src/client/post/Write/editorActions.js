@@ -125,6 +125,7 @@ const broadcastComment = (
   referral,
   authUsername,
   beneficiaries,
+  isReview,
 ) => {
   const operations = [];
   const commentOp = [
@@ -181,10 +182,10 @@ const broadcastComment = (
     ]);
   }
 
-  return steemConnectAPI.broadcast(operations);
+  return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData, beneficiaries) {
+export function createPost(postData, beneficiaries, isReview) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -246,6 +247,7 @@ export function createPost(postData, beneficiaries) {
         referral,
         authUser.name,
         beneficiaries,
+        isReview,
       )
         .then(result => {
           if (draftId) {

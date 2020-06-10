@@ -19,6 +19,8 @@ export const preparePropositionReqData = ({
   sort,
   types,
   guideNames,
+  limit,
+  simplified,
 }) => {
   const reqData = {
     limit: displayLimit,
@@ -32,14 +34,17 @@ export const preparePropositionReqData = ({
     reqData.coordinates = coordinates;
     reqData.radius = radius;
   }
-  if (area && area.length > 0 && radius) {
+  if (area && area.length > 0) {
     reqData.area = area;
-    reqData.radius = radius;
+    if (radius) reqData.radius = radius;
   }
   if (types && guideNames) {
     reqData.types = types;
     reqData.guideNames = guideNames;
   }
+  if (limit) reqData.limit = limit;
+  if (simplified) reqData.simplified = simplified;
+
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;

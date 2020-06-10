@@ -14,6 +14,7 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
+    onDoubleClick: PropTypes.func.isRequired,
     onContextMenu: PropTypes.func,
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
@@ -63,6 +64,12 @@ class CustomMarker extends React.Component {
     return this.props.onClick && this.props.onClick(this.eventParameters(event));
   };
 
+  handleDoubleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    return this.props.onDoubleClick && this.props.onDoubleClick(this.eventParameters(event));
+  };
+
   handleContextMenu = event =>
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));
 
@@ -92,6 +99,7 @@ class CustomMarker extends React.Component {
         style={style}
         className="pigeon-click-block"
         onClick={this.handleClick}
+        onDoubleClick={this.handleDoubleClick}
         onContextMenu={this.handleContextMenu}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
