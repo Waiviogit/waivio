@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, message } from 'antd';
 import Feed from '../../feed/Feed';
-import { getFeed, getPostsLocale, getCryptosPriceHistory } from '../../reducers';
+import { getFeed, getReadLanguages, getCryptosPriceHistory } from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
 import {
   getFeedLoadingFromState,
@@ -26,7 +26,7 @@ import './ObjectFeed.less';
 @connect(
   state => ({
     feed: getFeed(state),
-    readLocales: getPostsLocale(state),
+    readLocales: getReadLanguages(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
   {
@@ -269,7 +269,16 @@ export default class ObjectFeed extends React.Component {
   // END Propositions
 
   render() {
-    const { feed, limit, handleCreatePost, wobject, currentProposition, intl } = this.props;
+    const {
+      feed,
+      limit,
+      handleCreatePost,
+      wobject,
+      currentProposition,
+      intl,
+      readLocales,
+    } = this.props;
+    console.log('readLocales', readLocales);
     const { loadingPropositions, allPropositions } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);

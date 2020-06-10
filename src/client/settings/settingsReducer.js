@@ -43,6 +43,7 @@ const settings = (state = initialState, action) => {
       };
 
     case settingsTypes.SAVE_SETTINGS_SUCCESS:
+      console.log('action.payload', action.payload);
       return {
         ...state,
         ...action.payload,
