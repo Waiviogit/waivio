@@ -796,5 +796,6 @@
   "travel": "подорожі",
   "beneficiaries-weights": "Отримувачі",
   "find_users_placeholder": "Знайти користувачів",
-  "add_compensation_account": "Добавте компенсаційний рахунок"
+  "add_compensation_account": "Добавте компенсаційний рахунок",
+  "total_paid_liquid": "Всього сплачено (liquid)"
 }
