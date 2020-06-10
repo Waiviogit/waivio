@@ -63,14 +63,45 @@
     background: @grey-empress !important;
   }
 
-  .ant-calendar-month-panel-header a:hover::before {
-    color: @white-smoke;
+  .ant-calendar-prev-year-btn:hover::before {
+    border-color: @white-smoke;
   }
 
   .ant-calendar-decade-panel-last-century-cell,
   .ant-calendar-decade-panel-next-century-cell {
     .ant-calendar-decade-panel-decade {
       color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-month-panel-header {
+    .ant-calendar-month-panel-prev-year-btn:hover::before,
+    .ant-calendar-month-panel-prev-year-btn:hover::after,
+    .ant-calendar-month-panel-next-year-btn:hover::before,
+    .ant-calendar-month-panel-next-year-btn:hover::after {
+      border-color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-header {
+    .ant-calendar-prev-year-btn:hover::before,
+    .ant-calendar-prev-year-btn:hover::after,
+    .ant-calendar-next-year-btn:hover::before,
+    .ant-calendar-next-year-btn:hover::after,
+    .ant-calendar-prev-month-btn:hover::before,
+    .ant-calendar-prev-month-btn:hover::after,
+    .ant-calendar-next-month-btn:hover::before,
+    .ant-calendar-next-month-btn:hover::after {
+      border-color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-year-panel-header {
+    .ant-calendar-year-panel-prev-decade-btn:hover::before,
+    .ant-calendar-year-panel-prev-decade-btn:hover::after,
+    .ant-calendar-year-panel-next-decade-btn:hover::before,
+    .ant-calendar-year-panel-next-decade-btn:hover::after {
+      border-color: @white-smoke;
     }
   }
 }
