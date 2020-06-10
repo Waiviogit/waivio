@@ -571,15 +571,10 @@ export default class Transfer extends React.Component {
                   })}
                 />,
               )}
-              {isMobile ? (
-                <Input disabled className="Transfer__usd-value" placeholder={usdValue} />
-              ) : (
-                <Input
-                  disabled
-                  className="Transfer__usd-value"
-                  addonAfter={currencyPrefix}
-                  placeholder={usdValue}
-                />
+              {!isMobile && (
+                <span className="Transfer__usd-value" placeholder={usdValue}>
+                  {currencyPrefix}
+                </span>
               )}
             </InputGroup>
             <Form.Item>{isMobile && currencyPrefix}</Form.Item>
