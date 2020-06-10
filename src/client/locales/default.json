@@ -93,6 +93,8 @@
   "post_reply_show_original_post": "Show original post",
   "post_reply_show_parent_discussion": "Show parent discussion",
   "post_deleted": "This post has been deleted",
+  "post_post_is_published": "Your post has been published",
+  "post_post_will_published_soon": "Your post will be published soon",
   "comment": "Comment",
   "comment_placeholder": "Write a comment",
   "comment_collapsed": "Comment collapsed",
@@ -759,7 +761,7 @@
   "compare": "Compare",
   "compare_profitability": "Compare Profitability",
   "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
-  "unavailableStatisticsUser": "User has no completed forecasts",
+  "unavailableStatisticsUser": "The user has no completed forecasts",
   "and": "and",
   "ignoreList": "Ignore list",
   "addNewRule": "Add new rule",
@@ -1156,5 +1158,14 @@
   "enter_nickname": "Enter nickname",
   "privacy_policy": "Privacy Policy",
   "cookies_policy": "Cookies Policy",
-  "topic_name": "Topic name"
+  "topic_name": "Topic name",
+  "modal_button_buy": "BUY",
+  "modal_button_sell": "SELL",
+  "modal_available_balance": "Available balance is insufficient",
+  "modal_absent_wallet": "You don't have a {absentWallet} wallet",
+  "market_order_created_first": "Market order created (buy ",
+  "market_order_created_last": "at price Market)",
+  "market_order_filled_first": "Market order filled (buy ",
+  "market_order_filled_last": "at price ",
+  "profile_updated": "Profile updated"
 }

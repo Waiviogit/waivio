@@ -198,18 +198,24 @@ export default class User extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta property="description" content={desc} />
-          <meta property="og:title" content={title} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image} />
-          <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="InvestArena" />
-          <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@steemit'} />
-          <meta property="twitter:title" content={title} />
-          <meta property="twitter:description" content={desc} />
-          <meta property="twitter:image" content={image || defaults.AVATAR} />
+          <meta name="description" property="description" content={desc} />
+          <meta name="og:title" property="og:title" content={title} />
+          <meta name="og:type" property="og:type" content="article" />
+          <meta name="og:url" property="og:url" content={url} />
+          <meta name="og:image" property="og:image" content={image} />
+          <meta name="og:image:width" property="og:image:width" content="600" />
+          <meta name="og:image:height" property="og:image:height" content="600" />
+          <meta name="og:description" property="og:description" content={desc} />
+          <meta name="og:site_name" property="og:site_name" content="Crypto InvestArena" />
+          <meta
+            name="twitter:card"
+            property="twitter:card"
+            content={image ? 'summary_large_image' : 'summary'}
+          />
+          <meta name="twitter:site" property="twitter:site" content={'@steemit'} />
+          <meta name="twitter:title" property="twitter:title" content={title} />
+          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta name="twitter:image" property="twitter:image" content={image || defaults.AVATAR} />
         </Helmet>
         <ScrollToTopOnMount />
         {user && (

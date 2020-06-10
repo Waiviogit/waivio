@@ -1,8 +1,13 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { push } from 'connected-react-router';
-import { get } from 'lodash';
-import { getAuthenticatedUser, getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+  isGuestUser,
+} from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing, getNotifications } from '../user/userActions';
@@ -39,10 +44,18 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const getGuestBalance = async username =>
-  getGuestPaymentsHistory(username, {})
-    .then(result => get(result, ['payable'], null))
-    .catch(err => err);
+export const getAuthGuestBalance = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  if (isGuest) {
+    return dispatch({
+      type: UPDATE_GUEST_BALANCE.ACTION,
+      payload: getGuestPaymentsHistory(userName),
+    });
+  }
+  return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
+};
 
 export const logoutWithoutBroker = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const isAuthenticated = getIsAuthenticated(getState());
@@ -75,24 +88,6 @@ export const logout = () => (dispatch, getState, { busyAPI }) => {
   dispatch(disconnectBroker());
 };
 
-export const guestBalanceOnReload = () => (dispatch, getState) => {
-  const state = getState();
-  const username = state.auth.user.name;
-  const promise = new Promise(async (resolve, reject) => {
-    try {
-      const getBalance = await getGuestBalance(username);
-      resolve({ isGuestBalance: getBalance });
-    } catch (e) {
-      reject(e);
-    }
-  });
-
-  return dispatch({
-    type: UPDATE_GUEST_BALANCE.ACTION,
-    payload: promise,
-  });
-};
-
 export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { waivioAPI }) => {
   const state = getState();
 
@@ -100,8 +95,6 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
     type: LOGIN,
     payload: new Promise(async (resolve, reject) => {
       try {
-        const username = userData.user.name;
-        const getBalance = await getGuestBalance(username);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.user.name);
         waivioAPI.saveGuestData(
           userData.token,
@@ -117,7 +110,6 @@ export const beaxyLogin = (userData, bxySessionData) => (dispatch, getState, { w
           userMetaData,
           socialNetwork: 'beaxy',
           isGuestUser: true,
-          isGuestBalance: getBalance,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -142,7 +134,6 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
   if (socialNetwork === 'beaxy')
     return dispatch(beaxyLogin(regData.userData, regData.bxySessionData));
   const state = getState();
-  let username = null;
 
   let promise = Promise.resolve(null);
 
@@ -155,14 +146,11 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
       try {
         const tokenData = await setToken(oAuthToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        username = tokenData.userData.name;
-        const getBalance = await getGuestBalance(username);
         resolve({
           account: tokenData.userData,
           userMetaData,
           socialNetwork,
           isGuestUser: true,
-          isGuestBalance: getBalance,
         });
         dispatch(getNotifications(tokenData.userData.name));
       } catch (e) {
@@ -181,8 +169,7 @@ export const login = (oAuthToken = '', socialNetwork = '', regData = '') => asyn
         if (isGuest && getIsBeaxyUser(scUserData.account)) {
           waivioAPI.guestAuthProvider = scUserData.account.provider; // eslint-disable-line
         }
-        const getBalance = await getGuestBalance(username);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest, isGuestBalance: getBalance });
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
       }

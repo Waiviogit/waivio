@@ -15,7 +15,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getAuthenticatedUserName, getTranslationByKey } from '../../reducers';
 import { attachPostInfo } from '../../helpers/postHelpers';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
@@ -236,92 +236,102 @@ export function createPost(postData) {
         }
       }
 
-      dispatch({
-        type: CREATE_POST,
-        payload: {
-          promise: broadcastComment(
-            steemConnectAPI,
-            isUpdating,
-            parentAuthor,
-            parentPermlink,
-            author,
-            title,
-            newBody,
-            jsonMetadata,
-            reward,
-            beneficiary,
-            !isUpdating && !isGuest && upvote,
-            permlink,
-            referral,
-            authUser.name,
-          )
-            // eslint-disable-next-line consistent-return
-            .then(result => {
-              if (isGuest) {
-                if (result.ok) {
-                  if (draftId) {
-                    batch(() => {
-                      dispatch(deleteDraft(draftId));
-                      dispatch(addEditedPost(permlink));
-                    });
-                  }
-                  if (upvote) {
-                    steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-                  }
-
-                  if (window.analytics) {
-                    window.analytics.track('Post', {
-                      category: 'post',
-                      label: 'submit',
-                      value: 10,
-                    });
-                  }
-
-                  setTimeout(() => {
-                    getUserProfileBlog(authUser.name, {})
-                      .then(posts => {
-                        const lastPost = get(posts, '[0].permlink');
-                        if (lastPost === permlink) {
-                          dispatch(notify('Your post is published', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        } else {
-                          dispatch(notify('Your post will be posted soon', 'success'));
-                          dispatch(push(`/@${authUser.name}`));
-                        }
-                      })
-                      .catch(err => err);
-                  }, 6000);
-
-                  return result;
-                }
-
-                result.json().then(err => {
-                  dispatch(notify(err.error.message || err.error_description, 'error'));
-                });
+      const dispatchPostNotification = () => {
+        setTimeout(() => {
+          getUserProfileBlog(authUser.name, {})
+            .then(posts => {
+              const lastPost = get(posts, '[0].permlink', '');
+              if (lastPost === permlink) {
+                const postIsPublishedMessage = getTranslationByKey(state, 'post_post_is_published');
+                dispatch(notify(postIsPublishedMessage, 'success'));
               } else {
-                if (draftId) {
-                  batch(() => {
-                    dispatch(deleteDraft(draftId));
-                    dispatch(addEditedPost(permlink));
-                  });
-                }
-
-                if (window.analytics) {
-                  window.analytics.track('Post', {
-                    category: 'post',
-                    label: 'submit',
-                    value: 10,
-                  });
-                }
-
-                dispatch(push(`/@${authUser.name}`));
+                const postWillPublishedMessage = getTranslationByKey(
+                  state,
+                  'post_post_will_published_soon',
+                );
+                dispatch(notify(postWillPublishedMessage, 'success'));
               }
+              dispatch(push(`/@${authUser.name}`));
+              dispatch({ type: CREATE_POST_SUCCESS });
             })
-            .catch(err => {
+            .catch(err => console.error(err));
+        }, 8000);
+      };
+
+      dispatch({ type: CREATE_POST_START });
+      broadcastComment(
+        steemConnectAPI,
+        isUpdating,
+        parentAuthor,
+        parentPermlink,
+        author,
+        title,
+        newBody,
+        jsonMetadata,
+        reward,
+        beneficiary,
+        !isUpdating && !isGuest && upvote,
+        permlink,
+        referral,
+        authUser.name,
+      )
+        // eslint-disable-next-line consistent-return
+        .then(result => {
+          if (isGuest) {
+            if (result.ok) {
+              if (draftId) {
+                batch(() => {
+                  dispatch(deleteDraft(draftId));
+                  dispatch(addEditedPost(permlink));
+                });
+              }
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
+
+              if (window.analytics) {
+                window.analytics.track('Post', {
+                  category: 'post',
+                  label: 'submit',
+                  value: 10,
+                });
+              }
+              dispatchPostNotification();
+              return result;
+            }
+
+            result.json().then(err => {
               dispatch(notify(err.error.message || err.error_description, 'error'));
-            }),
-        },
-      });
+              dispatch({
+                type: CREATE_POST_ERROR,
+                payload: err.error.message || err.error_description,
+              });
+            });
+          } else {
+            if (draftId) {
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
+            }
+
+            if (window.analytics) {
+              window.analytics.track('Post', {
+                category: 'post',
+                label: 'submit',
+                value: 10,
+              });
+            }
+          }
+          dispatchPostNotification();
+        })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
+          dispatch({
+            type: CREATE_POST_ERROR,
+            payload: err.error.message || err.error_description,
+          });
+        });
     });
   };
 }

@@ -22,13 +22,13 @@ import {
   getTranslations,
   getUsedLocale,
   isGuestUser,
+  activeModal,
 } from './reducers';
 import {
   busyLogin,
   login,
   logout,
-  getGuestBalance,
-  guestBalanceOnReload,
+  getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
 // import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import {
@@ -67,6 +67,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     isChat: getChatCondition(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
+    isActiveModal: activeModal(state),
   }),
   {
     login,
@@ -82,8 +83,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     setUsedLocale,
     getChartsData,
     changeChatCondition,
-    getGuestBalance,
-    guestBalanceOnReload,
+    dispatchGetAuthGuestBalance,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -109,12 +109,11 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
-    isAuthenticated: PropTypes.bool.isRequired,
     // isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
     // screenSize: PropTypes.string.isRequired,
-    getGuestBalance: PropTypes.func,
-    guestBalanceOnReload: PropTypes.func,
+    dispatchGetAuthGuestBalance: PropTypes.func.isRequired,
+    isActiveModal: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -139,8 +138,7 @@ export default class Wrapper extends React.PureComponent {
     changeChatCondition: () => {},
     getMessagesQuantity: () => {},
     isGuest: false,
-    getGuestBalance: () => {},
-    guestBalanceOnReload: () => {},
+    isActiveModal: false,
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -186,7 +184,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.getPerformersStatistic();
         this.props.getNotifications();
         this.props.busyLogin();
-        this.props.getGuestBalance();
+        this.props.dispatchGetAuthGuestBalance();
       });
       // if (this.props.username) {
       //   getMessagesQuantity(this.props.username).then(data =>
@@ -201,16 +199,6 @@ export default class Wrapper extends React.PureComponent {
       this.props.getRate();
       this.props.getChartsData();
     });
-
-    if (this.props.isAuthenticated) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          this.props.guestBalanceOnReload();
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -312,6 +300,7 @@ export default class Wrapper extends React.PureComponent {
       usedLocale,
       translations,
       platformName,
+      isActiveModal,
       // username,
       // isChat,
       // isAuthenticated,
@@ -344,7 +333,7 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                {!isMobileMenuOpen && <BBackTop className="primary-modal" />}
+                {!isActiveModal && !isMobileMenuOpen && <BBackTop className="primary-modal" />}
                 {/* <ChatButton */}
                 {/*  openChat={this.props.changeChatCondition} */}
                 {/*  isChat={isChat} */}

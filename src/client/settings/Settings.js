@@ -176,10 +176,12 @@ export default class Settings extends React.Component {
         votePercent: this.state.votePercent * 100,
       })
       .then(() =>
-        this.props.notify(
-          this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
-          'success',
-        ),
+        setTimeout(() => {
+          this.props.notify(
+            this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
+            'success',
+          );
+        }, 500),
       );
   };
 

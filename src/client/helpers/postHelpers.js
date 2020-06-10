@@ -159,7 +159,7 @@ export function splitPostContent(
 
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
-  return `${baseUrl}/object/${objPermlink}`;
+  return `${invArena.baseUrl}object/${objPermlink}`;
 }
 
 export function getInitialState(props) {
@@ -212,6 +212,7 @@ export function getInitialState(props) {
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: [],
+      defaultObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),

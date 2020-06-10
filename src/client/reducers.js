@@ -21,7 +21,7 @@ import quotesReducer from '../investarena/redux/reducers/quotesReducer';
 import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
 import platformReducer, * as fromPlatformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
-import modalsReducer from '../investarena/redux/reducers/modalsReducer';
+import modalsReducer, * as fromModal from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import forecastReducer, * as fromForecastReducer from '../investarena/redux/reducers/forecastReducer';
 import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
@@ -76,7 +76,6 @@ export const getAuthenticateduserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
@@ -106,6 +105,8 @@ export const getAppUrl = state => fromApp.getAppUrl(state.app);
 export const getUsedLocale = state => fromApp.getUsedLocale(state.app);
 export const getScreenSize = state => fromApp.getScreenSize(state.app);
 export const getTranslations = state => fromApp.getTranslations(state.app);
+export const getTranslationByKey = (state, key, defaultMessage) =>
+  fromApp.getTranslationByKey(state.app, key, defaultMessage);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
@@ -203,7 +204,6 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
-export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
@@ -272,3 +272,5 @@ export const getBeaxyWallet = state => fromPlatformReducer.getBeaxyWallet(state.
 export const getCurrenciesDescriptions = state =>
   fromPlatformReducer.getCurrenciesDescriptions(state.platform);
 export const getIsBrokerConnected = state => fromPlatformReducer.getPlatformName(state.platform);
+
+export const activeModal = state => fromModal.activeModal(state.modals);

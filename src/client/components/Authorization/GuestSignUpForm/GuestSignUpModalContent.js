@@ -14,13 +14,14 @@ import {
 } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
-import { getLocale } from '../../../reducers';
+import { getAppUrl, getLocale } from '../../../reducers';
 import GuestSignUpFormContent from './GuestSignUpFormContent';
 import './GuestSignUpForm.less';
 
 const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
   const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
 
+  const appUrl = useSelector(getAppUrl);
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
 
@@ -102,7 +103,9 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        const userAvatar = isEmpty(values.avatar) ? '' : values.avatar[0].src;
+        const userAvatar = isEmpty(values.avatar)
+          ? 'https://images.hive.blog/u/undefined/avatar/large'
+          : values.avatar[0].src;
         const userAlias = values.alias || '';
         const regData =
           userData.socialNetwork === 'beaxy'
@@ -155,6 +158,7 @@ const GuestSignUpModalContent = ({ form, userData, isModalOpen }) => {
       getAvatar={getAvatar}
       setIsLoading={setIsLoading}
       image={userData.image}
+      appUrl={appUrl}
       initialLanguages={initialLanguages}
       socialNetwork={userData.socialNetwork}
     />
