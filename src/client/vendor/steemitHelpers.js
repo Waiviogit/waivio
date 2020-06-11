@@ -3,6 +3,7 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
+import { get } from 'lodash';
 import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
@@ -219,8 +220,8 @@ export const calculateVoteValue = (
 };
 
 export const calculateDownVote = user => {
-  const currentMana = user.voting_manabar.current_mana;
-  const downvoteMana = user.downvote_manabar.current_mana;
+  const currentMana = get(user, ['voting_manabar', 'current_mana']);
+  const downvoteMana = get(user, ['downvote_manabar', 'current_mana']);
 
   if (currentMana && downvoteMana) {
     const downvoteUpdate = user.downvote_manabar.last_update_time;

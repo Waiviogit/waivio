@@ -2,16 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
 import { ceil, get, truncate } from 'lodash';
+import {
+  injectIntl,
+  FormattedMessage,
+  FormattedTime,
+  FormattedDate,
+  FormattedRelative,
+} from 'react-intl';
 import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate, getAllUsers } from '../../reducers';
 import { calculateVotePower } from '../../helpers/user';
+import {
+  getUser,
+  getRewardFund,
+  getRate,
+  getAllUsers,
+  getUsersAccountHistory,
+} from '../../reducers';
 import { calculateDownVote, calcReputation, dSteem } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
+import BTooltip from '../../components/BTooltip';
+import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -19,6 +34,7 @@ import { getMetadata } from '../../helpers/postingMetadata';
   rewardFund: getRewardFund(state),
   rate: getRate(state),
   allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
+  usersAccountHistory: getUsersAccountHistory(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -27,12 +43,14 @@ class UserInfo extends React.Component {
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     match: PropTypes.shape().isRequired,
+    usersAccountHistory: PropTypes.shape(),
   };
 
   static defaultProps = {
     user: {},
     rewardFund: {},
     rate: 0,
+    usersAccountHistory: {},
   };
 
   state = {
@@ -71,17 +89,19 @@ class UserInfo extends React.Component {
   };
 
   render() {
-    const { intl, user, rewardFund, rate } = this.props;
+    const { intl, user, rewardFund, rate, usersAccountHistory } = this.props;
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
-    let lastActive;
+    let lastActive = null;
     let email;
 
+    const isGuestPage = guestUserRegex.test(user && user.name);
+
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = intl.formatRelative(Date.parse(user.updatedAt));
+      lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');
@@ -181,7 +201,19 @@ class UserInfo extends React.Component {
                       </div>
                       <div>
                         <i className="iconfont icon-time text-icon" />
-                        <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+                        <FormattedMessage id="active_info" defaultMessage="Active" />: &nbsp;
+                        <BTooltip
+                          title={
+                            <span>
+                              <FormattedDate value={`${lastActive}Z`} />{' '}
+                              <FormattedTime value={`${lastActive}Z`} />
+                            </span>
+                          }
+                        >
+                          <span>
+                            <FormattedRelative value={`${lastActive}Z`} />
+                          </span>
+                        </BTooltip>
                       </div>
                       <div>
                         <i className="iconfont icon-dollar text-icon" />

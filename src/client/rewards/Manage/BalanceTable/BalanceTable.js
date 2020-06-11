@@ -42,7 +42,6 @@ BalanceTable.propTypes = {
 
 BalanceTable.defaultProps = {
   budgetTotal: {},
-  user: {},
   intl: {},
   isGuest: false,
   guestBalance: null,

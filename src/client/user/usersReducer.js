@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import * as actions from './usersActions';
+import { GET_USER_ACCOUNT_HISTORY } from '../wallet/walletActions';
 
 const initialState = {
   users: {},
@@ -297,6 +298,21 @@ export default function usersReducer(state = initialState, action) {
           [action.meta.username]: {
             ...state.users[action.meta.username],
             pending: false,
+          },
+        },
+      };
+    }
+
+    case GET_USER_ACCOUNT_HISTORY.SUCCESS: {
+      // we get balance in payload only for guest users
+      const { username, balance } = action.payload;
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [username]: {
+            ...state.users[username],
+            balance: get(state, ['users', username, 'balance'], balance),
           },
         },
       };

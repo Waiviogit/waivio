@@ -62,7 +62,6 @@ export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
-export const isGuestBalance = state => fromAuth.isGuestBalance(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
@@ -192,7 +191,6 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
-export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
@@ -203,6 +201,7 @@ export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(s
 export const getSearchUsersResultsForDiscoverPage = state =>
   fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
+export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -222,7 +221,9 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
-export const getUpdatedMap = state => fromObjectType.getUpdatedMap(state.objectType);
+
+export const getUpdatedMapDiscover = state =>
+  fromObjectType.getUpdatedMapDiscover(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
@@ -238,7 +239,8 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
-export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
+export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
