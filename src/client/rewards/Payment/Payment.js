@@ -19,7 +19,7 @@ const Payment = ({ match, intl, userName }) => {
 
   const dispatch = useDispatch();
   const appUrl = useSelector(getAppUrl);
-  const url = appUrl === 'http://www.waivio.com' ? 'waivio' : 'waiviodev';
+  const url = 'waivio';
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,

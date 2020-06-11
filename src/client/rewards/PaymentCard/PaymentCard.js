@@ -19,7 +19,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
     history.push(path);
   };
   const appUrl = useSelector(getAppUrl);
-  const url = appUrl === 'http://www.waivio.com' ? 'waivio' : 'waiviodev';
+  const url = 'waivio';
 
   const handleClick = e => {
     e.preventDefault();
