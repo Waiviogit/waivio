@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import PowerUpTransaction from '../PowerUpTransaction';
+import PowerUpTransactionFrom from '../PowerUpTransactionFrom';
 
-describe('(Component) PowerUpTransaction', () => {
+describe('(Component) PowerUpTransactionFrom', () => {
   describe('with default prop values', () => {
     it('renders and matches snapshot', () => {
       const props = {
@@ -11,7 +11,7 @@ describe('(Component) PowerUpTransaction', () => {
         to: 'hellosteem',
         from: 'hellosteem',
       };
-      const wrapper = shallow(<PowerUpTransaction {...props} />);
+      const wrapper = shallow(<PowerUpTransactionFrom {...props} />);
       expect(wrapper).toMatchSnapshot();
     });
   });

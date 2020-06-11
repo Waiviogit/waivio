@@ -7,6 +7,7 @@ import { get, head, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
+  getAllUsers,
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -26,7 +27,6 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
 import NotFound from '../statics/NotFound';
 import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -42,6 +42,7 @@ import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
     usersAccountHistory: getUsersAccountHistory(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
+    allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
   }),
   {
     getUserAccount,
@@ -92,19 +93,20 @@ export default class User extends React.Component {
       getUserAccountHistory,
       match,
     } = this.props;
-    this.props.getUserAccount(this.props.match.params.name);
+
+    this.props.getUserAccount(match.params.name);
 
     if (authenticated) {
-      currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
+      currentUserFollowersUser(authenticatedUserName, match.params.name).then(resp => {
         const result = head(resp);
         const followingUsername = get(result, 'following', null);
-        const isFollowing = this.props.authenticatedUserName === followingUsername;
+        const isFollowing = authenticatedUserName === followingUsername;
         this.setState({
           isFollowing,
         });
       });
     }
-    if (isEmpty(usersAccountHistory[getUserDetailsKey(match.params.name)])) {
+    if (isEmpty(usersAccountHistory[match.params.name])) {
       getUserAccountHistory(match.params.name);
     }
   }

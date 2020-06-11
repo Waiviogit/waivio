@@ -15,6 +15,7 @@ export const GET_OBJECT_TYPE_MAP = createAsyncActionType('@objectType/GET_OBJECT
 export const CLEAR_OBJECT_TYPE = '@objectType/CLEAR_OBJECT_TYPE';
 export const UPDATE_ACTIVE_FILTERS = '@objectType/UPDATE_ACTIVE_FILTERS';
 export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
+export const RESET_UPDATED_STATE = '@objectType/RESET_UPDATED_STATE';
 
 /**
  * Action to get wobject of specific type with related wobjects
@@ -54,8 +55,8 @@ export const getObjectType = (
   });
 };
 
-export const getObjectTypeMap = (map = {}, isFullscreenMode) => dispatch => {
-  const filters = { rating: [], map };
+export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode) => dispatch => {
+  const filters = { rating: [], map: { radius, coordinates } };
   const typeName = 'restaurant';
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
   const getLimit = () => {
@@ -124,5 +125,11 @@ export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+  });
+};
+
+export const resetUpdatedFlag = () => dispatch => {
+  dispatch({
+    type: RESET_UPDATED_STATE,
   });
 };

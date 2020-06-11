@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, get, has, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -167,7 +167,8 @@ class EditPost extends Component {
 
   handleSubmit() {
     const postData = this.buildPost();
-    this.props.createPost(postData, this.props.beneficiaries);
+    const isReview = !isEmpty(this.state.campaign);
+    this.props.createPost(postData, this.props.beneficiaries, isReview);
   }
 
   handleToggleLinkedObject(objId, isLinked) {

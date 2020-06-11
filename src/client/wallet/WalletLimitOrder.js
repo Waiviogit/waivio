@@ -2,30 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
-import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
-const WalletFillOrderGet = ({ transactionDetails, timestamp }) => (
-  <React.Fragment>
+const WalletLimitOrder = ({ transactionDetails, timestamp }) => {
+  const arrowsIcon = '\u21C6';
+  return (
     <div className="UserWalletTransactions__transaction">
-      <div className="UserWalletTransactions__avatar">
-        <Avatar username={transactionDetails.account} size={40} />
+      <div className="UserWalletTransactions__icon-container">
+        <i className="arrows UserWalletTransactions__icon">{arrowsIcon}</i>
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>
             <FormattedMessage
-              id="fillOrder_wallet_get"
-              defaultMessage="You bought {open_pays} from {exchanger}"
+              id="limit_order"
+              defaultMessage="Limit order to buy {open_pays}"
               values={{
                 open_pays: <span>{transactionDetails.open_pays}</span>,
-                exchanger: <span>{transactionDetails.exchanger}</span>,
               }}
             />
           </div>
-          <div className="UserWalletTransactions__received">
-            {'+ '}
-            {transactionDetails.open_pays}
+          <div className="UserWalletTransactions__transfer">
+            {'- '}
+            {transactionDetails.current_pays}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">
@@ -43,18 +42,18 @@ const WalletFillOrderGet = ({ transactionDetails, timestamp }) => (
         </span>
       </div>
     </div>
-  </React.Fragment>
-);
+  );
+};
 
-WalletFillOrderGet.propTypes = {
-  transactionDetails: PropTypes.arrayOf(PropTypes.object).isRequired,
+WalletLimitOrder.propTypes = {
+  transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   timestamp: PropTypes.number,
-  open_pays: PropTypes.string,
+  current_pays: PropTypes.string,
 };
 
-WalletFillOrderGet.defaultProps = {
+WalletLimitOrder.defaultProps = {
   timestamp: 0,
-  open_pays: '',
+  current_pays: '',
 };
 
-export default WalletFillOrderGet;
+export default WalletLimitOrder;

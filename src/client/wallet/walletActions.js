@@ -1,7 +1,7 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
-import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   getAccountHistory,
   getDynamicGlobalProperties,
@@ -11,6 +11,7 @@ import {
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getTransferHistory } from '../../waivioApi/ApiClient';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -22,6 +23,9 @@ export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
 export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
+);
 
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
   '@users/GET_USER_EST_ACCOUNT_VALUE',
@@ -38,7 +42,7 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -46,6 +50,7 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '')
       amount,
       currency,
       memo,
+      app,
     },
   });
 
@@ -98,6 +103,7 @@ const parseGuestActions = actions => {
           ...transferDirection,
           amount: `${action.amount} HIVE`,
           memo: action.memo || '',
+          typeTransfer: action.type,
         },
       ],
       actionCount: index + 1,
@@ -169,7 +175,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
   const { wallet } = getState();
   const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
-  const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
+  const currentUsersActions = get(usersAccountHistory, username, []);
   const lastDisplayedAction = last(currentDisplayedActions);
 
   if (isEmpty(lastDisplayedAction)) {
@@ -207,7 +213,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
 };
 
 export const getUserAccountHistory = username => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
+  const isGuest = guestUserRegex.test(username);
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
@@ -231,7 +237,22 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
     payload: {
       promise: getTransferHistory(username, skip, limit)
         .then(data => ({
-          transactions: data.wallet,
+          username,
+          transactionsHistory: data.wallet,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => console.log(error)),
+    },
+  });
+
+export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch =>
+  dispatch({
+    type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistory(username, skip, limit)
+        .then(data => ({
+          username,
+          transactionsHistory: data.wallet,
           hasMore: data.hasMore,
         }))
         .catch(error => console.log(error)),

@@ -166,6 +166,12 @@ const createFormatter = api => {
       );
     },
 
+    fromVestsToHP(vests, totalVestingShares, totalVestingFundSteem) {
+      return (
+        (parseFloat(totalVestingFundSteem) * parseFloat(vests)) / parseFloat(totalVestingShares)
+      );
+    },
+
     commentPermlink(parentAuthor, parentPermlink) {
       const timeStr = new Date()
         .toISOString()

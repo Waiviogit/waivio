@@ -95,6 +95,33 @@ export const calculatePayout = post => {
   return payoutDetails;
 };
 
+export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeight, post) => {
+  const vests =
+    parseFloat(account.vesting_shares) +
+    parseFloat(account.received_vesting_shares) -
+    parseFloat(account.delegated_vesting_shares);
+
+  const previousVoteTime =
+    (new Date().getTime() - new Date(`${account.last_vote_time}Z`).getTime()) / 1000;
+  const accountVotingPower = Math.min(
+    10000,
+    account.voting_power + (10000 * previousVoteTime) / 432000,
+  );
+
+  const power = Math.round(((accountVotingPower / 100) * voteWeight + 49) / 50);
+  const rShares = vests * power * 100 - 50000000;
+
+  const tRShares = parseFloat(post.vote_rshares) + rShares;
+
+  const s = parseFloat(rewardFund.content_constant);
+  const tClaims = (tRShares * (tRShares + 2 * s)) / (tRShares + 4 * s);
+
+  const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
+  const postValue = tClaims * rewards * price;
+
+  return postValue * (rShares / tRShares);
+};
+
 function checkPermLinkLength(permlink) {
   if (permlink.length > 255) {
     // STEEMIT_MAX_PERMLINK_LENGTH

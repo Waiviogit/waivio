@@ -61,6 +61,7 @@ export default function withEditor(WrappedComponent) {
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
       const formData = new FormData();
+
       formData.append('file', blob);
 
       return fetch(`https://www.waivio.com/api/image`, {

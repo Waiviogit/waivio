@@ -45,7 +45,8 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
-  const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
+  const type =
+    wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'recency';
   const order = type === 'custom' ? wobj[objectFields.sorting] : null;
   return { type, order };
 };
@@ -139,7 +140,7 @@ class CatalogWrap extends React.Component {
     if (!isEmpty(obj.parent)) {
       requiredObject = obj.parent.author_permlink;
     } else if (!isEmpty(obj.listItems)) {
-      requiredObject = obj.listItems[0].parent.author_permlink;
+      requiredObject = get(obj, ['listItems', '0', 'parent', 'author_permlink']);
     } else {
       requiredObject = match.params.campaignParent || match.params.name;
     }

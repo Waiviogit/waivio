@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { get } from 'lodash';
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -220,6 +221,7 @@ export const assignProposition = ({
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
+  const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
   const detailsBody = getDetailsBody(
     proposition,
     proposedWobjName,
@@ -234,18 +236,13 @@ export const assignProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: resPermlink,
-      primaryObjectName,
-      secondaryObjectName,
-      amount,
-      proposition,
-      proposedWobj,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, ${primaryObjectName}</p>${detailsBody}`,
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
+        app: appName,
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
-          app: appName,
         },
       }),
     },
@@ -283,7 +280,6 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      requiredObjectName,
       title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
@@ -330,7 +326,6 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
-      company,
       title: 'Activate rewards campaign',
       body: `${username} (@${username}) activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({

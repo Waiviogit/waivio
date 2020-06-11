@@ -5,9 +5,9 @@ const ReportTableRewardsRow = beneficiary => {
   const weight = beneficiary.weight ? `${beneficiary.weight}%` : '';
   const votesAmount = beneficiary.votesAmount ? beneficiary.votesAmount.toFixed(3) : '';
   const amount = beneficiary.amount ? beneficiary.amount.toFixed(3) : '';
-  const totalHive = votesAmount + amount;
+  const totalHive = Number(votesAmount) + Number(amount);
   const payableInDollars = beneficiary.payableInDollars
-    ? `$ ${beneficiary.payableInDollars.toFixed(3)}`
+    ? `$ ${beneficiary.payableInDollars.toFixed(2)}`
     : '';
 
   return (
@@ -27,7 +27,7 @@ const ReportTableRewardsRow = beneficiary => {
         <div className="ReportTableRewardsRow__hive">{amount}</div>
       </td>
       <td>
-        <div className="ReportTableRewardsRow__totalHive">{totalHive}</div>
+        <div className="ReportTableRewardsRow__totalHive">{totalHive.toFixed(3)}</div>
       </td>
       <td>
         <div className="ReportTableRewardsRow__totalUsd">{payableInDollars}</div>
