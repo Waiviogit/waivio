@@ -17,13 +17,10 @@ const AuthorRewardMessage = ({
     { payout: actionDetails.vesting_payout, currency: 'HP' },
   ];
 
-  console.log('actionDetails: ', actionDetails);
-
   const parsedRewards = reduce(
     rewards,
     (array, reward) => {
       const parsedPayout = parseFloat(reward.payout);
-
       if (parsedPayout > 0) {
         let rewardsStr;
         if (reward.currency === 'SP') {
@@ -37,8 +34,15 @@ const AuthorRewardMessage = ({
             maximumFractionDigits: 3,
           });
         } else if (reward.currency === 'HP') {
-          const vesting = reward.vesting_payout;
-          formatter.vestToHP(vesting);
+          const vestsToHp = formatter.fromVestsToHP(
+            parsedPayout,
+            totalVestingShares,
+            totalVestingFundSteem,
+          );
+          rewardsStr = intl.formatNumber(vestsToHp, {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          });
         } else {
           rewardsStr = intl.formatNumber(parsedPayout, {
             minimumFractionDigits: 3,

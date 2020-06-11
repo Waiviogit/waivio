@@ -166,8 +166,10 @@ const createFormatter = api => {
       );
     },
 
-    vestToHP(vesting) {
-      return console.log('vesting: ', vesting);
+    fromVestsToHP(vests, totalVestingShares, totalVestingFundSteem) {
+      return (
+        (parseFloat(totalVestingFundSteem) * parseFloat(vests)) / parseFloat(totalVestingShares)
+      );
     },
 
     commentPermlink(parentAuthor, parentPermlink) {
