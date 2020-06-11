@@ -21,7 +21,6 @@ const AuthorRewardMessage = ({
     rewards,
     (array, reward) => {
       const parsedPayout = parseFloat(reward.payout);
-
       if (parsedPayout > 0) {
         let rewardsStr;
         if (reward.currency === 'SP') {
@@ -31,6 +30,16 @@ const AuthorRewardMessage = ({
             totalVestingFundSteem,
           );
           rewardsStr = intl.formatNumber(vestsToSP, {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          });
+        } else if (reward.currency === 'HP') {
+          const vestsToHp = formatter.fromVestsToHP(
+            parsedPayout,
+            totalVestingShares,
+            totalVestingFundSteem,
+          );
+          rewardsStr = intl.formatNumber(vestsToHp, {
             minimumFractionDigits: 3,
             maximumFractionDigits: 3,
           });
