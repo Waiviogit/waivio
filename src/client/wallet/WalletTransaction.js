@@ -56,10 +56,9 @@ const WalletTransaction = ({
       }
       return (
         <PowerUpTransactionTo
-          amount={getFormattedTransactionAmount(transactionDetails.amount, 'HP')}
+          amount={getFormattedTransactionAmount(transactionDetails.amount, 'HIVE')}
           timestamp={transaction.timestamp}
           to={transactionDetails.to}
-          from={transactionDetails.from}
         />
       );
     case accountHistoryConstants.TRANSFER:
