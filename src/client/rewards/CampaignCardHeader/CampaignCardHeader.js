@@ -43,11 +43,21 @@ const CampaignCardHeader = ({ intl, campaignData }) => {
             <div className="username">{`@${campaignData.guide.name}`}</div>
           </Link>
           <div className="total-paid">
-            <div>{intl.formatMessage({ id: 'paid', defaultMessage: 'Total paid' })}</div>
+            <div>
+              {intl.formatMessage({
+                id: 'total_paid_liquid',
+                defaultMessage: 'Total paid (liquid)',
+              })}
+            </div>
             <div className="total-paid__colon">:</div>
-            <div>{`${
-              campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-            } HIVE`}</div>
+            <div>
+              {`${
+                campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
+              } HIVE`}{' '}
+              {`(${
+                campaignData.guide.liquidHivePercent ? campaignData.guide.liquidHivePercent : 'n/a'
+              }%)`}
+            </div>
           </div>
         </div>
       </div>
