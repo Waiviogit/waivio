@@ -29,7 +29,9 @@ const Payment = ({ match, intl, userName }) => {
   const isReceiverGuest =
     match.params.userName.startsWith(GUEST_PREFIX) ||
     match.params.userName.startsWith(BXY_GUEST_PREFIX);
-  const memo = `${isReceiverGuest ? 'guest_reward' : 'user_reward'}", "app": "${url}`;
+
+  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
+  const app = url;
 
   useEffect(() => {
     getLenders(requestParams)
@@ -72,7 +74,7 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
+              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
             >
               {intl.formatMessage({
                 id: 'pay',

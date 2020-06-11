@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Tooltip } from 'antd';
+import { getAppUrl } from '../../reducers';
 import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
 import { openTransfer } from '../../wallet/walletActions';
@@ -17,6 +18,8 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   const handleSetUser = () => {
     history.push(path);
   };
+  const appUrl = useSelector(getAppUrl);
+  const url = appUrl === 'http://www.waivio.com' ? 'waivio' : 'waiviodev';
 
   const handleClick = e => {
     e.preventDefault();
@@ -25,12 +28,13 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   };
 
   const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
+  const app = url;
 
   let renderTransferButton = (
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
+      onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
