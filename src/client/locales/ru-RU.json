@@ -126,7 +126,7 @@
   "balance_amount": "Ваш баланс: {amount}.",
   "by": "От {username}",
   "memo": "Примечание",
-  "memo_placeholder": "Дополнительное сообщение для включения в этот платеж (опционально)",
+  "memo_placeholder": "Дополнительное сообщение для включения в этот платеж",
   "memo_exchange_error": "Примечание обязательно при отправке на обмен.",
   "memo_encryption_error": "Зашифрованные примечания не поддерживаются.",
   "power_up": "Hive power +",
@@ -1143,5 +1143,9 @@
   "create_duplicate": "создать дубликат",
   "total_paid_liquid": "Всего оплачено (liquid)",
   "date_and_time_picker_placeholder": "Выберите дату и время",
-  "paymentTable_data_time": "Дата & время (GMT)"
+  "paymentTable_data_time": "Дата & время (GMT)",
+  "memo_optional": "Примечание (необязательно)",
+  "estimated_value": "Расчетная стоимость сделки: {estimate} USD",
+  "powered_up_from": "Увеличение силы голоса от {from}",
+  "powered_up_to": "Увеличение силы голоса для {to}"
 }

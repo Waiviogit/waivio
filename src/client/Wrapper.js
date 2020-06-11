@@ -37,6 +37,7 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import ErrorBoundary from './ErrorBoundary';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -70,7 +71,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
   },
 )
-export default class Wrapper extends React.PureComponent {
+class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
@@ -281,3 +282,5 @@ export default class Wrapper extends React.PureComponent {
     );
   }
 }
+
+export default ErrorBoundary(Wrapper);
