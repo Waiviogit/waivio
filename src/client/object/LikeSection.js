@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { ceil } from 'lodash';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import {
   getAuthenticatedUser,
@@ -11,7 +12,9 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import { getVoteValue } from '../helpers/user';
+import { calculateVotePower } from '../helpers/user';
+import USDDisplay from '../components/Utils/USDDisplay';
+
 import './LikeSection.less';
 
 @injectIntl
@@ -65,13 +68,7 @@ class LikeSection extends React.Component {
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate, onVotePercentChange } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
+    const voteWorth = ceil((calculateVotePower(user, rewardFund, rate) * value) / 100, 3);
     this.setState({ votePercent: value, voteWorth });
 
     onVotePercentChange(value);
@@ -84,6 +81,19 @@ class LikeSection extends React.Component {
       }
     }
   };
+
+  formatTip = value => (
+    <div>
+      <FormattedNumber
+        style="percent" // eslint-disable-line react/style-prop-object
+        value={value / 100}
+      />
+      <span style={{ opacity: '0.5' }}>
+        {' '}
+        <USDDisplay value={this.state.voteWorth} />
+      </span>
+    </div>
+  );
 
   render() {
     const { voteWorth, votePercent, sliderVisible } = this.state;
@@ -121,6 +131,7 @@ class LikeSection extends React.Component {
                 initialValue={votePercent}
                 onChange={this.calculateVoteWorth}
                 disabled={disabled}
+                tipFormatter={this.formatTip}
               />
             </div>
             <div className="like-worth">
