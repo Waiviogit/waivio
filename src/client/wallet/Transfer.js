@@ -193,14 +193,11 @@ export default class Transfer extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value) {
-    if (!value) {
-      this.setState({
-        searchBarValue: '',
-        searchData: '',
-        currentItem: '',
-      });
-    }
-    this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
+    this.setState({
+      searchBarValue: value,
+      searchData: '',
+      currentItem: 'All',
+    });
   }
 
   getUSDValue() {
