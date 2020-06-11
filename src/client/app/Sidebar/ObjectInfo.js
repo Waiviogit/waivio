@@ -511,8 +511,10 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {description &&
-          listItem(objectFields.description, <DescriptionInfo description={description} />)}
+        {listItem(
+          objectFields.description,
+          description && <DescriptionInfo description={description} />,
+        )}
         {listItem(
           objectFields.rating,
           <RateInfo
