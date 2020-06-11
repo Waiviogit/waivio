@@ -358,3 +358,44 @@ export const payablesFilterData = location => [
     defaultMessage: `Over {value} HIVE`,
   },
 ];
+
+export const getContent = pathname => {
+  if (pathname.includes('references')) {
+    return {
+      title: {
+        id: 'recognize_other_users_blacklists',
+        defaultMessage: "Recognize other users' blacklists",
+      },
+      caption: {
+        id: 'when_you_reference_another_users_blacklist',
+        defaultMessage:
+          "When you reference another user's blacklist, you also recognize all other blacklists referred to by that user",
+      },
+    };
+  }
+
+  if (pathname.includes('whitelist')) {
+    return {
+      title: {
+        id: 'add_user_to_whitelist',
+        defaultMessage: 'Add user to the whitelist',
+      },
+      caption: {
+        id: 'whitelisted_users_can_participate',
+        defaultMessage:
+          'Whitelisted users can participate in any campaign (subject to campaign eligibility criteria) sponsored by',
+      },
+    };
+  }
+
+  return {
+    title: {
+      id: 'add_user_to_blacklist',
+      defaultMessage: 'Add user to the blacklist',
+    },
+    caption: {
+      id: 'blacklisted_users_cannot_participate',
+      defaultMessage: 'Blacklisted users cannot participate in any campaign sponsored by',
+    },
+  };
+};

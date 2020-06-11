@@ -1,0 +1,58 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.Blacklist {
+  &__menu {
+    display: flex;
+    justify-content: space-around;
+    height: 46px;
+    line-height: 46px;
+    border-bottom: 1px solid @blue-hawkesBlue;
+  }
+
+  &__link {
+    display: block;
+    height: 45px;
+    cursor: pointer;
+    color: @blue-botticelli;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 45px;
+    white-space: nowrap;
+
+    &--active,
+    &:hover {
+      color: @primary-color;
+      border-bottom: 2px @border-style-base @primary-color;
+    }
+  }
+
+  &__content {
+    &-title {
+      margin-top: 20px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    &-caption {
+      font-size: 14px;
+      margin-left: 3px;
+      margin-top: 3px;
+      margin-bottom: 5px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+
+    .ant-btn-primary {
+      width: 100px;
+    }
+
+    &-add {
+      margin-right: 30px;
+    }
+  }
+}

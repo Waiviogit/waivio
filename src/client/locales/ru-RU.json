@@ -1143,5 +1143,14 @@
   "create_duplicate": "создать дубликат",
   "total_paid_liquid": "Всего оплачено (liquid)",
   "date_and_time_picker_placeholder": "Выберите дату и время",
-  "paymentTable_data_time": "Дата & время (GMT)"
+  "paymentTable_data_time": "Дата & время (GMT)",
+  "blacklist": "Черный список",
+  "references": "Ссылки",
+  "whitelist": "Белый список",
+  "add_user_to_blacklist": "Добавить пользователя в черный список",
+  "blacklisted_users_cannot_participate": "Пользователи из черного списка не могут участвовать ни в одной кампании, спонсируемой",
+  "recognize_other_users_blacklists": "Узнать чёрные списки других пользователей",
+  "when_you_reference_another_user's_blacklist": "Когда вы ссылаетесь на черный список другого пользователя, вы также узнаете все другие черные списки, на которые ссылается этот пользователь",
+  "add_user_to_whitelist": "Добавить пользователя в белый список",
+  "whitelisted_users_can_participate": "Пользователи из белого списка могут участвовать в любой кампании (согласно критериям приемлемости кампании), спонсируемой"
 }
