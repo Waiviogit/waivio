@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import BlacklistContent from './BlacklistContent';
 import './Blacklist.less';
-import BlacklistFooter from './BlacklistFooter';
 
 const Blacklist = ({ intl, location: { pathname }, userName }) => (
   <div className="Blacklist">
@@ -51,7 +50,6 @@ const Blacklist = ({ intl, location: { pathname }, userName }) => (
       </li>
     </ul>
     <BlacklistContent userName={userName} pathname={pathname} />
-    <BlacklistFooter />
   </div>
 );
 

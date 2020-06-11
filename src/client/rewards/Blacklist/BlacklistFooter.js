@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
+import { changeBlackAndWhiteLists } from '../rewardsActions';
 import './Blacklist.less';
 
-const BlacklistFooter = ({ intl }) => {
+const BlacklistFooter = ({ intl, users }) => {
+  console.log('users', users);
+  const dispatch = useDispatch();
   const handleAddUsers = () => {
+    const id = 'addUsersToBlackList';
+
+    dispatch(changeBlackAndWhiteLists(id, users));
     console.log('add');
   };
 
@@ -37,6 +44,11 @@ const BlacklistFooter = ({ intl }) => {
 
 BlacklistFooter.propTypes = {
   intl: PropTypes.shape().isRequired,
+  users: PropTypes.arrayOf(PropTypes.shape()),
+};
+
+BlacklistFooter.defaultProps = {
+  users: [],
 };
 
 export default injectIntl(BlacklistFooter);

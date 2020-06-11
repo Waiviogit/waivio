@@ -6,6 +6,7 @@ import { filter, isEmpty, map } from 'lodash';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
 import { getContent } from '../rewardsHelper';
+import BlacklistFooter from './BlacklistFooter';
 import './Blacklist.less';
 
 const BlacklistContent = ({ intl, userName, pathname }) => {
@@ -53,6 +54,7 @@ const BlacklistContent = ({ intl, userName, pathname }) => {
         {!pathname.includes('references') && <Link to={`/@${userName}`}>{userName}</Link>}
       </div>
       <div className="Blacklist__content-objects-wrap">{renderUser}</div>
+      <BlacklistFooter users={users} />
     </div>
   );
 };
