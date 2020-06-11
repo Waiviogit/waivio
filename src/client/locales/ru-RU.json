@@ -1143,5 +1143,7 @@
   "create_duplicate": "создать дубликат",
   "total_paid_liquid": "Всего оплачено (liquid)",
   "date_and_time_picker_placeholder": "Выберите дату и время",
-  "paymentTable_data_time": "Дата & время (GMT)"
+  "paymentTable_data_time": "Дата & время (GMT)",
+  "powered_up_from": "Увеличение силы голоса от {from}",
+  "powered_up_to": "Увеличение силы голоса для {to}"
 }

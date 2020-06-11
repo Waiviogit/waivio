@@ -5,12 +5,13 @@ import * as accountHistoryConstants from '../../common/constants/accountHistory'
 import ReceiveTransaction from './ReceiveTransaction';
 import TransferTransaction from './TransferTransaction';
 import SavingsTransaction from './SavingsTransaction';
-import PowerUpTransaction from './PowerUpTransaction';
+import PowerUpTransactionFrom from './PowerUpTransactionFrom';
 import ClaimReward from './ClaimReward';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import './UserWalletTransactions.less';
+import PowerUpTransactionTo from './PowerUpTransactionTo';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -43,8 +44,18 @@ const WalletTransaction = ({
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
+      if (transactionDetails.to === currentUsername) {
+        return (
+          <PowerUpTransactionFrom
+            amount={getFormattedTransactionAmount(transactionDetails.amount, 'HP')}
+            timestamp={transaction.timestamp}
+            to={transactionDetails.to}
+            from={transactionDetails.from}
+          />
+        );
+      }
       return (
-        <PowerUpTransaction
+        <PowerUpTransactionTo
           amount={getFormattedTransactionAmount(transactionDetails.amount, 'HP')}
           timestamp={transaction.timestamp}
           to={transactionDetails.to}
