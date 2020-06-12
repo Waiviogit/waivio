@@ -1,5 +1,6 @@
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { has, setWith } from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -53,6 +54,15 @@ export default class ObjectGalleryAlbum extends Component {
       showModal: !prevState.showModal,
     }));
 
+  validatedAlbums = albums =>
+    albums.map(album => {
+      if (!has(album, 'active_votes') && !has(album, 'weight')) {
+        setWith(album, '[active_votes]', []);
+        setWith(album, '[weight]', 0);
+      }
+      return album;
+    });
+
   render() {
     const { loading, match, albums, isAuthenticated, admins, moderators } = this.props;
     const { showModal } = this.state;
@@ -60,7 +70,8 @@ export default class ObjectGalleryAlbum extends Component {
     if (loading) return <Loading center />;
 
     const albumId = match.params.itemId;
-    const album = albums.filter(
+    const allAlbums = this.validatedAlbums(albums);
+    const album = allAlbums.filter(
       albm =>
         albm.id === albumId &&
         calculateApprovePercent(albm.active_votes, albm.weight, { admins, moderators }),
