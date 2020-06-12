@@ -400,7 +400,26 @@ export const getContent = pathName => {
   };
 };
 
-export const getSuccessAddMessage = userNames => {
+export const getSuccessAddMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_subscribed_to_other_users_blacklists',
+      defaultMessage: "You subscribed to other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_added_to_whitelist',
+        defaultMessage: 'Users were added to the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_added_to_whitelist',
+      defaultMessage: 'User was added to the whitelist',
+    };
+  }
+
   if (userNames.length > 1) {
     return {
       id: 'users_were_added_to_blacklist',
@@ -413,7 +432,25 @@ export const getSuccessAddMessage = userNames => {
   };
 };
 
-export const getSuccessDeleteMessage = userNames => {
+export const getSuccessDeleteMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_unsubscribed_from_other_users_blacklists',
+      defaultMessage: "You unsubscribed from other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_deleted_from_whitelist',
+        defaultMessage: 'Users were deleted from the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_deleted_from_whitelist',
+      defaultMessage: 'User was deleted from the whitelist',
+    };
+  }
   if (userNames.length > 1) {
     return {
       id: 'users_were_deleted_from_blacklist',

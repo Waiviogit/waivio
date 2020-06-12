@@ -56,7 +56,7 @@ const BlacklistContent = ({ intl, userName, pathName }) => {
         {!pathName.includes('references') && <Link to={`/@${userName}`}>{userName}</Link>}
       </div>
       <div className="Blacklist__content-objects-wrap">{renderUser}</div>
-      <BlacklistFooter users={users} pathname={pathName} clearUsers={clearUsers} />
+      <BlacklistFooter users={users} pathName={pathName} clearUsers={clearUsers} />
     </div>
   );
 };

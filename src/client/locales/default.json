@@ -1159,5 +1159,13 @@
   "users_were_added_to_blacklist": "Users were added to the blacklist",
   "users_were_deleted_from_blacklist": "Users were deleted from the blacklist",
   "user_was_added_to_blacklist": "User was added to the blacklist",
-  "user_was_deleted_from_blacklist": "User was deleted from the blacklist"
+  "user_was_deleted_from_blacklist": "User was deleted from the blacklist",
+  "users_were_added_to_whitelist": "Users were added to the whitelist",
+  "users_were_deleted_from_whitelist": "Users were deleted from the whitelist",
+  "user_was_added_to_whitelist": "User was added to the whitelist",
+  "user_was_deleted_from_whitelist": "User was deleted from the whitelist",
+  "you_subscribed_to_other_users_blacklists": "You subscribed to other users' blacklists",
+  "you_unsubscribed_from_other_users_blacklists": "You unsubscribed from other users' blacklists",
+  "subscribe": "Subscribe",
+  "unsubscribe": "Unsubscribe"
 }

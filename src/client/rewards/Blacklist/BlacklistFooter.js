@@ -9,14 +9,16 @@ import { getSuccessAddMessage, getSuccessDeleteMessage } from '../rewardsHelper'
 import './Blacklist.less';
 
 const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
-  console.log('users', users);
   const dispatch = useDispatch();
   const usersNames = map(users, user => user.account);
   const successAddMessage = getSuccessAddMessage(users, pathName);
   const successDeleteMessage = getSuccessDeleteMessage(users, pathName);
 
   const handleAddUsers = () => {
-    const id = 'addUsersToBlackList';
+    let id = 'addUsersToBlackList';
+    if (pathName.includes('whitelist')) id = 'addUsersToWhiteList';
+    if (pathName.includes('references')) id = 'followAnotherBlacklist';
+
     dispatch(changeBlackAndWhiteLists(id, usersNames))
       .then(() => {
         clearUsers();
@@ -31,7 +33,10 @@ const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
   };
 
   const handleDeleteUsers = () => {
-    const id = 'removeUsersFromBlackList';
+    let id = 'removeUsersFromBlackList';
+    if (pathName.includes('whitelist')) id = 'removeUsersFromWhiteList';
+    if (pathName.includes('references')) id = 'unFollowAnotherBlacklist';
+
     dispatch(changeBlackAndWhiteLists(id, usersNames))
       .then(() => {
         clearUsers();
@@ -49,18 +54,28 @@ const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
     <div className="Blacklist__footer">
       <div className="Blacklist__footer-add">
         <Button type="primary" onClick={handleAddUsers}>
-          {intl.formatMessage({
-            id: 'add_new_proposition',
-            defaultMessage: 'Add',
-          })}
+          {pathName.includes('references')
+            ? intl.formatMessage({
+                id: 'subscribe',
+                defaultMessage: 'Subscribe',
+              })
+            : intl.formatMessage({
+                id: 'add_new_proposition',
+                defaultMessage: 'Add',
+              })}
         </Button>
       </div>
       <div className="Blacklist__footer-delete">
         <Button type="primary" onClick={handleDeleteUsers}>
-          {intl.formatMessage({
-            id: 'matchBot_btn_delete',
-            defaultMessage: 'Delete',
-          })}
+          {pathName.includes('references')
+            ? intl.formatMessage({
+                id: 'unsubscribe',
+                defaultMessage: 'unsubscribe',
+              })
+            : intl.formatMessage({
+                id: 'matchBot_btn_delete',
+                defaultMessage: 'Delete',
+              })}
         </Button>
       </div>
     </div>
