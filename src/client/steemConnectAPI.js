@@ -132,12 +132,12 @@ function sc2Extended() {
         };
         return this.broadcast([['custom_json', params]], cb);
       },
-      changeBlackAndWhiteLists(username, users, id, cb) {
+      changeBlackAndWhiteLists(username, id, usersNames, cb) {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
           id,
-          json: JSON.stringify({ names: [users] }),
+          json: JSON.stringify({ names: usersNames }),
         };
         return this.broadcast([['custom_json', params]], cb);
       },

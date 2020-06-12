@@ -2,22 +2,47 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
+import { map } from 'lodash';
 import { changeBlackAndWhiteLists } from '../rewardsActions';
+import { getSuccessAddMessage, getSuccessDeleteMessage } from '../rewardsHelper';
 import './Blacklist.less';
 
-const BlacklistFooter = ({ intl, users }) => {
+const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
   console.log('users', users);
   const dispatch = useDispatch();
+  const usersNames = map(users, user => user.account);
+  const successAddMessage = getSuccessAddMessage(users, pathName);
+  const successDeleteMessage = getSuccessDeleteMessage(users, pathName);
+
   const handleAddUsers = () => {
     const id = 'addUsersToBlackList';
-
-    dispatch(changeBlackAndWhiteLists(id, users));
-    console.log('add');
+    dispatch(changeBlackAndWhiteLists(id, usersNames))
+      .then(() => {
+        clearUsers();
+        message.success(
+          intl.formatMessage({
+            id: successAddMessage.id,
+            defaultMessage: successAddMessage.defaultMessage,
+          }),
+        );
+      })
+      .catch(err => console.error(err));
   };
 
   const handleDeleteUsers = () => {
-    console.log('delete');
+    const id = 'removeUsersFromBlackList';
+    dispatch(changeBlackAndWhiteLists(id, usersNames))
+      .then(() => {
+        clearUsers();
+        message.success(
+          intl.formatMessage({
+            id: successDeleteMessage.id,
+            defaultMessage: successDeleteMessage.defaultMessage,
+          }),
+        );
+      })
+      .catch(err => console.error(err));
   };
 
   return (
@@ -45,10 +70,13 @@ const BlacklistFooter = ({ intl, users }) => {
 BlacklistFooter.propTypes = {
   intl: PropTypes.shape().isRequired,
   users: PropTypes.arrayOf(PropTypes.shape()),
+  pathName: PropTypes.string,
+  clearUsers: PropTypes.func.isRequired,
 };
 
 BlacklistFooter.defaultProps = {
   users: [],
+  pathName: '',
 };
 
 export default injectIntl(BlacklistFooter);

@@ -359,8 +359,8 @@ export const payablesFilterData = location => [
   },
 ];
 
-export const getContent = pathname => {
-  if (pathname.includes('references')) {
+export const getContent = pathName => {
+  if (pathName.includes('references')) {
     return {
       title: {
         id: 'recognize_other_users_blacklists',
@@ -374,7 +374,7 @@ export const getContent = pathname => {
     };
   }
 
-  if (pathname.includes('whitelist')) {
+  if (pathName.includes('whitelist')) {
     return {
       title: {
         id: 'add_user_to_whitelist',
@@ -397,5 +397,31 @@ export const getContent = pathname => {
       id: 'blacklisted_users_cannot_participate',
       defaultMessage: 'Blacklisted users cannot participate in any campaign sponsored by',
     },
+  };
+};
+
+export const getSuccessAddMessage = userNames => {
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_added_to_blacklist',
+      defaultMessage: 'Users were added to blacklist',
+    };
+  }
+  return {
+    id: 'user_was_added_to_blacklist',
+    defaultMessage: 'User was added to the blacklist',
+  };
+};
+
+export const getSuccessDeleteMessage = userNames => {
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_deleted_from_blacklist',
+      defaultMessage: 'Users were deleted from the blacklist',
+    };
+  }
+  return {
+    id: 'user_was_deleted_from_blacklist',
+    defaultMessage: 'User was deleted from the blacklist',
   };
 };

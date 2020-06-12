@@ -1155,5 +1155,9 @@
   "recognize_other_users_blacklists": "Recognize other users' blacklists",
   "when_you_reference_another_users_blacklist": "When you reference another user's blacklist, you also recognize all other blacklists referred to by that user",
   "add_user_to_whitelist": "Add user to the whitelist",
-  "whitelisted_users_can_participate": "Whitelisted users can participate in any campaign (subject to campaign eligibility criteria) sponsored by"
+  "whitelisted_users_can_participate": "Whitelisted users can participate in any campaign (subject to campaign eligibility criteria) sponsored by",
+  "users_were_added_to_blacklist": "Users were added to the blacklist",
+  "users_were_deleted_from_blacklist": "Users were deleted from the blacklist",
+  "user_was_added_to_blacklist": "User was added to the blacklist",
+  "user_was_deleted_from_blacklist": "User was deleted from the blacklist"
 }

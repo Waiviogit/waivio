@@ -49,7 +49,7 @@ const Blacklist = ({ intl, location: { pathname }, userName }) => (
         </Link>
       </li>
     </ul>
-    <BlacklistContent userName={userName} pathname={pathname} />
+    <BlacklistContent userName={userName} pathName={pathname} />
   </div>
 );
 

@@ -9,7 +9,7 @@ import { getContent } from '../rewardsHelper';
 import BlacklistFooter from './BlacklistFooter';
 import './Blacklist.less';
 
-const BlacklistContent = ({ intl, userName, pathname }) => {
+const BlacklistContent = ({ intl, userName, pathName }) => {
   const [users, setUsers] = useState([]);
 
   const setUserBlacklist = user => setUsers([...users, user]);
@@ -19,14 +19,16 @@ const BlacklistContent = ({ intl, userName, pathname }) => {
     setUsers(newUsers);
   };
 
+  const clearUsers = () => setUsers([]);
+
   const renderUser = !isEmpty(users)
     ? map(users, user => (
         <ReviewItem key={user.id} object={user} removeReviewObject={removeUser} isUser />
       ))
     : null;
 
-  const title = pathname ? getContent(pathname).title : '';
-  const caption = pathname ? getContent(pathname).caption : '';
+  const title = pathName ? getContent(pathName).title : '';
+  const caption = pathName ? getContent(pathName).caption : '';
 
   return (
     <div className="Blacklist__content">
@@ -51,10 +53,10 @@ const BlacklistContent = ({ intl, userName, pathname }) => {
           id: caption.id,
           defaultMessage: caption.defaultMessage,
         })}{' '}
-        {!pathname.includes('references') && <Link to={`/@${userName}`}>{userName}</Link>}
+        {!pathName.includes('references') && <Link to={`/@${userName}`}>{userName}</Link>}
       </div>
       <div className="Blacklist__content-objects-wrap">{renderUser}</div>
-      <BlacklistFooter users={users} />
+      <BlacklistFooter users={users} pathname={pathName} clearUsers={clearUsers} />
     </div>
   );
 };
@@ -62,12 +64,12 @@ const BlacklistContent = ({ intl, userName, pathname }) => {
 BlacklistContent.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
-  pathname: PropTypes.string,
+  pathName: PropTypes.string,
 };
 
 BlacklistContent.defaultProps = {
   userName: '',
-  pathname: '',
+  pathName: '',
 };
 
 export default injectIntl(BlacklistContent);
