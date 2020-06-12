@@ -358,3 +358,5 @@ export const payablesFilterData = location => [
     defaultMessage: `Over {value} HIVE`,
   },
 ];
+
+export const getMemo = isReceiverGuest => (isReceiverGuest ? 'guest_reward' : 'user_reward');
