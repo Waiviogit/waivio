@@ -39,6 +39,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
 import USDDisplay from '../components/Utils/USDDisplay';
 import formatter from '../helpers/steemitFormatter';
+import { REWARD } from '../../common/constants/rewards';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -258,7 +259,7 @@ export default class Transfer extends React.Component {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
-            : { id: 'user_to_guest_transfer', to: values.to };
+            : { id: REWARD.guestTransfer, to: values.to };
           if (app) {
             transferQuery.memo.app = app;
           }
