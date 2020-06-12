@@ -11,7 +11,6 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getGuestUserBalance,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
   getScreenSize,
@@ -21,20 +20,19 @@ import {
   getUser,
   getUserHasMore,
   getUserHasMoreAccountHistory,
+  getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
-  isGuestBalance,
-  isGuestUser,
 } from '../reducers';
 import {
   getGlobalProperties,
   getMoreUserAccountHistory,
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
+  getUserAccountHistory,
 } from '../wallet/walletActions';
-import { getAccount } from './usersActions';
+import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
 import { guestUserRegex } from '../helpers/regexHelpers';
 
 @withRouter
@@ -47,32 +45,29 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     authenticatedUserName: getAuthenticatedUserName(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
+    usersAccountHistory: getUsersAccountHistory(state),
     usersAccountHistoryLoading: getUsersAccountHistoryLoading(state),
     loadingGlobalProperties: getLoadingGlobalProperties(state),
     loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
     screenSize: getScreenSize(state),
-    userHasMoreActions: getUserHasMoreAccountHistory(
+    demoHasMoreActions: getUserHasMoreAccountHistory(
       state,
       ownProps.isCurrentUser
         ? getAuthenticatedUserName(state)
         : getUser(state, ownProps.match.params.name).name,
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
-    guestBalance: getGuestUserBalance(state),
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
-    ownGuestBalance: isGuestBalance(state),
-    isGuest: isGuestUser(state),
-    ownPage:
-      ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state),
   }),
   {
     getGlobalProperties,
     getMoreUserAccountHistory,
-    getAccount,
+    getUserAccount,
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
+    getUserAccountHistory,
   },
 )
 class Wallet extends Component {
@@ -83,35 +78,31 @@ class Wallet extends Component {
     user: PropTypes.shape().isRequired,
     getGlobalProperties: PropTypes.func.isRequired,
     getMoreUserAccountHistory: PropTypes.func.isRequired,
-    getAccount: PropTypes.func.isRequired,
+    getUserAccount: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     usersAccountHistoryLoading: PropTypes.bool.isRequired,
     loadingGlobalProperties: PropTypes.bool.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
-    userHasMoreActions: PropTypes.bool.isRequired,
+    demoHasMoreActions: PropTypes.bool.isRequired,
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    guestBalance: PropTypes.number,
     transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
-    ownGuestBalance: PropTypes.func,
-    isGuest: PropTypes.bool,
-    ownPage: PropTypes.bool,
+    usersTransactions: PropTypes.shape().isRequired,
+    getUserAccountHistory: PropTypes.func.isRequired,
+    usersAccountHistory: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
-    guestBalance: null,
     usersTransactions: [],
     transactionsHistory: {},
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
-    ownGuestBalance: null,
-    isGuest: false,
     ownPage: false,
   };
 
@@ -134,26 +125,15 @@ class Wallet extends Component {
     }
 
     if (isEmpty(user)) {
-      this.props.getAccount(username);
+      this.props.getUserAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[getUserDetailsKey(username)])) {
+    if (isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
-  }
 
-  selectUserBalance = () => {
-    const { user, ownGuestBalance, guestBalance, isGuest, ownPage } = this.props;
-    const isGuestWalletPage = guestUserRegex.test(user && user.name);
-    if (ownPage && isGuest) {
-      return ownGuestBalance;
-    } else if (isGuestWalletPage && !ownPage) {
-      return guestBalance;
-    } else if (!isGuestWalletPage) {
-      return user.balance;
-    }
-    return null;
-  };
+    this.props.getUserAccountHistory(username);
+  }
 
   render() {
     const {
@@ -163,14 +143,18 @@ class Wallet extends Component {
       loadingGlobalProperties,
       usersAccountHistoryLoading,
       loadingMoreUsersAccountHistory,
-      userHasMoreActions,
+      demoHasMoreActions,
       cryptosPriceHistory,
       screenSize,
       transactionsHistory,
       hasMore,
+      usersTransactions,
+      usersAccountHistory,
     } = this.props;
 
-    const userKey = getUserDetailsKey(user.name);
+    const userKey = user.name;
+    const demoTransactions = get(usersTransactions, userKey, []);
+    const actions = get(usersAccountHistory, userKey, []);
     const transactions = get(transactionsHistory, userKey, []);
 
     const currentSteemRate = get(
@@ -189,6 +173,7 @@ class Wallet extends Component {
       <Loading style={{ marginTop: '20px' }} />
     ) : (
       <UserWalletTransactions
+        user={user}
         getMoreUserTransactionHistory={this.props.getMoreUserTransactionHistory}
         transactions={transactions}
         hasMore={hasMore}
@@ -197,7 +182,9 @@ class Wallet extends Component {
         totalVestingFundSteem={totalVestingFundSteem}
         getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
         loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-        userHasMoreActions={userHasMoreActions}
+        demoTransactions={demoTransactions}
+        demoHasMoreActions={demoHasMoreActions}
+        actions={actions}
       />
     );
 
@@ -205,7 +192,6 @@ class Wallet extends Component {
       <div>
         <UserWalletSummary
           user={user}
-          balance={this.selectUserBalance()}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}

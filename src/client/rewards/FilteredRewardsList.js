@@ -1,14 +1,17 @@
-import React, { useMemo } from 'react';
-import { Tag } from 'antd';
+import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { map } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import { getTextByFilterKey } from './rewardsHelper';
+import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
+import FilterModal from './FilterModal';
 
 const FilteredRewardsList = props => {
   const {
@@ -27,7 +30,16 @@ const FilteredRewardsList = props => {
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
+    sponsors,
+    activeFilters,
+    setFilterValue,
+    campaignsTypes,
   } = props;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const showMap = () => dispatch(setMapFullscreenMode(true));
 
   const sortRewards = useMemo(() => {
     if (filterKey === 'messages') {
@@ -118,6 +130,38 @@ const FilteredRewardsList = props => {
           ))}
         </SortSelector>
       )}
+      {!isEmpty(sponsors) && (
+        <div className="FilteredRewardsList__filters-tags-block">
+          <span className="FilteredRewardsList__filters-topic ttc">
+            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+          </span>
+          {map(activeFilters, (filterValues, filterName) =>
+            map(filterValues, filterValue => (
+              <Tag
+                key={`${filterName}:${filterValue}`}
+                closable
+                onClose={() => setFilterValue(filterValue, filterName)}
+              >
+                {filterValue}
+              </Tag>
+            )),
+          )}
+          <span
+            className="FilteredRewardsList__filters-selector underline ttl"
+            role="presentation"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+          </span>
+        </div>
+      )}
+      {!isEmpty(sponsors) && (
+        <div className="FilteredRewardsList__filters-toggle-map tc">
+          <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
+            {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+          </Button>
+        </div>
+      )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -129,6 +173,25 @@ const FilteredRewardsList = props => {
           {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
         </ReduxInfiniteScroll>
       </div>
+
+      <Modal
+        className="FilteredRewardsList__filters-modal"
+        footer={null}
+        title={intl.formatMessage({
+          id: 'filter_rewards',
+          defaultMessage: 'Filter rewards',
+        })}
+        closable
+        visible={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <FilterModal
+          intl={intl}
+          activeFilters={activeFilters}
+          filters={{ types: campaignsTypes, guideNames: sponsors }}
+          setFilterValue={setFilterValue}
+        />
+      </Modal>
     </React.Fragment>
   ) : (
     <Loading />
@@ -160,6 +223,10 @@ FilteredRewardsList.propTypes = {
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
+  sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  activeFilters: PropTypes.shape().isRequired,
+  setFilterValue: PropTypes.func.isRequired,
+  campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default FilteredRewardsList;

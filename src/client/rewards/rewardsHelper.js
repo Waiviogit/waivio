@@ -19,6 +19,8 @@ export const preparePropositionReqData = ({
   sort,
   types,
   guideNames,
+  limit,
+  simplified,
 }) => {
   const reqData = {
     limit: displayLimit,
@@ -30,15 +32,19 @@ export const preparePropositionReqData = ({
 
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
-  }
-  if (area && area.length > 0 && radius) {
-    reqData.area = area;
     reqData.radius = radius;
+  }
+  if (area && area.length > 0) {
+    reqData.area = area;
+    if (radius) reqData.radius = radius;
   }
   if (types && guideNames) {
     reqData.types = types;
     reqData.guideNames = guideNames;
   }
+  if (limit) reqData.limit = limit;
+  if (simplified) reqData.simplified = simplified;
+
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
@@ -168,7 +174,8 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));
+export const convertDigits = (number, isHive) =>
+  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
@@ -207,11 +214,7 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? reduce(
-        objectDetails.match_bots,
-        (acc, bot) => `${acc}, <a href='/object/${bot}/page'>${bot}</a>`,
-        '',
-      )
+    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, '')
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
@@ -342,6 +345,19 @@ export const getProcessingFee = data => {
       return null;
   }
 };
+
+export const payablesFilterData = location => [
+  {
+    filterName: 'days',
+    value: location.pathname === '/rewards/payables' ? 15 : 30,
+    defaultMessage: `Over {value} days`,
+  },
+  {
+    filterName: 'payable',
+    value: location.pathname === '/rewards/payables' ? 10 : 20,
+    defaultMessage: `Over {value} HIVE`,
+  },
+];
 
 export const popoverDataHistory = {
   reserved: [

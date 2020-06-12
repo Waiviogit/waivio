@@ -5,31 +5,28 @@ import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 
-const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
+const PowerUpTransactionTo = ({ timestamp, amount, to }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-container">
       <i className="iconfont icon-flashlight_fill UserWalletTransactions__icon" />
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
-        <div>
-          {to === from ? (
-            <FormattedMessage id="powered_up" defaultMessage="Powered up " />
-          ) : (
-            <FormattedMessage
-              id="powered_up_to"
-              defaultMessage="Powered up {to} "
-              values={{
-                to: (
-                  <Link to={`/@${to}`}>
-                    <span className="username">{to}</span>
-                  </Link>
-                ),
-              }}
-            />
-          )}
-        </div>
-        <span className="UserWalletTransactions__payout">{amount}</span>
+        <FormattedMessage
+          id="powered_up_to"
+          defaultMessage="Powered up to {to} "
+          values={{
+            to: (
+              <Link to={`/@${to}`}>
+                <span className="username">{to}</span>
+              </Link>
+            ),
+          }}
+        />
+        <span className="UserWalletTransactions__transfer">
+          {'- '}
+          {amount}
+        </span>
       </div>
       <span className="UserWalletTransactions__timestamp">
         <BTooltip
@@ -48,11 +45,10 @@ const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
   </div>
 );
 
-PowerUpTransaction.propTypes = {
+PowerUpTransactionTo.propTypes = {
   timestamp: PropTypes.string.isRequired,
   amount: PropTypes.element.isRequired,
   to: PropTypes.string.isRequired,
-  from: PropTypes.string.isRequired,
 };
 
-export default PowerUpTransaction;
+export default PowerUpTransactionTo;

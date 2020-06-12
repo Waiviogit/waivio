@@ -2,28 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { get, truncate } from 'lodash';
-import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate, isGuestUser } from '../../reducers';
-import { getVoteValue } from '../../helpers/user';
+import { ceil, get, truncate } from 'lodash';
 import {
-  calculateDownVote,
-  calculateVotingPower,
-  calcReputation,
-  dSteem,
-} from '../../vendor/steemitHelpers';
+  injectIntl,
+  FormattedMessage,
+  FormattedTime,
+  FormattedDate,
+  FormattedRelative,
+} from 'react-intl';
+import urlParse from 'url-parse';
+import { calculateVotePower } from '../../helpers/user';
+import {
+  getUser,
+  getRewardFund,
+  getRate,
+  getAllUsers,
+  getUsersAccountHistory,
+} from '../../reducers';
+import { calculateDownVote, calcReputation, dSteem } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { GUEST_PREFIX, BXY_GUEST_PREFIX } from '../../../common/constants/waivio';
 import { getMetadata } from '../../helpers/postingMetadata';
+import BTooltip from '../../components/BTooltip';
+import { getTimeFromLastAction } from '../../helpers/accountHistoryHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 @injectIntl
 @connect((state, ownProps) => ({
   user: getUser(state, ownProps.match.params.name),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
-  isGuest: isGuestUser(state),
+  allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
+  usersAccountHistory: getUsersAccountHistory(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -31,45 +42,72 @@ class UserInfo extends React.Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
-    isGuest: PropTypes.bool,
+    match: PropTypes.shape().isRequired,
+    usersAccountHistory: PropTypes.shape(),
   };
 
   static defaultProps = {
-    isGuest: false,
     user: {},
     rewardFund: {},
     rate: 0,
+    usersAccountHistory: {},
   };
+
   state = {
     rc_percentage: 0,
+    voting_mana: 0,
+  };
+
+  componentDidMount() {
+    this.getUserInfo();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.name !== this.props.match.params.name) {
+      this.getUserInfo();
+    }
+  }
+
+  getUserInfo = () => {
+    const { match } = this.props;
+
+    if (
+      !match.params.name.startsWith(GUEST_PREFIX) &&
+      !match.params.name.startsWith(BXY_GUEST_PREFIX)
+    ) {
+      dSteem.rc.getRCMana(match.params.name).then(res => {
+        this.setState({
+          rc_percentage: res.percentage,
+        });
+      });
+      dSteem.database.getAccounts([match.params.name]).then(res => {
+        this.setState({
+          voting_mana: dSteem.rc.calculateVPMana(res[0]).percentage,
+        });
+      });
+    }
   };
 
   render() {
-    const { intl, user, rewardFund, rate, isGuest } = this.props;
+    const { intl, user, rewardFund, rate, usersAccountHistory } = this.props;
     let metadata = {};
     let location = null;
     let profile = {};
     let website = null;
     let about = null;
-    let lastActive;
+    let lastActive = null;
     let email;
 
+    const isGuestPage = guestUserRegex.test(user && user.name);
+
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-      lastActive = intl.formatRelative(Date.parse(user.updatedAt));
+      lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});
       location = metadata && get(profile, 'location');
       website = metadata && get(profile, 'website');
       about = metadata && get(profile, 'about');
       email = metadata && get(profile, 'email');
-    }
-
-    if (user.name && !this.state.rc_percentage && !isGuest) {
-      dSteem.rc.getRCMana(user.name).then(res => {
-        this.setState({
-          rc_percentage: res.percentage,
-        });
-      });
     }
 
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
@@ -81,12 +119,10 @@ class UserInfo extends React.Component {
     if (hostWithoutWWW.indexOf('www.') === 0) {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
-
     const voteWorth =
-      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
-        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
-        : 0;
+      user && rewardFund && rate ? ceil(calculateVotePower(user, rewardFund, rate), 3) : 0;
     const rc = this.state.rc_percentage ? this.state.rc_percentage / 100 : 0;
+    const votingMana = this.state.voting_mana ? this.state.voting_mana / 100 : 0;
 
     return (
       <div className="UserInfo">
@@ -141,45 +177,55 @@ class UserInfo extends React.Component {
                     :&nbsp;{calcReputation(user.reputation)}
                   </div>
                 )}
-                {!user.name.startsWith(GUEST_PREFIX) && !user.name.startsWith(BXY_GUEST_PREFIX) && (
-                  <React.Fragment>
-                    <div>
-                      <i className="iconfont icon-praise text-icon" />
-                      <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
-                      <FormattedNumber
-                        style="percent" // eslint-disable-line react/style-prop-object
-                        value={calculateVotingPower(user)}
-                        maximumFractionDigits={0}
-                      />
-                    </div>
-                    <div>
-                      <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
-                      <FormattedMessage
-                        id="downvoting_mana"
-                        defaultMessage="Downvoting mana"
-                      />: <span>{calculateDownVote(user)}%</span>
-                    </div>
-                    <div>
-                      <i className="iconfont icon-flashlight text-icon" />
-                      <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
-                      <span>: {rc}%</span>
-                    </div>
-                    <div>
-                      <i className="iconfont icon-time text-icon" />
-                      <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
-                    </div>
-                    <div>
-                      <i className="iconfont icon-dollar text-icon" />
-                      <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                      {isNaN(voteWorth) ? (
-                        <Icon type="loading" className="text-icon-right" />
-                      ) : (
-                        <USDDisplay value={voteWorth} />
-                      )}
-                    </div>
-                  </React.Fragment>
-                )}
-
+                {user &&
+                  user.name &&
+                  !user.name.startsWith(GUEST_PREFIX) &&
+                  !user.name.startsWith(BXY_GUEST_PREFIX) && (
+                    <React.Fragment>
+                      <div>
+                        <i className="iconfont icon-praise text-icon" />
+                        <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
+                        <span>{votingMana}%</span>
+                      </div>
+                      <div>
+                        <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
+                        <FormattedMessage
+                          id="downvoting_mana"
+                          defaultMessage="Downvoting mana"
+                        />: <span>{calculateDownVote(user)}%</span>
+                      </div>
+                      <div>
+                        <i className="iconfont icon-flashlight text-icon" />
+                        <FormattedMessage id="resource_credits" defaultMessage="Resource credits" />
+                        <span>: {rc}%</span>
+                      </div>
+                      <div>
+                        <i className="iconfont icon-time text-icon" />
+                        <FormattedMessage id="active_info" defaultMessage="Active" />: &nbsp;
+                        <BTooltip
+                          title={
+                            <span>
+                              <FormattedDate value={`${lastActive}Z`} />{' '}
+                              <FormattedTime value={`${lastActive}Z`} />
+                            </span>
+                          }
+                        >
+                          <span>
+                            <FormattedRelative value={`${lastActive}Z`} />
+                          </span>
+                        </BTooltip>
+                      </div>
+                      <div>
+                        <i className="iconfont icon-dollar text-icon" />
+                        <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                        {isNaN(voteWorth) ? (
+                          <Icon type="loading" className="text-icon-right" />
+                        ) : (
+                          <USDDisplay value={voteWorth} />
+                        )}
+                      </div>
+                    </React.Fragment>
+                  )}
                 <SocialLinks profile={profile} />
               </div>
             </div>

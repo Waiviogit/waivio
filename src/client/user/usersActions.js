@@ -4,16 +4,6 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getAccount = name => (dispatch, getState) => {
-  const state = getState();
-  const authUser = getAuthenticatedUserName(state);
-  dispatch({
-    type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser),
-    meta: { username: name },
-  }).catch(() => {});
-};
-
 export const getUserAccount = name => (dispatch, getState) => {
   const state = getState();
   const authUser = getAuthenticatedUserName(state);

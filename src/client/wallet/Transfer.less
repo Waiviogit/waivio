@@ -39,6 +39,10 @@
     cursor: pointer;
   }
 
+  .estimate {
+    border-bottom: 1px solid rgb(160, 159, 159);
+  }
+
   &__amount {
     display: flex !important;
 
@@ -46,10 +50,14 @@
       width: 100%;
 
       &-steem {
+        padding-top: 4px !important;
+        height: 38px !important;
         width: 50%;
       }
 
       &-sbd {
+        padding-top: 4px !important;
+        height: 38px !important;
         width: 50%;
       }
     }
@@ -135,8 +143,14 @@
 
     @media @medium {
       min-width: 105px !important;
+      width: 236px !important;
     }
   }
+}
+
+.ant-select-auto-complete.ant-select .ant-select-selection--single {
+  height: 40px !important;
+  border: none !important;
 }
 
 @import 'Transfer-nightmode';

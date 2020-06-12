@@ -582,6 +582,7 @@ export const getPropositions = ({
   coordinates,
   sort,
   match,
+  simplified,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -595,15 +596,17 @@ export const getPropositions = ({
 
     if (!_.isEmpty(coordinates)) {
       reqData.coordinates = coordinates;
-    }
-    if (!_.isEmpty(area) && radius) {
       reqData.radius = radius;
+    }
+    if (!_.isEmpty(area) && _.isEmpty(requiredObject)) {
       reqData.area = area;
+      if (radius) reqData.radius = radius;
     }
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
+    if (simplified) reqData.simplified = simplified;
 
     const url = getUrl(match);
 
@@ -762,8 +765,7 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
 export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
     if (!isEmpty(obj)) {
-      return {
-        payable: obj.payable,
+      let preparedObject = {
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
@@ -772,6 +774,13 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
         currency: obj.currency,
         processingFees: obj.processingFees,
       };
+      if (obj.payable) {
+        preparedObject = {
+          ...preparedObject,
+          payable: obj.payable,
+        };
+      }
+      return preparedObject;
     }
     return {
       userName: user,
@@ -841,7 +850,7 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) => {
   return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
@@ -917,17 +926,29 @@ export const isUserRegistered = (id, socialNetwork) => {
     .then(data => data.result);
 };
 
-export const broadcastGuestOperation = async (operationId, data) => {
+export const broadcastGuestOperation = async (operationId, isReview, data) => {
   const userData = await getValidTokenData();
   if (userData.token) {
-    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
-      method: 'POST',
-      headers: { ...headers, 'access-token': userData.token },
-      body: JSON.stringify({
+    let body;
+    if (isReview) {
+      body = {
         id: operationId,
         data: { operations: data },
         userName: userData.userData.name,
-      }),
+        guestReview: true,
+      };
+    } else {
+      body = {
+        id: operationId,
+        data: { operations: data },
+        userName: userData.userData.name,
+      };
+    }
+
+    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+      method: 'POST',
+      headers: { ...headers, 'access-token': userData.token },
+      body: JSON.stringify(body),
     }).then(data => data);
   }
 };

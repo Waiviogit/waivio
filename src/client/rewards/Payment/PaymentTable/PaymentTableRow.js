@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { map, reduce } from 'lodash';
+import { map, reduce, get } from 'lodash';
 import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
@@ -12,10 +12,12 @@ import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
 import './PaymentTable.less';
 
-const PaymentTableRow = ({ intl, sponsor, isReports }) => {
+const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
-  const getConvertDidits = obj =>
-    obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
+  const getConvertDigits = obj =>
+    obj.type === 'transfer'
+      ? `-${convertDigits(obj.amount, isHive)}`
+      : convertDigits(obj.amount, isHive);
   const dispatch = useDispatch();
   const toggleModalReport = () => {
     const requestParams = {
@@ -34,8 +36,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getFieldWithMaxWeight(sponsor.details.main_object, 'name');
-  const reviewObjectName = getFieldWithMaxWeight(sponsor.details.review_object, 'name');
+  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, 'details.main_object', {}), 'name');
+  const reviewObjectName = getFieldWithMaxWeight(get(sponsor, 'details.review_object', {}), 'name');
   const userWeight = `(${(10000 -
     reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
@@ -48,39 +50,38 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">
-            <span className="PaymentTable__action-item fw6">
-              {sponsor.type === 'transfer'
-                ? intl.formatMessage({
-                    id: 'paymentTable_transfer',
-                    defaultMessage: `Transfer`,
-                  })
-                : intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: 'Review',
-                  })}
-            </span>{' '}
-            {sponsor.type === 'transfer'
-              ? intl.formatMessage({
-                  id: 'paymentTable_from',
-                  defaultMessage: 'from',
-                })
-              : intl.formatMessage({
-                  id: 'paymentTable_review_by',
-                  defaultMessage: 'by',
-                })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>{' '}
             {sponsor.type === 'transfer' ? (
               <React.Fragment>
-                {' '}
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'paymentTable_transfer',
+                    defaultMessage: `Transfer`,
+                  })}{' '}
+                </span>
+                {intl.formatMessage({
+                  id: 'paymentTable_from',
+                  defaultMessage: 'from',
+                })}{' '}
+                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
                 {intl.formatMessage({
                   id: 'paymentTable_review_to',
                   defaultMessage: 'to',
-                })}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>
+                })}{' '}
+                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                (
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'paymentTable_review',
+                    defaultMessage: 'Review',
+                  })}
+                </span>{' '}
+                {intl.formatMessage({
+                  id: 'paymentTable_review_by',
+                  defaultMessage: 'by',
+                })}{' '}
+                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
                 {intl.formatMessage({
                   id: 'paymentTable_requested_by',
                   defaultMessage: `requested by`,
@@ -99,11 +100,13 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
                   })}
                 </Link>
                 :{' '}
-                <Link to={`/object/${sponsor.details.main_object.author_permlink}`}>
+                <Link to={`/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`}>
                   {prymaryObjectName}
                 </Link>
                 ,{' '}
-                <Link to={`/object/${sponsor.details.review_object.author_permlink}`}>
+                <Link
+                  to={`/object/${get(sponsor, ['details', 'review_object', 'author_permlink'])}`}
+                >
                   {reviewObjectName}
                 </Link>
               </div>
@@ -113,12 +116,14 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
                   defaultMessage: `Beneficiaries`,
                 })}
                 :{' '}
-                {map(sponsor.details.beneficiaries, benef => (
-                  <React.Fragment>
-                    <Link to={`/@${benef.account}`}>{benef.account}</Link>
-                    <span>{` (${benef.weight / 100}%), `}</span>
-                  </React.Fragment>
-                ))}{' '}
+                {sponsor.details.beneficiaries
+                  ? map(sponsor.details.beneficiaries, benef => (
+                      <React.Fragment>
+                        <Link to={`/@${benef.account}`}>{benef.account}</Link>
+                        <span>{` (${benef.weight / 100}%), `}</span>
+                      </React.Fragment>
+                    ))
+                  : null}{' '}
                 <Link to={`/@${sponsor.userName}`}>{sponsor.userName}</Link> {userWeight}
               </div>
             </div>
@@ -136,7 +141,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
         ) : (
           <React.Fragment>
             <p>
-              <Link to={`/@${sponsor.userName}/${sponsor.details.reservation_permlink}`}>
+              <Link
+                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink'])}`}
+              >
                 {intl.formatMessage({
                   id: 'paymentTable_reservation',
                   defaultMessage: `Reservation`,
@@ -159,9 +166,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports }) => {
           sponsor={sponsor}
         />
       </td>
-      <td>{sponsor.amount ? getConvertDidits(sponsor) : 0}</td>
+      <td>{sponsor.amount ? getConvertDigits(sponsor) : 0}</td>
       <td className="PaymentTable__balance-column">
-        {convertDigits(sponsor.balance) ? convertDigits(sponsor.balance) : 0}
+        {convertDigits(sponsor.balance, isHive) ? convertDigits(sponsor.balance, isHive) : 0}
       </td>
     </tr>
   );
@@ -171,10 +178,12 @@ PaymentTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsor: PropTypes.shape().isRequired,
   isReports: PropTypes.bool,
+  isHive: PropTypes.bool,
 };
 
 PaymentTableRow.defaultProps = {
   isReports: false,
+  isHive: false,
 };
 
 export default injectIntl(PaymentTableRow);

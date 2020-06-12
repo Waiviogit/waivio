@@ -15,7 +15,7 @@ export const PRIMARY_COLOR = '#f87007';
 export const GUEST_PREFIX = 'waivio_';
 export const BXY_GUEST_PREFIX = 'bxy_';
 
-export const BANK_ACCOUNT = 'waiviobank';
+export const BANK_ACCOUNT = 'waivio.hive';
 
 export const newUserRecommendTopics = {
   news: ['politics', 'science'],
@@ -25,6 +25,7 @@ export const newUserRecommendTopics = {
   stocks: ['trading', 'gold', 'stocks'],
   more: ['funny', 'cats', 'beer', 'poll'],
 };
+
 export const newUserRecommendExperts = {
   politics: ['theouterlight', 'honeybee', 'ura-soul', 'johnvibes', 'corbettreport'],
   economy: ['themoneygps', 'joshsigurdson', 'x22report'],

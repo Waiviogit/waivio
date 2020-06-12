@@ -7,7 +7,7 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign, inactivateCampaign } from '../../user/userActions';
-import { getAuthenticatedUser, isGuestBalance, isGuestUser } from '../../reducers';
+import { getAuthenticatedUser, isGuestUser } from '../../reducers';
 import Error401 from '../../statics/Error401';
 import './Manage.less';
 
@@ -16,7 +16,6 @@ import './Manage.less';
   state => ({
     user: getAuthenticatedUser(state),
     isGuest: isGuestUser(state),
-    guestBalance: isGuestBalance(state),
   }),
   { activateCampaign, inactivateCampaign },
 )
@@ -28,7 +27,6 @@ class Manage extends React.Component {
     activateCampaign: PropTypes.func,
     inactivateCampaign: PropTypes.func,
     isGuest: PropTypes.bool,
-    guestBalance: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
@@ -98,17 +96,7 @@ class Manage extends React.Component {
   };
 
   render() {
-    const {
-      intl,
-      // eslint-disable-next-line no-shadow
-      activateCampaign,
-      // eslint-disable-next-line no-shadow
-      inactivateCampaign,
-      user,
-      userName,
-      isGuest,
-      guestBalance,
-    } = this.props;
+    const { intl, user, userName, isGuest } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -125,10 +113,9 @@ class Manage extends React.Component {
               </div>
               <BalanceTable
                 isGuest={isGuest}
-                guestBalance={guestBalance}
+                guestBalance={user.balance || null}
                 intl={intl}
                 budgetTotal={budgetTotal}
-                user={user}
               />
               <div className="Manage__account-balance-wrap-text-content">{balanceContent}</div>
               <div className="Manage__rewards-campaign-wrap">
@@ -139,8 +126,8 @@ class Manage extends React.Component {
                   })}
                 </div>
                 <CampaignRewardsTable
-                  activateCampaign={activateCampaign}
-                  inactivateCampaign={inactivateCampaign}
+                  activateCampaign={this.props.activateCampaign}
+                  inactivateCampaign={this.props.inactivateCampaign}
                   campaigns={campaigns}
                   userName={user.name}
                 />

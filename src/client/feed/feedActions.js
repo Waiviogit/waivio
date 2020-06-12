@@ -196,7 +196,8 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({ username, object, readLanguages, limit = 10 }) => dispatch => {
+export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+  const readLanguages = getUserLocalesArray(getState);
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
     payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),

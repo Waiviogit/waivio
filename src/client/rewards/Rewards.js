@@ -7,17 +7,32 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { isEmpty, map, size, includes, remove, find } from 'lodash';
+import {
+  isEmpty,
+  map,
+  size,
+  includes,
+  remove,
+  find,
+  flatten,
+  uniqBy,
+  get,
+  filter,
+  isEqual,
+  reduce,
+  findIndex,
+} from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getFilteredObjectsMap,
+  getObjectsMap,
   getIsLoaded,
   getUserLocation,
   getPendingUpdate,
   getIsMapModalOpen,
+  getSuitableLanguage,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -39,8 +54,14 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import { getObjectTypeMap } from '../objectTypes/objectTypeActions';
+import {
+  setUpdatedFlag,
+  resetUpdatedFlag,
+  getPropositionsForMap,
+} from '../components/Maps/mapActions';
 import { delay } from './rewardsHelpers';
+import { RADIUS } from '../../common/constants/map';
+import { getClientWObj } from '../adapters';
 
 @withRouter
 @injectIntl
@@ -51,23 +72,26 @@ import { delay } from './rewardsHelpers';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
-    wobjects: getFilteredObjectsMap(state),
+    wobjects: getObjectsMap(state),
     pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     assignProposition,
     declineProposition,
     getCoordinates,
     activateCampaign,
-    getObjectTypeMap,
+    getObjectsMap,
     pendingUpdateSuccess,
+    resetUpdatedFlag,
+    setUpdatedFlag,
+    getPropositionsForMap,
   },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
-    // activateCampaign: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     getCoordinates: PropTypes.func.isRequired,
@@ -78,9 +102,12 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    getObjectTypeMap: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
+    resetUpdatedFlag: PropTypes.func.isRequired,
+    setUpdatedFlag: PropTypes.func.isRequired,
+    getPropositionsForMap: PropTypes.func.isRequired,
+    wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
@@ -96,8 +123,8 @@ class Rewards extends React.Component {
     propositions: [],
     sponsors: [],
     sort: 'reward',
-    radius: 50000000,
-    coordinates: [],
+    radius: RADIUS,
+    area: [],
     campaignsTypes: [],
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
@@ -109,16 +136,25 @@ class Rewards extends React.Component {
 
   componentDidMount() {
     const { username, match, userLocation, history } = this.props;
-    const { radius, coordinates, activeFilters } = this.state;
+
+    const { area, activeFilters } = this.state;
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
     let sort = this.state.sort;
     if (match.params.filterKey === 'history') sort = 'reservation';
     if (match.params.filterKey === 'messages') sort = 'inquiry';
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    if (!isEmpty(userLocation)) {
+      this.getPropositions({
+        username,
+        match,
+        area: [+userLocation.lat, +userLocation.lon],
+        sort,
+        activeFilters,
+      });
+    }
     if (!username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.getPropositions({ username, match, area, sort, activeFilters });
       if (!match.params.campaignParent || match.params.filterKey !== 'all') {
         history.push(`/rewards/all`);
       }
@@ -126,7 +162,9 @@ class Rewards extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match } = nextProps;
+    const { match, userLocation } = nextProps;
+    const { username } = this.props;
+    const { area, activeFilters } = this.state;
     let sort = this.state.sort;
     if (match.params.filterKey === 'messages') sort = 'inquiry';
     if (match.params.filterKey === 'history') sort = 'reservation';
@@ -136,11 +174,25 @@ class Rewards extends React.Component {
     )
       sort = 'reward';
 
+    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation)) {
+      this.getPropositions({
+        username,
+        match,
+        area: [+userLocation.lat, +userLocation.lon],
+        sort,
+        activeFilters,
+      });
+    }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
+    if (
+      match.path !== this.props.match.path ||
+      match.params.filterKey !== this.props.match.params.filterKey
+    ) {
+      this.props.resetUpdatedFlag();
+    }
     if (match.params.filterKey !== 'create') {
-      const { radius, coordinates, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
@@ -149,8 +201,7 @@ class Rewards extends React.Component {
           this.getPropositions({
             username: nextProps.username,
             match,
-            coordinates,
-            radius,
+            area,
             sort,
             activeFilters,
           });
@@ -159,25 +210,30 @@ class Rewards extends React.Component {
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { username, match, pendingUpdate } = this.props;
-    const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
-    }
+    const { area, sort, activeFilters } = this.state;
     if (prevProps.username !== username && !username) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.getPropositions({ username, match, area, sort, activeFilters });
       this.props.history.push(`/rewards/all`);
     }
     if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
       this.props.pendingUpdateSuccess();
       delay(6000).then(() => {
-        this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+        this.getPropositions({ username, match, area, sort, activeFilters });
       });
     }
   }
 
-  setMapArea = mapArea => this.props.getObjectTypeMap(mapArea, this.props.isFullscreenMode);
+  setMapArea = ({ radius, coordinates, isMap }) => {
+    const { username, match, isFullscreenMode } = this.props;
+    const limit = isFullscreenMode ? 200 : 50;
+    const { activeFilters } = this.state;
+    this.getPropositions(
+      { username, match, area: coordinates, radius, activeFilters, limit },
+      isMap,
+    );
+  };
 
   getRequiredObjects = () =>
     this.state.propositions &&
@@ -186,87 +242,92 @@ class Rewards extends React.Component {
       .map(proposition => ({ ...proposition.required_object, campaigns: {} })); // add 'campaigns' prop to display objects on the map with proper marker
 
   getAreaSearchData = ({ radius, coordinates }) => {
+    this.setState({ isSearchAreaFilter: true, loadingCampaigns: true });
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
-  setFilterValue = (filter, key) => {
+  setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
-    const { radius, coordinates, sort } = this.state;
+    const { radius, area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
-    if (includes(activeFilters[key], filter)) {
-      remove(activeFilters[key], f => f === filter);
+    if (includes(activeFilters[key], filterValue)) {
+      remove(activeFilters[key], f => f === filterValue);
     } else {
-      activeFilters[key].push(filter);
+      activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
-  setPayablesFilterValue = filter => {
+  setPayablesFilterValue = filterValue => {
     const activeFilters = [...this.state.activePayableFilters];
-    if (find(activeFilters, ['filterName', filter.filterName])) {
+    if (find(activeFilters, ['filterName', filterValue.filterName])) {
       this.setState({
-        activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
+        activePayableFilters: activeFilters.filter(f => f.filterName !== filterValue.filterName),
       });
     } else {
-      activeFilters.push(filter);
+      activeFilters.push(filterValue);
       this.setState({ activePayableFilters: activeFilters });
     }
   };
 
-  setMessagesFilterValue = (filter, key) => {
+  setMessagesFilterValue = (filterValue, key) => {
     const activeFilters = this.state.activeMessagesFilters;
-    if (includes(activeFilters[key], filter)) {
-      remove(activeFilters[key], f => f === filter);
+    if (includes(activeFilters[key], filterValue)) {
+      remove(activeFilters[key], f => f === filterValue);
       this.setState({ activeMessagesFilters: activeFilters });
     } else {
-      activeFilters[key].push(filter);
+      activeFilters[key].push(filterValue);
       this.setState({ activeMessagesFilters: activeFilters });
     }
     this.setState({ loadingCampaigns: true });
   };
 
-  getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
+  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }, isMap) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
         match,
-        coordinates,
         area,
         radius,
         sort,
         guideNames: activeFilters.guideNames,
         types: activeFilters.types,
+        limit,
+        simplified: !!isMap,
       }),
     ).then(data => {
+      this.props.setUpdatedFlag();
       this.setState({
-        propositions: data.campaigns,
-        hasMore: data.hasMore,
         sponsors: data.sponsors,
         campaignsTypes: data.campaigns_types,
-        coordinates,
+        area,
         radius,
-        isSearchAreaFilter: Boolean(area),
         sort,
-        loadingCampaigns: false,
         loading: false,
       });
+      if (isMap) {
+        this.props.getPropositionsForMap(data.campaigns);
+      } else {
+        this.setState({
+          propositions: data.campaigns,
+          hasMore: data.hasMore,
+          loadingCampaigns: false,
+        });
+      }
     });
   };
 
   resetMapFilter = () => {
     const { username, match } = this.props;
-    const { radius, coordinates, sort, activeFilters } = this.state;
+    const { area, sort, activeFilters } = this.state;
     this.setState({ loadingCampaigns: true });
     this.getPropositions({
       username,
       match,
-      coordinates: isEmpty(coordinates)
-        ? [+this.props.userLocation.lat, +this.props.userLocation.lon]
-        : coordinates,
-      radius,
+      area: isEmpty(area) ? [+this.props.userLocation.lat, +this.props.userLocation.lon] : area,
       sort,
       activeFilters,
     });
@@ -274,10 +335,10 @@ class Rewards extends React.Component {
   };
 
   handleSortChange = sort => {
-    const { radius, coordinates, activeFilters } = this.state;
+    const { radius, area, activeFilters } = this.state;
     const { username, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
   // Propositions
@@ -445,11 +506,16 @@ class Rewards extends React.Component {
   };
 
   goToCampaign = wobjPermlink => {
-    this.props.history.push(`/object/${wobjPermlink}`);
+    const { match } = this.props;
+    const campaignParent = get(match, ['params', 'campaignParent']);
+    const filterKey = get(match, ['params', 'filterKey']);
+    this.props.history.push(
+      campaignParent ? `/object/${wobjPermlink}` : `/rewards/${filterKey}/${wobjPermlink}`,
+    );
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, radius, coordinates, sort, activeFilters } = this.state;
+    const { propositions, hasMore, radius, area, sort, activeFilters } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -457,7 +523,7 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, coordinates, radius, sort });
+          const reqData = preparePropositionReqData({ username, match, area, radius, sort });
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
@@ -475,8 +541,62 @@ class Rewards extends React.Component {
     }
   };
 
+  getCampaignsObjectsForMap = () => {
+    const { propositions } = this.state;
+    const secondaryObjects = flatten(
+      map(propositions, proposition => map(proposition.objects, object => object.object)),
+    );
+    const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
+    const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
+      ? get(propositions, ['0', 'required_object'])
+      : {};
+    const secondaryObjectsWithUniqueCoordinates = filter(
+      secondaryObjectsForMap,
+      object => object.map && !isEqual(object.map, primaryObjectForMap.map),
+    );
+    const secondaryObjectsWithWheight = reduce(
+      secondaryObjectsWithUniqueCoordinates,
+      (acc, object) => {
+        const idx = findIndex(acc, o => isEqual(o.map, object.map));
+        if (idx === -1) {
+          return [...acc, object];
+        }
+        acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
+
+        return acc;
+      },
+      [],
+    );
+
+    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWheight];
+
+    return campaignsObjectsForMap;
+  };
+
+  moveToCoordinates = objects => {
+    const { userLocation } = this.props;
+
+    if (!isEmpty(objects)) {
+      return get(objects, ['0', 'map', 'coordinates']) || get(objects, ['1', 'map', 'coordinates']);
+    }
+    if (userLocation.lat && userLocation.lon) {
+      return [Number(userLocation.lon), Number(userLocation.lat)];
+    }
+    return [];
+  };
+
   render() {
-    const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
+    const {
+      location,
+      intl,
+      match,
+      username,
+      cryptosPriceHistory,
+      user,
+      userLocation,
+      wobjects,
+      usedLocale,
+    } = this.props;
     const {
       sponsors,
       campaignsTypes,
@@ -489,6 +609,8 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
     } = this.state;
+
+    const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
@@ -519,7 +641,17 @@ class Rewards extends React.Component {
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
+      userLocation,
+      sponsors,
+      campaignsTypes,
+      activeFilters,
+      setFilterValue: this.setFilterValue,
+      setPayablesFilterValue: this.setPayablesFilterValue,
     });
+
+    const campaignParent = get(match, ['params', 'campaignParent']);
+    const campaignsObjectsForMap = campaignParent ? this.getCampaignsObjectsForMap() : [];
+    const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
 
     return (
       <div className="Rewards">
@@ -579,13 +711,15 @@ class Rewards extends React.Component {
                     !isCreate &&
                     !includes(match.url, 'messages') &&
                     !includes(match.url, 'history') && (
-                      <MapWrap
-                        setMapArea={this.setMapArea}
-                        wobjects={this.getRequiredObjects()}
-                        userLocation={this.props.userLocation}
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                      />
+                    <MapWrap
+                      setMapArea={this.setMapArea}
+                      userLocation={userLocation}
+                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                      onMarkerClick={this.goToCampaign}
+                      getAreaSearchData={this.getAreaSearchData}
+                      match={match}
+                      primaryObjectCoordinates={primaryObjectCoordinates}
+                    />
                     )}
                   {!isEmpty(sponsors) && !isCreate && (
                     <RewardsFiltersPanel
@@ -611,10 +745,12 @@ class Rewards extends React.Component {
 Rewards.propTypes = {
   route: PropTypes.shape().isRequired,
   isFullscreenMode: PropTypes.bool,
+  usedLocale: PropTypes.string,
 };
 
 Rewards.defaultProps = {
   isFullscreenMode: false,
+  usedLocale: 'en-US',
 };
 
 export default Rewards;
