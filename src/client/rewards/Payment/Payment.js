@@ -13,6 +13,7 @@ import {
   GUEST_PREFIX,
   WAIVIO_PARENT_PERMLINK,
 } from '../../../common/constants/waivio';
+import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import './Payment.less';
 
@@ -34,6 +35,7 @@ const Payment = ({ match, intl, userName }) => {
 
   const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   useEffect(() => {
     getLenders(requestParams)
@@ -76,7 +78,7 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
+              onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
             >
               {intl.formatMessage({
                 id: 'pay',

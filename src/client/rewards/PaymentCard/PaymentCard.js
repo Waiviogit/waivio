@@ -12,8 +12,9 @@ import {
   GUEST_PREFIX,
   WAIVIO_PARENT_PERMLINK,
 } from '../../../common/constants/waivio';
-import './PaymentCard.less';
+import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
+import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
 const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
@@ -31,12 +32,13 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
 
   const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   let renderTransferButton = (
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
+      onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
