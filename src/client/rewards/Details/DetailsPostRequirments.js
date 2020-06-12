@@ -4,11 +4,13 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import getDetailsMessages from './detailsMessagesData';
 import './Details.less';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
+  const proposedWobjName = getFieldWithMaxWeight(proposedWobj, 'name');
   let indexItem = 1;
   return (
     <React.Fragment>
@@ -19,7 +21,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
           <Link className="ml1" to={`/object/${proposedWobj.id}`}>
-            {proposedWobj.name}
+            {proposedWobjName || proposedWobj.name}
           </Link>
           ;
         </div>
@@ -33,7 +35,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
           <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
-            {proposedWobj.name}
+            {proposedWobjName || proposedWobj.name}
           </Link>
           ;
         </div>

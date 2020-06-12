@@ -42,7 +42,7 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -50,6 +50,7 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '')
       amount,
       currency,
       memo,
+      app,
     },
   });
 

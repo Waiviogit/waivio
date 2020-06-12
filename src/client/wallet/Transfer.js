@@ -18,6 +18,7 @@ import {
   getTransferAmount,
   getTransferCurrency,
   getTransferMemo,
+  getTransferApp,
   getTransferTo,
   isGuestUser,
   getAutoCompleteSearchResults,
@@ -50,6 +51,7 @@ const InputGroup = Input.Group;
     amount: getTransferAmount(state),
     currency: getTransferCurrency(state),
     memo: getTransferMemo(state),
+    app: getTransferApp(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -86,6 +88,7 @@ export default class Transfer extends React.Component {
     amount: PropTypes.number,
     currency: PropTypes.string,
     memo: PropTypes.string,
+    app: PropTypes.string,
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
@@ -104,6 +107,7 @@ export default class Transfer extends React.Component {
     visible: false,
     amount: 0,
     memo: '',
+    app: '',
     currency: 'HIVE',
     closeTransfer: () => {},
     screenSize: 'large',
@@ -243,7 +247,7 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form, isGuest, memo } = this.props;
+    const { form, isGuest, memo, app } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -255,12 +259,18 @@ export default class Transfer extends React.Component {
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
             : { id: 'user_to_guest_transfer', to: values.to };
+          if (app) {
+            transferQuery.memo.app = app;
+          }
           if (values.memo) transferQuery.memo.message = values.memo;
           transferQuery.memo = JSON.stringify(transferQuery.memo);
         } else {
           transferQuery.to = values.to;
           if (memo) {
             transferQuery.memo = { id: memo };
+            if (app) {
+              transferQuery.memo.app = app;
+            }
             if (values.memo) transferQuery.memo.message = values.memo;
             transferQuery.memo = JSON.stringify(transferQuery.memo);
           }
