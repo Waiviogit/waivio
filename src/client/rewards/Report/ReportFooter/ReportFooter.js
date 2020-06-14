@@ -30,7 +30,11 @@ const ReportFooter = ({ intl, toggleModal }) => {
           })}{' '}
           (<a href={`/@${sponsor}`}>{sponsor}</a>
           {!isEmpty(singleReportData.match_bots)
-            ? map(singleReportData.match_bots, bot => <a href={`/@${bot}`}>, {bot}</a>)
+            ? map(singleReportData.match_bots, bot => (
+                <a key={bot} href={`/@${bot}`}>
+                  , {bot}
+                </a>
+              ))
             : ''}
           ){' '}
           {intl.formatMessage({

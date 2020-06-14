@@ -41,8 +41,8 @@ const ReportTableRewardsRowTotal = ({ intl, totalUSD, totalHive }) => {
 
 ReportTableRewardsRowTotal.propTypes = {
   intl: PropTypes.shape().isRequired,
-  totalUSD: PropTypes.string.isRequired,
-  totalHive: PropTypes.string.isRequired,
+  totalUSD: PropTypes.number.isRequired,
+  totalHive: PropTypes.number.isRequired,
 };
 
 export default injectIntl(ReportTableRewardsRowTotal);

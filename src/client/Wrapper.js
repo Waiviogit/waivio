@@ -116,26 +116,23 @@ class Wrapper extends React.PureComponent {
     isGuest: false,
   };
 
-  static async fetchData({ store, req }) {
-    await store.dispatch(login());
-
+  static fetchData({ store, req }) {
     const appUrl = url.format({
       protocol: req.protocol,
       host: req.get('host'),
     });
-
-    store.dispatch(setAppUrl(appUrl));
-
     const state = store.getState();
-
     let activeLocale = getLocale(state);
     if (activeLocale === 'auto') {
       activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
     }
+    const lang = loadLanguage(activeLocale);
 
-    const lang = await loadLanguage(activeLocale);
-
-    store.dispatch(setUsedLocale(lang));
+    return Promise.all([
+      store.dispatch(login()),
+      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setUsedLocale(lang)),
+    ]);
   }
 
   constructor(props) {
