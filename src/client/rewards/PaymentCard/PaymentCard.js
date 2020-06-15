@@ -2,13 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Tooltip } from 'antd';
-import { getAppUrl } from '../../reducers';
 import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
 import { openTransfer } from '../../wallet/walletActions';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
+import {
+  BXY_GUEST_PREFIX,
+  GUEST_PREFIX,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
+import { HIVE } from '../../../common/constants/cryptos';
+import { getMemo } from '../rewardsHelper';
 import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
@@ -18,8 +23,6 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   const handleSetUser = () => {
     history.push(path);
   };
-  const appUrl = useSelector(getAppUrl);
-  const url = appUrl === 'http://www.waivio.com' ? 'waivio' : 'waiviodev';
 
   const handleClick = e => {
     e.preventDefault();
@@ -27,14 +30,15 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
     history.push(`/@${name}`);
   };
 
-  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
-  const app = url;
+  const memo = getMemo(isReceiverGuest);
+  const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   let renderTransferButton = (
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
+      onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
