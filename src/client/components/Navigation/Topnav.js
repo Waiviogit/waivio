@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, forEach, debounce, size, map } from 'lodash';
+import { isEmpty, debounce, size, map, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -40,8 +40,9 @@ import BrokerBalance from './BrokerBalance/BrokerBalance';
 import MobileMenu from './MobileMenu/MobileMenu';
 import LoggedOutMenu from './LoggedOutMenu';
 import LoggedInMenu from './LoggedInMenu';
-import './Topnav.less';
 import { getIsBeaxyUser } from '../../user/usersHelper';
+
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -181,27 +182,23 @@ class Topnav extends React.Component {
   };
 
   getTranformSearchCountData = searchResults => {
-    const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
-    const wobjectAllCount = wobjectsCounts
-      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-      : null;
-    const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
-    const countArr = [{ name: 'All', count: countAllSearch }];
-    if (!isEmpty(wobjectsCounts)) {
-      forEach(wobjectsCounts, current => {
-        const obj = {};
-        obj.name = current.object_type;
-        obj.count = current.count;
-        obj.type = 'wobject';
-        countArr.push(obj);
-      });
+    const { wobjectsCounts, usersCount } = searchResults;
+    const renderMarket = ['crypto', 'cryptopairs', 'hashtag', 'Users']
+    const allWobjects = wobjectsCounts.filter(wobj => renderMarket.includes(wobj.object_type));
+    let countArr = [];
+
+    if (!isEmpty(allWobjects)) {
+      countArr = allWobjects.map( current => ({
+        name: current.object_type,
+        count: current.count,
+        type: 'wobject',
+      }));
     }
-    if (objectTypesCount) {
-      countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
-    }
+
     if (usersCount) {
-      countArr.push({ name: 'Users', count: usersCount, type: 'user' });
+      countArr= [...countArr, { name: 'Users', count: usersCount, type: 'user' }];
     }
+
     return countArr;
   };
 
@@ -259,9 +256,9 @@ class Topnav extends React.Component {
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
+    let redirectUrl = '';
 
     this.handleOnBlur();
-    let redirectUrl = '';
 
     switch (searchData.type) {
       case 'wobject':
@@ -270,7 +267,6 @@ class Topnav extends React.Component {
       case 'user':
         redirectUrl = `/discover/${searchBarValue.replace('@', '')}`;
         break;
-      case 'type':
       default:
         redirectUrl = `/discover-objects?search=${searchBarValue}`;
         break;
@@ -454,7 +450,7 @@ class Topnav extends React.Component {
 
   prepareOptions(searchResults) {
     const { searchData } = this.state;
-    const { searchByObject, searchByUser, searchByObjectType } = this.props;
+    const { searchByObject, searchByUser } = this.props;
     const dataSource = [];
     if (!isEmpty(searchResults)) {
       dataSource.push(this.searchSelectBar(searchResults));
@@ -472,9 +468,6 @@ class Topnav extends React.Component {
       }
       if (searchData.type === 'user') {
         dataSource.push(this.usersSearchLayout(searchByUser.slice(0, 15)));
-      }
-      if (searchData.type === 'type') {
-        dataSource.push(this.wobjectTypeSearchLayout(searchByObjectType));
       }
     }
     return dataSource;
@@ -559,6 +552,9 @@ class Topnav extends React.Component {
     const brandLogoPathMobile = '/images/ia-logo-removebg.png?mobile';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const isBeaxyUser = getIsBeaxyUser(authUser);
+    const type = get(this.state.searchData, 'type', '');
+    let count = 0;
+
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
         <div
@@ -577,8 +573,19 @@ class Topnav extends React.Component {
         </div>
       </AutoComplete.Option>
     );
-    const formattedAutoCompleteDropdown =
-      this.state.searchData.type !== 'user' ? dropdownOptions : dropdownOptions.concat([downBar]);
+
+    if(autoCompleteSearchResults.wobjectsCounts && type === 'wobject') {
+      count = autoCompleteSearchResults.wobjectsCounts
+        .find(wobj => wobj.object_type === this.state.searchData.subtype).count;
+    }
+
+    if(autoCompleteSearchResults.usersCount && type === 'user') {
+      count = autoCompleteSearchResults.usersCount;
+    }
+
+    const formattedAutoCompleteDropdown = this.state.searchData && (count > 15)
+      ?  dropdownOptions.concat([downBar])
+      : dropdownOptions;
 
     return (
       <React.Fragment>
@@ -716,7 +723,7 @@ class Topnav extends React.Component {
           <MobileMenu
             {...this.props}
             {...this.state}
-            searchOptions={this.prepareOptions(autoCompleteSearchResults)}
+            searchOptions={formattedAutoCompleteDropdown}
             onSearch={this.handleAutoCompleteSearch}
             onSelect={this.handleSelectOnAutoCompleteDropdown}
             onChange={this.handleOnChangeForAutoComplete}
