@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, debounce, size, map, get } from 'lodash';
+import { isEmpty, debounce, size, map, get, filter } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -183,12 +183,12 @@ class Topnav extends React.Component {
 
   getTranformSearchCountData = searchResults => {
     const { wobjectsCounts, usersCount } = searchResults;
-    const renderMarket = ['crypto', 'cryptopairs', 'hashtag', 'Users']
-    const allWobjects = wobjectsCounts.filter(wobj => renderMarket.includes(wobj.object_type));
+    const renderMarket = ['crypto', 'cryptopairs', 'hashtag', 'Users'];
+    const allWobjects = filter(wobjectsCounts, wobj => renderMarket.includes(wobj.object_type));
     let countArr = [];
 
     if (!isEmpty(allWobjects)) {
-      countArr = allWobjects.map( current => ({
+      countArr = allWobjects.map(current => ({
         name: current.object_type,
         count: current.count,
         type: 'wobject',
@@ -196,7 +196,7 @@ class Topnav extends React.Component {
     }
 
     if (usersCount) {
-      countArr= [...countArr, { name: 'Users', count: usersCount, type: 'user' }];
+      countArr = [...countArr, { name: 'Users', count: usersCount, type: 'user' }];
     }
 
     return countArr;
@@ -475,6 +475,21 @@ class Topnav extends React.Component {
 
   searchSelectBar = searchResults => {
     const options = this.getTranformSearchCountData(searchResults);
+    if (isEmpty(options)) {
+      return (
+        <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
+          <div className="search-btn">
+            {this.props.intl.formatMessage(
+              {
+                id: 'no_results',
+                defaultMessage: "No results were found for '{search}' request",
+              },
+              { search: this.state.searchBarValue },
+            )}
+          </div>
+        </AutoComplete.Option>
+      );
+    }
     return (
       <AutoComplete.OptGroup key={Topnav.markers.SELECT_BAR} label=" ">
         {map(options, option => (
@@ -574,18 +589,18 @@ class Topnav extends React.Component {
       </AutoComplete.Option>
     );
 
-    if(autoCompleteSearchResults.wobjectsCounts && type === 'wobject') {
-      count = autoCompleteSearchResults.wobjectsCounts
-        .find(wobj => wobj.object_type === this.state.searchData.subtype).count;
+    if (autoCompleteSearchResults.wobjectsCounts && type === 'wobject') {
+      count = autoCompleteSearchResults.wobjectsCounts.find(
+        wobj => wobj.object_type === this.state.searchData.subtype,
+      ).count;
     }
 
-    if(autoCompleteSearchResults.usersCount && type === 'user') {
+    if (autoCompleteSearchResults.usersCount && type === 'user') {
       count = autoCompleteSearchResults.usersCount;
     }
 
-    const formattedAutoCompleteDropdown = this.state.searchData && (count > 15)
-      ?  dropdownOptions.concat([downBar])
-      : dropdownOptions;
+    const formattedAutoCompleteDropdown =
+      this.state.searchData && count > 15 ? dropdownOptions.concat([downBar]) : dropdownOptions;
 
     return (
       <React.Fragment>
