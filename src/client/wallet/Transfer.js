@@ -148,6 +148,7 @@ export default class Transfer extends React.Component {
     dropdownOpen: false,
     currentEstimate: null,
     isSelected: false,
+    isClosedFind: false,
   };
 
   componentDidMount() {
@@ -178,6 +179,7 @@ export default class Transfer extends React.Component {
         dropdownOpen: false,
         isSelected: false,
         currentEstimate: null,
+        isClosedFind: false,
       });
     }
 
@@ -416,6 +418,7 @@ export default class Transfer extends React.Component {
             this.setState({
               isSelected: false,
               searchBarValue: '',
+              isClosedFind: true,
             })
           }
           className="iconfont icon-delete Transfer__delete-icon"
@@ -434,6 +437,7 @@ export default class Transfer extends React.Component {
   handleOnChangeForAutoComplete(value) {
     this.setState({
       searchBarValue: value,
+      isClosedFind: false,
     });
   }
 
@@ -477,11 +481,11 @@ export default class Transfer extends React.Component {
 
   render() {
     const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
-    const { isSelected } = this.state;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { isSelected, searchBarValue, isClosedFind } = this.state;
+    const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
-    const to = getFieldValue('to');
 
+    const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
 
     const balance =
