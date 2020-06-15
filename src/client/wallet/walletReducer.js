@@ -23,6 +23,7 @@ const initialState = {
   loadingMoreTransactions: false,
   hasMore: false,
   transactionsHistoryLoading: false,
+  estValue: 0,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -36,11 +37,13 @@ export default function walletReducer(state = initialState, action) {
         currency: action.payload.currency,
         memo: action.payload.memo,
         app: action.payload.app,
+        estValue: action.payload.estValue,
       };
     case walletActions.CLOSE_TRANSFER:
       return {
         ...state,
         transferVisible: false,
+        estValue: 0,
       };
     case walletActions.OPEN_POWER_UP_OR_DOWN:
       return {
@@ -269,3 +272,4 @@ export const getUserHasMoreAccountHistory = (state, username) => {
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;
 export const getCurrentDisplayedActions = state => state.currentDisplayedActions;
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
+export const estimateValue = state => state.estValue;

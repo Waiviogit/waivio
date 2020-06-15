@@ -25,6 +25,7 @@ import {
   getSearchUsersResults,
   getTotalVestingShares,
   getTotalVestingFundSteem,
+  estimateValue,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
 import {
@@ -60,6 +61,7 @@ const InputGroup = Input.Group;
     searchByUser: getSearchUsersResults(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
+    getEstimateValue: estimateValue(state),
   }),
   {
     closeTransfer,
@@ -97,6 +99,7 @@ export default class Transfer extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
+    getEstimateValue: PropTypes.number,
   };
 
   static defaultProps = {
@@ -112,6 +115,7 @@ export default class Transfer extends React.Component {
     notify: () => {},
     autoCompleteSearchResults: {},
     searchByUser: [],
+    getEstimateValue: 0,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -157,7 +161,8 @@ export default class Transfer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to, amount, currency, visible } = this.props;
+    const { form, to, amount, currency, visible, getEstimateValue } = this.props;
+
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
         to: nextProps.to,
@@ -178,6 +183,10 @@ export default class Transfer extends React.Component {
         currentEstimate: 0,
         isSelected: false,
       });
+    }
+
+    if (amount && getEstimateValue) {
+      this.setState({ currentEstimate: getEstimateValue });
     }
   }
 
@@ -396,12 +405,14 @@ export default class Transfer extends React.Component {
   }
 
   showSelectedUser = () => {
+    const { to } = this.props;
     const { searchBarValue } = this.state;
+    const userName = isEmpty(searchBarValue) ? to : searchBarValue;
     const currentUser = (
       <div className="Transfer__search-content-wrap-current">
         <div className="Transfer__search-content-wrap-current-user">
-          <Avatar username={searchBarValue} size={40} />
-          <div className="Transfer__search-content">{searchBarValue}</div>
+          <Avatar username={userName} size={40} />
+          <div className="Transfer__search-content">{userName}</div>
         </div>
         <span
           role="presentation"
@@ -472,12 +483,12 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest, to } = this.props;
     const { isSelected } = this.state;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
-    const to = getFieldValue('to');
-    const guestName = to && guestUserRegex.test(to);
+    const TransferTo = getFieldValue('TransferTo');
+    const guestName = TransferTo && guestUserRegex.test(TransferTo);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
@@ -518,7 +529,7 @@ export default class Transfer extends React.Component {
       >
         <Form className="Transfer" hideRequiredMark>
           <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
-            {getFieldDecorator('to', {
+            {getFieldDecorator('TransferTo', {
               rules: [
                 {
                   required: true,
@@ -530,7 +541,7 @@ export default class Transfer extends React.Component {
                 { validator: this.validateUsername },
               ],
             })(
-              isSelected ? (
+              isSelected || !isEmpty(to) ? (
                 this.showSelectedUser()
               ) : (
                 <AutoComplete
