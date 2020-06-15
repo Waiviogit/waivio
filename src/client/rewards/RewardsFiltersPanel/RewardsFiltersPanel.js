@@ -108,7 +108,7 @@ const RewardsFiltersPanel = ({
                       defaultMessage: 'Receivables',
                     })}
               </div>
-              {_.map(payablesFilterData, payable =>
+              {_.map(payablesFilterData(location), payable =>
                 filterPaymentLayout(
                   payable,
                   activePayableFilters.some(f => f.filterName === payable.filterName),

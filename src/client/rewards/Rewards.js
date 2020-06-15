@@ -711,15 +711,15 @@ class Rewards extends React.Component {
                     !isCreate &&
                     !includes(match.url, 'messages') &&
                     !includes(match.url, 'history') && (
-                    <MapWrap
-                      setMapArea={this.setMapArea}
-                      userLocation={userLocation}
-                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                      match={match}
-                      primaryObjectCoordinates={primaryObjectCoordinates}
-                    />
+                      <MapWrap
+                        setMapArea={this.setMapArea}
+                        userLocation={userLocation}
+                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                        match={match}
+                        primaryObjectCoordinates={primaryObjectCoordinates}
+                      />
                     )}
                   {!isEmpty(sponsors) && !isCreate && (
                     <RewardsFiltersPanel

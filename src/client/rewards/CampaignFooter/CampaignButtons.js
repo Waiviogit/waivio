@@ -9,7 +9,7 @@ import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/Popov
 import '../../components/StoryFooter/Buttons.less';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, popoverDataMessages, buttonsTitle } from "../rewardsHelper";
+import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
 
 @injectIntl
 @withAuthActions
@@ -115,8 +115,8 @@ export default class CampaignButtons extends React.Component {
     this.props.toggleModalDetails({ value: true });
   };
 
-   getPopoverMenu = () => {
-     const { propositionStatus, match } = this.props;
+  getPopoverMenu = () => {
+    const { propositionStatus, match } = this.props;
     if (match.params.filterKey === 'messages') {
       return popoverDataMessages[propositionStatus] || [];
     }
@@ -182,15 +182,16 @@ export default class CampaignButtons extends React.Component {
         trigger="click"
         content={
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {match.params.filterKey === 'reserved' ?
-              popoverMenu : map(this.getPopoverMenu(), item => (
-              <PopoverMenuItem key={item.key}>
-                {intl.formatMessage({
-                  id: item.id,
-                  defaultMessage: item.defaultMessage,
-                })}
-              </PopoverMenuItem>
-            ))}
+            {match.params.filterKey === 'reserved'
+              ? popoverMenu
+              : map(this.getPopoverMenu(), item => (
+                  <PopoverMenuItem key={item.key}>
+                    {intl.formatMessage({
+                      id: item.id,
+                      defaultMessage: item.defaultMessage,
+                    })}
+                  </PopoverMenuItem>
+                ))}
           </PopoverMenu>
         }
       >
