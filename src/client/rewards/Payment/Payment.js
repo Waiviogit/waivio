@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
+import {
+  BXY_GUEST_PREFIX,
+  GUEST_PREFIX,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
+import { HIVE } from '../../../common/constants/cryptos';
+import { getMemo } from '../rewardsHelper';
 import './Payment.less';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
-import { getAppUrl } from '../../reducers';
 
 // eslint-disable-next-line no-shadow
 const Payment = ({ match, intl, userName }) => {
@@ -18,8 +23,6 @@ const Payment = ({ match, intl, userName }) => {
   const [payable, setPayable] = useState({});
 
   const dispatch = useDispatch();
-  const appUrl = useSelector(getAppUrl);
-  const url = appUrl === 'http://www.waivio.com' ? 'waivio' : 'waiviodev';
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
@@ -30,8 +33,9 @@ const Payment = ({ match, intl, userName }) => {
     match.params.userName.startsWith(GUEST_PREFIX) ||
     match.params.userName.startsWith(BXY_GUEST_PREFIX);
 
-  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
-  const app = url;
+  const memo = getMemo(isReceiverGuest);
+  const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   useEffect(() => {
     getLenders(requestParams)
@@ -74,7 +78,7 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo, app))}
+              onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
             >
               {intl.formatMessage({
                 id: 'pay',

@@ -359,6 +359,8 @@ export const payablesFilterData = location => [
   },
 ];
 
+export const getMemo = isReceiverGuest => (isReceiverGuest ? 'guest_reward' : 'user_reward');
+
 export const getContent = pathName => {
   if (pathName.includes('references')) {
     return {
