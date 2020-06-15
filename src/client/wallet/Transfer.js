@@ -145,10 +145,8 @@ export default class Transfer extends React.Component {
     currency: Transfer.CURRENCIES.HIVE,
     oldAmount: undefined,
     searchBarValue: '',
-    searchData: '',
-    currentItem: 'All',
     dropdownOpen: false,
-    currentEstimate: 0,
+    currentEstimate: null,
     isSelected: false,
   };
 
@@ -177,15 +175,13 @@ export default class Transfer extends React.Component {
     if (!visible) {
       this.setState({
         searchBarValue: '',
-        searchData: '',
-        currentItem: 'All',
         dropdownOpen: false,
-        currentEstimate: 0,
         isSelected: false,
+        currentEstimate: null,
       });
     }
 
-    if (amount && getEstimateValue) {
+    if (visible && getEstimateValue) {
       this.setState({ currentEstimate: getEstimateValue });
     }
   }
@@ -408,7 +404,7 @@ export default class Transfer extends React.Component {
     const { to } = this.props;
     const { searchBarValue } = this.state;
     const userName = isEmpty(searchBarValue) ? to : searchBarValue;
-    const currentUser = (
+    return (
       <div className="Transfer__search-content-wrap-current">
         <div className="Transfer__search-content-wrap-current-user">
           <Avatar username={userName} size={40} />
@@ -426,7 +422,6 @@ export default class Transfer extends React.Component {
         />
       </div>
     );
-    return currentUser;
   };
 
   hideAutoCompleteDropdown() {
@@ -439,8 +434,6 @@ export default class Transfer extends React.Component {
   handleOnChangeForAutoComplete(value) {
     this.setState({
       searchBarValue: value,
-      searchData: '',
-      currentItem: 'All',
     });
   }
 
@@ -483,12 +476,13 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest, to } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
     const { isSelected } = this.state;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
-    const TransferTo = getFieldValue('TransferTo');
-    const guestName = TransferTo && guestUserRegex.test(TransferTo);
+    const to = getFieldValue('to');
+
+    const guestName = to && guestUserRegex.test(to);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
@@ -529,7 +523,7 @@ export default class Transfer extends React.Component {
       >
         <Form className="Transfer" hideRequiredMark>
           <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
-            {getFieldDecorator('TransferTo', {
+            {getFieldDecorator('to', {
               rules: [
                 {
                   required: true,
@@ -541,7 +535,7 @@ export default class Transfer extends React.Component {
                 { validator: this.validateUsername },
               ],
             })(
-              isSelected || !isEmpty(to) ? (
+              isSelected || !isEmpty(this.props.to) ? (
                 this.showSelectedUser()
               ) : (
                 <AutoComplete

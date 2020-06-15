@@ -23,7 +23,7 @@ const initialState = {
   loadingMoreTransactions: false,
   hasMore: false,
   transactionsHistoryLoading: false,
-  estValue: 0,
+  estValue: null,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -43,7 +43,6 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         transferVisible: false,
-        estValue: 0,
       };
     case walletActions.OPEN_POWER_UP_OR_DOWN:
       return {
