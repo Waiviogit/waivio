@@ -134,6 +134,7 @@ class Rewards extends React.Component {
     activeMessagesFilters: { caseStatus: 'all', rewards: [], status: [] },
     isSearchAreaFilter: false,
     isAssign: false,
+    messagesSponsors: [],
   };
 
   componentDidMount() {
@@ -167,8 +168,12 @@ class Rewards extends React.Component {
     if (match.params.filterKey === 'messages') sort = 'inquiryDate';
     if (match.params.filterKey === 'history') sort = 'reservation';
     if (
-      (this.props.match.params.filterKey === 'messages' && match.params.filterKey !== 'history') ||
-      (this.props.match.params.filterKey === 'history' && match.params.filterKey !== 'messages')
+      (this.props.match.params.filterKey === 'messages' &&
+        match.params.filterKey !== 'history' &&
+        match.params.filterKey !== 'messages') ||
+      (this.props.match.params.filterKey === 'history' &&
+        match.params.filterKey !== 'messages' &&
+        match.params.filterKey !== 'history')
     )
       sort = 'reward';
 
@@ -275,7 +280,10 @@ class Rewards extends React.Component {
       }
     }
     this.setState({ loadingCampaigns: true });
-    if (this.props.match.params.filterKey !== 'messages')
+    if (
+      this.props.match.params.filterKey !== 'messages' &&
+      this.props.match.params.filterKey !== 'history'
+    )
       this.getPropositions({ username, match, area, radius, sort, activeFilters });
     this.getMessages({ sort, activeMessagesFilters });
   };
@@ -342,7 +350,14 @@ class Rewards extends React.Component {
     }
     this.setState({ loadingCampaigns: true });
     ApiClient.getMessages(requestData).then(data => {
-      this.setState({ messages: data.campaigns, sort, loading: false, loadingCampaigns: false });
+      const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
+      this.setState({
+        messages: data.campaigns,
+        sort,
+        messagesSponsors: sponsors,
+        loading: false,
+        loadingCampaigns: false,
+      });
     });
   };
 
@@ -639,6 +654,7 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
       activeMessagesFilters,
+      messagesSponsors,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -732,6 +748,7 @@ class Rewards extends React.Component {
                     setFilterValue={this.setFilterValue}
                     setPayablesFilterValue={this.setPayablesFilterValue}
                     location={location}
+                    messagesSponsors={messagesSponsors}
                   />
                 </div>
               </Affix>
@@ -763,6 +780,7 @@ class Rewards extends React.Component {
                       setFilterValue={this.setFilterValue}
                       setPayablesFilterValue={this.setPayablesFilterValue}
                       location={location}
+                      messagesSponsors={messagesSponsors}
                     />
                   )}
                 </div>

@@ -16,6 +16,7 @@ const RewardsFiltersPanel = ({
   intl,
   location,
   activeMessagesFilters,
+  messagesSponsors,
 }) => {
   const filterLayout = (filterName, key, checked) => (
     <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
@@ -52,7 +53,7 @@ const RewardsFiltersPanel = ({
   //   'suspended',
   // ];
 
-  // console.log('activeMessagesFilters', activeMessagesFilters)
+  const sponsorsData = location.pathname !== '/rewards/history' ? sponsors : messagesSponsors;
 
   return (
     <div className="RewardsFiltersPanel">
@@ -80,7 +81,7 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Sponsors`,
               })}:`}
             </div>
-            {_.map(sponsors, sponsor =>
+            {_.map(sponsorsData, sponsor =>
               filterLayout(sponsor, 'guideNames', _.includes(activeFilters.guideNames, sponsor)),
             )}
           </React.Fragment>
@@ -138,7 +139,7 @@ const RewardsFiltersPanel = ({
                     _.includes(activeMessagesFilters.caseStatus, type),
                   ),
                 )
-              : _.map(sponsors, sponsor =>
+              : _.map(sponsorsData, sponsor =>
                   filterLayout(
                     sponsor,
                     'guideNames',
@@ -164,6 +165,7 @@ RewardsFiltersPanel.propTypes = {
   location: PropTypes.shape().isRequired,
   setPayablesFilterValue: PropTypes.func.isRequired,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 RewardsFiltersPanel.defaultProps = {
