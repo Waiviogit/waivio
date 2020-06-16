@@ -107,7 +107,8 @@ const WalletTransaction = ({
     case accountHistoryConstants.LIMIT_ORDER:
       return (
         <WalletLimitOrder
-          transactionDetails={transactionDetails}
+          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
+          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
           timestamp={transaction.timestamp}
         />
       );
@@ -115,14 +116,16 @@ const WalletTransaction = ({
       return (
         <WalletFillOrderTransferred
           transactionDetails={transactionDetails}
+          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
           timestamp={transaction.timestamp}
         />
       );
     case accountHistoryConstants.CANCEL_ORDER:
       return (
         <WalletCancelOrder
-          transactionDetails={transactionDetails}
           timestamp={transaction.timestamp}
+          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
+          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
         />
       );
     default:
