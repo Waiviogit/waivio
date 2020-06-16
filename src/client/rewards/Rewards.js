@@ -135,6 +135,7 @@ class Rewards extends React.Component {
     isSearchAreaFilter: false,
     isAssign: false,
     messagesSponsors: [],
+    messages: [],
   };
 
   componentDidMount() {
@@ -662,6 +663,7 @@ class Rewards extends React.Component {
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';
+    const isMessages = filterKey === 'messages';
     const currentSteemPrice =
       cryptosPriceHistory &&
       cryptosPriceHistory[HBD.coinGeckoId] &&
@@ -740,14 +742,9 @@ class Rewards extends React.Component {
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
-                    campaignsTypes={campaignsTypes}
-                    sponsors={sponsors}
-                    activeFilters={activeFilters}
                     activePayableFilters={activePayableFilters}
-                    setFilterValue={this.setFilterValue}
                     setPayablesFilterValue={this.setPayablesFilterValue}
                     location={location}
-                    messagesSponsors={messagesSponsors}
                   />
                 </div>
               </Affix>
@@ -755,30 +752,25 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) &&
-                    !isCreate &&
-                    !includes(match.url, 'messages') &&
-                    !includes(match.url, 'history') && (
-                      <MapWrap
-                        setMapArea={this.setMapArea}
-                        userLocation={userLocation}
-                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                        match={match}
-                        primaryObjectCoordinates={primaryObjectCoordinates}
-                      />
-                    )}
-                  {(includes(match.url, 'messages') || (!isEmpty(sponsors) && !isCreate)) && (
+                  {!isEmpty(this.props.userLocation) && !isCreate && !isMessages && (
+                    <MapWrap
+                      setMapArea={this.setMapArea}
+                      userLocation={userLocation}
+                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                      onMarkerClick={this.goToCampaign}
+                      getAreaSearchData={this.getAreaSearchData}
+                      match={match}
+                      primaryObjectCoordinates={primaryObjectCoordinates}
+                    />
+                  )}
+                  {!isEmpty(propositions) && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
-                      sponsors={sponsors}
                       activeFilters={activeFilters}
-                      activePayableFilters={activePayableFilters}
                       activeMessagesFilters={activeMessagesFilters}
                       setFilterValue={this.setFilterValue}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
                       location={location}
+                      sponsors={sponsors}
                       messagesSponsors={messagesSponsors}
                     />
                   )}

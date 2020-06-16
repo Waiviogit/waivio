@@ -182,7 +182,7 @@ export default class CampaignButtons extends React.Component {
         trigger="click"
         content={
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {match.params.filterKey === 'reserved'
+            {match.params.filterKey === 'reserved' || match.params.filterKey === 'all'
               ? popoverMenu
               : map(this.getPopoverMenu(), item => (
                   <PopoverMenuItem key={item.key}>
@@ -201,8 +201,7 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, daysLeft, match } = this.props;
-
+    const { intl, post, daysLeft, propositionStatus } = this.props;
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
@@ -211,7 +210,7 @@ export default class CampaignButtons extends React.Component {
               id: this.buttonsTitle.id,
               defaultMessage: this.buttonsTitle.defaultMessage,
             })}
-            {match.params.filterKey === 'reserved'
+            {this.buttonsTitle.defaultMessage === 'Reserved'
               ? `- ${daysLeft} ${intl.formatMessage({
                   id: 'campaign_buttons_days_left',
                   defaultMessage: 'days left',
@@ -233,14 +232,16 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        <React.Fragment>
-          <Button type="primary" onClick={this.openModalDetails}>
-            {intl.formatMessage({
-              id: 'campaign_buttons_write_review',
-              defaultMessage: `Write review`,
-            })}
-          </Button>
-        </React.Fragment>
+        {propositionStatus === 'reserved' && (
+          <React.Fragment>
+            <Button type="primary" onClick={this.openModalDetails}>
+              {intl.formatMessage({
+                id: 'campaign_buttons_write_review',
+                defaultMessage: `Write review`,
+              })}
+            </Button>
+          </React.Fragment>
+        )}
       </div>
     );
   }
