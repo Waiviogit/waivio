@@ -146,7 +146,7 @@ const ReportHeader = ({ intl }) => {
             <span className="ReportHeader__campaignInfo-links">{`${primaryObjectName}, `}</span>
           </a>
           {map(secondaryObjects, object => (
-            <a href={`/object/${object.permlink}`}>
+            <a key={object.permlink} href={`/object/${object.permlink}`}>
               <span className="ReportHeader__campaignInfo-links">{object.name}</span>
             </a>
           ))}

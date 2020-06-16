@@ -269,7 +269,7 @@ class ReportsForm extends Component {
                       })}`,
                     },
                   ],
-                  initialValue: '',
+                  initialValue: null,
                 })(
                   <DatePicker
                     disabledDate={this.disabledStartDate}
