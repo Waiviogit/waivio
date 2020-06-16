@@ -36,7 +36,7 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
-  const campaignsTypesMessages = ['all', 'open', 'closed'];
+  const campaignsTypesMessages = ['all', 'open', 'close'];
 
   const rewardsTypesMessages = ['assigned', 'unassigned', 'completed', 'rejected', 'expired'];
 

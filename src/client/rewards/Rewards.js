@@ -261,20 +261,22 @@ class Rewards extends React.Component {
     const { radius, area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     const activeMessagesFilters = this.state.activeMessagesFilters;
-    if (includes(activeFilters[key], filterValue)) {
-      remove(activeFilters[key], f => f === filterValue);
-    } else {
-      activeFilters[key].push(filterValue);
+    if (key === 'types' || key === 'guideNames') {
+      if (includes(activeFilters[key], filterValue)) {
+        remove(activeFilters[key], f => f === filterValue);
+      } else {
+        activeFilters[key].push(filterValue);
+      }
     }
-
-    if (includes(activeMessagesFilters[key], filterValue)) {
-      remove(activeMessagesFilters[key], f => f === filterValue);
-    } else if (key === 'caseStatus') {
-      activeMessagesFilters[key] = filterValue;
-    } else {
-      activeMessagesFilters[key].push(filterValue);
+    if (key === 'rewards' || key === 'caseStatus') {
+      if (includes(activeMessagesFilters[key], filterValue)) {
+        remove(activeMessagesFilters[key], f => f === filterValue);
+      } else if (key === 'caseStatus') {
+        activeMessagesFilters[key] = filterValue;
+      } else {
+        activeMessagesFilters[key].push(filterValue);
+      }
     }
-
     this.setState({ loadingCampaigns: true });
     if (this.props.match.params.filterKey !== 'messages')
       this.getPropositions({ username, match, area, radius, sort, activeFilters });
