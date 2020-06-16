@@ -22,11 +22,12 @@ export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
     autoCompleteSearchResults: {},
+    userName: '',
   };
 
   constructor(props) {

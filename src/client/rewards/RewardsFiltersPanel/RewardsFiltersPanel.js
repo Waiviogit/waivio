@@ -15,6 +15,7 @@ const RewardsFiltersPanel = ({
   setPayablesFilterValue,
   intl,
   location,
+  activeMessagesFilters,
 }) => {
   const filterLayout = (filterName, key, checked) => (
     <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
@@ -35,33 +36,23 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
-  // const payablesFilterData = [
-  //   {
-  //     filterName: 'days',
-  //     value: location.pathname === '/rewards/payables' ? 15 : 30,
-  //     defaultMessage: `Over {value} days`,
-  //   },
-  //   {
-  //     filterName: 'payable',
-  //     value: location.pathname === '/rewards/payables' ? 10 : 20,
-  //     defaultMessage: `Over {value} HIVE`,
-  //   },
+  const campaignsTypesMessages = ['all', 'open', 'closed'];
+
+  const rewardsTypesMessages = ['assigned', 'unassigned', 'completed', 'rejected', 'expired'];
+
+  // const statusTypesMessages = [
+  //   'pending',
+  //   'active',
+  //   'inactive',
+  //   'expired',
+  //   'deleted',
+  //   'payed',
+  //   'reachedLimit',
+  //   'onHold',
+  //   'suspended',
   // ];
 
-  const campaignsTypesMessages = [
-    {
-      filterName: 'open',
-      value: 'Open',
-      defaultMessage: `{value} cases`,
-    },
-    {
-      filterName: 'closed',
-      value: 'Closed',
-      defaultMessage: `{value} cases`,
-    },
-  ];
-
-  const rewardsTypesMessages = ['Reserved', 'Completed', 'Released', 'Expired', 'Rejected'];
+  // console.log('activeMessagesFilters', activeMessagesFilters)
 
   return (
     <div className="RewardsFiltersPanel">
@@ -126,7 +117,7 @@ const RewardsFiltersPanel = ({
               })}:`}
             </div>
             {_.map(rewardsTypesMessages, type =>
-              filterLayout(type, 'types', _.includes(activeFilters.types, type)),
+              filterLayout(type, 'rewards', _.includes(activeMessagesFilters.rewards, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
               {location.pathname === '/rewards/messages'
@@ -141,9 +132,10 @@ const RewardsFiltersPanel = ({
             </div>
             {location.pathname === '/rewards/messages'
               ? _.map(campaignsTypesMessages, type =>
-                  filterPaymentLayout(
+                  filterLayout(
                     type,
-                    activePayableFilters.some(f => f.filterName === type.filterName),
+                    'caseStatus',
+                    _.includes(activeMessagesFilters.caseStatus, type),
                   ),
                 )
               : _.map(sponsors, sponsor =>
@@ -166,6 +158,7 @@ RewardsFiltersPanel.propTypes = {
   sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
+  activeMessagesFilters: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,

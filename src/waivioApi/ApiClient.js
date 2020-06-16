@@ -620,6 +620,37 @@ export const getPropositions = ({
       .catch(error => reject(error));
   });
 
+export const getMessages = ({
+  limit = 30,
+  skip = 0,
+  guideName,
+  onlyWithMessages,
+  sort,
+  caseStatus,
+  rewards,
+  status,
+}) =>
+  new Promise((resolve, reject) => {
+    const reqData = {
+      limit,
+      skip,
+      guideName,
+      onlyWithMessages,
+      sort,
+      caseStatus,
+      rewards,
+      status,
+    };
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(

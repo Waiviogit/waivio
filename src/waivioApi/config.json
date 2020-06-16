@@ -38,6 +38,7 @@
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "history": "/history",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
