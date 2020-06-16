@@ -491,7 +491,7 @@
   "reviews": "Reviews",
   "recency": "Recency",
   "object_field_backgroundImage": "Background image",
-  "gallery_list_empty": "No data. Be first to create a new one!",
+  "gallery_list_empty": "There are no photos in this album. Be first to create a new one!",
   "add_new_proposition": "Add",
   "add_new": "Add new",
   "add_new_album": "Add new album",
