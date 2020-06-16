@@ -624,6 +624,7 @@ export const getMessages = ({
   limit = 30,
   skip = 0,
   guideName,
+  userName,
   onlyWithMessages,
   sort,
   caseStatus,
@@ -634,13 +635,17 @@ export const getMessages = ({
     const reqData = {
       limit,
       skip,
-      guideName,
       onlyWithMessages,
       sort,
       caseStatus,
-      rewards,
-      status,
     };
+    if (userName) {
+      reqData.userName = userName;
+      reqData.onlyWithMessages = false;
+    }
+    if (guideName) reqData.guideName = guideName;
+    if (!isEmpty(rewards)) reqData.rewards = rewards;
+    if (!isEmpty(status)) reqData.status = status;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers,
       method: 'POST',

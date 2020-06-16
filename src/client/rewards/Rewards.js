@@ -131,7 +131,7 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
-    activeMessagesFilters: { caseStatus: 'all', rewards: ['completed'], status: ['onHold'] },
+    activeMessagesFilters: { caseStatus: 'all', rewards: [], status: [] },
     isSearchAreaFilter: false,
     isAssign: false,
   };
@@ -168,12 +168,8 @@ class Rewards extends React.Component {
     if (match.params.filterKey === 'messages') sort = 'inquiryDate';
     if (match.params.filterKey === 'history') sort = 'reservation';
     if (
-      (this.props.match.params.filterKey === 'messages' &&
-        match.params.filterKey !== 'history' &&
-        match.params.filterKey !== 'messages') ||
-      (this.props.match.params.filterKey === 'history' &&
-        match.params.filterKey !== 'messages' &&
-        match.params.filterKey !== 'history')
+      (this.props.match.params.filterKey === 'messages' && match.params.filterKey !== 'history') ||
+      (this.props.match.params.filterKey === 'history' && match.params.filterKey !== 'messages')
     )
       sort = 'reward';
 
@@ -198,7 +194,8 @@ class Rewards extends React.Component {
     if (match.params.filterKey !== 'create') {
       if (
         (match.params.filterKey !== this.props.match.params.filterKey &&
-          match.params.filterKey !== 'messages') ||
+          match.params.filterKey !== 'messages' &&
+          match.params.filterKey !== 'history') ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
       ) {
         this.setState({ loadingCampaigns: true }, () => {
@@ -212,9 +209,10 @@ class Rewards extends React.Component {
         });
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
+    const isHistory = Boolean(match.params.filterKey === 'history');
 
     if (match.params.filterKey === 'history' || match.params.filterKey === 'messages') {
-      this.getMessages({ username, sort, activeMessagesFilters });
+      this.getMessages({ username, sort, activeMessagesFilters, isHistory });
     }
   }
 
@@ -330,15 +328,20 @@ class Rewards extends React.Component {
     });
   };
 
-  getMessages = ({ username, sort, activeMessagesFilters }) => {
+  getMessages = ({ username, sort, activeMessagesFilters, isHistory }) => {
     const requestData = {
-      guideName: username,
       onlyWithMessages: true,
       sort,
       caseStatus: activeMessagesFilters.caseStatus,
       rewards: activeMessagesFilters.rewards,
       status: activeMessagesFilters.status,
     };
+    if (isHistory) {
+      requestData.userName = username;
+    } else {
+      requestData.guideName = username;
+    }
+    this.setState({ loadingCampaigns: true });
     ApiClient.getMessages(requestData).then(data => {
       this.setState({ messages: data.campaigns, sort, loading: false, loadingCampaigns: false });
     });
@@ -362,7 +365,7 @@ class Rewards extends React.Component {
     const { activeFilters, activeMessagesFilters } = this.state;
     const { username, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    if (match.params.filterKey !== 'messages') {
+    if (match.params.filterKey !== 'messages' && match.params.filterKey !== 'history') {
       this.getPropositions({ username, match, sort, activeFilters });
     }
     this.getMessages({ sort, activeMessagesFilters });
@@ -481,13 +484,14 @@ class Rewards extends React.Component {
   };
   // END Propositions
 
-  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, loadingAssignDiscard, isAssign } = this.state;
+  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match) => {
+    const { propositions, loadingAssignDiscard, isAssign, messages } = this.state;
+    const actualPropositions = match.params.filterKey !== 'history' ? propositions : messages;
     const { intl } = this.props;
-    if (size(propositions) !== 0) {
+    if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
-          propositions,
+          actualPropositions,
           proposition =>
             proposition &&
             proposition.required_object && (
@@ -501,7 +505,7 @@ class Rewards extends React.Component {
         );
       }
 
-      return map(propositions, proposition =>
+      return map(actualPropositions, proposition =>
         map(
           proposition.objects,
           wobj =>
@@ -639,7 +643,8 @@ class Rewards extends React.Component {
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
-    const IsRequiredObjectWrap = !match.params.campaignParent;
+    const IsRequiredObjectWrap =
+      !match.params.campaignParent && match.params.filterKey !== 'history';
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate = location.pathname === '/rewards/create';

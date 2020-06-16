@@ -69,7 +69,7 @@ const FilteredRewardsList = props => {
           defaultMessage: 'Reservation',
         },
         {
-          key: 'date',
+          key: 'inquiryDate',
           id: 'action_date',
           defaultMessage: 'Action (date)',
         },
@@ -100,7 +100,10 @@ const FilteredRewardsList = props => {
         tabText={getTextByFilterKey(intl, filterKey)}
         filterKey={filterKey}
         reqObject={
-          !IsRequiredObjectWrap && propositions.length && propositions[0]
+          !IsRequiredObjectWrap &&
+          match.params.filterKey !== 'history' &&
+          propositions.length &&
+          propositions[0]
             ? propositions[0].required_object
             : null
         }
@@ -110,7 +113,10 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
+      {!IsRequiredObjectWrap &&
+      match.params.filterKey !== 'history' &&
+      propositions.length &&
+      propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}
