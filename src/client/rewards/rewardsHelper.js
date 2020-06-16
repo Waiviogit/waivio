@@ -361,6 +361,110 @@ export const payablesFilterData = location => [
 
 export const getMemo = isReceiverGuest => (isReceiverGuest ? 'guest_reward' : 'user_reward');
 
+export const getContent = pathName => {
+  if (pathName.includes('references')) {
+    return {
+      title: {
+        id: 'recognize_other_users_blacklists',
+        defaultMessage: "Recognize other users' blacklists",
+      },
+      caption: {
+        id: 'when_you_reference_another_users_blacklist',
+        defaultMessage:
+          "When you reference another user's blacklist, you also recognize all other blacklists referred to by that user",
+      },
+    };
+  }
+
+  if (pathName.includes('whitelist')) {
+    return {
+      title: {
+        id: 'add_user_to_whitelist',
+        defaultMessage: 'Add user to the whitelist',
+      },
+      caption: {
+        id: 'whitelisted_users_can_participate',
+        defaultMessage:
+          'Whitelisted users can participate in any campaign (subject to campaign eligibility criteria) sponsored by',
+      },
+    };
+  }
+
+  return {
+    title: {
+      id: 'add_user_to_blacklist',
+      defaultMessage: 'Add user to the blacklist',
+    },
+    caption: {
+      id: 'blacklisted_users_cannot_participate',
+      defaultMessage: 'Blacklisted users cannot participate in any campaign sponsored by',
+    },
+  };
+};
+
+export const getSuccessAddMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_subscribed_to_other_users_blacklists',
+      defaultMessage: "You subscribed to other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_added_to_whitelist',
+        defaultMessage: 'Users were added to the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_added_to_whitelist',
+      defaultMessage: 'User was added to the whitelist',
+    };
+  }
+
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_added_to_blacklist',
+      defaultMessage: 'Users were added to blacklist',
+    };
+  }
+  return {
+    id: 'user_was_added_to_blacklist',
+    defaultMessage: 'User was added to the blacklist',
+  };
+};
+
+export const getSuccessDeleteMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_unsubscribed_from_other_users_blacklists',
+      defaultMessage: "You unsubscribed from other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_deleted_from_whitelist',
+        defaultMessage: 'Users were deleted from the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_deleted_from_whitelist',
+      defaultMessage: 'User was deleted from the whitelist',
+    };
+  }
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_deleted_from_blacklist',
+      defaultMessage: 'Users were deleted from the blacklist',
+    };
+  }
+  return {
+    id: 'user_was_deleted_from_blacklist',
+    defaultMessage: 'User was deleted from the blacklist',
+  };
+};
+
 export const popoverDataHistory = {
   reserved: [
     {

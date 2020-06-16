@@ -272,6 +272,18 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink
+                      to={`/rewards/blacklist`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: 'blacklist',
+                        defaultMessage: `Blacklist`,
+                      })}
+                    </NavLink>
+                  </li>
                 </React.Fragment>
               )}
             </React.Fragment>

@@ -51,6 +51,7 @@ import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import SubFeed from '../client/feed/SubFeed';
 import UserInfo from '../client/app/Sidebar/UserInfo';
+import BlacklistCampaign from '../client/rewards/Blacklist/Blacklist';
 
 const routes = [
   {
@@ -66,6 +67,9 @@ const routes = [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/payables',
           '/rewards/reports',
+          '/rewards/blacklist',
+          '/rewards/blacklist/references',
+          '/rewards/blacklist/whitelist',
           '/rewards/receivables',
           '/rewards/payables/@:userName',
           '/rewards/receivables/@:userName',
@@ -113,6 +117,21 @@ const routes = [
             path: '/rewards/match-bot',
             exact: true,
             component: MatchBotCampaign,
+          },
+          {
+            path: '/rewards/blacklist',
+            exact: true,
+            component: BlacklistCampaign,
+          },
+          {
+            path: '/rewards/blacklist/references',
+            exact: true,
+            component: BlacklistCampaign,
+          },
+          {
+            path: '/rewards/blacklist/whitelist',
+            exact: true,
+            component: BlacklistCampaign,
           },
           {
             path: '/rewards/details/:campaignId',
