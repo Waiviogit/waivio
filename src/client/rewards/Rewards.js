@@ -104,15 +104,17 @@ class Rewards extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
-    resetUpdatedFlag: PropTypes.func.isRequired,
+    resetUpdatedFlag: PropTypes.func,
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
-    wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    wobjects: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
+    resetUpdatedFlag: () => {},
+    wobjects: [],
   };
 
   state = {

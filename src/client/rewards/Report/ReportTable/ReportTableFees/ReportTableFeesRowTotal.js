@@ -36,8 +36,8 @@ const ReportTableFeesRowTotal = ({ intl, shareAmount, hiveAmount, usdAmount }) =
 ReportTableFeesRowTotal.propTypes = {
   intl: PropTypes.shape().isRequired,
   shareAmount: PropTypes.number.isRequired,
-  hiveAmount: PropTypes.string.isRequired,
-  usdAmount: PropTypes.string.isRequired,
+  hiveAmount: PropTypes.number.isRequired,
+  usdAmount: PropTypes.number.isRequired,
 };
 
 export default injectIntl(ReportTableFeesRowTotal);

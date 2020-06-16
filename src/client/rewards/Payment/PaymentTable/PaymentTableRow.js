@@ -118,7 +118,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
                 :{' '}
                 {sponsor.details.beneficiaries
                   ? map(sponsor.details.beneficiaries, benef => (
-                      <React.Fragment>
+                      <React.Fragment key={benef.account}>
                         <Link to={`/@${benef.account}`}>{benef.account}</Link>
                         <span>{` (${benef.weight / 100}%), `}</span>
                       </React.Fragment>

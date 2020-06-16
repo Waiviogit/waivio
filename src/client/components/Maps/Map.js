@@ -363,7 +363,7 @@ MapOS.propTypes = {
   mapWobjects: PropTypes.arrayOf(PropTypes.shape()),
   updated: PropTypes.bool,
   match: PropTypes.shape().isRequired,
-  resetUpdatedFlag: PropTypes.func.isRequired,
+  resetUpdatedFlag: PropTypes.func,
   primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
 };
 
@@ -382,6 +382,7 @@ MapOS.defaultProps = {
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},
   primaryObjectCoordinates: [],
+  resetUpdatedFlag: () => {},
 };
 
 export default MapOS;
