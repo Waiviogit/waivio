@@ -37,7 +37,7 @@ BalanceTable.propTypes = {
   budgetTotal: PropTypes.shape(),
   intl: PropTypes.shape(),
   isGuest: PropTypes.bool,
-  guestBalance: PropTypes.number,
+  guestBalance: PropTypes.string,
 };
 
 BalanceTable.defaultProps = {

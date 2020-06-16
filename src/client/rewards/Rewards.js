@@ -138,7 +138,6 @@ class Rewards extends React.Component {
 
   componentDidMount() {
     const { username, match, userLocation, history } = this.props;
-
     const { area, activeFilters, sort } = this.state;
     if (!size(userLocation)) {
       this.props.getCoordinates();

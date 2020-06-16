@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty, uniqBy, map, get, reduce } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import { REWARD } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
 export const displayLimit = 10;
@@ -359,7 +360,8 @@ export const payablesFilterData = location => [
   },
 ];
 
-export const getMemo = isReceiverGuest => (isReceiverGuest ? 'guest_reward' : 'user_reward');
+export const getMemo = isReceiverGuest =>
+  isReceiverGuest ? REWARD.guestReward : REWARD.userReward;
 
 export const getContent = pathName => {
   if (pathName.includes('references')) {
