@@ -4,7 +4,7 @@ import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 
-const WalletLimitOrder = ({ transactionDetails, timestamp }) => {
+const WalletLimitOrder = ({ timestamp, openPays, currentPays }) => {
   const arrowsIcon = '\u21C6';
   return (
     <div className="UserWalletTransactions__transaction">
@@ -18,13 +18,13 @@ const WalletLimitOrder = ({ transactionDetails, timestamp }) => {
               id="limit_order"
               defaultMessage="Limit order to buy {open_pays}"
               values={{
-                open_pays: <span>{transactionDetails.open_pays}</span>,
+                open_pays: <span>{openPays}</span>,
               }}
             />
           </div>
           <div className="UserWalletTransactions__transfer">
             {'- '}
-            {transactionDetails.current_pays}
+            {currentPays}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">
@@ -46,14 +46,15 @@ const WalletLimitOrder = ({ transactionDetails, timestamp }) => {
 };
 
 WalletLimitOrder.propTypes = {
-  transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  openPays: PropTypes.element,
+  currentPays: PropTypes.element,
   timestamp: PropTypes.number,
-  current_pays: PropTypes.string,
 };
 
 WalletLimitOrder.defaultProps = {
   timestamp: 0,
-  current_pays: '',
+  openPays: <span />,
+  currentPays: <span />,
 };
 
 export default WalletLimitOrder;
