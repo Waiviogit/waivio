@@ -630,6 +630,7 @@ export const getMessages = ({
   caseStatus,
   rewards,
   status,
+  guideNames,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -646,6 +647,7 @@ export const getMessages = ({
     if (guideName) reqData.guideName = guideName;
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
+    if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers,
       method: 'POST',

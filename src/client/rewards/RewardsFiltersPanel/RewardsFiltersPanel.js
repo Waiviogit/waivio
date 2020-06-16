@@ -142,8 +142,8 @@ const RewardsFiltersPanel = ({
               : _.map(sponsorsData, sponsor =>
                   filterLayout(
                     sponsor,
-                    'guideNames',
-                    _.includes(activeFilters.guideNames, sponsor),
+                    'messagesSponsors',
+                    _.includes(activeMessagesFilters.messagesSponsors, sponsor),
                   ),
                 )}
           </React.Fragment>
@@ -159,7 +159,7 @@ RewardsFiltersPanel.propTypes = {
   sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
-  activeMessagesFilters: PropTypes.shape().isRequired,
+  activeMessagesFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
@@ -172,6 +172,7 @@ RewardsFiltersPanel.defaultProps = {
   sponsors: [],
   campaignsTypes: [],
   activeFilters: {},
+  activeMessagesFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);

@@ -131,7 +131,7 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
-    activeMessagesFilters: { caseStatus: 'all', rewards: [], status: [] },
+    activeMessagesFilters: { caseStatus: 'all', rewards: [], status: [], messagesSponsors: [] },
     isSearchAreaFilter: false,
     isAssign: false,
     messagesSponsors: [],
@@ -213,10 +213,8 @@ class Rewards extends React.Component {
         });
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
-    const isHistory = Boolean(match.params.filterKey === 'history');
-
     if (match.params.filterKey === 'history' || match.params.filterKey === 'messages') {
-      this.getMessages({ username, sort, activeMessagesFilters, isHistory });
+      this.getMessages({ username, sort, activeMessagesFilters });
     }
   }
 
@@ -270,7 +268,7 @@ class Rewards extends React.Component {
         activeFilters[key].push(filterValue);
       }
     }
-    if (key === 'rewards' || key === 'caseStatus') {
+    if (key === 'rewards' || key === 'caseStatus' || key === 'messagesSponsors') {
       if (includes(activeMessagesFilters[key], filterValue)) {
         remove(activeMessagesFilters[key], f => f === filterValue);
       } else if (key === 'caseStatus') {
@@ -335,15 +333,16 @@ class Rewards extends React.Component {
     });
   };
 
-  getMessages = ({ username, sort, activeMessagesFilters, isHistory }) => {
+  getMessages = ({ username, sort, activeMessagesFilters }) => {
     const requestData = {
       onlyWithMessages: true,
       sort,
       caseStatus: activeMessagesFilters.caseStatus,
       rewards: activeMessagesFilters.rewards,
       status: activeMessagesFilters.status,
+      guideNames: activeMessagesFilters.messagesSponsors,
     };
-    if (isHistory) {
+    if (sort === 'reservation') {
       requestData.userName = username;
     } else {
       requestData.guideName = username;
