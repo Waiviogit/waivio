@@ -6,7 +6,7 @@ import Avatar from '../components/Avatar';
 import WalletFillOrderGet from './WalletFillOrderGet';
 import { epochToUTC } from '../helpers/formatter';
 
-const WalletFillOrderTransferred = ({ transactionDetails, timestamp }) => (
+const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays }) => (
   <React.Fragment>
     <WalletFillOrderGet transactionDetails={transactionDetails} timestamp={timestamp} />
     <div className="UserWalletTransactions__transaction">
@@ -20,14 +20,14 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp }) => (
               id="fillOrder_wallet_transferred"
               defaultMessage="You sold {current_pays} to {exchanger}"
               values={{
-                current_pays: <span>{transactionDetails.current_pays}</span>,
+                current_pays: <span>{currentPays}</span>,
                 exchanger: <span>{transactionDetails.exchanger}</span>,
               }}
             />
           </div>
           <div className="UserWalletTransactions__transfer">
             {'- '}
-            {transactionDetails.current_pays}
+            {currentPays}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">
@@ -51,13 +51,13 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp }) => (
 WalletFillOrderTransferred.propTypes = {
   transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   timestamp: PropTypes.number,
-  current_pays: PropTypes.string,
+  currentPays: PropTypes.element,
   exchanger: PropTypes.string,
 };
 
 WalletFillOrderTransferred.defaultProps = {
   timestamp: 0,
-  current_pays: '',
+  currentPays: <span />,
   exchanger: '',
 };
 
