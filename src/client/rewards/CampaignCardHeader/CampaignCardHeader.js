@@ -2,13 +2,13 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 import Avatar from '../../components/Avatar';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData }) => {
-  const currentPriceUSD = getCurrentUSDPrice();
-  const rewardPrise = `${(campaignData.reward / currentPriceUSD).toFixed(3)} HIVE`;
+  const price = get(campaignData, ['objects', '0', 'reward']);
+  const rewardPrise = `${price ? price.toFixed(3) : 0} HIVE`;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
