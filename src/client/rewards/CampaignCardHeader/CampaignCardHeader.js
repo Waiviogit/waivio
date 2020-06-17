@@ -3,10 +3,12 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData }) => {
-  const rewardPrise = `${campaignData.reward} USD`;
+  const currentPriceUSD = getCurrentUSDPrice();
+  const rewardPrise = `${(campaignData.reward / currentPriceUSD).toFixed(3)} HIVE`;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
