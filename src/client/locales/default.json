@@ -1167,5 +1167,7 @@
   "you_subscribed_to_other_users_blacklists": "You subscribed to other users' blacklists",
   "you_unsubscribed_from_other_users_blacklists": "You unsubscribed from other users' blacklists",
   "subscribe": "Subscribe",
-  "unsubscribe": "Unsubscribe"
+  "unsubscribe": "Unsubscribe",
+  "these_users_do_not_have_blacklists" : "These users do not have blacklists",
+  "this_user_does_not_have_blacklists" : "This user does not have blacklists"
 }
