@@ -56,9 +56,9 @@ class FollowButton extends React.Component {
     switch (followingType) {
       case 'wobject':
         if (following) {
-          this.props.unfollowObject(wobj.author_permlink);
+          this.props.unfollowObject(wobj.author_permlink, wobj.name, wobj.object_type);
         } else {
-          this.props.followObject(wobj.author_permlink);
+          this.props.followObject(wobj.author_permlink, wobj.name, wobj.object_type);
         }
         break;
       case 'user':

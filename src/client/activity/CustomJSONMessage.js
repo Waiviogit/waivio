@@ -1,42 +1,50 @@
 import React from 'react';
-import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import { WOBJ_RATING } from '../../common/constants/accountHistory';
-import UserActionMessage from './UserActionMessage';
 
-const CustomJSONMessage = ({ actionDetails, actionType }) => {
+const CustomJSONMessage = ({ actionDetails }) => {
   const actionJSON = JSON.parse(actionDetails.json);
-  const customFollowType = actionDetails.id;
-  const customReblogType = actionJSON[0];
-  const customActionDetails = JSON.parse(actionDetails.json)[1];
-  const whatTypes = get(customActionDetails, 'what[0]', []);
+  const customActionType = actionJSON[0];
+  const customActionDetails = actionJSON[1];
+  const objectType = customActionDetails.object_type;
 
-  if (customReblogType === accountHistoryConstants.REBLOG) {
+  console.log('customActionType: ', customActionType);
+
+  if (customActionType === accountHistoryConstants.FOLLOW_WOBJECT) {
     return (
-      <span className="capitalize-text">
-        <FormattedMessage
-          id="reblogged_post"
-          defaultMessage="reblogged {postLink}"
-          values={{
-            postLink: (
-              <Link
-                to={`/@${customActionDetails.author}/${customActionDetails.permlink}`}
-              >{`@${customActionDetails.author}/${customActionDetails.permlink}`}</Link>
-            ),
-          }}
-        />
-      </span>
+      <FormattedMessage
+        id="followed_wobject"
+        defaultMessage={`Followed ${objectType} {name}`}
+        values={{
+          name: (
+            <Link to={`/object/${customActionDetails.author_permlink}`}>
+              {customActionDetails.object_name}
+            </Link>
+          ),
+        }}
+      />
     );
-  }
-
-  if (customFollowType === accountHistoryConstants.FOLLOW) {
+  } else if (customActionType === accountHistoryConstants.UNFOLLOW_WOBJECT) {
+    return (
+      <FormattedMessage
+        id="followed_wobject"
+        defaultMessage={`Unfollowed ${objectType} {name}`}
+        values={{
+          name: (
+            <Link to={`/object/${customActionDetails.author_permlink}`}>
+              {customActionDetails.object_name}
+            </Link>
+          ),
+        }}
+      />
+    );
+  } else if (customActionType === accountHistoryConstants.FOLLOW) {
     let messageId = '';
     let messageDefault = '';
 
-    switch (whatTypes) {
+    switch (customActionDetails.what[0]) {
       case 'ignore':
         messageId = 'ignore_user';
         messageDefault = 'Ignored {following}';
@@ -64,36 +72,28 @@ const CustomJSONMessage = ({ actionDetails, actionType }) => {
         />
       </span>
     );
-  } else if (customFollowType === accountHistoryConstants.FOLLOW_WOBJECT) {
+  } else if (customActionType === accountHistoryConstants.REBLOG) {
     return (
       <span className="capitalize-text">
         <FormattedMessage
-          id="followed_wobject"
-          defaultMessage="Followed {object_type} {name}"
+          id="reblogged_post"
+          defaultMessage="reblogged {postLink}"
           values={{
-            object_type: 'type',
-            name: (
-              <Link to={`/object/${customActionDetails.author_permlink}`}>
-                {customActionDetails.author_permlink}
-              </Link>
+            postLink: (
+              <Link
+                to={`/@${customActionDetails.author}/${customActionDetails.permlink}`}
+              >{`@${customActionDetails.author}/${customActionDetails.permlink}`}</Link>
             ),
           }}
         />
       </span>
     );
-  } else if (customFollowType === WOBJ_RATING) {
-    return UserActionMessage.renderDefault(actionType);
   }
   return null;
 };
 
 CustomJSONMessage.propTypes = {
   actionDetails: PropTypes.shape().isRequired,
-  actionType: PropTypes.string,
-};
-
-CustomJSONMessage.defaultProps = {
-  actionType: PropTypes.string,
 };
 
 export default CustomJSONMessage;

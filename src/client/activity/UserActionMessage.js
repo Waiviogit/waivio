@@ -1,4 +1,5 @@
 import React from 'react';
+import { includes } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -30,8 +31,6 @@ class UserActionMessage extends React.Component {
       totalVestingFundSteem,
       currentUsername,
     } = this.props;
-
-    // console.log('actionDetails: ', actionDetails)
 
     switch (actionType) {
       case accountHistoryConstants.ACCOUNT_CREATE_WITH_DELEGATION:
@@ -94,9 +93,15 @@ class UserActionMessage extends React.Component {
             }}
           />
         );
-      case accountHistoryConstants.CUSTOM_JSON: {
-        return <CustomJSONMessage actionType={actionType} actionDetails={actionDetails} />;
-      }
+      case accountHistoryConstants.CUSTOM_JSON:
+        if (
+          !includes(accountHistoryConstants.PARSED_CUSTOM_JSON_IDS, actionDetails.id) &&
+          !includes(accountHistoryConstants.PARSED_CUSTOM_JSON_FOLLOW_WOBJECT, actionDetails.id) &&
+          !includes(accountHistoryConstants.PARSED_CUSTOM_JSON_UNFOLLOW_WOBJECT, actionDetails.id)
+        ) {
+          return UserActionMessage.renderDefault(actionType);
+        }
+        return <CustomJSONMessage actionDetails={actionDetails} />;
       case accountHistoryConstants.ACCOUNT_UPDATE:
         return <FormattedMessage id="account_updated" defaultMessage="Account Updated" />;
       case accountHistoryConstants.AUTHOR_REWARD:

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { includes, get } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import Avatar from '../components/Avatar';
@@ -35,7 +36,7 @@ class UserActionIcon extends React.Component {
           const customActionType = actionJSON[0];
           const customActionDetails = actionJSON[1];
 
-          if (!includes(accountHistoryConstants.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
+          if (!includes(accountHistoryConstants.FOLLOW, actionDetails.id)) {
             return 'icon-document';
           }
           if (
@@ -112,8 +113,17 @@ class UserActionIcon extends React.Component {
     }
   }
   render() {
+    const { actionDetails } = this.props;
     const iconName = this.getIcon();
     const avatarUsername = this.getAvatarUsername();
+
+    if (includes(accountHistoryConstants.PARSED_CUSTOM_JSON_FOLLOW_WOBJECT, actionDetails.id)) {
+      return (
+        <div className="UserActivityActions__icon__container">
+          <Icon type="file-done" />
+        </div>
+      );
+    }
 
     if (iconName) {
       return (
