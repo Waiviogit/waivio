@@ -654,10 +654,12 @@ export default class Transfer extends React.Component {
             )}
           </Form.Item>
         </Form>
-        <FormattedMessage
-          id="transfer_modal_info"
-          defaultMessage="Click the button below to be redirected to SteemConnect to complete your transaction."
-        />
+        {!isGuest ? (
+          <FormattedMessage
+            id="transfer_modal_info"
+            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
+          />
+        ) : null}
       </Modal>
     );
   }

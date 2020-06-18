@@ -466,3 +466,16 @@ export const getSuccessDeleteMessage = (userNames, pathName) => {
     defaultMessage: 'User was deleted from the blacklist',
   };
 };
+
+export const getNoBlacklistMessage = userNames => {
+  if (userNames.length > 1) {
+    return {
+      id: 'these_users_do_not_have_blacklists',
+      defaultMessage: 'These users do not have blacklists',
+    };
+  }
+  return {
+    id: 'this_user_does_not_have_blacklists',
+    defaultMessage: 'This user does not have blacklists',
+  };
+};
