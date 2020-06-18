@@ -18,7 +18,6 @@ export const FILL_VESTING_WITHDRAW = 'fill_vesting_withdraw';
 // Supported Custom JSON Type IDs
 export const ID_FOLLOW = 'follow';
 export const ID_FOLLOW_WOBJECT = 'follow_wobject';
-export const ID_UNFOLLOW_WOBJECT = 'unfollow_wobject';
 
 // Wallet Action Types
 export const TRANSFER = 'transfer';
@@ -69,4 +68,3 @@ export const PARSED_PROPERTIES = [
 
 export const PARSED_CUSTOM_JSON_IDS = [ID_FOLLOW];
 export const PARSED_CUSTOM_JSON_FOLLOW_WOBJECT = [ID_FOLLOW_WOBJECT];
-export const PARSED_CUSTOM_JSON_UNFOLLOW_WOBJECT = [ID_UNFOLLOW_WOBJECT];

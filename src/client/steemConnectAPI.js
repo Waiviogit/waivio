@@ -68,13 +68,14 @@ function sc2Extended() {
           required_posting_auths: [follower],
           id: 'follow_wobject',
           json: JSON.stringify([
-            'follow_wobject',
+            'follow',
             {
               user: follower,
               author_permlink: followingObject,
               what: ['feed'],
               object_type: type,
               object_name: name,
+              type_operation: 'follow_wobject',
             },
           ]),
         };
@@ -86,15 +87,16 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [unfollower],
-          id: 'unfollow_wobject',
+          id: 'follow_wobject',
           json: JSON.stringify([
-            'unfollow_wobject',
+            'follow',
             {
               user: unfollower,
               author_permlink: unfollowingObject,
               what: [],
               object_type: type,
               object_name: name,
+              type_operation: 'unfollow_wobject',
             },
           ]),
         };

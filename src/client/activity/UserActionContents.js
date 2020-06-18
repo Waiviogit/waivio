@@ -14,6 +14,9 @@ const UserActionContents = ({ actionType, actionDetails }) => {
     if (get(actionDetails, 'id') === accountHistory.FOLLOW_WOBJECT) {
       return null;
     }
+    if (get(actionDetails, 'id') === accountHistory.UNFOLLOW_WOBJECT) {
+      return null;
+    }
     if (includes(accountHistory.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
       return null;
     }

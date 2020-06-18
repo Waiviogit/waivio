@@ -112,6 +112,13 @@ class UserActionIcon extends React.Component {
         return get(actionDetails, 'author', '');
     }
   }
+
+  getTypeOperation = () => {
+    const { actionDetails } = this.props;
+    const customActionDetails = JSON.parse(actionDetails.json)[1];
+    return customActionDetails.type_operation;
+  };
+
   render() {
     const { actionDetails } = this.props;
     const iconName = this.getIcon();
@@ -120,7 +127,11 @@ class UserActionIcon extends React.Component {
     if (includes(accountHistoryConstants.PARSED_CUSTOM_JSON_FOLLOW_WOBJECT, actionDetails.id)) {
       return (
         <div className="UserActivityActions__icon__container">
-          <Icon type="file-done" />
+          {this.getTypeOperation() === accountHistoryConstants.FOLLOW_WOBJECT ? (
+            <Icon type="file-done" />
+          ) : (
+            <Icon type="file-excel" />
+          )}
         </div>
       );
     }
