@@ -664,7 +664,7 @@
   "balance": "Balance",
   "campaigns_be_suspended": "All campaigns will be suspended if accounts payable exceed 30 days",
   "remaining_balance_is_not_sufficient": "the remaining balance is not sufficient to cover outstanding obligations",
-  "only_inactive_campaigns": "Only inactive campaigns can be edited",
+  "only_pending_campaigns": "Only pending campaigns can be edited",
   "campaign_budgets_calcualted": "Campaign budgets calculated from the 1st day of each month",
   "rewards_for": "Rewards for",
   "date": "date",
@@ -1167,5 +1167,7 @@
   "you_subscribed_to_other_users_blacklists": "You subscribed to other users' blacklists",
   "you_unsubscribed_from_other_users_blacklists": "You unsubscribed from other users' blacklists",
   "subscribe": "Subscribe",
-  "unsubscribe": "Unsubscribe"
+  "unsubscribe": "Unsubscribe",
+  "these_users_do_not_have_blacklists" : "These users do not have blacklists",
+  "this_user_does_not_have_blacklists" : "This user does not have blacklists"
 }

@@ -1116,6 +1116,13 @@ export const setUserStatus = user => {
   }).then(res => res.json());
 };
 
+export const getBlacklist = userName => {
+  return fetch(`${config.campaignApiPrefix}${config.campaigns}/${userName}${config.blacklist}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 export const getWalletCryptoPriceHistory = symbols => {
   return fetch(
     `${config.currenciesApiPrefix}${config.market}?ids=${symbols[0]}&ids=${symbols[1]}&currencies=usd&currencies=btc`,

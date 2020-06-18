@@ -34,6 +34,7 @@ const CampaignRewardsTable = ({
               id: 'status',
               defaultMessage: `Status`,
             })}
+            **
           </th>
           <th className="Campaign-rewards basicWidth" rowSpan="3">
             {intl.formatMessage({
@@ -54,11 +55,11 @@ const CampaignRewardsTable = ({
         <tr>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
-            <p>(HIVE)</p>
+            <p>(USD)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
-            <p>(HIVE)</p>
+            <p>(USD)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}
