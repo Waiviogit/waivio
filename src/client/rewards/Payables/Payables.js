@@ -40,13 +40,14 @@ const PayablesContainer = ({
 PayablesContainer.propTypes = {
   location: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
-  currentSteemDollarPrice: PropTypes.number.isRequired,
+  currentSteemDollarPrice: PropTypes.number,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPayablesFilterValue: PropTypes.func,
 };
 
 PayablesContainer.defaultProps = {
   setPayablesFilterValue: () => {},
+  currentSteemDollarPrice: 0,
 };
 
 export default injectIntl(PayablesContainer);

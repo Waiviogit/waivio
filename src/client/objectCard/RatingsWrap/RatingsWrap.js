@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
-import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
+import { averageRate } from '../../components/Sidebar/Rate/rateHelper';
 import RateObjectModal from '../../components/Sidebar/Rate/RateObjectModal';
 import './RatingsWrap.less';
 
@@ -43,29 +43,18 @@ const RatingsWrap = ({
     </Col>
   );
 
-  const mobileRatesLayout = isCompactView => {
-    if (isCompactView) {
-      return (
-        <div className="RatingsWrap">
-          <div className="RatingsWrap-rate">
-            <Rate allowHalf disabled value={avrRate(sortedRatings)} />
+  const mobileRatesLayout = () => (
+    <div className="RatingsWrap">
+      {sortedRatings.map(rate => (
+        <div className="RatingsWrap__rate" key={rate.body}>
+          <div className="RatingsWrap__stars" role="presentation" onClick={openRateModal(rate)}>
+            <Rate allowHalf disabled value={averageRate(rate)} />
           </div>
+          <div className="RatingsWrap__rate-title">{rate.body}</div>
         </div>
-      );
-    }
-    return (
-      <div className="RatingsWrap">
-        {sortedRatings.map(rate => (
-          <div className="RatingsWrap__rate" key={rate.body}>
-            <div className="RatingsWrap__stars" role="presentation" onClick={openRateModal(rate)}>
-              <Rate allowHalf disabled value={averageRate(rate)} />
-            </div>
-            <div className="RatingsWrap__rate-title">{rate.body}</div>
-          </div>
-        ))}
-      </div>
-    );
-  };
+      ))}
+    </div>
+  );
 
   return sortedRatings[0] ? (
     <React.Fragment>

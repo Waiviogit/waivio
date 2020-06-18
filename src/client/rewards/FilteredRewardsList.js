@@ -160,6 +160,8 @@ FilteredRewardsList.defaultProps = {
   sort: 'reward',
   loadingCampaigns: false,
   loading: false,
+  sponsors: [],
+  campaignsTypes: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -178,10 +180,10 @@ FilteredRewardsList.propTypes = {
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
-  sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  sponsors: PropTypes.arrayOf(PropTypes.string),
   activeFilters: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
-  campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  campaignsTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;

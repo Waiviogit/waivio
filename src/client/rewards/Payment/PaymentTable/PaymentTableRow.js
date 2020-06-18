@@ -50,7 +50,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">
-            {sponsor.type === 'transfer' ? (
+            {sponsor.type === 'transfer' || sponsor.type === 'demo_debt' ? (
               <React.Fragment>
                 <span className="PaymentTable__action-item fw6">
                   {intl.formatMessage({
@@ -118,7 +118,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
                 :{' '}
                 {sponsor.details.beneficiaries
                   ? map(sponsor.details.beneficiaries, benef => (
-                      <React.Fragment>
+                      <React.Fragment key={benef.account}>
                         <Link to={`/@${benef.account}`}>{benef.account}</Link>
                         <span>{` (${benef.weight / 100}%), `}</span>
                       </React.Fragment>
