@@ -503,7 +503,7 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, radius, area, sort, activeFilters } = this.state;
+    const { propositions, hasMore, sort, area, activeFilters } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -511,7 +511,7 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, area, radius, sort });
+          const reqData = preparePropositionReqData({ username, match, sort, area });
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
