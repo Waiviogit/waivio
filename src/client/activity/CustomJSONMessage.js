@@ -1,19 +1,42 @@
 import React from 'react';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
+import { WOBJ_RATING } from '../../common/constants/accountHistory';
+import UserActionMessage from './UserActionMessage';
 
-const CustomJSONMessage = ({ actionDetails }) => {
+const CustomJSONMessage = ({ actionDetails, actionType }) => {
   const actionJSON = JSON.parse(actionDetails.json);
-  const customActionType = actionJSON[0];
-  const customActionDetails = actionJSON[1];
+  const customFollowType = actionDetails.id;
+  const customReblogType = actionJSON[0];
+  const customActionDetails = JSON.parse(actionDetails.json)[1];
+  const whatTypes = get(customActionDetails, 'what[0]', []);
 
-  if (customActionType === accountHistoryConstants.FOLLOW) {
+  if (customReblogType === accountHistoryConstants.REBLOG) {
+    return (
+      <span className="capitalize-text">
+        <FormattedMessage
+          id="reblogged_post"
+          defaultMessage="reblogged {postLink}"
+          values={{
+            postLink: (
+              <Link
+                to={`/@${customActionDetails.author}/${customActionDetails.permlink}`}
+              >{`@${customActionDetails.author}/${customActionDetails.permlink}`}</Link>
+            ),
+          }}
+        />
+      </span>
+    );
+  }
+
+  if (customFollowType === accountHistoryConstants.FOLLOW) {
     let messageId = '';
     let messageDefault = '';
 
-    switch (customActionDetails.what[0]) {
+    switch (whatTypes) {
       case 'ignore':
         messageId = 'ignore_user';
         messageDefault = 'Ignored {following}';
@@ -41,29 +64,36 @@ const CustomJSONMessage = ({ actionDetails }) => {
         />
       </span>
     );
-  } else if (customActionType === accountHistoryConstants.REBLOG) {
+  } else if (customFollowType === accountHistoryConstants.FOLLOW_WOBJECT) {
     return (
       <span className="capitalize-text">
         <FormattedMessage
-          id="reblogged_post"
-          defaultMessage="reblogged {postLink}"
+          id="followed_wobject"
+          defaultMessage="Followed {object_type} {name}"
           values={{
-            postLink: (
-              <Link to={`/@${customActionDetails.author}/${customActionDetails.permlink}`}>{`@${
-                customActionDetails.author
-              }/${customActionDetails.permlink}`}</Link>
+            object_type: 'type',
+            name: (
+              <Link to={`/object/${customActionDetails.author_permlink}`}>
+                {customActionDetails.author_permlink}
+              </Link>
             ),
           }}
         />
       </span>
     );
+  } else if (customFollowType === WOBJ_RATING) {
+    return UserActionMessage.renderDefault(actionType);
   }
-
   return null;
 };
 
 CustomJSONMessage.propTypes = {
   actionDetails: PropTypes.shape().isRequired,
+  actionType: PropTypes.string,
+};
+
+CustomJSONMessage.defaultProps = {
+  actionType: PropTypes.string,
 };
 
 export default CustomJSONMessage;
