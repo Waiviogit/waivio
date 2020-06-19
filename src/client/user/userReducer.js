@@ -6,8 +6,6 @@ import * as appTypes from '../app/appActions';
 
 const initialState = {
   recommendedObjects: [],
-  recommendedTopics: [],
-  recommendedExperts: [],
   location: {},
   following: {
     list: {},
@@ -272,24 +270,6 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
-
-    case userActions.GET_RECOMMENDS_HASHTAGS.SUCCESS:
-      return {
-        ...state,
-        recommendedTopics: action.payload.wobjects,
-      };
-
-    case userActions.GET_RECOMMENDS_HASHTAGS.ERROR:
-      return state;
-
-    case userActions.GET_RECOMMENDS_EXPERTS.SUCCESS:
-      return {
-        ...state,
-        recommendedExperts: action.payload.users,
-      };
-
-    case userActions.GET_RECOMMENDS_EXPERTS.ERROR:
-      return state;
 
     case authActions.LOGOUT:
       return initialState;
