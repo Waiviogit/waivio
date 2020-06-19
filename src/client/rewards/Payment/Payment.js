@@ -63,6 +63,7 @@ const Payment = ({ match, intl, userName }) => {
   }
 
   const name = match.params.userName;
+  const userReward = `"id":"user_reward"`;
 
   return (
     <div className="Payment">
@@ -97,11 +98,16 @@ const Payment = ({ match, intl, userName }) => {
           })}
           :
         </div>
-        {intl.formatMessage({
-          id: 'payment_page_transfers_with_user_reward_included',
-          defaultMessage:
-            'Only transfer with {"id":"user_reward"} instructions are processed as rewards payments',
-        })}
+        {intl.formatMessage(
+          {
+            id: 'payment_page_transfers_with_user_reward_included',
+            defaultMessage:
+              'Only transfer with {userRewards} instructions are processed as rewards payments',
+          },
+          {
+            userReward,
+          },
+        )}
       </div>
       {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
     </div>

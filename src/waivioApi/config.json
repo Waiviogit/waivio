@@ -32,6 +32,7 @@
   "all": "/all",
   "activation": "/validate_activation",
   "auth": "/auth",
+  "blacklist": "/blacklist",
   "blog": "/blog",
   "campaign": "/campaign",
   "campaigns": "/campaigns",

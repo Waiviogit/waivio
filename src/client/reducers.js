@@ -149,6 +149,7 @@ export const getFavoriteCategories = state => fromFavorites.getFavoriteCategorie
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
+export const estimateValue = state => fromWallet.estimateValue(state.wallet);
 export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);

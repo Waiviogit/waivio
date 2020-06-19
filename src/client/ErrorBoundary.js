@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 export function getDisplayName(ComposedComponent) {
   if (ComposedComponent.displayName) {
@@ -39,7 +40,7 @@ const ErrorBoundary = ComposedComponent => {
 
   WrapperComponent.displayName = `ErrorBoundary(${getDisplayName(ComposedComponent)})`;
 
-  return WrapperComponent;
+  return hoistNonReactStatics(WrapperComponent, ComposedComponent);
 };
 
 export default ErrorBoundary;

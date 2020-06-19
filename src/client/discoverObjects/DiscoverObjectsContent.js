@@ -94,7 +94,7 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
   };
@@ -103,6 +103,7 @@ class DiscoverObjectsContent extends Component {
     searchString: '',
     typeName: '',
     userLocation: {},
+    userName: '',
   };
 
   constructor(props) {

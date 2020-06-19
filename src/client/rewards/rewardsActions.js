@@ -1,5 +1,6 @@
 import { getAuthenticatedUserName } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 
@@ -60,4 +61,29 @@ export const setDataForGlobalReport = payload => dispatch =>
   dispatch({
     type: SET_DATA_FOR_GLOBAL_REPORT.ACTION,
     payload,
+  });
+
+export const CHANGE_BLACK_AND_WHITE_LISTS = '@rewards/CHANGE_BLACK_AND_WHITE_LISTS';
+
+export const changeBlackAndWhiteLists = (id, usersNames, isFollow) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  return dispatch({
+    type: CHANGE_BLACK_AND_WHITE_LISTS,
+    payload: {
+      promise: steemConnectAPI.changeBlackAndWhiteLists(username, id, usersNames, isFollow),
+    },
+  });
+};
+
+export const GET_BLACKLIST = '@rewards/GET_BLACKLIST';
+
+export const getBlacklist = userName => dispatch =>
+  dispatch({
+    type: GET_BLACKLIST,
+    payload: ApiClient.getBlacklist(userName),
   });

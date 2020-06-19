@@ -287,7 +287,7 @@ export default class ObjectFeed extends React.Component {
     };
     const goToProducts = () => {
       const permlink = get(wobject, 'author_permlink');
-      this.props.history.push(`/rewards/All/${permlink}`);
+      this.props.history.push(`/rewards/all/${permlink}`);
     };
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
     const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;

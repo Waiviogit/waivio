@@ -87,8 +87,8 @@ class Manage extends React.Component {
         <div>
           **{' '}
           {intl.formatMessage({
-            id: 'only_inactive_campaigns',
-            defaultMessage: `Only inactive campaigns can be edited`,
+            id: 'only_pending_campaigns',
+            defaultMessage: `Only pending campaigns can be edited`,
           })}
         </div>
       </React.Fragment>

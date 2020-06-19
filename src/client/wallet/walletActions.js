@@ -12,6 +12,8 @@ import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryH
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getTransferHistory } from '../../waivioApi/ApiClient';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import { HIVE } from '../../common/constants/cryptos';
+import { getCryptosPriceHistory } from '../reducers';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -42,8 +44,14 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
-  dispatch({
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const estValue =
+    get(getCryptosPriceHistory(state), `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * amount;
+  return dispatch({
     type: OPEN_TRANSFER,
     payload: {
       userName,
@@ -51,8 +59,10 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '',
       currency,
       memo,
       app,
+      estValue,
     },
   });
+};
 
 const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];

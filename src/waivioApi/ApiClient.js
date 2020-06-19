@@ -583,6 +583,7 @@ export const getPropositions = ({
   sort,
   match,
   simplified,
+  firstMapLoad,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -607,6 +608,7 @@ export const getPropositions = ({
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (simplified) reqData.simplified = simplified;
+    if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
     const url = getUrl(match);
 
@@ -1111,6 +1113,13 @@ export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
 
 export const setUserStatus = user => {
   return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
+export const getBlacklist = userName => {
+  return fetch(`${config.campaignApiPrefix}${config.campaigns}/${userName}${config.blacklist}`, {
     headers,
     method: 'GET',
   }).then(res => res.json());

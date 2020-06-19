@@ -33,6 +33,7 @@ import {
   getPendingUpdate,
   getIsMapModalOpen,
   getSuitableLanguage,
+  getUpdatedMap,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -62,6 +63,7 @@ import {
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
+import { getZoom } from '../components/Maps/mapHelper';
 
 @withRouter
 @injectIntl
@@ -76,6 +78,7 @@ import { getClientWObj } from '../adapters';
     pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
+    updated: getUpdatedMap(state),
   }),
   {
     assignProposition,
@@ -104,15 +107,19 @@ class Rewards extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     pendingUpdate: PropTypes.bool.isRequired,
     pendingUpdateSuccess: PropTypes.func.isRequired,
-    resetUpdatedFlag: PropTypes.func.isRequired,
+    resetUpdatedFlag: PropTypes.func,
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
-    wobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    wobjects: PropTypes.arrayOf(PropTypes.shape()),
+    updated: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
+    resetUpdatedFlag: () => {},
+    wobjects: [],
+    updated: false,
   };
 
   state = {
@@ -131,6 +138,7 @@ class Rewards extends React.Component {
     activePayableFilters: [],
     isSearchAreaFilter: false,
     isAssign: false,
+    zoomMap: 0,
   };
 
   componentDidMount() {
@@ -139,7 +147,7 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    if (!isEmpty(userLocation)) {
+    if (!isEmpty(userLocation) && !isEmpty(match.params)) {
       this.getPropositions({
         username,
         match,
@@ -160,7 +168,11 @@ class Rewards extends React.Component {
     const { match, userLocation } = nextProps;
     const { username } = this.props;
     const { area, sort, activeFilters } = this.state;
-    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation)) {
+    const needPropositions =
+      isEqual(this.props.match, match) &&
+      !isEmpty(match.params) &&
+      !isEmpty(this.props.match.params);
+    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
       this.getPropositions({
         username,
         match,
@@ -178,7 +190,12 @@ class Rewards extends React.Component {
     ) {
       this.props.resetUpdatedFlag();
     }
-    if (match.params.filterKey !== 'create') {
+    if (
+      match.params.filterKey === 'all' ||
+      match.params.filterKey === 'active' ||
+      match.params.filterKey === 'reserved' ||
+      match.params.filterKey === 'history'
+    ) {
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
@@ -193,7 +210,7 @@ class Rewards extends React.Component {
           });
         });
       }
-    } else this.setState({ propositions: [{}] }); // for map, not equal propositions
+    } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
   }
 
   componentDidUpdate(prevProps) {
@@ -203,7 +220,11 @@ class Rewards extends React.Component {
       this.getPropositions({ username, match, area, sort, activeFilters });
       this.props.history.push(`/rewards/all`);
     }
-    if (pendingUpdate && prevProps.match.params.filterKey !== match.params.filterKey) {
+    if (
+      pendingUpdate &&
+      prevProps.match.params.filterKey !== match.params.filterKey &&
+      prevProps.match !== this.props.match
+    ) {
       this.props.pendingUpdateSuccess();
       delay(6000).then(() => {
         this.getPropositions({ username, match, area, sort, activeFilters });
@@ -212,12 +233,15 @@ class Rewards extends React.Component {
   }
 
   setMapArea = ({ radius, coordinates, isMap }) => {
-    const { username, match, isFullscreenMode } = this.props;
+    const { username, match, isFullscreenMode, updated } = this.props;
+    const { radiusMap } = this.state;
+    const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     this.getPropositions(
-      { username, match, area: coordinates, radius, activeFilters, limit },
+      { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
       isMap,
+      updated,
     );
   };
 
@@ -259,7 +283,11 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, area, radius, sort, activeFilters, limit }, isMap) => {
+  getPropositions = (
+    { username, match, area, radius, sort, activeFilters, limit },
+    isMap,
+    updated,
+  ) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -271,6 +299,7 @@ class Rewards extends React.Component {
         types: activeFilters.types,
         limit,
         simplified: !!isMap,
+        firstMapLoad: !!isMap && !updated,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -289,6 +318,12 @@ class Rewards extends React.Component {
           propositions: data.campaigns,
           hasMore: data.hasMore,
           loadingCampaigns: false,
+        });
+      }
+      if (!!isMap && !updated) {
+        const zoomMap = getZoom(data.radius);
+        this.setState({
+          zoomMap,
         });
       }
     });
@@ -488,7 +523,7 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, radius, area, sort, activeFilters } = this.state;
+    const { propositions, hasMore, sort, area, activeFilters } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -496,7 +531,7 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, area, radius, sort });
+          const reqData = preparePropositionReqData({ username, match, sort, area });
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
@@ -581,6 +616,7 @@ class Rewards extends React.Component {
       activePayableFilters,
       sort,
       loadingCampaigns,
+      zoomMap,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -689,6 +725,7 @@ class Rewards extends React.Component {
                       getAreaSearchData={this.getAreaSearchData}
                       match={match}
                       primaryObjectCoordinates={primaryObjectCoordinates}
+                      zoomMap={zoomMap}
                     />
                   )}
                   {!isEmpty(sponsors) && !isCreate && (

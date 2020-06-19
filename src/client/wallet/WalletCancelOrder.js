@@ -4,7 +4,7 @@ import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 
-const WalletCancelOrder = ({ transactionDetails, timestamp }) => (
+const WalletCancelOrder = ({ timestamp, openPays, currentPays }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-container">
       <i className="iconfont icon-close-big UserWalletTransactions__icon" />
@@ -16,13 +16,13 @@ const WalletCancelOrder = ({ transactionDetails, timestamp }) => (
             id="cancel_order"
             defaultMessage="Cancel order to buy {open_pays}"
             values={{
-              open_pays: <span>{transactionDetails.open_pays}</span>,
+              open_pays: <span>{openPays}</span>,
             }}
           />
         </div>
         <div className="UserWalletTransactions__received">
           {'+ '}
-          {transactionDetails.current_pays}
+          {currentPays}
         </div>
       </div>
       <span className="UserWalletTransactions__timestamp">
@@ -43,14 +43,15 @@ const WalletCancelOrder = ({ transactionDetails, timestamp }) => (
 );
 
 WalletCancelOrder.propTypes = {
-  transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  openPays: PropTypes.element,
+  currentPays: PropTypes.element,
   timestamp: PropTypes.number,
-  current_pays: PropTypes.string,
 };
 
 WalletCancelOrder.defaultProps = {
   timestamp: 0,
-  current_pays: '',
+  openPays: <span />,
+  currentPays: <span />,
 };
 
 export default WalletCancelOrder;
