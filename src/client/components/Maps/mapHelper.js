@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
+import { forEach } from 'lodash';
 import { handleErrors } from '../../../waivioApi/ApiClient';
+import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
 
 export const regexCoordsLatitude = /^(\+|-)?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
 export const regexCoordsLongitude = /^(\+|-)?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
@@ -33,3 +35,16 @@ export const calculateAreaRadius = (zoom, weight, center) =>
   Math.abs(((earthAraund * Math.cos(center[0])) / 2 ** zoom + 8) * 1.2);
 
 export const getRadius = zoom => Math.floor(INITIAL_RADIUS / 2.01 ** (zoom - 1));
+
+export const getZoom = radius => {
+  let zoom;
+  if (!radius) return ZOOM;
+  if (radius >= zoomAndRadiusArray[0].radius) zoom = zoomAndRadiusArray[0].zoom;
+  if (radius <= zoomAndRadiusArray[17].radius) zoom = zoomAndRadiusArray[17].zoom;
+  forEach(zoomAndRadiusArray, value => {
+    if (radius <= value.radius) {
+      zoom = value.zoom;
+    }
+  });
+  return zoom;
+};

@@ -583,6 +583,7 @@ export const getPropositions = ({
   sort,
   match,
   simplified,
+  firstMapLoad,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -607,6 +608,7 @@ export const getPropositions = ({
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (simplified) reqData.simplified = simplified;
+    if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
     const url = getUrl(match);
 
