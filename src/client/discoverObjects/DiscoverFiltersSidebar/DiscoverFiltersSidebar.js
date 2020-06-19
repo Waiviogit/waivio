@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { isEmpty, memoize } from 'lodash';
+import { isEmpty, memoize, get, map } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
   getAvailableFilters,
@@ -34,14 +34,18 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   if (isEmpty(userLocation)) {
     dispatch(getCoordinates());
   }
+  console.log(
+    'wobjects',
+    map(wobjects, wobject => get(wobject, ['parent', 'default_name'])),
+  );
 
   const objectType = match.params.typeName;
-  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
+  const setSearchArea = mapData => dispatch(setFiltersAndLoad({ ...activeFilters, mapData }));
   const setMapArea = ({ radius, coordinates }) =>
     dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
 
-  const handleMapSearchClick = map => {
-    setSearchArea(map);
+  const handleMapSearchClick = mapData => {
+    setSearchArea(mapData);
     dispatch(setMapFullscreenMode(false));
   };
 
