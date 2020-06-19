@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { isEmpty, memoize, get, map } from 'lodash';
+import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
   getAvailableFilters,
@@ -20,6 +20,8 @@ import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
 import '../../components/Sidebar/SidebarContentBlock.less';
+import { DEFAULT_ZOOM } from '../../../common/constants/map';
+import { getWobjectsForMap } from '../../object/wObjectHelper';
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store
@@ -34,10 +36,6 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   if (isEmpty(userLocation)) {
     dispatch(getCoordinates());
   }
-  console.log(
-    'wobjects',
-    map(wobjects, wobject => get(wobject, ['parent', 'default_name'])),
-  );
 
   const objectType = match.params.typeName;
   const setSearchArea = mapData => dispatch(setFiltersAndLoad({ ...activeFilters, mapData }));
@@ -53,14 +51,14 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     history.push(`/object/${permlink}`);
   };
 
-  const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
+  const wobjectsForMap = useMemo(() => getWobjectsForMap(wobjects), [wobjects]);
 
   const isTypeHasFilters = memoize(isNeedFilters);
   return isTypeHasFilters(objectType) ? (
     <div className="discover-objects-filters">
       {hasMap ? (
         <MapWrap
-          wobjects={wobjectsWithMap}
+          wobjects={wobjectsForMap}
           onMarkerClick={handleMapMarkerClick}
           getAreaSearchData={setSearchArea}
           setMapArea={setMapArea}
@@ -68,6 +66,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
           customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
           onCustomControlClick={handleMapSearchClick}
           match={match}
+          zoomMap={DEFAULT_ZOOM}
         />
       ) : null}
       {!isEmpty(filters) ? (
