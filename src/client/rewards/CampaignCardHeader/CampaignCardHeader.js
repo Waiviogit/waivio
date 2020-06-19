@@ -8,7 +8,10 @@ import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData }) => {
   const price = get(campaignData, ['objects', '0', 'reward']);
-  const rewardPrise = `${price ? price.toFixed(3) : 0} HIVE`;
+  const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
+  const rewardPriseHive = `${price ? price.toFixed(3) : 0} HIVE`;
+  const rewardPriseUsd = `${campaignData.reward} USD`;
+  const rewardPrise = isAssigned ? rewardPriseHive : rewardPriseUsd;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -23,11 +26,11 @@ const CampaignCardHeader = ({ intl, campaignData }) => {
             {intl.formatMessage({
               id: 'rewards_details_earn',
               defaultMessage: 'Earn',
-            })}
+            })}{' '}
           </span>
           <React.Fragment>
             <span className="CampaignCardHeader__data-colored">
-              <span className="fw6">{` ${rewardPrise} `}</span>
+              <span className="fw6">{rewardPrise}</span>
             </span>
           </React.Fragment>
         </div>
