@@ -258,3 +258,16 @@ export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch
         .catch(error => console.log(error)),
     },
   });
+
+export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
+export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
+
+export const openWithdraw = () => dispatch =>
+  dispatch({
+    type: OPEN_WITHDRAW,
+  });
+
+export const closeWithdraw = () => dispatch =>
+  dispatch({
+    type: CLOSE_WITHDRAW,
+  });

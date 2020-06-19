@@ -1141,6 +1141,48 @@ export const checkFollowing = (user, users = []) => {
   }).then(res => res.json());
 };
 
+export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
+  const query = `inputAmount=${inputAmount}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.estimateOutputAmount}?${query}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
+export const sendEmailConfirmation = (
+  userName,
+  type,
+  email,
+  isGuest,
+  currency,
+  amount,
+  address,
+) => {
+  const transactionData = {
+    outputCoinType: currency,
+    inputCoinType: 'hive',
+    amount,
+    address,
+  };
+  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('');
+  const body =
+    type === 'confirmEmail'
+      ? { userName, type, email, isGuest }
+      : { userName, type, email, isGuest, transactionData };
+  console.log(body);
+  return fetch(`${config.campaignApiPrefix}${config.mailer}${config.confirmEmail}`, {
+    headers: {
+      ...headers,
+      'access-token': accessToken,
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  }).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

@@ -159,27 +159,30 @@ export default class UserList extends React.Component {
           useWindow={false}
         >
           <div className="ReactionsList__content">
-            {take(usersList, noOfItemsToShow).map(vote => (
-              <UserCard
-                key={vote.voter}
-                user={vote}
-                admin={vote.admin}
-                moderator={vote.moderator}
-                follow={this.followUser}
-                unfollow={this.unfollowUser}
-                alt={
-                  <span>
-                    <USDDisplay value={voteValue(vote)} />
-                    <span className="ReactionsList__bullet" />
-                    <FormattedNumber
-                      style="percent" // eslint-disable-line react/style-prop-object
-                      value={vote.percent / 10000}
-                      maximumFractionDigits={2}
-                    />
-                  </span>
-                }
-              />
-            ))}
+            {take(usersList, noOfItemsToShow).map(
+              vote =>
+                console.log(vote) || (
+                  <UserCard
+                    key={vote.voter}
+                    user={vote}
+                    admin={vote.admin}
+                    moderator={vote.moderator}
+                    follow={this.followUser}
+                    unfollow={this.unfollowUser}
+                    alt={
+                      <span>
+                        <USDDisplay value={voteValue(vote)} />
+                        <span className="ReactionsList__bullet" />
+                        <FormattedNumber
+                          style="percent" // eslint-disable-line react/style-prop-object
+                          value={vote.percent / 10000}
+                          maximumFractionDigits={2}
+                        />
+                      </span>
+                    }
+                  />
+                ),
+            )}
           </div>
         </InfiniteSroll>
       </Scrollbars>

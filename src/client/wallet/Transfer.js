@@ -39,6 +39,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
 import USDDisplay from '../components/Utils/USDDisplay';
 import formatter from '../helpers/steemitFormatter';
+
 import './Transfer.less';
 
 const InputGroup = Input.Group;

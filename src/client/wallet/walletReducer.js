@@ -23,6 +23,7 @@ const initialState = {
   loadingMoreTransactions: false,
   hasMore: false,
   transactionsHistoryLoading: false,
+  withdrawOpen: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -238,6 +239,16 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         loadingMoreUsersAccountHistory: true,
       };
+    case walletActions.OPEN_WITHDRAW:
+      return {
+        ...state,
+        withdrawOpen: true,
+      };
+    case walletActions.CLOSE_WITHDRAW:
+      return {
+        ...state,
+        withdrawOpen: false,
+      };
     default:
       return state;
   }
@@ -269,3 +280,4 @@ export const getUserHasMoreAccountHistory = (state, username) => {
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;
 export const getCurrentDisplayedActions = state => state.currentDisplayedActions;
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
+export const getStatusWithdraw = state => state.withdrawOpen;
