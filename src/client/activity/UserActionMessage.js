@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
 import formatter from '../helpers/steemitFormatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import VoteActionMessage from './VoteActionMessage';
@@ -94,10 +93,7 @@ class UserActionMessage extends React.Component {
           />
         );
       case accountHistoryConstants.CUSTOM_JSON:
-        if (!_.includes(accountHistoryConstants.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
-          return UserActionMessage.renderDefault(actionType);
-        }
-        return <CustomJSONMessage actionDetails={actionDetails} />;
+        return <CustomJSONMessage actionType={actionType} actionDetails={actionDetails} />;
       case accountHistoryConstants.ACCOUNT_UPDATE:
         return <FormattedMessage id="account_updated" defaultMessage="Account Updated" />;
       case accountHistoryConstants.AUTHOR_REWARD:
@@ -132,9 +128,7 @@ class UserActionMessage extends React.Component {
               ),
               postLink: (
                 <Link
-                  to={`/p/@${actionDetails.comment_author}/${actionDetails.comment_permlink}#@${
-                    actionDetails.comment_author
-                  }/${actionDetails.comment_permlink}`}
+                  to={`/p/@${actionDetails.comment_author}/${actionDetails.comment_permlink}#@${actionDetails.comment_author}/${actionDetails.comment_permlink}`}
                 >
                   {actionDetails.comment_permlink}
                 </Link>

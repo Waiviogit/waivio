@@ -1169,5 +1169,7 @@
   "subscribe": "Subscribe",
   "unsubscribe": "Unsubscribe",
   "these_users_do_not_have_blacklists" : "These users do not have blacklists",
-  "this_user_does_not_have_blacklists" : "This user does not have blacklists"
+  "this_user_does_not_have_blacklists" : "This user does not have blacklists",
+  "followed_wobject": "Followed {object_type} {name}",
+  "unfollowed_wobject": "Unfollowed {object_type} {name}"
 }
