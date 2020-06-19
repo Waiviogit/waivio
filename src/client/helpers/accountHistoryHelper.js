@@ -23,6 +23,8 @@ export const getCustomJSONFilterType = actionDetails => {
       : `+${accountHistoryConstants.FOLLOWED}`;
   } else if (customActionType === accountHistoryConstants.REBLOG) {
     return accountHistoryConstants.REBLOGGED;
+  } else if (customActionType === accountHistoryConstants.FOLLOW_WOBJECT) {
+    return accountHistoryConstants.FOLLOWED;
   }
   return '';
 };
@@ -98,6 +100,7 @@ export const getTimeFromLastAction = (username, accountHistory) => {
       case accountHistoryConstants.DELETE_COMMENT:
       case accountHistoryConstants.CUSTOM_JSON:
       case accountHistoryConstants.FOLLOW:
+      case accountHistoryConstants.FOLLOW_WOBJECT:
       case accountHistoryConstants.REBLOG:
       case accountHistoryConstants.CURATION_REWARD:
       case accountHistoryConstants.AUTHOR_REWARD:

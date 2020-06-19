@@ -22,6 +22,7 @@ export const preparePropositionReqData = ({
   guideNames,
   limit,
   simplified,
+  firstMapLoad,
 }) => {
   const reqData = {
     limit: displayLimit,
@@ -45,6 +46,7 @@ export const preparePropositionReqData = ({
   }
   if (limit) reqData.limit = limit;
   if (simplified) reqData.simplified = simplified;
+  if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
   switch (match.params.filterKey) {
     case 'active':
