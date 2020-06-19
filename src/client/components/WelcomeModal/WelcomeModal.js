@@ -117,7 +117,7 @@ const WelcomeModal = ({
 
     setWobjects([...wobjectsArray]);
     dispatch(unfollowWobject(permlink)).then(res => {
-      if ((res.value.ok && this.props.isGuest) || !res.message) {
+      if ((res.value.ok && isGuest) || !res.message) {
         wobjectsArray.splice(matchWobjIndex, 1, {
           ...wobjectsArray[matchWobjIndex],
           youFollows: false,
@@ -144,9 +144,9 @@ const WelcomeModal = ({
       pending: true,
     });
 
-    this.setState({ wobjects: [...wobjectsArray] });
+    setWobjects([...wobjectsArray]);
     dispatch(followWobject(permlink)).then(res => {
-      if ((this.props.isGuest && res.value.ok) || !res.message) {
+      if ((isGuest && res.value.ok) || !res.message) {
         wobjectsArray.splice(matchWobjectIndex, 1, {
           ...wobjectsArray[matchWobjectIndex],
           youFollows: true,
@@ -174,27 +174,27 @@ const WelcomeModal = ({
   const topic = [
     {
       name: 'news',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.news),
+      list: getRecommendList(wobjects, newUserRecommendTopics.news),
     },
     {
       name: 'lifestyle',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.lifestyle),
+      list: getRecommendList(wobjects, newUserRecommendTopics.lifestyle),
     },
     {
       name: 'entertainment',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.entertainment),
+      list: getRecommendList(wobjects, newUserRecommendTopics.entertainment),
     },
     {
       name: 'cryptos',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.cryptos),
+      list: getRecommendList(wobjects, newUserRecommendTopics.cryptos),
     },
     {
       name: 'stocks',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.stocks),
+      list: getRecommendList(wobjects, newUserRecommendTopics.stocks),
     },
     {
       name: 'more',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.more),
+      list: getRecommendList(wobjects, newUserRecommendTopics.more),
     },
   ];
   const userList = [
@@ -298,6 +298,7 @@ const WelcomeModal = ({
                   <FollowButton
                     following={theme.youFollows}
                     followingType="wobject"
+                    wobj={theme}
                     secondary
                     unfollowObject={unFollowObj}
                     followObject={followObj}
