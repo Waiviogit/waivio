@@ -9,20 +9,18 @@ import WeightTag from '../WeightTag';
 import Avatar from '../Avatar';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getRecommendTopics, getRecommendExperts } from '../../user/userActions';
 import { followWobject, unfollowWobject } from '../../object/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
 import { getUserFeedContent } from '../../feed/feedActions';
 import { followUser, unfollowUser } from '../../user/usersActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 
 import './WelcomeModal.less';
 
 const WelcomeModal = ({
   isAuthorization,
-  recommendedTopics,
-  recommendedExperts,
   intl,
   userName,
   followingList,
@@ -33,22 +31,38 @@ const WelcomeModal = ({
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
-  const [users, setUsers] = useState(recommendedExperts);
-  const [wobjects, setWobjects] = useState(recommendedTopics);
+  const [users, setUsers] = useState([]);
+  const [wobjs, setWobjs] = useState([]);
   const followingKeysList = Object.keys(followingList);
   const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
-  useEffect(() => {
-    dispatch(getRecommendTopics());
-    dispatch(getRecommendExperts());
-  }, []);
 
   useEffect(() => {
     if (haveFollowing) {
       dispatch(setUsersStatus());
-    } else if (isAuthorization && recommendedTopics.length && recommendedExperts.length) {
+    } else {
+      const userList = Object.values(newUserRecommendExperts).reduce(
+        (arr, acc) => [...acc, ...arr],
+        [],
+      );
+      const topicList = Object.values(newUserRecommendTopics).reduce(
+        (arr, acc) => [...acc, ...arr],
+        [],
+      );
+
+      getRecommendTopic(topicList.length, 'en-US', 0, topicList).then(res => {
+        if (res && res.wobjects) setWobjs(res.wobjects);
+      });
+      getUsers({ listUsers: userList, limit: userList.length }).then(res => {
+        if (res && res.users) setUsers(res.users);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthorization && wobjs.length && users.length) {
       setIsOpenTopicsModal(true);
     }
-  }, [isAuthorization, recommendedTopics, recommendedExperts]);
+  }, [isAuthorization, wobjs, users]);
 
   const unFollow = name => {
     const matchUserIndex = users.findIndex(user => user.name === name);
@@ -108,14 +122,14 @@ const WelcomeModal = ({
   };
 
   const unFollowObj = permlink => {
-    const matchWobjIndex = wobjects.findIndex(wobj => wobj.author_permlink === permlink);
-    const wobjectsArray = [...wobjects];
+    const matchWobjIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...wobjs];
     wobjectsArray.splice(matchWobjIndex, 1, {
       ...wobjectsArray[matchWobjIndex],
       pending: true,
     });
 
-    setWobjects([...wobjectsArray]);
+    setWobjs([...wobjectsArray]);
     dispatch(unfollowWobject(permlink)).then(res => {
       if ((res.value.ok && isGuest) || !res.message) {
         wobjectsArray.splice(matchWobjIndex, 1, {
@@ -131,20 +145,20 @@ const WelcomeModal = ({
         });
       }
 
-      setWobjects([...wobjectsArray]);
+      setWobjs([...wobjectsArray]);
     });
   };
 
   const followObj = permlink => {
-    const matchWobjectIndex = wobjects.findIndex(wobj => wobj.author_permlink === permlink);
-    const wobjectsArray = [...wobjects];
+    const matchWobjectIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...wobjs];
 
     wobjectsArray.splice(matchWobjectIndex, 1, {
       ...wobjectsArray[matchWobjectIndex],
       pending: true,
     });
 
-    setWobjects([...wobjectsArray]);
+    setWobjs([...wobjectsArray]);
     dispatch(followWobject(permlink)).then(res => {
       if ((isGuest && res.value.ok) || !res.message) {
         wobjectsArray.splice(matchWobjectIndex, 1, {
@@ -160,7 +174,7 @@ const WelcomeModal = ({
         });
       }
 
-      setWobjects([...wobjectsArray]);
+      setWobjs([...wobjectsArray]);
     });
   };
 
@@ -174,27 +188,27 @@ const WelcomeModal = ({
   const topic = [
     {
       name: 'news',
-      list: getRecommendList(wobjects, newUserRecommendTopics.news),
+      list: getRecommendList(wobjs, newUserRecommendTopics.news),
     },
     {
       name: 'lifestyle',
-      list: getRecommendList(wobjects, newUserRecommendTopics.lifestyle),
+      list: getRecommendList(wobjs, newUserRecommendTopics.lifestyle),
     },
     {
       name: 'entertainment',
-      list: getRecommendList(wobjects, newUserRecommendTopics.entertainment),
+      list: getRecommendList(wobjs, newUserRecommendTopics.entertainment),
     },
     {
       name: 'cryptos',
-      list: getRecommendList(wobjects, newUserRecommendTopics.cryptos),
+      list: getRecommendList(wobjs, newUserRecommendTopics.cryptos),
     },
     {
       name: 'stocks',
-      list: getRecommendList(wobjects, newUserRecommendTopics.stocks),
+      list: getRecommendList(wobjs, newUserRecommendTopics.stocks),
     },
     {
       name: 'more',
-      list: getRecommendList(wobjects, newUserRecommendTopics.more),
+      list: getRecommendList(wobjs, newUserRecommendTopics.more),
     },
   ];
   const userList = [
@@ -371,8 +385,6 @@ WelcomeModal.propTypes = {
     PropTypes.string,
   ]),
   followingList: PropTypes.shape({}).isRequired,
-  recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -393,8 +405,6 @@ const mapStateToProps = state => ({
   isAuthorization: state.auth.isAuthenticated,
   followingList: state.user.following.list,
   followingObjectsList: state.user.followingObjects.list,
-  recommendedTopics: state.user.recommendedTopics,
-  recommendedExperts: state.user.recommendedExperts,
   userName: getAuthenticatedUserName(state),
   isGuest: isGuestUser(state),
 });
