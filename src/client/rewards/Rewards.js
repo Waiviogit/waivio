@@ -129,7 +129,7 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'reward',
+    sort: 'proximity',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],

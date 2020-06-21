@@ -28,7 +28,6 @@ export const preparePropositionReqData = ({
     limit: displayLimit,
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
-    sort,
     match,
   };
 
@@ -46,6 +45,7 @@ export const preparePropositionReqData = ({
   }
   if (limit) reqData.limit = limit;
   if (simplified) reqData.simplified = simplified;
+  if (!simplified) reqData.sort = sort;
   if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
   switch (match.params.filterKey) {
