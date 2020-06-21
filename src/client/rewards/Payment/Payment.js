@@ -75,7 +75,7 @@ const Payment = ({ match, intl, userName }) => {
           <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
-          {isPayables && payable && (
+          {isPayables && payable > 0 ? (
             <Action
               className="WalletSidebar__transfer"
               primary
@@ -87,6 +87,8 @@ const Payment = ({ match, intl, userName }) => {
               })}
               {` ${payable} HIVE`}
             </Action>
+          ) : (
+            `${payable} HIVE`
           )}
         </div>
       </div>
