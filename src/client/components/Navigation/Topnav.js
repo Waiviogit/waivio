@@ -190,9 +190,7 @@ class Topnav extends React.Component {
     return countArr;
   };
 
-  debouncedSearch = debounce(value => {
-    this.props.searchAutoComplete(value, 3, 15);
-  }, 300);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
 
   debouncedSearchByObject = debounce((searchString, objType) =>
     this.props.searchObjectsAutoCompete(searchString, objType),
