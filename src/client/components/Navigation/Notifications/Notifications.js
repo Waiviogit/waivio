@@ -15,13 +15,13 @@ import NotificationVoteWitness from './NotificationVoteWitness';
 import NotificationChangeStatus from './NotificationChangeStatus';
 import NotificationPowerDown from './NotificationPowerDown';
 import NotificationFillOrder from './NotificationFillOrder';
-import './Notification.less';
-import './Notifications.less';
 import Loading from '../../Icon/Loading';
 import NotificationRejectUpdate from './NotificationRejectUpdate';
 import NotificationActicationCampaign from './NotificationActivationCampaign';
 import NotificationSuspandedStatus from './NotificationSuspandedStatus';
 import NotificationWithdrawRoute from './NotificationWithdrawRoute';
+import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 
