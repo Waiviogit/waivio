@@ -2,6 +2,9 @@ export const RADIUS = 183488;
 
 export const ZOOM = 7;
 
+export const DEFAULT_ZOOM = 6;
+export const DEFAULT_RADIUS = 368812;
+
 export const zoomAndRadiusArray = [
   { zoom: 1, radius: 12100000 },
   { zoom: 2, radius: 6019900 },
