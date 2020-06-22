@@ -7,26 +7,35 @@ import { epochToUTC } from '../../../helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationActicationCampaign = ({ notification, read, onClick }) => {
-  const url = `/rewards/all/${notification.author_permlink}`;
+const NotificationWithdrawRoute = ({ notification, read, onClick }) => {
+  const urlTo = `/@${notification.to_account}`;
+  const urlFrom = `/@${notification.from_account}`;
 
   return (
     <Link
-      to={url}
+      to={urlFrom}
       onClick={onClick}
       className={classNames('Notification', {
         'Notification--unread': !read,
       })}
     >
-      <Avatar username={notification.author} size={40} />
+      <Avatar username={notification.from_account} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
           <FormattedMessage
-            id="activation_campaign"
-            defaultMessage="{author} launched a new campaign for {object_name}"
+            id="withdraw_route"
+            defaultMessage="Account {to_account} registered withdraw route for {from_account} account"
             values={{
-              author: <span className="username">{notification.author}</span>,
-              object_name: <span>{notification.object_name}</span>,
+              to_account: (
+                <Link to={urlTo}>
+                  <span className="username">{notification.to_account}</span>
+                </Link>
+              ),
+              from_account: (
+                <Link to={urlFrom}>
+                  <span className="username">{notification.from_account}</span>
+                </Link>
+              ),
             }}
           />
         </div>
@@ -38,21 +47,20 @@ const NotificationActicationCampaign = ({ notification, read, onClick }) => {
   );
 };
 
-NotificationActicationCampaign.propTypes = {
+NotificationWithdrawRoute.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
-    author: PropTypes.string,
-    object_name: PropTypes.string,
+    from_account: PropTypes.string,
+    to_account: PropTypes.string,
     timestamp: PropTypes.number,
-    author_permlink: PropTypes.string,
   }),
   onClick: PropTypes.func,
 };
 
-NotificationActicationCampaign.defaultProps = {
+NotificationWithdrawRoute.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
 };
 
-export default NotificationActicationCampaign;
+export default NotificationWithdrawRoute;

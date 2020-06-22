@@ -157,6 +157,30 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           object_name: notification.object_name,
         },
       );
+    case notificationConstants.SUSPENDED_STATUS:
+      return intl.formatMessage(
+        {
+          id: 'suspended_status',
+          defaultMessage:
+            'After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review',
+        },
+        {
+          days: notification.days,
+          sponsor: notification.sponsor,
+        },
+      );
+    case notificationConstants.WITHDRAW_ROUTE:
+      return intl.formatMessage(
+        {
+          id: 'withdraw_route',
+          defaultMessage:
+            'Account {to_account} registered withdraw route for {from_account} account',
+        },
+        {
+          to_account: notification.to_account,
+          from_account: notification.from_account,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -190,6 +214,10 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/object/${notification.author_permlink}/updates/${notification.object_name}`;
     case notificationConstants.ACTIVATION_CAMPAIGN:
       return `/rewards/all/${notification.author_permlink}`;
+    case notificationConstants.SUSPENDED_STATUS:
+      return `/@${notification.reviewAuthor}/${notification.reviewPermlink}`;
+    case notificationConstants.WITHDRAW_ROUTE:
+      return `/@${notification.from_account}`;
     default:
       return '/notifications-list';
   }
@@ -220,6 +248,10 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.voter;
     case notificationConstants.ACTIVATION_CAMPAIGN:
       return notification.author;
+    case notificationConstants.SUSPENDED_STATUS:
+      return notification.sponsor;
+    case notificationConstants.WITHDRAW_ROUTE:
+      return notification.from_account;
     default:
       return currentAuthUsername;
   }

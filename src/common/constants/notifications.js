@@ -10,6 +10,8 @@ export const POWER_DOWN = 'power_down';
 export const FILL_ORDER = 'fillOrder';
 export const REJECT_UPDATE = 'rejectUpdate';
 export const ACTIVATION_CAMPAIGN = 'activationCampaign';
+export const SUSPENDED_STATUS = 'suspendedStatus';
+export const WITHDRAW_ROUTE = 'withdraw_route';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -24,6 +26,8 @@ export const PARSED_NOTIFICATIONS = [
   FILL_ORDER,
   REJECT_UPDATE,
   ACTIVATION_CAMPAIGN,
+  SUSPENDED_STATUS,
+  WITHDRAW_ROUTE,
 ];
 
 export const BUSY_API_TYPES = {
