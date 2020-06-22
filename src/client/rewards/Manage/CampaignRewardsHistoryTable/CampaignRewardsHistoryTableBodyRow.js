@@ -6,7 +6,7 @@ import moment from 'moment';
 const CampaignRewardsHistoryTableBodyRow = ({ currentItem }) => (
   <React.Fragment>
     <tr>
-      <td>{moment(currentItem.expired_at).format('DD-MMM-YYYY')}</td>
+      <td>{moment(currentItem.createdAt).format('DD-MMM-YYYY')}</td>
       <td>{moment(currentItem.expired_at).format('DD-MMM-YYYY')}</td>
       <td>
         {/* eslint-disable-next-line no-underscore-dangle */}
@@ -18,8 +18,8 @@ const CampaignRewardsHistoryTableBodyRow = ({ currentItem }) => (
       <td className="Campaign-rewards-history hide-element">{currentItem.type}</td>
       <td className="Campaign-rewards-history hide-element">{currentItem.reward.toFixed(2)}</td>
       <td className="Campaign-rewards-history hide-element">USD</td>
-      <td className="Campaign-rewards-history hide-element">Reviews</td>
-      <td className="Campaign-rewards-history hide-element">Paid</td>
+      <td className="Campaign-rewards-history hide-element">{currentItem.completed}</td>
+      <td className="Campaign-rewards-history hide-element">{currentItem.payed}</td>
     </tr>
   </React.Fragment>
 );
