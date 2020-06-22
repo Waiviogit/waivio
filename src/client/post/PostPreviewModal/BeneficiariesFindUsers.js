@@ -65,8 +65,18 @@ class BeneficiariesFindUsers extends React.Component {
 
   handleSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true, searchBarValue: value });
+    setTimeout(() => this.complateHandleSearch(value), 800);
   }
+
+  complateHandleSearch = value => {
+    const { searchBarValue } = this.state;
+    this.debouncedSearch(searchBarValue);
+    if (searchBarValue === value) {
+      this.debouncedSearchByUser(searchBarValue);
+      this.debouncedSearchByObjectTypes(searchBarValue);
+    }
+  };
 
   handleSelect(value) {
     this.setState({ searchString: value, dropdownOpen: false });
