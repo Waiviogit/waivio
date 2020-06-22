@@ -141,16 +141,6 @@ class Topnav extends React.Component {
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
-    }
-  }
-
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
@@ -450,9 +440,18 @@ class Topnav extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true, searchBarValue: value });
+    setTimeout(() => this.handleSearch(value), 800);
   }
+
+  handleSearch = value => {
+    const { searchBarValue } = this.state;
+    this.debouncedSearch(searchBarValue);
+    if (searchBarValue === value) {
+      this.debouncedSearchByUser(searchBarValue);
+      this.debouncedSearchByObjectTypes(searchBarValue);
+    }
+  };
 
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
