@@ -1175,6 +1175,5 @@
   "find_user": "Найти пользователя",
   "followed_wobject": "Подписался {object_type} {name}",
   "unfollowed_wobject": "Отписался {object_type} {name}",
-  "suspended_status": "По истечению {days} дней {sponsor} компания будет заблокирована, пожалуйста, оплатите долг за отзыв",
-  "withdraw_route": "Аккаунт {to_account} зарегистрированный маршрут вывода для аккаунта {from_account}"
+  "suspended_status": "По истечению {days} дней {sponsor} компания будет заблокирована, пожалуйста, оплатите долг за отзыв"
 }

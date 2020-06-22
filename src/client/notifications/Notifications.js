@@ -27,7 +27,6 @@ import Loading from '../components/Icon/Loading';
 import NotificationRejectUpdate from '../components/Navigation/Notifications/NotificationRejectUpdate';
 import NotificationActicationCampaign from '../components/Navigation/Notifications/NotificationActivationCampaign';
 import NotificationSuspandedStatus from '../components/Navigation/Notifications/NotificationSuspandedStatus';
-import NotificationWithdrawRoute from '../components/Navigation/Notifications/NotificationWithdrawRoute';
 import './Notifications.less';
 
 class Notifications extends React.Component {
@@ -159,15 +158,6 @@ class Notifications extends React.Component {
               case notificationConstants.SUSPENDED_STATUS:
                 return (
                   <NotificationSuspandedStatus
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    onClick={this.handleNotificationsClick}
-                  />
-                );
-              case notificationConstants.WITHDRAW_ROUTE:
-                return (
-                  <NotificationWithdrawRoute
                     key={key}
                     notification={notification}
                     read={read}

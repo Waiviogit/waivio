@@ -1172,6 +1172,5 @@
   "this_user_does_not_have_blacklists" : "This user does not have blacklists",
   "followed_wobject": "Followed {object_type} {name}",
   "unfollowed_wobject": "Unfollowed {object_type} {name}",
-  "suspended_status": "After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review",
-  "withdraw_route": "Account {to_account} registered withdraw route for {from_account} account"
+  "suspended_status": "After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review"
 }

@@ -169,18 +169,6 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           sponsor: notification.sponsor,
         },
       );
-    case notificationConstants.WITHDRAW_ROUTE:
-      return intl.formatMessage(
-        {
-          id: 'withdraw_route',
-          defaultMessage:
-            'Account {to_account} registered withdraw route for {from_account} account',
-        },
-        {
-          to_account: notification.to_account,
-          from_account: notification.from_account,
-        },
-      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -216,8 +204,6 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/rewards/all/${notification.author_permlink}`;
     case notificationConstants.SUSPENDED_STATUS:
       return `/@${notification.reviewAuthor}/${notification.reviewPermlink}`;
-    case notificationConstants.WITHDRAW_ROUTE:
-      return `/@${notification.from_account}`;
     default:
       return '/notifications-list';
   }
@@ -250,8 +236,6 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.author;
     case notificationConstants.SUSPENDED_STATUS:
       return notification.sponsor;
-    case notificationConstants.WITHDRAW_ROUTE:
-      return notification.from_account;
     default:
       return currentAuthUsername;
   }
