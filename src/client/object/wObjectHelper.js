@@ -10,6 +10,10 @@ import {
   mapValues,
   orderBy,
   uniqBy,
+  reduce,
+  findIndex,
+  isEqual,
+  map,
 } from 'lodash';
 import { getClientWObj } from '../adapters';
 import {
@@ -443,4 +447,32 @@ export const mainerName = (votes, moderators, admins) => {
   }
 
   return null;
+};
+
+export const getWobjectsWithMaxWeight = wobjects =>
+  reduce(
+    wobjects,
+    (acc, object) => {
+      const idx = findIndex(acc, o => isEqual(o.map, object.map));
+      if (idx === -1) {
+        return [...acc, object];
+      }
+      acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
+
+      return acc;
+    },
+    [],
+  );
+
+export const getWobjectsForMap = objects => {
+  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map));
+  const wobjectWithPropositions = filter(
+    wobjectsWithMap,
+    wobject => wobject.campaigns || wobject.propositions,
+  );
+  const wobjectsWithMaxWeight = getWobjectsWithMaxWeight(wobjectsWithMap);
+  return map(
+    wobjectsWithMaxWeight,
+    obj => find(wobjectWithPropositions, o => isEqual(o.map, obj.map)) || obj,
+  );
 };

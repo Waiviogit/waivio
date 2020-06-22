@@ -19,8 +19,6 @@ import {
   get,
   filter,
   isEqual,
-  reduce,
-  findIndex,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -63,6 +61,7 @@ import {
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
+import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
 import { getZoom } from '../components/Maps/mapHelper';
 
 @withRouter
@@ -562,21 +561,10 @@ class Rewards extends React.Component {
       secondaryObjectsForMap,
       object => object.map && !isEqual(object.map, primaryObjectForMap.map),
     );
-    const secondaryObjectsWithWheight = reduce(
+    const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
       secondaryObjectsWithUniqueCoordinates,
-      (acc, object) => {
-        const idx = findIndex(acc, o => isEqual(o.map, object.map));
-        if (idx === -1) {
-          return [...acc, object];
-        }
-        acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
-
-        return acc;
-      },
-      [],
     );
-
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWheight];
+    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
     return campaignsObjectsForMap;
   };

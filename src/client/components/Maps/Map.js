@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { RADIUS } from '../../../common/constants/map';
+import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import {
@@ -50,7 +50,7 @@ class MapOS extends React.Component {
       zoom: 0,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: RADIUS,
+      radius: DEFAULT_RADIUS,
     };
 
     this.mapRef = createRef();
@@ -142,7 +142,9 @@ class MapOS extends React.Component {
         const lng =
           getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
           get(wobject, 'map.coordinates[0]');
-        const isMarked = Boolean(wobject && wobject.campaigns) || match.path.includes('rewards');
+        const isMarked =
+          Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
+          match.path.includes('rewards');
         return lat && lng ? (
           <CustomMarker
             key={`obj${wobject.author_permlink}`}
