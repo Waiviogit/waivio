@@ -1,4 +1,4 @@
-import { get, isEmpty, omit, reduce } from 'lodash';
+import { get, isEmpty, omit, reduce, filter } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { getClientWObj } from '../adapters';
 
@@ -50,12 +50,15 @@ const objectType = (state = initialState, action) => {
             {},
           )
         : { ...state.activeFilters };
+      const hasMap = !isEmpty(
+        filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
+      );
       return {
         ...state,
         data,
         filtersList,
         activeFilters,
-        map: Boolean(filters && !isEmpty(filters.map)),
+        map: Boolean((filters && !isEmpty(filters.map)) || hasMap),
         filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
@@ -71,7 +74,7 @@ const objectType = (state = initialState, action) => {
         ...state,
         data,
         mapWobjects: filteredObjects,
-        map: Boolean(filters && !isEmpty(filters.map)),
+        map: true,
         updated: true,
       };
     }
