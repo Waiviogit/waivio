@@ -399,9 +399,16 @@ export default class Transfer extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true, searchBarValue: value });
+    setTimeout(() => this.handleSearch(value), 800);
   }
+
+  handleSearch = value => {
+    const { searchBarValue } = this.state;
+    if (searchBarValue === value) {
+      this.debouncedSearch(searchBarValue);
+    }
+  };
 
   showSelectedUser = () => {
     const { to } = this.props;
