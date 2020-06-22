@@ -29,6 +29,7 @@ export const preparePropositionReqData = ({
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
     match,
+    sort,
   };
 
   if (coordinates && coordinates.length > 0) {
@@ -45,7 +46,6 @@ export const preparePropositionReqData = ({
   }
   if (limit) reqData.limit = limit;
   if (simplified) reqData.simplified = simplified;
-  if (!simplified) reqData.sort = sort;
   if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
   switch (match.params.filterKey) {
