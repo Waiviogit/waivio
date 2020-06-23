@@ -137,6 +137,19 @@ class EditPost extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    if (
+      get(this.props, 'draftId') !== get(prevProps, 'draftId') &&
+      currDraft &&
+      currDraft.campaignId
+    ) {
+      getCampaignById(currDraft.campaignId)
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
+  }
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     const linkedObjects = getLinkedObjects(rawContent);
@@ -215,6 +228,8 @@ class EditPost extends Component {
       originalBody,
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
+    // eslint-disable-next-line no-underscore-dangle
+    const campaignId = campaign._id;
 
     const postData = {
       body: postBody,
@@ -224,6 +239,10 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
+
+    if (campaign && campaignId) {
+      postData.campaignId = campaignId;
+    }
 
     if (campaign && campaign.alias) {
       postData.body += `\n***\n${this.props.intl.formatMessage({
