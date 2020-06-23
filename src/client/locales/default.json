@@ -955,7 +955,7 @@
   "manage_page_cant_activate_campaign": "Can't activate campaign '{campaignName}', try again later",
   "manage_page_cant_inactivate_campaign": "Can't inactivate campaign '{campaignName}', try again later",
   "manage_page_account_balance": "Account balance (HIVE)",
-  "manage_page_manage_campaign": "Manage rewards campaign",
+  "manage_page_active_and_pending_campaign": "Active and pending campaigns",
   "sidenav_user_personal": "Personal",
   "sidenav_user_websites": "Websites",
   "sidenav_user_create": "Create",
@@ -1171,5 +1171,8 @@
   "these_users_do_not_have_blacklists" : "These users do not have blacklists",
   "this_user_does_not_have_blacklists" : "This user does not have blacklists",
   "followed_wobject": "Followed {object_type} {name}",
-  "unfollowed_wobject": "Unfollowed {object_type} {name}"
+  "unfollowed_wobject": "Unfollowed {object_type} {name}",
+  "currency": "Currency",
+  "paid_hive": "Paid (HIVE)",
+  "suspended_status": "After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review"
 }
