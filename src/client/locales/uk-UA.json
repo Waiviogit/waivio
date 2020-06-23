@@ -832,5 +832,8 @@
   "these_users_do_not_have_blacklists" : "У цих користувачів немає чорних списків",
   "this_user_does_not_have_blacklists" : "У цього користувача немає чорних списків",
   "when_you_reference_another_users_blacklist": "Коли ви посилаєтесь на чорний список іншого користувача, ви також розпізнаєте всі інші чорні списки, на які посилається цей користувач",
-  "find_user": "Знайти користувача"
+  "find_user": "Знайти користувача",
+  "manage_page_active_and_pending_campaign": "Активні та очікувані кампанії",
+  "currency": "Валюта",
+  "paid_hive": "Сплачено (HIVE)"
 }

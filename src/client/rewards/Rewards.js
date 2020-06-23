@@ -610,7 +610,10 @@ class Rewards extends React.Component {
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
-    const isCreate = location.pathname === '/rewards/create';
+    const isCreate =
+      includes(location.pathname, 'create') ||
+      includes(location.pathname, 'createDuplicate') ||
+      includes(location.pathname, 'details');
     const currentSteemPrice =
       cryptosPriceHistory &&
       cryptosPriceHistory[HBD.coinGeckoId] &&
