@@ -19,8 +19,8 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const maxReward = proposition.campaigns
     ? proposition.campaigns.max_reward
     : proposition.max_reward;
-  const rewardPrise = `${minReward} USD`;
-  const rewardMax = maxReward !== minReward ? `${maxReward} USD` : '';
+  const rewardPrise = `${minReward.toFixed(2)} USD`;
+  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   };
