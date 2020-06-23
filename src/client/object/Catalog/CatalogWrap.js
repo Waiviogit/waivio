@@ -114,14 +114,12 @@ class CatalogWrap extends React.Component {
         this.getPropositions({ userName, match, requiredObject, sort });
       }
     } else {
-      let myWobject;
       getObject(match.params.name, this.props.userName, [
         'tagCategory',
         'categoryItem',
         'galleryItem',
-      ]).then(data => {
-        myWobject = data;
-        const requiredObject = this.getRequiredObject(myWobject, match);
+      ]).then(wObject => {
+        const requiredObject = this.getRequiredObject(wObject, match);
         if (requiredObject) {
           this.getPropositions({ userName, match, requiredObject, sort });
         }
