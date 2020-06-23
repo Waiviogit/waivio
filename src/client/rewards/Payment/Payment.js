@@ -85,7 +85,7 @@ const Payment = ({ match, intl, userName }) => {
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable} HIVE`}
+              {` ${payable && payable.toFixed(3)} HIVE`}
             </Action>
           ) : (
             ''
