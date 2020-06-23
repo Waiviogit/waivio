@@ -15,11 +15,12 @@ import NotificationVoteWitness from './NotificationVoteWitness';
 import NotificationChangeStatus from './NotificationChangeStatus';
 import NotificationPowerDown from './NotificationPowerDown';
 import NotificationFillOrder from './NotificationFillOrder';
-import './Notification.less';
-import './Notifications.less';
 import Loading from '../../Icon/Loading';
 import NotificationRejectUpdate from './NotificationRejectUpdate';
 import NotificationActicationCampaign from './NotificationActivationCampaign';
+import NotificationSuspandedStatus from './NotificationSuspandedStatus';
+import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 
@@ -260,6 +261,15 @@ class Notifications extends React.Component {
               case notificationConstants.ACTIVATION_CAMPAIGN:
                 return (
                   <NotificationActicationCampaign
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.SUSPENDED_STATUS:
+                return (
+                  <NotificationSuspandedStatus
                     key={key}
                     notification={notification}
                     read={read}

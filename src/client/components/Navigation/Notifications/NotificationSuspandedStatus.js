@@ -7,8 +7,8 @@ import { epochToUTC } from '../../../helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationActicationCampaign = ({ notification, read, onClick }) => {
-  const url = `/rewards/all/${notification.author_permlink}`;
+const NotificationSuspandedStatus = ({ notification, read, onClick }) => {
+  const url = `/@${notification.reviewAuthor}/${notification.reviewPermlink}`;
 
   return (
     <Link
@@ -18,15 +18,15 @@ const NotificationActicationCampaign = ({ notification, read, onClick }) => {
         'Notification--unread': !read,
       })}
     >
-      <Avatar username={notification.author} size={40} />
+      <Avatar username={notification.sponsor} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
           <FormattedMessage
-            id="activation_campaign"
-            defaultMessage="{author} launched a new campaign for {object_name}"
+            id="suspended_status"
+            defaultMessage="After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review"
             values={{
-              author: <span className="username">{notification.author}</span>,
-              object_name: <span>{notification.object_name}</span>,
+              days: <span className="username">{notification.days}</span>,
+              sponsor: <span>{notification.sponsor}</span>,
             }}
           />
         </div>
@@ -38,21 +38,22 @@ const NotificationActicationCampaign = ({ notification, read, onClick }) => {
   );
 };
 
-NotificationActicationCampaign.propTypes = {
+NotificationSuspandedStatus.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
-    author: PropTypes.string,
-    object_name: PropTypes.string,
+    reviewAuthor: PropTypes.string,
+    sponsor: PropTypes.string,
     timestamp: PropTypes.number,
-    author_permlink: PropTypes.string,
+    reviewPermlink: PropTypes.string,
+    days: PropTypes.number,
   }),
   onClick: PropTypes.func,
 };
 
-NotificationActicationCampaign.defaultProps = {
+NotificationSuspandedStatus.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
 };
 
-export default NotificationActicationCampaign;
+export default NotificationSuspandedStatus;

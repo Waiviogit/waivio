@@ -128,7 +128,7 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'reward',
+    sort: 'proximity',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
@@ -310,7 +310,6 @@ class Rewards extends React.Component {
         campaignsTypes: data.campaigns_types,
         area,
         radius,
-        sort,
         loading: false,
       });
       if (isMap) {
@@ -348,7 +347,7 @@ class Rewards extends React.Component {
   handleSortChange = sort => {
     const { radius, area, activeFilters } = this.state;
     const { username, match } = this.props;
-    this.setState({ loadingCampaigns: true });
+    this.setState({ loadingCampaigns: true, sort });
     this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
