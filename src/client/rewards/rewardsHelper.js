@@ -28,8 +28,8 @@ export const preparePropositionReqData = ({
     limit: displayLimit,
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
-    sort,
     match,
+    sort,
   };
 
   if (coordinates && coordinates.length > 0) {

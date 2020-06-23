@@ -2,24 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 import { Tooltip } from 'antd';
-import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
-import { openTransfer } from '../../wallet/walletActions';
-import {
-  BXY_GUEST_PREFIX,
-  GUEST_PREFIX,
-  WAIVIO_PARENT_PERMLINK,
-} from '../../../common/constants/waivio';
-import { HIVE } from '../../../common/constants/cryptos';
-import { getMemo } from '../rewardsHelper';
+import TransferButton from './TransferButton';
 import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
 const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
-  const dispatch = useDispatch();
-  const isReceiverGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
   const handleSetUser = () => {
     history.push(path);
   };
@@ -29,29 +18,6 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
     e.stopPropagation();
     history.push(`/@${name}`);
   };
-
-  const memo = getMemo(isReceiverGuest);
-  const app = WAIVIO_PARENT_PERMLINK;
-  const currency = HIVE.symbol;
-
-  let renderTransferButton = (
-    <Action
-      className="WalletSidebar__transfer"
-      primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
-      disabled={payable <= 0}
-    >
-      {intl.formatMessage({
-        id: 'pay',
-        defaultMessage: 'Pay',
-      })}
-      {` ${payable && payable.toFixed(2)} HIVE`}
-    </Action>
-  );
-
-  if (match.path === '/rewards/receivables') {
-    renderTransferButton = <span>{` ${payable && payable.toFixed(2)} HIVE`}</span>;
-  }
 
   return (
     <div className="PaymentCard" onClick={handleSetUser} role="presentation">
@@ -66,7 +32,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
       </div>
       <div className="PaymentCard__end-wrap">
         <div className="PaymentCard__content-name-wrap-row-pay">
-          {renderTransferButton}
+          <TransferButton payable={payable} name={name} match={match} />
           <div className="PaymentCard__end-wrap-icon">
             <Tooltip
               title={intl.formatMessage(

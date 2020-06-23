@@ -92,4 +92,16 @@
   cursor: pointer;
 }
 
+.Payment {
+  &__title-pay {
+    .WalletSidebar__transfer {
+      &.Action--primary:disabled {
+        background-color: @white-smoke !important;
+        border-color: @white-gainsboro !important;
+        color: @blue-botticelli !important;
+      }
+    }
+  }
+}
+
 @import 'PaymentCard-nightmode';
