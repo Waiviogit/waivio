@@ -189,7 +189,7 @@ export default class Transfer extends React.Component {
     }
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -399,16 +399,9 @@ export default class Transfer extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.setState({ dropdownOpen: true, searchBarValue: value });
-    setTimeout(() => this.handleSearch(value), 800);
+    this.debouncedSearch(value);
+    this.setState({ dropdownOpen: true });
   }
-
-  handleSearch = value => {
-    const { searchBarValue } = this.state;
-    if (searchBarValue === value) {
-      this.debouncedSearch(searchBarValue);
-    }
-  };
 
   showSelectedUser = () => {
     const { to } = this.props;

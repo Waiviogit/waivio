@@ -55,7 +55,7 @@ class BeneficiariesFindUsers extends React.Component {
     this.handleOnChange = this.handleOnChange.bind(this);
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 200);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
 
   prepareOptions = searchResults => {
     const dataSource = [];
@@ -65,18 +65,8 @@ class BeneficiariesFindUsers extends React.Component {
 
   handleSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true, searchBarValue: value });
-    setTimeout(() => this.complateHandleSearch(value), 800);
+    this.setState({ dropdownOpen: true });
   }
-
-  complateHandleSearch = value => {
-    const { searchBarValue } = this.state;
-    this.debouncedSearch(searchBarValue);
-    if (searchBarValue === value) {
-      this.debouncedSearchByUser(searchBarValue);
-      this.debouncedSearchByObjectTypes(searchBarValue);
-    }
-  };
 
   handleSelect(value) {
     this.setState({ searchString: value, dropdownOpen: false });

@@ -331,9 +331,7 @@ class EditPost extends Component {
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete
-              handleSelect={setTimeout(() => this.handleObjectSelect, 800)}
-            />
+            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (

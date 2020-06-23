@@ -49,18 +49,10 @@ class SearchUsersAutocomplete extends React.Component {
     isOptionSelected: false,
   };
 
-  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString));
+  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 800);
 
   handleSearch = value => {
-    this.setState({ searchString: value });
-    setTimeout(() => this.completeHandleSearch(value), 800);
-  };
-
-  completeHandleSearch = value => {
-    const { searchString } = this.state;
-    if (searchString === value) {
-      this.debouncedSearchByUser(searchString);
-    }
+    this.debouncedSearchByUser(value);
   };
 
   handleChange = value => {
