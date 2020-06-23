@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
@@ -34,24 +34,44 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, match }) => {
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
 
-  let renderTransferButton = (
-    <Action
-      className="WalletSidebar__transfer"
-      primary={payable >= 0}
-      onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
-      disabled={payable <= 0}
-    >
-      {intl.formatMessage({
-        id: 'pay',
-        defaultMessage: 'Pay',
-      })}
-      {` ${payable && payable.toFixed(2)} HIVE`}
-    </Action>
-  );
+  const getTransferButton = () => {
+    if (match.path === '/rewards/receivables' && payable < 0) {
+      return (
+        <Action
+          className="WalletSidebar__transfer"
+          primary={payable < 0}
+          onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
+          disabled={payable >= 0}
+        >
+          {intl.formatMessage({
+            id: 'pay',
+            defaultMessage: 'Pay',
+          })}
+          {` ${payable && payable.toFixed(2)} HIVE`}
+        </Action>
+      );
+    }
+    if (match.path === '/rewards/receivables' && payable >= 0) {
+      return <span>{` ${payable && payable.toFixed(2)} HIVE`}</span>;
+    }
 
-  if (match.path === '/rewards/receivables') {
-    renderTransferButton = <span>{` ${payable && payable.toFixed(2)} HIVE`}</span>;
-  }
+    return (
+      <Action
+        className="WalletSidebar__transfer"
+        primary={payable >= 0}
+        onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
+        disabled={payable <= 0}
+      >
+        {intl.formatMessage({
+          id: 'pay',
+          defaultMessage: 'Pay',
+        })}
+        {` ${payable && payable.toFixed(2)} HIVE`}
+      </Action>
+    );
+  };
+
+  const renderTransferButton = useMemo(() => getTransferButton(), [match.path]);
 
   return (
     <div className="PaymentCard" onClick={handleSetUser} role="presentation">
