@@ -271,10 +271,13 @@ class Rewards extends React.Component {
   };
 
   setPayablesFilterValue = filterValue => {
-    const activeFilters = [...this.state.activePayableFilters];
+    let activeFilters = [...this.state.activePayableFilters];
+    if (filterValue.filterName === 'days' || filterValue.filterName === 'moreDays') {
+      activeFilters = remove(activeFilters, f => isEqual(f, filterValue));
+    }
     if (find(activeFilters, ['filterName', filterValue.filterName])) {
       this.setState({
-        activePayableFilters: activeFilters.filter(f => f.filterName !== filterValue.filterName),
+        activePayableFilters: filter(activeFilters, f => f.filterName !== filterValue.filterName),
       });
     } else {
       activeFilters.push(filterValue);
