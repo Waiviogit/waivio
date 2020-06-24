@@ -65,13 +65,15 @@ class LetsGetStarted extends React.Component {
     const accountHistory = get(usersAccountHistory, authenticatedUser.name, []);
     const hasLikes = [];
 
-    // eslint-disable-next-line array-callback-return,consistent-return
-    accountHistory.map(item => {
-      const historyElement = item.op[0];
-      if (historyElement === accountHistoryConstants.VOTE) {
-        return hasLikes.push(historyElement);
-      }
-    });
+    // eslint-disable-next-line array-callback-return,consistent-return,no-unused-expressions
+    !isGuest &&
+      // eslint-disable-next-line array-callback-return,consistent-return
+      accountHistory.map(item => {
+        const historyElement = item.op[0];
+        if (historyElement === accountHistoryConstants.VOTE) {
+          return hasLikes.push(historyElement);
+        }
+      });
     const hasPost =
       authenticatedUser.last_root_post &&
       authenticatedUser.last_root_post !== '1970-01-01T00:00:00';

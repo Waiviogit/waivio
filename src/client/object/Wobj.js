@@ -82,7 +82,7 @@ export default class Wobj extends React.Component {
 
   static fetchData({ store, match }) {
     return store.dispatch(
-      getObject(match.params.name, this.props.authenticatedUserName, [
+      getObject(match.params.name, getAuthenticatedUserName(store.getState()), [
         'tagCategory',
         'categoryItem',
         'galleryItem',
