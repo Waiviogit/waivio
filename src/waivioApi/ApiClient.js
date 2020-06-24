@@ -766,8 +766,9 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
 
 export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
+    let preparedObject;
     if (!isEmpty(obj)) {
-      let preparedObject = {
+      preparedObject = {
         sponsor: sponsor,
         globalReport: globalReport,
         objects: obj.objects,
@@ -776,11 +777,18 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
         currency: obj.currency,
         processingFees: obj.processingFees,
       };
-      if (obj.payable) {
+      if (obj.payable && globalReport) {
         preparedObject = {
           ...preparedObject,
           payable: obj.payable,
         };
+      }
+      if (!globalReport) {
+        preparedObject = {
+          userName: user,
+        };
+        if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
+        if (obj.payable) preparedObject.payable = obj.payable;
       }
       return preparedObject;
     }
@@ -884,8 +892,9 @@ export const getAccessToken = (token, social, regData) => {
     body: JSON.stringify(body),
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
       response.expiration = data.headers.get('expires-in');
+      response.refreshToken = data.headers.get('refresh-token');
       return data.json();
     })
     .then(data => {
@@ -895,20 +904,17 @@ export const getAccessToken = (token, social, regData) => {
     .catch(err => err);
 };
 
-export const getNewToken = token => {
+export const refreshToken = token => {
   let response = {};
-  return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
+  return fetch(`${config.baseUrl}${config.auth}/${config.refreshAuthToken}`, {
     method: 'POST',
-    headers: { 'access-token': token },
+    headers: { 'refresh-token': token },
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
+      response.refreshToken = data.headers.get('refresh-token');
       response.expiration = data.headers.get('expires-in');
       response.status = data.status;
-      return data.json();
-    })
-    .then(data => {
-      response.userData = data.user;
       return response;
     })
     .catch(e => {

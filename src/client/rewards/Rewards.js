@@ -13,12 +13,12 @@ import {
   size,
   includes,
   remove,
-  find,
   flatten,
   uniqBy,
   get,
   filter,
   isEqual,
+  findIndex,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -273,14 +273,29 @@ class Rewards extends React.Component {
   };
 
   setPayablesFilterValue = filterValue => {
-    const activeFilters = [...this.state.activePayableFilters];
-    if (find(activeFilters, ['filterName', filterValue.filterName])) {
-      this.setState({
-        activePayableFilters: activeFilters.filter(f => f.filterName !== filterValue.filterName),
-      });
-    } else {
-      activeFilters.push(filterValue);
-      this.setState({ activePayableFilters: activeFilters });
+    let activeFilters = [...this.state.activePayableFilters];
+    switch (filterValue.filterName) {
+      case 'payable':
+        if (findIndex(activeFilters, { filterName: 'payable' }) === -1) {
+          activeFilters.push(filterValue);
+        } else {
+          remove(activeFilters, { filterName: 'payable' });
+        }
+        this.setState({ activePayableFilters: activeFilters });
+        break;
+      case 'days':
+      case 'moreDays':
+      default:
+        if (findIndex(activeFilters, { filterName: filterValue.filterName }) === -1) {
+          activeFilters = filter(
+            activeFilters,
+            item => item.filterName !== 'days' && item.filterName !== 'moreDays',
+          );
+          activeFilters.push(filterValue);
+        } else {
+          remove(activeFilters, { filterName: filterValue.filterName });
+        }
+        this.setState({ activePayableFilters: activeFilters });
     }
   };
 

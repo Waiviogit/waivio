@@ -19,7 +19,7 @@ const PayablesContainer = ({
   const [lenders, setLenders] = useState({});
   useEffect(() => {
     getLenders({
-      sponsor: userName,
+      user: userName,
       filters: payableFilters,
     })
       .then(data => setLenders(data))
