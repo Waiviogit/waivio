@@ -142,9 +142,10 @@ class EditPost extends Component {
     if (
       get(this.props, 'draftId') !== get(prevProps, 'draftId') &&
       currDraft &&
-      currDraft.campaignId
+      currDraft.jsonMetadata &&
+      currDraft.jsonMetadata.campaignId
     ) {
-      getCampaignById(currDraft.campaignId)
+      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
@@ -240,10 +241,6 @@ class EditPost extends Component {
       ...settings,
     };
 
-    if (campaign && campaignId) {
-      postData.campaignId = campaignId;
-    }
-
     if (campaign && campaign.alias) {
       postData.body += `\n***\n${this.props.intl.formatMessage({
         id: `check_review_post_add_text`,
@@ -268,7 +265,13 @@ class EditPost extends Component {
         })),
     };
 
-    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+    postData.jsonMetadata = createPostMetadata(
+      postBody,
+      topics,
+      oldMetadata,
+      waivioData,
+      campaignId,
+    );
 
     if (originalBody) {
       postData.originalBody = originalBody;
