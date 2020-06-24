@@ -1176,5 +1176,6 @@
   "followed_wobject": "Подписался {object_type} {name}",
   "unfollowed_wobject": "Отписался {object_type} {name}",
   "currency": "Валюта",
-  "paid_hive": "Оплачено (HIVE)"
+  "paid_hive": "Оплачено (HIVE)",
+  "suspended_status": "По истечению {days} дней {sponsor} компания будет заблокирована, пожалуйста, оплатите долг за отзыв"
 }
