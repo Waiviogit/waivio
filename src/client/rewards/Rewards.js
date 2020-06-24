@@ -261,7 +261,7 @@ class Rewards extends React.Component {
 
   setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
-    const { radius, area, sort } = this.state;
+    const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -269,7 +269,7 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, area, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
@@ -531,7 +531,11 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, sort, area });
+          const reqData = preparePropositionReqData({ username, match, sort, area, activeFilters });
+          const guideNames = get(activeFilters, 'guideNames');
+          const types = get(activeFilters, 'types');
+          reqData.guideNames = guideNames;
+          reqData.types = types;
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
