@@ -78,8 +78,9 @@ class SearchObjectsAutocomplete extends Component {
 
   debouncedSearch = _.debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
-    300,
+    800,
   );
+
   handleSearch(value) {
     let val = value;
     const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;

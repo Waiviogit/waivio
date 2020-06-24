@@ -19,8 +19,6 @@ import {
   get,
   filter,
   isEqual,
-  reduce,
-  findIndex,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -63,6 +61,7 @@ import {
 import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
+import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
 import { getZoom } from '../components/Maps/mapHelper';
 
 @withRouter
@@ -129,7 +128,7 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'reward',
+    sort: 'proximity',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
@@ -308,7 +307,6 @@ class Rewards extends React.Component {
         campaignsTypes: data.campaigns_types,
         area,
         radius,
-        sort,
         loading: false,
       });
       if (isMap) {
@@ -346,7 +344,7 @@ class Rewards extends React.Component {
   handleSortChange = sort => {
     const { radius, area, activeFilters } = this.state;
     const { username, match } = this.props;
-    this.setState({ loadingCampaigns: true });
+    this.setState({ loadingCampaigns: true, sort });
     this.getPropositions({ username, match, area, radius, sort, activeFilters });
   };
 
@@ -562,21 +560,10 @@ class Rewards extends React.Component {
       secondaryObjectsForMap,
       object => object.map && !isEqual(object.map, primaryObjectForMap.map),
     );
-    const secondaryObjectsWithWheight = reduce(
+    const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
       secondaryObjectsWithUniqueCoordinates,
-      (acc, object) => {
-        const idx = findIndex(acc, o => isEqual(o.map, object.map));
-        if (idx === -1) {
-          return [...acc, object];
-        }
-        acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
-
-        return acc;
-      },
-      [],
     );
-
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWheight];
+    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
     return campaignsObjectsForMap;
   };
@@ -623,7 +610,10 @@ class Rewards extends React.Component {
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
-    const isCreate = location.pathname === '/rewards/create';
+    const isCreate =
+      includes(location.pathname, 'create') ||
+      includes(location.pathname, 'createDuplicate') ||
+      includes(location.pathname, 'details');
     const currentSteemPrice =
       cryptosPriceHistory &&
       cryptosPriceHistory[HBD.coinGeckoId] &&

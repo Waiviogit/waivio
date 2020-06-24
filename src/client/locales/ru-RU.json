@@ -960,7 +960,7 @@
   "manage_page_cant_activate_campaign": "Кампания не может быть активированна '{campaignName}', попробуйте позже",
   "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже",
   "manage_page_account_balance": "Баланс счета (HIVE)",
-  "manage_page_manage_campaign": "Управление кампаниями",
+  "manage_page_active_and_pending_campaign": "Активные и ожидающие кампании",
   "sidenav_user_personal": "Персональные",
   "sidenav_user_websites": "Веб-сайты",
   "sidenav_user_create": "Создать",
@@ -1174,5 +1174,8 @@
   "when_you_reference_another_users_blacklist": "Когда вы ссылаетесь на черный список другого пользователя, вы также узнаете все другие черные списки, на которые ссылается этот пользователь",
   "find_user": "Найти пользователя",
   "followed_wobject": "Подписался {object_type} {name}",
-  "unfollowed_wobject": "Отписался {object_type} {name}"
+  "unfollowed_wobject": "Отписался {object_type} {name}",
+  "currency": "Валюта",
+  "paid_hive": "Оплачено (HIVE)",
+  "suspended_status": "По истечению {days} дней {sponsor} компания будет заблокирована, пожалуйста, оплатите долг за отзыв"
 }
