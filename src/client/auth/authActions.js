@@ -39,6 +39,8 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
+const isUserLoaded = state => getIsLoaded(state) && Cookie.get('access_token');
+
 export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -67,7 +69,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     isGuest = token === 'null' ? false : Boolean(token);
   }
 
-  if (getIsLoaded(state)) {
+  if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
@@ -106,7 +108,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       promise,
     },
     meta: {
-      refresh: getIsLoaded(state),
+      refresh: isUserLoaded(state),
     },
   }).catch(e => {
     console.warn(e);
