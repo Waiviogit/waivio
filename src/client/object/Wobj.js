@@ -183,7 +183,7 @@ export default class Wobj extends React.Component {
       );
     }
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const desc = `${objectName || ''}`;
+    const desc = `${wobject.description || objectName || ''}`;
 
     const image =
       wobject.avatar ||
