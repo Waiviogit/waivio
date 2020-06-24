@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { filter } from 'lodash';
+import { filter, difference } from 'lodash';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
@@ -110,14 +110,7 @@ class Manage extends React.Component {
         campaign.status === 'onHold' ||
         campaign.status === 'reachedLimit',
     );
-    const historyCampaigns = filter(
-      campaigns,
-      campaign =>
-        campaign.status !== 'active' &&
-        campaign.status !== 'pending' &&
-        campaign.status !== 'onHold' &&
-        campaign.status !== 'reachedLimit',
-    );
+    const historyCampaigns = difference(campaigns, activeAndPendingCampaigns);
 
     return (
       <div className="Manage">
