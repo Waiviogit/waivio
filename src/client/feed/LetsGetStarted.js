@@ -67,7 +67,7 @@ class LetsGetStarted extends React.Component {
 
     // eslint-disable-next-line array-callback-return,consistent-return
     accountHistory.map(item => {
-      const historyElement = item.op[0];
+      const historyElement = get(item, ['op', 0], null);
       if (historyElement === accountHistoryConstants.VOTE) {
         return hasLikes.push(historyElement);
       }
