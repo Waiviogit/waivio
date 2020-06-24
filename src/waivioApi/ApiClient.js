@@ -783,12 +783,12 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
           payable: obj.payable,
         };
       }
-      if (obj.days || obj.moreDays || (obj.payable && !globalReport)) {
+      if (!globalReport) {
         preparedObject = {
           userName: user,
-          days: obj.days || obj.moreDays,
-          payable: obj.payable,
         };
+        if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
+        if (obj.payable) preparedObject.payable = obj.payable;
       }
       return preparedObject;
     }
