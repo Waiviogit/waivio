@@ -1,4 +1,4 @@
-import { each, find, omit } from 'lodash';
+import { each, find, omit, get } from 'lodash';
 import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
@@ -266,10 +266,9 @@ export const getPostContent = (state, permlink) =>
   Object.values(state.list).find(post => post.permlink === permlink);
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] &&
-  state.postsStates[`${author}/${permlink}}`].fetching;
+  get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);
 export const getIsPostLoaded = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].loaded;
+  get(state, ['postsStates', `${author}/${permlink}`, 'loaded']);
 export const getIsPostFailed = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].failed;
+  get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
 export const getLastPostId = state => state.lastId;
