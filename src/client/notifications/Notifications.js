@@ -28,6 +28,9 @@ import NotificationRejectUpdate from '../components/Navigation/Notifications/Not
 import NotificationActicationCampaign from '../components/Navigation/Notifications/NotificationActivationCampaign';
 import NotificationSuspandedStatus from '../components/Navigation/Notifications/NotificationSuspandedStatus';
 import './Notifications.less';
+import NotificationWithdrawRoute from '../components/Navigation/Notifications/NotificationWithdrawRoute';
+import NotificationChangePassword from '../components/Navigation/Notifications/NotificationChangePassword';
+import NotificationTransferFrom from '../components/Navigation/Notifications/NotificationTransferFrom';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -158,6 +161,33 @@ class Notifications extends React.Component {
               case notificationConstants.SUSPENDED_STATUS:
                 return (
                   <NotificationSuspandedStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WITHDRAW_ROUTE:
+                return (
+                  <NotificationWithdrawRoute
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_PASSWORD:
+                return (
+                  <NotificationChangePassword
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM:
+                return (
+                  <NotificationTransferFrom
                     key={key}
                     notification={notification}
                     read={read}

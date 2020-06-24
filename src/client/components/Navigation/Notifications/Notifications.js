@@ -21,6 +21,9 @@ import NotificationActicationCampaign from './NotificationActivationCampaign';
 import NotificationSuspandedStatus from './NotificationSuspandedStatus';
 import './Notification.less';
 import './Notifications.less';
+import NotificationWithdrawRoute from './NotificationWithdrawRoute';
+import NotificationChangePassword from './NotificationChangePassword';
+import NotificationTransferFrom from './NotificationTransferFrom';
 
 const displayLimit = 6;
 
@@ -270,6 +273,33 @@ class Notifications extends React.Component {
               case notificationConstants.SUSPENDED_STATUS:
                 return (
                   <NotificationSuspandedStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WITHDRAW_ROUTE:
+                return (
+                  <NotificationWithdrawRoute
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_PASSWORD:
+                return (
+                  <NotificationChangePassword
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM:
+                return (
+                  <NotificationTransferFrom
                     key={key}
                     notification={notification}
                     read={read}
