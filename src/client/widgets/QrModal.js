@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { message, Modal } from 'antd';
-// import QrReader from 'react-qr-reader';
+import QrReader from 'react-qr-reader';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
-  // eslint-disable-next-line no-unused-vars
   const [result, setResult] = useState('');
 
-  // const handleScan = data => {
-  //   if ((!result && data) || (data && result && result !== data)) {
-  //     setResult(data);
-  //     message.success('Success!');
-  //   }
-  // };
+  const handleScan = data => {
+    if ((!result && data) || (data && result && result !== data)) {
+      setResult(data);
+      message.success('Success!');
+    }
+  };
 
   const handleAccept = () => {
     handleClose(false);
@@ -48,12 +46,16 @@ const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
       onCancel={handleCancel}
       footer={[modalFooter]}
     >
-      {/* <QrReader */}
-      {/*  delay={300} */}
-      {/*  onError={e => { message.error(e); }} */}
-      {/*  onScan={data => { handleScan(data); }} */}
-      {/*  style={{ width: '100%' }} */}
-      {/* /> */}
+      <QrReader
+        delay={300}
+        onError={e => {
+          message.error(e);
+        }}
+        onScan={data => {
+          handleScan(data);
+        }}
+        style={{ width: '100%' }}
+      />
     </Modal>
   );
 };

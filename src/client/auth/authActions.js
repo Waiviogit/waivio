@@ -73,7 +73,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        console.log(userMetaData);
+
         resolve({
           account: tokenData.userData,
           userMetaData,

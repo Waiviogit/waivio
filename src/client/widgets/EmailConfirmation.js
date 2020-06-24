@@ -29,23 +29,7 @@ const EmailConfirmation = ({
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
   const currentEmail = email || newEmail;
   const confirmationType = email ? 'confirmTransaction' : 'confirmEmail';
-  const confirmText =
-    confirmationType === 'confirmTransaction'
-      ? {
-          title: 'Confirmation email sent',
-          content: `Please confirm this transaction from your email (${currentEmail})`,
-          onOk: () => {
-            closeWithdrawModal(false);
-            handleClose(false);
-          },
-        }
-      : {
-          title: 'Confirmation email sent',
-          content: `Please confirm your email (${currentEmail})`,
-          onOk: () => {
-            handleClose(false);
-          },
-        };
+
   const handleChangeEmail = () => {
     setIsVisibleConfirm(true);
   };
@@ -53,23 +37,53 @@ const EmailConfirmation = ({
     <p>
       <b className="email-change">{email}</b>(
       <a role="presentation" onClick={handleChangeEmail}>
-        change
+        {intl.formatMessage({
+          id: 'change',
+          defaultMessage: 'change',
+        })}
       </a>
       )
     </p>
   ) : (
-    <Input onChange={e => setNewEmail(e.currentTarget.value)} placeholder={'Enter your email'} />
+    <Input
+      onChange={e => setNewEmail(e.currentTarget.value)}
+      placeholder={intl.formatMessage({
+        id: 'enter_email',
+        defaultMessage: 'Enter your email',
+      })}
+    />
   );
 
   const handleCancel = () => {
     handleClose(false);
   };
 
-  const handleSendConfirmation = () => {
-    sendEmailConfirmation(userName, confirmationType, currentEmail, isGuest)
+  const handleSendConfirmation = (changeEmail = '') => {
+    const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
+
+    sendEmailConfirmation(userName, type, currentEmail, isGuest)
       .then(r => {
         if (r.message) message.error(`${r.message}. Please, try again`);
-        else Modal.success(confirmText);
+        else
+          Modal.success({
+            title: intl.formatMessage({
+              id: 'confirmation_email',
+              defaultMessage: 'Confirmation email sent',
+            }),
+            content: intl.formatMessage(
+              {
+                id: 'confirm_transaction',
+                defaultMessage: 'Please confirm this transaction from your email ({currentEmail})',
+              },
+              {
+                currentEmail,
+              },
+            ),
+            onOk: () => {
+              closeWithdrawModal(false);
+              handleClose(false);
+            },
+          });
       })
       .catch(e => message.error(e.message));
     handleClose(false);
@@ -93,20 +107,35 @@ const EmailConfirmation = ({
         okButtonProps={{ disabled: (!email || !newEmail) && !isCheck }}
       >
         <Form>
-          <Form.Item label="This transaction must be confirmed by email:">{emailInput}</Form.Item>
+          <Form.Item
+            label={intl.formatMessage({
+              id: 'confirmed_by_email',
+              defaultMessage: 'This transaction must be confirmed by email:',
+            })}
+          >
+            {emailInput}
+          </Form.Item>
           <PolicyConfirmation
             isChecked={isCheck}
-            checkboxLabel="Legal notice"
+            checkboxLabel={intl.formatMessage({
+              id: 'legal_notice',
+              defaultMessage: 'Legal notice',
+            })}
             policyText={
               <span>
-                I agree to{' '}
+                {intl.formatMessage({ id: 'agree_to', defaultMessage: 'I agree to' })}{' '}
                 <a href="https://blocktrades.us/en/terms-and-conditions-of-use">
-                  Blocktrades.us Terms and Conditions of Use
+                  {intl.formatMessage({
+                    id: 'blocktrades_conditions',
+                    defaultMessage: 'Blocktrades.us Terms and Conditions of Use',
+                  })}
                 </a>
-                . I am at least 18 years of age and do not reside in Prohibited Jurisdictions (New
-                York and Belarus, Burma, Cote D’Ivoire (Ivory Coast), Cuba, Democratic Republic of
-                Congo, Iran, Iraq, Lebanon, Liberia, Libya, North Korea, Sudan, Syria, Somalia, and
-                Zimbabwe).
+                .{' '}
+                {intl.formatMessage({
+                  id: 'blocktrades_rules',
+                  defaultMessage:
+                    'I am at least 18 years of age and do not reside in Prohibited Jurisdictions (New York and Belarus, Burma, Cote D’Ivoire (Ivory Coast), Cuba, Democratic Republic of Congo, Iran, Iraq, Lebanon, Liberia, Libya, North Korea, Sudan, Syria, Somalia, and Zimbabwe).',
+                })}
               </span>
             }
             onChange={setCheck}
@@ -114,19 +143,45 @@ const EmailConfirmation = ({
         </Form>
       </Modal>
       <Modal
-        title="Email change request"
+        title={intl.formatMessage({
+          id: 'email_change_request',
+          defaultMessage: 'Email change request',
+        })}
         visible={isVisibleConfirm}
         onCancel={() => setIsVisibleConfirm(false)}
+        onOk={() => handleSendConfirmation('pullEmail')}
       >
         <div>
           <div className="modal-row">
-            To change the email address, you must first unlink the existing email address.
+            {intl.formatMessage({
+              id: 'email_change_message',
+              defaultMessage:
+                'To change the email address, you must first unlink the existing email address.',
+            })}
           </div>
-          <div className="modal-row">Unlink request will be sent to: </div>
+          <div className="modal-row">
+            {intl.formatMessage({
+              id: 'unlink_request',
+              defaultMessage: 'Unlink request will be sent to:',
+            })}{' '}
+          </div>
           <b className="email-change modal-row">{email}</b>
           <div className="modal-row">
-            <b>Note:</b> if you no longer have access to this email, unfortunately you will not be
-            able to unlink it from the @{userName} account.
+            <b>
+              {intl.formatMessage({
+                id: 'note',
+                defaultMessage: 'Note',
+              })}
+              :
+            </b>{' '}
+            {intl.formatMessage(
+              {
+                id: 'unlink_email_warning',
+                defaultMessage:
+                  'if you no longer have access to this email, unfortunately you will not be able to unlink it from the @{userName} account.',
+              },
+              { userName },
+            )}
           </div>
         </div>
       </Modal>
@@ -144,13 +199,11 @@ EmailConfirmation.propTypes = {
   closeWithdrawModal: PropTypes.func.isRequired,
 };
 
-export default injectIntl(
-  connect(
-    state => ({
-      userName: getAuthenticatedUserName(state),
-      isGuest: isGuestUser(state),
-      email: getAuthenticatedUserPrivateEmail(state),
-    }),
-    { closeWithdrawModal: closeWithdraw },
-  )(EmailConfirmation),
-);
+export default connect(
+  state => ({
+    userName: getAuthenticatedUserName(state),
+    isGuest: isGuestUser(state),
+    email: getAuthenticatedUserPrivateEmail(state),
+  }),
+  { closeWithdrawModal: closeWithdraw },
+)(injectIntl(EmailConfirmation));

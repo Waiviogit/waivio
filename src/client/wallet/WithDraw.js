@@ -24,6 +24,7 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
   const [currencyAmount, setCurrencyAmount] = useState();
   const [isShowConfirm, setShowConfirm] = useState();
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
+  const draftTransfer = JSON.parse(localStorage.getItem('withdrawData'));
 
   const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
   const isUserCanMakeTransfer =
@@ -46,6 +47,14 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (draftTransfer) {
+      setHiveAmount(draftTransfer.hiveAmount);
+      setCurrentCurrency(draftTransfer.currentCurrency);
+      setWalletAddress(draftTransfer.walletAddress);
+    }
+  }, []);
 
   useEffect(() => {
     if (currentCurrency) {
@@ -155,13 +164,13 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
             </div>
           </div>
           <div className="Withdraw__subtitle">
-            {intl.formatMessage({
-              id: 'balance_amount',
-              defaultMessage: 'Your balance: ',
-            })}
-            <span role="presentation" className="balance">
-              {currentBalance}.
-            </span>
+            <FormattedMessage
+              id="balance_amount"
+              defaultMessage="Your balance: {amount}"
+              values={{
+                amount: <span className="balance">{currentBalance}</span>,
+              }}
+            />
           </div>
           <Form.Item
             className="Withdraw__title"
@@ -197,10 +206,13 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
             </div>
           </div>
           <div className="Withdraw__subtitle">
-            {intl.formatMessage({
-              id: 'balance_amount',
-              defaultMessage: 'Est. amount: 1.00 USD (limit: 100 per day)',
-            })}
+            {intl.formatMessage(
+              {
+                id: 'est_account_value_withdraw',
+                defaultMessage: 'Est. amount: 1.00 USD (limit: 100 per day)',
+              },
+              { amount: 0 },
+            )}
           </div>
           <Form.Item
             className="Withdraw__title"
@@ -211,7 +223,10 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
               className="Withdraw__input"
               value={walletAddress}
               onChange={handleChange}
-              placeholder="Enter address"
+              placeholder={intl.formatMessage({
+                id: 'enter_address',
+                defaultMessage: 'Enter address',
+              })}
             />
             <button className="Withdraw__qr-button" onClick={() => setShowScanner(true)}>
               <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
@@ -260,4 +275,4 @@ export default connect(
   {
     closeWithdrawModal: closeWithdraw,
   },
-)(Form.create()(injectIntl(Withdraw)));
+)(injectIntl(Withdraw));

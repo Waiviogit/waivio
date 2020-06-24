@@ -1,23 +1,84 @@
 import React, { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { upperFirst } from 'lodash';
+import { injectIntl } from 'react-intl';
+import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { estimateAmount, finalConfirmation } from '../../waivioApi/ApiClient';
 import { CRYPTO_FOR_VALIDATE_WALLET } from '../../common/constants/waivio';
+import { isGuestUser } from '../reducers';
 
-const ConfirmationModal = ({ location }) => {
+const ConfirmationModal = ({ intl, history }) => {
   const [count, calculateAmount] = useState(0);
   const [isVisible, setVisible] = useState(true);
-
-  const parseSearchParams = location.search
+  const [isLoading, setLoading] = useState(false);
+  const isGuest = useSelector(isGuestUser);
+  const parseSearchParams = history.location.search
     .split('&')
     .map(search => search.replace('=', '": "').replace('?', '"'))
     .join('", "');
   const searchParams = JSON.parse(`{${parseSearchParams}"}`);
 
   const confirmTransaction = () => {
-    finalConfirmation(searchParams.token, searchParams.memo);
+    setLoading(true);
+
+    finalConfirmation(searchParams.token, isGuest)
+      .then(res => {
+        if (res.message) {
+          message.error(res.message);
+          history.push(`/@${searchParams.userName}`);
+        } else {
+          setTimeout(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'transaction_success',
+                defaultMessage: 'Your transaction success',
+              }),
+            );
+            history.push(`/@${searchParams.userName}/transfers`);
+          }, 3000);
+        }
+      })
+      .catch(e => message.error(e.message));
+    localStorage.setItem('withdrawData', null);
+  };
+
+  const handleCloseConfirm = () => {
+    history.push('/');
     setVisible(false);
+  };
+
+  const modalText = () => {
+    switch (searchParams.id) {
+      case 'unlinkEmailSuccess':
+        return intl.formatMessage(
+          {
+            id: 'unlink_email_message',
+            defaultMessage:
+              'Email address was successfully unlinked from @{username} user account.',
+          },
+          {
+            username: searchParams.userName,
+          },
+        );
+      case 'confirmEmailSuccess':
+        return intl.formatMessage(
+          {
+            id: 'saved_email_message',
+            defaultMessage: 'Email address was successfully saved from @{username} user account.',
+          },
+          {
+            username: searchParams.userName,
+          },
+        );
+      default:
+        return intl.formatMessage({
+          id: 'address_not_valid',
+          defaultMessage: 'Address is invalid',
+        });
+    }
   };
 
   useEffect(() => {
@@ -32,53 +93,93 @@ const ConfirmationModal = ({ location }) => {
         return (
           <Modal
             visible={isVisible}
-            title="Final confirmation"
+            title={intl.formatMessage({
+              id: 'final_confirmation',
+              defaultMessage: 'Final confirmation',
+            })}
             onOk={confirmTransaction}
-            onCancel={() => setVisible(false)}
+            onCancel={handleCloseConfirm}
+            okButtonProps={{
+              loading: isLoading,
+            }}
+            cancelButtonProps={{
+              disabled: isLoading,
+            }}
           >
-            <div>
-              <b>Send</b>: {searchParams.reqAmount} HIVE
+            <div className="modal-row">
+              <b>
+                {intl.formatMessage({
+                  id: 'send',
+                  defaultMessage: 'Send',
+                })}
+              </b>
+              : {searchParams.reqAmount} HIVE
             </div>
-            <div>
-              <b>Receive</b>: {count}{' '}
-              {upperFirst(CRYPTO_FOR_VALIDATE_WALLET[searchParams.outputCoinType])}
+            <div className="modal-row">
+              <b>
+                {intl.formatMessage({
+                  id: 'receive',
+                  defaultMessage: 'Receive',
+                })}
+              </b>
+              : {count} {upperFirst(CRYPTO_FOR_VALIDATE_WALLET[searchParams.outputCoinType])}
             </div>
-            <div>
-              <b>Deposit to</b>: {searchParams.depositAcc}
+            <div className="modal-row">
+              <b>
+                {intl.formatMessage({
+                  id: 'deposit_to',
+                  defaultMessage: 'Deposit to',
+                })}
+              </b>
+              : {searchParams.depositAcc}
             </div>
-            <div>
-              <b>Memo</b>: {searchParams.memo}
+            <div className="modal-row">
+              <b>
+                {intl.formatMessage({
+                  id: 'memo',
+                  defaultMessage: 'Memo',
+                })}
+              </b>
+              : {searchParams.memo}
             </div>
-            <div>
-              <b>Initiate the transfer on the Hive blockchain.</b>
+            <div className="modal-row">
+              <b>
+                {intl.formatMessage({
+                  id: 'initiate_transfer',
+                  defaultMessage: 'Initiate the transfer on the Hive blockchain.',
+                })}
+              </b>
             </div>
           </Modal>
         );
 
-      case 'confirmEmailSuccess':
-        return Modal.success({
-          title: '',
-          content: '',
-        });
-
-      case 'confirmEmailSecretFailed':
-        return Modal.error({
-          title: '',
-          content: '',
-        });
-
-      case 'confirmEmailTimeFailed':
-        return Modal.error({
-          title: '',
-          content: '',
-        });
-
       default:
-        return null;
+        return (
+          <Modal
+            visible={isVisible}
+            title={intl.formatMessage({
+              id: 'request_confirmed',
+              defaultMessage: 'Request confirmed',
+            })}
+            footer={[
+              <button className="ant-btn" key={'ok'} onClick={handleCloseConfirm}>
+                Ok
+              </button>,
+            ]}
+            onCancel={handleCloseConfirm}
+          >
+            <div>{modalText}</div>
+          </Modal>
+        );
     }
   };
 
   return currentModal();
 };
 
-export default ConfirmationModal;
+ConfirmationModal.propTypes = {
+  intl: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
+};
+
+export default injectIntl(withRouter(ConfirmationModal));
