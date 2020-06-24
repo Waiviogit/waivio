@@ -231,17 +231,19 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap }) => {
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
     const { radiusMap } = this.state;
     const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    this.getPropositions(
-      { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
-      isMap,
-      updated,
-    );
+    if (!isSecondaryObjectsCards) {
+      this.getPropositions(
+        { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
+        isMap,
+        updated,
+      );
+    }
   };
 
   getRequiredObjects = () =>

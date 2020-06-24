@@ -607,8 +607,8 @@ export const getPropositions = ({
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
-    if (simplified && _.isEmpty(requiredObject)) reqData.simplified = simplified;
-    if (firstMapLoad && _.isEmpty(requiredObject)) reqData.firstMapLoad = firstMapLoad;
+    if (simplified) reqData.simplified = simplified;
+    if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
     const url = getUrl(match);
 
