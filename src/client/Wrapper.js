@@ -10,7 +10,6 @@ import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
-  getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -44,7 +43,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
 @withRouter
 @connect(
   state => ({
-    loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
     isAuthenticated: getIsAuthenticated(state),
