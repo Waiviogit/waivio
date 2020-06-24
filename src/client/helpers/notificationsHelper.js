@@ -202,6 +202,41 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           to: notification.to,
         },
       );
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return intl.formatMessage(
+        {
+          id: 'transfer_to_vesting',
+          defaultMessage: '{from} sent to {to} {amount}',
+        },
+        {
+          from: notification.from,
+          to: notification.to,
+          amount: notification.amount,
+        },
+      );
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return intl.formatMessage(
+        {
+          id: 'change_recovery_account',
+          defaultMessage:
+            '{account_to_recover} initiated change recovery account on {new_recovery_account}',
+        },
+        {
+          account_to_recover: notification.account_to_recover,
+          new_recovery_account: notification.new_recovery_account,
+        },
+      );
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return intl.formatMessage(
+        {
+          id: 'transfer_from_savings',
+          defaultMessage: 'Account {from} initiated a power down on the saving account to {to}',
+        },
+        {
+          from: notification.from,
+          to: notification.to,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -243,6 +278,12 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}`;
     case notificationConstants.TRANSFER_FROM:
       return `/@${notification.to}/transfers`;
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return `/@${notification.from}/transfers`;
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return `/@${notification.new_recovery_account}`;
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return `/@${notification.from}/transfers`;
     default:
       return '/notifications-list';
   }
@@ -281,6 +322,12 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account;
     case notificationConstants.TRANSFER_FROM:
       return notification.to;
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return notification.from;
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return notification.account_to_recover;
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return notification.from;
     default:
       return currentAuthUsername;
   }

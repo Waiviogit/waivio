@@ -27,10 +27,13 @@ import Loading from '../components/Icon/Loading';
 import NotificationRejectUpdate from '../components/Navigation/Notifications/NotificationRejectUpdate';
 import NotificationActicationCampaign from '../components/Navigation/Notifications/NotificationActivationCampaign';
 import NotificationSuspandedStatus from '../components/Navigation/Notifications/NotificationSuspandedStatus';
-import './Notifications.less';
 import NotificationWithdrawRoute from '../components/Navigation/Notifications/NotificationWithdrawRoute';
 import NotificationChangePassword from '../components/Navigation/Notifications/NotificationChangePassword';
 import NotificationTransferFrom from '../components/Navigation/Notifications/NotificationTransferFrom';
+import NotificationTransferVesting from '../components/Navigation/Notifications/NotificationTransferVesting';
+import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
+import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
+import './Notifications.less';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -188,6 +191,33 @@ class Notifications extends React.Component {
               case notificationConstants.TRANSFER_FROM:
                 return (
                   <NotificationTransferFrom
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_TO_VESTING:
+                return (
+                  <NotificationTransferVesting
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+                return (
+                  <NotificationChangeRecoveryAccount
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM_SAVINGS:
+                return (
+                  <NotificationTransferFromSavings
                     key={key}
                     notification={notification}
                     read={read}

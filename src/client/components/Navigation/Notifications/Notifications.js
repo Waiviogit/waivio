@@ -19,11 +19,14 @@ import Loading from '../../Icon/Loading';
 import NotificationRejectUpdate from './NotificationRejectUpdate';
 import NotificationActicationCampaign from './NotificationActivationCampaign';
 import NotificationSuspandedStatus from './NotificationSuspandedStatus';
-import './Notification.less';
-import './Notifications.less';
 import NotificationWithdrawRoute from './NotificationWithdrawRoute';
 import NotificationChangePassword from './NotificationChangePassword';
 import NotificationTransferFrom from './NotificationTransferFrom';
+import NotificationTransferVesting from './NotificationTransferVesting';
+import NotificationChangeRecoveryAccount from './NotificationChangeRecoveryAccount';
+import NotificationTransferFromSavings from './NotificationTransferFromSavings';
+import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 
@@ -300,6 +303,33 @@ class Notifications extends React.Component {
               case notificationConstants.TRANSFER_FROM:
                 return (
                   <NotificationTransferFrom
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_TO_VESTING:
+                return (
+                  <NotificationTransferVesting
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+                return (
+                  <NotificationChangeRecoveryAccount
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM_SAVINGS:
+                return (
+                  <NotificationTransferFromSavings
                     key={key}
                     notification={notification}
                     read={read}
