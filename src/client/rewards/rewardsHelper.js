@@ -352,6 +352,11 @@ export const getProcessingFee = data => {
 export const payablesFilterData = location => [
   {
     filterName: 'days',
+    value: location.pathname === '/rewards/payables' ? 7 : 15,
+    defaultMessage: `Over {value} days`,
+  },
+  {
+    filterName: 'moreDays',
     value: location.pathname === '/rewards/payables' ? 15 : 30,
     defaultMessage: `Over {value} days`,
   },
