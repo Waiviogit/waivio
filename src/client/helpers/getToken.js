@@ -1,5 +1,6 @@
 import store from 'store';
 import { getAccessToken, refreshToken as refreshTokenRequest } from '../../waivioApi/ApiClient';
+import { clearGuestAuthData, getGuestAccessToken, setGuestAuthData } from './localStorageHelpers';
 
 export const setToken = async (socialToken, social, regData) => {
   try {
@@ -8,9 +9,7 @@ export const setToken = async (socialToken, social, regData) => {
       social,
       regData,
     );
-    store.set('accessToken', accessToken);
-    store.set('refreshToken', refreshToken);
-    store.set('accessTokenExpiration', expiration);
+    setGuestAuthData(accessToken, refreshToken, expiration);
     store.set('socialName', social);
     store.set('guestName', userData.name);
 
@@ -27,21 +26,15 @@ export const getValidTokenData = async () => {
     const refreshTokenValue = store.get('refreshToken');
     const response = await refreshTokenRequest(refreshTokenValue);
     if (response.status === 200) {
-      store.set('accessToken', response.accessToken);
-      store.set('refreshToken', response.refreshToken);
-      store.set('accessTokenExpiration', response.expiration);
+      setGuestAuthData(response.accessToken, response.refreshToken, response.expiration);
     }
     if (response.status === 401) {
-      store.remove('accessToken');
-      store.remove('refreshToken');
-      store.remove('accessTokenExpiration');
-      store.remove('socialName');
-      store.remove('guestName');
+      clearGuestAuthData();
       window.location.replace(window.location.origin);
     }
   }
 
-  const token = store.get('accessToken');
+  const token = getGuestAccessToken();
   const name = store.get('guestName');
   return { token, userData: { name } };
 };

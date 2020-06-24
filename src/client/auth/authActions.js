@@ -14,6 +14,7 @@ import { setToken } from '../helpers/getToken';
 import { getGuestPaymentsHistory, updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import history from '../history';
+import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -61,7 +62,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let isGuest = null;
 
   if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
+    const token = getGuestAccessToken();
 
     isGuest = token === 'null' ? false : Boolean(token);
   }
@@ -132,11 +133,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
 
   if (guestAccessToken) accessToken = guestAccessToken;
   if (state.auth.isGuestUser) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('accessTokenExpiration');
-    localStorage.removeItem('socialName');
-    localStorage.removeItem('guestName');
+    clearGuestAuthData();
     if (window) {
       if (window.FB) {
         window.FB.getLoginStatus(res => {
@@ -168,7 +165,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
   if (typeof localStorage !== 'undefined') {
-    const guestAccessToken = localStorage.getItem('accessToken');
+    const guestAccessToken = getGuestAccessToken();
 
     if (guestAccessToken) {
       method = 'guest_login';

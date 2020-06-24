@@ -53,6 +53,16 @@ export const setLocale = locale => {
 
 export const setGuestAuthData = (accessToken, refreshToken, expiration) => {
   store.set('accessToken', accessToken);
-  store.set('expiration', expiration);
+  store.set('accessTokenExpiration', expiration);
   store.set('refreshToken', refreshToken);
+};
+
+export const getGuestAccessToken = () => store.get('accessToken');
+
+export const clearGuestAuthData = () => {
+  store.remove('accessToken');
+  store.remove('refreshToken');
+  store.remove('accessTokenExpiration');
+  store.remove('socialName');
+  store.remove('guestName');
 };
