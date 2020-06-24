@@ -98,10 +98,7 @@ const Debts = ({
           </span>
         </div>
         {map(renderData, debtObjData => {
-          const name =
-            componentLocation === '/rewards/payables'
-              ? debtObjData.userName
-              : debtObjData.guideName;
+          const name = debtObjData.userName || debtObjData.guideName;
           return (
             <PaymentCard
               key={name}
