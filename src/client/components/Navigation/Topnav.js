@@ -127,6 +127,7 @@ class Topnav extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
+      typingTimeout: 0,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -440,8 +441,14 @@ class Topnav extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.setState({ dropdownOpen: true, searchBarValue: value });
-    setTimeout(() => this.handleSearch(value), 800);
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+    this.setState({
+      dropdownOpen: true,
+      searchBarValue: value,
+      typingTimeout: setTimeout(() => this.handleSearch(value), 800),
+    });
   }
 
   handleSearch = value => {

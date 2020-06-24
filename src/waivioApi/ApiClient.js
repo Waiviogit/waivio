@@ -243,29 +243,33 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
 
 export const searchUsers = (searchString, username, limit = 15) =>
   new Promise((resolve, reject) => {
-    fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
-      {
-        headers: {
-          ...headers,
-          following: username,
-          follower: username,
+    if (searchString) {
+      fetch(
+        `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
+        {
+          headers: {
+            ...headers,
+            following: username,
+            follower: username,
+          },
+          method: 'GET',
         },
-        method: 'GET',
-      },
-    )
-      .then(res => res.json())
-      .then(posts => resolve(posts))
-      .catch(error => reject(error));
+      )
+        .then(res => res.json())
+        .then(posts => resolve(posts))
+        .catch(error => reject(error));
+    }
   });
 
 export const searchObjectTypes = (searchString, limit = 15, skip) => {
   const requestBody = { search_string: searchString, limit, skip };
-  return fetch(`${config.apiPrefix}${config.objectTypesSearch}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(requestBody),
-  }).then(res => res.json());
+  if (searchString) {
+    return fetch(`${config.apiPrefix}${config.objectTypesSearch}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+    }).then(res => res.json());
+  }
 };
 
 export const postAppendWaivioObject = postData =>
@@ -506,19 +510,21 @@ export const getObjectType = (typeName, requestData) =>
 
 export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectTypesLimit = 5, user) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.generalSearch}`, {
-      headers: {
-        ...headers,
-        following: user,
-        follower: user,
-      },
-      method: 'POST',
-      body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
+    if (string) {
+      fetch(`${config.apiPrefix}${config.generalSearch}`, {
+        headers: {
+          ...headers,
+          following: user,
+          follower: user,
+        },
+        method: 'POST',
+        body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
+      })
+        .then(handleErrors)
+        .then(res => res.json())
+        .then(result => resolve(result))
+        .catch(error => reject(error));
+    }
   });
 
 export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
