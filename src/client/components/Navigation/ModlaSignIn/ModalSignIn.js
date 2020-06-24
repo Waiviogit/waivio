@@ -4,7 +4,7 @@ import { Modal } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import SteemConnect from '../../../steemConnectAPI';
-import { login, busyLogin } from '../../../auth/authActions';
+import { login, busyLogin, getAuthGuestBalance } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
@@ -42,6 +42,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
             dispatch(getRewardFund());
             dispatch(getRebloggedList());
             dispatch(getRate());
+            dispatch(getAuthGuestBalance());
           });
         });
       } else {

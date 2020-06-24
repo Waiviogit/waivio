@@ -113,6 +113,17 @@ class CatalogWrap extends React.Component {
       if (requiredObject) {
         this.getPropositions({ userName, match, requiredObject, sort });
       }
+    } else {
+      getObject(match.params.name, this.props.userName, [
+        'tagCategory',
+        'categoryItem',
+        'galleryItem',
+      ]).then(wObject => {
+        const requiredObject = this.getRequiredObject(wObject, match);
+        if (requiredObject) {
+          this.getPropositions({ userName, match, requiredObject, sort });
+        }
+      });
     }
   }
 
@@ -140,7 +151,7 @@ class CatalogWrap extends React.Component {
     if (!isEmpty(obj.parent)) {
       requiredObject = obj.parent.author_permlink;
     } else if (!isEmpty(obj.listItems)) {
-      requiredObject = obj.listItems[0].parent.author_permlink;
+      requiredObject = get(obj, ['listItems', '0', 'parent', 'author_permlink']);
     } else {
       requiredObject = match.params.campaignParent || match.params.name;
     }

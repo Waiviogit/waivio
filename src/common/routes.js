@@ -180,6 +180,10 @@ const PayablesCampaign = Loadable({
   loader: () => import('../client/rewards/Payables/Payables'),
   loading: Loading,
 });
+const BlacklistCampaign = Loadable({
+  loader: () => import('../client/rewards/Blacklist/Blacklist'),
+  loading: Loading,
+});
 const Reports = Loadable({
   loader: () => import('../client/rewards/Reports/Reports'),
   loading: Loading,
@@ -215,6 +219,9 @@ const routes = [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/payables',
           '/rewards/reports',
+          '/rewards/blacklist',
+          '/rewards/blacklist/references',
+          '/rewards/blacklist/whitelist',
           '/rewards/receivables',
           '/rewards/payables/@:userName',
           '/rewards/receivables/@:userName',
@@ -262,6 +269,21 @@ const routes = [
             path: '/rewards/match-bot',
             exact: true,
             component: MatchBotCampaign,
+          },
+          {
+            path: '/rewards/blacklist',
+            exact: true,
+            component: BlacklistCampaign,
+          },
+          {
+            path: '/rewards/blacklist/references',
+            exact: true,
+            component: BlacklistCampaign,
+          },
+          {
+            path: '/rewards/blacklist/whitelist',
+            exact: true,
+            component: BlacklistCampaign,
           },
           {
             path: '/rewards/details/:campaignId',

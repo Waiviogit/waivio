@@ -5,7 +5,13 @@ import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
-const PayablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {
+const PayablesContainer = ({
+  userName,
+  currentSteemDollarPrice,
+  filterData,
+  location,
+  setPayablesFilterValue,
+}) => {
   const payableFilters = {};
   _.map(filterData, f => {
     payableFilters[f.filterName] = f.value;
@@ -25,6 +31,8 @@ const PayablesContainer = ({ userName, currentSteemDollarPrice, filterData, loca
       currentSteemDollarPrice={currentSteemDollarPrice}
       debtObjsData={lenders}
       componentLocation={location.pathname}
+      activeFilters={filterData}
+      setPayablesFilterValue={setPayablesFilterValue}
     />
   );
 };
@@ -32,12 +40,14 @@ const PayablesContainer = ({ userName, currentSteemDollarPrice, filterData, loca
 PayablesContainer.propTypes = {
   location: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
-  currentSteemDollarPrice: PropTypes.number.isRequired,
+  currentSteemDollarPrice: PropTypes.number,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  setPayablesFilterValue: PropTypes.func,
 };
 
 PayablesContainer.defaultProps = {
-  filterData: [],
+  setPayablesFilterValue: () => {},
+  currentSteemDollarPrice: 0,
 };
 
 export default injectIntl(PayablesContainer);

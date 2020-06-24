@@ -8,8 +8,14 @@ import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
+import {
+  BXY_GUEST_PREFIX,
+  GUEST_PREFIX,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
+import { HIVE } from '../../../common/constants/cryptos';
+import { getMemo } from '../rewardsHelper';
 import './Payment.less';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../../common/constants/waivio';
 
 // eslint-disable-next-line no-shadow
 const Payment = ({ match, intl, userName }) => {
@@ -26,7 +32,10 @@ const Payment = ({ match, intl, userName }) => {
   const isReceiverGuest =
     match.params.userName.startsWith(GUEST_PREFIX) ||
     match.params.userName.startsWith(BXY_GUEST_PREFIX);
-  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
+
+  const memo = getMemo(isReceiverGuest);
+  const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   useEffect(() => {
     getLenders(requestParams)
@@ -54,6 +63,7 @@ const Payment = ({ match, intl, userName }) => {
   }
 
   const name = match.params.userName;
+  const userReward = `"id":"user_reward"`;
 
   return (
     <div className="Payment">
@@ -65,18 +75,20 @@ const Payment = ({ match, intl, userName }) => {
           <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
-          {isPayables && payable && (
+          {(isPayables && payable > 0) || (!isPayables && payable < 0) ? (
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
+              onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
             >
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable} HIVE`}
+              {` ${payable && payable.toFixed(3)} HIVE`}
             </Action>
+          ) : (
+            ''
           )}
         </div>
       </div>
@@ -88,13 +100,18 @@ const Payment = ({ match, intl, userName }) => {
           })}
           :
         </div>
-        {intl.formatMessage({
-          id: 'payment_page_transfers_with_user_reward_included',
-          defaultMessage:
-            'Only transfer with {"id":"user_reward"} instructions are processed as rewards payments',
-        })}
+        {intl.formatMessage(
+          {
+            id: 'payment_page_transfers_with_user_reward_included',
+            defaultMessage:
+              'Only transfer with {userRewards} instructions are processed as rewards payments',
+          },
+          {
+            userReward,
+          },
+        )}
       </div>
-      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal, Form } from 'antd';
 import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { busyLogin, login } from '../../../auth/authActions';
+import { busyLogin, getAuthGuestBalance, login } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
@@ -40,6 +40,7 @@ const ModalSignUp = ({ isButton }) => {
             dispatch(getRewardFund());
             dispatch(getRebloggedList());
             dispatch(getRate());
+            dispatch(getAuthGuestBalance());
           });
         });
       } else {

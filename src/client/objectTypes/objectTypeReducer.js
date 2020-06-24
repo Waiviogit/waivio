@@ -1,4 +1,4 @@
-import { get, isEmpty, omit, reduce } from 'lodash';
+import { get, isEmpty, omit, reduce, filter } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { getClientWObj } from '../adapters';
 
@@ -50,32 +50,31 @@ const objectType = (state = initialState, action) => {
             {},
           )
         : { ...state.activeFilters };
+      const hasMap = !isEmpty(
+        filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
+      );
       return {
         ...state,
         data,
         filtersList,
         activeFilters,
-        map: Boolean(filters && !isEmpty(filters.map)),
+        map: Boolean((filters && !isEmpty(filters.map)) || hasMap),
         filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
       };
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
-      const { locale } = action.meta;
       const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
-      const filteredObjects = relatedWobjects
-        .filter(
-          wObj =>
-            !wObj.status ||
-            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-        )
-        .map(wObj => getClientWObj(wObj, locale));
+      const filteredObjects = relatedWobjects.filter(
+        wObj =>
+          !wObj.status || (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+      );
       return {
         ...state,
         data,
         mapWobjects: filteredObjects,
-        map: Boolean(filters && !isEmpty(filters.map)),
+        map: true,
         updated: true,
       };
     }
@@ -94,6 +93,11 @@ const objectType = (state = initialState, action) => {
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
+    case wobjTypeActions.RESET_UPDATED_STATE:
+      return {
+        ...state,
+        updated: false,
+      };
     default:
       return state;
   }
@@ -105,7 +109,7 @@ export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
 export const getFilteredObjectsMap = state => state.mapWobjects;
-export const getUpdatedMap = state => state.updated;
+export const getUpdatedMapDiscover = state => state.updated;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
 export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;

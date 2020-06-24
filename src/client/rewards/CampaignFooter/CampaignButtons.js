@@ -24,7 +24,7 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     toggleModalDetails: PropTypes.func,
-    requiredObjectName: PropTypes.bool.isRequired,
+    requiredObjectName: PropTypes.string.isRequired,
     propositionGuideName: PropTypes.string.isRequired,
   };
 

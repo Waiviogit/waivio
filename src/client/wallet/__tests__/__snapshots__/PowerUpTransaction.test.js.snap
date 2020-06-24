@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`(Component) PowerUpTransaction with default prop values renders and matches snapshot 1`] = `
+exports[`(Component) PowerUpTransactionFrom with default prop values renders and matches snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <PowerUpTransaction
+  Symbol(enzyme.__unrendered__): <PowerUpTransactionFrom
     amount={
       <span>
         0 HIVE

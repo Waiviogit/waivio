@@ -7,8 +7,9 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getVoteValue } from '../../helpers/user';
 import { getAuthenticatedUserName, getRate, isGuestUser } from '../../reducers';
+import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
+
 import './StoryFooter.less';
 
 @connect(state => ({
@@ -110,10 +111,10 @@ class StoryFooter extends React.Component {
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
   handleSliderChange = value => {
-    const { user, rewardFund, rate, isGuest } = this.props;
+    const { user, rewardFund, rate, isGuest, post } = this.props;
     const voteWorth = isGuest
       ? 0
-      : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
+      : calculateVotePowerForSlider(user, rewardFund, rate, value, post);
     this.setState({ sliderValue: value, voteWorth });
   };
 

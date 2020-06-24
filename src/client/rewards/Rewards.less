@@ -1,5 +1,6 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/mixins.less';
 
 @wrapPadding: 15px;
 
@@ -7,9 +8,98 @@
   width: 100%;
 
   .RewardBreadcrumb {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+
     .ant-breadcrumb {
       font-size: 1.7em;
       font-weight: 500;
+    }
+  }
+
+  .SortSelector {
+    margin-top: -10px;
+  }
+
+  .RewardsHeader {
+    &-block {
+      border: 1px solid @blue-hawkesBlue;
+      border-radius: 4px;
+      border-bottom: 0;
+      padding: @wrapPadding;
+      background-color: @white;
+    }
+
+    &-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      font-size: larger;
+    }
+
+    &-payment {
+      font-weight: 600;
+    }
+  }
+
+  .RewardsFooter {
+    &-button {
+      button {
+        margin-right: @wrapPadding;
+      }
+    }
+
+    &-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-wrap {
+      margin-top: 145px;
+      background-color: @white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: @wrapPadding;
+      border-top: 0;
+      border-radius: 0 0 4px 4px;
+
+      .anticon {
+        font-size: 26px;
+        margin-right: 5px;
+      }
+    }
+
+    &-payment {
+      font-size: 22px;
+    }
+
+    &__top-line {
+      display: flex;
+      align-items: center;
+      color: @blue-baliHai;
+
+      &-button {
+        border: 1px solid @blue-baliHai;
+        border-radius: 17px;
+        padding: 0 8px;
+        color: @blue-baliHai;
+        cursor: pointer;
+
+        &:hover {
+          border-color: @primary-color;
+          color: @primary-color;
+        }
+      }
+
+      &-button-active {
+        border-color: @primary-color !important;
+        color: @primary-color !important;
+      }
     }
   }
 
@@ -45,28 +135,51 @@
   }
 }
 
-.RewardBreadcrumb {
-  display: none;
-  @media @small {
-    display: block;
-  }
-}
-
 .FilteredRewardsList {
   padding: 0 @wrapPadding;
+
   @media @small {
     padding: 0;
   }
+
   &__header {
-    padding: 0px 30px 8px;
+    padding: 0 30px 8px;
+
     @media @small {
       display: none;
     }
+
     &-text {
       text-transform: capitalize;
       font-size: large;
       font-weight: bold;
       color: @black;
+    }
+  }
+
+  &__filters {
+    &-tags-block {
+      .filters-tags-block();
+
+      margin-top: -10px;
+    }
+
+    &-topic {
+      .filters-topic();
+    }
+
+    &-selector {
+      .filters-selector();
+    }
+
+    &-toggle-map {
+      .filters-toggle-map();
+
+      padding-bottom: 15px;
+    }
+
+    &-modal {
+      .filters-ant-modal();
     }
   }
 }

@@ -5,10 +5,10 @@ import './BalanceTable.less';
 
 const BalanceTable = props => {
   const { intl, budgetTotal, isGuest, guestBalance } = props;
-  const balance = budgetTotal.account_amount ? budgetTotal.account_amount : '0.000';
-  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable : '0.000';
-  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved : '0.000';
-  const remaining = budgetTotal.remaining ? budgetTotal.remaining : '0.000';
+  const balance = budgetTotal.account_amount ? budgetTotal.account_amount.toFixed(3) : '0.000';
+  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
+  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
+  const remaining = budgetTotal.remaining ? budgetTotal.remaining.toFixed(3) : '0.000';
   return (
     <table className="BalanceTable">
       <thead>
@@ -37,12 +37,11 @@ BalanceTable.propTypes = {
   budgetTotal: PropTypes.shape(),
   intl: PropTypes.shape(),
   isGuest: PropTypes.bool,
-  guestBalance: PropTypes.number,
+  guestBalance: PropTypes.string,
 };
 
 BalanceTable.defaultProps = {
   budgetTotal: {},
-  user: {},
   intl: {},
   isGuest: false,
   guestBalance: null,

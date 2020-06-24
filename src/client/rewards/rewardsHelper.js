@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty, uniqBy, map, get, reduce } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import { REWARD } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
 export const displayLimit = 10;
@@ -19,26 +20,34 @@ export const preparePropositionReqData = ({
   sort,
   types,
   guideNames,
+  limit,
+  simplified,
+  firstMapLoad,
 }) => {
   const reqData = {
     limit: displayLimit,
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
-    sort,
     match,
+    sort,
   };
 
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
-  }
-  if (area && area.length > 0 && radius) {
-    reqData.area = area;
     reqData.radius = radius;
+  }
+  if (area && area.length > 0) {
+    reqData.area = area;
+    if (radius) reqData.radius = radius;
   }
   if (types && guideNames) {
     reqData.types = types;
     reqData.guideNames = guideNames;
   }
+  if (limit) reqData.limit = limit;
+  if (simplified) reqData.simplified = simplified;
+  if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
+
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
@@ -168,7 +177,8 @@ export const formatDate = (intl, date) => {
   }
 };
 
-export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));
+export const convertDigits = (number, isHive) =>
+  parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
 
 export const getCurrentUSDPrice = () => {
   const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
@@ -207,11 +217,7 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? reduce(
-        objectDetails.match_bots,
-        (acc, bot) => `${acc}, <a href='/object/${bot}/page'>${bot}</a>`,
-        '',
-      )
+    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, '')
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
@@ -341,4 +347,137 @@ export const getProcessingFee = data => {
     default:
       return null;
   }
+};
+
+export const payablesFilterData = location => [
+  {
+    filterName: 'days',
+    value: location.pathname === '/rewards/payables' ? 15 : 30,
+    defaultMessage: `Over {value} days`,
+  },
+  {
+    filterName: 'payable',
+    value: location.pathname === '/rewards/payables' ? 10 : 20,
+    defaultMessage: `Over {value} HIVE`,
+  },
+];
+
+export const getMemo = isReceiverGuest =>
+  isReceiverGuest ? REWARD.guestReward : REWARD.userReward;
+
+export const getContent = pathName => {
+  if (pathName.includes('references')) {
+    return {
+      title: {
+        id: 'recognize_other_users_blacklists',
+        defaultMessage: "Recognize other users' blacklists",
+      },
+      caption: {
+        id: 'when_you_reference_another_users_blacklist',
+        defaultMessage:
+          "When you reference another user's blacklist, you also recognize all other blacklists referred to by that user",
+      },
+    };
+  }
+
+  if (pathName.includes('whitelist')) {
+    return {
+      title: {
+        id: 'add_user_to_whitelist',
+        defaultMessage: 'Add user to the whitelist',
+      },
+      caption: {
+        id: 'whitelisted_users_can_participate',
+        defaultMessage:
+          'Whitelisted users can participate in any campaign (subject to campaign eligibility criteria) sponsored by',
+      },
+    };
+  }
+
+  return {
+    title: {
+      id: 'add_user_to_blacklist',
+      defaultMessage: 'Add user to the blacklist',
+    },
+    caption: {
+      id: 'blacklisted_users_cannot_participate',
+      defaultMessage: 'Blacklisted users cannot participate in any campaign sponsored by',
+    },
+  };
+};
+
+export const getSuccessAddMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_subscribed_to_other_users_blacklists',
+      defaultMessage: "You subscribed to other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_added_to_whitelist',
+        defaultMessage: 'Users were added to the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_added_to_whitelist',
+      defaultMessage: 'User was added to the whitelist',
+    };
+  }
+
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_added_to_blacklist',
+      defaultMessage: 'Users were added to blacklist',
+    };
+  }
+  return {
+    id: 'user_was_added_to_blacklist',
+    defaultMessage: 'User was added to the blacklist',
+  };
+};
+
+export const getSuccessDeleteMessage = (userNames, pathName) => {
+  if (pathName.includes('references')) {
+    return {
+      id: 'you_unsubscribed_from_other_users_blacklists',
+      defaultMessage: "You unsubscribed from other users' blacklists",
+    };
+  }
+  if (pathName.includes('whitelist')) {
+    if (userNames.length > 1) {
+      return {
+        id: 'users_were_deleted_from_whitelist',
+        defaultMessage: 'Users were deleted from the whitelist',
+      };
+    }
+    return {
+      id: 'user_was_deleted_from_whitelist',
+      defaultMessage: 'User was deleted from the whitelist',
+    };
+  }
+  if (userNames.length > 1) {
+    return {
+      id: 'users_were_deleted_from_blacklist',
+      defaultMessage: 'Users were deleted from the blacklist',
+    };
+  }
+  return {
+    id: 'user_was_deleted_from_blacklist',
+    defaultMessage: 'User was deleted from the blacklist',
+  };
+};
+
+export const getNoBlacklistMessage = userNames => {
+  if (userNames.length > 1) {
+    return {
+      id: 'these_users_do_not_have_blacklists',
+      defaultMessage: 'These users do not have blacklists',
+    };
+  }
+  return {
+    id: 'this_user_does_not_have_blacklists',
+    defaultMessage: 'This user does not have blacklists',
+  };
 };

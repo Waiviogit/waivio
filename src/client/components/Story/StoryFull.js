@@ -184,7 +184,6 @@ class StoryFull extends React.Component {
     const linkedObjects = [];
     const authorName =
       post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
-
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
@@ -192,10 +191,9 @@ class StoryFull extends React.Component {
     const { isReported } = postState;
     const { open, index } = this.state.lightbox;
     const parsedBody = getHtml(post.body, {}, 'text');
-
     this.images = extractImageTags(parsedBody);
     const body = this.images.reduce(
-      (acc, item) => acc.replace(`<center>${item.alt} || 'image'</center>`, ''),
+      (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
       post.body,
     );
 
@@ -230,8 +228,8 @@ class StoryFull extends React.Component {
 
     let replyUI = null;
 
-    if (post.depth !== 0) {
-      replyUI = !isOriginalPost ? (
+    if (post.depth !== 0 && !isOriginalPost) {
+      replyUI = (
         <div className="StoryFull__reply">
           <h3 className="StoryFull__reply__title">
             <FormattedMessage
@@ -259,7 +257,7 @@ class StoryFull extends React.Component {
             </h4>
           )}
         </div>
-      ) : null;
+      );
     }
 
     let popoverMenu = [];
@@ -311,7 +309,6 @@ class StoryFull extends React.Component {
         )}
       </PopoverMenuItem>,
     ];
-
     let content = null;
     if (isPostDeleted(post)) {
       content = <StoryDeleted />;
@@ -475,6 +472,7 @@ class StoryFull extends React.Component {
             >
               {map(taggedObjects, obj => {
                 const wobj = getClientWObj(obj, usedLocale);
+
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>

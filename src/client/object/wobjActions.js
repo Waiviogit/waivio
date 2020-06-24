@@ -258,7 +258,11 @@ export const changeParent = parent => dispatch =>
 export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
 export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
 
-export const followWobject = permlink => (dispatch, getState, { steemConnectAPI }) => {
+export const followWobject = (permlink, name, type) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -268,7 +272,7 @@ export const followWobject = permlink => (dispatch, getState, { steemConnectAPI 
   return dispatch({
     type: FOLLOW_OBJECT.ACTION,
     payload: {
-      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), permlink),
+      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), permlink, name, type),
     },
     meta: {
       permlink,
@@ -276,7 +280,11 @@ export const followWobject = permlink => (dispatch, getState, { steemConnectAPI 
   });
 };
 
-export const unfollowWobject = permlink => (dispatch, getState, { steemConnectAPI }) => {
+export const unfollowWobject = (permlink, name, type) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -286,7 +294,12 @@ export const unfollowWobject = permlink => (dispatch, getState, { steemConnectAP
   return dispatch({
     type: UNFOLLOW_OBJECT.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollowObject(getAuthenticatedUserName(state), permlink),
+      promise: steemConnectAPI.unfollowObject(
+        getAuthenticatedUserName(state),
+        permlink,
+        name,
+        type,
+      ),
     },
     meta: {
       permlink,

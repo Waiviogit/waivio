@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty } from 'lodash';
-import { Form, Input, Modal, Radio } from 'antd';
+import { get, isNull, isEmpty, debounce, map, isNaN } from 'lodash';
+import { AutoComplete, Form, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
@@ -18,13 +18,28 @@ import {
   getTransferAmount,
   getTransferCurrency,
   getTransferMemo,
+  getTransferApp,
   getTransferTo,
   isGuestUser,
-  getGuestUserBalance,
-  isGuestBalance,
+  getAutoCompleteSearchResults,
+  getSearchUsersResults,
+  getTotalVestingShares,
+  getTotalVestingFundSteem,
+  estimateValue,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
-import { BANK_ACCOUNT, BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import {
+  searchAutoComplete,
+  searchObjectsAutoCompete,
+  searchUsersAutoCompete,
+  searchObjectTypesAutoCompete,
+  resetSearchAutoCompete,
+} from '../search/searchActions';
+import { BANK_ACCOUNT } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
+import Avatar from '../components/Avatar';
+import USDDisplay from '../components/Utils/USDDisplay';
+import { REWARD } from '../../common/constants/rewards';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -37,18 +52,27 @@ const InputGroup = Input.Group;
     amount: getTransferAmount(state),
     currency: getTransferCurrency(state),
     memo: getTransferMemo(state),
+    app: getTransferApp(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    guestsBalance: getGuestUserBalance(state),
-    authGuestBalance: isGuestBalance(state),
+    autoCompleteSearchResults: getAutoCompleteSearchResults(state),
+    searchByUser: getSearchUsersResults(state),
+    totalVestingShares: getTotalVestingShares(state),
+    totalVestingFundSteem: getTotalVestingFundSteem(state),
+    getEstimateValue: estimateValue(state),
   }),
   {
     closeTransfer,
     getCryptoPriceHistory,
     notify,
+    searchAutoComplete,
+    searchObjectsAutoCompete,
+    searchUsersAutoCompete,
+    searchObjectTypesAutoCompete,
+    resetSearchAutoCompete,
   },
 )
 @Form.create()
@@ -66,10 +90,17 @@ export default class Transfer extends React.Component {
     amount: PropTypes.number,
     currency: PropTypes.string,
     memo: PropTypes.string,
+    app: PropTypes.string,
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    authGuestBalance: PropTypes.number,
+    searchAutoComplete: PropTypes.func.isRequired,
+    resetSearchAutoCompete: PropTypes.func.isRequired,
+    autoCompleteSearchResults: PropTypes.oneOfType([
+      PropTypes.shape(),
+      PropTypes.arrayOf(PropTypes.shape()),
+    ]),
+    getEstimateValue: PropTypes.number,
   };
 
   static defaultProps = {
@@ -77,13 +108,15 @@ export default class Transfer extends React.Component {
     visible: false,
     amount: 0,
     memo: '',
+    app: '',
     currency: 'HIVE',
     closeTransfer: () => {},
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
-    guestsBalance: 0,
-    authGuestBalance: 0,
+    autoCompleteSearchResults: {},
+    searchByUser: [],
+    getEstimateValue: 0,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -97,22 +130,39 @@ export default class Transfer extends React.Component {
     HBD: 'HBD',
   };
 
+  static markers = {
+    USER: 'user',
+    SELECT_BAR: 'searchSelectBar',
+  };
+
+  constructor(props) {
+    super(props);
+    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
+    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
+    this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
+  }
+
   state = {
     currency: Transfer.CURRENCIES.HIVE,
     oldAmount: undefined,
+    searchBarValue: '',
+    dropdownOpen: false,
+    currentEstimate: null,
+    isSelected: false,
+    isClosedFind: false,
   };
 
   componentDidMount() {
     const { cryptosPriceHistory, getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
-
     if (isNull(currentHiveRate) || isNull(currentHBDRate))
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to, amount, currency } = this.props;
+    const { form, to, amount, currency, visible, getEstimateValue } = this.props;
+
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
         to: nextProps.to,
@@ -123,7 +173,23 @@ export default class Transfer extends React.Component {
         currency: HIVE.symbol,
       });
     }
+
+    if (!visible) {
+      this.setState({
+        searchBarValue: '',
+        dropdownOpen: false,
+        isSelected: false,
+        currentEstimate: null,
+        isClosedFind: false,
+      });
+    }
+
+    if (visible && getEstimateValue) {
+      this.setState({ currentEstimate: getEstimateValue });
+    }
   }
+
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -168,24 +234,30 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form, isGuest, memo } = this.props;
+    const { form, isGuest, memo, app } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
 
-        if (values.to.startsWith(GUEST_PREFIX) || values.to.startsWith(BXY_GUEST_PREFIX)) {
+        if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
             ? { id: memo, to: values.to }
-            : { id: 'user_to_guest_transfer', to: values.to };
+            : { id: REWARD.guestTransfer, to: values.to };
+          if (app) {
+            transferQuery.memo.app = app;
+          }
           if (values.memo) transferQuery.memo.message = values.memo;
           transferQuery.memo = JSON.stringify(transferQuery.memo);
         } else {
           transferQuery.to = values.to;
           if (memo) {
             transferQuery.memo = { id: memo };
+            if (app) {
+              transferQuery.memo.app = app;
+            }
             if (values.memo) transferQuery.memo.message = values.memo;
             transferQuery.memo = JSON.stringify(transferQuery.memo);
           }
@@ -225,19 +297,6 @@ export default class Transfer extends React.Component {
 
   handleCancelClick = () => this.props.closeTransfer();
 
-  handleAmountChange = event => {
-    const { value } = event.target;
-    const { oldAmount } = this.state;
-
-    this.setState({
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
-    });
-    this.props.form.setFieldsValue({
-      amount: Transfer.amountRegex.test(value) ? value : oldAmount,
-    });
-    this.props.form.validateFields(['amount']);
-  };
-
   validateMemo = (rule, value, callback) => {
     const { intl } = this.props;
     const recipientIsExchange = Transfer.exchangeRegex.test(this.props.form.getFieldValue('to'));
@@ -267,7 +326,6 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
-    const guestName = value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -275,45 +333,7 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    if (value.length < Transfer.minAccountLength) {
-      callback([
-        new Error(
-          intl.formatMessage(
-            {
-              id: 'username_too_short',
-              defaultMessage: 'Username {username} is too short.',
-            },
-            {
-              username: value,
-            },
-          ),
-        ),
-      ]);
-      return;
-    }
-    if (
-      (guestName && value.length > Transfer.maxGuestAccountLength) ||
-      (!guestName && value.length > Transfer.maxAccountLength)
-    ) {
-      callback([
-        new Error(
-          intl.formatMessage(
-            {
-              id: 'username_too_long',
-              defaultMessage: 'Username {username} is too long.',
-            },
-            {
-              username: value,
-            },
-          ),
-        ),
-      ]);
-      return;
-    }
-    if (
-      this.props.isGuest &&
-      (value.startsWith(GUEST_PREFIX) || value.startsWith(BXY_GUEST_PREFIX))
-    ) {
+    if (this.props.isGuest && guestUserRegex.test(value)) {
       callback([
         new Error(
           intl.formatMessage({
@@ -324,6 +344,7 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
+
     getUserAccount(value, false).then(result => {
       if (!isEmpty(result)) {
         callback();
@@ -364,9 +385,7 @@ export default class Transfer extends React.Component {
 
     const selectedBalance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentSelectedBalance = this.props.isGuest
-      ? this.props.authGuestBalance
-      : selectedBalance;
+    const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
       callback([
@@ -379,26 +398,100 @@ export default class Transfer extends React.Component {
     }
   };
 
-  render() {
-    const {
-      intl,
-      visible,
-      authenticated,
-      user,
-      memo,
-      screenSize,
-      isGuest,
+  handleAutoCompleteSearch(value) {
+    this.debouncedSearch(value);
+    this.setState({ dropdownOpen: true });
+  }
 
-      authGuestBalance,
-    } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+  showSelectedUser = () => {
+    const { to } = this.props;
+    const { searchBarValue } = this.state;
+    const userName = isEmpty(searchBarValue) ? to : searchBarValue;
+    return (
+      <div className="Transfer__search-content-wrap-current">
+        <div className="Transfer__search-content-wrap-current-user">
+          <Avatar username={userName} size={40} />
+          <div className="Transfer__search-content">{userName}</div>
+        </div>
+        <span
+          role="presentation"
+          onClick={() =>
+            this.setState({
+              isSelected: false,
+              searchBarValue: '',
+              isClosedFind: true,
+            })
+          }
+          className="iconfont icon-delete Transfer__delete-icon"
+        />
+      </div>
+    );
+  };
+
+  hideAutoCompleteDropdown() {
+    this.setState(
+      { searchBarActive: false, dropdownOpen: false, isSelected: true },
+      this.props.resetSearchAutoCompete,
+    );
+  }
+
+  handleOnChangeForAutoComplete(value) {
+    this.setState({
+      searchBarValue: value,
+      isClosedFind: false,
+    });
+  }
+
+  handleAmountChange = event => {
+    const { value } = event.target;
+    const { oldAmount } = this.state;
+    const { cryptosPriceHistory } = this.props;
+
+    const estimatedValue =
+      get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * value;
+
+    this.setState({
+      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
+      currentEstimate: estimatedValue,
+    });
+
+    this.props.form.setFieldsValue({
+      amount: Transfer.amountRegex.test(value) ? value : oldAmount,
+    });
+    this.props.form.validateFields(['amount']);
+  };
+
+  completeDropdown = () => {
+    const { autoCompleteSearchResults } = this.props;
+    const foundUsers = autoCompleteSearchResults.users;
+    const { Option } = AutoComplete;
+    return map(foundUsers, option => (
+      <Option
+        marker={Transfer.markers.USER}
+        key={option.account}
+        value={option.account}
+        className="Transfer__search-autocomplete"
+      >
+        <div className="Transfer__search-content-wrap">
+          <Avatar username={option.account} size={40} />
+          <div className="Transfer__search-content">{option.account}</div>
+        </div>
+      </Option>
+    ));
+  };
+
+  render() {
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { isSelected, searchBarValue, isClosedFind } = this.state;
+    const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
-    const to = getFieldValue('to');
-    const guestName = to && (to.startsWith(GUEST_PREFIX) || to.startsWith(BXY_GUEST_PREFIX));
+
+    const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
+    const guestName = to && guestUserRegex.test(to);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
-    const currentBalance = isGuest ? `${authGuestBalance} HIVE` : balance;
+    const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
 
     const currencyPrefix = getFieldDecorator('currency', {
@@ -423,6 +516,7 @@ export default class Transfer extends React.Component {
     );
 
     const usdValue = this.getUSDValue();
+
     return (
       <Modal
         visible={visible}
@@ -446,14 +540,24 @@ export default class Transfer extends React.Component {
                 { validator: this.validateUsername },
               ],
             })(
-              <Input
-                disabled={isChangesDisabled}
-                type="text"
-                placeholder={intl.formatMessage({
-                  id: 'to_placeholder',
-                  defaultMessage: 'Payment recipient',
-                })}
-              />,
+              isSelected || !isEmpty(this.props.to) ? (
+                this.showSelectedUser()
+              ) : (
+                <AutoComplete
+                  dropdownClassName="Transfer__search-dropdown-container"
+                  onSearch={this.handleAutoCompleteSearch}
+                  onSelect={this.hideAutoCompleteDropdown}
+                  onChange={this.handleOnChangeForAutoComplete}
+                  optionLabelProp="value"
+                  dropdownStyle={{ color: 'red' }}
+                  open={this.state.dropdownOpen && visible}
+                  dataSource={this.completeDropdown()}
+                  placeholder={intl.formatMessage({
+                    id: 'find_user',
+                    defaultMessage: 'Find user',
+                  })}
+                />
+              ),
             )}
           </Form.Item>
           {guestName && (
@@ -495,15 +599,10 @@ export default class Transfer extends React.Component {
                   })}
                 />,
               )}
-              {isMobile ? (
-                <Input disabled className="Transfer__usd-value" placeholder={usdValue} />
-              ) : (
-                <Input
-                  disabled
-                  className="Transfer__usd-value"
-                  addonAfter={currencyPrefix}
-                  placeholder={usdValue}
-                />
+              {!isMobile && (
+                <span className="Transfer__usd-value" placeholder={usdValue}>
+                  {currencyPrefix}
+                </span>
               )}
             </InputGroup>
             <Form.Item>{isMobile && currencyPrefix}</Form.Item>
@@ -524,8 +623,23 @@ export default class Transfer extends React.Component {
                 }}
               />
             )}
+            <div>
+              <FormattedMessage
+                id="estimated_value"
+                defaultMessage="Estimated transaction value: {estimate} USD"
+                values={{
+                  estimate: (
+                    <span role="presentation" className="estimate">
+                      <USDDisplay value={this.state.currentEstimate} />
+                    </span>
+                  ),
+                }}
+              />
+            </div>
           </Form.Item>
-          <Form.Item label={<FormattedMessage id="memo" defaultMessage="Memo" />}>
+          <Form.Item
+            label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
+          >
             {getFieldDecorator('memo', {
               rules: [{ validator: this.validateMemo }],
             })(
@@ -540,10 +654,12 @@ export default class Transfer extends React.Component {
             )}
           </Form.Item>
         </Form>
-        <FormattedMessage
-          id="transfer_modal_info"
-          defaultMessage="Click the button below to be redirected to SteemConnect to complete your transaction."
-        />
+        {!isGuest ? (
+          <FormattedMessage
+            id="transfer_modal_info"
+            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
+          />
+        ) : null}
       </Modal>
     );
   }

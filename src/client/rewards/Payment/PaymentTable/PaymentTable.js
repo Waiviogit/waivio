@@ -37,8 +37,13 @@ const PaymentTable = ({ intl, sponsors, isReports, isHive }) => (
     </thead>
     <tbody>
       {_.map(sponsors, sponsor => (
-        // eslint-disable-next-line no-underscore-dangle
-        <PaymentTableRow key={sponsor._id} sponsor={sponsor} isReports={isReports} />
+        <PaymentTableRow
+          // eslint-disable-next-line no-underscore-dangle
+          key={sponsor._id}
+          sponsor={sponsor}
+          isReports={isReports}
+          isHive={isHive}
+        />
       ))}
     </tbody>
   </table>

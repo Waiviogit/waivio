@@ -15,7 +15,7 @@ const ReportHeader = ({ intl }) => {
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
   const rewardHive = singleReportData.rewardHive ? singleReportData.rewardHive.toFixed(3) : 0;
-  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(3) : 'N/A';
+  const rewardUsd = singleReportData.rewardUsd ? singleReportData.rewardUsd.toFixed(2) : 'N/A';
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
@@ -143,11 +143,10 @@ const ReportHeader = ({ intl }) => {
             {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
           </span>
           <a href={`/object/${primaryObjectPermlink}`}>
-            <span className="ReportHeader__campaignInfo-links">{primaryObjectName}</span>
+            <span className="ReportHeader__campaignInfo-links">{`${primaryObjectName}, `}</span>
           </a>
-          {', '}
           {map(secondaryObjects, object => (
-            <a href={`/object/${object.permlink}`}>
+            <a key={object.permlink} href={`/object/${object.permlink}`}>
               <span className="ReportHeader__campaignInfo-links">{object.name}</span>
             </a>
           ))}

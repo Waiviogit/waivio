@@ -3,6 +3,7 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
+import { get } from 'lodash';
 import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
@@ -92,6 +93,33 @@ export const calculatePayout = post => {
   }
 
   return payoutDetails;
+};
+
+export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeight, post) => {
+  const vests =
+    parseFloat(account.vesting_shares) +
+    parseFloat(account.received_vesting_shares) -
+    parseFloat(account.delegated_vesting_shares);
+
+  const previousVoteTime =
+    (new Date().getTime() - new Date(`${account.last_vote_time}Z`).getTime()) / 1000;
+  const accountVotingPower = Math.min(
+    10000,
+    account.voting_power + (10000 * previousVoteTime) / 432000,
+  );
+
+  const power = Math.round(((accountVotingPower / 100) * voteWeight + 49) / 50);
+  const rShares = vests * power * 100 - 50000000;
+
+  const tRShares = parseFloat(post.vote_rshares) + rShares;
+
+  const s = parseFloat(rewardFund.content_constant);
+  const tClaims = (tRShares * (tRShares + 2 * s)) / (tRShares + 4 * s);
+
+  const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
+  const postValue = tClaims * rewards * price;
+
+  return postValue * (rShares / tRShares);
 };
 
 function checkPermLinkLength(permlink) {
@@ -192,8 +220,8 @@ export const calculateVoteValue = (
 };
 
 export const calculateDownVote = user => {
-  const currentMana = user.voting_manabar.current_mana;
-  const downvoteMana = user.downvote_manabar.current_mana;
+  const currentMana = get(user, ['voting_manabar', 'current_mana']);
+  const downvoteMana = get(user, ['downvote_manabar', 'current_mana']);
 
   if (currentMana && downvoteMana) {
     const downvoteUpdate = user.downvote_manabar.last_update_time;
