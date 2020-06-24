@@ -26,6 +26,7 @@ export const getContent = (author, permlink, afterLike) => dispatch => {
     payload: {
       promise: doApiRequest().then(res => {
         if (res.id === 0) throw new Error('There is no such post');
+        if (res.message) throw new Error(res.message);
         return res;
       }),
     },
