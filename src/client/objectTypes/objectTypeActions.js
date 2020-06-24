@@ -55,9 +55,12 @@ export const getObjectType = (
   });
 };
 
-export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode) => dispatch => {
+export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode) => (
+  dispatch,
+  getState,
+) => {
   const filters = { rating: [], map: { radius, coordinates } };
-  const typeName = 'restaurant';
+  const typeName = getTypeName(getState());
   const actionType = GET_OBJECT_TYPE_MAP.ACTION;
   const getLimit = () => {
     let limit = 50;

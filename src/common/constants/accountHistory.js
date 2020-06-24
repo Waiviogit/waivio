@@ -6,6 +6,9 @@ export const COMMENT = 'comment';
 export const DELETE_COMMENT = 'delete_comment';
 export const CUSTOM_JSON = 'custom_json';
 export const FOLLOW = 'follow';
+export const FOLLOW_WOBJECT = 'follow_wobject';
+export const UNFOLLOW_WOBJECT = 'unfollow_wobject';
+export const WOBJ_RATING = 'wobj_rating';
 export const REBLOG = 'reblog';
 export const CURATION_REWARD = 'curation_reward';
 export const AUTHOR_REWARD = 'author_reward';
@@ -14,6 +17,7 @@ export const FILL_VESTING_WITHDRAW = 'fill_vesting_withdraw';
 
 // Supported Custom JSON Type IDs
 export const ID_FOLLOW = 'follow';
+export const ID_FOLLOW_WOBJECT = 'follow_wobject';
 
 // Wallet Action Types
 export const TRANSFER = 'transfer';
@@ -63,3 +67,4 @@ export const PARSED_PROPERTIES = [
 ];
 
 export const PARSED_CUSTOM_JSON_IDS = [ID_FOLLOW];
+export const PARSED_CUSTOM_JSON_FOLLOW_WOBJECT = [ID_FOLLOW_WOBJECT];

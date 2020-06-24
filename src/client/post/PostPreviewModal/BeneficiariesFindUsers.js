@@ -55,7 +55,7 @@ class BeneficiariesFindUsers extends React.Component {
     this.handleOnChange = this.handleOnChange.bind(this);
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 200);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
 
   prepareOptions = searchResults => {
     const dataSource = [];

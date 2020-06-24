@@ -22,13 +22,14 @@ export const preparePropositionReqData = ({
   guideNames,
   limit,
   simplified,
+  firstMapLoad,
 }) => {
   const reqData = {
     limit: displayLimit,
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
-    sort,
     match,
+    sort,
   };
 
   if (coordinates && coordinates.length > 0) {
@@ -45,6 +46,7 @@ export const preparePropositionReqData = ({
   }
   if (limit) reqData.limit = limit;
   if (simplified) reqData.simplified = simplified;
+  if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
 
   switch (match.params.filterKey) {
     case 'active':
@@ -464,6 +466,19 @@ export const getSuccessDeleteMessage = (userNames, pathName) => {
   return {
     id: 'user_was_deleted_from_blacklist',
     defaultMessage: 'User was deleted from the blacklist',
+  };
+};
+
+export const getNoBlacklistMessage = userNames => {
+  if (userNames.length > 1) {
+    return {
+      id: 'these_users_do_not_have_blacklists',
+      defaultMessage: 'These users do not have blacklists',
+    };
+  }
+  return {
+    id: 'this_user_does_not_have_blacklists',
+    defaultMessage: 'This user does not have blacklists',
   };
 };
 

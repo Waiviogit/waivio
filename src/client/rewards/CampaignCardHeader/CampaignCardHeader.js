@@ -2,11 +2,16 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 import Avatar from '../../components/Avatar';
 import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData }) => {
-  const rewardPrise = `${campaignData.reward} USD`;
+  const price = get(campaignData, ['objects', '0', 'reward']);
+  const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
+  const rewardPriseHive = `${price ? price.toFixed(3) : 0} HIVE`;
+  const rewardPriseUsd = `${campaignData.reward} USD`;
+  const rewardPrise = isAssigned ? rewardPriseHive : rewardPriseUsd;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -21,11 +26,11 @@ const CampaignCardHeader = ({ intl, campaignData }) => {
             {intl.formatMessage({
               id: 'rewards_details_earn',
               defaultMessage: 'Earn',
-            })}
+            })}{' '}
           </span>
           <React.Fragment>
             <span className="CampaignCardHeader__data-colored">
-              <span className="fw6">{` ${rewardPrise} `}</span>
+              <span className="fw6">{rewardPrise}</span>
             </span>
           </React.Fragment>
         </div>

@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { RADIUS, ZOOM } from '../../../common/constants/map';
+import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import {
@@ -47,10 +47,10 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: ZOOM,
+      zoom: 0,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: RADIUS,
+      radius: DEFAULT_RADIUS,
     };
 
     this.mapRef = createRef();
@@ -70,7 +70,8 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { primaryObjectCoordinates } = this.props;
+    const { primaryObjectCoordinates, zoomMap } = this.props;
+    const { zoom } = this.state;
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
       !isEmpty(nextProps.primaryObjectCoordinates)
@@ -80,22 +81,21 @@ class MapOS extends React.Component {
         center: [nextProps.primaryObjectCoordinates[1], nextProps.primaryObjectCoordinates[0]],
       });
     }
+    if ((zoomMap === 0 && nextProps.zoomMap) || (zoom === 0 && nextProps.zoomMap)) {
+      this.setState({ zoom: nextProps.zoomMap });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { zoom, center } = this.state;
-    const { mapWobjects, updated, match } = this.props;
+    const { center, zoom } = this.state;
+    const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
 
-    if (propsMatch !== prevPropsMatch) {
+    if (propsMatch !== prevPropsMatch && prevProps.match !== this.props.match) {
       this.updateMap();
     }
-    if (prevProps.updated !== updated) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ needUpdate: false, zoom: mapWobjects.length < 6 ? 3 : zoom });
-    }
-    if (prevState.zoom !== zoom || !isEqual(prevState.center, center)) {
+    if ((prevState.zoom !== zoom && prevState.zoom !== 0) || !isEqual(prevState.center, center)) {
       this.updateMap();
     }
   }
@@ -142,7 +142,9 @@ class MapOS extends React.Component {
         const lng =
           getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
           get(wobject, 'map.coordinates[0]');
-        const isMarked = Boolean(wobject && wobject.campaigns) || match.path.includes('rewards');
+        const isMarked =
+          Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
+          match.path.includes('rewards');
         return lat && lng ? (
           <CustomMarker
             key={`obj${wobject.author_permlink}`}
@@ -266,19 +268,20 @@ class MapOS extends React.Component {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, zoom, center } = this.state;
     const markersLayout = this.getMarkers(wobjects);
-
     return center ? (
       <div className="MapOS">
-        <Map
-          provider={mapProvider}
-          onBoundsChanged={this.onBoundsChanged}
-          center={center}
-          zoom={zoom}
-          height={heigth}
-        >
-          {markersLayout}
-          {infoboxData && this.getOverlayLayout()}
-        </Map>
+        {zoom > 0 && (
+          <Map
+            provider={mapProvider}
+            onBoundsChanged={this.onBoundsChanged}
+            center={center}
+            zoom={zoom}
+            height={heigth}
+          >
+            {markersLayout}
+            {infoboxData && this.getOverlayLayout()}
+          </Map>
+        )}
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
@@ -360,11 +363,10 @@ MapOS.propTypes = {
   onMarkerClick: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   getAreaSearchData: PropTypes.func,
-  mapWobjects: PropTypes.arrayOf(PropTypes.shape()),
-  updated: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   resetUpdatedFlag: PropTypes.func,
   primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
+  zoomMap: PropTypes.number,
 };
 
 MapOS.defaultProps = {
@@ -376,13 +378,12 @@ MapOS.defaultProps = {
   userLocation: {},
   customControl: null,
   usedLocale: 'en-US',
-  mapWobjects: [],
-  updated: false,
   setArea: () => {},
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},
   primaryObjectCoordinates: [],
   resetUpdatedFlag: () => {},
+  zoomMap: 0,
 };
 
 export default MapOS;

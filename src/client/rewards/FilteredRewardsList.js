@@ -4,7 +4,7 @@ import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { getTextByFilterKey } from './rewardsHelper';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
@@ -122,7 +122,7 @@ const FilteredRewardsList = props => {
             to={`/object/${propositions[0].requiredObject}`}
             className="FilteredRewardsList__header-text"
           >
-            {propositions[0].required_object.default_name}
+            {get(propositions, ['0', 'required_object', 'default_name'])}
           </Link>
         </div>
       ) : (
@@ -208,7 +208,7 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'reward',
+  sort: 'proximity',
   loadingCampaigns: false,
   loading: false,
   sponsors: [],
