@@ -140,10 +140,8 @@ class EditPost extends Component {
   componentDidUpdate(prevProps) {
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     if (
-      get(this.props, 'draftId') !== get(prevProps, 'draftId') &&
-      currDraft &&
-      currDraft.jsonMetadata &&
-      currDraft.jsonMetadata.campaignId
+      this.props.draftId !== prevProps.draftId &&
+      has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
       getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
@@ -230,7 +228,7 @@ class EditPost extends Component {
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
-    const campaignId = campaign._id;
+    const campaignId = has(campaign, '_id') ? campaign._id : null;
 
     const postData = {
       body: postBody,
