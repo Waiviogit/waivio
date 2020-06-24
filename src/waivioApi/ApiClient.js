@@ -884,8 +884,9 @@ export const getAccessToken = (token, social, regData) => {
     body: JSON.stringify(body),
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
       response.expiration = data.headers.get('expires-in');
+      response.refreshToken = data.headers.get('refresh-token');
       return data.json();
     })
     .then(data => {

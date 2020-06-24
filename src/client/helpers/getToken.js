@@ -3,7 +3,8 @@ import { getAccessToken, getNewToken } from '../../waivioApi/ApiClient';
 export const setToken = async (socialToken, social, regData) => {
   try {
     const userData = await getAccessToken(socialToken, social, regData);
-    localStorage.setItem('accessToken', userData.token);
+    localStorage.setItem('accessToken', userData.accessToken);
+    localStorage.setItem('refreshToken', userData.refreshToken);
     const expiration = userData.expiration;
     localStorage.setItem('accessTokenExpiration', String(expiration));
     localStorage.setItem('socialName', social);
