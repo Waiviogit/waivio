@@ -107,14 +107,16 @@ class Manage extends React.Component {
       campaign =>
         campaign.status === 'active' ||
         campaign.status === 'pending' ||
-        campaign.status === 'onHold',
+        campaign.status === 'onHold' ||
+        campaign.status === 'reachedLimit',
     );
     const historyCampaigns = filter(
       campaigns,
       campaign =>
         campaign.status !== 'active' ||
         campaign.status !== 'pending' ||
-        campaign.status !== 'onHold',
+        campaign.status !== 'onHold' ||
+        campaign.status !== 'reachedLimit',
     );
 
     return (
