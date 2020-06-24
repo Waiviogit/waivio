@@ -228,7 +228,7 @@ class EditPost extends Component {
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
-    const campaignId = has(campaign, '_id') ? campaign._id : null;
+    const campaignId = get(campaign, '_id', null);
 
     const postData = {
       body: postBody,
