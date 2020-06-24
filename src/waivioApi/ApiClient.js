@@ -1,8 +1,8 @@
 /* eslint-disable */
-import _ from 'lodash';
+import _, { ceil } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
-import { isEmpty } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
@@ -829,7 +829,10 @@ export const getAuthenticatedUserMetadata = userName => {
     method: 'GET',
   })
     .then(res => res.json())
-    .then(res => _.omit(res.user_metadata, '_id'));
+    .then(res => ({
+      user_metadata: omit(res.user_metadata, '_id'),
+      privateEmail: res.privateEmail,
+    }));
 };
 
 export const updateUserMetadata = async (userName, data) => {
@@ -1151,7 +1154,10 @@ export const checkFollowing = (user, users = []) => {
 };
 
 export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
-  const query = `inputAmount=${inputAmount}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
+  const query = `inputAmount=${ceil(
+    inputAmount,
+    17,
+  )}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
   return fetch(
     `${config.campaignApiPrefix}${config.withdraw}${config.estimateOutputAmount}?${query}`,
     {
@@ -1161,27 +1167,20 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
   ).then(res => res.json());
 };
 
-export const sendEmailConfirmation = (
-  userName,
-  type,
-  email,
-  isGuest,
-  currency,
-  amount,
-  address,
-) => {
+export const sendEmailConfirmation = (userName, type, email, isGuest) => {
+  const transactionInfo = JSON.parse(localStorage.getItem('withdrawData'));
   const transactionData = {
-    outputCoinType: currency,
+    outputCoinType: transactionInfo.currentCurrency,
     inputCoinType: 'hive',
-    amount,
-    address,
+    amount: transactionInfo.hiveAmount,
+    address: transactionInfo.walletAddress,
   };
-  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('');
+  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('accessToken');
   const body =
     type === 'confirmEmail'
       ? { userName, type, email, isGuest }
       : { userName, type, email, isGuest, transactionData };
-  console.log(body);
+
   return fetch(`${config.campaignApiPrefix}${config.mailer}${config.confirmEmail}`, {
     headers: {
       ...headers,
@@ -1190,6 +1189,29 @@ export const sendEmailConfirmation = (
     method: 'POST',
     body: JSON.stringify(body),
   }).then(res => res.json());
+};
+
+export const validaveCryptoWallet = (address, crypto) => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.validateAddress}?address=${address}&crypto=${crypto}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
+export const finalConfirmation = (token, id) => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.finalConfirmTransaction}?id=${id}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': token,
+      },
+      method: 'GET',
+    },
+  ).then(res => res.json());
 };
 
 // injected as extra argument in Redux Thunk

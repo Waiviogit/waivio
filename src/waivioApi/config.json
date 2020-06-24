@@ -87,5 +87,7 @@
   "estimateOutputAmount": "/estimate-output-amount",
   "withdraw": "/withdraw",
   "mailer": "/mailer",
-  "confirmEmail": "/confirm-email-request"
+  "confirmEmail": "/confirm-email-request",
+  "validateAddress": "/validate-crypto-wallet",
+  "finalConfirmTransaction": "/confirm-transaction"
 }

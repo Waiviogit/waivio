@@ -92,8 +92,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
+        resolve({
+          ...scUserData,
+          userMetaData: userMetaData.user_metadata,
+          privateEmail: userMetaData.privateEmail,
+          isGuestUser: isGuest,
+        });
       } catch (e) {
         reject(e);
       }

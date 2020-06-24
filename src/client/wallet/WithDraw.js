@@ -3,74 +3,106 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Modal } from 'antd';
 import classNames from 'classnames';
+import { upperFirst } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
+
 import { getAuthenticatedUser, getStatusWithdraw, isGuestUser } from '../reducers';
 import { closeWithdraw } from './walletActions';
 import QrModal from '../widgets/QrModal';
-import { estimateAmount } from '../../waivioApi/ApiClient';
+import { estimateAmount, validaveCryptoWallet } from '../../waivioApi/ApiClient';
 import { onlyNumberRegExp } from '../../common/constants/validation';
 import EmailConfirmation from '../widgets/EmailConfirmation';
+import { CRYPTO_FOR_VALIDATE_WALLET, CRYPTO_LIST_FOR_WALLET } from '../../common/constants/waivio';
 
 import './Withdraw.less';
 
 const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
   const [isShowScanner, setShowScanner] = useState(false);
-  const [scanResult, setScanResult] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
   const [currentCurrency, setCurrentCurrency] = useState('');
   const [hiveAmount, setHiveAmount] = useState();
   const [currencyAmount, setCurrencyAmount] = useState();
   const [isShowConfirm, setShowConfirm] = useState();
+  const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
 
-  useEffect(() => {
-    if (currentCurrency && hiveAmount && !currencyAmount) {
-      estimateAmount(hiveAmount, 'hive', currentCurrency).then(r =>
-        setCurrencyAmount(r.outputAmount),
+  const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
+  const isUserCanMakeTransfer =
+    +(currentBalance && currentBalance.replace(' HIVE', '')) >= +hiveAmount;
+
+  const walletAddressValidation = (address, crypto) => {
+    setIsValidate({ valid: false, loading: true });
+
+    if (currentCurrency) {
+      setTimeout(
+        () =>
+          validaveCryptoWallet(address, crypto).then(res => {
+            if (res.isValid) {
+              setIsValidate({ valid: true, loading: false });
+            } else {
+              setIsValidate({ valid: false, loading: false });
+            }
+          }),
+        1000,
       );
     }
+  };
 
-    if (currentCurrency && currencyAmount) {
-      estimateAmount(currencyAmount, currentCurrency, 'hive').then(r =>
-        setHiveAmount(r.outputAmount),
-      );
+  useEffect(() => {
+    if (currentCurrency) {
+      if (hiveAmount && !currencyAmount) {
+        estimateAmount(hiveAmount, 'hive', currentCurrency).then(r =>
+          setCurrencyAmount(r.outputAmount),
+        );
+      }
+
+      if (currencyAmount) {
+        estimateAmount(currencyAmount, currentCurrency, 'hive').then(r =>
+          setHiveAmount(r.outputAmount),
+        );
+      }
+
+      if (walletAddress) {
+        walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
+      }
     }
   }, [currentCurrency]);
 
-  const handleHiveCount = e => {
-    const validateValue = e.currentTarget.value.replace(onlyNumberRegExp, '');
-    setHiveAmount(validateValue);
-
-    if (currentCurrency)
-      estimateAmount(validateValue, 'hive', currentCurrency).then(r => {
-        setCurrencyAmount(r.outputAmount);
-      });
-  };
-  const handleCurrencyCount = e => {
+  const handleCurrencyCountChange = (e, inputSetter, outputSetter, input, output) => {
     const validateValue = e.currentTarget.value.replace(onlyNumberRegExp, '');
 
-    setCurrencyAmount(validateValue);
+    inputSetter(validateValue);
 
-    if (currentCurrency)
-      estimateAmount(validateValue, currentCurrency, 'hive').then(r => {
-        setHiveAmount(r.outputAmount);
-      });
+    if (input) estimateAmount(validateValue, input, output).then(r => outputSetter(r.outputAmount));
   };
-  const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
+
   const switchButtonClassList = currency =>
     classNames('Withdraw__switcher-button', 'Withdraw__switcher-button--border-radius', {
       'Withdraw__switcher-button--active-radius': currency === currentCurrency,
     });
-  const handleChange = e => setScanResult(e.currentTarget.value);
+  const validatorClassList = classNames({
+    invalid: !validationAddressState.valid,
+    valid: validationAddressState.valid,
+  });
+  const handleChange = e => {
+    const address = e.currentTarget.value;
+
+    setWalletAddress(address);
+    walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
+  };
   const handleRequest = () => {
     localStorage.setItem(
       'withdrawData',
       JSON.stringify({
         hiveAmount,
-        scanResult,
+        walletAddress,
         currentCurrency,
       }),
     );
     setShowConfirm(true);
   };
+  const validatorMessage = validationAddressState.valid
+    ? intl.formatMessage({ id: 'address_valid', defaultMessage: 'Address is valid' })
+    : intl.formatMessage({ id: 'address_not_valid', defaultMessage: 'Address is invalid' });
 
   return (
     <React.Fragment>
@@ -84,6 +116,16 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={handleRequest}
         onCancel={closeWithdrawModal}
+        okButtonProps={{
+          disabled: !(
+            walletAddress &&
+            currentCurrency &&
+            hiveAmount &&
+            currencyAmount &&
+            validationAddressState.valid &&
+            isUserCanMakeTransfer
+          ),
+        }}
       >
         <Form className="Withdraw" hideRequiredMark>
           <Form.Item
@@ -94,7 +136,15 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
             <input
               placeholder={0}
               value={hiveAmount}
-              onChange={handleHiveCount}
+              onChange={e =>
+                handleCurrencyCountChange(
+                  e,
+                  setHiveAmount,
+                  setCurrencyAmount,
+                  'hive',
+                  currentCurrency,
+                )
+              }
               type="text"
               className="Withdraw__input-text"
             />
@@ -120,33 +170,30 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
           <div className="Withdraw__input-wrapper">
             <input
               type="text"
-              onChange={handleCurrencyCount}
+              onChange={e =>
+                handleCurrencyCountChange(
+                  e,
+                  setCurrencyAmount,
+                  setHiveAmount,
+                  currentCurrency,
+                  'hive',
+                )
+              }
               value={currencyAmount}
               placeholder={0}
               className="Withdraw__input-text"
             />
             <div className="Withdraw__switcher-wrapper">
-              <span
-                className={switchButtonClassList('btc')}
-                role="presentation"
-                onClick={() => setCurrentCurrency('btc')}
-              >
-                Bitcoin
-              </span>
-              <span
-                className={switchButtonClassList('ltc')}
-                role="presentation"
-                onClick={() => setCurrentCurrency('ltc')}
-              >
-                Litecoin
-              </span>
-              <span
-                className={switchButtonClassList('eth')}
-                role="presentation"
-                onClick={() => setCurrentCurrency('eth')}
-              >
-                Ethereum
-              </span>
+              {CRYPTO_LIST_FOR_WALLET.map(crypto => (
+                <span
+                  key={crypto}
+                  className={switchButtonClassList(crypto)}
+                  role="presentation"
+                  onClick={() => setCurrentCurrency(crypto)}
+                >
+                  {upperFirst(CRYPTO_FOR_VALIDATE_WALLET[crypto])}
+                </span>
+              ))}
             </div>
           </div>
           <div className="Withdraw__subtitle">
@@ -162,7 +209,7 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
           <div className="Withdraw__address-wrapper">
             <input
               className="Withdraw__input"
-              value={scanResult}
+              value={walletAddress}
               onChange={handleChange}
               placeholder="Enter address"
             />
@@ -171,12 +218,27 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
               QR scanner
             </button>
           </div>
+          {walletAddress && !validationAddressState.loading && (
+            <p className={validatorClassList}>{validatorMessage}</p>
+          )}
+          {walletAddress && currentCurrency && validationAddressState.loading && (
+            <p>
+              {intl.formatMessage({
+                id: 'check_address',
+                defaultMessage: 'Please wait, we validation your address',
+              })}
+            </p>
+          )}
         </Form>
       </Modal>
       {isShowScanner && (
-        <QrModal visible={isShowScanner} setDataScan={setScanResult} handleClose={setShowScanner} />
+        <QrModal
+          visible={isShowScanner}
+          setDataScan={setWalletAddress}
+          handleClose={setShowScanner}
+        />
       )}
-      <EmailConfirmation visible={isShowConfirm} handleClose={setShowConfirm} email="" />
+      <EmailConfirmation visible={isShowConfirm} handleClose={setShowConfirm} />
     </React.Fragment>
   );
 };

@@ -52,6 +52,7 @@ import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage
 import SubFeed from '../client/feed/SubFeed';
 import UserInfo from '../client/app/Sidebar/UserInfo';
 import BlacklistCampaign from '../client/rewards/Blacklist/Blacklist';
+import ConfirmationModal from '../client/widgets/ConfirmationModal';
 
 const routes = [
   {
@@ -331,6 +332,11 @@ const routes = [
         component: Page,
         exact: true,
         routes: [
+          {
+            path: '/confirmation',
+            exact: true,
+            component: ConfirmationModal,
+          },
           {
             path: '/notifications-list',
             component: Notifications,
