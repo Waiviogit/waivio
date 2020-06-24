@@ -50,3 +50,9 @@ export const getLocale = () => store.get('locale') || 'en';
 export const setLocale = locale => {
   store.set('locale', locale);
 };
+
+export const setGuestAuthData = (accessToken, refreshToken, expiration) => {
+  store.set('accessToken', accessToken);
+  store.set('expiration', expiration);
+  store.set('refreshToken', refreshToken);
+};

@@ -896,20 +896,17 @@ export const getAccessToken = (token, social, regData) => {
     .catch(err => err);
 };
 
-export const getNewToken = token => {
+export const refreshToken = token => {
   let response = {};
-  return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
+  return fetch(`${config.baseUrl}${config.auth}/${config.refreshAuthToken}`, {
     method: 'POST',
-    headers: { 'access-token': token },
+    headers: { 'refresh-token': token },
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
+      response.refreshToken = data.headers.get('refresh-token');
       response.expiration = data.headers.get('expires-in');
       response.status = data.status;
-      return data.json();
-    })
-    .then(data => {
-      response.userData = data.user;
       return response;
     })
     .catch(e => {

@@ -133,6 +133,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   if (guestAccessToken) accessToken = guestAccessToken;
   if (state.auth.isGuestUser) {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('accessTokenExpiration');
     localStorage.removeItem('socialName');
     localStorage.removeItem('guestName');

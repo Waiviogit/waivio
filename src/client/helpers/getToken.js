@@ -1,15 +1,20 @@
-import { getAccessToken, getNewToken } from '../../waivioApi/ApiClient';
+import store from 'store';
+import { getAccessToken, refreshToken as refreshTokenRequest } from '../../waivioApi/ApiClient';
 
 export const setToken = async (socialToken, social, regData) => {
   try {
-    const userData = await getAccessToken(socialToken, social, regData);
-    localStorage.setItem('accessToken', userData.accessToken);
-    localStorage.setItem('refreshToken', userData.refreshToken);
-    const expiration = userData.expiration;
-    localStorage.setItem('accessTokenExpiration', String(expiration));
-    localStorage.setItem('socialName', social);
-    localStorage.setItem('guestName', userData.userData.name);
-    return userData;
+    const { accessToken, expiration, refreshToken, userData } = await getAccessToken(
+      socialToken,
+      social,
+      regData,
+    );
+    store.set('accessToken', accessToken);
+    store.set('refreshToken', refreshToken);
+    store.set('accessTokenExpiration', expiration);
+    store.set('socialName', social);
+    store.set('guestName', userData.name);
+
+    return { userData };
   } catch (err) {
     return err;
   }
@@ -17,17 +22,26 @@ export const setToken = async (socialToken, social, regData) => {
 
 // eslint-disable-next-line no-unused-vars
 export const getValidTokenData = async () => {
-  const token = localStorage.getItem('accessToken');
-  const expiration = localStorage.getItem('accessTokenExpiration');
+  const expiration = store.get('accessTokenExpiration');
   if (expiration && Date.now() > expiration * 1000) {
-    const userData = await getNewToken(token);
-    if (userData.status === 200) {
-      localStorage.setItem('accessToken', userData.token);
-      localStorage.setItem('accessTokenExpiration', String(userData.expiration));
-      localStorage.setItem('guestName', userData.userData.name);
-      return userData;
+    const refreshTokenValue = store.get('refreshToken');
+    const response = await refreshTokenRequest(refreshTokenValue);
+    if (response.status === 200) {
+      store.set('accessToken', response.accessToken);
+      store.set('refreshToken', response.refreshToken);
+      store.set('accessTokenExpiration', response.expiration);
+    }
+    if (response.status === 401) {
+      store.remove('accessToken');
+      store.remove('refreshToken');
+      store.remove('accessTokenExpiration');
+      store.remove('socialName');
+      store.remove('guestName');
+      window.location.replace(window.location.origin);
     }
   }
-  const name = localStorage.getItem('guestName');
+
+  const token = store.get('accessToken');
+  const name = store.get('guestName');
   return { token, userData: { name } };
 };
