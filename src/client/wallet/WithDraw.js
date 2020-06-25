@@ -3,20 +3,38 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Modal } from 'antd';
 import classNames from 'classnames';
-import { upperFirst } from 'lodash';
+import { get, upperFirst } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
-import { getAuthenticatedUser, getStatusWithdraw, isGuestUser } from '../reducers';
+import {
+  getAuthenticatedUser,
+  getCryptosPriceHistory,
+  getStatusWithdraw,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  isGuestUser,
+} from '../reducers';
 import { closeWithdraw } from './walletActions';
 import QrModal from '../widgets/QrModal';
 import { estimateAmount, validaveCryptoWallet } from '../../waivioApi/ApiClient';
 import { onlyNumberRegExp } from '../../common/constants/validation';
 import EmailConfirmation from '../widgets/EmailConfirmation';
 import { CRYPTO_FOR_VALIDATE_WALLET, CRYPTO_LIST_FOR_WALLET } from '../../common/constants/waivio';
+import { calculateEstAccountValue } from '../vendor/steemitHelpers';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 
 import './Withdraw.less';
 
-const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
+const Withdraw = ({
+  intl,
+  visible,
+  user,
+  isGuest,
+  closeWithdrawModal,
+  totalVestingShares,
+  totalVestingFundSteem,
+  cryptosPriceHistory,
+}) => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [currentCurrency, setCurrentCurrency] = useState('');
@@ -24,8 +42,13 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
   const [currencyAmount, setCurrencyAmount] = useState();
   const [isShowConfirm, setShowConfirm] = useState();
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
-  const draftTransfer = JSON.parse(localStorage.getItem('withdrawData'));
-
+  const draftTransfer =
+    typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('withdrawData'));
+  const steemRate = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null);
+  const sbdRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
+  const userEstAcc = isGuest
+    ? user.balance * steemRate
+    : calculateEstAccountValue(user, totalVestingShares, totalVestingFundSteem, steemRate, sbdRate);
   const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
   const isUserCanMakeTransfer =
     +(currentBalance && currentBalance.replace(' HIVE', '')) >= +hiveAmount;
@@ -209,9 +232,9 @@ const Withdraw = ({ intl, visible, user, isGuest, closeWithdrawModal }) => {
             {intl.formatMessage(
               {
                 id: 'est_account_value_withdraw',
-                defaultMessage: 'Est. amount: 1.00 USD (limit: 100 per day)',
+                defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
               },
-              { amount: 0 },
+              { amount: isNaN(userEstAcc) ? 0 : userEstAcc },
             )}
           </div>
           <Form.Item
@@ -264,6 +287,9 @@ Withdraw.propTypes = {
   visible: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
+  totalVestingShares: PropTypes.string.isRequired,
+  totalVestingFundSteem: PropTypes.string.isRequired,
+  cryptosPriceHistory: PropTypes.shape().isRequired,
 };
 
 export default connect(
@@ -271,6 +297,9 @@ export default connect(
     user: getAuthenticatedUser(state),
     isGuest: isGuestUser(state),
     visible: getStatusWithdraw(state),
+    totalVestingShares: getTotalVestingShares(state),
+    totalVestingFundSteem: getTotalVestingFundSteem(state),
+    cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
   {
     closeWithdrawModal: closeWithdraw,

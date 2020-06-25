@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { message, Modal } from 'antd';
-import QrReader from 'react-qr-reader';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
   const [result, setResult] = useState('');
+  const QrReader = typeof window !== 'undefined' && require('react-qr-reader');
 
   const handleScan = data => {
     if ((!result && data) || (data && result && result !== data)) {
@@ -37,26 +37,28 @@ const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
   );
 
   return (
-    <Modal
-      visible={visible}
-      title={intl.formatMessage({ id: 'qr_code_scanner', defaultMessage: 'QR code scanner' })}
-      okText={intl.formatMessage({ id: 'withdraw_continue', defaultMessage: 'Request withdraw' })}
-      cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-      onOk={() => handleClose(false)}
-      onCancel={handleCancel}
-      footer={[modalFooter]}
-    >
-      <QrReader
-        delay={300}
-        onError={e => {
-          message.error(e);
-        }}
-        onScan={data => {
-          handleScan(data);
-        }}
-        style={{ width: '100%' }}
-      />
-    </Modal>
+    QrReader && (
+      <Modal
+        visible={visible}
+        title={intl.formatMessage({ id: 'qr_code_scanner', defaultMessage: 'QR code scanner' })}
+        okText={intl.formatMessage({ id: 'withdraw_continue', defaultMessage: 'Request withdraw' })}
+        cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+        onOk={() => handleClose(false)}
+        onCancel={handleCancel}
+        footer={[modalFooter]}
+      >
+        <QrReader
+          delay={300}
+          onError={e => {
+            message.error(e);
+          }}
+          onScan={data => {
+            handleScan(data);
+          }}
+          style={{ width: '100%' }}
+        />
+      </Modal>
+    )
   );
 };
 
