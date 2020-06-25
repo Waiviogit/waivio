@@ -38,3 +38,11 @@ export const newUserRecommendExperts = {
 };
 
 export const POST_AUTHOR_FOR_REWARDS_COMMENTS = 'monterey';
+
+export const CRYPTO_FOR_VALIDATE_WALLET = {
+  btc: 'bitcoin',
+  ltc: 'litecoin',
+  eth: 'ethereum',
+};
+
+export const CRYPTO_LIST_FOR_WALLET = ['btc', 'ltc', 'eth'];

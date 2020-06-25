@@ -7,7 +7,7 @@ export const saveSettingsMetadata = (userName, settings) =>
   getMetadata(userName)
     .then(metadata =>
       updateUserMetadata(userName, {
-        ...metadata,
+        ...metadata.user_metadata,
         settings: {
           ...metadata.settings,
           ...settings,
