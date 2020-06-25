@@ -231,17 +231,19 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap }) => {
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
     const { radiusMap } = this.state;
     const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    this.getPropositions(
-      { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
-      isMap,
-      updated,
-    );
+    if (!isSecondaryObjectsCards) {
+      this.getPropositions(
+        { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
+        isMap,
+        updated,
+      );
+    }
   };
 
   getRequiredObjects = () =>
@@ -259,7 +261,7 @@ class Rewards extends React.Component {
 
   setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
-    const { radius, area, sort } = this.state;
+    const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -267,7 +269,7 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, area, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
@@ -536,7 +538,15 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, sort, area, activeFilters } = this.state;
+    const {
+      propositions,
+      hasMore,
+      sort,
+      area,
+      activeFilters,
+      radius,
+      isSearchAreaFilter,
+    } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -544,8 +554,15 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, sort, area });
+          const reqData = preparePropositionReqData({
+            username,
+            match,
+            sort,
+            area,
+            ...activeFilters,
+          });
           reqData.skip = propositions.length;
+          if (isSearchAreaFilter) reqData.radius = radius;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
               loading: false,

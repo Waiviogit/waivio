@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { openTransfer, openPowerUpOrDown } from '../../wallet/walletActions';
+import { openTransfer, openPowerUpOrDown, openWithdraw } from '../../wallet/walletActions';
 import { getAuthenticatedUser, getCryptosPriceHistory, isGuestUser } from '../../reducers';
 import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
@@ -22,6 +22,7 @@ import './WalletSidebar.less';
   {
     openTransfer,
     openPowerUpOrDown,
+    openWithdraw,
   },
 )
 class WalletSidebar extends React.Component {
@@ -33,6 +34,7 @@ class WalletSidebar extends React.Component {
     openPowerUpOrDown: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
+    openWithdraw: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -64,6 +66,7 @@ class WalletSidebar extends React.Component {
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const cryptos = [HIVE.symbol, HBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
+
     return (
       <div className="WalletSidebar">
         <Action big className="WalletSidebar__transfer" primary onClick={this.handleOpenTransfer}>
@@ -92,6 +95,11 @@ class WalletSidebar extends React.Component {
             </Action>
           )}
         </a>
+        {!isEmpty(user) && ownProfile && isGuest && (
+          <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
+            <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+          </Action>
+        )}
       </div>
     );
   }
