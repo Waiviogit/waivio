@@ -21,7 +21,7 @@ const QrModal = ({ visible, intl, setDataScan, handleClose }) => {
 
   const handleCancel = () => {
     handleClose(false);
-    setDataScan('');
+    setResult('');
   };
 
   const modalFooter = (

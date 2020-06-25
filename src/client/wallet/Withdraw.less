@@ -47,7 +47,11 @@
     border: 1px solid @white-gainsboro;
     display: inline-block;
     border-radius: 4px;
-    padding-left: 5px;
+    padding-left: 3px;
+
+    @media @small {
+      padding-left: 5px;
+    }
   }
 
   &__input-text {
@@ -56,12 +60,17 @@
   }
 
   &__switcher-wrapper {
-    padding: 4px 15px;
+    padding: 2px;
     display: inline-block;
     background-color: @blue-alabaster;
     justify-content: center;
     border-left: 1px solid @white-gainsboro;
     border-radius: 0 4px 4px 0;
+
+    @media @small {
+      padding: 4px 15px;
+      font-size: 18px;
+    }
   }
 
   &__subtitle {
@@ -74,8 +83,14 @@
     color: @blue-botticelli;
     border-radius: 4px;
     background-color: @white;
-    padding: 2px 10px;
+    padding: 2px;
     cursor: pointer;
+    font-size: 15px;
+
+    @media @small {
+      padding: 2px 10px;
+      font-size: 18px;
+    }
 
     &--border-radius {
       border-radius: 0;
@@ -126,6 +141,20 @@
     flex-basis: 28%;
     justify-content: center;
     cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      border: 1px solid @neon-carrot;
+      color: @neon-carrot;
+    }
+
+    span {
+      display: none;
+
+      @media @small {
+        display: inline-block;
+      }
+    }
   }
 
   &__input {
@@ -156,4 +185,12 @@
   .valid {
     color: @green;
   }
+
+  &__modal.ant-modal {
+    .ant-modal-content .ant-modal-body {
+      padding: 24px 10px;
+    }
+  }
 }
+
+@import 'Withdraw-nightmode';

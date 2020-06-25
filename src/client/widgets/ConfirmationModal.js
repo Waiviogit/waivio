@@ -14,12 +14,19 @@ const ConfirmationModal = ({ intl, history }) => {
   const [count, calculateAmount] = useState(0);
   const [isVisible, setVisible] = useState(true);
   const [isLoading, setLoading] = useState(false);
+
   const isGuest = useSelector(isGuestUser);
-  const parseSearchParams = history.location.search
-    .split('&')
-    .map(search => search.replace('=', '": "').replace('?', '"'))
-    .join('", "');
-  const searchParams = JSON.parse(`{${parseSearchParams}"}`);
+
+  const parseSearchParams = new URLSearchParams(history.location.search);
+  const searchParams = {
+    id: parseSearchParams.get('id'),
+    reqAmount: parseSearchParams.get('reqAmount'),
+    outputCoinType: parseSearchParams.get('outputCoinType'),
+    depositAcc: parseSearchParams.get('depositAcc'),
+    memo: parseSearchParams.get('memo'),
+    token: parseSearchParams.get('token'),
+    userName: parseSearchParams.get('userName'),
+  };
 
   const confirmTransaction = () => {
     setLoading(true);
@@ -168,7 +175,7 @@ const ConfirmationModal = ({ intl, history }) => {
             ]}
             onCancel={handleCloseConfirm}
           >
-            <div>{modalText}</div>
+            <div>{modalText()}</div>
           </Modal>
         );
     }

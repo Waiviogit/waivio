@@ -5,6 +5,7 @@ import { Form, Modal } from 'antd';
 import classNames from 'classnames';
 import { get, upperFirst } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import store from 'store';
 
 import {
   getAuthenticatedUser,
@@ -17,7 +18,7 @@ import {
 import { closeWithdraw } from './walletActions';
 import QrModal from '../widgets/QrModal';
 import { estimateAmount, validaveCryptoWallet } from '../../waivioApi/ApiClient';
-import { onlyNumberRegExp } from '../../common/constants/validation';
+import { matchAllButNumberRegExp } from '../../common/constants/validation';
 import EmailConfirmation from '../widgets/EmailConfirmation';
 import { CRYPTO_FOR_VALIDATE_WALLET, CRYPTO_LIST_FOR_WALLET } from '../../common/constants/waivio';
 import { calculateEstAccountValue } from '../vendor/steemitHelpers';
@@ -42,8 +43,7 @@ const Withdraw = ({
   const [currencyAmount, setCurrencyAmount] = useState();
   const [isShowConfirm, setShowConfirm] = useState();
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
-  const draftTransfer =
-    typeof localStorage !== 'undefined' && JSON.parse(localStorage.getItem('withdrawData'));
+  const draftTransfer = store.get('withdrawData');
   const steemRate = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null);
   const sbdRate = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, null);
   const userEstAcc = isGuest
@@ -100,7 +100,7 @@ const Withdraw = ({
   }, [currentCurrency]);
 
   const handleCurrencyCountChange = (e, inputSetter, outputSetter, input, output) => {
-    const validateValue = e.currentTarget.value.replace(onlyNumberRegExp, '');
+    const validateValue = e.currentTarget.value.replace(matchAllButNumberRegExp, '');
 
     inputSetter(validateValue);
 
@@ -122,14 +122,11 @@ const Withdraw = ({
     walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
   };
   const handleRequest = () => {
-    localStorage.setItem(
-      'withdrawData',
-      JSON.stringify({
-        hiveAmount,
-        walletAddress,
-        currentCurrency,
-      }),
-    );
+    store.set('withdrawData', {
+      hiveAmount,
+      walletAddress,
+      currentCurrency,
+    });
     setShowConfirm(true);
   };
   const validatorMessage = validationAddressState.valid
@@ -148,6 +145,7 @@ const Withdraw = ({
     <React.Fragment>
       <Modal
         visible={visible}
+        className="Withdraw__modal"
         title={intl.formatMessage({
           id: 'withdraw_modal_title',
           defaultMessage: 'Blocktrades.us exchange',
@@ -254,7 +252,7 @@ const Withdraw = ({
             />
             <button className="Withdraw__qr-button" onClick={() => setShowScanner(true)}>
               <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
-              QR scanner
+              <span>QR scanner</span>
             </button>
           </div>
           {walletAddress && !validationAddressState.loading && (

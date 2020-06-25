@@ -13,7 +13,7 @@ export const emailValidationRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]{0,100}$/;
 
 export const wordsWithSpaceRegExp = /^([\w-_.,:!?]+ )*([\w-_.,:?!]+)?$/;
 
-export const onlyNumberRegExp = /[^.\d]+/g;
+export const matchAllButNumberRegExp = /[^.\d]+/g;
 
 export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif'];
 export const MAX_IMG_SIZE = {
