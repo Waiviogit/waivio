@@ -105,10 +105,12 @@ class MapOS extends React.Component {
   }
 
   updateMap = () => {
+    const { match } = this.props;
+    const isSecondaryObjectsCards = !isEmpty(match.params.campaignParent);
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({ radius: newRadius, coordinates: center, isMap: true });
+    setMapArea({ radius: newRadius, coordinates: center, isMap: true, isSecondaryObjectsCards });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
