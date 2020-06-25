@@ -51,7 +51,7 @@ const Withdraw = ({
     : calculateEstAccountValue(user, totalVestingShares, totalVestingFundSteem, steemRate, sbdRate);
   const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
   const isUserCanMakeTransfer =
-    +(currentBalance && currentBalance.replace(' HIVE', '')) >= +hiveAmount;
+    Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveAmount);
 
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
@@ -135,6 +135,14 @@ const Withdraw = ({
   const validatorMessage = validationAddressState.valid
     ? intl.formatMessage({ id: 'address_valid', defaultMessage: 'Address is valid' })
     : intl.formatMessage({ id: 'address_not_valid', defaultMessage: 'Address is invalid' });
+  const disabled = !(
+    walletAddress &&
+    currentCurrency &&
+    hiveAmount &&
+    currencyAmount &&
+    validationAddressState.valid &&
+    isUserCanMakeTransfer
+  );
 
   return (
     <React.Fragment>
@@ -149,14 +157,7 @@ const Withdraw = ({
         onOk={handleRequest}
         onCancel={closeWithdrawModal}
         okButtonProps={{
-          disabled: !(
-            walletAddress &&
-            currentCurrency &&
-            hiveAmount &&
-            currencyAmount &&
-            validationAddressState.valid &&
-            isUserCanMakeTransfer
-          ),
+          disabled,
         }}
       >
         <Form className="Withdraw" hideRequiredMark>

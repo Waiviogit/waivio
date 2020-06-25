@@ -95,7 +95,7 @@ class WalletSidebar extends React.Component {
             </Action>
           )}
         </a>
-        {!isEmpty(user) && ownProfile && (
+        {!isEmpty(user) && ownProfile && isGuest && (
           <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
             <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
           </Action>
