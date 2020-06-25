@@ -77,7 +77,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
       return intl.formatMessage(
         {
           id: 'notification_transfer_username_amount',
-          defaultMessage: '{username} transfered {amount} to you',
+          defaultMessage: '{username} transferred {amount} to you',
         },
         {
           username: displayUsername ? notification.from : '',
@@ -169,6 +169,74 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           sponsor: notification.sponsor,
         },
       );
+    case notificationConstants.WITHDRAW_ROUTE:
+      return intl.formatMessage(
+        {
+          id: 'withdraw_route',
+          defaultMessage:
+            'Account {to_account} registered withdraw route for {from_account} account',
+        },
+        {
+          to_account: notification.to_account,
+          from_account: notification.from_account,
+        },
+      );
+    case notificationConstants.CHANGE_PASSWORD:
+      return intl.formatMessage(
+        {
+          id: 'change_password',
+          defaultMessage: 'Account {account} initiated a password change procedure',
+        },
+        {
+          account: notification.account,
+        },
+      );
+    case notificationConstants.TRANSFER_FROM:
+      return intl.formatMessage(
+        {
+          id: 'transfer_from',
+          defaultMessage: 'You transferred {amount} to {to}',
+        },
+        {
+          amount: notification.amount,
+          to: notification.to,
+        },
+      );
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return intl.formatMessage(
+        {
+          id: 'transfer_to_vesting',
+          defaultMessage: '{from} sent to {to} {amount}',
+        },
+        {
+          from: notification.from,
+          to: notification.to,
+          amount: notification.amount,
+        },
+      );
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return intl.formatMessage(
+        {
+          id: 'change_recovery_account',
+          defaultMessage:
+            '{account_to_recover} initiated change recovery account on {new_recovery_account}',
+        },
+        {
+          account_to_recover: notification.account_to_recover,
+          new_recovery_account: notification.new_recovery_account,
+        },
+      );
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return intl.formatMessage(
+        {
+          id: 'transfer_from_savings',
+          defaultMessage: 'Account {from} initiated a power down on the saving account to {to}',
+        },
+        {
+          from: notification.from,
+          to: notification.to,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -204,6 +272,18 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/rewards/all/${notification.author_permlink}`;
     case notificationConstants.SUSPENDED_STATUS:
       return `/@${notification.reviewAuthor}/${notification.reviewPermlink}`;
+    case notificationConstants.WITHDRAW_ROUTE:
+      return `/@${notification.from_account}`;
+    case notificationConstants.CHANGE_PASSWORD:
+      return `/@${notification.account}`;
+    case notificationConstants.TRANSFER_FROM:
+      return `/@${notification.to}/transfers`;
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return `/@${notification.from}/transfers`;
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return `/@${notification.new_recovery_account}`;
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return `/@${notification.from}/transfers`;
     default:
       return '/notifications-list';
   }
@@ -236,6 +316,18 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.author;
     case notificationConstants.SUSPENDED_STATUS:
       return notification.sponsor;
+    case notificationConstants.WITHDRAW_ROUTE:
+      return notification.from_account;
+    case notificationConstants.CHANGE_PASSWORD:
+      return notification.account;
+    case notificationConstants.TRANSFER_FROM:
+      return notification.to;
+    case notificationConstants.TRANSFER_TO_VESTING:
+      return notification.from;
+    case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+      return notification.account_to_recover;
+    case notificationConstants.TRANSFER_FROM_SAVINGS:
+      return notification.from;
     default:
       return currentAuthUsername;
   }
