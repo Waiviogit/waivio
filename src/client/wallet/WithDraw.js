@@ -104,7 +104,8 @@ const Withdraw = ({
 
     inputSetter(validateValue);
 
-    if (input) estimateAmount(validateValue, input, output).then(r => outputSetter(r.outputAmount));
+    if (!isNaN(e.currentTarget.value))
+      estimateAmount(validateValue, input, output).then(r => outputSetter(r.outputAmount));
   };
 
   const switchButtonClassList = currency =>
