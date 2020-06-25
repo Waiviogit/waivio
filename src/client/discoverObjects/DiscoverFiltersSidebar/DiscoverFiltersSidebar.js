@@ -38,12 +38,12 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   }
 
   const objectType = match.params.typeName;
-  const setSearchArea = mapData => dispatch(setFiltersAndLoad({ ...activeFilters, mapData }));
+  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
   const setMapArea = ({ radius, coordinates }) =>
     dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
 
-  const handleMapSearchClick = mapData => {
-    setSearchArea(mapData);
+  const handleMapSearchClick = map => {
+    setSearchArea(map);
     dispatch(setMapFullscreenMode(false));
   };
 
