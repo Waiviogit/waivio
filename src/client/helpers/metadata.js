@@ -9,7 +9,7 @@ export const saveSettingsMetadata = (userName, settings) =>
       updateUserMetadata(userName, {
         ...metadata.user_metadata,
         settings: {
-          ...metadata.settings,
+          ...metadata.user_metadata.settings,
           ...settings,
         },
       }),
@@ -20,7 +20,7 @@ export const setLocaleMetadata = locale =>
   getMetadata()
     .then(metadata =>
       SteemConnect.updateUserMetadata({
-        ...metadata,
+        ...metadata.user_metadata,
         locale,
       }),
     )
@@ -30,8 +30,8 @@ export const addDraftMetadata = draft =>
   getMetadata(draft.author)
     .then(metadata =>
       updateUserMetadata(draft.author, {
-        ...metadata,
-        drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
+        ...metadata.user_metadata,
+        drafts: [...metadata.user_metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
       }).catch(e => e.message),
     )
     .then(() => draft);
@@ -40,8 +40,8 @@ export const deleteDraftMetadata = (draftIds, userName) =>
   getMetadata(userName)
     .then(metadata =>
       updateUserMetadata(userName, {
-        ...metadata,
-        drafts: metadata.drafts.filter(d => !draftIds.includes(d.draftId)),
+        ...metadata.user_metadata,
+        drafts: metadata.user_metadata.drafts.filter(d => !draftIds.includes(d.draftId)),
       }),
     )
     .then(resp => resp.user_metadata.drafts);
@@ -53,8 +53,8 @@ export const toggleBookmarkMetadata = (userName, postId) =>
   getMetadata(userName)
     .then(metadata =>
       updateUserMetadata(userName, {
-        ...metadata,
-        bookmarks: getUpdatedBookmarks(metadata.bookmarks, postId),
+        ...metadata.user_metadata,
+        bookmarks: getUpdatedBookmarks(metadata.user_metadata.bookmarks, postId),
       }),
     )
     .then(resp => resp.user_metadata.bookmarks);
@@ -63,7 +63,7 @@ export const saveNotificationsLastTimestamp = (lastTimestamp, userName) =>
   getMetadata(userName)
     .then(metadata =>
       updateUserMetadata(userName, {
-        ...metadata,
+        ...metadata.user_metadata,
         notifications_last_timestamp: lastTimestamp,
       }),
     )

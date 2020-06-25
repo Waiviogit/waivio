@@ -7,13 +7,12 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getAuthenticatedUserName, getRate, isGuestUser } from '../../reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
 import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
 
 import './StoryFooter.less';
 
 @connect(state => ({
-  rate: getRate(state),
   isGuest: isGuestUser(state),
   userName: getAuthenticatedUserName(state),
 }))
@@ -22,8 +21,6 @@ class StoryFooter extends React.Component {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    rewardFund: PropTypes.shape().isRequired,
-    rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
@@ -110,11 +107,11 @@ class StoryFooter extends React.Component {
 
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
-  handleSliderChange = value => {
-    const { user, rewardFund, rate, isGuest, post } = this.props;
+  handleSliderChange = async value => {
+    const { user, isGuest, post } = this.props;
     const voteWorth = isGuest
       ? 0
-      : calculateVotePowerForSlider(user, rewardFund, rate, value, post);
+      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
     this.setState({ sliderValue: value, voteWorth });
   };
 
