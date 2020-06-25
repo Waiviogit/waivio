@@ -42,9 +42,23 @@ const CheckReviewModal = ({
   const secondaryObject = linkedObjects.find(
     obj => obj.id === get(postRequirements, ['secondaryObject', 'author_permlink']),
   );
-  const primaryObject = linkedObjects.find(obj => obj.id === postRequirements.primaryObject);
+  const primaryObject = linkedObjects
+    ? linkedObjects.find(obj => obj.id === postRequirements.primaryObject)
+    : null;
   const hasMinPhotos =
     (postBody.match(/(?:!\[(.*?)\]\((.*?)\))/gi) || []).length >= postRequirements.minPhotos;
+  const secondaryObjectAuthorPermlink = secondaryObject
+    ? secondaryObject.author_permlink
+    : get(campaign, ['objects', '0', 'author_permlink']);
+  const secondaryObjectName = secondaryObject
+    ? secondaryObject.name
+    : get(campaign, ['objects', '0', 'name']);
+  const primaryObjectAuthorPermlink = primaryObject
+    ? primaryObject.author_permlink
+    : get(campaign, ['requiredObject', 'author_permlink']);
+  const primaryObjectName = primaryObject
+    ? primaryObject.name
+    : get(campaign, ['requiredObject', 'name']);
   const modalBody =
     hasMinPhotos && secondaryObject && primaryObject ? (
       <React.Fragment>
@@ -150,7 +164,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${secondaryObject.author_permlink}`}>{secondaryObject.name}</a>}
+            {<a href={`/object/${secondaryObjectAuthorPermlink}`}>{secondaryObjectName}</a>}
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(Boolean(primaryObject && primaryObject.id))}
@@ -158,7 +172,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${primaryObject.author_permlink}`}>{primaryObject.name}</a>}
+            {<a href={`/object/${primaryObjectAuthorPermlink}`}>{primaryObjectName}</a>}
           </div>
         </div>
         <div className="check-review-modal__buttons">
