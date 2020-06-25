@@ -12,7 +12,6 @@ import ReviewItem from '../Create-Edit/ReviewItem';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { setDataForGlobalReport } from '../rewardsActions';
 import { getAuthenticatedUser, getUsedLocale } from '../../reducers';
-import { findLanguage } from '../../translations';
 
 @injectIntl
 @connect(
@@ -172,7 +171,7 @@ class ReportsForm extends Component {
   };
 
   render() {
-    const { form, intl, userName, usedLocale } = this.props;
+    const { form, intl, userName } = this.props;
     const {
       currency,
       sponsor,
@@ -204,9 +203,6 @@ class ReportsForm extends Component {
           <ReviewItem key={obj.id} object={obj} removeReviewObject={this.removePrimaryObject} />
         ))
       : null;
-
-    const language = findLanguage(usedLocale);
-    moment.locale(language.localeData);
 
     return (
       <div className="CreateReportForm">
@@ -482,7 +478,6 @@ ReportsForm.propTypes = {
   user: PropTypes.shape(),
   userName: PropTypes.string.isRequired,
   getHistories: PropTypes.func,
-  usedLocale: PropTypes.string,
 };
 
 ReportsForm.defaultProps = {
