@@ -1174,5 +1174,11 @@
   "unfollowed_wobject": "Unfollowed {object_type} {name}",
   "currency": "Currency",
   "paid_hive": "Paid (HIVE)",
-  "suspended_status": "After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review"
+  "suspended_status": "After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review",
+  "withdraw_route": "Account {to_account} registered withdraw route for {from_account} account",
+  "change_password": "Account {account} initiated a password change procedure",
+  "transfer_from": "You transferred {amount} to {to}",
+  "transfer_to_vesting": "{from} sent to {to} {amount}",
+  "change_recovery_account": "{account_to_recover} initiated change recovery account on {new_recovery_account}",
+  "transfer_from_savings ": "Account {from} initiated a power down on the saving account to {to}"
 }
