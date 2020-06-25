@@ -554,11 +554,13 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, sort, area, activeFilters });
-          const guideNames = get(activeFilters, 'guideNames');
-          const types = get(activeFilters, 'types');
-          reqData.guideNames = guideNames;
-          reqData.types = types;
+          const reqData = preparePropositionReqData({
+            username,
+            match,
+            sort,
+            area,
+            ...activeFilters,
+          });
           reqData.skip = propositions.length;
           if (isSearchAreaFilter) reqData.radius = radius;
           ApiClient.getPropositions(reqData).then(newPropositions =>
