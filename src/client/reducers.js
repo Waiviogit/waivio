@@ -62,6 +62,8 @@ export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
+export const getAuthenticatedUserPrivateEmail = state =>
+  fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
@@ -157,6 +159,7 @@ export const getTransferApp = state => fromWallet.getTransferApp(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
+export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);

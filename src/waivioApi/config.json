@@ -84,5 +84,11 @@
   "comments": "/comments",
   "postComments": "/post_comments",
   "market": "/marketInfo",
-  "transfers_history": "/transfers_history"
+  "transfers_history": "/transfers_history",
+  "estimateOutputAmount": "/estimate-output-amount",
+  "withdraw": "/withdraw",
+  "mailer": "/mailer",
+  "confirmEmail": "/confirm-email-request",
+  "validateAddress": "/validate-crypto-wallet",
+  "finalConfirmTransaction": "/confirm-transaction"
 }
