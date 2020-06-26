@@ -172,18 +172,20 @@ class Rewards extends React.Component {
     const { username } = this.props;
     const { area, activeFilters, activeMessagesFilters } = this.state;
     const needPropositions =
-      isEmpty(this.props.userLocation) && !isEmpty(userLocation) &&
+      isEmpty(this.props.userLocation) &&
+      !isEmpty(userLocation) &&
       isEqual(this.props.match, match) &&
       !isEmpty(match.params) &&
-      !isEmpty(this.props.match.params) && this.props.match.params.filterKey !== 'messages';
+      !isEmpty(this.props.match.params) &&
+      this.props.match.params.filterKey !== 'messages';
     let sort = this.state.sort;
     if (match.params.filterKey === 'messages') {
       sort = 'inquiryDate';
-      this.setState({sort})
+      this.setState({ sort });
     }
     if (match.params.filterKey === 'history') {
       sort = 'reservation';
-      this.setState({sort})
+      this.setState({ sort });
     }
     if (
       (this.props.match.params.filterKey === 'messages' &&
@@ -194,7 +196,7 @@ class Rewards extends React.Component {
         match.params.filterKey !== 'history')
     ) {
       sort = 'proximity';
-      this.setState({sort})
+      this.setState({ sort });
     }
 
     if (needPropositions) {
@@ -303,8 +305,8 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key].push(filterValue);
         }
-        this.setState({activeFilters, loadingCampaigns: true});
-        return this.getPropositions({ username, match, area, sort, activeFilters })
+        this.setState({ activeFilters, loadingCampaigns: true });
+        return this.getPropositions({ username, match, area, sort, activeFilters });
       case 'rewards':
       case 'messagesSponsors':
         if (includes(activeMessagesFilters[key], filterValue)) {
@@ -312,16 +314,16 @@ class Rewards extends React.Component {
         } else {
           activeMessagesFilters[key].push(filterValue);
         }
-        this.setState({activeMessagesFilters, loadingCampaigns: true});
-        return this.getHistory({sort, activeMessagesFilters});
+        this.setState({ activeMessagesFilters, loadingCampaigns: true });
+        return this.getHistory({ sort, activeMessagesFilters });
       case 'caseStatus':
         if (activeMessagesFilters[key] === filterValue) {
           activeMessagesFilters[key] = '';
         } else {
           activeMessagesFilters[key] = filterValue;
         }
-        this.setState({activeMessagesFilters, loadingCampaigns: true});
-        return this.getHistory({sort, activeMessagesFilters});
+        this.setState({ activeMessagesFilters, loadingCampaigns: true });
+        return this.getHistory({ sort, activeMessagesFilters });
       default:
         return null;
     }
@@ -846,7 +848,7 @@ class Rewards extends React.Component {
                       zoomMap={zoomMap}
                     />
                   )}
-                  {!isEmpty(propositions) && (
+                  {(!isEmpty(sponsors) || !isEmpty(propositions)) && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
                       activeFilters={activeFilters}

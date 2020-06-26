@@ -133,11 +133,7 @@ const RewardsFiltersPanel = ({
             </div>
             {location.pathname === '/rewards/messages'
               ? _.map(campaignsTypesMessages, type =>
-                  filterLayout(
-                    type,
-                    'caseStatus',
-                    activeMessagesFilters.caseStatus === type,
-                  ),
+                  filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
                 )
               : _.map(sponsorsData, sponsor =>
                   filterLayout(

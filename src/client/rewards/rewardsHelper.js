@@ -24,10 +24,6 @@ export const preparePropositionReqData = ({ username, match, limit = 10, sort, .
     reqData[argName] = args[argName];
   });
 
-  if (match.params.filterKey === 'history') {
-    reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
-  }
-
   return reqData;
 };
 
