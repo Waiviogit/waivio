@@ -56,7 +56,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
-    visible: getStatusWithdraw(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     login,
@@ -94,7 +94,7 @@ class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
-    visible: PropTypes.bool.isRequired,
+    isWithdrawOpen: PropTypes.bool.isRequired,
     dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
@@ -269,7 +269,7 @@ class Wrapper extends React.PureComponent {
                 />
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
-                {this.props.visible && <Withdraw />}
+                {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
