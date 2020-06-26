@@ -34,6 +34,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {

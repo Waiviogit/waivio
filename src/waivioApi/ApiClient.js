@@ -3,6 +3,7 @@ import { isEmpty, omit, ceil } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
+import store from 'store';
 
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
@@ -1149,8 +1150,10 @@ export const checkFollowing = (user, users = []) => {
 };
 
 export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
+  const amount = isNaN(inputAmount) ? 0 : inputAmount;
+
   const query = `inputAmount=${ceil(
-    inputAmount,
+    amount,
     17,
   )}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
   return fetch(
@@ -1163,14 +1166,16 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
 };
 
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
-  const transactionInfo = JSON.parse(localStorage.getItem('withdrawData'));
+  const transactionInfo = store.get('withdrawData');
+  const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
+
   const transactionData = {
     outputCoinType: transactionInfo.currentCurrency,
     inputCoinType: 'hive',
-    amount: transactionInfo.hiveAmount,
+    amount,
     address: transactionInfo.walletAddress,
   };
-  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('accessToken');
+  const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
   const body =
     type === 'confirmTransaction'
       ? { userName, type, email, isGuest, transactionData }
@@ -1196,7 +1201,7 @@ export const validaveCryptoWallet = (address, crypto) =>
   ).then(res => res.json());
 
 export const finalConfirmation = (token, isGuest) => {
-  const accessToken = isGuest ? localStorage.getItem('accessToken') : Cookie.get('accessToken');
+  const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
 
   return fetch(
     `${config.campaignApiPrefix}${config.withdraw}${config.finalConfirmTransaction}?id=${token}`,
