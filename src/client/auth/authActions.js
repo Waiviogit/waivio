@@ -43,7 +43,8 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
-const isUserLoaded = state => getIsLoaded(state) && Cookie.get('access_token');
+const isUserLoaded = state =>
+  getIsLoaded(state) && (Cookie.get('access_token') || getGuestAccessToken());
 
 export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
@@ -67,23 +68,20 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   let isGuest = null;
 
-  if (typeof localStorage !== 'undefined') {
-    const token = getGuestAccessToken();
-
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
+  const guestAccessToken = getGuestAccessToken();
+  isGuest = Boolean(guestAccessToken);
 
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await setToken(accessToken, socialNetwork, regData);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        const privateEmail = await getPrivateEmail(tokenData.userData.name);
+        const userData = await setToken(accessToken, socialNetwork, regData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+        const privateEmail = await getPrivateEmail(userData.name);
 
         resolve({
-          account: tokenData.userData,
+          account: userData,
           userMetaData,
           privateEmail,
           socialNetwork,
@@ -101,7 +99,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        const privateEmail = await getPrivateEmail(scUserData.userData.name);
+        const privateEmail = await getPrivateEmail(scUserData.name);
 
         resolve({
           ...scUserData,

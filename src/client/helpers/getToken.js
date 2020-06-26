@@ -13,7 +13,7 @@ export const setToken = async (socialToken, social, regData) => {
     store.set('socialName', social);
     store.set('guestName', userData.name);
 
-    return { userData };
+    return userData;
   } catch (err) {
     return err;
   }
