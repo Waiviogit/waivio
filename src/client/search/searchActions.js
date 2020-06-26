@@ -58,24 +58,26 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
   const searchString = replacer(search, '@');
   const user = getAuthenticatedUserName(state);
 
-  dispatch({
-    type: AUTO_COMPLETE_SEARCH.ACTION,
-    payload: {
-      promise: ApiClient.getSearchResult(
-        searchString,
-        userLimit,
-        wobjectsLimi,
-        objectTypesLimit,
-        user,
-      ).then(result => ({
-        result,
-        search: searchString,
-      })),
-    },
-    meta: {
-      followingUsersList: getFollowingList(state),
-    },
-  });
+  if (searchString) {
+    dispatch({
+      type: AUTO_COMPLETE_SEARCH.ACTION,
+      payload: {
+        promise: ApiClient.getSearchResult(
+          searchString,
+          userLimit,
+          wobjectsLimi,
+          objectTypesLimit,
+          user,
+        ).then(result => ({
+          result,
+          search: searchString,
+        })),
+      },
+      meta: {
+        followingUsersList: getFollowingList(state),
+      },
+    });
+  }
 };
 
 export const resetSearchAutoCompete = () => dispatch =>
@@ -105,33 +107,37 @@ export const searchUsersAutoCompete = (userName, limit) => (dispatch, getState) 
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
 
-  dispatch({
-    type: SEARCH_USERS.ACTION,
-    payload: {
-      promise: ApiClient.searchUsers(search, user, limit)
-        .then(result => ({
-          result,
-          search,
-        }))
-        .catch(console.log),
-    },
-  });
+  if (search) {
+    dispatch({
+      type: SEARCH_USERS.ACTION,
+      payload: {
+        promise: ApiClient.searchUsers(search, user, limit)
+          .then(result => ({
+            result,
+            search,
+          }))
+          .catch(console.log),
+      },
+    });
+  }
 };
 export const searchUsersForDiscoverPage = (userName, limit) => (dispatch, getState) => {
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
 
-  dispatch({
-    type: SEARCH_USERS_FOR_DISCOVER_PAGE.ACTION,
-    payload: {
-      promise: ApiClient.searchUsers(search, user, limit)
-        .then(result => ({
-          result,
-          search,
-        }))
-        .catch(e => message.error(e)),
-    },
-  });
+  if (search) {
+    dispatch({
+      type: SEARCH_USERS_FOR_DISCOVER_PAGE.ACTION,
+      payload: {
+        promise: ApiClient.searchUsers(search, user, limit)
+          .then(result => ({
+            result,
+            search,
+          }))
+          .catch(e => message.error(e)),
+      },
+    });
+  }
 };
 
 export const UNFOLLOW_SEARCH_USER = createAsyncActionType('@users/UNFOLLOW_SEARCH_USER');
@@ -181,15 +187,17 @@ export const resetSearchUsersForDiscoverPage = () => dispatch =>
 export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch => {
   const search = replacer(searchString, '@');
 
-  dispatch({
-    type: SEARCH_OBJECT_TYPES.ACTION,
-    payload: {
-      promise: ApiClient.searchObjectTypes(search, objType).then(result => ({
-        result,
-        search,
-      })),
-    },
-  });
+  if (searchString) {
+    dispatch({
+      type: SEARCH_OBJECT_TYPES.ACTION,
+      payload: {
+        promise: ApiClient.searchObjectTypes(search, objType).then(result => ({
+          result,
+          search,
+        })),
+      },
+    });
+  }
 };
 
 export const clearSearchObjectsResults = () => dispatch =>

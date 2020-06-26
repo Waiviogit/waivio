@@ -424,7 +424,7 @@ export function combineObjectMenu(menuItems, { button, news } = { button: null, 
 export const mainerName = (votes, moderators, admins) => {
   if (!votes || !moderators || !admins) return null;
 
-  const statusName = perc => (perc > 0 ? 'approve' : 'reject');
+  const statusName = perc => (perc > 0 ? 'approved' : 'rejected');
   const mainObjCreator = (mainer, name, status) => ({
     mainer,
     name,

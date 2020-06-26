@@ -204,6 +204,10 @@ const UserInfo = Loadable({
   loader: () => import('../client/app/Sidebar/UserInfo'),
   loading: Loading,
 });
+const ConfirmationModal = Loadable({
+  loader: () => import('../client/widgets/ConfirmationModal'),
+  loading: Loading,
+});
 
 const routes = [
   {
@@ -483,6 +487,11 @@ const routes = [
         component: Page,
         exact: true,
         routes: [
+          {
+            path: '/confirmation',
+            exact: true,
+            component: ConfirmationModal,
+          },
           {
             path: '/notifications-list',
             component: Notifications,

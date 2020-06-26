@@ -82,7 +82,7 @@ export default class Wobj extends React.Component {
 
   static fetchData({ store, match }) {
     return store.dispatch(
-      getObject(match.params.name, this.props.authenticatedUserName, [
+      getObject(match.params.name, getAuthenticatedUserName(store.getState()), [
         'tagCategory',
         'categoryItem',
         'galleryItem',
@@ -183,7 +183,7 @@ export default class Wobj extends React.Component {
       );
     }
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const desc = `${objectName || ''}`;
+    const desc = `${wobject.description || objectName || ''}`;
 
     const image =
       wobject.avatar ||

@@ -1,12 +1,13 @@
 /* eslint-disable */
-import _ from 'lodash';
+import { isEmpty, omit, ceil } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
-import { isEmpty } from 'lodash';
+import { message } from 'antd';
+import store from 'store';
+
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
-import { message } from 'antd';
 import { getUrl } from '../client/rewards/rewardsHelper';
 
 let headers = {
@@ -79,10 +80,10 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
     queryString = Array.isArray(requiredField)
       ? requiredField.reduce((acc, field, index) => {
           if (index !== requiredField.length - 1) {
-            return acc + `required_fields=${field}&`;
+            return `${acc}required_fields=${field}&`;
           }
 
-          return acc + `required_fields=${field}`;
+          return `${acc}required_fields=${field}`;
         }, '')
       : `required_fields=${requiredField}`;
   }
@@ -329,9 +330,9 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser) =>
   });
 };
 
-export const getUserAccount = (username, with_followings = false, authUser) =>
+export const getUserAccount = (username, withFollowings = false, authUser) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`, {
+    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
       headers: {
         ...headers,
         following: authUser,
@@ -358,8 +359,8 @@ export const getFollowingUpdates = (userName, count = 5) =>
       .catch(error => reject(error));
   });
 
-export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 0) => {
-  return new Promise((resolve, reject) => {
+export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 0) =>
+  new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.user}/${follower}${config.followingObjectsUpdates}?object_type=${objType}&limit=${limit}&skip=${skip}`,
       {
@@ -375,7 +376,6 @@ export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
 
 export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
   new Promise((resolve, reject) => {
@@ -554,7 +554,7 @@ export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {
   });
 };
 
-//region Campaigns Requests
+// region Campaigns Requests
 
 export const getCampaignById = campaignId =>
   new Promise((resolve, reject) => {
@@ -595,17 +595,17 @@ export const getPropositions = ({
       sort,
     };
 
-    if (!_.isEmpty(coordinates)) {
+    if (!isEmpty(coordinates)) {
       reqData.coordinates = coordinates;
       reqData.radius = radius;
     }
-    if (!_.isEmpty(area) && _.isEmpty(requiredObject)) {
+    if (!isEmpty(area) && isEmpty(requiredObject)) {
       reqData.area = area;
       if (radius) reqData.radius = radius;
     }
-    if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
-    if (!_.isEmpty(types)) reqData.types = types;
-    if (!_.isEmpty(userName)) reqData.userName = userName;
+    if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!isEmpty(types)) reqData.types = types;
+    if (!isEmpty(userName)) reqData.userName = userName;
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (simplified) reqData.simplified = simplified;
     if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
@@ -652,7 +652,7 @@ export const createCampaign = data =>
 export const validateActivationCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.activation}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -665,7 +665,7 @@ export const validateActivationCampaign = data =>
 export const validateInactivationCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.inactivation}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -678,7 +678,7 @@ export const validateInactivationCampaign = data =>
 export const reserveActivatedCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.reservation}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -691,7 +691,7 @@ export const reserveActivatedCampaign = data =>
 export const rejectReservationCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -704,11 +704,11 @@ export const rejectReservationCampaign = data =>
 export const getFilteredCampaignsByGuideName = (guideName, status) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify({
         guideNames: [guideName],
-        status: status,
+        status,
       }),
     })
       .then(res => res.json())
@@ -752,7 +752,7 @@ export const getMatchBotRules = guideName =>
 export const getCampaignByGuideNameAndObject = (guideName, object) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
-      headers: headers,
+      headers,
       method: 'POST',
       body: JSON.stringify({
         guideNames: [guideName],
@@ -766,28 +766,37 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
 
 export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   const getBody = obj => {
+    let preparedObject;
+
     if (!isEmpty(obj)) {
-      let preparedObject = {
-        sponsor: sponsor,
-        globalReport: globalReport,
+      preparedObject = {
+        sponsor,
+        globalReport,
         objects: obj.objects,
         endDate: obj.endDate,
         startDate: obj.startDate,
         currency: obj.currency,
         processingFees: obj.processingFees,
       };
-      if (obj.payable) {
+      if (obj.payable && globalReport) {
         preparedObject = {
           ...preparedObject,
           payable: obj.payable,
         };
       }
+      if (!globalReport) {
+        preparedObject = {
+          userName: user,
+        };
+        if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
+        if (obj.payable) preparedObject.payable = obj.payable;
+      }
       return preparedObject;
     }
     return {
       userName: user,
-      sponsor: sponsor,
-      globalReport: globalReport,
+      sponsor,
+      globalReport,
     };
   };
 
@@ -803,8 +812,8 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
   });
 };
 
-export const getReport = ({ guideName, userName, reservationPermlink }) => {
-  return new Promise((resolve, reject) => {
+export const getReport = ({ guideName, userName, reservationPermlink }) =>
+  new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.payments}${config.report}`, {
       headers,
       method: 'POST',
@@ -818,18 +827,20 @@ export const getReport = ({ guideName, userName, reservationPermlink }) => {
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
-//endregion
+// endregion
 
-//region UserMetadata Requests
+// region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers: headers,
+    headers,
     method: 'GET',
   })
     .then(res => res.json())
-    .then(res => _.omit(res.user_metadata, '_id'));
+    .then(res => ({
+      user_metadata: omit(res.user_metadata, '_id'),
+      privateEmail: res.privateEmail,
+    }));
 };
 
 export const updateUserMetadata = async (userName, data) => {
@@ -852,8 +863,8 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) => {
-  return new Promise((resolve, reject) => {
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) =>
+  new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
@@ -865,16 +876,15 @@ export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {})
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
-//endregion
+// endregion
 
-//region Guest user's requests
+// region Guest user's requests
 export const getAccessToken = (token, social, regData) => {
-  let response = {};
-  let body = {};
+  const response = {};
+  const body = {};
   body.access_token = token;
 
-  if (!_.isEmpty(regData)) {
+  if (!isEmpty(regData)) {
     Object.keys(regData).forEach(key => (body[key] = regData[key]));
   }
 
@@ -884,8 +894,9 @@ export const getAccessToken = (token, social, regData) => {
     body: JSON.stringify(body),
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
       response.expiration = data.headers.get('expires-in');
+      response.refreshToken = data.headers.get('refresh-token');
       return data.json();
     })
     .then(data => {
@@ -895,20 +906,17 @@ export const getAccessToken = (token, social, regData) => {
     .catch(err => err);
 };
 
-export const getNewToken = token => {
-  let response = {};
-  return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
+export const refreshToken = token => {
+  const response = {};
+  return fetch(`${config.baseUrl}${config.auth}/${config.refreshAuthToken}`, {
     method: 'POST',
-    headers: { 'access-token': token },
+    headers: { 'refresh-token': token },
   })
     .then(data => {
-      response.token = data.headers.get('access-token');
+      response.accessToken = data.headers.get('access-token');
+      response.refreshToken = data.headers.get('refresh-token');
       response.expiration = data.headers.get('expires-in');
       response.status = data.status;
-      return data.json();
-    })
-    .then(data => {
-      response.userData = data.user;
       return response;
     })
     .catch(e => {
@@ -916,17 +924,14 @@ export const getNewToken = token => {
     });
 };
 
-export const isUserNameVacant = userName => {
-  return fetch(`${config.baseUrl}${config.user}/${userName}`);
-};
+export const isUserNameVacant = userName => fetch(`${config.baseUrl}${config.user}/${userName}`);
 
-export const isUserRegistered = (id, socialNetwork) => {
-  return fetch(
+export const isUserRegistered = (id, socialNetwork) =>
+  fetch(
     `${config.baseUrl}${config.auth}/${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
   )
     .then(data => data.json())
     .then(data => data.result);
-};
 
 export const broadcastGuestOperation = async (operationId, isReview, data) => {
   const userData = await getValidTokenData();
@@ -951,13 +956,13 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
       body: JSON.stringify(body),
-    }).then(data => data);
+    }).then(res => res);
   }
 };
-//endregion
+// endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
-  return fetch(
+export const getFollowersFromAPI = (username, limit = 10, skip = 0) =>
+  fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
     {
       headers: {
@@ -970,7 +975,6 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
     .then(res => res.json())
     .then(data => data)
     .catch(err => console.error(err));
-};
 
 export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser) => {
   const actualHeaders = authUser
@@ -1010,6 +1014,7 @@ export const getGuestAvatarUrl = (username, url, intl) => {
     });
 };
 
+// eslint-disable-next-line camelcase
 export const updateGuestProfile = async (username, json_metadata) => {
   const body = {
     id: 'waivio_guest_account_update',
@@ -1058,11 +1063,11 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .catch(err => err);
 };
 
-export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_permlink) => {
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink) => {
   let res;
-  if (start_permlink) {
+  if (startPermlink) {
     res = fetch(
-      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${start_permlink}`,
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${startPermlink}`,
     );
   } else {
     res = fetch(
@@ -1070,22 +1075,21 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     );
   }
   return res
-    .then(res => res.json())
+    .then(responsive => responsive.json())
     .then(data => data)
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, author, permlink }) => {
-  return fetch(
+export const getPostCommentsFromApi = ({ category, author, permlink }) =>
+  fetch(
     `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
   )
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
-};
 
-export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
-  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) =>
+  fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -1096,10 +1100,9 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
       object_types: ['hashtag'],
     }),
   }).then(res => res.json());
-};
 
-export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
-  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) =>
+  fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -1109,38 +1112,34 @@ export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
       limit,
     }),
   }).then(res => res.json());
-};
 
-export const setUserStatus = user => {
-  return fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
+export const setUserStatus = user =>
+  fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
     headers,
     method: 'GET',
   }).then(res => res.json());
-};
 
-export const getBlacklist = userName => {
-  return fetch(`${config.campaignApiPrefix}${config.campaigns}/${userName}${config.blacklist}`, {
+export const getBlacklist = userName =>
+  fetch(`${config.campaignApiPrefix}${config.campaigns}/${userName}${config.blacklist}`, {
     headers,
     method: 'GET',
   }).then(res => res.json());
-};
 
-export const getWalletCryptoPriceHistory = symbols => {
-  return fetch(
+export const getWalletCryptoPriceHistory = symbols =>
+  fetch(
     `${config.currenciesApiPrefix}${config.market}?ids=${symbols[0]}&ids=${symbols[1]}&currencies=usd&currencies=btc`,
     {
       headers,
       method: 'GET',
     },
   ).then(res => res.json());
-};
 
 export const checkFollowing = (user, users = []) => {
   const queryString = users.length
     ? users.reduce((acc, usr, index) => {
-        if (index !== users.length - 1) return acc + `users=${usr}&`;
+        if (index !== users.length - 1) return `${acc}users=${usr}&`;
 
-        return acc + `users=${usr}`;
+        return `${acc}users=${usr}`;
       }, '?')
     : '';
 
@@ -1150,6 +1149,72 @@ export const checkFollowing = (user, users = []) => {
   }).then(res => res.json());
 };
 
+export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
+  const amount = isNaN(inputAmount) ? 0 : inputAmount;
+
+  const query = `inputAmount=${ceil(
+    amount,
+    17,
+  )}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.estimateOutputAmount}?${query}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
+export const sendEmailConfirmation = (userName, type, email, isGuest) => {
+  const transactionInfo = store.get('withdrawData');
+  const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
+
+  const transactionData = {
+    outputCoinType: transactionInfo.currentCurrency,
+    inputCoinType: 'hive',
+    amount,
+    address: transactionInfo.walletAddress,
+  };
+  const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
+  const body =
+    type === 'confirmTransaction'
+      ? { userName, type, email, isGuest, transactionData }
+      : { userName, type, email, isGuest };
+
+  return fetch(`${config.campaignApiPrefix}${config.mailer}${config.confirmEmail}`, {
+    headers: {
+      ...headers,
+      'access-token': accessToken,
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  }).then(res => res.json());
+};
+
+export const validaveCryptoWallet = (address, crypto) =>
+  fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.validateAddress}?address=${address}&crypto=${crypto}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+
+export const finalConfirmation = (token, isGuest) => {
+  const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
+
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.finalConfirmTransaction}?id=${token}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': accessToken,
+      },
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
@@ -1157,8 +1222,8 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 50) => {
-  return fetch(
+export const getTransferHistory = (username, skip = 0, limit = 50) =>
+  fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
       headers,
@@ -1168,7 +1233,6 @@ export const getTransferHistory = (username, skip = 0, limit = 50) => {
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
-};
 
 // I don't read changes before commit
 

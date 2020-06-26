@@ -13,12 +13,12 @@ import {
   size,
   includes,
   remove,
-  find,
   flatten,
   uniqBy,
   get,
   filter,
   isEqual,
+  findIndex,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -138,6 +138,7 @@ class Rewards extends React.Component {
     isSearchAreaFilter: false,
     isAssign: false,
     zoomMap: 0,
+    fetched: true,
   };
 
   componentDidMount() {
@@ -231,17 +232,19 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap }) => {
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
     const { radiusMap } = this.state;
     const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    this.getPropositions(
-      { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
-      isMap,
-      updated,
-    );
+    if (!isSecondaryObjectsCards) {
+      this.getPropositions(
+        { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
+        isMap,
+        updated,
+      );
+    }
   };
 
   getRequiredObjects = () =>
@@ -259,7 +262,7 @@ class Rewards extends React.Component {
 
   setFilterValue = (filterValue, key) => {
     const { username, match } = this.props;
-    const { radius, area, sort } = this.state;
+    const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -267,18 +270,33 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, area, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
-    const activeFilters = [...this.state.activePayableFilters];
-    if (find(activeFilters, ['filterName', filterValue.filterName])) {
-      this.setState({
-        activePayableFilters: activeFilters.filter(f => f.filterName !== filterValue.filterName),
-      });
-    } else {
-      activeFilters.push(filterValue);
-      this.setState({ activePayableFilters: activeFilters });
+    let activeFilters = [...this.state.activePayableFilters];
+    switch (filterValue.filterName) {
+      case 'payable':
+        if (findIndex(activeFilters, { filterName: 'payable' }) === -1) {
+          activeFilters.push(filterValue);
+        } else {
+          remove(activeFilters, { filterName: 'payable' });
+        }
+        this.setState({ activePayableFilters: activeFilters });
+        break;
+      case 'days':
+      case 'moreDays':
+      default:
+        if (findIndex(activeFilters, { filterName: filterValue.filterName }) === -1) {
+          activeFilters = filter(
+            activeFilters,
+            item => item.filterName !== 'days' && item.filterName !== 'moreDays',
+          );
+          activeFilters.push(filterValue);
+        } else {
+          remove(activeFilters, { filterName: filterValue.filterName });
+        }
+        this.setState({ activePayableFilters: activeFilters });
     }
   };
 
@@ -308,6 +326,7 @@ class Rewards extends React.Component {
         area,
         radius,
         loading: false,
+        fetched: false,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -462,7 +481,7 @@ class Rewards extends React.Component {
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, loadingAssignDiscard, isAssign } = this.state;
+    const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const { intl } = this.props;
     if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -504,11 +523,13 @@ class Rewards extends React.Component {
             ),
         ),
       );
+    } else if (!fetched && isEmpty(propositions)) {
+      return `${intl.formatMessage({
+        id: 'noProposition',
+        defaultMessage: `No reward matches the criteria`,
+      })}`;
     }
-    return `${intl.formatMessage({
-      id: 'noProposition',
-      defaultMessage: `No reward matches the criteria`,
-    })}`;
+    return '';
   };
 
   goToCampaign = wobjPermlink => {
@@ -521,7 +542,15 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, sort, area, activeFilters } = this.state;
+    const {
+      propositions,
+      hasMore,
+      sort,
+      area,
+      activeFilters,
+      radius,
+      isSearchAreaFilter,
+    } = this.state;
     const { username, match } = this.props;
     if (hasMore) {
       this.setState(
@@ -529,8 +558,15 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData({ username, match, sort, area });
+          const reqData = preparePropositionReqData({
+            username,
+            match,
+            sort,
+            area,
+            ...activeFilters,
+          });
           reqData.skip = propositions.length;
+          if (isSearchAreaFilter) reqData.radius = radius;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
               loading: false,
@@ -604,6 +640,7 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
       zoomMap,
+      fetched,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -644,6 +681,7 @@ class Rewards extends React.Component {
       sponsors,
       campaignsTypes,
       activeFilters,
+      fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
     });

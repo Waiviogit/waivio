@@ -19,6 +19,12 @@ import Loading from '../../Icon/Loading';
 import NotificationRejectUpdate from './NotificationRejectUpdate';
 import NotificationActicationCampaign from './NotificationActivationCampaign';
 import NotificationSuspandedStatus from './NotificationSuspandedStatus';
+import NotificationWithdrawRoute from './NotificationWithdrawRoute';
+import NotificationChangePassword from './NotificationChangePassword';
+import NotificationTransferFrom from './NotificationTransferFrom';
+import NotificationTransferVesting from './NotificationTransferVesting';
+import NotificationChangeRecoveryAccount from './NotificationChangeRecoveryAccount';
+import NotificationTransferFromSavings from './NotificationTransferFromSavings';
 import './Notification.less';
 import './Notifications.less';
 
@@ -270,6 +276,60 @@ class Notifications extends React.Component {
               case notificationConstants.SUSPENDED_STATUS:
                 return (
                   <NotificationSuspandedStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WITHDRAW_ROUTE:
+                return (
+                  <NotificationWithdrawRoute
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_PASSWORD:
+                return (
+                  <NotificationChangePassword
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM:
+                return (
+                  <NotificationTransferFrom
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_TO_VESTING:
+                return (
+                  <NotificationTransferVesting
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+                return (
+                  <NotificationChangeRecoveryAccount
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM_SAVINGS:
+                return (
+                  <NotificationTransferFromSavings
                     key={key}
                     notification={notification}
                     read={read}

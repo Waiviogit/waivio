@@ -34,6 +34,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
@@ -137,6 +138,18 @@ class EditPost extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    if (
+      this.props.draftId !== prevProps.draftId &&
+      has(currDraft, ['jsonMetadata', 'campaignId'])
+    ) {
+      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
+  }
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     const linkedObjects = getLinkedObjects(rawContent);
@@ -215,6 +228,8 @@ class EditPost extends Component {
       originalBody,
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
+    // eslint-disable-next-line no-underscore-dangle
+    const campaignId = get(campaign, '_id', null);
 
     const postData = {
       body: postBody,
@@ -249,7 +264,13 @@ class EditPost extends Component {
         })),
     };
 
-    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+    postData.jsonMetadata = createPostMetadata(
+      postBody,
+      topics,
+      oldMetadata,
+      waivioData,
+      campaignId,
+    );
 
     if (originalBody) {
       postData.originalBody = originalBody;
