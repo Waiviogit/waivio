@@ -62,9 +62,9 @@ const RewardsFiltersPanel = ({
           <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
-        {location.pathname === '/rewards/all' ||
-        location.pathname === '/rewards/active' ||
-        location.pathname === '/rewards/reserved' ? (
+        {_.includes(location.pathname, 'all') ||
+        _.includes(location.pathname, 'active') ||
+        _.includes(location.pathname, 'reserved') ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -86,8 +86,8 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         ) : (
-          location.pathname !== '/rewards/messages' &&
-          location.pathname !== '/rewards/history' && (
+          !_.includes(location.pathname, 'messages') &&
+          !_.includes(location.pathname, 'history') && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
                 {location.pathname === '/rewards/payables'
@@ -136,7 +136,7 @@ const RewardsFiltersPanel = ({
                   filterLayout(
                     type,
                     'caseStatus',
-                    _.includes(activeMessagesFilters.caseStatus, type),
+                    activeMessagesFilters.caseStatus === type,
                   ),
                 )
               : _.map(sponsorsData, sponsor =>

@@ -622,7 +622,7 @@ export const getPropositions = ({
       .catch(error => reject(error));
   });
 
-export const getMessages = ({
+export const getHistory = ({
   limit = 30,
   skip = 0,
   guideName,
@@ -650,6 +650,7 @@ export const getMessages = ({
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (isEmpty(caseStatus)) reqData.caseStatus = 'all';
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers,
       method: 'POST',
