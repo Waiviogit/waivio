@@ -101,3 +101,18 @@ export const followUser = (username, top = false) => (dispatch, getState, { stee
     },
   });
 };
+
+export const GET_USER_PRIVATE_EMAIL = createAsyncActionType('@user/GET_USER_PRIVATE_EMAIL');
+
+export const getUserPrivateEmail = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  if (userName) {
+    return dispatch({
+      type: GET_USER_PRIVATE_EMAIL.ACTION,
+      payload: ApiClient.getPrivateEmail(userName),
+    });
+  }
+  return dispatch({ type: GET_USER_PRIVATE_EMAIL.ERROR, payload: Promise.resolve(null) });
+};
