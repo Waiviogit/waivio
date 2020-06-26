@@ -25,6 +25,7 @@ import { calculateEstAccountValue } from '../vendor/steemitHelpers';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 
 import './Withdraw.less';
+import { getUserPrivateEmail } from '../user/usersActions';
 
 const Withdraw = ({
   intl,
@@ -35,6 +36,7 @@ const Withdraw = ({
   totalVestingShares,
   totalVestingFundSteem,
   cryptosPriceHistory,
+  getPrivateEmail,
 }) => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
@@ -42,6 +44,7 @@ const Withdraw = ({
   const [hiveAmount, setHiveAmount] = useState();
   const [currencyAmount, setCurrencyAmount] = useState();
   const [isShowConfirm, setShowConfirm] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const draftTransfer = store.get('withdrawData');
   const steemRate = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null);
@@ -76,6 +79,10 @@ const Withdraw = ({
       setHiveAmount(draftTransfer.hiveAmount);
       setCurrentCurrency(draftTransfer.currentCurrency);
       setWalletAddress(draftTransfer.walletAddress);
+      walletAddressValidation(
+        draftTransfer.walletAddress,
+        CRYPTO_FOR_VALIDATE_WALLET[draftTransfer.currentCurrency],
+      );
     }
   }, []);
 
@@ -123,12 +130,16 @@ const Withdraw = ({
     walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
   };
   const handleRequest = () => {
+    setIsLoading(true);
     store.set('withdrawData', {
       hiveAmount,
       walletAddress,
       currentCurrency,
     });
-    setShowConfirm(true);
+    getPrivateEmail(user.name).then(() => {
+      setShowConfirm(true);
+      setIsLoading(false);
+    });
   };
   const validatorMessage = validationAddressState.valid
     ? intl.formatMessage({ id: 'address_valid', defaultMessage: 'Address is valid' })
@@ -157,6 +168,7 @@ const Withdraw = ({
         onCancel={closeWithdrawModal}
         okButtonProps={{
           disabled,
+          loading: isLoading,
         }}
       >
         <Form className="Withdraw" hideRequiredMark>
@@ -290,6 +302,7 @@ Withdraw.propTypes = {
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   cryptosPriceHistory: PropTypes.shape().isRequired,
+  getPrivateEmail: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -303,5 +316,6 @@ export default connect(
   }),
   {
     closeWithdrawModal: closeWithdraw,
+    getPrivateEmail: getUserPrivateEmail,
   },
 )(injectIntl(Withdraw));
