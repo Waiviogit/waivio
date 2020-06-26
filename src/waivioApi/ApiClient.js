@@ -9,6 +9,7 @@ import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
 import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
+import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 
 let headers = {
   Accept: 'application/json',
@@ -837,18 +838,13 @@ export const getAuthenticatedUserMetadata = userName => {
     method: 'GET',
   })
     .then(res => res.json())
-    .then(res => ({
-      user_metadata: omit(res.user_metadata, '_id'),
-      privateEmail: res.privateEmail,
-    }));
+    .then(res => omit(res.user_metadata, '_id'));
 };
 
 export const updateUserMetadata = async (userName, data) => {
   let isGuest = null;
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
+  const token = getGuestAccessToken();
+  isGuest = token === 'null' ? false : Boolean(token);
 
   if (isGuest) {
     const token = await getValidTokenData();
@@ -1213,6 +1209,17 @@ export const finalConfirmation = (token, isGuest) => {
       method: 'GET',
     },
   ).then(res => res.json());
+};
+
+export const getPrivateEmail = userName => {
+  const { apiPrefix, user, userMetadata } = config;
+
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}?onlyEmail=true`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.privateEmail);
 };
 
 // injected as extra argument in Redux Thunk

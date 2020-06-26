@@ -11,7 +11,11 @@ import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
-import { getGuestPaymentsHistory, updateGuestProfile } from '../../waivioApi/ApiClient';
+import {
+  getGuestPaymentsHistory,
+  getPrivateEmail,
+  updateGuestProfile,
+} from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import history from '../history';
 import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
@@ -76,10 +80,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+        const privateEmail = await getPrivateEmail(tokenData.userData.name);
 
         resolve({
           account: tokenData.userData,
           userMetaData,
+          privateEmail,
           socialNetwork,
           isGuestUser: true,
         });
@@ -95,10 +101,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+        const privateEmail = await getPrivateEmail(scUserData.userData.name);
+
         resolve({
           ...scUserData,
-          userMetaData: userMetaData.user_metadata,
-          privateEmail: userMetaData.privateEmail,
+          userMetaData,
+          privateEmail,
           isGuestUser: isGuest,
         });
       } catch (e) {
