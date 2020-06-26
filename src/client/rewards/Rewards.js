@@ -138,7 +138,7 @@ class Rewards extends React.Component {
     isSearchAreaFilter: false,
     isAssign: false,
     zoomMap: 0,
-    isFirstRendering: true,
+    fetched: true,
   };
 
   componentDidMount() {
@@ -326,7 +326,7 @@ class Rewards extends React.Component {
         area,
         radius,
         loading: false,
-        isFirstRendering: false,
+        fetched: false,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -481,7 +481,7 @@ class Rewards extends React.Component {
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, loadingAssignDiscard, isAssign, isFirstRendering } = this.state;
+    const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const { intl } = this.props;
     if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -523,7 +523,7 @@ class Rewards extends React.Component {
             ),
         ),
       );
-    } else if (!isFirstRendering && isEmpty(propositions)) {
+    } else if (!fetched && isEmpty(propositions)) {
       return `${intl.formatMessage({
         id: 'noProposition',
         defaultMessage: `No reward matches the criteria`,
@@ -640,7 +640,7 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
       zoomMap,
-      isFirstRendering,
+      fetched,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -681,7 +681,7 @@ class Rewards extends React.Component {
       sponsors,
       campaignsTypes,
       activeFilters,
-      isFirstRendering,
+      fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
     });

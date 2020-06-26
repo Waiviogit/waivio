@@ -470,7 +470,7 @@ class ReportsForm extends Component {
   }
 }
 
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(ReportsForm);
+const WrappedReportsForm = Form.create({ name: 'ReportsForm' })(ReportsForm);
 
 ReportsForm.propTypes = {
   form: PropTypes.shape(),
@@ -488,4 +488,4 @@ ReportsForm.defaultProps = {
   usedLocale: 'en-US',
 };
 
-export default WrappedNormalLoginForm;
+export default WrappedReportsForm;
