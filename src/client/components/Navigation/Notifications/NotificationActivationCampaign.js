@@ -42,7 +42,7 @@ NotificationActicationCampaign.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
     author: PropTypes.string,
-    object_name: PropTypes.number,
+    object_name: PropTypes.string,
     timestamp: PropTypes.number,
     author_permlink: PropTypes.string,
   }),

@@ -141,16 +141,6 @@ class Topnav extends React.Component {
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
-    }
-  }
-
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
@@ -190,16 +180,20 @@ class Topnav extends React.Component {
     return countArr;
   };
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
 
   debouncedSearchByObject = debounce((searchString, objType) =>
     this.props.searchObjectsAutoCompete(searchString, objType),
   );
 
-  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
+  debouncedSearchByUser = debounce(
+    searchString => this.props.searchUsersAutoCompete(searchString),
+    800,
+  );
 
-  debouncedSearchByObjectTypes = debounce(searchString =>
-    this.props.searchObjectTypesAutoCompete(searchString),
+  debouncedSearchByObjectTypes = debounce(
+    searchString => this.props.searchObjectTypesAutoCompete(searchString),
+    800,
   );
 
   handleMoreMenuSelect(key) {
@@ -450,9 +444,18 @@ class Topnav extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true, searchBarValue: value });
+    this.handleSearch(value);
   }
+
+  handleSearch = value => {
+    const { searchBarValue } = this.state;
+    this.debouncedSearch(searchBarValue);
+    if (searchBarValue === value) {
+      this.debouncedSearchByUser(searchBarValue);
+      this.debouncedSearchByObjectTypes(searchBarValue);
+    }
+  };
 
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {

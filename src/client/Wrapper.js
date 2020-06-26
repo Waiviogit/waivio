@@ -7,10 +7,11 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
+import ruRU from 'antd/lib/locale-provider/ru_RU';
+import ukUA from 'antd/lib/locale-provider/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
-  getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -19,6 +20,7 @@ import {
   getTranslations,
   getNightmode,
   isGuestUser,
+  getStatusWithdraw,
 } from './reducers';
 import {
   login,
@@ -38,13 +40,13 @@ import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './ErrorBoundary';
+import Withdraw from './wallet/WithDraw';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
 @withRouter
 @connect(
   state => ({
-    loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
     isAuthenticated: getIsAuthenticated(state),
@@ -56,6 +58,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     login,
@@ -93,6 +96,7 @@ class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
+    isWithdrawOpen: PropTypes.bool.isRequired,
     dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
@@ -233,6 +237,17 @@ class Wrapper extends React.PureComponent {
     }
   }
 
+  getAntdLocale = language => {
+    switch (language.id) {
+      case 'ru-RU':
+        return ruRU;
+      case 'uk-UA':
+        return ukUA;
+      default:
+        return enUS;
+    }
+  };
+
   render() {
     const {
       user,
@@ -245,10 +260,11 @@ class Wrapper extends React.PureComponent {
     } = this.props;
 
     const language = findLanguage(usedLocale);
+    const antdLocale = this.getAntdLocale(language);
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <ConfigProvider locale={enUS}>
+        <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{
               usedLocale,
@@ -267,6 +283,7 @@ class Wrapper extends React.PureComponent {
                 />
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
+                {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
