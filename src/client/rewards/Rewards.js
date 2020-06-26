@@ -856,6 +856,7 @@ class Rewards extends React.Component {
                       location={location}
                       setPayablesFilterValue={this.setPayablesFilterValue}
                       messagesSponsors={messagesSponsors}
+                      sponsors={sponsors}
                     />
                   )}
                 </div>
