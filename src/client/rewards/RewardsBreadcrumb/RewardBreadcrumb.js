@@ -8,12 +8,12 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import '../Rewards.less';
 
 const rewardText = {
-  all: { id: 'all', defaultMessage: 'all' },
-  active: { id: 'eligible', defaultMessage: 'eligible' },
-  reserved: { id: 'reserved', defaultMessage: 'reserved' },
-  history: { id: 'history', defaultMessage: 'history' },
-  created: { id: 'created', defaultMessage: 'created' },
-  messages: { id: 'messages', defaultMessage: 'messages' },
+  all: { id: 'all', defaultMessage: 'All' },
+  active: { id: 'eligible', defaultMessage: 'Eligible' },
+  reserved: { id: 'reserved', defaultMessage: 'Reserved' },
+  history: { id: 'history', defaultMessage: 'History' },
+  created: { id: 'created', defaultMessage: 'Created' },
+  messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
   const isCorrectFilter = !!rewardText[filterKey];

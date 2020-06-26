@@ -7,6 +7,8 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
+import ruRU from 'antd/lib/locale-provider/ru_RU';
+import ukUA from 'antd/lib/locale-provider/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
@@ -232,6 +234,17 @@ class Wrapper extends React.PureComponent {
     }
   }
 
+  getAntdLocale = language => {
+    switch (language.id) {
+      case 'ru-RU':
+        return ruRU;
+      case 'uk-UA':
+        return ukUA;
+      default:
+        return enUS;
+    }
+  };
+
   render() {
     const {
       user,
@@ -244,10 +257,11 @@ class Wrapper extends React.PureComponent {
     } = this.props;
 
     const language = findLanguage(usedLocale);
+    const antdLocale = this.getAntdLocale(language);
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <ConfigProvider locale={enUS}>
+        <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{
               usedLocale,

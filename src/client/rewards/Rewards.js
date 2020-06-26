@@ -141,6 +141,7 @@ class Rewards extends React.Component {
     messagesSponsors: [],
     messages: [],
     zoomMap: 0,
+    fetched: true,
   };
 
   componentDidMount() {
@@ -379,6 +380,7 @@ class Rewards extends React.Component {
         area,
         radius,
         loading: false,
+        fetched: false,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -563,7 +565,7 @@ class Rewards extends React.Component {
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match) => {
-    const { propositions, loadingAssignDiscard, isAssign, messages } = this.state;
+    const { propositions, loadingAssignDiscard, isAssign, messages, fetched } = this.state;
     const actualPropositions = match.params.filterKey !== 'history' ? propositions : messages;
     const { intl } = this.props;
     if (size(actualPropositions) !== 0) {
@@ -607,11 +609,13 @@ class Rewards extends React.Component {
             ),
         ),
       );
+    } else if (!fetched && isEmpty(propositions)) {
+      return `${intl.formatMessage({
+        id: 'noProposition',
+        defaultMessage: `No reward matches the criteria`,
+      })}`;
     }
-    return `${intl.formatMessage({
-      id: 'noProposition',
-      defaultMessage: `No reward matches the criteria`,
-    })}`;
+    return '';
   };
 
   goToCampaign = wobjPermlink => {
@@ -724,6 +728,7 @@ class Rewards extends React.Component {
       zoomMap,
       activeMessagesFilters,
       messagesSponsors,
+      fetched,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -766,6 +771,7 @@ class Rewards extends React.Component {
       sponsors,
       campaignsTypes,
       activeFilters,
+      fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
     });
@@ -849,7 +855,6 @@ class Rewards extends React.Component {
                       setFilterValue={this.setFilterValue}
                       location={location}
                       setPayablesFilterValue={this.setPayablesFilterValue}
-                      sponsors={sponsors}
                       messagesSponsors={messagesSponsors}
                     />
                   )}
