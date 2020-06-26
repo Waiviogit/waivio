@@ -20,6 +20,7 @@ import {
   getTranslations,
   getNightmode,
   isGuestUser,
+  getStatusWithdraw,
 } from './reducers';
 import {
   login,
@@ -57,6 +58,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     login,
@@ -94,6 +96,7 @@ class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
+    isWithdrawOpen: PropTypes.bool.isRequired,
     dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
@@ -280,7 +283,7 @@ class Wrapper extends React.PureComponent {
                 />
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
-                <Withdraw />
+                {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
