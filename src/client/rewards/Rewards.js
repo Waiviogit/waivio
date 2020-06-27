@@ -135,13 +135,18 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
-    activeMessagesFilters: { caseStatus: '', rewards: [], status: [], messagesSponsors: [] },
     isSearchAreaFilter: false,
     isAssign: false,
     messagesSponsors: [],
     messages: [],
     zoomMap: 0,
     fetched: true,
+    activeMessagesFilters: {
+      caseStatus: '',
+      rewards: [],
+      status: [],
+      messagesSponsors: [],
+    },
   };
 
   componentDidMount() {
@@ -170,34 +175,16 @@ class Rewards extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { match, userLocation } = nextProps;
     const { username } = this.props;
-    const { area, activeFilters, activeMessagesFilters } = this.state;
+    const { area, activeFilters } = this.state;
     const needPropositions =
       isEmpty(this.props.userLocation) &&
       !isEmpty(userLocation) &&
       isEqual(this.props.match, match) &&
       !isEmpty(match.params) &&
       !isEmpty(this.props.match.params) &&
-      this.props.match.params.filterKey !== 'messages';
-    let sort = this.state.sort;
-    if (match.params.filterKey === 'messages') {
-      sort = 'inquiryDate';
-      this.setState({ sort });
-    }
-    if (match.params.filterKey === 'history') {
-      sort = 'reservation';
-      this.setState({ sort });
-    }
-    if (
-      (this.props.match.params.filterKey === 'messages' &&
-        match.params.filterKey !== 'history' &&
-        match.params.filterKey !== 'messages') ||
-      (this.props.match.params.filterKey === 'history' &&
-        match.params.filterKey !== 'messages' &&
-        match.params.filterKey !== 'history')
-    ) {
-      sort = 'proximity';
-      this.setState({ sort });
-    }
+      this.props.match.params.filterKey !== 'messages' &&
+      this.props.match.params.filterKey !== 'history';
+    const sort = this.state.sort;
 
     if (needPropositions) {
       this.getPropositions({
@@ -220,8 +207,7 @@ class Rewards extends React.Component {
     if (
       match.params.filterKey === 'all' ||
       match.params.filterKey === 'active' ||
-      match.params.filterKey === 'reserved' ||
-      match.params.filterKey === 'history'
+      match.params.filterKey === 'reserved'
     ) {
       if (
         (match.params.filterKey !== this.props.match.params.filterKey &&
@@ -240,9 +226,6 @@ class Rewards extends React.Component {
         });
       }
     } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
-    if (match.params.filterKey === 'history' || match.params.filterKey === 'messages') {
-      this.getHistory({ username, sort, activeMessagesFilters });
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -296,7 +279,6 @@ class Rewards extends React.Component {
     const { username, match } = this.props;
     const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
-    const activeMessagesFilters = this.state.activeMessagesFilters;
     switch (key) {
       case 'types':
       case 'guideNames':
@@ -307,27 +289,37 @@ class Rewards extends React.Component {
         }
         this.setState({ activeFilters, loadingCampaigns: true });
         return this.getPropositions({ username, match, area, sort, activeFilters });
-      case 'rewards':
-      case 'messagesSponsors':
-        if (includes(activeMessagesFilters[key], filterValue)) {
-          remove(activeMessagesFilters[key], f => f === filterValue);
-        } else {
-          activeMessagesFilters[key].push(filterValue);
-        }
-        this.setState({ activeMessagesFilters, loadingCampaigns: true });
-        return this.getHistory({ sort, activeMessagesFilters });
-      case 'caseStatus':
-        if (activeMessagesFilters[key] === filterValue) {
-          activeMessagesFilters[key] = '';
-        } else {
-          activeMessagesFilters[key] = filterValue;
-        }
-        this.setState({ activeMessagesFilters, loadingCampaigns: true });
-        return this.getHistory({ sort, activeMessagesFilters });
       default:
         return null;
     }
   };
+
+  setActiveMessagesFilters = (filterValue, key) => {
+    const activeFilters = this.state.activeMessagesFilters;
+    switch (key) {
+      case 'rewards':
+      case 'messagesSponsors':
+        if (includes(activeFilters[key], filterValue)) {
+          remove(activeFilters[key], f => f === filterValue);
+        } else {
+          activeFilters[key].push(filterValue);
+        }
+        this.setState({ activeMessagesFilters: activeFilters });
+        break;
+      case 'caseStatus':
+        if (activeFilters[key] === filterValue) {
+          activeFilters[key] = '';
+        } else {
+          activeFilters[key] = filterValue;
+        }
+        this.setState({ activeMessagesFilters: activeFilters });
+        break;
+      default:
+        break;
+    }
+  };
+
+  setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
 
   setPayablesFilterValue = filterValue => {
     let activeFilters = [...this.state.activePayableFilters];
@@ -402,33 +394,6 @@ class Rewards extends React.Component {
     });
   };
 
-  getHistory = ({ username, sort, activeMessagesFilters }) => {
-    const requestData = {
-      onlyWithMessages: true,
-      sort,
-      caseStatus: activeMessagesFilters.caseStatus,
-      rewards: activeMessagesFilters.rewards,
-      status: activeMessagesFilters.status,
-      guideNames: activeMessagesFilters.messagesSponsors,
-    };
-    if (sort === 'reservation') {
-      requestData.userName = username;
-    } else {
-      requestData.guideName = username;
-    }
-    this.setState({ loadingCampaigns: true });
-    ApiClient.getHistory(requestData).then(data => {
-      const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
-      this.setState({
-        messages: data.campaigns,
-        sort,
-        messagesSponsors: sponsors,
-        loading: false,
-        loadingCampaigns: false,
-      });
-    });
-  };
-
   resetMapFilter = () => {
     const { username, match } = this.props;
     const { area, sort, activeFilters } = this.state;
@@ -444,13 +409,12 @@ class Rewards extends React.Component {
   };
 
   handleSortChange = sort => {
-    const { radius, area, activeFilters, activeMessagesFilters } = this.state;
+    const { radius, area, activeFilters } = this.state;
     const { username, match } = this.props;
     this.setState({ loadingCampaigns: true, sort });
     if (match.params.filterKey !== 'messages' && match.params.filterKey !== 'history') {
       this.getPropositions({ username, match, radius, area, sort, activeFilters });
     }
-    this.getHistory({ sort, activeMessagesFilters });
   };
 
   // Propositions
@@ -566,9 +530,9 @@ class Rewards extends React.Component {
   };
   // END Propositions
 
-  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match) => {
-    const { propositions, loadingAssignDiscard, isAssign, messages, fetched } = this.state;
-    const actualPropositions = match.params.filterKey !== 'history' ? propositions : messages;
+  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match, messages) => {
+    const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
+    const actualPropositions = !isEmpty(propositions[0]) ? propositions : messages;
     const { intl } = this.props;
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -728,9 +692,9 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
       zoomMap,
-      activeMessagesFilters,
       messagesSponsors,
       fetched,
+      activeMessagesFilters,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -738,11 +702,6 @@ class Rewards extends React.Component {
       !match.params.campaignParent && match.params.filterKey !== 'history';
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
-    const isMessages = filterKey === 'messages';
-    const isCreate =
-      includes(location.pathname, 'create') ||
-      includes(location.pathname, 'createDuplicate') ||
-      includes(location.pathname, 'details');
     const currentSteemPrice =
       cryptosPriceHistory &&
       cryptosPriceHistory[HBD.coinGeckoId] &&
@@ -776,6 +735,9 @@ class Rewards extends React.Component {
       fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
+      activeMessagesFilters,
+      setMessagesSponsors: this.setMessagesSponsors,
+      messagesSponsors,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
@@ -836,7 +798,7 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && !isCreate && !isMessages && (
+                  {!isEmpty(this.props.userLocation) && (
                     <MapWrap
                       setMapArea={this.setMapArea}
                       userLocation={userLocation}
@@ -848,13 +810,17 @@ class Rewards extends React.Component {
                       zoomMap={zoomMap}
                     />
                   )}
-                  {(!isEmpty(sponsors) || !isEmpty(propositions)) && (
+                  {!isEmpty(sponsors) && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
                       activeFilters={activeFilters}
                       activeMessagesFilters={activeMessagesFilters}
                       activePayableFilters={activePayableFilters}
-                      setFilterValue={this.setFilterValue}
+                      setFilterValue={
+                        match.params.filterKey === 'history'
+                          ? this.setActiveMessagesFilters
+                          : this.setFilterValue
+                      }
                       location={location}
                       setPayablesFilterValue={this.setPayablesFilterValue}
                       messagesSponsors={messagesSponsors}

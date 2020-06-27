@@ -53,6 +53,7 @@ import SubFeed from '../client/feed/SubFeed';
 import UserInfo from '../client/app/Sidebar/UserInfo';
 import BlacklistCampaign from '../client/rewards/Blacklist/Blacklist';
 import ConfirmationModal from '../client/widgets/ConfirmationModal';
+import HistoryCampaign from '../client/rewards/History/History';
 
 const routes = [
   {
@@ -118,6 +119,11 @@ const routes = [
             path: '/rewards/match-bot',
             exact: true,
             component: MatchBotCampaign,
+          },
+          {
+            path: '/rewards/history',
+            exact: true,
+            component: HistoryCampaign,
           },
           {
             path: '/rewards/blacklist',

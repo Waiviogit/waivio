@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import find from 'lodash/find';
+import { find, get } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -110,9 +110,11 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition } = this.props;
-    getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
-      this.setState({ currentPost: res }),
-    );
+    const author = get(proposition, ['objects', '0', 'author']);
+    const permlink = get(proposition, ['objects', '0', 'permlink']);
+    if (author && permlink) {
+      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+    }
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(

@@ -34,6 +34,7 @@ const FilteredRewardsList = props => {
     activeFilters,
     setFilterValue,
     campaignsTypes,
+    messages,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,10 +101,7 @@ const FilteredRewardsList = props => {
         tabText={getTextByFilterKey(intl, filterKey)}
         filterKey={filterKey}
         reqObject={
-          !IsRequiredObjectWrap &&
-          match.params.filterKey !== 'history' &&
-          propositions.length &&
-          propositions[0]
+          !IsRequiredObjectWrap && propositions.length && propositions[0]
             ? propositions[0].required_object
             : null
         }
@@ -114,7 +112,7 @@ const FilteredRewardsList = props => {
         </Tag>
       )}
       {!IsRequiredObjectWrap &&
-      match.params.filterKey !== 'history' &&
+      filterKey !== 'history' &&
       propositions.length &&
       propositions[0] ? (
         <div className="FilteredRewardsList__header">
@@ -176,7 +174,7 @@ const FilteredRewardsList = props => {
           loadingMore={loading}
           loader={<Loading />}
         >
-          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
+          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match, messages)}
         </ReduxInfiniteScroll>
       </div>
 
@@ -213,6 +211,7 @@ FilteredRewardsList.defaultProps = {
   loading: false,
   sponsors: [],
   campaignsTypes: [],
+  messages: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -235,6 +234,7 @@ FilteredRewardsList.propTypes = {
   activeFilters: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
+  messages: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 export default FilteredRewardsList;
