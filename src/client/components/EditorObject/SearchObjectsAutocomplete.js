@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { AutoComplete } from 'antd';
+import { AutoComplete, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
-import { getSearchObjectsResults } from '../../reducers';
+import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 
@@ -15,6 +15,7 @@ import './SearchObjectsAutocomplete.less';
 @connect(
   state => ({
     searchObjectsResults: getSearchObjectsResults(state),
+    isSearchObject: getIsStartSearchObject(state),
   }),
   {
     searchObjects: searchObjectsAutoCompete,
@@ -40,6 +41,7 @@ class SearchObjectsAutocomplete extends Component {
     placeholder: '',
     parentPermlink: '',
     autoFocus: true,
+    isSearchObject: false,
   };
 
   static propTypes = {
@@ -60,6 +62,7 @@ class SearchObjectsAutocomplete extends Component {
     dropdownClassName: PropTypes.string,
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
+    isSearchObject: PropTypes.bool,
   };
 
   constructor(props) {
@@ -113,6 +116,26 @@ class SearchObjectsAutocomplete extends Component {
     this.props.clearSearchResults();
     this.setState({ searchString: '' });
   }
+
+  pendingSearch = () => {
+    const downBar = (
+      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
+        <div className="pending-status">
+          {this.props.intl.formatMessage(
+            {
+              id: 'search_all_results_for',
+              defaultMessage: 'Search all results for {search}...',
+            },
+            { search: this.state.searchString },
+          )}
+          {<span> &nbsp;</span>}
+          {<Icon type="loading" />}
+        </div>
+      </AutoComplete.Option>
+    );
+    return [downBar];
+  };
+
   render() {
     const { searchString } = this.state;
     const {
@@ -123,6 +146,7 @@ class SearchObjectsAutocomplete extends Component {
       allowClear,
       disabled,
       autoFocus,
+      isSearchObject,
     } = this.props;
     const searchObjectsOptions = searchString
       ? searchObjectsResults
@@ -143,7 +167,7 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        dataSource={searchObjectsOptions}
+        dataSource={isSearchObject ? this.pendingSearch() : searchObjectsOptions}
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({

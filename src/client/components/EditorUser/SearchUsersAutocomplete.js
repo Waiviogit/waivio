@@ -77,7 +77,7 @@ class SearchUsersAutocomplete extends React.Component {
               id: 'search_all_results_for',
               defaultMessage: 'Search all results for {search}...',
             },
-            { search: this.state.searchBarValue },
+            { search: this.state.searchString },
           )}
           {<span> &nbsp;</span>}
           {<Icon type="loading" />}

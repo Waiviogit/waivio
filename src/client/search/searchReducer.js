@@ -16,6 +16,7 @@ const initialState = {
   beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
   isStartSearchAutoComplete: false,
   isStartSearchUser: false,
+  isStartSearchObject: false,
 };
 
 export default (state = initialState, action) => {
@@ -76,6 +77,11 @@ export default (state = initialState, action) => {
         searchUsersResults: [],
       };
     }
+    case searchActions.SEARCH_OBJECTS.START:
+      return {
+        ...state,
+        isStartSearchObject: true,
+      };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
       const { result, search, locale } = action.payload;
       return {
@@ -83,6 +89,7 @@ export default (state = initialState, action) => {
         searchObjectsResults: isEmpty(search)
           ? []
           : result.map(serverWObj => getClientWObj(serverWObj, locale)),
+        isStartSearchObject: false,
       };
     }
     case searchActions.SEARCH_OBJECTS.ERROR: {
@@ -317,3 +324,4 @@ export const searchObjectTypesResults = state => state.searchObjectTypesResults;
 export const getBeneficiariesUsers = state => state.beneficiariesUsers;
 export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
 export const getIsStartSearchUser = state => state.isStartSearchUser;
+export const getIsStartSearchObject = state => state.isStartSearchObject;
