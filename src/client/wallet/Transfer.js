@@ -174,6 +174,10 @@ export default class Transfer extends React.Component {
       });
     }
 
+    if (getEstimateValue) {
+      this.setState({ currentEstimate: getEstimateValue });
+    }
+
     if (!visible) {
       this.setState({
         searchBarValue: '',
@@ -182,10 +186,6 @@ export default class Transfer extends React.Component {
         currentEstimate: null,
         isClosedFind: false,
       });
-    }
-
-    if (visible && getEstimateValue) {
-      this.setState({ currentEstimate: getEstimateValue });
     }
   }
 
