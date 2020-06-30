@@ -1227,5 +1227,6 @@
   "rejected": "Rejected",
   "add_to_blacklist": "Add to blacklist",
   "reject_review": "Reject review",
-  "reinstate_reward": "Reinstate reward"
+  "reinstate_reward": "Reinstate reward",
+  "campaign_buttons_reachedLimit": "Reached limit"
 }

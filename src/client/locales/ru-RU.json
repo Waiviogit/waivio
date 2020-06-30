@@ -1230,5 +1230,6 @@
   "rejected": "Отклоненная",
   "add_to_blacklist": "Добавить в черный список",
   "reject_review": "Отклонить отзыв",
-  "reinstate_reward": "Восстановить награду"
+  "reinstate_reward": "Восстановить награду",
+  "campaign_buttons_reachedLimit": "Достигнут предел"
 }

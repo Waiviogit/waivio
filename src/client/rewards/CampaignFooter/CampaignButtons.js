@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedNumber } from 'react-intl';
 import { Icon, Button } from 'antd';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { map } from 'lodash';
+import { map, get } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import '../../components/StoryFooter/Buttons.less';
@@ -30,6 +31,8 @@ export default class CampaignButtons extends React.Component {
     propositionGuideName: PropTypes.string.isRequired,
     propositionStatus: PropTypes.string.isRequired,
     match: PropTypes.shape().isRequired,
+    proposition: PropTypes.shape().isRequired,
+    userName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -133,6 +136,8 @@ export default class CampaignButtons extends React.Component {
       propositionGuideName,
       match,
       intl,
+      proposition,
+      userName,
     } = this.props;
 
     const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
@@ -176,6 +181,8 @@ export default class CampaignButtons extends React.Component {
       </PopoverMenuItem>,
     ];
 
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+
     return (
       <Popover
         placement="bottomRight"
@@ -186,10 +193,19 @@ export default class CampaignButtons extends React.Component {
               ? popoverMenu
               : map(this.getPopoverMenu(), item => (
                   <PopoverMenuItem key={item.key}>
-                    {intl.formatMessage({
-                      id: item.id,
-                      defaultMessage: item.defaultMessage,
-                    })}
+                    {item.id === 'view_reservation' ? (
+                      <Link to={`/@${userName}/${reservationPermlink}`}>
+                        {intl.formatMessage({
+                          id: item.id,
+                          defaultMessage: item.defaultMessage,
+                        })}
+                      </Link>
+                    ) : (
+                      intl.formatMessage({
+                        id: item.id,
+                        defaultMessage: item.defaultMessage,
+                      })
+                    )}
                   </PopoverMenuItem>
                 ))}
           </PopoverMenu>

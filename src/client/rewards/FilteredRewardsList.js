@@ -35,6 +35,7 @@ const FilteredRewardsList = props => {
     setFilterValue,
     campaignsTypes,
     messages,
+    location,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +44,7 @@ const FilteredRewardsList = props => {
   const showMap = () => dispatch(setMapFullscreenMode(true));
 
   const sortRewards = useMemo(() => {
-    if (filterKey === 'messages') {
+    if (location === '/rewards/messages') {
       return [
         {
           key: 'inquiryDate',
@@ -62,7 +63,7 @@ const FilteredRewardsList = props => {
         },
       ];
     }
-    if (filterKey === 'history') {
+    if (location === '/rewards/history') {
       return [
         {
           key: 'reservation',
@@ -93,7 +94,7 @@ const FilteredRewardsList = props => {
         defaultMessage: 'proximity',
       },
     ];
-  }, [filterKey]);
+  }, [location]);
 
   return !loadingCampaigns ? (
     <React.Fragment>
@@ -105,6 +106,7 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        location={location}
       />
       {isSearchAreaFilter && (
         <Tag className="ttc" key="search-area-filter" closable onClose={resetMapFilter}>
@@ -235,6 +237,7 @@ FilteredRewardsList.propTypes = {
   setFilterValue: PropTypes.func.isRequired,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
+  location: PropTypes.string.isRequired,
 };
 
 export default FilteredRewardsList;

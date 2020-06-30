@@ -632,8 +632,22 @@ export const buttonsTitle = {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
   },
+  reachedLimit: {
+    id: 'campaign_buttons_reachedLimit',
+    defaultMessage: 'Reached limit',
+  },
   default: {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
   },
+};
+
+export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
+  if (location === '/rewards/messages') {
+    return intl.formatMessage({
+      id: 'messages',
+      defaultMessage: `Messages`,
+    });
+  }
+  return intl.formatMessage(rewardText[filterKey]);
 };

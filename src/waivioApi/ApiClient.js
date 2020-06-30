@@ -641,7 +641,6 @@ export const getHistory = ({
       skip,
       onlyWithMessages,
       sort,
-      caseStatus,
     };
     if (userName) {
       reqData.userName = userName;
@@ -651,7 +650,7 @@ export const getHistory = ({
     if (!isEmpty(rewards)) reqData.rewards = rewards;
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
-    if (isEmpty(caseStatus)) reqData.caseStatus = 'all';
+    if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers,
       method: 'POST',

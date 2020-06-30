@@ -126,6 +126,11 @@ const routes = [
             component: HistoryCampaign,
           },
           {
+            path: '/rewards/messages',
+            exact: true,
+            component: HistoryCampaign,
+          },
+          {
             path: '/rewards/blacklist',
             exact: true,
             component: BlacklistCampaign,

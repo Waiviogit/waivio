@@ -249,6 +249,7 @@ class CampaignFooter extends React.Component {
       loading,
       proposition,
       match,
+      user,
     } = this.props;
     return (
       <div className="CampaignFooter">
@@ -275,7 +276,9 @@ class CampaignFooter extends React.Component {
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
               propositionStatus={proposition.status}
+              proposition={proposition}
               match={match}
+              userName={user.name}
             />
           )}
         </div>

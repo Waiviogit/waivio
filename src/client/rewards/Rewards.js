@@ -575,7 +575,7 @@ class Rewards extends React.Component {
             ),
         ),
       );
-    } else if (!fetched && isEmpty(propositions)) {
+    } else if (!fetched && isEmpty(actualPropositions)) {
       return `${intl.formatMessage({
         id: 'noProposition',
         defaultMessage: `No reward matches the criteria`,
@@ -795,7 +795,9 @@ class Rewards extends React.Component {
                 </div>
               </Affix>
             )}
-            {match.path === '/rewards/:filterKey/:campaignParent?' && (
+            {(includes(match.params.filterKey, 'all') ||
+              includes(match.params.filterKey, 'active') ||
+              includes(match.params.filterKey, 'reserved')) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   {!isEmpty(this.props.userLocation) && (
@@ -814,19 +816,24 @@ class Rewards extends React.Component {
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
                       activeFilters={activeFilters}
-                      activeMessagesFilters={activeMessagesFilters}
-                      activePayableFilters={activePayableFilters}
-                      setFilterValue={
-                        match.params.filterKey === 'history'
-                          ? this.setActiveMessagesFilters
-                          : this.setFilterValue
-                      }
+                      setFilterValue={this.setFilterValue}
                       location={location}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
-                      messagesSponsors={messagesSponsors}
                       sponsors={sponsors}
                     />
                   )}
+                </div>
+              </Affix>
+            )}
+            {(includes(match.params.filterKey, 'history') ||
+              includes(match.params.filterKey, 'messages')) && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
+                <div className="right">
+                  <RewardsFiltersPanel
+                    activeMessagesFilters={activeMessagesFilters}
+                    setFilterValue={this.setActiveMessagesFilters}
+                    location={location}
+                    messagesSponsors={messagesSponsors}
+                  />
                 </div>
               </Affix>
             )}

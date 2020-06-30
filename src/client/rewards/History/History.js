@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { map, uniqBy } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -14,7 +15,9 @@ const History = ({
   messagesSponsors,
   setMessagesSponsors,
 }) => {
-  const [sort, setSort] = useState('reservation');
+  const location = useLocation();
+  const isHistory = location.pathname === '/rewards/history';
+  const [sort, setSort] = useState(isHistory ? 'reservation' : 'inquiryDate');
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,18 +30,18 @@ const History = ({
       const requestData = {
         onlyWithMessages: true,
         sort: sortHistory,
-        caseStatus: activeFilters.caseStatus,
         rewards: activeFilters.rewards,
         status: activeFilters.status,
-        guideNames: activeFilters.messagesSponsors,
         userName: username,
       };
+      if (isHistory) requestData.guideNames = activeFilters.messagesSponsors;
+      if (!isHistory) requestData.caseStatus = activeFilters.caseStatus;
       await setLoadingCampaigns(true);
       await ApiClient.getHistory(requestData).then(data => {
         const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
         setLoadingCampaigns(false);
         setSort(sortHistory);
-        setMessages(data.campaigns);
+        setMessages(data.campaigns || []);
         setMessagesSponsors(sponsors);
         setLoading(false);
         setHasMore(data.hasMore);
@@ -75,6 +78,7 @@ const History = ({
           sort,
           sponsors: messagesSponsors,
           filterKey: 'history',
+          location: location.pathname,
         }}
       />
     </div>

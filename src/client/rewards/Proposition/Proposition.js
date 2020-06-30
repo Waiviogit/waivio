@@ -128,7 +128,9 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {assigned || get(match, ['params', 'filterKey']) === 'history' ? (
+        {assigned ||
+        get(match, ['params', 'filterKey']) === 'history' ||
+        get(match, ['params', 'filterKey']) === 'messages' ? (
           <CampaignFooter
             post={post}
             loading={loading}
