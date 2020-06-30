@@ -15,6 +15,7 @@ import {
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import {
+  geIsStartSearch,
   getAuthenticatedUserMetaData,
   getAutoCompleteSearchResults,
   getIsLoadingNotifications,
@@ -53,6 +54,7 @@ import { getApprovedField } from '../../helpers/wObjectHelper';
     notifications: getNotifications(state),
     userMetaData: getAuthenticatedUserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
+    isStartSearch: geIsStartSearch(state),
   }),
   {
     searchObjectsAutoCompete,
@@ -89,6 +91,7 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    isStartSearch: PropTypes.bool,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
@@ -100,6 +103,7 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
+    isStartSearch: false,
   };
 
   static markers = {
@@ -127,6 +131,7 @@ class Topnav extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
+      isStartSearch: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -450,6 +455,7 @@ class Topnav extends React.Component {
 
   handleSearch = value => {
     const { searchBarValue } = this.state;
+    this.setState({ isStartSearch: true });
     this.debouncedSearch(searchBarValue);
     if (searchBarValue === value) {
       this.debouncedSearchByUser(searchBarValue);
@@ -734,8 +740,27 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
+  pendingSearch = () => {
+    const downBar = (
+      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
+        <div className="pending-status">
+          {this.props.intl.formatMessage(
+            {
+              id: 'search_all_results_for',
+              defaultMessage: 'Search all results for {search}...',
+            },
+            { search: this.state.searchBarValue },
+          )}
+          {<span> &nbsp;</span>}
+          {<Icon type="loading" />}
+        </div>
+      </AutoComplete.Option>
+    );
+    return [downBar];
+  };
+
   render() {
-    const { intl, autoCompleteSearchResults } = this.props;
+    const { intl, autoCompleteSearchResults, isStartSearch } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
@@ -773,7 +798,7 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={formattedAutoCompleteDropdown}
+                dataSource={isStartSearch ? this.pendingSearch() : formattedAutoCompleteDropdown}
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}

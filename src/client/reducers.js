@@ -207,6 +207,7 @@ export const getSearchUsersResultsForDiscoverPage = state =>
   fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+export const geIsStartSearch = state => fromSearch.geIsStartSearch(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
