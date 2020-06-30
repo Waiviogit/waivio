@@ -26,8 +26,9 @@ const ConfirmationModal = ({ intl, history }) => {
     memo: parseSearchParams.get('memo'),
     token: parseSearchParams.get('token'),
     userName: parseSearchParams.get('userName'),
+    commission: parseSearchParams.get('commission'),
   };
-
+  const finalSumm = searchParams.reqAmount - searchParams.commission;
   const confirmTransaction = () => {
     setLoading(true);
 
@@ -89,7 +90,7 @@ const ConfirmationModal = ({ intl, history }) => {
   };
 
   useEffect(() => {
-    estimateAmount(searchParams.reqAmount, 'hive', searchParams.outputCoinType).then(res =>
+    estimateAmount(finalSumm, 'hive', searchParams.outputCoinType).then(res =>
       calculateAmount(res.outputAmount),
     );
   }, []);
@@ -120,7 +121,7 @@ const ConfirmationModal = ({ intl, history }) => {
                   defaultMessage: 'Send',
                 })}
               </b>
-              : {searchParams.reqAmount} HIVE
+              : {finalSumm} HIVE
             </div>
             <div className="modal-row">
               <b>
