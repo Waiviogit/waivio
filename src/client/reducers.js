@@ -209,6 +209,7 @@ export const searchObjectTypesResults = state => fromSearch.searchObjectTypesRes
 export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
 export const getIsStartSearchAutoComplete = state =>
   fromSearch.getIsStartSearchAutoComplete(state.search);
+export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);

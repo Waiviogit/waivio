@@ -15,6 +15,7 @@ const initialState = {
   },
   beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
   isStartSearchAutoComplete: false,
+  isStartSearchUser: false,
 };
 
 export default (state = initialState, action) => {
@@ -94,12 +95,18 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
+    case searchActions.SEARCH_USERS.START:
+      return {
+        ...state,
+        isStartSearchUser: true,
+      };
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,
+        isStartSearchUser: false,
       };
     }
 
@@ -309,3 +316,4 @@ export const getSearchUsersResultsForDiscoverPage = state => state.usersForDisco
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
 export const getBeneficiariesUsers = state => state.beneficiariesUsers;
 export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
+export const getIsStartSearchUser = state => state.isStartSearchUser;
