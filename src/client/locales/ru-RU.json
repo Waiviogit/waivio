@@ -1189,7 +1189,7 @@
   "withdraw_modal_title": "Blocktrades.us обмен",
   "send": "Отправить",
   "receive": "Получить",
-  "est_account_value_withdraw": "Оценочная стоимость аккаунта: {amount} USD (лимит: 100 USD в день)",
+  "est_account_value_withdraw": "Расчетная стоимость сделки: {amount} USD (лимит: 100 USD в день)",
   "enter_address": "Введите адрес",
   "check_address": "Пожалуйста, подождите, мы проверяем ваш адрес",
   "withdraw_continue": "Запрос на снятие",
