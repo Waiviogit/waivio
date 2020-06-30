@@ -3,12 +3,20 @@
 exports[`<UserCard /> should render without exploding 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <UserCard
-    alt=""
-    authUser=""
-    showFollow={true}
-    user=""
-  />,
+  Symbol(enzyme.__unrendered__): <IntlProvider
+    locale="en"
+  >
+    <UserCard
+      admin={false}
+      alt=""
+      authUser=""
+      follow={[Function]}
+      moderator={false}
+      showFollow={true}
+      unfollow={[Function]}
+      user=""
+    />
+  </IntlProvider>,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "checkPropTypes": [Function],
@@ -21,403 +29,39 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "function",
     "props": Object {
-      "children": Array [
-        <div
-          className="UserCard__left"
-        >
-          <div
-            className="UserCard__wrap"
-          >
-            <UNDEFINED
-              to="/@undefined"
-            >
-              <Avatar
-                size={40}
-                username={undefined}
-              />
-            </UNDEFINED>
-            <UNDEFINED
-              to="/@undefined"
-            >
-              <span
-                className="username"
-              />
-            </UNDEFINED>
-          </div>
-          
-        </div>,
-        <UNDEFINED
-          following={undefined}
-          followingType="user"
-          secondary={true}
-        />,
-      ],
-      "className": "UserCard",
+      "admin": false,
+      "alt": "",
+      "authUser": "",
+      "follow": [Function],
+      "moderator": false,
+      "showFollow": true,
+      "unfollow": [Function],
+      "user": "",
     },
     "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "host",
-        "props": Object {
-          "children": Array [
-            <div
-              className="UserCard__wrap"
-            >
-              <UNDEFINED
-                to="/@undefined"
-              >
-                <Avatar
-                  size={40}
-                  username={undefined}
-                />
-              </UNDEFINED>
-              <UNDEFINED
-                to="/@undefined"
-              >
-                <span
-                  className="username"
-                />
-              </UNDEFINED>
-            </div>,
-            "",
-          ],
-          "className": "UserCard__left",
-        },
-        "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": Array [
-                <UNDEFINED
-                  to="/@undefined"
-                >
-                  <Avatar
-                    size={40}
-                    username={undefined}
-                  />
-                </UNDEFINED>,
-                <UNDEFINED
-                  to="/@undefined"
-                >
-                  <span
-                    className="username"
-                  />
-                </UNDEFINED>,
-              ],
-              "className": "UserCard__wrap",
-            },
-            "ref": null,
-            "rendered": Array [
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {
-                  "children": <Avatar
-                    size={40}
-                    username={undefined}
-                  />,
-                  "to": "/@undefined",
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {
-                    "size": 40,
-                    "username": undefined,
-                  },
-                  "ref": null,
-                  "rendered": null,
-                  "type": [Function],
-                },
-                "type": Object {
-                  "$$typeof": Symbol(react.forward_ref),
-                  "displayName": "Link",
-                  "propTypes": Object {
-                    "innerRef": [Function],
-                    "onClick": [Function],
-                    "replace": [Function],
-                    "target": [Function],
-                    "to": [Function],
-                  },
-                  "render": [Function],
-                },
-              },
-              Object {
-                "instance": null,
-                "key": undefined,
-                "nodeType": "function",
-                "props": Object {
-                  "children": <span
-                    className="username"
-                  />,
-                  "to": "/@undefined",
-                },
-                "ref": null,
-                "rendered": Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "host",
-                  "props": Object {
-                    "children": undefined,
-                    "className": "username",
-                  },
-                  "ref": null,
-                  "rendered": null,
-                  "type": "span",
-                },
-                "type": Object {
-                  "$$typeof": Symbol(react.forward_ref),
-                  "displayName": "Link",
-                  "propTypes": Object {
-                    "innerRef": [Function],
-                    "onClick": [Function],
-                    "replace": [Function],
-                    "target": [Function],
-                    "to": [Function],
-                  },
-                  "render": [Function],
-                },
-              },
-            ],
-            "type": "div",
-          },
-          "",
-        ],
-        "type": "div",
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "function",
-        "props": Object {
-          "following": undefined,
-          "followingType": "user",
-          "secondary": true,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": Object {
-          "$$typeof": Symbol(react.memo),
-          "WrappedComponent": [Function],
-          "compare": null,
-          "displayName": "withAuthActions(Connect(FollowButton))",
-          "type": [Function],
-          Symbol(Symbol.hasInstance): [Function],
-        },
-      },
-    ],
-    "type": "div",
+    "rendered": null,
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "function",
       "props": Object {
-        "children": Array [
-          <div
-            className="UserCard__left"
-          >
-            <div
-              className="UserCard__wrap"
-            >
-              <UNDEFINED
-                to="/@undefined"
-              >
-                <Avatar
-                  size={40}
-                  username={undefined}
-                />
-              </UNDEFINED>
-              <UNDEFINED
-                to="/@undefined"
-              >
-                <span
-                  className="username"
-                />
-              </UNDEFINED>
-            </div>
-            
-          </div>,
-          <UNDEFINED
-            following={undefined}
-            followingType="user"
-            secondary={true}
-          />,
-        ],
-        "className": "UserCard",
+        "admin": false,
+        "alt": "",
+        "authUser": "",
+        "follow": [Function],
+        "moderator": false,
+        "showFollow": true,
+        "unfollow": [Function],
+        "user": "",
       },
       "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": Array [
-              <div
-                className="UserCard__wrap"
-              >
-                <UNDEFINED
-                  to="/@undefined"
-                >
-                  <Avatar
-                    size={40}
-                    username={undefined}
-                  />
-                </UNDEFINED>
-                <UNDEFINED
-                  to="/@undefined"
-                >
-                  <span
-                    className="username"
-                  />
-                </UNDEFINED>
-              </div>,
-              "",
-            ],
-            "className": "UserCard__left",
-          },
-          "ref": null,
-          "rendered": Array [
-            Object {
-              "instance": null,
-              "key": undefined,
-              "nodeType": "host",
-              "props": Object {
-                "children": Array [
-                  <UNDEFINED
-                    to="/@undefined"
-                  >
-                    <Avatar
-                      size={40}
-                      username={undefined}
-                    />
-                  </UNDEFINED>,
-                  <UNDEFINED
-                    to="/@undefined"
-                  >
-                    <span
-                      className="username"
-                    />
-                  </UNDEFINED>,
-                ],
-                "className": "UserCard__wrap",
-              },
-              "ref": null,
-              "rendered": Array [
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {
-                    "children": <Avatar
-                      size={40}
-                      username={undefined}
-                    />,
-                    "to": "/@undefined",
-                  },
-                  "ref": null,
-                  "rendered": Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "function",
-                    "props": Object {
-                      "size": 40,
-                      "username": undefined,
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
-                  },
-                  "type": Object {
-                    "$$typeof": Symbol(react.forward_ref),
-                    "displayName": "Link",
-                    "propTypes": Object {
-                      "innerRef": [Function],
-                      "onClick": [Function],
-                      "replace": [Function],
-                      "target": [Function],
-                      "to": [Function],
-                    },
-                    "render": [Function],
-                  },
-                },
-                Object {
-                  "instance": null,
-                  "key": undefined,
-                  "nodeType": "function",
-                  "props": Object {
-                    "children": <span
-                      className="username"
-                    />,
-                    "to": "/@undefined",
-                  },
-                  "ref": null,
-                  "rendered": Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": undefined,
-                      "className": "username",
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": "span",
-                  },
-                  "type": Object {
-                    "$$typeof": Symbol(react.forward_ref),
-                    "displayName": "Link",
-                    "propTypes": Object {
-                      "innerRef": [Function],
-                      "onClick": [Function],
-                      "replace": [Function],
-                      "target": [Function],
-                      "to": [Function],
-                    },
-                    "render": [Function],
-                  },
-                },
-              ],
-              "type": "div",
-            },
-            "",
-          ],
-          "type": "div",
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "function",
-          "props": Object {
-            "following": undefined,
-            "followingType": "user",
-            "secondary": true,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": Object {
-            "$$typeof": Symbol(react.memo),
-            "WrappedComponent": [Function],
-            "compare": null,
-            "displayName": "withAuthActions(Connect(FollowButton))",
-            "type": [Function],
-            Symbol(Symbol.hasInstance): [Function],
-          },
-        },
-      ],
-      "type": "div",
+      "rendered": null,
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -446,5 +90,32 @@ ShallowWrapper {
     Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): Object {
+    "intl": Object {
+      "defaultFormats": Object {},
+      "defaultLocale": "en",
+      "formatDate": [Function],
+      "formatHTMLMessage": [Function],
+      "formatMessage": [Function],
+      "formatNumber": [Function],
+      "formatPlural": [Function],
+      "formatRelative": [Function],
+      "formatTime": [Function],
+      "formats": Object {},
+      "formatters": Object {
+        "getDateTimeFormat": [Function],
+        "getMessageFormat": [Function],
+        "getNumberFormat": [Function],
+        "getPluralFormat": [Function],
+        "getRelativeFormat": [Function],
+      },
+      "locale": "en",
+      "messages": Object {},
+      "now": [Function],
+      "onError": [Function],
+      "textComponent": "span",
+      "timeZone": null,
+    },
+  },
 }
 `;
