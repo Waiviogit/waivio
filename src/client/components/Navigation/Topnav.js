@@ -15,7 +15,7 @@ import {
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import {
-  geIsStartSearch,
+  getIsStartSearchAutoComplete,
   getAuthenticatedUserMetaData,
   getAutoCompleteSearchResults,
   getIsLoadingNotifications,
@@ -37,11 +37,10 @@ import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
-
-import './Topnav.less';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { getApprovedField } from '../../helpers/wObjectHelper';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -54,7 +53,7 @@ import { getApprovedField } from '../../helpers/wObjectHelper';
     notifications: getNotifications(state),
     userMetaData: getAuthenticatedUserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
-    isStartSearch: geIsStartSearch(state),
+    isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     searchObjectsAutoCompete,
@@ -91,7 +90,7 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
-    isStartSearch: PropTypes.bool,
+    isStartSearchAutoComplete: PropTypes.bool,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
@@ -103,7 +102,7 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
-    isStartSearch: false,
+    isStartSearchAutoComplete: false,
   };
 
   static markers = {
@@ -131,7 +130,6 @@ class Topnav extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
-      isStartSearch: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -455,7 +453,6 @@ class Topnav extends React.Component {
 
   handleSearch = value => {
     const { searchBarValue } = this.state;
-    this.setState({ isStartSearch: true });
     this.debouncedSearch(searchBarValue);
     if (searchBarValue === value) {
       this.debouncedSearchByUser(searchBarValue);
@@ -760,7 +757,7 @@ class Topnav extends React.Component {
   };
 
   render() {
-    const { intl, autoCompleteSearchResults, isStartSearch } = this.props;
+    const { intl, autoCompleteSearchResults, isStartSearchAutoComplete } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
@@ -798,7 +795,9 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={isStartSearch ? this.pendingSearch() : formattedAutoCompleteDropdown}
+                dataSource={
+                  isStartSearchAutoComplete ? this.pendingSearch() : formattedAutoCompleteDropdown
+                }
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}

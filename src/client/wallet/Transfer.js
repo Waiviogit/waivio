@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isNull, isEmpty, debounce, map, isNaN } from 'lodash';
-import { AutoComplete, Form, Input, Modal, Radio } from 'antd';
+import { AutoComplete, Form, Icon, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
@@ -26,6 +26,7 @@ import {
   getTotalVestingShares,
   getTotalVestingFundSteem,
   estimateValue,
+  getIsStartSearchAutoComplete,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
 import {
@@ -63,6 +64,7 @@ const InputGroup = Input.Group;
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     getEstimateValue: estimateValue(state),
+    isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     closeTransfer,
@@ -101,6 +103,7 @@ export default class Transfer extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     getEstimateValue: PropTypes.number,
+    isStartSearchAutoComplete: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -117,6 +120,7 @@ export default class Transfer extends React.Component {
     autoCompleteSearchResults: {},
     searchByUser: [],
     getEstimateValue: 0,
+    isStartSearchAutoComplete: false,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -480,8 +484,36 @@ export default class Transfer extends React.Component {
     ));
   };
 
+  pendingSearch = () => {
+    const downBar = (
+      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
+        <div className="pending-status">
+          {this.props.intl.formatMessage(
+            {
+              id: 'search_all_results_for',
+              defaultMessage: 'Search all results for {search}...',
+            },
+            { search: this.state.searchBarValue },
+          )}
+          {<span> &nbsp;</span>}
+          {<Icon type="loading" />}
+        </div>
+      </AutoComplete.Option>
+    );
+    return [downBar];
+  };
+
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const {
+      intl,
+      visible,
+      authenticated,
+      user,
+      memo,
+      screenSize,
+      isGuest,
+      isStartSearchAutoComplete,
+    } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
@@ -551,7 +583,9 @@ export default class Transfer extends React.Component {
                   optionLabelProp="value"
                   dropdownStyle={{ color: 'red' }}
                   open={this.state.dropdownOpen && visible}
-                  dataSource={this.completeDropdown()}
+                  dataSource={
+                    isStartSearchAutoComplete ? this.pendingSearch() : this.completeDropdown()
+                  }
                   placeholder={intl.formatMessage({
                     id: 'find_user',
                     defaultMessage: 'Find user',

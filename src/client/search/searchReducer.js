@@ -14,7 +14,7 @@ const initialState = {
     loading: false,
   },
   beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
-  isStartSearch: false,
+  isStartSearchAutoComplete: false,
 };
 
 export default (state = initialState, action) => {
@@ -49,6 +49,11 @@ export default (state = initialState, action) => {
         loading: false,
         searchError: true,
       };
+    case searchActions.AUTO_COMPLETE_SEARCH.START:
+      return {
+        ...state,
+        isStartSearchAutoComplete: true,
+      };
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
       const { followingUsersList } = action.meta;
@@ -59,6 +64,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         autoCompleteSearchResults: isEmpty(search) ? [] : result,
+        isStartSearchAutoComplete: false,
       };
     }
     case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
@@ -88,18 +94,12 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
-    case searchActions.SEARCH_USERS.START:
-      return {
-        ...state,
-        isStartSearch: true,
-      };
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,
-        isStartSearch: false,
       };
     }
 
@@ -308,4 +308,4 @@ export const getSearchUsersResults = state => state.searchUsersResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
 export const getBeneficiariesUsers = state => state.beneficiariesUsers;
-export const geIsStartSearch = state => state.isStartSearch;
+export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
