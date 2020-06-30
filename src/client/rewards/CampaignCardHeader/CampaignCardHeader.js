@@ -2,16 +2,21 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import Avatar from '../../components/Avatar';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData }) => {
+const CampaignCardHeader = ({ intl, campaignData, match }) => {
+  const currentUSDPrice = getCurrentUSDPrice();
   const price = get(campaignData, ['objects', '0', 'reward']);
   const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
-  const rewardPriseHive = `${price ? price.toFixed(3) : 0} HIVE`;
+  const isMessages = match ? match.params.filterKey === 'messages' : null;
+  const rewardPriseHive = `${
+    !isEmpty(price) ? price.toFixed(3) : (campaignData.reward * currentUSDPrice).toFixed(3)
+  } HIVE`;
   const rewardPriseUsd = `${campaignData.reward} USD`;
-  const rewardPrise = isAssigned ? rewardPriseHive : rewardPriseUsd;
+  const rewardPrise = isAssigned || isMessages ? rewardPriseHive : rewardPriseUsd;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -73,6 +78,7 @@ const CampaignCardHeader = ({ intl, campaignData }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(CampaignCardHeader);

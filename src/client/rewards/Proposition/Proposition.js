@@ -115,7 +115,7 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} />
+        <CampaignCardHeader campaignData={proposition} match={match} />
       </div>
       <div className="Proposition__card">
         <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />

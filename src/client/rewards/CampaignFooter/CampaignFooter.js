@@ -278,7 +278,8 @@ class CampaignFooter extends React.Component {
               propositionStatus={proposition.status}
               proposition={proposition}
               match={match}
-              userName={user.name}
+              user={user}
+              toggleModal={this.toggleModal}
             />
           )}
         </div>

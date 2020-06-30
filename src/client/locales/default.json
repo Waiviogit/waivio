@@ -1228,5 +1228,6 @@
   "add_to_blacklist": "Add to blacklist",
   "reject_review": "Reject review",
   "reinstate_reward": "Reinstate reward",
-  "campaign_buttons_reachedLimit": "Reached limit"
+  "campaign_buttons_reachedLimit": "Reached limit",
+  "review": "Review"
 }

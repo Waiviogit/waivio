@@ -11,6 +11,8 @@ import '../../components/StoryFooter/Buttons.less';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
+import Avatar from '../../components/Avatar';
+import WeightTag from '../../components/WeightTag';
 
 @injectIntl
 @withAuthActions
@@ -32,7 +34,8 @@ export default class CampaignButtons extends React.Component {
     propositionStatus: PropTypes.string.isRequired,
     match: PropTypes.shape().isRequired,
     proposition: PropTypes.shape().isRequired,
-    userName: PropTypes.string.isRequired,
+    user: PropTypes.shape().isRequired,
+    toggleModal: PropTypes.func,
   };
 
   static defaultProps = {
@@ -47,6 +50,7 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: () => {},
     handlePostPopoverMenuClick: () => {},
     toggleModalDetails: () => {},
+    toggleModal: () => {},
   };
 
   constructor(props) {
@@ -137,7 +141,8 @@ export default class CampaignButtons extends React.Component {
       match,
       intl,
       proposition,
-      userName,
+      user,
+      toggleModal,
     } = this.props;
 
     const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
@@ -191,23 +196,41 @@ export default class CampaignButtons extends React.Component {
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {match.params.filterKey === 'reserved' || match.params.filterKey === 'all'
               ? popoverMenu
-              : map(this.getPopoverMenu(), item => (
-                  <PopoverMenuItem key={item.key}>
-                    {item.id === 'view_reservation' ? (
-                      <Link to={`/@${userName}/${reservationPermlink}`}>
-                        {intl.formatMessage({
-                          id: item.id,
-                          defaultMessage: item.defaultMessage,
-                        })}
-                      </Link>
-                    ) : (
-                      intl.formatMessage({
-                        id: item.id,
-                        defaultMessage: item.defaultMessage,
-                      })
-                    )}
-                  </PopoverMenuItem>
-                ))}
+              : map(this.getPopoverMenu(), item => {
+                  switch (item.id) {
+                    case 'view_reservation':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <Link to={`/@${user.name}/${reservationPermlink}`}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </Link>
+                        </PopoverMenuItem>
+                      );
+                    case 'campaign_buttons_release':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={toggleModal}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    default:
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          {intl.formatMessage({
+                            id: item.id,
+                            defaultMessage: item.defaultMessage,
+                          })}
+                        </PopoverMenuItem>
+                      );
+                  }
+                })}
           </PopoverMenu>
         }
       >
@@ -217,7 +240,8 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, daysLeft, propositionStatus } = this.props;
+    const { intl, post, daysLeft, propositionStatus, match, user, proposition } = this.props;
+    const isAssigned = get(proposition, ['objects', '0', 'assigned']);
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
@@ -248,7 +272,7 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {propositionStatus === 'reserved' && (
+        {isAssigned && (
           <React.Fragment>
             <Button type="primary" onClick={this.openModalDetails}>
               {intl.formatMessage({
@@ -257,6 +281,24 @@ export default class CampaignButtons extends React.Component {
               })}
             </Button>
           </React.Fragment>
+        )}
+        {match.params.filterKey === 'messages' && (
+          <div className="Buttons__avatar">
+            <Avatar username={user.name} size={30} />{' '}
+            <div role="presentation" className="userName">
+              {user.name}
+            </div>
+            <WeightTag weight={user.wobjects_weight} />
+          </div>
+        )}
+        {propositionStatus === 'completed' && match.params.filterKey === 'history' && (
+          <Link to={`/`}>
+            {intl.formatMessage({
+              id: 'review',
+              defaultMessage: `Review`,
+            })}{' '}
+            {'>'}
+          </Link>
         )}
       </div>
     );
