@@ -114,7 +114,7 @@ export const calculateVotePowerForSlider = async (name, voteWeight, author, perm
     account.voting_power + (10000 * previousVoteTime) / 432000,
   );
 
-  const power = Math.round(((accountVotingPower / 100) * voteWeight + 49) / 50);
+  const power = Math.round(((accountVotingPower / 100) * voteWeight) / 50);
   const rShares = vests * power * 100 - 50000000;
   const tRShares = parseFloat(post.vote_rshares) + rShares;
 
