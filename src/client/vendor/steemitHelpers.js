@@ -9,6 +9,7 @@ import * as dsteem from '@hivechain/dsteem';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**
@@ -95,7 +96,12 @@ export const calculatePayout = post => {
   return payoutDetails;
 };
 
-export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeight, post) => {
+export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
+  const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
+  const sbdMedian = await steemAPI.sendAsync('get_current_median_history_price', []);
+  const rewardFund = await steemAPI.sendAsync('get_reward_fund', ['post']);
+  const post = await steemAPI.sendAsync('get_content', [author, permlink]);
+  const price = parseFloat(sbdMedian.base) / parseFloat(sbdMedian.quote);
   const vests =
     parseFloat(account.vesting_shares) +
     parseFloat(account.received_vesting_shares) -
@@ -108,9 +114,8 @@ export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeig
     account.voting_power + (10000 * previousVoteTime) / 432000,
   );
 
-  const power = Math.round(((accountVotingPower / 100) * voteWeight + 49) / 50);
+  const power = Math.round(((accountVotingPower / 100) * voteWeight) / 50);
   const rShares = vests * power * 100 - 50000000;
-
   const tRShares = parseFloat(post.vote_rshares) + rShares;
 
   const s = parseFloat(rewardFund.content_constant);
@@ -118,8 +123,9 @@ export const calculateVotePowerForSlider = (account, rewardFund, price, voteWeig
 
   const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
   const postValue = tClaims * rewards * price;
+  const voteValue = postValue * (rShares / tRShares);
 
-  return postValue * (rShares / tRShares);
+  return voteValue >= 0 ? voteValue : 0;
 };
 
 function checkPermLinkLength(permlink) {

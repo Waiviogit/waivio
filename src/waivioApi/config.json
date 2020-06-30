@@ -75,6 +75,7 @@
   "setUserStatus": "/setState",
   "userMetadata": "/userMetadata",
   "users": "/users",
+  "refreshAuthToken": "refresh_auth_token",
   "validateAuthToken": "validate_auth_token",
   "wobjectsExpertise": "/object_expertise",
   "wobjectsWithUserWeight": "/objects_shares",
@@ -83,5 +84,11 @@
   "comments": "/comments",
   "postComments": "/post_comments",
   "market": "/marketInfo",
-  "transfers_history": "/transfers_history"
+  "transfers_history": "/transfers_history",
+  "estimateOutputAmount": "/estimate-output-amount",
+  "withdraw": "/withdraw",
+  "mailer": "/mailer",
+  "confirmEmail": "/confirm-email-request",
+  "validateAddress": "/validate-crypto-wallet",
+  "finalConfirmTransaction": "/confirm-transaction"
 }

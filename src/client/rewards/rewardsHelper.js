@@ -11,56 +11,23 @@ export const rewardPostContainerData = {
   author: 'monterey',
   permlink: 'test-post',
 };
-export const preparePropositionReqData = ({
-  username,
-  match,
-  coordinates,
-  area,
-  radius,
-  sort,
-  types,
-  guideNames,
-  limit,
-  simplified,
-  firstMapLoad,
-}) => {
+export const preparePropositionReqData = ({ username, match, limit = 10, sort, ...args }) => {
   const reqData = {
-    limit: displayLimit,
+    limit,
     requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
     match,
     sort,
   };
 
-  if (coordinates && coordinates.length > 0) {
-    reqData.coordinates = coordinates;
-    reqData.radius = radius;
-  }
-  if (area && area.length > 0) {
-    reqData.area = area;
-    if (radius) reqData.radius = radius;
-  }
-  if (types && guideNames) {
-    reqData.types = types;
-    reqData.guideNames = guideNames;
-  }
-  if (limit) reqData.limit = limit;
-  if (simplified) reqData.simplified = simplified;
-  if (firstMapLoad) reqData.firstMapLoad = firstMapLoad;
+  Object.keys(args).forEach(argName => {
+    reqData[argName] = args[argName];
+  });
 
-  switch (match.params.filterKey) {
-    case 'active':
-      reqData.userName = username;
-      break;
-    case 'history':
-      reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
-      break;
-    case 'reserved':
-      reqData.userName = username;
-      break;
-    default:
-      break;
+  if (match.params.filterKey === 'history') {
+    reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
   }
+
   return reqData;
 };
 
@@ -352,6 +319,11 @@ export const getProcessingFee = data => {
 export const payablesFilterData = location => [
   {
     filterName: 'days',
+    value: location.pathname === '/rewards/payables' ? 7 : 15,
+    defaultMessage: `Over {value} days`,
+  },
+  {
+    filterName: 'moreDays',
     value: location.pathname === '/rewards/payables' ? 15 : 30,
     defaultMessage: `Over {value} days`,
   },

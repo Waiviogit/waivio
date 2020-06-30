@@ -11,9 +11,14 @@ import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
-import { getGuestPaymentsHistory, updateGuestProfile } from '../../waivioApi/ApiClient';
+import {
+  getGuestPaymentsHistory,
+  getPrivateEmail,
+  updateGuestProfile,
+} from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 import history from '../history';
+import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -38,6 +43,9 @@ export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BA
 
 const loginError = createAction(LOGIN_ERROR);
 
+const isUserLoaded = state =>
+  getIsLoaded(state) && (Cookie.get('access_token') || getGuestAccessToken());
+
 export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -60,23 +68,22 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   let isGuest = null;
 
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
+  const guestAccessToken = getGuestAccessToken();
+  isGuest = Boolean(guestAccessToken);
 
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
-
-  if (getIsLoaded(state)) {
+  if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await setToken(accessToken, socialNetwork, regData);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+        const userData = await setToken(accessToken, socialNetwork, regData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+        const privateEmail = await getPrivateEmail(userData.name);
 
         resolve({
-          account: tokenData.userData,
+          account: userData,
           userMetaData,
+          privateEmail,
           socialNetwork,
           isGuestUser: true,
         });
@@ -92,7 +99,14 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
+        const privateEmail = await getPrivateEmail(scUserData.name);
+
+        resolve({
+          ...scUserData,
+          userMetaData,
+          privateEmail,
+          isGuestUser: isGuest,
+        });
       } catch (e) {
         reject(e);
       }
@@ -105,7 +119,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       promise,
     },
     meta: {
-      refresh: getIsLoaded(state),
+      refresh: isUserLoaded(state),
     },
   }).catch(e => {
     console.warn(e);
@@ -128,14 +142,10 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
   let accessToken = Cookie.get('access_token');
-  const guestAccessToken = Cookie.get('waivio_token');
 
-  if (guestAccessToken) accessToken = guestAccessToken;
   if (state.auth.isGuestUser) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('accessTokenExpiration');
-    localStorage.removeItem('socialName');
-    localStorage.removeItem('guestName');
+    accessToken = getGuestAccessToken();
+    clearGuestAuthData();
     if (window) {
       if (window.FB) {
         window.FB.getLoginStatus(res => {
@@ -167,7 +177,7 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
   if (typeof localStorage !== 'undefined') {
-    const guestAccessToken = localStorage.getItem('accessToken');
+    const guestAccessToken = getGuestAccessToken();
 
     if (guestAccessToken) {
       method = 'guest_login';

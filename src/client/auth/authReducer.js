@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import * as types from './authActions';
-import { GET_USER_METADATA } from '../user/usersActions';
+import { GET_USER_METADATA, GET_USER_PRIVATE_EMAIL } from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -9,6 +9,7 @@ const initialState = {
   loaded: false,
   user: {},
   userMetaData: {},
+  privateEmail: '',
   isGuestUser: false,
 };
 
@@ -26,6 +27,7 @@ export default (state = initialState, action) => {
 
     case types.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         isFetching: false,
@@ -33,6 +35,7 @@ export default (state = initialState, action) => {
         loaded: true,
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
+        privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
       };
 
@@ -81,6 +84,12 @@ export default (state = initialState, action) => {
         userMetaData: action.payload,
       };
 
+    case GET_USER_PRIVATE_EMAIL.SUCCESS:
+      return {
+        ...state,
+        privateEmail: action.payload,
+      };
+
     case types.UPDATE_PROFILE_START:
       return {
         ...state,
@@ -117,6 +126,7 @@ export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
+export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
 export const getAuthenticatedUserAvatar = state => {
   let jsonMetadata = get(state, 'user.posting_json_metadata');
   if (jsonMetadata) {
