@@ -16,7 +16,6 @@ import FilterModal from './FilterModal';
 const FilteredRewardsList = props => {
   const {
     hasMore,
-    IsRequiredObjectWrap,
     loading,
     filterKey,
     userName,
@@ -40,7 +39,7 @@ const FilteredRewardsList = props => {
   const dispatch = useDispatch();
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-
+  const IsRequiredObjectWrap = !match.params.campaignParent;
   return !loadingCampaigns ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -166,7 +165,6 @@ FilteredRewardsList.defaultProps = {
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
-  IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,

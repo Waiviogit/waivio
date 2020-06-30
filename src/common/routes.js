@@ -41,7 +41,6 @@ import UserExpertise from '../client/user/UserExpertise';
 import DiscoverObjects from '../client/discoverObjects/DiscoverObjects';
 import Rewards from '../client/rewards/Rewards';
 import CreateRewardForm from '../client/rewards/Create-Edit/CreateRewardForm';
-import FilteredRewardsList from '../client/rewards/FilteredRewardsList';
 import ManageCampaign from '../client/rewards/Manage/Manage';
 import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
 import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
@@ -53,6 +52,7 @@ import SubFeed from '../client/feed/SubFeed';
 import UserInfo from '../client/app/Sidebar/UserInfo';
 import BlacklistCampaign from '../client/rewards/Blacklist/Blacklist';
 import ConfirmationModal from '../client/widgets/ConfirmationModal';
+import RewardsComponent from '../client/rewards/RewardsComponent/RewardsComponent';
 
 const routes = [
   {
@@ -79,6 +79,11 @@ const routes = [
         exact: true,
         component: Rewards,
         routes: [
+          {
+            path: '/rewards/all',
+            exact: true,
+            component: RewardsComponent,
+          },
           {
             path: '/rewards/create',
             exact: true,
@@ -147,7 +152,7 @@ const routes = [
           {
             path: '/rewards/:filterKey/:campaignParent?',
             exact: true,
-            component: FilteredRewardsList,
+            component: RewardsComponent,
           },
         ],
       },

@@ -58,7 +58,7 @@ import {
   resetUpdatedFlag,
   getPropositionsForMap,
 } from '../components/Maps/mapActions';
-import { delay } from './rewardsHelpers';
+// import { delay } from './rewardsHelpers';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
@@ -104,9 +104,9 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    pendingUpdate: PropTypes.bool.isRequired,
-    pendingUpdateSuccess: PropTypes.func.isRequired,
-    resetUpdatedFlag: PropTypes.func,
+    // pendingUpdate: PropTypes.bool.isRequired,
+    // pendingUpdateSuccess: PropTypes.func.isRequired,
+    // resetUpdatedFlag: PropTypes.func,
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
@@ -142,95 +142,94 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { username, match, userLocation, history } = this.props;
-    const { area, sort, activeFilters } = this.state;
+    const { userLocation } = this.props;
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    if (!isEmpty(userLocation) && !isEmpty(match.params)) {
-      this.getPropositions({
-        username,
-        match,
-        area: [+userLocation.lat, +userLocation.lon],
-        sort,
-        activeFilters,
-      });
-    }
-    if (!username) {
-      this.getPropositions({ username, match, area, sort, activeFilters });
-      if (!match.params.campaignParent || match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
-    }
+    // if (!isEmpty(userLocation) && !isEmpty(match.params)) {
+    //   this.getPropositions({
+    //     username,
+    //     match,
+    //     area: [+userLocation.lat, +userLocation.lon],
+    //     sort,
+    //     activeFilters,
+    //   });
+    // }
+    // if (!username) {
+    //   this.getPropositions({ username, match, area, sort, activeFilters });
+    //   if (!match.params.campaignParent || match.params.filterKey !== 'all') {
+    //     history.push(`/rewards/all`);
+    //   }
+    // }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { match, userLocation } = nextProps;
-    const { username } = this.props;
-    const { area, sort, activeFilters } = this.state;
-    const needPropositions =
-      isEqual(this.props.match, match) &&
-      !isEmpty(match.params) &&
-      !isEmpty(this.props.match.params);
-    if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
-      this.getPropositions({
-        username,
-        match,
-        area: [+userLocation.lat, +userLocation.lon],
-        sort,
-        activeFilters,
-      });
-    }
-    if (match.path !== this.props.match.path) {
-      this.setState({ activePayableFilters: [] });
-    }
-    if (
-      match.path !== this.props.match.path ||
-      match.params.filterKey !== this.props.match.params.filterKey
-    ) {
-      this.props.resetUpdatedFlag();
-    }
-    if (
-      match.params.filterKey === 'all' ||
-      match.params.filterKey === 'active' ||
-      match.params.filterKey === 'reserved' ||
-      match.params.filterKey === 'history'
-    ) {
-      if (
-        match.params.filterKey !== this.props.match.params.filterKey ||
-        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
-      ) {
-        this.setState({ loadingCampaigns: true }, () => {
-          this.getPropositions({
-            username: nextProps.username,
-            match,
-            area,
-            sort,
-            activeFilters,
-          });
-        });
-      }
-    } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { match, userLocation } = nextProps;
+  //   const { username } = this.props;
+  //   const { area, sort, activeFilters } = this.state;
+  //   const needPropositions =
+  //     isEqual(this.props.match, match) &&
+  //     !isEmpty(match.params) &&
+  //     !isEmpty(this.props.match.params);
+  //   if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
+  //     this.getPropositions({
+  //       username,
+  //       match,
+  //       area: [+userLocation.lat, +userLocation.lon],
+  //       sort,
+  //       activeFilters,
+  //     });
+  //   }
+  //   if (match.path !== this.props.match.path) {
+  //     this.setState({ activePayableFilters: [] });
+  //   }
+  //   if (
+  //     match.path !== this.props.match.path ||
+  //     match.params.filterKey !== this.props.match.params.filterKey
+  //   ) {
+  //     this.props.resetUpdatedFlag();
+  //   }
+  //   if (
+  //     match.params.filterKey === 'all' ||
+  //     match.params.filterKey === 'active' ||
+  //     match.params.filterKey === 'reserved' ||
+  //     match.params.filterKey === 'history'
+  //   ) {
+  //     if (
+  //       match.params.filterKey !== this.props.match.params.filterKey ||
+  //       nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
+  //     ) {
+  //       this.setState({ loadingCampaigns: true }, () => {
+  //         this.getPropositions({
+  //           username: nextProps.username,
+  //           match,
+  //           area,
+  //           sort,
+  //           activeFilters,
+  //         });
+  //       });
+  //     }
+  //   } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
+  // }
 
-  componentDidUpdate(prevProps) {
-    const { username, match, pendingUpdate } = this.props;
-    const { area, sort, activeFilters } = this.state;
-    if (prevProps.username !== username && !username) {
-      this.getPropositions({ username, match, area, sort, activeFilters });
-      this.props.history.push(`/rewards/all`);
-    }
-    if (
-      pendingUpdate &&
-      prevProps.match.params.filterKey !== match.params.filterKey &&
-      prevProps.match !== this.props.match
-    ) {
-      this.props.pendingUpdateSuccess();
-      delay(6000).then(() => {
-        this.getPropositions({ username, match, area, sort, activeFilters });
-      });
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   const { username, match, pendingUpdate } = this.props;
+  //   const { area, sort, activeFilters } = this.state;
+  //   if (prevProps.username !== username && !username) {
+  //     this.getPropositions({ username, match, area, sort, activeFilters });
+  //     this.props.history.push(`/rewards/all`);
+  //   }
+  //   if (
+  //     pendingUpdate &&
+  //     prevProps.match.params.filterKey !== match.params.filterKey &&
+  //     prevProps.match !== this.props.match
+  //   ) {
+  //     this.props.pendingUpdateSuccess();
+  //     delay(6000).then(() => {
+  //       this.getPropositions({ username, match, area, sort, activeFilters });
+  //     });
+  //   }
+  // }
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
@@ -269,7 +268,7 @@ class Rewards extends React.Component {
     } else {
       activeFilters[key].push(filterValue);
     }
-    this.setState({ loadingCampaigns: true });
+    this.setState({ loadingCampaigns: true, activeFilters });
     this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
@@ -567,17 +566,17 @@ class Rewards extends React.Component {
           });
           reqData.skip = propositions.length;
           if (isSearchAreaFilter) reqData.radius = radius;
-          ApiClient.getPropositions(reqData).then(newPropositions =>
-            this.setState({
-              loading: false,
-              hasMore: newPropositions.campaigns && newPropositions.hasMore,
-              propositions: this.state.propositions.concat(newPropositions.campaigns),
-              sponsors: newPropositions.sponsors,
-              campaignsTypes: newPropositions.campaigns_types,
-              guideNames: activeFilters.guideNames,
-              types: activeFilters.types,
-            }),
-          );
+          // ApiClient.getPropositions(reqData).then(newPropositions =>
+          //   this.setState({
+          //     loading: false,
+          //     hasMore: newPropositions.campaigns && newPropositions.hasMore,
+          //     propositions: this.state.propositions.concat(newPropositions.campaigns),
+          //     sponsors: newPropositions.sponsors,
+          //     campaignsTypes: newPropositions.campaigns_types,
+          //     guideNames: activeFilters.guideNames,
+          //     types: activeFilters.types,
+          //   }),
+          // );
         },
       );
     }
@@ -641,6 +640,8 @@ class Rewards extends React.Component {
       loadingCampaigns,
       zoomMap,
       fetched,
+      area,
+      radius,
     } = this.state;
 
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
@@ -684,6 +685,9 @@ class Rewards extends React.Component {
       fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
+      area,
+      radius,
+      getPropositions: this.getPropositions,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
