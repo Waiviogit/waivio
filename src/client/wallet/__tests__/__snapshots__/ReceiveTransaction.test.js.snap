@@ -11,6 +11,7 @@ ShallowWrapper {
         </span>
       }
       from="hellosteem"
+      isGuestPage={false}
       memo="Test Memo"
       timestamp="0"
     />
@@ -36,6 +37,7 @@ ShallowWrapper {
           </span>
         }
         from="hellosteem"
+        isGuestPage={false}
         memo="Test Memo"
         timestamp="0"
       />,
@@ -47,7 +49,7 @@ ShallowWrapper {
         "entries": Array [
           Object {
             "hash": "",
-            "key": "zeq2ou",
+            "key": "f7sqmm",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -61,7 +63,7 @@ ShallowWrapper {
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "key": "zeq2ou",
+          "key": "f7sqmm",
           "pathname": "/",
           "search": "",
           "state": undefined,
@@ -80,6 +82,7 @@ ShallowWrapper {
           0 HIVE
         </span>,
         "from": "hellosteem",
+        "isGuestPage": false,
         "memo": "Test Memo",
         "timestamp": "0",
       },
@@ -102,6 +105,7 @@ ShallowWrapper {
             </span>
           }
           from="hellosteem"
+          isGuestPage={false}
           memo="Test Memo"
           timestamp="0"
         />,
@@ -113,7 +117,7 @@ ShallowWrapper {
           "entries": Array [
             Object {
               "hash": "",
-              "key": "zeq2ou",
+              "key": "f7sqmm",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -127,7 +131,7 @@ ShallowWrapper {
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "zeq2ou",
+            "key": "f7sqmm",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -146,6 +150,7 @@ ShallowWrapper {
             0 HIVE
           </span>,
           "from": "hellosteem",
+          "isGuestPage": false,
           "memo": "Test Memo",
           "timestamp": "0",
         },
