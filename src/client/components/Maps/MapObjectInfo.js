@@ -120,13 +120,6 @@ class MapObjectInfo extends React.Component {
   showUserPosition = position =>
     this.setState({ center: [position.coords.latitude, position.coords.longitude] });
 
-  handleMarkerClick = ({ payload, anchor }) => {
-    if (this.state.infoboxData && this.state.infoboxData.coordinates === anchor) {
-      this.setState({ infoboxData: null });
-    }
-    this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
-  };
-
   closeInfobox = () => {
     this.setState({ infoboxData: null });
   };

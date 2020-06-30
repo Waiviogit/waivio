@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -7,77 +7,93 @@ import { getAuthenticatedUserName, getUserLocation } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
 
-const RewardsComponent = ({
-  match,
-  activeFilters,
-  area,
-  radius,
-  getPropositions,
-  intl,
-  campaignsLayoutWrapLayout,
-  loading,
-  hasMore,
-  sponsors,
-}) => {
-  const [loadingCampaigns, setLoadingCampaigns] = useState(false);
-  const [sort, setSort] = useState('proximity');
+const RewardsComponent = memo(
+  ({
+    match,
+    activeFilters,
+    area,
+    radius,
+    getPropositions,
+    intl,
+    campaignsLayoutWrapLayout,
+    loading,
+    hasMore,
+    sponsors,
+  }) => {
+    const [loadingCampaigns, setLoadingCampaigns] = useState(false);
+    const [sort, setSort] = useState('proximity');
 
-  // const location = useLocation();
-  const { campaignParent } = useParams();
+    // const location = useLocation();
+    const { campaignParent } = useParams();
 
-  // const isAll = location.pathname === '/rewards/all';
-  // const isEligible = location.pathname === '/rewards/active';
-  // const isReserved = location.pathname === '/rewards/reserved';
-  const username = useSelector(getAuthenticatedUserName);
-  const userLocation = useSelector(getUserLocation);
-  const areaRewards = [+userLocation.lat, +userLocation.lon];
-  const prevLocation = useRef(userLocation);
+    // const isAll = location.pathname === '/rewards/all';
+    // const isEligible = location.pathname === '/rewards/active';
+    // const isReserved = location.pathname === '/rewards/reserved';
+    const username = useSelector(getAuthenticatedUserName);
+    const userLocation = useSelector(getUserLocation);
+    const areaRewards = [+userLocation.lat, +userLocation.lon];
+    const prevLocation = useRef(userLocation);
+    const prevCampaignParent = useRef();
 
-  const handleSortChange = sortRewards => {
-    setLoadingCampaigns(true);
-    setSort(sortRewards);
-    getPropositions({ username, match, area, radius, sort, activeFilters });
-  };
+    const handleSortChange = sortRewards => {
+      setLoadingCampaigns(true);
+      setSort(sortRewards);
+      getPropositions({ username, match, area, radius, sort, activeFilters });
+    };
 
-  useEffect(() => {
-    if (!isEmpty(userLocation) && !isEqual(userLocation, prevLocation.current)) {
-      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-      prevLocation.current = userLocation;
-    }
-  }, [userLocation]);
+    useEffect(() => {
+      if (campaignParent) return;
+      if (!isEmpty(userLocation)) {
+        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      }
+    }, []);
 
-  useEffect(() => {
-    getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    // prevCampaignParent.current = campaignParent;
-  }, [campaignParent]);
+    useEffect(() => {
+      if (campaignParent) return;
+      if (!isEmpty(userLocation) && !isEqual(userLocation, prevLocation.current)) {
+        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+        prevLocation.current = userLocation;
+      }
+    }, [userLocation]);
 
-  console.log('prevLocation.current', prevLocation.current);
-  console.log('userLocation', userLocation);
+    useEffect(() => {
+      if (prevCampaignParent.current !== campaignParent) {
+        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+        prevCampaignParent.current = campaignParent;
+      }
+    }, [campaignParent]);
 
-  // useEffect(() => {
-  //   getPropositions({ username, match, area, sort, activeFilters });
-  // }, [JSON.stringify(activeFilters)]);
+    // console.log('prevCampaignParent.current', prevCampaignParent.current);
+    // console.log('campaignParent', campaignParent);
+    //
+    // console.log('prevLocation.current', prevLocation.current);
+    // console.log('userLocation', userLocation);
 
-  return (
-    <div className="Rewards">
-      111
-      <FilteredRewardsList
-        {...{
-          intl,
-          campaignsLayoutWrapLayout,
-          loadingCampaigns,
-          loading,
-          hasMore,
-          handleSortChange,
-          sort,
-          sponsors,
-          match,
-          filterKey: 'all',
-        }}
-      />
-    </div>
-  );
-};
+    // useEffect(() => {
+    //   getPropositions({ username, match, area, sort, activeFilters });
+    // }, [JSON.stringify(activeFilters)]);
+
+    return (
+      <div className="Rewards">
+        111
+        <FilteredRewardsList
+          {...{
+            intl,
+            campaignsLayoutWrapLayout,
+            loadingCampaigns,
+            loading,
+            hasMore,
+            handleSortChange,
+            sort,
+            sponsors,
+            match,
+            filterKey: 'all',
+          }}
+        />
+      </div>
+    );
+  },
+);
 
 RewardsComponent.propTypes = {
   match: PropTypes.shape().isRequired,

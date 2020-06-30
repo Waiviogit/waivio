@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { get, has } from 'lodash';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
@@ -98,7 +99,7 @@ const StoryPreview = ({ post }) => {
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
     image: () => (
       <div key={imagePath} className="Story__content__img-container">
-        <img alt="" src={imagePath} />
+        <LazyLoadImage src={imagePath} threshold={250} />
       </div>
     ),
   };
