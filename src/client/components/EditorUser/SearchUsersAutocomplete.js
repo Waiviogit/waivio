@@ -52,7 +52,7 @@ class SearchUsersAutocomplete extends React.Component {
     isOptionSelected: false,
   };
 
-  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 800);
+  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 300);
 
   handleSearch = value => {
     this.debouncedSearchByUser(value);

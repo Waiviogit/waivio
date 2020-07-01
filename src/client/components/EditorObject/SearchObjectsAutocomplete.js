@@ -81,7 +81,7 @@ class SearchObjectsAutocomplete extends Component {
 
   debouncedSearch = _.debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
-    800,
+    300,
   );
 
   handleSearch(value) {
