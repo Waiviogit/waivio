@@ -19,6 +19,7 @@ import {
   filter,
   isEqual,
   findIndex,
+  sortBy,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -260,8 +261,8 @@ class Rewards extends React.Component {
   };
 
   setFilterValue = (filterValue, key) => {
-    const { username, match } = this.props;
-    const { area, sort } = this.state;
+    // const { username, match } = this.props;
+    // const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -269,7 +270,7 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true, activeFilters });
-    this.getPropositions({ username, match, area, sort, activeFilters });
+    // this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
@@ -304,6 +305,7 @@ class Rewards extends React.Component {
     isMap,
     updated,
   ) => {
+    this.setState({ loadingCampaigns: true });
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -319,8 +321,9 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors, sponsor => sponsor);
       this.setState({
-        sponsors: data.sponsors,
+        sponsors,
         campaignsTypes: data.campaigns_types,
         area,
         radius,
@@ -359,12 +362,12 @@ class Rewards extends React.Component {
     this.setState({ isSearchAreaFilter: false });
   };
 
-  handleSortChange = sort => {
-    const { radius, area, activeFilters } = this.state;
-    const { username, match } = this.props;
-    this.setState({ loadingCampaigns: true, sort });
-    this.getPropositions({ username, match, area, radius, sort, activeFilters });
-  };
+  // handleSortChange = sort => {
+  //   const { radius, area, activeFilters } = this.state;
+  //   const { username, match } = this.props;
+  //   this.setState({ loadingCampaigns: true, sort });
+  //   this.getPropositions({ username, match, area, radius, sort, activeFilters });
+  // };
 
   // Propositions
   assignPropositionHandler = ({

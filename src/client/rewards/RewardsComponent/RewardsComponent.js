@@ -12,18 +12,15 @@ const RewardsComponent = memo(
     match,
     activeFilters,
     area,
-    radius,
     getPropositions,
     intl,
     campaignsLayoutWrapLayout,
     loading,
     hasMore,
     sponsors,
+    loadingCampaigns,
   }) => {
-    const [loadingCampaigns, setLoadingCampaigns] = useState(false);
     const [sort, setSort] = useState('proximity');
-
-    // const location = useLocation();
     const { campaignParent } = useParams();
 
     // const isAll = location.pathname === '/rewards/all';
@@ -36,14 +33,13 @@ const RewardsComponent = memo(
     const prevCampaignParent = useRef();
 
     const handleSortChange = sortRewards => {
-      setLoadingCampaigns(true);
       setSort(sortRewards);
-      getPropositions({ username, match, area, radius, sort, activeFilters });
+      getPropositions({ username, match, area, sort: sortRewards, activeFilters });
     };
 
     useEffect(() => {
       if (campaignParent) return;
-      if (!isEmpty(userLocation)) {
+      if (!isEmpty(userLocation) && isEmpty(activeFilters)) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       }
     }, []);
@@ -63,19 +59,13 @@ const RewardsComponent = memo(
       }
     }, [campaignParent]);
 
-    // console.log('prevCampaignParent.current', prevCampaignParent.current);
-    // console.log('campaignParent', campaignParent);
-    //
-    // console.log('prevLocation.current', prevLocation.current);
-    // console.log('userLocation', userLocation);
-
-    // useEffect(() => {
-    //   getPropositions({ username, match, area, sort, activeFilters });
-    // }, [JSON.stringify(activeFilters)]);
+    useEffect(() => {
+      if (campaignParent) return;
+      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+    }, [JSON.stringify(activeFilters)]);
 
     return (
       <div className="Rewards">
-        111
         <FilteredRewardsList
           {...{
             intl,
@@ -103,10 +93,11 @@ RewardsComponent.propTypes = {
   getPropositions: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
-  hasMore: PropTypes.string,
-  loading: PropTypes.string,
+  hasMore: PropTypes.bool,
+  loading: PropTypes.bool,
   sponsors: PropTypes.arrayOf(PropTypes.shape()),
   propositions: PropTypes.arrayOf(PropTypes.shape()),
+  loadingCampaigns: PropTypes.bool,
 };
 
 RewardsComponent.defaultProps = {
@@ -116,6 +107,7 @@ RewardsComponent.defaultProps = {
   loading: false,
   sponsors: [],
   propositions: [],
+  loadingCampaigns: false,
 };
 
 export default RewardsComponent;
