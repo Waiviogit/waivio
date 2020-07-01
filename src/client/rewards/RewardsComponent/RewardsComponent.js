@@ -63,12 +63,12 @@ const RewardsComponent = memo(
     }, [userLocation, JSON.stringify(activeFilters)]);
 
     useEffect(() => {
-      if (prevCampaignParent.current !== campaignParent) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-        prevCampaignParent.current = campaignParent;
-      } else if (!isEqual(prevMatch.current, match)) {
+      if (!isEqual(prevMatch.current, match)) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
         prevMatch.current = match;
+      } else if (prevCampaignParent.current !== campaignParent) {
+        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+        prevCampaignParent.current = campaignParent;
       }
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
