@@ -29,7 +29,6 @@ import {
   getObjectsMap,
   getIsLoaded,
   getUserLocation,
-  getPendingUpdate,
   getIsMapModalOpen,
   getSuitableLanguage,
   getUpdatedMap,
@@ -43,7 +42,6 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-  pendingUpdateSuccess,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -54,12 +52,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import {
-  setUpdatedFlag,
-  resetUpdatedFlag,
-  getPropositionsForMap,
-} from '../components/Maps/mapActions';
-// import { delay } from './rewardsHelpers';
+import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
@@ -75,7 +68,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
     wobjects: getObjectsMap(state),
-    pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
     updated: getUpdatedMap(state),
@@ -86,8 +78,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     getCoordinates,
     activateCampaign,
     getObjectsMap,
-    pendingUpdateSuccess,
-    resetUpdatedFlag,
     setUpdatedFlag,
     getPropositionsForMap,
   },
@@ -105,9 +95,6 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    // pendingUpdate: PropTypes.bool.isRequired,
-    // pendingUpdateSuccess: PropTypes.func.isRequired,
-    // resetUpdatedFlag: PropTypes.func,
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
@@ -117,7 +104,6 @@ class Rewards extends React.Component {
   static defaultProps = {
     username: '',
     userLocation: {},
-    resetUpdatedFlag: () => {},
     wobjects: [],
     updated: false,
   };
@@ -147,91 +133,14 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
-    // if (!isEmpty(userLocation) && !isEmpty(match.params)) {
-    //   this.getPropositions({
-    //     username,
-    //     match,
-    //     area: [+userLocation.lat, +userLocation.lon],
-    //     sort,
-    //     activeFilters,
-    //   });
-    // }
-    // if (!username) {
-    //   this.getPropositions({ username, match, area, sort, activeFilters });
-    //   if (!match.params.campaignParent || match.params.filterKey !== 'all') {
-    //     history.push(`/rewards/all`);
-    //   }
-    // }
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
-    // const { match, userLocation } = nextProps;
-    // const { username } = this.props;
-    // const { area, sort, activeFilters } = this.state;
-    // const needPropositions =
-    //   isEqual(this.props.match, match) &&
-    //   !isEmpty(match.params) &&
-    //   !isEmpty(this.props.match.params);
-    // if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
-    //   this.getPropositions({
-    //     username,
-    //     match,
-    //     area: [+userLocation.lat, +userLocation.lon],
-    //     sort,
-    //     activeFilters,
-    //   });
-    // }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
-    // if (
-    //   match.path !== this.props.match.path ||
-    //   match.params.filterKey !== this.props.match.params.filterKey
-    // ) {
-    //   this.props.resetUpdatedFlag();
-    // }
-    // if (
-    //   match.params.filterKey === 'all' ||
-    //   match.params.filterKey === 'active' ||
-    //   match.params.filterKey === 'reserved' ||
-    //   match.params.filterKey === 'history'
-    // ) {
-    //   if (
-    //     match.params.filterKey !== this.props.match.params.filterKey ||
-    //     nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
-    //   ) {
-    //     this.setState({ loadingCampaigns: true }, () => {
-    //       this.getPropositions({
-    //         username: nextProps.username,
-    //         match,
-    //         area,
-    //         sort,
-    //         activeFilters,
-    //       });
-    //     });
-    //   }
-    // } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
   }
-
-  // componentDidUpdate(prevProps) {
-  //   const { username, match, pendingUpdate } = this.props;
-  //   const { area, sort, activeFilters } = this.state;
-  //   if (prevProps.username !== username && !username) {
-  //     this.getPropositions({ username, match, area, sort, activeFilters });
-  //     this.props.history.push(`/rewards/all`);
-  //   }
-  //   if (
-  //     pendingUpdate &&
-  //     prevProps.match.params.filterKey !== match.params.filterKey &&
-  //     prevProps.match !== this.props.match
-  //   ) {
-  //     this.props.pendingUpdateSuccess();
-  //     delay(6000).then(() => {
-  //       this.getPropositions({ username, match, area, sort, activeFilters });
-  //     });
-  //   }
-  // }
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;

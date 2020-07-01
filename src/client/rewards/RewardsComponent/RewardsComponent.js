@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual, isEmpty } from 'lodash';
-import { getAuthenticatedUserName, getPendingUpdate, getUserLocation } from '../../reducers';
+import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
 import { pendingUpdateSuccess } from '../../user/userActions';
@@ -27,6 +27,7 @@ const RewardsComponent = memo(
     handleLoadMore,
     setSortValue,
     sort,
+    userLocation,
   }) => {
     const dispatch = useDispatch();
     const { campaignParent } = useParams();
@@ -39,7 +40,6 @@ const RewardsComponent = memo(
     const filterKey = getTypeRewards();
 
     const username = useSelector(getAuthenticatedUserName);
-    const userLocation = useSelector(getUserLocation);
     const pendingUpdate = useSelector(getPendingUpdate);
     const areaRewards = [+userLocation.lat, +userLocation.lon];
     const prevLocation = useRef(userLocation);
@@ -52,54 +52,38 @@ const RewardsComponent = memo(
       getPropositions({ username, match, area, sort: sortRewards, activeFilters });
     };
 
-    // useEffect(() => {
-    //   if (campaignParent) return;
-    //   if (!isEmpty(userLocation) && isEmpty(activeFilters)) {
-    //     console.log('isEmpty(userLocation)')
-    //     getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    //   }
-    // }, []);
-
     useEffect(() => {
-      if (campaignParent) return;
-      if (!isEmpty(userLocation) && !isEqual(userLocation, prevLocation.current)) {
+      if (campaignParent || isEmpty(userLocation)) return;
+      if (!isEqual(userLocation, prevLocation.current)) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
         prevLocation.current = userLocation;
+        return;
       }
-    }, [userLocation]);
+      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+    }, [userLocation, JSON.stringify(activeFilters)]);
 
     useEffect(() => {
       if (prevCampaignParent.current !== campaignParent) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
         prevCampaignParent.current = campaignParent;
-      }
-    }, [campaignParent]);
-
-    useEffect(() => {
-      if (campaignParent) return;
-      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    }, [JSON.stringify(activeFilters)]);
-
-    useEffect(() => {
-      if (campaignParent) return;
-      if (!username && match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
+      } else if (!isEqual(prevMatch.current, match)) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+        prevMatch.current = match;
       }
-    }, [username]);
-
-    useEffect(() => {
-      if (campaignParent) return;
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
         delay(6000).then(() => {
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-      if (!isEqual(prevMatch.current, match))
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-      prevMatch.current = match;
-    }, [match]);
+    }, [campaignParent, match]);
+
+    useEffect(() => {
+      if (campaignParent) return;
+      if (!username && match.params.filterKey !== 'all') {
+        history.push(`/rewards/all`);
+      }
+    }, [username]);
 
     return (
       <div className="Rewards">
@@ -145,6 +129,7 @@ RewardsComponent.propTypes = {
   handleLoadMore: PropTypes.func,
   setSortValue: PropTypes.func,
   sort: PropTypes.string,
+  userLocation: PropTypes.shape(),
 };
 
 RewardsComponent.defaultProps = {
@@ -160,6 +145,7 @@ RewardsComponent.defaultProps = {
   handleLoadMore: () => {},
   setSortValue: () => {},
   sort: 'proximity',
+  userLocation: {},
 };
 
 export default RewardsComponent;
