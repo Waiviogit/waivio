@@ -399,17 +399,13 @@ class Topnav extends React.Component {
 
   handleSearchForInput(event) {
     const value = replacer(event.target.value, '@');
-    const { searchData } = this.state;
-    const search = searchData.type === Topnav.markers.USER ? '' : `search=${value}`;
-    const userSearch = this.props.searchByUser.some(item => item.account === value)
+    const pathname = this.props.searchByUser.some(item => item.account === value)
       ? `/@${value}`
       : '';
-    const pathname = searchData.type === Topnav.markers.USER ? userSearch : '/discover-objects';
 
     this.props.resetSearchAutoCompete();
     this.props.history.push({
       pathname,
-      search,
       state: {
         query: value,
       },
