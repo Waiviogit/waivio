@@ -25,7 +25,6 @@ import {
   getSearchUsersResults,
   getTotalVestingShares,
   getTotalVestingFundSteem,
-  estimateValue,
   getIsStartSearchAutoComplete,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
@@ -63,7 +62,6 @@ const InputGroup = Input.Group;
     searchByUser: getSearchUsersResults(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
-    getEstimateValue: estimateValue(state),
     isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
@@ -102,7 +100,6 @@ export default class Transfer extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
-    getEstimateValue: PropTypes.number,
     isStartSearchAutoComplete: PropTypes.bool,
   };
 
@@ -119,7 +116,6 @@ export default class Transfer extends React.Component {
     notify: () => {},
     autoCompleteSearchResults: {},
     searchByUser: [],
-    getEstimateValue: 0,
     isStartSearchAutoComplete: false,
   };
 
@@ -165,7 +161,7 @@ export default class Transfer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to, amount, currency, visible, getEstimateValue } = this.props;
+    const { form, to, amount, currency } = this.props;
 
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
@@ -175,20 +171,6 @@ export default class Transfer extends React.Component {
       });
       this.setState({
         currency: HIVE.symbol,
-      });
-    }
-
-    if (getEstimateValue) {
-      this.setState({ currentEstimate: getEstimateValue });
-    }
-
-    if (!visible) {
-      this.setState({
-        searchBarValue: '',
-        dropdownOpen: false,
-        isSelected: false,
-        currentEstimate: null,
-        isClosedFind: false,
       });
     }
   }
@@ -513,7 +495,13 @@ export default class Transfer extends React.Component {
       screenSize,
       isGuest,
       isStartSearchAutoComplete,
+      amount,
+      cryptosPriceHistory,
     } = this.props;
+
+    const estimatedValue =
+      get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * amount;
+
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
@@ -664,7 +652,7 @@ export default class Transfer extends React.Component {
                 values={{
                   estimate: (
                     <span role="presentation" className="estimate">
-                      <USDDisplay value={this.state.currentEstimate} />
+                      <USDDisplay value={amount ? estimatedValue : this.state.currentEstimate} />
                     </span>
                   ),
                 }}
