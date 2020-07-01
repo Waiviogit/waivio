@@ -164,54 +164,55 @@ class Rewards extends React.Component {
     // }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { match, userLocation } = nextProps;
-  //   const { username } = this.props;
-  //   const { area, sort, activeFilters } = this.state;
-  //   const needPropositions =
-  //     isEqual(this.props.match, match) &&
-  //     !isEmpty(match.params) &&
-  //     !isEmpty(this.props.match.params);
-  //   if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
-  //     this.getPropositions({
-  //       username,
-  //       match,
-  //       area: [+userLocation.lat, +userLocation.lon],
-  //       sort,
-  //       activeFilters,
-  //     });
-  //   }
-  //   if (match.path !== this.props.match.path) {
-  //     this.setState({ activePayableFilters: [] });
-  //   }
-  //   if (
-  //     match.path !== this.props.match.path ||
-  //     match.params.filterKey !== this.props.match.params.filterKey
-  //   ) {
-  //     this.props.resetUpdatedFlag();
-  //   }
-  //   if (
-  //     match.params.filterKey === 'all' ||
-  //     match.params.filterKey === 'active' ||
-  //     match.params.filterKey === 'reserved' ||
-  //     match.params.filterKey === 'history'
-  //   ) {
-  //     if (
-  //       match.params.filterKey !== this.props.match.params.filterKey ||
-  //       nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
-  //     ) {
-  //       this.setState({ loadingCampaigns: true }, () => {
-  //         this.getPropositions({
-  //           username: nextProps.username,
-  //           match,
-  //           area,
-  //           sort,
-  //           activeFilters,
-  //         });
-  //       });
-  //     }
-  //   } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
-  // }
+  componentWillReceiveProps(nextProps) {
+    const { match } = nextProps;
+    // const { match, userLocation } = nextProps;
+    // const { username } = this.props;
+    // const { area, sort, activeFilters } = this.state;
+    // const needPropositions =
+    //   isEqual(this.props.match, match) &&
+    //   !isEmpty(match.params) &&
+    //   !isEmpty(this.props.match.params);
+    // if (isEmpty(this.props.userLocation) && !isEmpty(userLocation) && needPropositions) {
+    //   this.getPropositions({
+    //     username,
+    //     match,
+    //     area: [+userLocation.lat, +userLocation.lon],
+    //     sort,
+    //     activeFilters,
+    //   });
+    // }
+    if (match.path !== this.props.match.path) {
+      this.setState({ activePayableFilters: [] });
+    }
+    // if (
+    //   match.path !== this.props.match.path ||
+    //   match.params.filterKey !== this.props.match.params.filterKey
+    // ) {
+    //   this.props.resetUpdatedFlag();
+    // }
+    // if (
+    //   match.params.filterKey === 'all' ||
+    //   match.params.filterKey === 'active' ||
+    //   match.params.filterKey === 'reserved' ||
+    //   match.params.filterKey === 'history'
+    // ) {
+    //   if (
+    //     match.params.filterKey !== this.props.match.params.filterKey ||
+    //     nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
+    //   ) {
+    //     this.setState({ loadingCampaigns: true }, () => {
+    //       this.getPropositions({
+    //         username: nextProps.username,
+    //         match,
+    //         area,
+    //         sort,
+    //         activeFilters,
+    //       });
+    //     });
+    //   }
+    // } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
+  }
 
   // componentDidUpdate(prevProps) {
   //   const { username, match, pendingUpdate } = this.props;
@@ -260,9 +261,9 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
+  setSortValue = sort => this.setState({ sort });
+
   setFilterValue = (filterValue, key) => {
-    // const { username, match } = this.props;
-    // const { area, sort } = this.state;
     const activeFilters = this.state.activeFilters;
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
@@ -270,7 +271,6 @@ class Rewards extends React.Component {
       activeFilters[key].push(filterValue);
     }
     this.setState({ loadingCampaigns: true, activeFilters });
-    // this.getPropositions({ username, match, area, sort, activeFilters });
   };
 
   setPayablesFilterValue = filterValue => {
@@ -305,7 +305,7 @@ class Rewards extends React.Component {
     isMap,
     updated,
   ) => {
-    this.setState({ loadingCampaigns: true });
+    this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -361,13 +361,6 @@ class Rewards extends React.Component {
     });
     this.setState({ isSearchAreaFilter: false });
   };
-
-  // handleSortChange = sort => {
-  //   const { radius, area, activeFilters } = this.state;
-  //   const { username, match } = this.props;
-  //   this.setState({ loadingCampaigns: true, sort });
-  //   this.getPropositions({ username, match, area, radius, sort, activeFilters });
-  // };
 
   // Propositions
   assignPropositionHandler = ({
@@ -569,17 +562,17 @@ class Rewards extends React.Component {
           });
           reqData.skip = propositions.length;
           if (isSearchAreaFilter) reqData.radius = radius;
-          // ApiClient.getPropositions(reqData).then(newPropositions =>
-          //   this.setState({
-          //     loading: false,
-          //     hasMore: newPropositions.campaigns && newPropositions.hasMore,
-          //     propositions: this.state.propositions.concat(newPropositions.campaigns),
-          //     sponsors: newPropositions.sponsors,
-          //     campaignsTypes: newPropositions.campaigns_types,
-          //     guideNames: activeFilters.guideNames,
-          //     types: activeFilters.types,
-          //   }),
-          // );
+          ApiClient.getPropositions(reqData).then(newPropositions =>
+            this.setState({
+              loading: false,
+              hasMore: newPropositions.campaigns && newPropositions.hasMore,
+              propositions: this.state.propositions.concat(newPropositions.campaigns),
+              sponsors: newPropositions.sponsors,
+              campaignsTypes: newPropositions.campaigns_types,
+              guideNames: activeFilters.guideNames,
+              types: activeFilters.types,
+            }),
+          );
         },
       );
     }
@@ -691,6 +684,7 @@ class Rewards extends React.Component {
       area,
       radius,
       getPropositions: this.getPropositions,
+      setSortValue: this.setSortValue,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
