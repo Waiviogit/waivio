@@ -162,7 +162,6 @@ export default class Transfer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { form, to, amount, currency } = this.props;
-
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
         to: nextProps.to,
