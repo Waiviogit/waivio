@@ -5,9 +5,10 @@ import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
-import { getSearchObjectsResults } from '../../reducers';
+import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
+import { pendingSearch } from '../../search/Search';
 
 import './SearchObjectsAutocomplete.less';
 
@@ -15,6 +16,7 @@ import './SearchObjectsAutocomplete.less';
 @connect(
   state => ({
     searchObjectsResults: getSearchObjectsResults(state),
+    isSearchObject: getIsStartSearchObject(state),
   }),
   {
     searchObjects: searchObjectsAutoCompete,
@@ -40,6 +42,7 @@ class SearchObjectsAutocomplete extends Component {
     placeholder: '',
     parentPermlink: '',
     autoFocus: true,
+    isSearchObject: false,
   };
 
   static propTypes = {
@@ -60,6 +63,7 @@ class SearchObjectsAutocomplete extends Component {
     dropdownClassName: PropTypes.string,
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
+    isSearchObject: PropTypes.bool,
   };
 
   constructor(props) {
@@ -78,7 +82,7 @@ class SearchObjectsAutocomplete extends Component {
 
   debouncedSearch = _.debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
-    800,
+    300,
   );
 
   handleSearch(value) {
@@ -113,6 +117,7 @@ class SearchObjectsAutocomplete extends Component {
     this.props.clearSearchResults();
     this.setState({ searchString: '' });
   }
+
   render() {
     const { searchString } = this.state;
     const {
@@ -123,6 +128,7 @@ class SearchObjectsAutocomplete extends Component {
       allowClear,
       disabled,
       autoFocus,
+      isSearchObject,
     } = this.props;
     const searchObjectsOptions = searchString
       ? searchObjectsResults
@@ -143,7 +149,7 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        dataSource={searchObjectsOptions}
+        dataSource={isSearchObject ? pendingSearch(searchString, intl) : searchObjectsOptions}
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({
