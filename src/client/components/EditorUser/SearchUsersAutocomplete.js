@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { AutoComplete, Icon } from 'antd';
+import { AutoComplete } from 'antd';
 import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
 import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
 import Avatar from '../Avatar';
 
 import './SearchUsersAutocomplete.less';
+import { pendingSearch } from '../../search/Search';
 
 @injectIntl
 @connect(
@@ -75,25 +76,6 @@ class SearchUsersAutocomplete extends React.Component {
     this.setState({ searchString: '' });
   };
 
-  pendingSearch = () => {
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
-        <div className="pending-status">
-          {this.props.intl.formatMessage(
-            {
-              id: 'search_all_results_for',
-              defaultMessage: 'Search all results for {search}...',
-            },
-            { search: this.state.searchString },
-          )}
-          {<span> &nbsp;</span>}
-          {<Icon type="loading" />}
-        </div>
-      </AutoComplete.Option>
-    );
-    return [downBar];
-  };
-
   render() {
     const { searchString } = this.state;
     const {
@@ -137,7 +119,7 @@ class SearchUsersAutocomplete extends React.Component {
         disabled={disabled}
         style={style}
       >
-        {isSearchUser ? this.pendingSearch() : searchUsersOptions}
+        {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
       </AutoComplete>
     );
   }

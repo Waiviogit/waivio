@@ -40,6 +40,7 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { getApprovedField } from '../../helpers/wObjectHelper';
+import { pendingSearch } from '../../search/Search';
 import './Topnav.less';
 
 @injectIntl
@@ -738,28 +739,9 @@ class Topnav extends React.Component {
 
   renderTitle = title => <span>{title}</span>;
 
-  pendingSearch = () => {
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
-        <div className="pending-status">
-          {this.props.intl.formatMessage(
-            {
-              id: 'search_all_results_for',
-              defaultMessage: 'Search all results for {search}...',
-            },
-            { search: this.state.searchBarValue },
-          )}
-          {<span> &nbsp;</span>}
-          {<Icon type="loading" />}
-        </div>
-      </AutoComplete.Option>
-    );
-    return [downBar];
-  };
-
   render() {
     const { intl, autoCompleteSearchResults, isStartSearchAutoComplete } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { searchBarActive, dropdownOpen, searchBarValue } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -797,7 +779,9 @@ class Topnav extends React.Component {
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
                 dataSource={
-                  isStartSearchAutoComplete ? this.pendingSearch() : formattedAutoCompleteDropdown
+                  isStartSearchAutoComplete
+                    ? pendingSearch(searchBarValue, intl)
+                    : formattedAutoCompleteDropdown
                 }
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}

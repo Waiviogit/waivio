@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { AutoComplete, Icon } from 'antd';
+import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
+import { pendingSearch } from '../../search/Search';
 
 import './SearchObjectsAutocomplete.less';
 
@@ -117,25 +118,6 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: '' });
   }
 
-  pendingSearch = () => {
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
-        <div className="pending-status">
-          {this.props.intl.formatMessage(
-            {
-              id: 'search_all_results_for',
-              defaultMessage: 'Search all results for {search}...',
-            },
-            { search: this.state.searchString },
-          )}
-          {<span> &nbsp;</span>}
-          {<Icon type="loading" />}
-        </div>
-      </AutoComplete.Option>
-    );
-    return [downBar];
-  };
-
   render() {
     const { searchString } = this.state;
     const {
@@ -167,7 +149,7 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        dataSource={isSearchObject ? this.pendingSearch() : searchObjectsOptions}
+        dataSource={isSearchObject ? pendingSearch(searchString, intl) : searchObjectsOptions}
         placeholder={
           !this.props.placeholder
             ? intl.formatMessage({
