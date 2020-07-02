@@ -33,6 +33,8 @@ class SearchUsersAutocomplete extends React.Component {
     autoFocus: true,
     style: {},
     isSearchUser: false,
+    value: undefined,
+    onChange: undefined,
   };
   static propTypes = {
     intl: PropTypes.shape(),
@@ -45,6 +47,8 @@ class SearchUsersAutocomplete extends React.Component {
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
     isSearchUser: PropTypes.bool,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
   };
 
   state = {
@@ -59,6 +63,9 @@ class SearchUsersAutocomplete extends React.Component {
   };
 
   handleChange = value => {
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(value);
+    }
     this.setState({ searchString: value });
   };
 
@@ -96,6 +103,7 @@ class SearchUsersAutocomplete extends React.Component {
       disabled,
       autoFocus,
       style,
+      value,
       isSearchUser,
     } = this.props;
     const searchUsersOptions = searchString
@@ -124,7 +132,7 @@ class SearchUsersAutocomplete extends React.Component {
               })
             : this.props.placeholder
         }
-        value={searchString}
+        value={value || searchString}
         autoFocus={autoFocus}
         disabled={disabled}
         style={style}
