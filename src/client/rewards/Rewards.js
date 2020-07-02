@@ -230,7 +230,7 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
-      const sponsors = sortBy(data.sponsors, sponsor => sponsor);
+      const sponsors = sortBy(data.sponsors);
       this.setState({
         sponsors,
         campaignsTypes: data.campaigns_types,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { find, get } from 'lodash';
+import { find, has } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -110,8 +110,8 @@ class CampaignFooter extends React.Component {
   componentDidMount() {
     const { proposition } = this.props;
     if (
-      get(proposition, ['objects', '0', 'author']) &&
-      get(proposition, ['objects', '0', 'permlink'])
+      has(proposition, ['objects', '0', 'author']) &&
+      has(proposition, ['objects', '0', 'permlink'])
     ) {
       getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
         this.setState({ currentPost: res }),
