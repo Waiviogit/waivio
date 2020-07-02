@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, debounce, map, isNaN } from 'lodash';
-import { AutoComplete, Form, Icon, Input, Modal, Radio } from 'antd';
+import { get, isNull, isEmpty, isNaN } from 'lodash';
+import { Form, Input, Modal, Radio } from 'antd';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
@@ -21,20 +21,12 @@ import {
   getTransferApp,
   getTransferTo,
   isGuestUser,
-  getAutoCompleteSearchResults,
   getSearchUsersResults,
   getTotalVestingShares,
   getTotalVestingFundSteem,
-  getIsStartSearchAutoComplete,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
-import {
-  searchAutoComplete,
-  searchObjectsAutoCompete,
-  searchUsersAutoCompete,
-  searchObjectTypesAutoCompete,
-  resetSearchAutoCompete,
-} from '../search/searchActions';
+import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
@@ -58,21 +50,14 @@ const InputGroup = Input.Group;
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
-    autoCompleteSearchResults: getAutoCompleteSearchResults(state),
     searchByUser: getSearchUsersResults(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
-    isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     closeTransfer,
     getCryptoPriceHistory,
     notify,
-    searchAutoComplete,
-    searchObjectsAutoCompete,
-    searchUsersAutoCompete,
-    searchObjectTypesAutoCompete,
-    resetSearchAutoCompete,
   },
 )
 @Form.create()
@@ -94,13 +79,6 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    searchAutoComplete: PropTypes.func.isRequired,
-    resetSearchAutoCompete: PropTypes.func.isRequired,
-    autoCompleteSearchResults: PropTypes.oneOfType([
-      PropTypes.shape(),
-      PropTypes.arrayOf(PropTypes.shape()),
-    ]),
-    isStartSearchAutoComplete: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -114,9 +92,7 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
-    autoCompleteSearchResults: {},
     searchByUser: [],
-    isStartSearchAutoComplete: false,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -134,13 +110,6 @@ export default class Transfer extends React.Component {
     USER: 'user',
     SELECT_BAR: 'searchSelectBar',
   };
-
-  constructor(props) {
-    super(props);
-    this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
-    this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
-    this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
-  }
 
   state = {
     currency: Transfer.CURRENCIES.HIVE,
@@ -173,8 +142,6 @@ export default class Transfer extends React.Component {
       });
     }
   }
-
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -383,11 +350,6 @@ export default class Transfer extends React.Component {
     }
   };
 
-  handleAutoCompleteSearch(value) {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
-  }
-
   showSelectedUser = () => {
     const { to } = this.props;
     const { searchBarValue } = this.state;
@@ -413,19 +375,8 @@ export default class Transfer extends React.Component {
     );
   };
 
-  hideAutoCompleteDropdown() {
-    this.setState(
-      { searchBarActive: false, dropdownOpen: false, isSelected: true },
-      this.props.resetSearchAutoCompete,
-    );
-  }
-
-  handleOnChangeForAutoComplete(value) {
-    this.setState({
-      searchBarValue: value,
-      isClosedFind: false,
-    });
-  }
+  handleUserSelect = selected =>
+    this.setState({ isSelected: true, isClosedFind: false, searchBarValue: selected.account });
 
   handleAmountChange = event => {
     const { value } = event.target;
@@ -446,44 +397,6 @@ export default class Transfer extends React.Component {
     this.props.form.validateFields(['amount']);
   };
 
-  completeDropdown = () => {
-    const { autoCompleteSearchResults } = this.props;
-    const foundUsers = autoCompleteSearchResults.users;
-    const { Option } = AutoComplete;
-    return map(foundUsers, option => (
-      <Option
-        marker={Transfer.markers.USER}
-        key={option.account}
-        value={option.account}
-        className="Transfer__search-autocomplete"
-      >
-        <div className="Transfer__search-content-wrap">
-          <Avatar username={option.account} size={40} />
-          <div className="Transfer__search-content">{option.account}</div>
-        </div>
-      </Option>
-    ));
-  };
-
-  pendingSearch = () => {
-    const downBar = (
-      <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
-        <div className="pending-status">
-          {this.props.intl.formatMessage(
-            {
-              id: 'search_all_results_for',
-              defaultMessage: 'Search all results for {search}...',
-            },
-            { search: this.state.searchBarValue },
-          )}
-          {<span> &nbsp;</span>}
-          {<Icon type="loading" />}
-        </div>
-      </AutoComplete.Option>
-    );
-    return [downBar];
-  };
-
   render() {
     const {
       intl,
@@ -493,7 +406,6 @@ export default class Transfer extends React.Component {
       memo,
       screenSize,
       isGuest,
-      isStartSearchAutoComplete,
       amount,
       cryptosPriceHistory,
     } = this.props;
@@ -562,21 +474,15 @@ export default class Transfer extends React.Component {
               isSelected || !isEmpty(this.props.to) ? (
                 this.showSelectedUser()
               ) : (
-                <AutoComplete
-                  dropdownClassName="Transfer__search-dropdown-container"
-                  onSearch={this.handleAutoCompleteSearch}
-                  onSelect={this.hideAutoCompleteDropdown}
-                  onChange={this.handleOnChangeForAutoComplete}
-                  optionLabelProp="value"
-                  dropdownStyle={{ color: 'red' }}
-                  open={this.state.dropdownOpen && visible}
-                  dataSource={
-                    isStartSearchAutoComplete ? this.pendingSearch() : this.completeDropdown()
-                  }
+                <SearchUsersAutocomplete
+                  allowClear={false}
+                  handleSelect={this.handleUserSelect}
                   placeholder={intl.formatMessage({
-                    id: 'find_user',
+                    id: 'find_users_placeholder',
                     defaultMessage: 'Find user',
                   })}
+                  style={{ width: '100%' }}
+                  autoFocus={false}
                 />
               ),
             )}
