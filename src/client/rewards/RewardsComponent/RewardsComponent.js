@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, memo } from 'react';
 import PropTypes from 'prop-types';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual, isEmpty } from 'lodash';
+import { isEqual, isEmpty, get } from 'lodash';
 import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -30,7 +30,6 @@ const RewardsComponent = memo(
     userLocation,
   }) => {
     const dispatch = useDispatch();
-    const { campaignParent } = useParams();
 
     const getTypeRewards = () => {
       if (match.params.filterKey === 'active') return 'active';
@@ -42,6 +41,7 @@ const RewardsComponent = memo(
     const username = useSelector(getAuthenticatedUserName);
     const pendingUpdate = useSelector(getPendingUpdate);
     const areaRewards = [+userLocation.lat, +userLocation.lon];
+    const campaignParent = get(match, ['params', 'campaignParent']);
     const prevLocation = useRef(userLocation);
     const prevCampaignParent = useRef();
     const prevMatch = useRef(match);
