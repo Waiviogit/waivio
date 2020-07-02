@@ -151,7 +151,6 @@ export const getFavoriteCategories = state => fromFavorites.getFavoriteCategorie
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
-export const estimateValue = state => fromWallet.estimateValue(state.wallet);
 export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
@@ -207,6 +206,10 @@ export const getSearchUsersResultsForDiscoverPage = state =>
   fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+export const getIsStartSearchAutoComplete = state =>
+  fromSearch.getIsStartSearchAutoComplete(state.search);
+export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
+export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);

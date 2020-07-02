@@ -14,6 +14,9 @@ const initialState = {
     loading: false,
   },
   beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
+  isStartSearchAutoComplete: false,
+  isStartSearchUser: false,
+  isStartSearchObject: false,
 };
 
 export default (state = initialState, action) => {
@@ -48,6 +51,11 @@ export default (state = initialState, action) => {
         loading: false,
         searchError: true,
       };
+    case searchActions.AUTO_COMPLETE_SEARCH.START:
+      return {
+        ...state,
+        isStartSearchAutoComplete: true,
+      };
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
       const { followingUsersList } = action.meta;
@@ -58,6 +66,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         autoCompleteSearchResults: isEmpty(search) ? [] : result,
+        isStartSearchAutoComplete: false,
       };
     }
     case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
@@ -68,6 +77,11 @@ export default (state = initialState, action) => {
         searchUsersResults: [],
       };
     }
+    case searchActions.SEARCH_OBJECTS.START:
+      return {
+        ...state,
+        isStartSearchObject: true,
+      };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
       const { result, search, locale } = action.payload;
       return {
@@ -75,6 +89,7 @@ export default (state = initialState, action) => {
         searchObjectsResults: isEmpty(search)
           ? []
           : result.map(serverWObj => getClientWObj(serverWObj, locale)),
+        isStartSearchObject: false,
       };
     }
     case searchActions.SEARCH_OBJECTS.ERROR: {
@@ -87,13 +102,18 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
-
+    case searchActions.SEARCH_USERS.START:
+      return {
+        ...state,
+        isStartSearchUser: true,
+      };
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,
+        isStartSearchUser: false,
       };
     }
 
@@ -302,3 +322,6 @@ export const getSearchUsersResults = state => state.searchUsersResults;
 export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
 export const getBeneficiariesUsers = state => state.beneficiariesUsers;
+export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
+export const getIsStartSearchUser = state => state.isStartSearchUser;
+export const getIsStartSearchObject = state => state.isStartSearchObject;
