@@ -1,9 +1,10 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins';
 
 .nightmode {
   .QuickComment {
     &__send-comment {
-      filter: invert(1);
+      .light-arrows-color();
     }
   }
 }
