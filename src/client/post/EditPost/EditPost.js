@@ -117,13 +117,14 @@ class EditPost extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.draftId && nextProps.draftId !== prevState.draftId) {
-      return getInitialState(nextProps);
+      return { ...getInitialState(nextProps), draftId: nextProps.draftId };
     } else if (nextProps.draftId === null && prevState.draftId) {
       const nextState = getInitialState(nextProps);
       nextProps.history.replace({
         pathname: nextProps.location.pathname,
         search: `draft=${nextState.draftId}`,
       });
+
       return nextState;
     }
     return null;
