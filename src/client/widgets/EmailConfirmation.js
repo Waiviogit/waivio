@@ -84,9 +84,10 @@ const EmailConfirmation = ({
               handleClose(false);
             },
           });
+
+        handleClose(false);
       })
       .catch(e => message.error(e.message));
-    handleClose(false);
   };
 
   return (
