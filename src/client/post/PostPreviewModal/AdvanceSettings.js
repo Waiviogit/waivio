@@ -6,19 +6,21 @@ import { connect } from 'react-redux';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
-import { getAutoCompleteSearchResults } from '../../reducers';
+import { getAutoCompleteSearchResults, getHiveBeneficiaryAccount } from '../../reducers';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
 import BeneficiariesWeights from './BeneficiariesWeights';
+
 import './AdvanceSettings.less';
 
 @injectIntl
 @connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   {
     searchAutoComplete,
@@ -40,6 +42,7 @@ class AdvanceSettings extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
+    hiveBeneficiaryAccount: PropTypes.string.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -67,59 +70,67 @@ class AdvanceSettings extends Component {
       objPercentage,
       settings: { reward, upvote },
       isGuest,
+      hiveBeneficiaryAccount,
     } = this.props;
+
     return (
       <Collapse>
         <Collapse.Panel
+          key={'advance_settings'}
           header={intl.formatMessage({
             id: 'advance_settings',
             defaultMessage: 'Advance settings',
           })}
         >
-          {!isGuest && (
-            <div className="rewards-settings">
-              <div className="rewards-settings__label">
-                {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
+          {(!isGuest || (isGuest && hiveBeneficiaryAccount)) && (
+            <React.Fragment>
+              <div className="rewards-settings">
+                <div className="rewards-settings__label">
+                  {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
+                </div>
+                <div className="rewards-settings__control">
+                  <Select
+                    value={reward}
+                    dropdownClassName="rewards-settings__dropdown"
+                    onChange={this.handleRewardChange}
+                    disabled={isUpdating || isGuest}
+                  >
+                    <Select.Option value={rewardsValues.all}>
+                      {intl.formatMessage({
+                        id: 'reward_option_100',
+                        defaultMessage: '100% Hive Power',
+                      })}
+                    </Select.Option>
+                    <Select.Option value={rewardsValues.half}>
+                      {intl.formatMessage({
+                        id: 'reward_option_50',
+                        defaultMessage: '50% HBD and 50% HP',
+                      })}
+                    </Select.Option>
+                    <Select.Option value={rewardsValues.none}>
+                      {intl.formatMessage({ id: 'reward_option_0', defaultMessage: 'Declined' })}
+                    </Select.Option>
+                  </Select>
+                </div>
               </div>
-              <div className="rewards-settings__control">
-                <Select
-                  value={reward}
-                  dropdownClassName="rewards-settings__dropdown"
-                  onChange={this.handleRewardChange}
-                  disabled={isUpdating || isGuest}
-                >
-                  <Select.Option value={rewardsValues.all}>
-                    {intl.formatMessage({
-                      id: 'reward_option_100',
-                      defaultMessage: '100% Hive Power',
-                    })}
-                  </Select.Option>
-                  <Select.Option value={rewardsValues.half}>
-                    {intl.formatMessage({
-                      id: 'reward_option_50',
-                      defaultMessage: '50% HBD and 50% HP',
-                    })}
-                  </Select.Option>
-                  <Select.Option value={rewardsValues.none}>
-                    {intl.formatMessage({ id: 'reward_option_0', defaultMessage: 'Declined' })}
-                  </Select.Option>
-                </Select>
+              <div className="upvote-settings">
+                <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
+                  {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
+                </Checkbox>
               </div>
-            </div>
+              {!isUpdating && (
+                <div className="beneficiary-settings">
+                  <BeneficiariesWeights
+                    intl={intl}
+                    isGuest={isGuest}
+                    hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+                  />
+                </div>
+              )}
+            </React.Fragment>
           )}
-          {!isGuest && (
-            <div className="upvote-settings">
-              <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
-                {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
-              </Checkbox>
-            </div>
-          )}
-          {!isUpdating && !isGuest && (
-            <div className="beneficiary-settings">
-              <BeneficiariesWeights intl={intl} />
-            </div>
-          )}
-          {isGuest && (
+
+          {isGuest && !hiveBeneficiaryAccount && (
             <div>
               <div className="rewards-settings__guest">
                 <span>{intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}:</span>{' '}

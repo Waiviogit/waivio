@@ -90,3 +90,4 @@ export const getRewriteLinks = state => !!state.rewriteLinks;
 export const getUpvoteSetting = state => state.upvoteSetting;
 export const getExitPageSetting = state => state.exitPageSetting;
 export const getRewardSetting = state => state.rewardSetting;
+export const getHiveBeneficiaryAccount = state => state.hiveBeneficiaryAccount;

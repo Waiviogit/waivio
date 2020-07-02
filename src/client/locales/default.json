@@ -1210,5 +1210,8 @@
   "unlink_request": "Unlink request will be sent to:",
   "unlink_email_warning": "if you no longer have access to this email, unfortunately you will not be able to unlink it from the @{userName} account.",
   "withdraw": "Withdraw",
-  "transaction_success": "Your transaction success"
+  "transaction_success": "Your transaction success",
+  "hive_account": "Hive account",
+  "hive_account_info": "You can add your Hive account and will get all you rewards there",
+  "find_account": "Find your account"
 }

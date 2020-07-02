@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Select, Radio, Checkbox } from 'antd';
+import { Select, Radio, Checkbox, AutoComplete, Input } from 'antd';
+import { debounce, map } from 'lodash';
 import {
   getIsReloading,
   getLocale,
@@ -18,6 +19,8 @@ import {
   getExitPageSetting,
   isGuestUser,
   getAuthenticatedUserName,
+  getSearchUsersResults,
+  getHiveBeneficiaryAccount,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -32,6 +35,9 @@ import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import Avatar from '../components/Avatar';
+import { resetSearchAutoCompete, searchUsersAutoCompete } from '../search/searchActions';
+
 import './Settings.less';
 
 @requiresLogin
@@ -51,8 +57,10 @@ import './Settings.less';
     exitPageSetting: getExitPageSetting(state),
     isGuest: isGuestUser(state),
     user: getAuthenticatedUserName(state),
+    foundUsers: getSearchUsersResults(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
-  { reload, saveSettings, notify },
+  { reload, saveSettings, notify, searchUsersAutoCompete, resetSearchAutoCompete },
 )
 export default class Settings extends React.Component {
   static propTypes = {
@@ -72,6 +80,10 @@ export default class Settings extends React.Component {
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
+    resetSearchAutoCompete: PropTypes.func.isRequired,
+    searchUsersAutoCompete: PropTypes.func.isRequired,
+    foundUsers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    hiveBeneficiaryAccount: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -108,6 +120,11 @@ export default class Settings extends React.Component {
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
       upvoteSetting: props.exitPageSetting,
+      hiveBeneficiaryAccount: props.hiveBeneficiaryAccount,
+      searchBarActive: '',
+      dropdownOpen: false,
+      isSelected: false,
+      showSelectAccount: Boolean(props.hiveBeneficiaryAccount),
     };
   }
 
@@ -122,6 +139,7 @@ export default class Settings extends React.Component {
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
       exitPageSetting: this.props.exitPageSetting,
+      hiveBeneficiaryAccount: this.props.hiveBeneficiaryAccount,
     });
   }
 
@@ -167,6 +185,51 @@ export default class Settings extends React.Component {
     }
   }
 
+  debouncedSearch = debounce(value => this.props.searchUsersAutoCompete(value, 3, 15), 800);
+
+  handleAutoCompleteSearch = value => {
+    this.debouncedSearch(value);
+    this.setState({ dropdownOpen: true });
+  };
+
+  hideAutoCompleteDropdown = value => {
+    console.log(value);
+    this.setState(
+      {
+        searchBarActive: false,
+        dropdownOpen: false,
+        isSelected: true,
+        hiveBeneficiaryAccount: value,
+        showSelectAccount: true,
+      },
+      this.props.resetSearchAutoCompete,
+    );
+  };
+
+  handleOnChangeForAutoComplete = value => {
+    this.setState({
+      searchBarValue: value,
+    });
+  };
+
+  completeDropdown = () => {
+    const { foundUsers } = this.props;
+
+    return map(foundUsers, option => (
+      <AutoComplete.Option
+        marker={'user'}
+        key={option.account}
+        value={option.account}
+        className="Transfer__search-autocomplete"
+      >
+        <div className="Transfer__search-content-wrap">
+          <Avatar username={option.account} size={40} />
+          <div className="Transfer__search-content">{option.account}</div>
+        </div>
+      </AutoComplete.Option>
+    ));
+  };
+
   handleSave = () => {
     this.props
       .saveSettings({
@@ -179,6 +242,7 @@ export default class Settings extends React.Component {
         upvoteSetting: this.state.upvoteSetting,
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
+        hiveBeneficiaryAccount: this.state.hiveBeneficiaryAccount,
       })
       .then(() =>
         this.props.notify(
@@ -186,6 +250,38 @@ export default class Settings extends React.Component {
           'success',
         ),
       );
+  };
+
+  showSelectedUser = () => {
+    const { hiveBeneficiaryAccount } = this.state;
+
+    return (
+      <div className="Settings__search-account">
+        <div className="Settings__account-info">
+          <Avatar username={hiveBeneficiaryAccount} size={40} />
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href={`/@${hiveBeneficiaryAccount}`}
+            className="Settings__account-name"
+          >
+            {hiveBeneficiaryAccount}
+          </a>
+        </div>
+        <span
+          role="presentation"
+          onClick={() =>
+            this.setState({
+              isSelected: false,
+              searchBarValue: '',
+              showSelectAccount: false,
+              hiveBeneficiaryAccount: '',
+            })
+          }
+          className="iconfont icon-delete Settings__delete-icon"
+        />
+      </div>
+    );
   };
 
   handleLocaleChange = locale => this.setState({ locale });
@@ -218,6 +314,8 @@ export default class Settings extends React.Component {
       rewriteLinks,
       upvoteSetting,
       exitPageSetting,
+      showSelectAccount,
+      hiveBeneficiaryAccount,
     } = this.state;
 
     const initialLanguages =
@@ -225,6 +323,28 @@ export default class Settings extends React.Component {
         ? readLanguages
         : LANGUAGES.find(lang => lang.name === 'English').id;
     const languageOptions = [];
+    const addHiveAccount =
+      hiveBeneficiaryAccount && showSelectAccount ? (
+        this.showSelectedUser()
+      ) : (
+        <AutoComplete
+          dropdownClassName="Transfer__search-dropdown-container"
+          onSearch={this.handleAutoCompleteSearch}
+          onSelect={this.hideAutoCompleteDropdown}
+          onChange={this.handleOnChangeForAutoComplete}
+          optionLabelProp="value"
+          dropdownStyle={{ color: 'red' }}
+          open={this.state.dropdownOpen}
+          dataSource={this.completeDropdown()}
+        >
+          <Input
+            placeholder={intl.formatMessage({
+              id: 'find_account',
+              defaultMessage: 'Find your account',
+            })}
+          />
+        </AutoComplete>
+      );
 
     if (locale === 'auto') {
       languageOptions.push(
@@ -322,6 +442,18 @@ export default class Settings extends React.Component {
                   >
                     {languageOptions}
                   </Select>
+                </div>
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage id="hive_account" defaultMessage="Hive account" />
+                  </h3>
+                  <p>
+                    <FormattedMessage
+                      id="hive_account_info"
+                      defaultMessage="You can add your Hive account and will get all you rewards there"
+                    />
+                  </p>
+                  {isGuest && addHiveAccount}
                 </div>
                 <div className="Settings__section">
                   <h3>
