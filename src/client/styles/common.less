@@ -133,9 +133,9 @@ body.post-modal .primary-modal {
 }
 
 .ant-rate {
-  color: @orange-hot;
+  color: @primary-color !important;
   &:hover {
-    color: @orange;
+    color: @orange !important;
   }
 }
 
@@ -275,6 +275,7 @@ ul {
   max-width: 95%;
 }
 
+// region ant-slider
 .ant-slider-track {
   background-color: @orange !important;
 }
@@ -288,5 +289,15 @@ ul {
 .ant-slider-dot-active {
   border-color: @primary-color !important;
 }
+// endregion
+
+// region ant-tabs
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: @primary-color !important;
+}
+.ant-tabs-ink-bar {
+  background-color: @primary-color !important;
+}
+// endregion
 
 @import 'common-nightmode';
