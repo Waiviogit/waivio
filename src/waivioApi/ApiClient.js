@@ -424,6 +424,7 @@ export const getWobjectsWithUserWeight = (
       headers: {
         ...headers,
         follower: authUser,
+        app: config.appName,
       },
       method: 'POST',
       body: JSON.stringify(reqData),
