@@ -193,7 +193,6 @@ export default class Settings extends React.Component {
   };
 
   hideAutoCompleteDropdown = value => {
-    console.log(value);
     this.setState(
       {
         searchBarActive: false,
