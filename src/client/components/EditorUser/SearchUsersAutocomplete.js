@@ -5,15 +5,17 @@ import { injectIntl } from 'react-intl';
 import { AutoComplete } from 'antd';
 import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
-import { getSearchUsersResults } from '../../reducers';
+import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
 import Avatar from '../Avatar';
 
 import './SearchUsersAutocomplete.less';
+import { pendingSearch } from '../../search/Search';
 
 @injectIntl
 @connect(
   state => ({
     searchUsersResults: getSearchUsersResults(state),
+    isSearchUser: getIsStartSearchUser(state),
   }),
   {
     searchUsers: searchUsersAutoCompete,
@@ -31,6 +33,9 @@ class SearchUsersAutocomplete extends React.Component {
     disabled: false,
     autoFocus: true,
     style: {},
+    isSearchUser: false,
+    value: undefined,
+    onChange: undefined,
   };
   static propTypes = {
     intl: PropTypes.shape(),
@@ -42,6 +47,8 @@ class SearchUsersAutocomplete extends React.Component {
     disabled: PropTypes.bool,
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
+    isSearchUser: PropTypes.bool,
+    onChange: PropTypes.func,
   };
 
   state = {
@@ -49,13 +56,16 @@ class SearchUsersAutocomplete extends React.Component {
     isOptionSelected: false,
   };
 
-  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 800);
+  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 300);
 
   handleSearch = value => {
     this.debouncedSearchByUser(value);
   };
 
   handleChange = value => {
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(value);
+    }
     this.setState({ searchString: value });
   };
 
@@ -67,7 +77,15 @@ class SearchUsersAutocomplete extends React.Component {
 
   render() {
     const { searchString } = this.state;
-    const { intl, searchUsersResults, itemsIdsToOmit, disabled, autoFocus, style } = this.props;
+    const {
+      intl,
+      searchUsersResults,
+      itemsIdsToOmit,
+      disabled,
+      autoFocus,
+      style,
+      isSearchUser,
+    } = this.props;
     const searchUsersOptions = searchString
       ? searchUsersResults
           .filter(obj => !itemsIdsToOmit.includes(obj.account))
@@ -99,7 +117,7 @@ class SearchUsersAutocomplete extends React.Component {
         disabled={disabled}
         style={style}
       >
-        {searchUsersOptions}
+        {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
       </AutoComplete>
     );
   }

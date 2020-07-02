@@ -10,6 +10,7 @@ ShallowWrapper {
           0 HIVE
         </span>
       }
+      isGuestPage={false}
       memo="Test Transfer Transaction"
       timestamp="0"
       to="hellosteem"
@@ -35,6 +36,7 @@ ShallowWrapper {
             0 HIVE
           </span>
         }
+        isGuestPage={false}
         memo="Test Transfer Transaction"
         timestamp="0"
         to="hellosteem"
@@ -47,7 +49,7 @@ ShallowWrapper {
         "entries": Array [
           Object {
             "hash": "",
-            "key": "ejf4lo",
+            "key": "g4exj3",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -61,7 +63,7 @@ ShallowWrapper {
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "key": "ejf4lo",
+          "key": "g4exj3",
           "pathname": "/",
           "search": "",
           "state": undefined,
@@ -79,6 +81,7 @@ ShallowWrapper {
         "amount": <span>
           0 HIVE
         </span>,
+        "isGuestPage": false,
         "memo": "Test Transfer Transaction",
         "timestamp": "0",
         "to": "hellosteem",
@@ -101,6 +104,7 @@ ShallowWrapper {
               0 HIVE
             </span>
           }
+          isGuestPage={false}
           memo="Test Transfer Transaction"
           timestamp="0"
           to="hellosteem"
@@ -113,7 +117,7 @@ ShallowWrapper {
           "entries": Array [
             Object {
               "hash": "",
-              "key": "ejf4lo",
+              "key": "g4exj3",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -127,7 +131,7 @@ ShallowWrapper {
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "ejf4lo",
+            "key": "g4exj3",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -145,6 +149,7 @@ ShallowWrapper {
           "amount": <span>
             0 HIVE
           </span>,
+          "isGuestPage": false,
           "memo": "Test Transfer Transaction",
           "timestamp": "0",
           "to": "hellosteem",

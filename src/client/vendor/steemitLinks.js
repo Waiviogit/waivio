@@ -5,7 +5,7 @@
  */
 
 const urlChar = '[^\\s"<>\\]\\[\\(\\)]';
-const urlCharEnd = urlChar.replace(/\]$/, ".,']"); // insert bad chars to end on
+const urlCharEnd = urlChar.replace(/]$/, ".,']"); // insert bad chars to end on
 const imagePath = '(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))';
 const domainPath = '(?:[-a-zA-Z0-9\\._]*[-a-zA-Z0-9])';
 const urlChars = `(?:${urlChar}*${urlCharEnd})?`;
@@ -39,7 +39,7 @@ export default {
   image: image(),
   imageFile: imageFile(),
   youTube: youTube(),
-  youTubeId: /(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9\_\-]+)/i,
+  youTubeId: /(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9_-]+)/i,
   vimeoId: /(?:vimeo.com\/|player.vimeo.com\/video\/)([0-9]+)/,
   // simpleLink: new RegExp(`<a href="(.*)">(.*)<\/a>`, 'ig'),
   ipfsPrefix: /(https?:\/\/.*)?\/ipfs/i,

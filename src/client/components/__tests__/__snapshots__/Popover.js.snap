@@ -4,8 +4,8 @@ exports[`<PopoverContainer /> Should render without exploding 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <PopoverContainer
-    content={null}
-    onVisibleChange={[Function]}
+    content="some text"
+    onVisibleChange={[MockFunction]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -27,10 +27,11 @@ ShallowWrapper {
           onClick={[Function]}
           role="presentation"
         />
+        some text
       </div>,
       "mouseEnterDelay": 0.1,
       "mouseLeaveDelay": 0.1,
-      "onVisibleChange": [Function],
+      "onVisibleChange": [MockFunction],
       "overlayStyle": Object {},
       "placement": "top",
       "transitionName": "zoom-big",
@@ -52,10 +53,11 @@ ShallowWrapper {
             onClick={[Function]}
             role="presentation"
           />
+          some text
         </div>,
         "mouseEnterDelay": 0.1,
         "mouseLeaveDelay": 0.1,
-        "onVisibleChange": [Function],
+        "onVisibleChange": [MockFunction],
         "overlayStyle": Object {},
         "placement": "top",
         "transitionName": "zoom-big",

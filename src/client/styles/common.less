@@ -1,4 +1,5 @@
 @import (reference) './custom.less';
+@import (reference) './modules/variables.less';
 
 body {
   overflow-x: hidden;
@@ -132,9 +133,9 @@ body.post-modal .primary-modal {
 }
 
 .ant-rate {
-  color: @orange-hot;
+  color: @primary-color !important;
   &:hover {
-    color: @orange;
+    color: @orange !important;
   }
 }
 
@@ -172,10 +173,6 @@ iframe {
 
 div[data-dir='rtl'] {
   direction: rtl;
-}
-
-.wv-break-word {
-  word-wrap: break-word;
 }
 
 .ant-modal-mask {
@@ -277,5 +274,30 @@ ul {
   white-space: nowrap;
   max-width: 95%;
 }
+
+// region ant-slider
+.ant-slider-track {
+  background-color: @orange !important;
+}
+.ant-slider-handle {
+  border-color: @orange !important;
+  &:focus {
+    border-color: @neon-carrot !important;
+    box-shadow: 0 0 0 5px rgba(248, 112, 7, 0.2) !important;
+  }
+}
+.ant-slider-dot-active {
+  border-color: @primary-color !important;
+}
+// endregion
+
+// region ant-tabs
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: @primary-color !important;
+}
+.ant-tabs-ink-bar {
+  background-color: @primary-color !important;
+}
+// endregion
 
 @import 'common-nightmode';

@@ -1,4 +1,5 @@
 @import (reference) './custom.less';
+@import (reference) './modules/variables.less';
 
 body.nightmode {
   background: #191e23;
@@ -35,6 +36,11 @@ body.nightmode {
     .ant-select-selection {
       border: @border-width-base @border-style-base @normal-grey;
       background-color: @grey-nero;
+
+      &__clear {
+        background: @grey-nero;
+        color: @blue-baliHai;
+      }
     }
   }
 
@@ -47,6 +53,11 @@ body.nightmode {
 
   .ant-time-picker-clock-icon {
     color: @white-smoke;
+  }
+
+  .has-error .ant-input,
+  .has-error .ant-input:hover {
+    background-color: @grey-nero;
   }
 
   .ant-checkbox-wrapper {
@@ -129,6 +140,10 @@ body.nightmode {
   .ant-form-item-label label,
   .ant-modal-title {
     color: @white-smoke;
+  }
+
+  .ant-modal-mask {
+    background-color: rgba(25, 30, 35, 0.97) !important;
   }
 
   .ant-tabs {
