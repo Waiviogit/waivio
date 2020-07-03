@@ -235,11 +235,6 @@ const routes = [
         component: Rewards,
         routes: [
           {
-            path: '/rewards/all',
-            exact: true,
-            component: RewardsComponent,
-          },
-          {
             path: '/rewards/create',
             exact: true,
             component: CreateRewardForm,

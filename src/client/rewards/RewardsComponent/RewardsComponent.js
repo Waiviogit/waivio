@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual, isEmpty, get } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -42,9 +42,7 @@ const RewardsComponent = memo(
     const pendingUpdate = useSelector(getPendingUpdate);
     const areaRewards = [+userLocation.lat, +userLocation.lon];
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const prevLocation = useRef(userLocation);
-    const prevCampaignParent = useRef();
-    const prevMatch = useRef(match);
+    const filterKeyParams = get(match, ['params', 'filterKey']);
     const history = useHistory();
 
     const handleSortChange = sortRewards => {
@@ -54,29 +52,18 @@ const RewardsComponent = memo(
 
     useEffect(() => {
       if (campaignParent || isEmpty(userLocation)) return;
-      if (!isEqual(userLocation, prevLocation.current)) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-        prevLocation.current = userLocation;
-        return;
-      }
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    }, [userLocation, JSON.stringify(activeFilters)]);
+    }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
 
     useEffect(() => {
-      if (!isEqual(prevMatch.current, match)) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-        prevMatch.current = match;
-      } else if (prevCampaignParent.current !== campaignParent) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-        prevCampaignParent.current = campaignParent;
-      }
+      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
         delay(6000).then(() => {
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, match]);
+    }, [campaignParent, filterKeyParams]);
 
     useEffect(() => {
       if (campaignParent) return;
