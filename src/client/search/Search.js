@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { get, isEmpty, map } from 'lodash';
+import { AutoComplete, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { getSearchResults, getSearchLoading } from '../reducers';
@@ -108,5 +109,24 @@ class Search extends React.Component {
     );
   }
 }
+
+export const pendingSearch = (searchString, intl) => {
+  const downBar = (
+    <AutoComplete.Option disabled key="all" className="Topnav__search-pending">
+      <div className="pending-status">
+        {intl.formatMessage(
+          {
+            id: 'search_all_results_for',
+            defaultMessage: 'Search all results for {search}...',
+          },
+          { search: searchString },
+        )}
+        {<span> &nbsp;</span>}
+        {<Icon type="loading" />}
+      </div>
+    </AutoComplete.Option>
+  );
+  return [downBar];
+};
 
 export default Search;
