@@ -15,6 +15,7 @@ import {
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import {
+  getIsStartSearchAutoComplete,
   getAuthenticatedUserMetaData,
   getAutoCompleteSearchResults,
   getIsLoadingNotifications,
@@ -36,11 +37,11 @@ import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
-
-import './Topnav.less';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { getApprovedField } from '../../helpers/wObjectHelper';
+import { pendingSearch } from '../../search/Search';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -53,6 +54,7 @@ import { getApprovedField } from '../../helpers/wObjectHelper';
     notifications: getNotifications(state),
     userMetaData: getAuthenticatedUserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
+    isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     searchObjectsAutoCompete,
@@ -89,6 +91,7 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    isStartSearchAutoComplete: PropTypes.bool,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
@@ -100,6 +103,7 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
+    isStartSearchAutoComplete: false,
   };
 
   static markers = {
@@ -180,20 +184,21 @@ class Topnav extends React.Component {
     return countArr;
   };
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
 
-  debouncedSearchByObject = debounce((searchString, objType) =>
-    this.props.searchObjectsAutoCompete(searchString, objType),
+  debouncedSearchByObject = debounce(
+    (searchString, objType) => this.props.searchObjectsAutoCompete(searchString, objType),
+    300,
   );
 
   debouncedSearchByUser = debounce(
     searchString => this.props.searchUsersAutoCompete(searchString),
-    800,
+    300,
   );
 
   debouncedSearchByObjectTypes = debounce(
     searchString => this.props.searchObjectTypesAutoCompete(searchString),
-    800,
+    300,
   );
 
   handleMoreMenuSelect(key) {
@@ -734,8 +739,8 @@ class Topnav extends React.Component {
   renderTitle = title => <span>{title}</span>;
 
   render() {
-    const { intl, autoCompleteSearchResults } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { intl, autoCompleteSearchResults, isStartSearchAutoComplete } = this.props;
+    const { searchBarActive, dropdownOpen, searchBarValue } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -772,7 +777,11 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={formattedAutoCompleteDropdown}
+                dataSource={
+                  isStartSearchAutoComplete
+                    ? pendingSearch(searchBarValue, intl)
+                    : formattedAutoCompleteDropdown
+                }
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}
