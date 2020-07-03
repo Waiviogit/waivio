@@ -270,20 +270,19 @@ class MapOS extends React.Component {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, zoom, center } = this.state;
     const markersLayout = this.getMarkers(wobjects);
-    return center ? (
+    return center && zoom > 0 ? (
       <div className="MapOS">
-        {zoom > 0 && (
-          <Map
-            provider={mapProvider}
-            onBoundsChanged={this.onBoundsChanged}
-            center={center}
-            zoom={zoom}
-            height={heigth}
-          >
-            {markersLayout}
-            {infoboxData && this.getOverlayLayout()}
-          </Map>
-        )}
+        <Map
+          provider={mapProvider}
+          onBoundsChanged={this.onBoundsChanged}
+          center={center}
+          zoom={zoom}
+          height={heigth}
+        >
+          {markersLayout}
+          {infoboxData && this.getOverlayLayout()}
+        </Map>
+
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
@@ -345,7 +344,7 @@ class MapOS extends React.Component {
         )}
       </div>
     ) : (
-      <Loading />
+      <Loading style={{ width: '270px', height: '268px', paddingTop: '110px' }} />
     );
   }
 }
