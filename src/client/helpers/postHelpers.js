@@ -154,7 +154,7 @@ export function getObjectUrl(objPermlink) {
 export function getInitialState(props) {
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
-    draftId: uuidv4(),
+    draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title:

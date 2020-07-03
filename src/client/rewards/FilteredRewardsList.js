@@ -16,7 +16,6 @@ import FilterModal from './FilterModal';
 const FilteredRewardsList = props => {
   const {
     hasMore,
-    IsRequiredObjectWrap,
     loading,
     filterKey,
     userName,
@@ -40,7 +39,7 @@ const FilteredRewardsList = props => {
   const dispatch = useDispatch();
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-
+  const IsRequiredObjectWrap = !match.params.campaignParent;
   return !loadingCampaigns ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -162,27 +161,31 @@ FilteredRewardsList.defaultProps = {
   loading: false,
   sponsors: [],
   campaignsTypes: [],
+  setFilterValue: () => {},
+  handleLoadMore: () => {},
+  resetMapFilter: () => {},
+  activeFilters: {},
+  userName: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
-  IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
-  resetMapFilter: PropTypes.func.isRequired,
+  resetMapFilter: PropTypes.func,
   sort: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
-  handleLoadMore: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func,
   sponsors: PropTypes.arrayOf(PropTypes.string),
-  activeFilters: PropTypes.shape().isRequired,
-  setFilterValue: PropTypes.func.isRequired,
+  activeFilters: PropTypes.shape(),
+  setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
 };
 

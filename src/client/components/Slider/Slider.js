@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
+import { debounce } from 'lodash';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
 import './Slider.less';
@@ -45,11 +46,11 @@ export default class Slider extends React.Component {
 
   getCurrentValue = () => this.props.voteWorth || 0;
 
-  handleChange = value => {
+  handleChange = debounce(value => {
     this.setState({ value }, () => {
       this.props.onChange(value);
     });
-  };
+  }, 300);
 
   formatTip = value => (
     <div>
