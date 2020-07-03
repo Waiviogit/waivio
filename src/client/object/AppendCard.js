@@ -33,6 +33,10 @@ import Confirmation from '../components/StoryFooter/Confirmation';
 import { getVoteValue } from '../helpers/user';
 import ApprovingCard from './ApprovingCard';
 
+import '../components/Story/Story.less';
+import '../components/StoryFooter/StoryFooter.less';
+import '../components/StoryFooter/Buttons.less';
+
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
   const [reactionsModalVisible, showReactionModal] = useState(false);

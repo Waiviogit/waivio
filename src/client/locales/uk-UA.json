@@ -478,6 +478,7 @@
   "object_field_menuList": "Список",
   "object_field_pageContent": "Сторiнка",
   "object_field_status": "Статус",
+  "object_field_gallery": "Галерея",
   "object_field_galleryItem": "Элемент галереї",
   "object_field_galleryAlbum": "Альбом галереї",
   "field_error": "необхiдно {field}",
