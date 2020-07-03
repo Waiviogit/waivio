@@ -160,10 +160,6 @@ const CreateRewardForm = Loadable({
   loader: () => import('../client/rewards/Create-Edit/CreateRewardForm'),
   loading: Loading,
 });
-const FilteredRewardsList = Loadable({
-  loader: () => import('../client/rewards/FilteredRewardsList'),
-  loading: Loading,
-});
 const ManageCampaign = Loadable({
   loader: () => import('../client/rewards/Manage/Manage'),
   loading: Loading,
@@ -206,6 +202,10 @@ const UserInfo = Loadable({
 });
 const ConfirmationModal = Loadable({
   loader: () => import('../client/widgets/ConfirmationModal'),
+  loading: Loading,
+});
+const RewardsComponent = Loadable({
+  loader: () => import('../client/rewards/RewardsComponent/RewardsComponent'),
   loading: Loading,
 });
 
@@ -302,7 +302,7 @@ const routes = [
           {
             path: '/rewards/:filterKey/:campaignParent?',
             exact: true,
-            component: FilteredRewardsList,
+            component: RewardsComponent,
           },
         ],
       },

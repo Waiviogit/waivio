@@ -124,6 +124,7 @@ class EditPost extends Component {
         pathname: nextProps.location.pathname,
         search: `draft=${nextState.draftId}`,
       });
+
       return nextState;
     }
     return null;
