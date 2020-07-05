@@ -18,20 +18,21 @@ const TransferButton = ({ match, intl, payable, name }) => {
   const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
+  const payableForRender = payable >= 0 ? payable : payable * -1;
   return (
     <React.Fragment>
       {match.path === '/rewards/receivables' && payable < 0 && (
         <Action
           className="WalletSidebar__transfer"
           primary={payable < 0}
-          onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
+          onClick={() => dispatch(openTransfer(name, payableForRender, currency, memo, app))}
           disabled={payable >= 0}
         >
           {intl.formatMessage({
             id: 'pay',
             defaultMessage: 'Pay',
           })}
-          {` ${payable && payable.toFixed(3)} HIVE`}
+          {` ${payableForRender && payableForRender.toFixed(3)} HIVE`}
         </Action>
       )}
       {match.path === '/rewards/receivables' && payable >= 0 && (

@@ -64,6 +64,7 @@ const Payment = ({ match, intl, userName }) => {
 
   const name = match.params.userName;
   const userReward = `"id":"user_reward"`;
+  const payableForRender = payable >= 0 ? payable : payable * -1;
 
   return (
     <div className="Payment">
@@ -79,13 +80,21 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => dispatch(openTransfer(name, payable, currency, memo, app))}
+              onClick={() =>
+                dispatch(
+                  openTransfer(name, isPayables ? payable : payableForRender, currency, memo, app),
+                )
+              }
             >
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable && payable.toFixed(3)} HIVE`}
+              {` ${
+                isPayables
+                  ? payable && payable.toFixed(3)
+                  : payableForRender && payableForRender.toFixed(3)
+              } HIVE`}
             </Action>
           ) : (
             ''
