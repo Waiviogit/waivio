@@ -15,8 +15,9 @@ import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
-import './WalletSidebar.less';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+
+import './WalletSidebar.less';
 
 @withRouter
 @connect(
