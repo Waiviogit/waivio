@@ -41,15 +41,17 @@ ShallowWrapper {
         <div
           className="UserWalletSummary__item"
         >
-          <i
-            className="iconfont icon-steem UserWalletSummary__icon"
+          <img
+            alt="hive"
+            className="UserWalletSummary__icon hive"
+            src="/images/icons/logo-hive-wallet.svg"
           />
           <div
             className="UserWalletSummary__label"
           >
             <FormattedMessage
-              defaultMessage="Steem"
-              id="steem"
+              defaultMessage="Hive"
+              id="hive"
               values={Object {}}
             />
           </div>
@@ -75,7 +77,7 @@ ShallowWrapper {
               className="UserWalletSummary__label"
             >
               <FormattedMessage
-                defaultMessage="Steem Power"
+                defaultMessage="Hive Power"
                 id="steem_power"
                 values={Object {}}
               />
@@ -83,7 +85,9 @@ ShallowWrapper {
             <div
               className="UserWalletSummary__value"
             >
-              <span>
+              <span
+                className=""
+              >
                 <FormattedNumber
                   value={0}
                 />
@@ -116,7 +120,7 @@ ShallowWrapper {
                   title={
                     <span>
                       <FormattedMessage
-                        defaultMessage="Steem Power delegated to this account"
+                        defaultMessage="Hive Power delegated to this account"
                         id="steem_power_delegated_to_account_tooltip"
                         values={Object {}}
                       />
@@ -145,7 +149,7 @@ ShallowWrapper {
               className="UserWalletSummary__label"
             >
               <FormattedMessage
-                defaultMessage="Steem Dollar"
+                defaultMessage="Hive Dollar"
                 id="steem_dollar"
                 values={Object {}}
               />
@@ -183,7 +187,7 @@ ShallowWrapper {
                 <FormattedNumber
                   value={100}
                 />
-                 HIVE,
+                 HIVE, 
                 <FormattedNumber
                   value={1000}
                 />
@@ -226,15 +230,17 @@ ShallowWrapper {
         "nodeType": "host",
         "props": Object {
           "children": Array [
-            <i
-              className="iconfont icon-steem UserWalletSummary__icon"
+            <img
+              alt="hive"
+              className="UserWalletSummary__icon hive"
+              src="/images/icons/logo-hive-wallet.svg"
             />,
             <div
               className="UserWalletSummary__label"
             >
               <FormattedMessage
-                defaultMessage="Steem"
-                id="steem"
+                defaultMessage="Hive"
+                id="hive"
                 values={Object {}}
               />
             </div>,
@@ -258,11 +264,13 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "host",
             "props": Object {
-              "className": "iconfont icon-steem UserWalletSummary__icon",
+              "alt": "hive",
+              "className": "UserWalletSummary__icon hive",
+              "src": "/images/icons/logo-hive-wallet.svg",
             },
             "ref": null,
             "rendered": null,
-            "type": "i",
+            "type": "img",
           },
           Object {
             "instance": null,
@@ -270,8 +278,8 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "children": <FormattedMessage
-                defaultMessage="Steem"
-                id="steem"
+                defaultMessage="Hive"
+                id="hive"
                 values={Object {}}
               />,
               "className": "UserWalletSummary__label",
@@ -282,8 +290,8 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "class",
               "props": Object {
-                "defaultMessage": "Steem",
-                "id": "steem",
+                "defaultMessage": "Hive",
+                "id": "hive",
                 "values": Object {},
               },
               "ref": null,
@@ -331,7 +339,7 @@ ShallowWrapper {
                   "rendered": null,
                   "type": [Function],
                 },
-                " STEEM",
+                " HIVE",
               ],
               "type": "span",
             },
@@ -356,7 +364,7 @@ ShallowWrapper {
                 className="UserWalletSummary__label"
               >
                 <FormattedMessage
-                  defaultMessage="Steem Power"
+                  defaultMessage="Hive Power"
                   id="steem_power"
                   values={Object {}}
                 />
@@ -364,7 +372,9 @@ ShallowWrapper {
               <div
                 className="UserWalletSummary__value"
               >
-                <span>
+                <span
+                  className=""
+                >
                   <FormattedNumber
                     value={0}
                   />
@@ -397,7 +407,7 @@ ShallowWrapper {
                     title={
                       <span>
                         <FormattedMessage
-                          defaultMessage="Steem Power delegated to this account"
+                          defaultMessage="Hive Power delegated to this account"
                           id="steem_power_delegated_to_account_tooltip"
                           values={Object {}}
                         />
@@ -426,7 +436,7 @@ ShallowWrapper {
                 className="UserWalletSummary__label"
               >
                 <FormattedMessage
-                  defaultMessage="Steem Dollar"
+                  defaultMessage="Hive Dollar"
                   id="steem_dollar"
                   values={Object {}}
                 />
@@ -464,7 +474,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={100}
                   />
-                   STEEM, 
+                   HIVE, 
                   <FormattedNumber
                     value={1000}
                   />
@@ -489,7 +499,7 @@ ShallowWrapper {
                   className="UserWalletSummary__label"
                 >
                   <FormattedMessage
-                    defaultMessage="Steem Power"
+                    defaultMessage="Hive Power"
                     id="steem_power"
                     values={Object {}}
                   />
@@ -497,7 +507,9 @@ ShallowWrapper {
                 <div
                   className="UserWalletSummary__value"
                 >
-                  <span>
+                  <span
+                    className=""
+                  >
                     <FormattedNumber
                       value={0}
                     />
@@ -530,7 +542,7 @@ ShallowWrapper {
                       title={
                         <span>
                           <FormattedMessage
-                            defaultMessage="Steem Power delegated to this account"
+                            defaultMessage="Hive Power delegated to this account"
                             id="steem_power_delegated_to_account_tooltip"
                             values={Object {}}
                           />
@@ -570,7 +582,7 @@ ShallowWrapper {
                 "nodeType": "host",
                 "props": Object {
                   "children": <FormattedMessage
-                    defaultMessage="Steem Power"
+                    defaultMessage="Hive Power"
                     id="steem_power"
                     values={Object {}}
                   />,
@@ -582,7 +594,7 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "class",
                   "props": Object {
-                    "defaultMessage": "Steem Power",
+                    "defaultMessage": "Hive Power",
                     "id": "steem_power",
                     "values": Object {},
                   },
@@ -597,7 +609,9 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "host",
                 "props": Object {
-                  "children": <span>
+                  "children": <span
+                    className=""
+                  >
                     <FormattedNumber
                       value={0}
                     />
@@ -630,7 +644,7 @@ ShallowWrapper {
                       title={
                         <span>
                           <FormattedMessage
-                            defaultMessage="Steem Power delegated to this account"
+                            defaultMessage="Hive Power delegated to this account"
                             id="steem_power_delegated_to_account_tooltip"
                             values={Object {}}
                           />
@@ -688,7 +702,7 @@ ShallowWrapper {
                         title={
                           <span>
                             <FormattedMessage
-                              defaultMessage="Steem Power delegated to this account"
+                              defaultMessage="Hive Power delegated to this account"
                               id="steem_power_delegated_to_account_tooltip"
                               values={Object {}}
                             />
@@ -705,6 +719,7 @@ ShallowWrapper {
                       </BTooltip>,
                       " HP",
                     ],
+                    "className": "",
                   },
                   "ref": null,
                   "rendered": Array [
@@ -791,7 +806,7 @@ ShallowWrapper {
                         </span>,
                         "title": <span>
                           <FormattedMessage
-                            defaultMessage="Steem Power delegated to this account"
+                            defaultMessage="Hive Power delegated to this account"
                             id="steem_power_delegated_to_account_tooltip"
                             values={Object {}}
                           />
@@ -853,7 +868,7 @@ ShallowWrapper {
                   className="UserWalletSummary__label"
                 >
                   <FormattedMessage
-                    defaultMessage="Steem Dollar"
+                    defaultMessage="Hive Dollar"
                     id="steem_dollar"
                     values={Object {}}
                   />
@@ -890,7 +905,7 @@ ShallowWrapper {
                 "nodeType": "host",
                 "props": Object {
                   "children": <FormattedMessage
-                    defaultMessage="Steem Dollar"
+                    defaultMessage="Hive Dollar"
                     id="steem_dollar"
                     values={Object {}}
                   />,
@@ -902,7 +917,7 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "class",
                   "props": Object {
-                    "defaultMessage": "Steem Dollar",
+                    "defaultMessage": "Hive Dollar",
                     "id": "steem_dollar",
                     "values": Object {},
                   },
@@ -985,7 +1000,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={100}
                     />
-                     STEEM, 
+                     HIVE, 
                     <FormattedNumber
                       value={1000}
                     />
@@ -1045,7 +1060,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={100}
                     />
-                     STEEM, 
+                     HIVE, 
                     <FormattedNumber
                       value={1000}
                     />
@@ -1063,7 +1078,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={100}
                       />,
-                      " STEEM, ",
+                      " HIVE, ",
                       <FormattedNumber
                         value={1000}
                       />,
@@ -1083,7 +1098,7 @@ ShallowWrapper {
                       "rendered": null,
                       "type": [Function],
                     },
-                    " STEEM, ",
+                    " HIVE, ",
                     Object {
                       "instance": null,
                       "key": undefined,
@@ -1216,15 +1231,17 @@ ShallowWrapper {
           <div
             className="UserWalletSummary__item"
           >
-            <i
-              className="iconfont icon-steem UserWalletSummary__icon"
+            <img
+              alt="hive"
+              className="UserWalletSummary__icon hive"
+              src="/images/icons/logo-hive-wallet.svg"
             />
             <div
               className="UserWalletSummary__label"
             >
               <FormattedMessage
-                defaultMessage="Steem"
-                id="steem"
+                defaultMessage="Hive"
+                id="hive"
                 values={Object {}}
               />
             </div>
@@ -1235,7 +1252,7 @@ ShallowWrapper {
                 <FormattedNumber
                   value={0}
                 />
-                 STEEM
+                 HIVE
               </span>
             </div>
           </div>,
@@ -1250,7 +1267,7 @@ ShallowWrapper {
                 className="UserWalletSummary__label"
               >
                 <FormattedMessage
-                  defaultMessage="Steem Power"
+                  defaultMessage="Hive Power"
                   id="steem_power"
                   values={Object {}}
                 />
@@ -1258,7 +1275,9 @@ ShallowWrapper {
               <div
                 className="UserWalletSummary__value"
               >
-                <span>
+                <span
+                  className=""
+                >
                   <FormattedNumber
                     value={0}
                   />
@@ -1291,7 +1310,7 @@ ShallowWrapper {
                     title={
                       <span>
                         <FormattedMessage
-                          defaultMessage="Steem Power delegated to this account"
+                          defaultMessage="Hive Power delegated to this account"
                           id="steem_power_delegated_to_account_tooltip"
                           values={Object {}}
                         />
@@ -1320,7 +1339,7 @@ ShallowWrapper {
                 className="UserWalletSummary__label"
               >
                 <FormattedMessage
-                  defaultMessage="Steem Dollar"
+                  defaultMessage="Hive Dollar"
                   id="steem_dollar"
                   values={Object {}}
                 />
@@ -1358,7 +1377,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={100}
                   />
-                   STEEM, 
+                   HIVE, 
                   <FormattedNumber
                     value={1000}
                   />
@@ -1401,15 +1420,17 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": Array [
-              <i
-                className="iconfont icon-steem UserWalletSummary__icon"
+              <img
+                alt="hive"
+                className="UserWalletSummary__icon hive"
+                src="/images/icons/logo-hive-wallet.svg"
               />,
               <div
                 className="UserWalletSummary__label"
               >
                 <FormattedMessage
-                  defaultMessage="Steem"
-                  id="steem"
+                  defaultMessage="Hive"
+                  id="hive"
                   values={Object {}}
                 />
               </div>,
@@ -1420,7 +1441,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={0}
                   />
-                   STEEM
+                   HIVE
                 </span>
               </div>,
             ],
@@ -1433,11 +1454,13 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "host",
               "props": Object {
-                "className": "iconfont icon-steem UserWalletSummary__icon",
+                "alt": "hive",
+                "className": "UserWalletSummary__icon hive",
+                "src": "/images/icons/logo-hive-wallet.svg",
               },
               "ref": null,
               "rendered": null,
-              "type": "i",
+              "type": "img",
             },
             Object {
               "instance": null,
@@ -1445,8 +1468,8 @@ ShallowWrapper {
               "nodeType": "host",
               "props": Object {
                 "children": <FormattedMessage
-                  defaultMessage="Steem"
-                  id="steem"
+                  defaultMessage="Hive"
+                  id="hive"
                   values={Object {}}
                 />,
                 "className": "UserWalletSummary__label",
@@ -1457,8 +1480,8 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "class",
                 "props": Object {
-                  "defaultMessage": "Steem",
-                  "id": "steem",
+                  "defaultMessage": "Hive",
+                  "id": "hive",
                   "values": Object {},
                 },
                 "ref": null,
@@ -1476,7 +1499,7 @@ ShallowWrapper {
                   <FormattedNumber
                     value={0}
                   />
-                   STEEM
+                   HIVE
                 </span>,
                 "className": "UserWalletSummary__value",
               },
@@ -1490,7 +1513,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={0}
                     />,
-                    " STEEM",
+                    " HIVE",
                   ],
                 },
                 "ref": null,
@@ -1506,7 +1529,7 @@ ShallowWrapper {
                     "rendered": null,
                     "type": [Function],
                   },
-                  " STEEM",
+                  " HIVE",
                 ],
                 "type": "span",
               },
@@ -1531,7 +1554,7 @@ ShallowWrapper {
                   className="UserWalletSummary__label"
                 >
                   <FormattedMessage
-                    defaultMessage="Steem Power"
+                    defaultMessage="Hive Power"
                     id="steem_power"
                     values={Object {}}
                   />
@@ -1539,7 +1562,9 @@ ShallowWrapper {
                 <div
                   className="UserWalletSummary__value"
                 >
-                  <span>
+                  <span
+                    className=""
+                  >
                     <FormattedNumber
                       value={0}
                     />
@@ -1572,7 +1597,7 @@ ShallowWrapper {
                       title={
                         <span>
                           <FormattedMessage
-                            defaultMessage="Steem Power delegated to this account"
+                            defaultMessage="Hive Power delegated to this account"
                             id="steem_power_delegated_to_account_tooltip"
                             values={Object {}}
                           />
@@ -1601,7 +1626,7 @@ ShallowWrapper {
                   className="UserWalletSummary__label"
                 >
                   <FormattedMessage
-                    defaultMessage="Steem Dollar"
+                    defaultMessage="Hive Dollar"
                     id="steem_dollar"
                     values={Object {}}
                   />
@@ -1639,7 +1664,7 @@ ShallowWrapper {
                     <FormattedNumber
                       value={100}
                     />
-                     STEEM, 
+                     HIVE, 
                     <FormattedNumber
                       value={1000}
                     />
@@ -1664,7 +1689,7 @@ ShallowWrapper {
                     className="UserWalletSummary__label"
                   >
                     <FormattedMessage
-                      defaultMessage="Steem Power"
+                      defaultMessage="Hive Power"
                       id="steem_power"
                       values={Object {}}
                     />
@@ -1672,7 +1697,9 @@ ShallowWrapper {
                   <div
                     className="UserWalletSummary__value"
                   >
-                    <span>
+                    <span
+                      className=""
+                    >
                       <FormattedNumber
                         value={0}
                       />
@@ -1705,7 +1732,7 @@ ShallowWrapper {
                         title={
                           <span>
                             <FormattedMessage
-                              defaultMessage="Steem Power delegated to this account"
+                              defaultMessage="Hive Power delegated to this account"
                               id="steem_power_delegated_to_account_tooltip"
                               values={Object {}}
                             />
@@ -1720,7 +1747,7 @@ ShallowWrapper {
                           )
                         </span>
                       </BTooltip>
-                       SP
+                       HP
                     </span>
                   </div>,
                 ],
@@ -1745,7 +1772,7 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": <FormattedMessage
-                      defaultMessage="Steem Power"
+                      defaultMessage="Hive Power"
                       id="steem_power"
                       values={Object {}}
                     />,
@@ -1757,7 +1784,7 @@ ShallowWrapper {
                     "key": undefined,
                     "nodeType": "class",
                     "props": Object {
-                      "defaultMessage": "Steem Power",
+                      "defaultMessage": "Hive Power",
                       "id": "steem_power",
                       "values": Object {},
                     },
@@ -1772,7 +1799,9 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "host",
                   "props": Object {
-                    "children": <span>
+                    "children": <span
+                      className=""
+                    >
                       <FormattedNumber
                         value={0}
                       />
@@ -1805,7 +1834,7 @@ ShallowWrapper {
                         title={
                           <span>
                             <FormattedMessage
-                              defaultMessage="Steem Power delegated to this account"
+                              defaultMessage="Hive Power delegated to this account"
                               id="steem_power_delegated_to_account_tooltip"
                               values={Object {}}
                             />
@@ -1820,7 +1849,7 @@ ShallowWrapper {
                           )
                         </span>
                       </BTooltip>
-                       SP
+                       HP
                     </span>,
                     "className": "UserWalletSummary__value",
                   },
@@ -1863,7 +1892,7 @@ ShallowWrapper {
                           title={
                             <span>
                               <FormattedMessage
-                                defaultMessage="Steem Power delegated to this account"
+                                defaultMessage="Hive Power delegated to this account"
                                 id="steem_power_delegated_to_account_tooltip"
                                 values={Object {}}
                               />
@@ -1878,8 +1907,9 @@ ShallowWrapper {
                             )
                           </span>
                         </BTooltip>,
-                        " SP",
+                        " HP",
                       ],
+                      "className": "",
                     },
                     "ref": null,
                     "rendered": Array [
@@ -1966,7 +1996,7 @@ ShallowWrapper {
                           </span>,
                           "title": <span>
                             <FormattedMessage
-                              defaultMessage="Steem Power delegated to this account"
+                              defaultMessage="Hive Power delegated to this account"
                               id="steem_power_delegated_to_account_tooltip"
                               values={Object {}}
                             />
@@ -2006,7 +2036,7 @@ ShallowWrapper {
                         },
                         "type": [Function],
                       },
-                      " SP",
+                      " HP",
                     ],
                     "type": "span",
                   },
@@ -2028,7 +2058,7 @@ ShallowWrapper {
                     className="UserWalletSummary__label"
                   >
                     <FormattedMessage
-                      defaultMessage="Steem Dollar"
+                      defaultMessage="Hive Dollar"
                       id="steem_dollar"
                       values={Object {}}
                     />
@@ -2065,7 +2095,7 @@ ShallowWrapper {
                   "nodeType": "host",
                   "props": Object {
                     "children": <FormattedMessage
-                      defaultMessage="Steem Dollar"
+                      defaultMessage="Hive Dollar"
                       id="steem_dollar"
                       values={Object {}}
                     />,
@@ -2077,7 +2107,7 @@ ShallowWrapper {
                     "key": undefined,
                     "nodeType": "class",
                     "props": Object {
-                      "defaultMessage": "Steem Dollar",
+                      "defaultMessage": "Hive Dollar",
                       "id": "steem_dollar",
                       "values": Object {},
                     },
@@ -2160,7 +2190,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={100}
                       />
-                       STEEM, 
+                       HIVE, 
                       <FormattedNumber
                         value={1000}
                       />
@@ -2220,7 +2250,7 @@ ShallowWrapper {
                       <FormattedNumber
                         value={100}
                       />
-                       STEEM, 
+                       HIVE, 
                       <FormattedNumber
                         value={1000}
                       />
@@ -2238,7 +2268,7 @@ ShallowWrapper {
                         <FormattedNumber
                           value={100}
                         />,
-                        " STEEM, ",
+                        " HIVE, ",
                         <FormattedNumber
                           value={1000}
                         />,
@@ -2258,7 +2288,7 @@ ShallowWrapper {
                         "rendered": null,
                         "type": [Function],
                       },
-                      " STEEM, ",
+                      " HIVE, ",
                       Object {
                         "instance": null,
                         "key": undefined,

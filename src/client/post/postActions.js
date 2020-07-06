@@ -76,7 +76,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
             setTimeout(
               () =>
                 dispatch(getContent(post.author_original || votedPostAuthor, post.permlink, true)),
-              1000,
+              1250,
             );
           }
           return res;

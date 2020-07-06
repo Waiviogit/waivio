@@ -39,6 +39,11 @@ class ReactionsModal extends React.Component {
     tabKey: '1',
   };
 
+  handleModalClose = () => {
+    this.setTabKey('1');
+    this.props.onClose();
+  };
+
   setTabKey = key => this.setState({ tabKey: key });
 
   render() {
@@ -87,7 +92,8 @@ class ReactionsModal extends React.Component {
       <Modal
         visible={this.props.visible && (upVotes.length > 0 || downVotes.length > 0)}
         footer={null}
-        onCancel={this.props.onClose}
+        onCancel={this.handleModalClose}
+        destroyOnClose
       >
         {this.props.append && <ApprovingCard post={this.props.post} modal />}
         <Tabs onTabClick={key => currentSetter(key)} activeKey={currentKey}>
