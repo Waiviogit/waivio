@@ -731,19 +731,20 @@ class Rewards extends React.Component {
                         zoomMap={zoomMap}
                       />
                     )}
-                  {!isEmpty(sponsors) && !isCreate && (
-                    <RewardsFiltersPanel
-                      campaignsTypes={campaignsTypes}
-                      sponsors={sponsors}
-                      activeFilters={activeFilters}
-                      activePayableFilters={activePayableFilters}
-                      setFilterValue={this.setFilterValue}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
-                      location={location}
-                      activeMessagesFilters={activeMessagesFilters}
-                      messagesSponsors={messagesSponsors}
-                    />
-                  )}
+                  {!isEmpty(sponsors) ||
+                    (!isEmpty(messagesSponsors) && !isCreate && (
+                      <RewardsFiltersPanel
+                        campaignsTypes={campaignsTypes}
+                        sponsors={sponsors}
+                        activeFilters={activeFilters}
+                        activePayableFilters={activePayableFilters}
+                        setFilterValue={this.setFilterValue}
+                        setPayablesFilterValue={this.setPayablesFilterValue}
+                        location={location}
+                        activeMessagesFilters={activeMessagesFilters}
+                        messagesSponsors={messagesSponsors}
+                      />
+                    ))}
                 </div>
               </Affix>
             )}
