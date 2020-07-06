@@ -18,7 +18,7 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays
           <div>
             <FormattedMessage
               id="fillOrder_wallet_transferred"
-              defaultMessage="You sold {current_pays} to {exchanger}"
+              defaultMessage="Sold {current_pays} to {exchanger}"
               values={{
                 current_pays: <span>{currentPays}</span>,
                 exchanger: <span>{transactionDetails.exchanger}</span>,

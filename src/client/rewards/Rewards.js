@@ -19,6 +19,7 @@ import {
   filter,
   isEqual,
   findIndex,
+  sortBy,
 } from 'lodash';
 import { HBD } from '../../common/constants/cryptos';
 import {
@@ -28,7 +29,6 @@ import {
   getObjectsMap,
   getIsLoaded,
   getUserLocation,
-  getPendingUpdate,
   getIsMapModalOpen,
   getSuitableLanguage,
   getUpdatedMap,
@@ -42,7 +42,6 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-  pendingUpdateSuccess,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -53,12 +52,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
-import {
-  setUpdatedFlag,
-  resetUpdatedFlag,
-  getPropositionsForMap,
-} from '../components/Maps/mapActions';
-import { delay } from './rewardsHelpers';
+import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
@@ -74,7 +68,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
     wobjects: getObjectsMap(state),
-    pendingUpdate: getPendingUpdate(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
     updated: getUpdatedMap(state),
@@ -85,8 +78,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     getCoordinates,
     activateCampaign,
     getObjectsMap,
-    pendingUpdateSuccess,
-    resetUpdatedFlag,
     setUpdatedFlag,
     getPropositionsForMap,
   },
@@ -104,9 +95,6 @@ class Rewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    pendingUpdate: PropTypes.bool.isRequired,
-    pendingUpdateSuccess: PropTypes.func.isRequired,
-    resetUpdatedFlag: PropTypes.func,
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
@@ -117,7 +105,6 @@ class Rewards extends React.Component {
     username: '',
     userLocation: {},
     wobjects: [],
-    resetUpdatedFlag: () => {},
     updated: false,
   };
 
@@ -128,7 +115,9 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'proximity',
+    sortAll: 'proximity',
+    sortEligible: 'proximity',
+    sortReserved: 'proximity',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
@@ -150,100 +139,16 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { username, match, userLocation, history } = this.props;
-    const { area, activeFilters, sort } = this.state;
+    const { userLocation } = this.props;
     if (!size(userLocation)) {
       this.props.getCoordinates();
-    }
-    if (!isEmpty(userLocation) && !isEmpty(match.params)) {
-      this.getPropositions({
-        username,
-        match,
-        area: [+userLocation.lat, +userLocation.lon],
-        sort,
-        activeFilters,
-      });
-    }
-    if (!username) {
-      this.getPropositions({ username, match, area, sort, activeFilters });
-      if (!match.params.campaignParent || match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, userLocation } = nextProps;
-    const { username } = this.props;
-    const { area, activeFilters } = this.state;
-    const needPropositions =
-      isEmpty(this.props.userLocation) &&
-      !isEmpty(userLocation) &&
-      isEqual(this.props.match, match) &&
-      !isEmpty(match.params) &&
-      !isEmpty(this.props.match.params) &&
-      this.props.match.params.filterKey !== 'messages' &&
-      this.props.match.params.filterKey !== 'history';
-    const sort = this.state.sort;
-
-    if (needPropositions) {
-      this.getPropositions({
-        username,
-        match,
-        area: [+userLocation.lat, +userLocation.lon],
-        sort,
-        activeFilters,
-      });
-    }
+    const { match } = nextProps;
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
-    }
-    if (
-      match.path !== this.props.match.path ||
-      match.params.filterKey !== this.props.match.params.filterKey
-    ) {
-      this.props.resetUpdatedFlag();
-    }
-    if (
-      match.params.filterKey === 'all' ||
-      match.params.filterKey === 'active' ||
-      match.params.filterKey === 'reserved'
-    ) {
-      if (
-        (match.params.filterKey !== this.props.match.params.filterKey &&
-          match.params.filterKey !== 'messages' &&
-          match.params.filterKey !== 'history') ||
-        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
-      ) {
-        this.setState({ loadingCampaigns: true }, () => {
-          this.getPropositions({
-            username: nextProps.username,
-            match,
-            area,
-            sort,
-            activeFilters,
-          });
-        });
-      }
-    } else this.setState({ propositions: [{}], zoomMap: 0 }); // for map, not equal propositions
-  }
-
-  componentDidUpdate(prevProps) {
-    const { username, match, pendingUpdate } = this.props;
-    const { area, sort, activeFilters } = this.state;
-    if (prevProps.username !== username && !username) {
-      this.getPropositions({ username, match, area, sort, activeFilters });
-      this.props.history.push(`/rewards/all`);
-    }
-    if (
-      pendingUpdate &&
-      prevProps.match.params.filterKey !== match.params.filterKey &&
-      prevProps.match !== this.props.match
-    ) {
-      this.props.pendingUpdateSuccess();
-      delay(6000).then(() => {
-        this.getPropositions({ username, match, area, sort, activeFilters });
-      });
     }
   }
 
@@ -275,23 +180,27 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
-  setFilterValue = (filterValue, key) => {
-    const { username, match } = this.props;
-    const { area, sort } = this.state;
-    const activeFilters = this.state.activeFilters;
-    switch (key) {
-      case 'types':
-      case 'guideNames':
-        if (includes(activeFilters[key], filterValue)) {
-          remove(activeFilters[key], f => f === filterValue);
-        } else {
-          activeFilters[key].push(filterValue);
-        }
-        this.setState({ activeFilters, loadingCampaigns: true });
-        return this.getPropositions({ username, match, area, sort, activeFilters });
+  setSortValue = sort => {
+    const { match } = this.props;
+    const filterKey = get(match, ['params', 'filterKey']);
+    switch (filterKey) {
+      case 'active':
+        return this.setState({ sortEligible: sort });
+      case 'reserved':
+        return this.setState({ sortReserved: sort });
       default:
-        return null;
+        return this.setState({ sortAll: sort });
     }
+  };
+
+  setFilterValue = (filterValue, key) => {
+    const activeFilters = this.state.activeFilters;
+    if (includes(activeFilters[key], filterValue)) {
+      remove(activeFilters[key], f => f === filterValue);
+    } else {
+      activeFilters[key].push(filterValue);
+    }
+    this.setState({ loadingCampaigns: true, activeFilters });
   };
 
   setActiveMessagesFilters = (filterValue, key) => {
@@ -317,6 +226,7 @@ class Rewards extends React.Component {
       default:
         break;
     }
+    this.setState({ loadingCampaigns: true, activeFilters });
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
@@ -349,10 +259,11 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, radius, sort, activeFilters, limit },
+    { username, match, area, sort, radius, activeFilters, limit },
     isMap,
     updated,
   ) => {
+    this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
@@ -368,8 +279,9 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors);
       this.setState({
-        sponsors: data.sponsors,
+        sponsors,
         campaignsTypes: data.campaigns_types,
         area,
         radius,
@@ -406,15 +318,6 @@ class Rewards extends React.Component {
       activeFilters,
     });
     this.setState({ isSearchAreaFilter: false });
-  };
-
-  handleSortChange = sort => {
-    const { radius, area, activeFilters } = this.state;
-    const { username, match } = this.props;
-    this.setState({ loadingCampaigns: true, sort });
-    if (match.params.filterKey !== 'messages' && match.params.filterKey !== 'history') {
-      this.getPropositions({ username, match, radius, area, sort, activeFilters });
-    }
   };
 
   // Propositions
@@ -694,14 +597,22 @@ class Rewards extends React.Component {
       zoomMap,
       messagesSponsors,
       fetched,
+      area,
+      radius,
+      sortEligible,
+      sortAll,
+      sortReserved,
       activeMessagesFilters,
     } = this.state;
-
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
       !match.params.campaignParent && match.params.filterKey !== 'history';
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
+    const isCreate =
+      includes(location.pathname, 'create') ||
+      includes(location.pathname, 'createDuplicate') ||
+      includes(location.pathname, 'details');
     const currentSteemPrice =
       cryptosPriceHistory &&
       cryptosPriceHistory[HBD.coinGeckoId] &&
@@ -735,6 +646,13 @@ class Rewards extends React.Component {
       fetched,
       setFilterValue: this.setFilterValue,
       setPayablesFilterValue: this.setPayablesFilterValue,
+      area,
+      radius,
+      getPropositions: this.getPropositions,
+      setSortValue: this.setSortValue,
+      sortEligible,
+      sortAll,
+      sortReserved,
       activeMessagesFilters,
       setMessagesSponsors: this.setMessagesSponsors,
       messagesSponsors,
@@ -795,12 +713,10 @@ class Rewards extends React.Component {
                 </div>
               </Affix>
             )}
-            {(includes(match.params.filterKey, 'all') ||
-              includes(match.params.filterKey, 'active') ||
-              includes(match.params.filterKey, 'reserved')) && (
+            {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(this.props.userLocation) && (
+                  {!isEmpty(userLocation) && !isCreate && (
                     <MapWrap
                       setMapArea={this.setMapArea}
                       userLocation={userLocation}
@@ -812,13 +728,15 @@ class Rewards extends React.Component {
                       zoomMap={zoomMap}
                     />
                   )}
-                  {!isEmpty(sponsors) && (
+                  {!isEmpty(sponsors) && !isCreate && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
-                      activeFilters={activeFilters}
-                      setFilterValue={this.setFilterValue}
-                      location={location}
                       sponsors={sponsors}
+                      activeFilters={activeFilters}
+                      activePayableFilters={activePayableFilters}
+                      setFilterValue={this.setFilterValue}
+                      setPayablesFilterValue={this.setPayablesFilterValue}
+                      location={location}
                     />
                   )}
                 </div>

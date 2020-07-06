@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isEmpty, map, get } from 'lodash';
-import { getTextByFilterKey } from './rewardsHelper';
+import { getTextByFilterKey, getSort } from './rewardsHelper';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
@@ -16,7 +16,6 @@ import FilterModal from './FilterModal';
 const FilteredRewardsList = props => {
   const {
     hasMore,
-    IsRequiredObjectWrap,
     loading,
     filterKey,
     userName,
@@ -25,7 +24,9 @@ const FilteredRewardsList = props => {
     intl,
     isSearchAreaFilter,
     resetMapFilter,
-    sort,
+    sortEligible,
+    sortAll,
+    sortReserved,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
@@ -40,8 +41,10 @@ const FilteredRewardsList = props => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
+  const IsRequiredObjectWrap = !match.params.campaignParent;
 
   const sortRewards = useMemo(() => {
     if (location === '/rewards/messages') {
@@ -208,33 +211,41 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'proximity',
+  sortReserved: 'proximity',
+  sortAll: 'proximity',
+  sortEligible: 'proximity',
   loadingCampaigns: false,
   loading: false,
   sponsors: [],
   campaignsTypes: [],
   messages: [],
+  setFilterValue: () => {},
+  handleLoadMore: () => {},
+  resetMapFilter: () => {},
+  activeFilters: {},
+  userName: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
-  IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
-  resetMapFilter: PropTypes.func.isRequired,
-  sort: PropTypes.string,
+  resetMapFilter: PropTypes.func,
+  sortAll: PropTypes.string,
+  sortReserved: PropTypes.string,
+  sortEligible: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
-  handleLoadMore: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func,
   sponsors: PropTypes.arrayOf(PropTypes.string),
-  activeFilters: PropTypes.shape().isRequired,
-  setFilterValue: PropTypes.func.isRequired,
+  activeFilters: PropTypes.shape(),
+  setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
   location: PropTypes.string.isRequired,
