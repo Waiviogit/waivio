@@ -47,7 +47,6 @@ const CreateFormRenderer = props => {
     getFieldValue,
     commissionAgreement,
     campaignId,
-    iAgree,
     isPending,
     isDuplicate,
     intl,
@@ -428,7 +427,6 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,
             valuePropName: fields.checkboxAgree.valuePropName,
-            initialValue: iAgree,
           })(
             <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title ant-form-item-required">
@@ -567,7 +565,6 @@ CreateFormRenderer.propTypes = {
   campaignId: PropTypes.string,
   isPending: PropTypes.bool,
   isDuplicate: PropTypes.bool.isRequired,
-  iAgree: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };

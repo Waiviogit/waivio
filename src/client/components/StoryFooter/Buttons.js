@@ -99,7 +99,9 @@ export default class Buttons extends React.Component {
   onFlagClick() {
     if (this.props.post.append_field_name) {
       this.props.onReportClick(this.props.post, this.props.postState, true);
-    } else this.props.handlePostPopoverMenuClick('report');
+    } else {
+      this.props.handlePostPopoverMenuClick('report');
+    }
   }
 
   handleReject = () => this.props.onActionInitiated(() => this.onFlagClick());
@@ -418,8 +420,8 @@ export default class Buttons extends React.Component {
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
-        {showReblogLink && (
-          <React.Fragment>
+        <React.Fragment>
+          {showReblogLink && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
@@ -430,21 +432,33 @@ export default class Buttons extends React.Component {
                 <i className="iconfont icon-share1 Buttons__share" />
               </a>
             </BTooltip>
-            {hasRebloggedUsers && (
-              <BTooltip title={this.rebloggedUsersTitle()}>
-                <span
-                  className="Buttons__number amount-users"
-                  role="presentation"
-                  onClick={this.toggleModalReblog}
-                >
-                  {post.reblogged_users.length > 0 && (
-                    <FormattedNumber value={post.reblogged_users.length} />
-                  )}
-                </span>
-              </BTooltip>
-            )}
-          </React.Fragment>
-        )}
+          )}
+          {!showReblogLink && (
+            <BTooltip
+              title={intl.formatMessage({
+                id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
+                defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog',
+              })}
+            >
+              <a role="presentation" className={rebloggedClass}>
+                <i className="iconfont icon-share1 Buttons__share" />
+              </a>
+            </BTooltip>
+          )}
+          {hasRebloggedUsers && (
+            <BTooltip title={this.rebloggedUsersTitle()}>
+              <span
+                className="Buttons__number amount-users"
+                role="presentation"
+                onClick={this.toggleModalReblog}
+              >
+                {post.reblogged_users.length > 0 && (
+                  <FormattedNumber value={post.reblogged_users.length} />
+                )}
+              </span>
+            </BTooltip>
+          )}
+        </React.Fragment>
         {this.renderPostPopoverMenu()}
         {!(
           this.props.post.reblogged_users &&
