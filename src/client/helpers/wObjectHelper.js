@@ -117,7 +117,7 @@ export const calculateApprovePercent = (votes, weight, wobj = {}) => {
 
     const mainer = mainerName(votes, wobj.moderators, wobj.admins);
 
-    if (mainer) return mainer.status === 'approve' ? 100 : 0;
+    if (mainer) return mainer.status === 'approved' ? 100 : 0;
 
     const summRshares = votes.reduce((acc, vote) => acc + Math.abs(vote.rshares_weight), 0);
 
