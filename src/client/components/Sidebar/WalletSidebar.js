@@ -5,11 +5,18 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { openTransfer, openPowerUpOrDown, openWithdraw } from '../../wallet/walletActions';
-import { getAuthenticatedUser, getCryptosPriceHistory, isGuestUser } from '../../reducers';
+import {
+  getAuthenticatedUser,
+  getCryptosPriceHistory,
+  getHiveBeneficiaryAccount,
+  isGuestUser,
+} from '../../reducers';
 import { HIVE, HBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
+import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+
 import './WalletSidebar.less';
 
 @withRouter
@@ -18,11 +25,13 @@ import './WalletSidebar.less';
     isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   {
     openTransfer,
     openPowerUpOrDown,
     openWithdraw,
+    openLinkHiveAccountModal,
   },
 )
 class WalletSidebar extends React.Component {
@@ -35,6 +44,8 @@ class WalletSidebar extends React.Component {
     cryptosPriceHistory: PropTypes.shape(),
     isGuest: PropTypes.bool,
     openWithdraw: PropTypes.func.isRequired,
+    openLinkHiveAccountModal: PropTypes.func.isRequired,
+    hiveBeneficiaryAccount: PropTypes.string,
   };
 
   static defaultProps = {
@@ -42,12 +53,13 @@ class WalletSidebar extends React.Component {
     isCurrentUser: false,
     cryptosPriceHistory: {},
     isGuest: false,
+    hiveBeneficiaryAccount: '',
   };
 
   handleOpenTransfer = () => {
-    const { match, user, isCurrentUser } = this.props;
+    const { match, user, isCurrentUser, hiveBeneficiaryAccount, isGuest } = this.props;
     const username = match.params.name === user.name || isCurrentUser ? '' : match.params.name;
-
+    if (!hiveBeneficiaryAccount && isGuest) this.props.openLinkHiveAccountModal(true);
     this.props.openTransfer(username);
   };
 

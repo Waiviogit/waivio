@@ -74,11 +74,12 @@ class BeneficiariesWeight extends React.PureComponent {
   }
 }
 
-const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
+const BeneficiariesWeights = ({ intl, isLinkedObjectsValid, isGuest, hiveBeneficiaryAccount }) => {
   const [weightBuffer, setWeightBuffer] = useState(100);
   const user = useSelector(getAuthenticatedUser);
   const beneficiariesUsers = useSelector(getBeneficiariesUsers);
   const dispatch = useDispatch();
+  const userName = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : user.name;
 
   useEffect(() => {
     setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weight / 100, 100));
@@ -99,7 +100,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
       </div>
       <BeneficiariesFindUsers intl={intl} />
       <div className="beneficiaries-weights__header">
-        <div className="user">{`${user.name} ${weightBuffer}%`}</div>
+        <div className="user">{`${userName} ${weightBuffer}%`}</div>
         <div
           className={classNames('weight-buffer', {
             'validation-error': !isLinkedObjectsValid && weightBuffer > 0,
@@ -145,6 +146,8 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
 BeneficiariesWeights.propTypes = {
   intl: PropTypes.shape().isRequired,
   isLinkedObjectsValid: PropTypes.bool,
+  isGuest: PropTypes.bool.isRequired,
+  hiveBeneficiaryAccount: PropTypes.string.isRequired,
 };
 
 BeneficiariesWeights.defaultProps = {
