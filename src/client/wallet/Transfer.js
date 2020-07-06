@@ -425,13 +425,6 @@ export default class Transfer extends React.Component {
     });
   };
 
-  handleOnChangeForAutoComplete(value) {
-    this.setState({
-      searchBarValue: value,
-      isClosedFind: false,
-    });
-  }
-
   handleAmountChange = event => {
     const { value } = event.target;
     const { oldAmount } = this.state;
