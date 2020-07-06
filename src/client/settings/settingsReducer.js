@@ -16,6 +16,7 @@ const initialState = {
   rewardSetting: rewardsValues.half,
   postLocales: [],
   newUser: false,
+  openLinkModal: false,
 };
 
 const settings = (state = initialState, action) => {
@@ -69,6 +70,12 @@ const settings = (state = initialState, action) => {
     case settingsTypes.SET_USER_STATUS.ERROR:
       return state;
 
+    case settingsTypes.OPEN_LINK_MODAL:
+      return {
+        ...state,
+        openLinkModal: action.payload,
+      };
+
     case authTypes.LOGOUT:
       return initialState;
 
@@ -90,3 +97,5 @@ export const getRewriteLinks = state => !!state.rewriteLinks;
 export const getUpvoteSetting = state => state.upvoteSetting;
 export const getExitPageSetting = state => state.exitPageSetting;
 export const getRewardSetting = state => state.rewardSetting;
+export const getHiveBeneficiaryAccount = state => state.hiveBeneficiaryAccount;
+export const isOpenLinkModal = state => state.openLinkModal;
