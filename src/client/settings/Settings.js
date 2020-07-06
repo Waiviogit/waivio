@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Select, Radio, Checkbox, AutoComplete, Input } from 'antd';
-import { debounce, map } from 'lodash';
+import { Select, Radio, Checkbox, Modal } from 'antd';
 import {
   getIsReloading,
   getLocale,
@@ -19,7 +18,6 @@ import {
   getExitPageSetting,
   isGuestUser,
   getAuthenticatedUserName,
-  getSearchUsersResults,
   getHiveBeneficiaryAccount,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
@@ -35,8 +33,7 @@ import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import Avatar from '../components/Avatar';
-import { resetSearchAutoCompete, searchUsersAutoCompete } from '../search/searchActions';
+import LinkHiveAccountModal from './LinkHiveAccountModal';
 
 import './Settings.less';
 
@@ -57,10 +54,9 @@ import './Settings.less';
     exitPageSetting: getExitPageSetting(state),
     isGuest: isGuestUser(state),
     user: getAuthenticatedUserName(state),
-    foundUsers: getSearchUsersResults(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
-  { reload, saveSettings, notify, searchUsersAutoCompete, resetSearchAutoCompete },
+  { reload, saveSettings, notify },
 )
 export default class Settings extends React.Component {
   static propTypes = {
@@ -81,9 +77,8 @@ export default class Settings extends React.Component {
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
     resetSearchAutoCompete: PropTypes.func.isRequired,
-    searchUsersAutoCompete: PropTypes.func.isRequired,
-    foundUsers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     hiveBeneficiaryAccount: PropTypes.shape().isRequired,
+    user: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -123,8 +118,7 @@ export default class Settings extends React.Component {
       hiveBeneficiaryAccount: props.hiveBeneficiaryAccount,
       searchBarActive: '',
       dropdownOpen: false,
-      isSelected: false,
-      showSelectAccount: Boolean(props.hiveBeneficiaryAccount),
+      showModal: false,
     };
   }
 
@@ -185,49 +179,49 @@ export default class Settings extends React.Component {
     }
   }
 
-  debouncedSearch = debounce(value => this.props.searchUsersAutoCompete(value, 3, 15), 800);
+  unlinkHiveAccount = () => {
+    const { user, intl } = this.props;
 
-  handleAutoCompleteSearch = value => {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    Modal.confirm({
+      title: intl.formatMessage({
+        id: 'unlink_hive_account',
+        defaultMessage: 'Unlink Hive account',
+      }),
+      content: this.props.intl.formatMessage(
+        {
+          id: 'unlink_hive_account_message',
+          defaultMessage:
+            'Do you want to unlink @{hiveUser} Hive account from your @{user} guest account?',
+        },
+        {
+          hiveUser: this.state.hiveBeneficiaryAccount,
+          user,
+        },
+      ),
+      onOk: () => {
+        this.setState({ hiveBeneficiaryAccount: '' });
+        this.props
+          .saveSettings({
+            hiveBeneficiaryAccount: '',
+          })
+          .then(() =>
+            this.props.notify(
+              this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
+              'success',
+            ),
+          );
+      },
+    });
   };
 
   hideAutoCompleteDropdown = value => {
-    console.log(value);
     this.setState(
       {
-        searchBarActive: false,
-        dropdownOpen: false,
-        isSelected: true,
-        hiveBeneficiaryAccount: value,
+        hiveBeneficiaryAccount: value.account,
         showSelectAccount: true,
       },
       this.props.resetSearchAutoCompete,
     );
-  };
-
-  handleOnChangeForAutoComplete = value => {
-    this.setState({
-      searchBarValue: value,
-    });
-  };
-
-  completeDropdown = () => {
-    const { foundUsers } = this.props;
-
-    return map(foundUsers, option => (
-      <AutoComplete.Option
-        marker={'user'}
-        key={option.account}
-        value={option.account}
-        className="Transfer__search-autocomplete"
-      >
-        <div className="Transfer__search-content-wrap">
-          <Avatar username={option.account} size={40} />
-          <div className="Transfer__search-content">{option.account}</div>
-        </div>
-      </AutoComplete.Option>
-    ));
   };
 
   handleSave = () => {
@@ -252,36 +246,24 @@ export default class Settings extends React.Component {
       );
   };
 
-  showSelectedUser = () => {
-    const { hiveBeneficiaryAccount } = this.state;
+  handleUnselectUser = () => {
+    this.setState({
+      searchBarValue: '',
+      hiveBeneficiaryAccount: '',
+    });
+  };
 
-    return (
-      <div className="Settings__search-account">
-        <div className="Settings__account-info">
-          <Avatar username={hiveBeneficiaryAccount} size={40} />
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href={`/@${hiveBeneficiaryAccount}`}
-            className="Settings__account-name"
-          >
-            {hiveBeneficiaryAccount}
-          </a>
-        </div>
-        <span
-          role="presentation"
-          onClick={() =>
-            this.setState({
-              isSelected: false,
-              searchBarValue: '',
-              showSelectAccount: false,
-              hiveBeneficiaryAccount: '',
-            })
-          }
-          className="iconfont icon-delete Settings__delete-icon"
-        />
-      </div>
-    );
+  handleSubmit = () => {
+    if (this.state.hiveBeneficiaryAccount) {
+      this.handleSave();
+    } else {
+      this.setState({ showModal: true });
+    }
+  };
+
+  handleOkModal = () => {
+    this.handleSave();
+    this.setState({ showModal: false });
   };
 
   handleLocaleChange = locale => this.setState({ locale });
@@ -314,8 +296,8 @@ export default class Settings extends React.Component {
       rewriteLinks,
       upvoteSetting,
       exitPageSetting,
-      showSelectAccount,
       hiveBeneficiaryAccount,
+      showModal,
     } = this.state;
 
     const initialLanguages =
@@ -323,28 +305,6 @@ export default class Settings extends React.Component {
         ? readLanguages
         : LANGUAGES.find(lang => lang.name === 'English').id;
     const languageOptions = [];
-    const addHiveAccount =
-      hiveBeneficiaryAccount && showSelectAccount ? (
-        this.showSelectedUser()
-      ) : (
-        <AutoComplete
-          dropdownClassName="Transfer__search-dropdown-container"
-          onSearch={this.handleAutoCompleteSearch}
-          onSelect={this.hideAutoCompleteDropdown}
-          onChange={this.handleOnChangeForAutoComplete}
-          optionLabelProp="value"
-          dropdownStyle={{ color: 'red' }}
-          open={this.state.dropdownOpen}
-          dataSource={this.completeDropdown()}
-        >
-          <Input
-            placeholder={intl.formatMessage({
-              id: 'find_account',
-              defaultMessage: 'Find your account',
-            })}
-          />
-        </AutoComplete>
-      );
 
     if (locale === 'auto') {
       languageOptions.push(
@@ -453,7 +413,6 @@ export default class Settings extends React.Component {
                       defaultMessage="You can add your Hive account and will get all you rewards there"
                     />
                   </p>
-                  {isGuest && addHiveAccount}
                 </div>
                 <div className="Settings__section">
                   <h3>
@@ -584,7 +543,37 @@ export default class Settings extends React.Component {
                     </Checkbox>
                   </div>
                 </div>
-                <Action primary big loading={loading} onClick={this.handleSave}>
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage
+                      id="linked_hive_account"
+                      defaultMessage="Linked Hive account"
+                    />
+                  </h3>
+                  <p>
+                    <FormattedMessage
+                      id="linked_hive_account_details"
+                      defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
+                    />
+                  </p>
+                  {hiveBeneficiaryAccount ? (
+                    <div>
+                      <span>@{hiveBeneficiaryAccount}</span>(
+                      <a role="presentation" onClick={this.unlinkHiveAccount}>
+                        <FormattedMessage id="unlink" defaultMessage="unlink" />
+                      </a>
+                      )
+                    </div>
+                  ) : (
+                    <div>
+                      <FormattedMessage
+                        id="linked_you_hive_account"
+                        defaultMessage="Link your Hive account"
+                      />
+                    </div>
+                  )}
+                </div>
+                <Action primary big loading={loading} onClick={this.handleSubmit}>
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
                 <div className="Settings__version">
@@ -600,6 +589,14 @@ export default class Settings extends React.Component {
             )}
           </div>
         </div>
+        <LinkHiveAccountModal
+          handleOk={this.handleOkModal}
+          handleSelect={this.hideAutoCompleteDropdown}
+          handleClose={() => this.setState({ showModal: false })}
+          showModal={showModal}
+          hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+          handleUnselectUser={this.handleUnselectUser}
+        />
       </div>
     );
   }

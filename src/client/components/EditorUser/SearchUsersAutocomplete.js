@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { AutoComplete } from 'antd';
-import _ from 'lodash';
+import { AutoComplete, Input } from 'antd';
+import { debounce } from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
 import { getSearchUsersResults } from '../../reducers';
 import Avatar from '../Avatar';
@@ -49,7 +49,7 @@ class SearchUsersAutocomplete extends React.Component {
     isOptionSelected: false,
   };
 
-  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 800);
+  debouncedSearchByUser = debounce(searchString => this.props.searchUsers(searchString), 800);
 
   handleSearch = value => {
     this.debouncedSearchByUser(value);
@@ -61,6 +61,7 @@ class SearchUsersAutocomplete extends React.Component {
 
   handleSelect = value => {
     const selectedUsers = this.props.searchUsersResults.find(obj => obj.account === value);
+
     this.props.handleSelect(selectedUsers);
     this.setState({ searchString: '' });
   };
@@ -80,26 +81,29 @@ class SearchUsersAutocomplete extends React.Component {
             </AutoComplete.Option>
           ))
       : [];
+
     return (
       <AutoComplete
         onChange={this.handleChange}
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        placeholder={
-          !this.props.placeholder
-            ? intl.formatMessage({
-                id: 'objects_auto_complete_placeholder',
-                defaultMessage: 'Find objects',
-              })
-            : this.props.placeholder
-        }
         value={searchString}
         autoFocus={autoFocus}
         disabled={disabled}
         style={style}
+        dataSource={searchUsersOptions}
       >
-        {searchUsersOptions}
+        <Input
+          placeholder={
+            !this.props.placeholder
+              ? intl.formatMessage({
+                  id: 'objects_auto_complete_placeholder',
+                  defaultMessage: 'Find objects',
+                })
+              : this.props.placeholder
+          }
+        />
       </AutoComplete>
     );
   }

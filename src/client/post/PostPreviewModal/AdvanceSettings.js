@@ -82,7 +82,7 @@ class AdvanceSettings extends Component {
             defaultMessage: 'Advance settings',
           })}
         >
-          {(!isGuest || (isGuest && hiveBeneficiaryAccount)) && (
+          {!isGuest && (
             <React.Fragment>
               <div className="rewards-settings">
                 <div className="rewards-settings__label">
@@ -130,7 +130,7 @@ class AdvanceSettings extends Component {
             </React.Fragment>
           )}
 
-          {isGuest && !hiveBeneficiaryAccount && (
+          {isGuest && (
             <div>
               <div className="rewards-settings__guest">
                 <span>{intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}:</span>{' '}

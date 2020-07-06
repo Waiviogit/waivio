@@ -23,9 +23,9 @@ import EmailConfirmation from '../widgets/EmailConfirmation';
 import { CRYPTO_FOR_VALIDATE_WALLET, CRYPTO_LIST_FOR_WALLET } from '../../common/constants/waivio';
 import { calculateEstAccountValue } from '../vendor/steemitHelpers';
 import { HBD, HIVE } from '../../common/constants/cryptos';
+import { getUserPrivateEmail } from '../user/usersActions';
 
 import './Withdraw.less';
-import { getUserPrivateEmail } from '../user/usersActions';
 
 const Withdraw = ({
   intl,

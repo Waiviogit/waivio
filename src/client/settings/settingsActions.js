@@ -35,6 +35,14 @@ export const setUsersStatus = () => (dispatch, getState) => {
   });
 };
 
+export const OPEN_LINK_MODAL = 'OPEN_LINK_MODAL';
+
+export const openLinkHiveAccountModal = payload => dispatch =>
+  dispatch({
+    type: OPEN_LINK_MODAL,
+    payload,
+  });
+
 export const SET_LOCALE = '@app/SET_LOCALE';
 
 export const setLocale = createAction(SET_LOCALE);

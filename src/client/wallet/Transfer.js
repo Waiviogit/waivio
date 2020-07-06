@@ -26,6 +26,8 @@ import {
   getTotalVestingShares,
   getTotalVestingFundSteem,
   estimateValue,
+  getHiveBeneficiaryAccount,
+  isOpenLinkModal,
 } from '../reducers';
 import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
 import {
@@ -40,6 +42,9 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 import Avatar from '../components/Avatar';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { REWARD } from '../../common/constants/rewards';
+import LinkHiveAccountModal from '../settings/LinkHiveAccountModal';
+import { saveSettings, openLinkHiveAccountModal } from '../settings/settingsActions';
+
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -63,6 +68,8 @@ const InputGroup = Input.Group;
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     getEstimateValue: estimateValue(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+    showModal: isOpenLinkModal(state),
   }),
   {
     closeTransfer,
@@ -73,6 +80,8 @@ const InputGroup = Input.Group;
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
+    saveSettings,
+    openLinkHiveAccountModal,
   },
 )
 @Form.create()
@@ -101,6 +110,10 @@ export default class Transfer extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     getEstimateValue: PropTypes.number,
+    hiveBeneficiaryAccount: PropTypes.string.isRequired,
+    saveSettings: PropTypes.func.isRequired,
+    openLinkHiveAccountModal: PropTypes.func.isRequired,
+    showModal: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -150,6 +163,7 @@ export default class Transfer extends React.Component {
     currentEstimate: null,
     isSelected: false,
     isClosedFind: false,
+    hiveBeneficiaryAccount: this.props.hiveBeneficiaryAccount,
   };
 
   componentDidMount() {
@@ -160,8 +174,17 @@ export default class Transfer extends React.Component {
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { form, to, amount, currency, visible, getEstimateValue } = this.props;
+  componentWillReceiveProps(nextProps, nextState) {
+    const {
+      form,
+      to,
+      amount,
+      currency,
+      visible,
+      getEstimateValue,
+      hiveBeneficiaryAccount,
+      isGuest,
+    } = this.props;
 
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
@@ -184,12 +207,34 @@ export default class Transfer extends React.Component {
       });
     }
 
+    if (visible && nextState.hiveBeneficiaryAccount && !hiveBeneficiaryAccount && isGuest) {
+      console.log('ffff');
+
+      this.setState({
+        hiveBeneficiaryAccount: '',
+      });
+    }
+
     if (visible && getEstimateValue) {
       this.setState({ currentEstimate: getEstimateValue });
     }
   }
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 800);
+
+  handleOkModal = () =>
+    this.props
+      .saveSettings({
+        hiveBeneficiaryAccount: this.state.hiveBeneficiaryAccount,
+      })
+      .then(() => {
+        this.props.notify(
+          this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
+          'success',
+        );
+        this.props.openLinkHiveAccountModal(false);
+        this.setState({ hiveBeneficiaryAccount: '' });
+      });
 
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
@@ -404,36 +449,60 @@ export default class Transfer extends React.Component {
   }
 
   showSelectedUser = () => {
-    const { to } = this.props;
+    const { to, hiveBeneficiaryAccount, isGuest, form } = this.props;
     const { searchBarValue } = this.state;
     const userName = isEmpty(searchBarValue) ? to : searchBarValue;
+    const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
+    if (isGuest && hiveBeneficiaryAccount && !form.getFieldValue('to')) {
+      this.props.form.setFieldsValue({
+        to: hiveBeneficiaryAccount,
+      });
+    }
+
     return (
       <div className="Transfer__search-content-wrap-current">
         <div className="Transfer__search-content-wrap-current-user">
-          <Avatar username={userName} size={40} />
-          <div className="Transfer__search-content">{userName}</div>
+          <Avatar username={account} size={40} />
+          <div className="Transfer__search-content">{account}</div>
         </div>
-        <span
-          role="presentation"
-          onClick={() =>
-            this.setState({
-              isSelected: false,
-              searchBarValue: '',
-              isClosedFind: true,
-            })
-          }
-          className="iconfont icon-delete Transfer__delete-icon"
-        />
+        {!(isGuest && hiveBeneficiaryAccount) && (
+          <span
+            role="presentation"
+            onClick={() =>
+              this.setState({
+                isSelected: false,
+                searchBarValue: '',
+                isClosedFind: true,
+              })
+            }
+            className="iconfont icon-delete Transfer__delete-icon"
+          />
+        )}
       </div>
     );
   };
 
-  hideAutoCompleteDropdown() {
+  hideAutoCompleteDropdown(value) {
     this.setState(
       { searchBarActive: false, dropdownOpen: false, isSelected: true },
       this.props.resetSearchAutoCompete,
     );
+
+    if (value && this.props.isGuest && !this.props.hiveBeneficiaryAccount) {
+      this.setState({
+        hiveBeneficiaryAccount: value.account,
+        searchBarValue: value.account,
+        isClosedFind: false,
+      });
+    }
   }
+
+  handleUnselectUser = () => {
+    this.setState({
+      searchBarValue: '',
+      hiveBeneficiaryAccount: '',
+    });
+  };
 
   handleOnChangeForAutoComplete(value) {
     this.setState({
@@ -481,14 +550,22 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const {
+      intl,
+      visible,
+      authenticated,
+      user,
+      memo,
+      screenSize,
+      isGuest,
+      hiveBeneficiaryAccount,
+      showModal,
+    } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
-
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-
     const balance =
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
@@ -517,7 +594,7 @@ export default class Transfer extends React.Component {
 
     const usdValue = this.getUSDValue();
 
-    return (
+    return (isGuest && hiveBeneficiaryAccount) || !isGuest ? (
       <Modal
         visible={visible}
         title={intl.formatMessage({ id: 'transfer_modal_title', defaultMessage: 'Transfer funds' })}
@@ -540,7 +617,7 @@ export default class Transfer extends React.Component {
                 { validator: this.validateUsername },
               ],
             })(
-              isSelected || !isEmpty(this.props.to) ? (
+              isSelected || !isEmpty(this.props.to) || (isGuest && hiveBeneficiaryAccount) ? (
                 this.showSelectedUser()
               ) : (
                 <AutoComplete
@@ -654,13 +731,22 @@ export default class Transfer extends React.Component {
             )}
           </Form.Item>
         </Form>
-        {!isGuest ? (
+        {!isGuest && (
           <FormattedMessage
             id="transfer_modal_info"
             defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
           />
-        ) : null}
+        )}
       </Modal>
+    ) : (
+      <LinkHiveAccountModal
+        handleOk={this.handleOkModal}
+        handleSelect={this.hideAutoCompleteDropdown}
+        handleClose={() => this.props.openLinkHiveAccountModal(false)}
+        showModal={showModal}
+        hiveBeneficiaryAccount={this.state.hiveBeneficiaryAccount}
+        handleUnselectUser={this.handleUnselectUser}
+      />
     );
   }
 }
