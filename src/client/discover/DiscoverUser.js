@@ -40,13 +40,12 @@ const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => {
               )}
               <div className="Discover__user__follow">
                 <FollowButton
+                  unfollowUser={unfollow}
+                  followUser={follow}
                   following={user.youFollows}
                   user={user}
-                  unfollowUser={unfollow}
                   followingType="user"
                   secondary={isReblogged}
-                  followUser={follow}
-                  top
                 />
               </div>
             </div>

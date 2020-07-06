@@ -51,6 +51,7 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
+    console.log(this.props.following);
     const { following, followingType, user, top, wobj } = this.props;
 
     switch (followingType) {
@@ -70,6 +71,7 @@ class FollowButton extends React.Component {
         break;
       default:
     }
+    console.log(this.props.following);
   }
 
   handleFollowClick() {

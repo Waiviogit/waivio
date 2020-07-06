@@ -365,7 +365,7 @@ class Story extends React.Component {
           />
         </div>
       );
-    } else if (!ownPost) {
+    } else if (post.reblogged_by) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
