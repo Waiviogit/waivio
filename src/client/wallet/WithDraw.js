@@ -197,7 +197,7 @@ const Withdraw = ({
                   currentCurrency,
                 )
               }
-              type="text"
+              type="number"
               className="Withdraw__input-text"
             />
             <div className="Withdraw__switcher-wrapper">
@@ -213,7 +213,7 @@ const Withdraw = ({
               values={{
                 amount: (
                   <span className="balance" role="presentation" onClick={handleClickCurrentAmount}>
-                    {currentBalance}
+                    {currentBalance || 0}
                   </span>
                 ),
               }}
@@ -225,7 +225,7 @@ const Withdraw = ({
           />
           <div className="Withdraw__input-wrapper">
             <input
-              type="text"
+              type="number"
               onChange={e =>
                 handleCurrencyCountChange(
                   e,
@@ -258,7 +258,7 @@ const Withdraw = ({
                 id: 'est_account_value_withdraw',
                 defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
               },
-              { amount: ceil(userEstAcc, 3) },
+              { amount: isNaN(ceil(userEstAcc, 3)) ? 0 : ceil(userEstAcc, 3) },
             )}
           </div>
           <Form.Item

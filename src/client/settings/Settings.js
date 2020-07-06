@@ -254,7 +254,7 @@ export default class Settings extends React.Component {
   };
 
   handleSubmit = () => {
-    if (this.state.hiveBeneficiaryAccount) {
+    if ((this.state.hiveBeneficiaryAccount && this.props.isGuest) || !this.props.isGuest) {
       this.handleSave();
     } else {
       this.setState({ showModal: true });
