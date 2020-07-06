@@ -44,7 +44,10 @@ const FilteredRewardsList = props => {
   const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-  const IsRequiredObjectWrap = !match.params.campaignParent;
+  const IsRequiredObjectWrap =
+    !match.params.campaignParent &&
+    match.params.filterKey !== 'history' &&
+    match.params.filterKey !== 'messages';
 
   const sortRewards = useMemo(() => {
     if (location === '/rewards/messages') {

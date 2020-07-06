@@ -14,6 +14,7 @@ const History = ({
   activeMessagesFilters,
   messagesSponsors,
   setMessagesSponsors,
+  match,
 }) => {
   const location = useLocation();
   const isHistory = location.pathname === '/rewards/history';
@@ -69,6 +70,7 @@ const History = ({
       <FilteredRewardsList
         {...{
           intl,
+          match,
           campaignsLayoutWrapLayout,
           loadingCampaigns,
           loading,

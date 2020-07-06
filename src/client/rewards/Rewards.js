@@ -716,18 +716,21 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(userLocation) && !isCreate && (
-                    <MapWrap
-                      setMapArea={this.setMapArea}
-                      userLocation={userLocation}
-                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                      match={match}
-                      primaryObjectCoordinates={primaryObjectCoordinates}
-                      zoomMap={zoomMap}
-                    />
-                  )}
+                  {!isEmpty(userLocation) &&
+                    !isCreate &&
+                    match.params.filterKey !== 'history' &&
+                    match.params.filterKey !== 'messages' && (
+                      <MapWrap
+                        setMapArea={this.setMapArea}
+                        userLocation={userLocation}
+                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                        match={match}
+                        primaryObjectCoordinates={primaryObjectCoordinates}
+                        zoomMap={zoomMap}
+                      />
+                    )}
                   {!isEmpty(sponsors) && !isCreate && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
@@ -737,21 +740,10 @@ class Rewards extends React.Component {
                       setFilterValue={this.setFilterValue}
                       setPayablesFilterValue={this.setPayablesFilterValue}
                       location={location}
+                      activeMessagesFilters={activeMessagesFilters}
+                      messagesSponsors={messagesSponsors}
                     />
                   )}
-                </div>
-              </Affix>
-            )}
-            {(includes(match.params.filterKey, 'history') ||
-              includes(match.params.filterKey, 'messages')) && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
-                <div className="right">
-                  <RewardsFiltersPanel
-                    activeMessagesFilters={activeMessagesFilters}
-                    setFilterValue={this.setActiveMessagesFilters}
-                    location={location}
-                    messagesSponsors={messagesSponsors}
-                  />
                 </div>
               </Affix>
             )}
