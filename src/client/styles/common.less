@@ -296,8 +296,11 @@ ul {
 // endregion
 
 // region ant-tabs
-.ant-tabs-nav .ant-tabs-tab-active {
-  color: @primary-color !important;
+.ant-tabs-nav {
+  .ant-tabs-tab-active,
+  .ant-tabs-tab:hover {
+    color: @primary-color !important;
+  }
 }
 .ant-tabs-ink-bar {
   background-color: @primary-color !important;
