@@ -46,7 +46,7 @@ const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => {
                   followingType="user"
                   secondary={isReblogged}
                   followUser={follow}
-                  top
+                  z
                 />
               </div>
             </div>
