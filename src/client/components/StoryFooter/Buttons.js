@@ -99,7 +99,9 @@ export default class Buttons extends React.Component {
   onFlagClick() {
     if (this.props.post.append_field_name) {
       this.props.onReportClick(this.props.post, this.props.postState, true);
-    } else this.props.handlePostPopoverMenuClick('report');
+    } else {
+      this.props.handlePostPopoverMenuClick('report');
+    }
   }
 
   handleReject = () => this.props.onActionInitiated(() => this.onFlagClick());

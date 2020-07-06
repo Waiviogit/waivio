@@ -8,6 +8,7 @@ import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
 import { pendingUpdateSuccess } from '../../user/userActions';
 import { delay } from '../rewardsHelpers';
+import { getSort } from '../rewardsHelper';
 
 const RewardsComponent = memo(
   ({
@@ -26,8 +27,10 @@ const RewardsComponent = memo(
     resetMapFilter,
     handleLoadMore,
     setSortValue,
-    sort,
     userLocation,
+    sortEligible,
+    sortAll,
+    sortReserved,
   }) => {
     const dispatch = useDispatch();
 
@@ -52,10 +55,12 @@ const RewardsComponent = memo(
 
     useEffect(() => {
       if (campaignParent || isEmpty(userLocation)) return;
+      const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
     }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
 
     useEffect(() => {
+      const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
@@ -82,7 +87,9 @@ const RewardsComponent = memo(
             loading,
             hasMore,
             handleSortChange,
-            sort,
+            sortEligible,
+            sortAll,
+            sortReserved,
             sponsors,
             match,
             filterKey,
@@ -115,8 +122,10 @@ RewardsComponent.propTypes = {
   resetMapFilter: PropTypes.func,
   handleLoadMore: PropTypes.func,
   setSortValue: PropTypes.func,
-  sort: PropTypes.string,
   userLocation: PropTypes.shape(),
+  sortEligible: PropTypes.string,
+  sortAll: PropTypes.string,
+  sortReserved: PropTypes.string,
 };
 
 RewardsComponent.defaultProps = {
@@ -131,8 +140,10 @@ RewardsComponent.defaultProps = {
   resetMapFilter: () => {},
   handleLoadMore: () => {},
   setSortValue: () => {},
-  sort: 'proximity',
   userLocation: {},
+  sortEligible: 'proximity',
+  sortAll: 'proximity',
+  sortReserved: 'proximity',
 };
 
 export default RewardsComponent;
