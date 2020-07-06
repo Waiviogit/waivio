@@ -15,22 +15,25 @@ const History = ({
   messagesSponsors,
   setMessagesSponsors,
   match,
+  setSortValue,
+  sortHistory,
+  sortMessages,
 }) => {
   const location = useLocation();
   const isHistory = location.pathname === '/rewards/history';
-  const [sort, setSort] = useState(isHistory ? 'reservation' : 'inquiryDate');
+
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-
   const userName = useSelector(getAuthenticatedUserName);
+  const sort = isHistory ? sortHistory : sortMessages;
 
   const getHistory = useCallback(
-    async (username, sortHistory, activeFilters) => {
+    async (username, sortChanged, activeFilters) => {
       const requestData = {
         onlyWithMessages: true,
-        sort: sortHistory,
+        sort: sortChanged,
         rewards: activeFilters.rewards,
         status: activeFilters.status,
         userName: username,
@@ -41,7 +44,6 @@ const History = ({
       await ApiClient.getHistory(requestData).then(data => {
         const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
         setLoadingCampaigns(false);
-        setSort(sortHistory);
         setMessages(data.campaigns || []);
         setMessagesSponsors(sponsors);
         setLoading(false);
@@ -53,16 +55,17 @@ const History = ({
   );
 
   const handleSortChange = useCallback(
-    sortHistory => {
+    sortChanged => {
       setLoadingCampaigns(true);
-      setSort(sortHistory);
-      getHistory(userName, sortHistory, activeMessagesFilters);
+      setSortValue(sortChanged);
+      getHistory(userName, sortChanged, activeMessagesFilters);
     },
     [userName, activeMessagesFilters],
   );
 
   useEffect(() => {
-    getHistory(userName, sort, activeMessagesFilters);
+    const sortForFilters = isHistory ? sortHistory : sortMessages;
+    getHistory(userName, sortForFilters, activeMessagesFilters);
   }, [JSON.stringify(activeMessagesFilters)]);
 
   return (
@@ -81,6 +84,9 @@ const History = ({
           sponsors: messagesSponsors,
           filterKey: 'history',
           location: location.pathname,
+          sortHistory,
+          sortMessages,
+          activeMessagesFilters,
         }}
       />
     </div>
@@ -95,6 +101,17 @@ History.propTypes = {
   activeMessagesFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   setMessagesSponsors: PropTypes.func.isRequired,
+  setSortValue: PropTypes.func,
+  sortHistory: PropTypes.string,
+  sortMessages: PropTypes.string,
+  setActiveMessagesFilters: PropTypes.func,
+};
+
+History.defaultProps = {
+  setSortValue: () => {},
+  sortHistory: 'reservation',
+  sortMessages: 'inquiry date',
+  setActiveMessagesFilters: () => {},
 };
 
 export default injectIntl(History);

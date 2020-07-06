@@ -1,7 +1,7 @@
 import { Checkbox } from 'antd';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
 import './RewardsFiltersPanel.less';
@@ -17,29 +17,43 @@ const RewardsFiltersPanel = ({
   location,
   activeMessagesFilters,
   messagesSponsors,
+  setActiveMessagesFilters,
 }) => {
-  const filterLayout = (filterName, key, checked) => (
-    <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
-      <Checkbox onChange={() => setFilterValue(filterName, key)} checked={checked} />
-      <div className="RewardsFiltersPanel__name">{filterName}</div>
-    </div>
+  const handleChange = useCallback(
+    (filterName, key) => {
+      if (location.pathname !== '/rewards/history' && location.pathname !== '/rewards/messages') {
+        setFilterValue(filterName, key);
+      } else {
+        setActiveMessagesFilters(filterName, key);
+      }
+    },
+    [location.pathname, setFilterValue, setActiveMessagesFilters],
   );
 
-  const filterPaymentLayout = (obj, checked) => (
-    <div key={`${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
-      <Checkbox onChange={() => setPayablesFilterValue(obj)} checked={checked} />
-      <div className="RewardsFiltersPanel__name">
-        {intl.formatMessage(
-          { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
-          { value: obj.value },
-        )}
+  const filterLayout = useCallback(
+    (filterName, key, checked) => (
+      <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
+        <Checkbox onChange={() => handleChange(filterName, key)} checked={checked} />
+        <div className="RewardsFiltersPanel__name">{filterName}</div>
       </div>
-    </div>
+    ),
+    [handleChange],
   );
 
-  const campaignsTypesMessages = ['all', 'open', 'close'];
-
-  const rewardsTypesMessages = ['assigned', 'unassigned', 'completed', 'rejected', 'expired'];
+  const filterPaymentLayout = useCallback(
+    (obj, checked) => (
+      <div key={`${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
+        <Checkbox onChange={() => setPayablesFilterValue(obj)} checked={checked} />
+        <div className="RewardsFiltersPanel__name">
+          {intl.formatMessage(
+            { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
+            { value: obj.value },
+          )}
+        </div>
+      </div>
+    ),
+    [setPayablesFilterValue, intl.formatMessage],
+  );
 
   // const statusTypesMessages = [
   //   'pending',
@@ -53,7 +67,14 @@ const RewardsFiltersPanel = ({
   //   'suspended',
   // ];
 
-  const sponsorsData = location.pathname !== '/rewards/history' ? sponsors : messagesSponsors;
+  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
+    () => ({
+      campaignsTypesMessages: ['all', 'open', 'close'],
+      rewardsTypesMessages: ['assigned', 'unassigned', 'completed', 'rejected', 'expired'],
+      sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
+    }),
+    [sponsors, messagesSponsors, location.pathname],
+  );
 
   return (
     <div className="RewardsFiltersPanel">
@@ -160,6 +181,7 @@ RewardsFiltersPanel.propTypes = {
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
   setPayablesFilterValue: PropTypes.func.isRequired,
+  setActiveMessagesFilters: PropTypes.func.isRequired,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

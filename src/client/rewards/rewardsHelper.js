@@ -447,20 +447,24 @@ export const getNoBlacklistMessage = userNames => {
   };
 };
 
-export const getSort = (match, sortAll, sortEligible, sortReserved) => {
+export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages) => {
   const filterKey = get(match, ['params', 'filterKey']);
   switch (filterKey) {
     case 'active':
       return sortEligible;
     case 'reserved':
       return sortReserved;
+    case 'history':
+      return sortHistory;
+    case 'messages':
+      return sortMessages;
     default:
       return sortAll;
   }
 };
 
 export const popoverDataHistory = {
-  reserved: [
+  assigned: [
     {
       key: 'reserved',
       id: 'view_reservation',
@@ -513,7 +517,7 @@ export const popoverDataHistory = {
       defaultMessage: 'View reservation',
     },
   ],
-  released: [
+  unassigned: [
     {
       key: 'reserved',
       id: 'view_reservation',
@@ -625,7 +629,7 @@ export const buttonsTitle = {
     id: 'expired',
     defaultMessage: 'Expired',
   },
-  released: {
+  unassigned: {
     id: 'released',
     defaultMessage: 'Released',
   },
@@ -637,13 +641,9 @@ export const buttonsTitle = {
     id: 'rejected',
     defaultMessage: 'Rejected',
   },
-  reserved: {
+  assigned: {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
-  },
-  reachedLimit: {
-    id: 'campaign_buttons_reachedLimit',
-    defaultMessage: 'Reached limit',
   },
   default: {
     id: 'campaign_buttons_reserved',

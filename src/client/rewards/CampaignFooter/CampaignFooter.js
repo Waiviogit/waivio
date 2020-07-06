@@ -110,7 +110,6 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition } = this.props;
-    console.log('proposition', proposition);
     const author = get(proposition, ['objects', '0', 'author']);
     const permlink = get(proposition, ['objects', '0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
@@ -254,6 +253,7 @@ class CampaignFooter extends React.Component {
       match,
       user,
     } = this.props;
+    const propositionStatus = get(proposition, ['users', '0', 'status']);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -278,7 +278,7 @@ class CampaignFooter extends React.Component {
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
-              propositionStatus={proposition.status}
+              propositionStatus={propositionStatus}
               proposition={proposition}
               match={match}
               user={user}

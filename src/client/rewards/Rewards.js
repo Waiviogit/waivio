@@ -115,6 +115,8 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
+    sortHistory: 'reservation',
+    sortMessages: 'inquiry date',
     sortAll: 'proximity',
     sortEligible: 'proximity',
     sortReserved: 'proximity',
@@ -188,6 +190,10 @@ class Rewards extends React.Component {
         return this.setState({ sortEligible: sort });
       case 'reserved':
         return this.setState({ sortReserved: sort });
+      case 'history':
+        return this.setState({ sortHistory: sort });
+      case 'messages':
+        return this.setState({ sortMessages: sort });
       default:
         return this.setState({ sortAll: sort });
     }
@@ -226,7 +232,7 @@ class Rewards extends React.Component {
       default:
         break;
     }
-    this.setState({ loadingCampaigns: true, activeFilters });
+    this.setState({ loadingCampaigns: true, activeMessagesFilters: activeFilters });
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
@@ -435,7 +441,7 @@ class Rewards extends React.Component {
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match, messages) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
-    const actualPropositions = !isEmpty(propositions[0]) ? propositions : messages;
+    const actualPropositions = isEmpty(messages) ? propositions : messages;
     const { intl } = this.props;
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -603,6 +609,8 @@ class Rewards extends React.Component {
       sortAll,
       sortReserved,
       activeMessagesFilters,
+      sortHistory,
+      sortMessages,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -656,6 +664,9 @@ class Rewards extends React.Component {
       activeMessagesFilters,
       setMessagesSponsors: this.setMessagesSponsors,
       messagesSponsors,
+      sortHistory,
+      sortMessages,
+      setActiveMessagesFilters: this.setActiveMessagesFilters,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
@@ -731,20 +742,20 @@ class Rewards extends React.Component {
                         zoomMap={zoomMap}
                       />
                     )}
-                  {!isEmpty(sponsors) ||
-                    (!isEmpty(messagesSponsors) && !isCreate && (
-                      <RewardsFiltersPanel
-                        campaignsTypes={campaignsTypes}
-                        sponsors={sponsors}
-                        activeFilters={activeFilters}
-                        activePayableFilters={activePayableFilters}
-                        setFilterValue={this.setFilterValue}
-                        setPayablesFilterValue={this.setPayablesFilterValue}
-                        location={location}
-                        activeMessagesFilters={activeMessagesFilters}
-                        messagesSponsors={messagesSponsors}
-                      />
-                    ))}
+                  {(!isEmpty(sponsors) || !isEmpty(messagesSponsors)) && !isCreate && (
+                    <RewardsFiltersPanel
+                      campaignsTypes={campaignsTypes}
+                      sponsors={sponsors}
+                      activeFilters={activeFilters}
+                      activePayableFilters={activePayableFilters}
+                      setFilterValue={this.setFilterValue}
+                      setPayablesFilterValue={this.setPayablesFilterValue}
+                      location={location}
+                      activeMessagesFilters={activeMessagesFilters}
+                      messagesSponsors={messagesSponsors}
+                      setActiveMessagesFilters={this.setActiveMessagesFilters}
+                    />
+                  )}
                 </div>
               </Affix>
             )}

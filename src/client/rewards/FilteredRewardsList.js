@@ -27,6 +27,8 @@ const FilteredRewardsList = props => {
     sortEligible,
     sortAll,
     sortReserved,
+    sortHistory,
+    sortMessages,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
@@ -37,11 +39,12 @@ const FilteredRewardsList = props => {
     campaignsTypes,
     messages,
     location,
+    activeMessagesFilters,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const sort = getSort(match, sortAll, sortEligible, sortReserved);
+  const sort = getSort(match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
@@ -200,6 +203,7 @@ const FilteredRewardsList = props => {
         <FilterModal
           intl={intl}
           activeFilters={activeFilters}
+          activeMessagesFilters={activeMessagesFilters}
           filters={{ types: campaignsTypes, guideNames: sponsors }}
           setFilterValue={setFilterValue}
         />
@@ -226,7 +230,10 @@ FilteredRewardsList.defaultProps = {
   handleLoadMore: () => {},
   resetMapFilter: () => {},
   activeFilters: {},
+  activeMessagesFilters: {},
   userName: '',
+  sortHistory: 'reservation',
+  sortMessages: 'inquiry date',
 };
 
 FilteredRewardsList.propTypes = {
@@ -248,10 +255,13 @@ FilteredRewardsList.propTypes = {
   handleLoadMore: PropTypes.func,
   sponsors: PropTypes.arrayOf(PropTypes.string),
   activeFilters: PropTypes.shape(),
+  activeMessagesFilters: PropTypes.shape(),
   setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
   location: PropTypes.string.isRequired,
+  sortHistory: PropTypes.string,
+  sortMessages: PropTypes.string,
 };
 
 export default FilteredRewardsList;
