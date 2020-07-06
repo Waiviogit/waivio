@@ -1211,6 +1211,18 @@
   "unlink_request": "Unlink request will be sent to:",
   "unlink_email_warning": "if you no longer have access to this email, unfortunately you will not be able to unlink it from the @{userName} account.",
   "withdraw": "Withdraw",
+  "time_sort": "time",
   "transaction_success": "Your transaction success",
-  "time_sort": "time"
+  "hive_account": "Hive account",
+  "hive_account_info": "You can add your Hive account and will get all you rewards there",
+  "find_account": "Find your account",
+  "linked_hive_account": "Linked Hive account",
+  "linked_hive_account_details": "Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers.",
+  "linked_you_hive_account": "Link your Hive account",
+  "unlink": "unlink",
+  "unlink_hive_account": "Unlink Hive account",
+  "link_hive_account": "Link Hive account",
+  "unlink_hive_account_message": "Do you want to unlink @{hiveUser} Hive account from your @{user} guest account?",
+  "link_hive_account_info": "Guests are only allowed to make transfers to their own Hive accounts. This account should be first linked to the guest account.Once you have linked your Hive account, that account will be also registered as the beneficiary of all author and other rewards for guest account",
+  "hive_account_link_rules": "I hereby confirm that this Hive account belongs to me and that I have full control of this account, including all the private keys associated with it."
 }
