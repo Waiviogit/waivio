@@ -43,6 +43,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         transferVisible: false,
+        amount: null,
       };
     case walletActions.OPEN_POWER_UP_OR_DOWN:
       return {
