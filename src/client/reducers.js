@@ -159,6 +159,7 @@ export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
 export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wallet);
+export const isGuestHasMore = state => fromWallet.isGuestHasMore(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);

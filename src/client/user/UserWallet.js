@@ -19,10 +19,10 @@ import {
   getTransactions,
   getUser,
   getUserHasMore,
-  getUserHasMoreAccountHistory,
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
+  isGuestHasMore,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -50,12 +50,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     loadingGlobalProperties: getLoadingGlobalProperties(state),
     loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
     screenSize: getScreenSize(state),
-    demoHasMoreActions: getUserHasMoreAccountHistory(
-      state,
-      ownProps.isCurrentUser
-        ? getAuthenticatedUserName(state)
-        : getUser(state, ownProps.match.params.name).name,
-    ),
+    demoHasMoreActions: isGuestHasMore(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
