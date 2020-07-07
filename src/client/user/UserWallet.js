@@ -22,7 +22,7 @@ import {
   getUsersAccountHistory,
   getUsersAccountHistoryLoading,
   getUsersTransactions,
-  isGuestHasMore,
+  hasMoreGuestActions,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -50,7 +50,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     loadingGlobalProperties: getLoadingGlobalProperties(state),
     loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
     screenSize: getScreenSize(state),
-    demoHasMoreActions: isGuestHasMore(state),
+    demoHasMoreActions: hasMoreGuestActions(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
