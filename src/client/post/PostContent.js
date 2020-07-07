@@ -148,7 +148,8 @@ class PostContent extends React.Component {
 
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
-    const authorName = this.getAuthorName(post);
+    const authorName = post.guestInfo ? post.root_author : post.author;
+
     if (sliderMode && !postState.isLiked) {
       this.props.votePost(post.id, authorName, post.permlink, weight);
     } else if (postState.isLiked) {
@@ -160,7 +161,9 @@ class PostContent extends React.Component {
 
   handleReportClick(post, postState) {
     const weight = postState.isReported ? 0 : -10000;
-    this.props.votePost(post.id, this.getAuthorName(post), post.permlink, weight);
+    const authorName = post.guestInfo ? post.root_author : post.author;
+
+    this.props.votePost(post.id, authorName, post.permlink, weight);
   }
 
   handleShareClick = post => this.props.reblog(post.id);
