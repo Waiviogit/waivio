@@ -145,6 +145,15 @@ export default class Transfer extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { form, to, amount, currency } = this.props;
+    if (!this.props.visible) {
+      this.setState({
+        searchBarValue: '',
+        dropdownOpen: false,
+        currentEstimate: null,
+        isSelected: false,
+        isClosedFind: false,
+      });
+    }
     if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
         to: nextProps.to,
@@ -196,13 +205,16 @@ export default class Transfer extends React.Component {
   }
 
   handleBalanceClick = event => {
+    const { cryptosPriceHistory } = this.props;
     const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
-    this.setState({
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
-    });
     this.props.form.setFieldsValue({
       amount: value,
+    });
+    this.setState({
+      searchBarValue: value,
+      currentEstimate: this.estimatedValue(cryptosPriceHistory, value),
+      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
     });
   };
 
@@ -444,6 +456,9 @@ export default class Transfer extends React.Component {
     this.props.form.validateFields(['amount']);
   };
 
+  estimatedValue = (cryptosPriceHistory, amount) =>
+    get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * amount;
+
   render() {
     const {
       intl,
@@ -459,9 +474,6 @@ export default class Transfer extends React.Component {
       showModal,
     } = this.props;
 
-    const estimatedValue =
-      get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * amount;
-
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
@@ -471,22 +483,27 @@ export default class Transfer extends React.Component {
       this.state.currency === Transfer.CURRENCIES.HIVE ? user.balance : user.sbd_balance;
     const currentBalance = isGuest ? `${user.balance} HIVE` : balance;
     const isChangesDisabled = !!memo;
-
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
       <Radio.Group
-        disabled={isChangesDisabled}
         onChange={this.handleCurrencyChange}
         className="Transfer__amount__type"
+        defaultValue={Transfer.CURRENCIES.HBD}
       >
-        <Radio.Button value={Transfer.CURRENCIES.HIVE} className="Transfer__amount__type-steem">
+        <Radio.Button
+          disabled={isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HIVE}
+          value={Transfer.CURRENCIES.HIVE}
+          className="Transfer__amount__type-steem"
+        >
           {Transfer.CURRENCIES.HIVE}
         </Radio.Button>
         <Radio.Button
           value={Transfer.CURRENCIES.HBD}
           className="Transfer__amount__type-sbd"
-          disabled={isGuest}
+          disabled={
+            !isGuest ? isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HBD : true
+          }
         >
           {Transfer.CURRENCIES.HBD}
         </Radio.Button>
@@ -604,7 +621,13 @@ export default class Transfer extends React.Component {
                 values={{
                   estimate: (
                     <span role="presentation" className="estimate">
-                      <USDDisplay value={amount ? estimatedValue : this.state.currentEstimate} />
+                      <USDDisplay
+                        value={
+                          amount
+                            ? this.estimatedValue(cryptosPriceHistory, amount)
+                            : this.state.currentEstimate
+                        }
+                      />
                     </span>
                   ),
                 }}
@@ -639,7 +662,10 @@ export default class Transfer extends React.Component {
       <LinkHiveAccountModal
         handleOk={this.handleOkModal}
         handleSelect={this.handleUserSelect}
-        handleClose={() => this.props.openLinkHiveAccountModal(false)}
+        handleClose={() => {
+          this.props.openLinkHiveAccountModal(false);
+          this.props.closeTransfer();
+        }}
         showModal={showModal}
         hiveBeneficiaryAccount={this.state.hiveBeneficiaryAccount}
         handleUnselectUser={this.handleUnselectUser}
