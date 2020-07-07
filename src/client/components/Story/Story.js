@@ -351,9 +351,16 @@ class Story extends React.Component {
 
     if (isPostDeleted(post)) return <div />;
 
-    if (
+    if (isRebloggedPost) {
+      rebloggedUI = (
+        <div className="Story__reblog">
+          <i className="iconfont icon-share1" />
+          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
+        </div>
+      );
+    } else if (
       (post.checkForFollow && post.checkForFollow.youFollows) ||
-      (match.params.name !== post.author && match.params.name !== user.name)
+      match.params.name !== post.author
     ) {
       rebloggedUI = (
         <div className="Story__reblog">
@@ -369,13 +376,6 @@ class Story extends React.Component {
               ),
             }}
           />
-        </div>
-      );
-    } else if (isRebloggedPost) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
         </div>
       );
     }

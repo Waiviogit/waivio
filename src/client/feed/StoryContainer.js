@@ -1,4 +1,4 @@
-import { find, get } from 'lodash';
+import { find } from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
