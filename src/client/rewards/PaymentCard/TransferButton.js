@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import {
   BXY_GUEST_PREFIX,
@@ -11,6 +11,8 @@ import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
+import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
+import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 
 const TransferButton = ({ match, intl, payable, name }) => {
   const dispatch = useDispatch();
@@ -18,6 +20,8 @@ const TransferButton = ({ match, intl, payable, name }) => {
   const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
+  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
+  const isGuest = useSelector(isGuestUser);
   const payableForRender = payable >= 0 ? payable : payable * -1;
   return (
     <React.Fragment>
@@ -25,7 +29,12 @@ const TransferButton = ({ match, intl, payable, name }) => {
         <Action
           className="WalletSidebar__transfer"
           primary={payable < 0}
-          onClick={() => dispatch(openTransfer(name, payableForRender, currency, memo, app))}
+          onClick={() => {
+            if (!hiveBeneficiaryAccount && isGuest) {
+              dispatch(openLinkHiveAccountModal(true));
+            }
+            dispatch(openTransfer(name, payableForRender, currency, memo, app));
+          }}
           disabled={payable >= 0}
         >
           {intl.formatMessage({

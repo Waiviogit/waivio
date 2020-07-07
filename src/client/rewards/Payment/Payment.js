@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
+import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import {
   BXY_GUEST_PREFIX,
   GUEST_PREFIX,
   WAIVIO_PARENT_PERMLINK,
 } from '../../../common/constants/waivio';
+import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import './Payment.less';
@@ -23,6 +25,8 @@ const Payment = ({ match, intl, userName }) => {
   const [payable, setPayable] = useState({});
 
   const dispatch = useDispatch();
+  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
+  const isGuest = useSelector(isGuestUser);
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
@@ -80,11 +84,14 @@ const Payment = ({ match, intl, userName }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() =>
+              onClick={() => {
+                if (!hiveBeneficiaryAccount && isGuest) {
+                  dispatch(openLinkHiveAccountModal(true));
+                }
                 dispatch(
                   openTransfer(name, isPayables ? payable : payableForRender, currency, memo, app),
-                )
-              }
+                );
+              }}
             >
               {intl.formatMessage({
                 id: 'pay',
