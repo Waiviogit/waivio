@@ -105,7 +105,6 @@ class PostModal extends React.Component {
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    // eslint-disable-next-line camelcase
     const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
