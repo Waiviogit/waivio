@@ -173,7 +173,7 @@ export default function walletReducer(state = initialState, action) {
             'actionCount',
           ),
         },
-        isGuestHasMore: action.payload.hasMoreGuestActions,
+        hasMoreGuestActions: action.payload.hasMoreGuestActions,
         loadingMoreUsersAccountHistory: false,
       };
     }
