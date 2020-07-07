@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
@@ -20,13 +20,17 @@ import { getMemo } from '../rewardsHelper';
 import './Payment.less';
 
 // eslint-disable-next-line no-shadow
-const Payment = ({ match, intl, userName }) => {
+const Payment = ({
+  match,
+  intl,
+  userName,
+  isGuest,
+  hiveBeneficiaryAccount,
+  openLinkModal,
+  openTransf,
+}) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
-
-  const dispatch = useDispatch();
-  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
-  const isGuest = useSelector(isGuestUser);
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
@@ -68,7 +72,13 @@ const Payment = ({ match, intl, userName }) => {
 
   const name = match.params.userName;
   const userReward = `"id":"user_reward"`;
-  const payableForRender = payable >= 0 ? payable : payable * -1;
+  const payableForRender = payable >= 0 ? payable : Math.abs(payable);
+  const handleClick = () => {
+    if (!hiveBeneficiaryAccount && isGuest) {
+      openLinkModal(true);
+    }
+    openTransf(name, payableForRender, currency, memo, app);
+  };
 
   return (
     <div className="Payment">
@@ -81,18 +91,7 @@ const Payment = ({ match, intl, userName }) => {
         </div>
         <div className="Payment__title-pay">
           {(isPayables && payable > 0) || (!isPayables && payable < 0) ? (
-            <Action
-              className="WalletSidebar__transfer"
-              primary
-              onClick={() => {
-                if (!hiveBeneficiaryAccount && isGuest) {
-                  dispatch(openLinkHiveAccountModal(true));
-                }
-                dispatch(
-                  openTransfer(name, isPayables ? payable : payableForRender, currency, memo, app),
-                );
-              }}
-            >
+            <Action className="WalletSidebar__transfer" primary onClick={() => handleClick()}>
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
@@ -136,6 +135,26 @@ Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  isGuest: PropTypes.bool,
+  hiveBeneficiaryAccount: PropTypes.string,
+  openLinkModal: PropTypes.func,
+  openTransf: PropTypes.func,
 };
 
-export default injectIntl(Payment);
+Payment.defaultProps = {
+  isGuest: false,
+  hiveBeneficiaryAccount: '',
+  openLinkModal: () => {},
+  openTransf: () => {},
+};
+
+export default connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+  }),
+  {
+    openLinkModal: openLinkHiveAccountModal,
+    openTransf: openTransfer,
+  },
+)(injectIntl(Payment));
