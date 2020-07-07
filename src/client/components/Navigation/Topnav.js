@@ -41,6 +41,7 @@ import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { getApprovedField } from '../../helpers/wObjectHelper';
 import { pendingSearch } from '../../search/Search';
+
 import './Topnav.less';
 
 @injectIntl
