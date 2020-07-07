@@ -266,7 +266,13 @@ export default class Buttons extends React.Component {
     return (
       <span>
         {reblogged_users.map(
-          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>,
+          (user, index) =>
+            index >= 0 &&
+            index < maxUserCount && (
+              <p key={user}>
+                <Link to={`/@${user}`}>{user}</Link>
+              </p>
+            ),
         )}
         {reblogged_users.length > 3 && (
           <p>
@@ -448,7 +454,7 @@ export default class Buttons extends React.Component {
           {hasRebloggedUsers && (
             <BTooltip title={this.rebloggedUsersTitle()}>
               <span
-                className="Buttons__number amount-users"
+                className="Buttons__number Buttons__reactions-count"
                 role="presentation"
                 onClick={this.toggleModalReblog}
               >

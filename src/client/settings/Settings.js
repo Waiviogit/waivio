@@ -253,16 +253,7 @@ export default class Settings extends React.Component {
     });
   };
 
-  handleSubmit = () => {
-    if (this.state.hiveBeneficiaryAccount) {
-      this.handleSave();
-    } else {
-      this.setState({ showModal: true });
-    }
-  };
-
   handleOkModal = () => {
-    this.handleSave();
     this.setState({ showModal: false });
   };
 
@@ -565,15 +556,15 @@ export default class Settings extends React.Component {
                       )
                     </div>
                   ) : (
-                    <div>
+                    <a role="presentation" onClick={() => this.setState({ showModal: true })}>
                       <FormattedMessage
                         id="linked_you_hive_account"
                         defaultMessage="Link your Hive account"
                       />
-                    </div>
+                    </a>
                   )}
                 </div>
-                <Action primary big loading={loading} onClick={this.handleSubmit}>
+                <Action primary big loading={loading} onClick={this.handleSave}>
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
                 <div className="Settings__version">

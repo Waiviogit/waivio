@@ -156,13 +156,11 @@ class Rewards extends React.Component {
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
-    const { radiusMap } = this.state;
-    const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     if (!isSecondaryObjectsCards) {
       this.getPropositions(
-        { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
+        { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
         updated,
       );
@@ -285,9 +283,7 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
-      const sponsors = sortBy(data.sponsors);
       this.setState({
-        sponsors,
         campaignsTypes: data.campaigns_types,
         area,
         radius,
@@ -297,7 +293,9 @@ class Rewards extends React.Component {
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
       } else {
+        const sponsors = sortBy(data.sponsors);
         this.setState({
+          sponsors,
           propositions: data.campaigns,
           hasMore: data.hasMore,
           loadingCampaigns: false,
