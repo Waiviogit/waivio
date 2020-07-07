@@ -324,15 +324,15 @@ class StoryFull extends React.Component {
             )}
           </div>
           <PostPopoverMenu
-            pendingFlag={this.props.pendingFlag}
-            pendingFollow={this.props.pendingFollow}
-            pendingBookmark={this.props.pendingBookmark}
-            saving={this.props.saving}
-            postState={this.props.postState}
-            intl={this.props.intl}
-            post={this.props.post}
+            pendingFlag={pendingFlag}
+            pendingFollow={pendingFollow}
+            pendingBookmark={pendingBookmark}
+            saving={saving}
+            postState={postState}
+            intl={intl}
+            post={post}
             handlePostPopoverMenuClick={this.handleClick}
-            ownPost={this.props.ownPost}
+            ownPost={ownPost}
             iconClassName={'StoryFull__header__more'}
           />
         </div>

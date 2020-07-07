@@ -200,6 +200,11 @@ export default class Buttons extends React.Component {
       ownPost,
       defaultVotePercent,
       username,
+      pendingFlag,
+      pendingFollow,
+      pendingBookmark,
+      saving,
+      handlePostPopoverMenuClick,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -363,15 +368,15 @@ export default class Buttons extends React.Component {
           )}
         </React.Fragment>
         <PostPopoverMenu
-          pendingFlag={this.props.pendingFlag}
-          pendingFollow={this.props.pendingFollow}
-          pendingBookmark={this.props.pendingBookmark}
-          saving={this.props.saving}
-          postState={this.props.postState}
-          intl={this.props.intl}
-          post={this.props.post}
-          handlePostPopoverMenuClick={this.props.handlePostPopoverMenuClick}
-          ownPost={this.props.ownPost}
+          pendingFlag={pendingFlag}
+          pendingFollow={pendingFollow}
+          pendingBookmark={pendingBookmark}
+          saving={saving}
+          postState={postState}
+          intl={intl}
+          post={post}
+          handlePostPopoverMenuClick={handlePostPopoverMenuClick}
+          ownPost={ownPost}
           iconClassName={'Buttons__post-menu'}
         />
         {!(

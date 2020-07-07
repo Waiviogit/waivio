@@ -75,8 +75,8 @@ export default class Settings extends React.Component {
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
-    resetSearchAutoCompete: PropTypes.func.isRequired,
-    hiveBeneficiaryAccount: PropTypes.shape().isRequired,
+    resetSearchAutoCompete: PropTypes.func,
+    hiveBeneficiaryAccount: PropTypes.string.isRequired,
     user: PropTypes.string.isRequired,
   };
 
@@ -98,6 +98,7 @@ export default class Settings extends React.Component {
     notify: () => {},
     user: '',
     history: {},
+    resetSearchAutoCompete: () => {},
   };
 
   constructor(props) {
