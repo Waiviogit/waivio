@@ -364,6 +364,7 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="profile_location" defaultMessage="Location" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
@@ -382,6 +383,7 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="profile_email" defaultMessage="Email" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
@@ -400,6 +402,7 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="profile_website" defaultMessage="Website" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>

@@ -30,7 +30,6 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import './Settings.less';
 
@@ -215,7 +214,6 @@ export default class Settings extends React.Component {
       locale,
       showNSFWPosts,
       nightmode,
-      rewriteLinks,
       upvoteSetting,
       exitPageSetting,
     } = this.state;
@@ -306,12 +304,12 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="language" defaultMessage="Language" />
+                    <FormattedMessage id="language" defaultMessage="Interface language" />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="language_info"
-                      defaultMessage="What language do you want to use on Waivio?"
+                      defaultMessage="Select the preferred language of the website and objects"
                     />
                   </p>
                   <Select
@@ -325,12 +323,15 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="post_languages" defaultMessage="Posts languages" />
+                    <FormattedMessage
+                      id="post_languages"
+                      defaultMessage="Content language preferences"
+                    />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="post_languages_info"
-                      defaultMessage="In which languages do you want to read posts?"
+                      defaultMessage="Content from the blockchain (posts, comments) will be filtered according to these preferences"
                     />
                   </p>
                   <Select
@@ -393,26 +394,6 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="rewrite_links_details"
-                      defaultMessage="You can enable this option to replace Steemit.com links with Waivio links."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="rewrite_links"
-                      checked={rewriteLinks}
-                      onChange={this.handleRewriteLinksChange}
-                    >
-                      <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
                     <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                   </h3>
                   <p>
@@ -455,15 +436,6 @@ export default class Settings extends React.Component {
                 <Action primary big loading={loading} onClick={this.handleSave}>
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
-                <div className="Settings__version">
-                  <p>
-                    <FormattedMessage
-                      id="version"
-                      defaultMessage="Version: {version}"
-                      values={{ version: packageJson.version }}
-                    />
-                  </p>
-                </div>
               </div>
             )}
           </div>

@@ -1,0 +1,20 @@
+@import (reference) '../../styles/mixins.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Popover__shared-link {
+  display: block;
+  .menu-item-link();
+
+  .iconfont {
+    font-size: 20px;
+    margin-right: 8px;
+
+    &.icon-twitter {
+      color: @twitter-link-color;
+    }
+
+    &.icon-facebook {
+      color: @facebook-background-color;
+    }
+  }
+}
