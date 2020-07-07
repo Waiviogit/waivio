@@ -28,7 +28,7 @@ const TransferButton = ({
   const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
-  const payableForRender = payable >= 0 ? payable : Math.abs(payable);
+  const payableForRender = Math.abs(payable);
   const pathRecivables = match.path === '/rewards/receivables';
   const handleClick = () => {
     if (!hiveBeneficiaryAccount && isGuest) {
@@ -42,7 +42,7 @@ const TransferButton = ({
         <Action
           className="WalletSidebar__transfer"
           primary={payable < 0}
-          onClick={() => handleClick()}
+          onClick={handleClick}
           disabled={payable >= 0}
         >
           {intl.formatMessage({

@@ -72,7 +72,7 @@ const Payment = ({
 
   const name = match.params.userName;
   const userReward = `"id":"user_reward"`;
-  const payableForRender = payable >= 0 ? payable : Math.abs(payable);
+  const payableForRender = Math.abs(payable);
   const handleClick = () => {
     if (!hiveBeneficiaryAccount && isGuest) {
       openLinkModal(true);
@@ -91,7 +91,7 @@ const Payment = ({
         </div>
         <div className="Payment__title-pay">
           {(isPayables && payable > 0) || (!isPayables && payable < 0) ? (
-            <Action className="WalletSidebar__transfer" primary onClick={() => handleClick()}>
+            <Action className="WalletSidebar__transfer" primary onClick={handleClick}>
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
