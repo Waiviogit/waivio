@@ -20,7 +20,7 @@ const objectSearchInput = props => {
     contentState = Modifier.insertText(
       contentState,
       selectionState,
-      selectedObject.name,
+      String(selectedObject.name),
       null,
       entityKey,
     );

@@ -115,7 +115,9 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
-    sort: 'proximity',
+    sortAll: 'proximity',
+    sortEligible: 'proximity',
+    sortReserved: 'proximity',
     radius: RADIUS,
     area: [],
     campaignsTypes: [],
@@ -144,13 +146,11 @@ class Rewards extends React.Component {
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
     const { username, match, isFullscreenMode, updated } = this.props;
-    const { radiusMap } = this.state;
-    const newRadius = !updated ? radius : radiusMap;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     if (!isSecondaryObjectsCards) {
       this.getPropositions(
-        { username, match, area: coordinates, radius: newRadius, activeFilters, limit },
+        { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
         updated,
       );
@@ -170,7 +170,18 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
-  setSortValue = sort => this.setState({ sort });
+  setSortValue = sort => {
+    const { match } = this.props;
+    const filterKey = get(match, ['params', 'filterKey']);
+    switch (filterKey) {
+      case 'active':
+        return this.setState({ sortEligible: sort });
+      case 'reserved':
+        return this.setState({ sortReserved: sort });
+      default:
+        return this.setState({ sortAll: sort });
+    }
+  };
 
   setFilterValue = (filterValue, key) => {
     const activeFilters = this.state.activeFilters;
@@ -210,7 +221,7 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, radius, sort, activeFilters, limit },
+    { username, match, area, sort, radius, activeFilters, limit },
     isMap,
     updated,
   ) => {
@@ -230,9 +241,7 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
-      const sponsors = sortBy(data.sponsors);
       this.setState({
-        sponsors,
         campaignsTypes: data.campaigns_types,
         area,
         radius,
@@ -242,7 +251,9 @@ class Rewards extends React.Component {
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
       } else {
+        const sponsors = sortBy(data.sponsors);
         this.setState({
+          sponsors,
           propositions: data.campaigns,
           hasMore: data.hasMore,
           loadingCampaigns: false,
@@ -547,8 +558,10 @@ class Rewards extends React.Component {
       fetched,
       area,
       radius,
+      sortEligible,
+      sortAll,
+      sortReserved,
     } = this.state;
-
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
@@ -594,6 +607,9 @@ class Rewards extends React.Component {
       radius,
       getPropositions: this.getPropositions,
       setSortValue: this.setSortValue,
+      sortEligible,
+      sortAll,
+      sortReserved,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);

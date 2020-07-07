@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isEmpty, map, get } from 'lodash';
-import { getTextByFilterKey } from './rewardsHelper';
+import { getTextByFilterKey, getSort } from './rewardsHelper';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
@@ -24,7 +24,9 @@ const FilteredRewardsList = props => {
     intl,
     isSearchAreaFilter,
     resetMapFilter,
-    sort,
+    sortEligible,
+    sortAll,
+    sortReserved,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
@@ -37,6 +39,7 @@ const FilteredRewardsList = props => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const sort = getSort(match, sortAll, sortEligible, sortReserved);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -156,7 +159,9 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'proximity',
+  sortReserved: 'proximity',
+  sortAll: 'proximity',
+  sortEligible: 'proximity',
   loadingCampaigns: false,
   loading: false,
   sponsors: [],
@@ -178,7 +183,9 @@ FilteredRewardsList.propTypes = {
   intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
   resetMapFilter: PropTypes.func,
-  sort: PropTypes.string,
+  sortAll: PropTypes.string,
+  sortReserved: PropTypes.string,
+  sortEligible: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
