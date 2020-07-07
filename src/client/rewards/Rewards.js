@@ -742,20 +742,23 @@ class Rewards extends React.Component {
                         zoomMap={zoomMap}
                       />
                     )}
-                  {(!isEmpty(sponsors) || !isEmpty(messagesSponsors)) && !isCreate && (
-                    <RewardsFiltersPanel
-                      campaignsTypes={campaignsTypes}
-                      sponsors={sponsors}
-                      activeFilters={activeFilters}
-                      activePayableFilters={activePayableFilters}
-                      setFilterValue={this.setFilterValue}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
-                      location={location}
-                      activeMessagesFilters={activeMessagesFilters}
-                      messagesSponsors={messagesSponsors}
-                      setActiveMessagesFilters={this.setActiveMessagesFilters}
-                    />
-                  )}
+                  {(!isEmpty(sponsors) ||
+                    match.params.filterKey === 'history' ||
+                      match.params.filterKey === 'messages') &&
+                    !isCreate && (
+                      <RewardsFiltersPanel
+                        campaignsTypes={campaignsTypes}
+                        sponsors={sponsors}
+                        activeFilters={activeFilters}
+                        activePayableFilters={activePayableFilters}
+                        setFilterValue={this.setFilterValue}
+                        setPayablesFilterValue={this.setPayablesFilterValue}
+                        location={location}
+                        activeMessagesFilters={activeMessagesFilters}
+                        messagesSponsors={messagesSponsors}
+                        setActiveMessagesFilters={this.setActiveMessagesFilters}
+                      />
+                    )}
                 </div>
               </Affix>
             )}

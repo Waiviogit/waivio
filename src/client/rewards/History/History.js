@@ -87,6 +87,7 @@ const History = ({
           sortHistory,
           sortMessages,
           activeMessagesFilters,
+          userName,
         }}
       />
     </div>

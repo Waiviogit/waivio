@@ -220,6 +220,17 @@ export default class CampaignButtons extends React.Component {
                           </div>
                         </PopoverMenuItem>
                       );
+                    case 'show_report':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <Link to={`/rewards/receivables/@${user.name}`}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </Link>
+                        </PopoverMenuItem>
+                      );
                     default:
                       return (
                         <PopoverMenuItem key={item.key}>

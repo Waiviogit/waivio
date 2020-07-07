@@ -227,14 +227,16 @@ class CampaignFooter extends React.Component {
   };
 
   toggleCommentsVisibility = isVisible => {
-    if (this.props.post.children > 0) {
-      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
+    const { proposition } = this.props;
+    const hasComments = !isEmpty(proposition.conversation);
+    if (hasComments) {
+      this.setState(prevState => ({ commentsVisible: !isVisible || !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
+    const { commentsVisible, modalVisible, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -254,6 +256,8 @@ class CampaignFooter extends React.Component {
       user,
     } = this.props;
     const propositionStatus = get(proposition, ['users', '0', 'status']);
+    const postCurrent = proposition.conversation;
+    const hasComments = !isEmpty(proposition.conversation);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -293,12 +297,8 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!singlePostVew && isComment && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={this.state.currentPost}
-          />
+        {hasComments && (
+          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={postCurrent} />
         )}
         <Modal
           closable
