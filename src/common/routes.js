@@ -3,6 +3,7 @@ import URL from '../../src/common/constants/routing';
 import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
 import Loading from '../client/components/Icon/Loading';
+import Post from '../client/post/Post';
 
 const Bookmarks = Loadable({
   loader: () => import('../client/bookmarks/Bookmarks'),
@@ -78,10 +79,6 @@ const UserWallet = Loadable({
 });
 const UserActivity = Loadable({
   loader: () => import('../client/activity/UserActivity'),
-  loading: Loading,
-});
-const Post = Loadable({
-  loader: () => import('../client/post/Post'),
   loading: Loading,
 });
 const Discover = Loadable({
