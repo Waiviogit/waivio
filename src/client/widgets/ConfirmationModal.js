@@ -121,7 +121,7 @@ const ConfirmationModal = ({ intl, history }) => {
                   defaultMessage: 'Send',
                 })}
               </b>
-              : {finalSumm} HIVE
+              : {searchParams.reqAmount} HIVE
             </div>
             <div className="modal-row">
               <b>
