@@ -333,8 +333,9 @@ class StoryFull extends React.Component {
             post={post}
             handlePostPopoverMenuClick={this.handleClick}
             ownPost={ownPost}
-            iconClassName={'StoryFull__header__more'}
-          />
+          >
+            <i className="StoryFull__header__more iconfont icon-more" />
+          </PostPopoverMenu>
         </div>
         <div className="StoryFull__content">{content}</div>
         {open && (

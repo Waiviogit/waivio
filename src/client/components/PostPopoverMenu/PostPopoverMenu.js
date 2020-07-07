@@ -32,7 +32,7 @@ const propTypes = {
   }).isRequired,
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
-  iconClassName: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
@@ -54,7 +54,7 @@ const PostPopoverMenu = ({
   post,
   handlePostPopoverMenuClick,
   ownPost,
-  iconClassName,
+  children,
 }) => {
   const { isReported, userFollowed, isSaved } = postState;
   const { guestInfo, author, url, title, author_original: authorOriginal } = post;
@@ -170,7 +170,7 @@ const PostPopoverMenu = ({
         </React.Fragment>
       }
     >
-      <i className={`${iconClassName} iconfont icon-more`} />
+      {children}
     </Popover>
   );
 };

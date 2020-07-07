@@ -377,8 +377,9 @@ export default class Buttons extends React.Component {
           post={post}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
-          iconClassName={'Buttons__post-menu'}
-        />
+        >
+          <i className="Buttons__post-menu iconfont icon-more" />
+        </PostPopoverMenu>
         {!(
           this.props.post.reblogged_users &&
           this.props.post.reblogged_users.includes(this.props.username)
