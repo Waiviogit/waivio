@@ -2,23 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
-import { get } from 'lodash';
 import { calculatePayout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
-import { getCryptosPriceHistory } from '../../reducers';
 
 import './Payout.less';
 
 const Payout = ({ intl, post }) => {
-  const HVD = get(
-    useSelector(getCryptosPriceHistory),
-    ['hive_dollar', 'usdPriceHistory', 'usd'],
-    1,
-  );
   const payout = calculatePayout(post);
+  const currentPayout =
+    Date.parse(payout.cashoutInTime) < Date.now() ? payout.totalPayout : payout.potentialPayout;
 
   return (
     <span className="Payout">
@@ -28,7 +22,7 @@ const Payout = ({ intl, post }) => {
             'Payout--rejected': payout.isPayoutDeclined,
           })}
         >
-          <USDDisplay value={payout.totalPayout * HVD} />
+          <USDDisplay value={currentPayout} />
         </span>
       </BTooltip>
       {post.percent_steem_dollars === 0 && (
