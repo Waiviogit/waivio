@@ -142,6 +142,7 @@ export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
+          hasMoreGuestActions: get(userActions, ['hasMore'], false),
         };
       }),
     },
@@ -225,6 +226,7 @@ export const getUserAccountHistory = username => dispatch => {
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
           balance: get(userActions, ['payable'], null),
+          hasMoreGuestActions: get(userActions, ['hasMore'], false),
         };
       }),
     },
