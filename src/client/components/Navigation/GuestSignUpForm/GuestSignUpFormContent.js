@@ -6,6 +6,7 @@ import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import ImageSetter from '../../ImageSetter/ImageSetter';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
+import './GuestSignUpForm.less';
 
 const GuestSignUpFormContent = ({
   getFieldDecorator,
@@ -61,7 +62,13 @@ const GuestSignUpFormContent = ({
               },
             ],
           })(
-            <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
+            <Input
+              placeholder="Enter nickname"
+              addonBefore={`@${GUEST_PREFIX}`}
+              maxLength={16}
+              type="text"
+              className="input-nickname"
+            />,
           )}
         </Form.Item>
 
