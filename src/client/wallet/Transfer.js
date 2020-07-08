@@ -391,7 +391,7 @@ export default class Transfer extends React.Component {
   };
 
   showSelectedUser = () => {
-    const { to, hiveBeneficiaryAccount, isGuest, form } = this.props;
+    const { to, hiveBeneficiaryAccount, isGuest, form, amount } = this.props;
     const { searchBarValue } = this.state;
     const userName = isEmpty(searchBarValue) ? to : searchBarValue;
     const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
@@ -407,7 +407,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!(isGuest && hiveBeneficiaryAccount) && (
+        {!(isGuest && hiveBeneficiaryAccount) && !amount ? (
           <span
             role="presentation"
             onClick={() =>
@@ -419,7 +419,7 @@ export default class Transfer extends React.Component {
             }
             className="iconfont icon-delete Transfer__delete-icon"
           />
-        )}
+        ) : null}
       </div>
     );
   };
@@ -554,7 +554,7 @@ export default class Transfer extends React.Component {
           {guestName && (
             <FormattedMessage
               id="transferThroughBank"
-              defaultMessage="Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees."
+              defaultMessage="Your funds transaction will be processed through WaivioBank service. WaivioBank doesn't take any fees."
             />
           )}
           <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
