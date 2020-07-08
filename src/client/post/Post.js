@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isError, isEmpty, get, attempt, uniqBy, map, each } from 'lodash';
+import { get } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../helpers/steemitFormatter';
-import { getCryptoDetails } from '../helpers/cryptosHelper';
 import { isBannedPost } from '../helpers/postHelpers';
 import {
   getPostContent,
@@ -24,7 +23,6 @@ import PostContent from './PostContent';
 import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
-import CryptoTrendingCharts from '../components/Sidebar/CryptoTrendingCharts';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 
 @connect(
@@ -133,28 +131,6 @@ export default class Post extends React.Component {
     });
   };
 
-  renderCryptoTrendingCharts() {
-    const { content } = this.props;
-    const parsedJsonMetadata = attempt(JSON.parse, content.json_metadata);
-
-    if (isError(parsedJsonMetadata)) {
-      return null;
-    }
-
-    const tags = get(parsedJsonMetadata, 'tags', []);
-    const allCryptoDetails = [];
-
-    each(tags, tag => {
-      const cryptoDetails = getCryptoDetails(tag);
-      if (!isEmpty(cryptoDetails)) {
-        allCryptoDetails.push(cryptoDetails);
-      }
-    });
-
-    const cryptoTags = map(uniqBy(allCryptoDetails, 'symbol'), crypto => crypto.symbol);
-    return !isEmpty(cryptoTags) && <CryptoTrendingCharts cryptos={cryptoTags} />;
-  }
-
   render() {
     const { content, fetching, loaded, failed, isAuthFetching, user, match } = this.props;
 
@@ -174,7 +150,6 @@ export default class Post extends React.Component {
           <div className="post-layout container">
             <Affix className="rightContainer" stickPosition={77}>
               <div className="right">
-                {loaded && this.renderCryptoTrendingCharts()}
                 <PostRecommendation isAuthFetching={isAuthFetching} />
               </div>
             </Affix>
