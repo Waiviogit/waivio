@@ -57,7 +57,10 @@ export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0, isOnlyHasht
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      app: config.appName,
+    },
     method: 'POST',
     body: JSON.stringify(reqData),
   }).then(res => res.json());
