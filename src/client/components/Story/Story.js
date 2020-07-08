@@ -342,13 +342,26 @@ class Story extends React.Component {
       singlePostVew,
       sliderMode,
       defaultVotePercent,
+      match,
     } = this.props;
+    const rebloggedUser = get(post, ['reblogged_users'], []);
+    const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
 
     if (isPostDeleted(post)) return <div />;
 
-    if (post.checkForFollow && post.checkForFollow.youFollows) {
+    if (isRebloggedPost) {
+      rebloggedUI = (
+        <div className="Story__reblog">
+          <i className="iconfont icon-share1" />
+          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
+        </div>
+      );
+    } else if (
+      (post.checkForFollow && post.checkForFollow.youFollows) ||
+      match.params.name !== post.author
+    ) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
@@ -363,13 +376,6 @@ class Story extends React.Component {
               ),
             }}
           />
-        </div>
-      );
-    } else if (!ownPost) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
         </div>
       );
     }
