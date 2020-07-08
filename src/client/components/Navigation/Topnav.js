@@ -352,9 +352,6 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="objects" fullScreenHidden>
                     <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
-                  </PopoverMenuItem>
                   <PopoverMenuItem key="wallet" fullScreenHidden>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
