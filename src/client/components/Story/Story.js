@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   injectIntl,
-  FormattedMessage,
+  // FormattedMessage,
   FormattedRelative,
   FormattedDate,
   FormattedTime,
@@ -342,47 +342,47 @@ class Story extends React.Component {
       singlePostVew,
       sliderMode,
       defaultVotePercent,
-      match,
+      // match,
     } = this.props;
-    const rebloggedUser = get(post, ['reblogged_users'], []);
-    const isRebloggedPost = rebloggedUser.includes(user.name);
+    // const rebloggedUser = get(post, ['reblogged_users'], []);
+    // const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
-    let rebloggedUI = null;
+    // let rebloggedUI = null;
 
     if (isPostDeleted(post)) return <div />;
 
-    if (isRebloggedPost) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
-        </div>
-      );
-    } else if (
-      (post.checkForFollow && post.checkForFollow.youFollows) ||
-      match.params.name !== post.author
-    ) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage
-            id="reblogged_username"
-            defaultMessage="Re-blogged by {username}"
-            values={{
-              username: (
-                <Link to={`/@${post.reblogged_by}`}>
-                  <span className="username">{post.reblogged_by}</span>
-                </Link>
-              ),
-            }}
-          />
-        </div>
-      );
-    }
+    // if (isRebloggedPost) {
+    //   rebloggedUI = (
+    //     <div className="Story__reblog">
+    //       <i className="iconfont icon-share1" />
+    //       <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
+    //     </div>
+    //   );
+    // } else if (
+    //   (post.checkForFollow && post.checkForFollow.youFollows) ||
+    //   match.params.name !== post.author
+    // ) {
+    //   rebloggedUI = (
+    //     <div className="Story__reblog">
+    //       <i className="iconfont icon-share1" />
+    //       <FormattedMessage
+    //         id="reblogged_username"
+    //         defaultMessage="Re-blogged by {username}"
+    //         values={{
+    //           username: (
+    //             <Link to={`/@${post.reblogged_by}`}>
+    //               <span className="username">{post.reblogged_by}</span>
+    //             </Link>
+    //           ),
+    //         }}
+    //       />
+    //     </div>
+    //   );
+    // }
 
     return (
       <div className="Story" id={`${author}-${post.permlink}`}>
-        {rebloggedUI}
+        {/* {rebloggedUI} */}
         <div className="Story__content">
           <div className="Story__header">
             <Link to={`/@${author}`}>
