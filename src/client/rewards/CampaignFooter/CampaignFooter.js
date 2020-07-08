@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { find, get, isEmpty } from 'lodash';
+import { findKey, find, get, isEmpty, map } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -262,6 +262,12 @@ class CampaignFooter extends React.Component {
     const propositionStatus = get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
     const hasComments = !isEmpty(proposition.conversation);
+    const commentsAll = get(postCurrent, ['all']);
+    const rootKey = findKey(commentsAll, ['depth', 2]);
+    const rootComment = get(commentsAll, [rootKey]);
+    const repliesKeys = get(commentsAll, [rootKey, 'replies']);
+    const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
+
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -301,17 +307,27 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {hasComments && (
-          <div>
-            <CommentsMessages
-              show={commentsVisible}
-              user={user}
-              post={postCurrent}
-              getMessageHistory={getMessageHistory}
-            />{' '}
-          </div>
+        {hasComments &&
+          map(commentsArr, currentComment => (
+            <div>
+              <CommentsMessages
+                show={commentsVisible}
+                user={user}
+                post={postCurrent}
+                getMessageHistory={getMessageHistory}
+                currentComment={currentComment}
+              />
+            </div>
+          ))}
+        {hasComments && commentsVisible && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={rootComment}
+            getMessageHistory={getMessageHistory}
+          />
         )}
-        {!singlePostVew && isComment && (
+        {!singlePostVew && isComment && !hasComments && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}

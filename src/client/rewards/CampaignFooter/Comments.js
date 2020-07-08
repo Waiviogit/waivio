@@ -30,6 +30,7 @@ const Comments = ({
   onActionInitiated,
   currentComment,
   getMessageHistory,
+  parent,
 }) => {
   const [replying, setReplyOpen] = useState(false);
   const [editing, setEditOpen] = useState(false);
@@ -55,6 +56,7 @@ const Comments = ({
     post_id: postId,
     children,
     permlink,
+    depth,
   } = useMemo(
     () =>
       pick(commentObj, [
@@ -66,6 +68,7 @@ const Comments = ({
         'post_id',
         'children',
         'permlink',
+        'depth',
       ]),
     [commentObj],
   );
@@ -73,8 +76,8 @@ const Comments = ({
   const userVote = find(activeVotes, { voter: user.name });
 
   const onSendComment = useCallback(
-    (parentPost, body, isUpdating, originalPost) =>
-      dispatch(commentsActions.sendComment(parentPost, body, isUpdating, originalPost)),
+    (parentPost, commentBody, isUpdating, originalPost) =>
+      dispatch(commentsActions.sendComment(parentPost, commentBody, isUpdating, originalPost)),
     [dispatch, commentsActions.sendComment],
   );
 
@@ -88,6 +91,7 @@ const Comments = ({
   const pendingVote = find(pendingVotes, { id: postId });
   const pendingLike = pendingVote && (pendingVote.percent > 0 || pendingVote.vote === 'like');
   const pendingDisLike = pendingVote && (pendingVote.percent < 0 || pendingVote.vote === 'dislike');
+  const editable = author === user.name;
 
   let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
   if (userUpVoted) {
@@ -113,15 +117,21 @@ const Comments = ({
     const currentPost = find(post.all, obj => obj.post_id === id);
     if (userVote.percent < 0) {
       dispatch(commentsActions.likeHistoryComment(currentPost, 0, 'dislike'));
+      getMessageHistory();
     } else {
       dispatch(commentsActions.likeHistoryComment(currentPost, -10000, 'dislike'));
+      getMessageHistory();
     }
-    setTimeout(() => getMessageHistory(), 5000);
   };
 
   const handleDislikeClick = id => {
     setIsLiked(!isLiked);
     onDislikeClick(id);
+  };
+
+  const handleEditClick = () => {
+    setEditOpen(!editing);
+    setReplyOpen(!editing ? false : replying);
   };
 
   const handleSubmitComment = useCallback((parentP, commentValue) => {
@@ -159,6 +169,13 @@ const Comments = ({
     return get(comments, ['all', replyKey]);
   }, []);
 
+  const handleEditComment = (parentPost, commentValue) => {
+    onSendComment(parentPost, commentValue, true, commentObj).then(() => {
+      setEditOpen(false);
+      setTimeout(() => getMessageHistory(), 10000);
+    });
+  };
+
   return (
     <React.Fragment>
       {show && (
@@ -180,7 +197,7 @@ const Comments = ({
                   </span>
                 }
               >
-                <FormattedRelative value={`${commentCreated}Z`} />
+                <FormattedRelative value={commentCreated} />
               </BTooltip>
             </span>
             <div className="Comment__content">
@@ -231,6 +248,20 @@ const Comments = ({
                   </a>
                 </span>
               )}
+              {editable && (
+                <span>
+                  <span className="CommentFooter__bullet" />
+                  <a
+                    role="presentation"
+                    className={classNames('CommentFooter__link', {
+                      'CommentFooter__link--active': editing,
+                    })}
+                    onClick={handleEditClick}
+                  >
+                    <FormattedMessage id="edit" defaultMessage="Edit" />
+                  </a>
+                </span>
+              )}
             </div>
             {replying && (
               <QuickCommentEditor
@@ -242,21 +273,40 @@ const Comments = ({
                 submitted={commentSubmitted}
               />
             )}
-            {children && (
-              <Comments
-                {...{
-                  intl,
-                  show,
-                  user,
-                  post,
-                  defaultVotePercent,
-                  onActionInitiated,
-                  currentComment: getChildren(commentObj, post),
-                  onLikeClick: () => {},
-                  getMessageHistory,
-                }}
+            {editable && editing && (
+              <QuickCommentEditor
+                parentPost={parent || commentObj}
+                username={user.name}
+                onSubmit={handleEditComment}
+                isLoading={loading}
+                inputValue={postBody}
+                submitted={commentSubmitted}
+                onClose={handleEditClick}
               />
             )}
+            <div
+              className={classNames('Comment__replies', {
+                'Comment__replies--no-indent': depth >= 1,
+                'Comment__replies--never-indent': depth >= 5,
+              })}
+            >
+              {children && (
+                <Comments
+                  {...{
+                    intl,
+                    show,
+                    user,
+                    post,
+                    defaultVotePercent,
+                    onActionInitiated,
+                    parent: commentObj,
+                    currentComment: getChildren(commentObj, post),
+                    onLikeClick: () => {},
+                    getMessageHistory,
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -272,6 +322,7 @@ Comments.propTypes = {
   intl: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   currentComment: PropTypes.shape().isRequired,
+  parent: PropTypes.shape().isRequired,
   getMessageHistory: PropTypes.func.isRequired,
 };
 
