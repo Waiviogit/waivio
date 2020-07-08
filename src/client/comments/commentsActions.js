@@ -278,17 +278,14 @@ export const likeHistoryComment = (currentPost, weight = 10000, vote = 'like', r
   { steemConnectAPI },
 ) => {
   const { auth } = getState();
-  const isGuest = auth.isGuestUser;
 
   if (!auth.isAuthenticated) {
     return;
   }
 
   const voter = auth.user.name;
-  const TYPE = isGuest ? FAKE_LIKE_COMMENT.ACTION : LIKE_COMMENT.ACTION;
 
   dispatch({
-    type: TYPE,
     payload: {
       promise: steemConnectAPI
         .vote(voter, currentPost.author, currentPost.permlink, weight)

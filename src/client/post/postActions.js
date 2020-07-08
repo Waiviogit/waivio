@@ -101,21 +101,21 @@ export const voteHistoryPost = (currentPost, author, permlink, weight) => (
   { steemConnectAPI },
 ) => {
   const { auth } = getState();
-  const isGuest = auth.isGuestUser;
   const post = currentPost;
   const voter = auth.user.name;
-  const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
 
   if (!auth.isAuthenticated) {
     return null;
   }
 
   return dispatch({
-    type: TYPE,
     payload: {
       promise: steemConnectAPI
         .vote(voter, post.author || author, post.permlink, weight)
-        .then(res => res),
+        .then(res => {
+          setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1250);
+          return res;
+        }),
     },
   });
 };

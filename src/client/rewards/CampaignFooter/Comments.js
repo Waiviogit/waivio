@@ -100,12 +100,14 @@ const Comments = ({
 
   const onLikeClick = (id, weight = 10000) => {
     const currentPost = find(post.all, obj => obj.post_id === id);
-    if (userVote.percent <= 0) {
-      dispatch(voteHistoryPost(currentPost, author, permlink, weight));
+    if (!userVote || userVote.percent <= 0) {
+      dispatch(voteHistoryPost(currentPost, author, permlink, weight)).then(res =>
+        console.log('res', res),
+      );
     } else if (userVote.percent > 0) {
       dispatch(voteHistoryPost(currentPost, author, permlink, 0));
     }
-    setTimeout(() => getMessageHistory(), 5000);
+    // setTimeout(() => getMessageHistory(), 8000);
   };
 
   const handleLikeClick = id => {
@@ -115,13 +117,12 @@ const Comments = ({
 
   const onDislikeClick = id => {
     const currentPost = find(post.all, obj => obj.post_id === id);
-    if (userVote.percent < 0) {
+    if (!userVote || userVote.percent < 0) {
       dispatch(commentsActions.likeHistoryComment(currentPost, 0, 'dislike'));
-      getMessageHistory();
     } else {
       dispatch(commentsActions.likeHistoryComment(currentPost, -10000, 'dislike'));
-      getMessageHistory();
     }
+    // setTimeout(() => getMessageHistory(), 8000);
   };
 
   const handleDislikeClick = id => {
