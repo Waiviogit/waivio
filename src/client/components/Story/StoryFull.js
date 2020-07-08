@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { forEach, isEmpty, map } from 'lodash';
-import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -12,24 +11,24 @@ import {
   injectIntl,
 } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Collapse, Icon } from 'antd';
+import { Collapse } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { extractImageTags } from '../../helpers/parser';
 import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
-import Popover from '../Popover';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
+import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
+
 import './StoryFull.less';
 
 @injectIntl
@@ -188,7 +187,6 @@ class StoryFull extends React.Component {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
-    const { isReported } = postState;
     const { open, index } = this.state.lightbox;
     const parsedBody = getHtml(post.body, {}, 'text');
     this.images = extractImageTags(parsedBody);
@@ -200,30 +198,6 @@ class StoryFull extends React.Component {
     let signedBody = body;
     if (signature) {
       signedBody = `${body}<hr>${signature}`;
-    }
-
-    let followText = '';
-
-    if (postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: authorName },
-      );
-    } else if (postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: authorName },
-      );
-    } else if (!postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: authorName },
-      );
-    } else if (!postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: authorName },
-      );
     }
 
     let replyUI = null;
@@ -260,55 +234,6 @@ class StoryFull extends React.Component {
       );
     }
 
-    let popoverMenu = [];
-
-    if (ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="edit">
-          {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-          <FormattedMessage id="edit_post" defaultMessage="Edit post" />
-        </PopoverMenuItem>,
-      ];
-    }
-
-    if (!ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="follow" disabled={pendingFollow}>
-          {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
-          {followText}
-        </PopoverMenuItem>,
-      ];
-    }
-
-    popoverMenu = [
-      ...popoverMenu,
-      <PopoverMenuItem key="save">
-        {pendingBookmark ? <Icon type="loading" /> : <i className="iconfont icon-collection" />}
-        <FormattedMessage
-          id={postState.isSaved ? 'unsave_post' : 'save_post'}
-          defaultMessage={postState.isSaved ? 'Unsave post' : 'Save post'}
-        />
-      </PopoverMenuItem>,
-      <PopoverMenuItem key="report">
-        {pendingFlag ? (
-          <Icon type="loading" />
-        ) : (
-          <i
-            className={classNames('iconfont', {
-              'icon-flag': !postState.isReported,
-              'icon-flag_fill': postState.isReported,
-            })}
-          />
-        )}
-        {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-        ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-        )}
-      </PopoverMenuItem>,
-    ];
     let content = null;
     if (isPostDeleted(post)) {
       content = <StoryDeleted />;
@@ -398,17 +323,19 @@ class StoryFull extends React.Component {
               </span>
             )}
           </div>
-          <Popover
-            placement="bottomRight"
-            trigger="click"
-            content={
-              <PopoverMenu onSelect={this.handleClick} bold={false}>
-                {popoverMenu}
-              </PopoverMenu>
-            }
+          <PostPopoverMenu
+            pendingFlag={pendingFlag}
+            pendingFollow={pendingFollow}
+            pendingBookmark={pendingBookmark}
+            saving={saving}
+            postState={postState}
+            intl={intl}
+            post={post}
+            handlePostPopoverMenuClick={this.handleClick}
+            ownPost={ownPost}
           >
-            <i className="iconfont icon-more StoryFull__header__more" />
-          </Popover>
+            <i className="StoryFull__header__more iconfont icon-more" />
+          </PostPopoverMenu>
         </div>
         <div className="StoryFull__content">{content}</div>
         {open && (

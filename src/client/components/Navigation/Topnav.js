@@ -146,6 +146,12 @@ class Topnav extends React.Component {
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.handleClearSearchData();
+    }
+  }
+
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
@@ -352,9 +358,6 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="objects" fullScreenHidden>
                     <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
-                  </PopoverMenuItem>
                   <PopoverMenuItem key="wallet" fullScreenHidden>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
@@ -416,14 +419,16 @@ class Topnav extends React.Component {
         query: value,
       },
     });
-    this.setState({
-      searchBarValue: '',
-      searchData: '',
-      currentItem: '',
-      searchBarActive: false,
-      dropdownOpen: false,
-    });
-    this.handleClearSearchData();
+    if (this.props.searchByUser.some(item => item.account === value)) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: '',
+        searchBarActive: false,
+        dropdownOpen: false,
+      });
+      this.handleClearSearchData();
+    }
   }
 
   handleSearchAllResultsClick = () => {
