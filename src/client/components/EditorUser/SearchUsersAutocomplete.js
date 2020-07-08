@@ -7,9 +7,9 @@ import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
 import { getIsStartSearchUser, getSearchUsersResults } from '../../reducers';
 import Avatar from '../Avatar';
+import { pendingSearch } from '../../search/Search';
 
 import './SearchUsersAutocomplete.less';
-import { pendingSearch } from '../../search/Search';
 
 @injectIntl
 @connect(
@@ -71,6 +71,7 @@ class SearchUsersAutocomplete extends React.Component {
 
   handleSelect = value => {
     const selectedUsers = this.props.searchUsersResults.find(obj => obj.account === value);
+
     this.props.handleSelect(selectedUsers);
     this.setState({ searchString: '' });
   };

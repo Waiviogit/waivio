@@ -8,6 +8,7 @@ import { Modal, Tabs } from 'antd';
 import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
+
 import './UserReblogModal.less';
 
 const UserReblogModal = ({ visible, userNames, onCancel }) => {

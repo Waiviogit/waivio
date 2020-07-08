@@ -3,6 +3,7 @@ import URL from '../../src/common/constants/routing';
 import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
 import Loading from '../client/components/Icon/Loading';
+import Post from '../client/post/Post';
 
 const Bookmarks = Loadable({
   loader: () => import('../client/bookmarks/Bookmarks'),
@@ -78,10 +79,6 @@ const UserWallet = Loadable({
 });
 const UserActivity = Loadable({
   loader: () => import('../client/activity/UserActivity'),
-  loading: Loading,
-});
-const Post = Loadable({
-  loader: () => import('../client/post/Post'),
   loading: Loading,
 });
 const Discover = Loadable({
@@ -160,10 +157,6 @@ const CreateRewardForm = Loadable({
   loader: () => import('../client/rewards/Create-Edit/CreateRewardForm'),
   loading: Loading,
 });
-const FilteredRewardsList = Loadable({
-  loader: () => import('../client/rewards/FilteredRewardsList'),
-  loading: Loading,
-});
 const ManageCampaign = Loadable({
   loader: () => import('../client/rewards/Manage/Manage'),
   loading: Loading,
@@ -206,6 +199,10 @@ const UserInfo = Loadable({
 });
 const ConfirmationModal = Loadable({
   loader: () => import('../client/widgets/ConfirmationModal'),
+  loading: Loading,
+});
+const RewardsComponent = Loadable({
+  loader: () => import('../client/rewards/RewardsComponent/RewardsComponent'),
   loading: Loading,
 });
 
@@ -302,7 +299,7 @@ const routes = [
           {
             path: '/rewards/:filterKey/:campaignParent?',
             exact: true,
-            component: FilteredRewardsList,
+            component: RewardsComponent,
           },
         ],
       },

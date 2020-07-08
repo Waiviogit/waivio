@@ -8,12 +8,11 @@ import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
 import { sortVotes } from '../../helpers/sortHelpers';
 import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
-import Popover from '../Popover';
 import BTooltip from '../BTooltip';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import UserRebloggedModal from '../../user/UserReblogModal';
+import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 
 import './Buttons.less';
 
@@ -78,7 +77,6 @@ export default class Buttons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
-    this.renderPostPopoverMenu = this.renderPostPopoverMenu.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -99,7 +97,9 @@ export default class Buttons extends React.Component {
   onFlagClick() {
     if (this.props.post.append_field_name) {
       this.props.onReportClick(this.props.post, this.props.postState, true);
-    } else this.props.handlePostPopoverMenuClick('report');
+    } else {
+      this.props.handlePostPopoverMenuClick('report');
+    }
   }
 
   handleReject = () => this.props.onActionInitiated(() => this.onFlagClick());
@@ -154,108 +154,6 @@ export default class Buttons extends React.Component {
     });
   }
 
-  renderPostPopoverMenu() {
-    const {
-      pendingFlag,
-      pendingFollow,
-      pendingBookmark,
-      saving,
-      postState,
-      intl,
-      post,
-      handlePostPopoverMenuClick,
-      ownPost,
-    } = this.props;
-    const { isReported } = postState;
-    let followText = '';
-
-    if (postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
-      );
-    } else if (postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
-      );
-    } else if (!postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
-      );
-    } else if (!postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
-      );
-    }
-
-    let popoverMenu = [];
-
-    if (ownPost && !post.author_original) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="edit">
-          {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-          <FormattedMessage id="edit_post" defaultMessage="Edit post" />
-        </PopoverMenuItem>,
-      ];
-    }
-
-    if (!ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="follow" disabled={pendingFollow}>
-          {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
-          {followText}
-        </PopoverMenuItem>,
-      ];
-    }
-
-    popoverMenu = [
-      ...popoverMenu,
-      <PopoverMenuItem key="save">
-        {pendingBookmark ? <Icon type="loading" /> : <i className="iconfont icon-collection" />}
-        <FormattedMessage
-          id={postState.isSaved ? 'unsave_post' : 'save_post'}
-          defaultMessage={postState.isSaved ? 'Unsave post' : 'Save post'}
-        />
-      </PopoverMenuItem>,
-      <PopoverMenuItem key="report">
-        {pendingFlag ? (
-          <Icon type="loading" />
-        ) : (
-          <i
-            className={classNames('iconfont', {
-              'icon-flag': !postState.isReported,
-              'icon-flag_fill': postState.isReported,
-            })}
-          />
-        )}
-        {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-        ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-        )}
-      </PopoverMenuItem>,
-    ];
-
-    return (
-      <Popover
-        placement="bottomRight"
-        trigger="click"
-        content={
-          <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {popoverMenu}
-          </PopoverMenu>
-        }
-      >
-        <i className="Buttons__post-menu iconfont icon-more" />
-      </Popover>
-    );
-  }
-
   rebloggedUsersTitle = () => {
     // eslint-disable-next-line camelcase
     const { reblogged_users } = this.props.post;
@@ -264,7 +162,13 @@ export default class Buttons extends React.Component {
     return (
       <span>
         {reblogged_users.map(
-          (user, index) => index >= 0 && index < maxUserCount && <p key={user}>{user}</p>,
+          (user, index) =>
+            index >= 0 &&
+            index < maxUserCount && (
+              <p key={user}>
+                <Link to={`/@${user}`}>{user}</Link>
+              </p>
+            ),
         )}
         {reblogged_users.length > 3 && (
           <p>
@@ -286,6 +190,7 @@ export default class Buttons extends React.Component {
   toggleModalReblog = () => {
     this.setState({ isUsersReblogModal: !this.state.isUsersReblogModal });
   };
+
   render() {
     const {
       intl,
@@ -295,6 +200,11 @@ export default class Buttons extends React.Component {
       ownPost,
       defaultVotePercent,
       username,
+      pendingFlag,
+      pendingFollow,
+      pendingBookmark,
+      saving,
+      handlePostPopoverMenuClick,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -418,8 +328,8 @@ export default class Buttons extends React.Component {
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
-        {showReblogLink && (
-          <React.Fragment>
+        <React.Fragment>
+          {showReblogLink && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
@@ -430,22 +340,46 @@ export default class Buttons extends React.Component {
                 <i className="iconfont icon-share1 Buttons__share" />
               </a>
             </BTooltip>
-            {hasRebloggedUsers && (
-              <BTooltip title={this.rebloggedUsersTitle()}>
-                <span
-                  className="Buttons__number amount-users"
-                  role="presentation"
-                  onClick={this.toggleModalReblog}
-                >
-                  {post.reblogged_users.length > 0 && (
-                    <FormattedNumber value={post.reblogged_users.length} />
-                  )}
-                </span>
-              </BTooltip>
-            )}
-          </React.Fragment>
-        )}
-        {this.renderPostPopoverMenu()}
+          )}
+          {!showReblogLink && (
+            <BTooltip
+              title={intl.formatMessage({
+                id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
+                defaultMessage: postState.reblogged ? 'You already reblogged this post' : 'Reblog',
+              })}
+            >
+              <a role="presentation" className={rebloggedClass}>
+                <i className="iconfont icon-share1 Buttons__share" />
+              </a>
+            </BTooltip>
+          )}
+          {hasRebloggedUsers && (
+            <BTooltip title={this.rebloggedUsersTitle()}>
+              <span
+                className="Buttons__number Buttons__reactions-count"
+                role="presentation"
+                onClick={this.toggleModalReblog}
+              >
+                {post.reblogged_users.length > 0 && (
+                  <FormattedNumber value={post.reblogged_users.length} />
+                )}
+              </span>
+            </BTooltip>
+          )}
+        </React.Fragment>
+        <PostPopoverMenu
+          pendingFlag={pendingFlag}
+          pendingFollow={pendingFollow}
+          pendingBookmark={pendingBookmark}
+          saving={saving}
+          postState={postState}
+          intl={intl}
+          post={post}
+          handlePostPopoverMenuClick={handlePostPopoverMenuClick}
+          ownPost={ownPost}
+        >
+          <i className="Buttons__post-menu iconfont icon-more" />
+        </PostPopoverMenu>
         {!(
           this.props.post.reblogged_users &&
           this.props.post.reblogged_users.includes(this.props.username)

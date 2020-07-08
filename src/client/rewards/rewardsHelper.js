@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, uniqBy, map, get, reduce } from 'lodash';
+import { isEmpty, map, get, reduce } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { REWARD } from '../../common/constants/rewards';
@@ -263,22 +263,19 @@ export const getDetailsBody = (
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const sortDebtObjsData = (items, sortBy = 'amount') => {
+export const sortDebtObjsData = (items, sortBy) => {
   if (!items || !items.length) return [];
   if (!sortBy) return items;
   let comparator;
   switch (sortBy) {
-    case 'amount':
-      comparator = (a, b) => (b.payable > a.payable ? 1 : -1);
-      break;
     case 'time':
       comparator = (a, b) => (a.lastCreatedAt < b.lastCreatedAt ? 1 : -1);
       break;
     default:
-      comparator = (a, b) => (a.guideName > b.guideName ? 1 : -1);
+      comparator = (a, b) => (b.payable > a.payable ? 1 : -1);
       break;
   }
-  const sorted = uniqBy(items, 'alias').sort(comparator);
+  const sorted = items.sort(comparator);
 
   return sorted;
 };
@@ -452,4 +449,16 @@ export const getNoBlacklistMessage = userNames => {
     id: 'this_user_does_not_have_blacklists',
     defaultMessage: 'This user does not have blacklists',
   };
+};
+
+export const getSort = (match, sortAll, sortEligible, sortReserved) => {
+  const filterKey = get(match, ['params', 'filterKey']);
+  switch (filterKey) {
+    case 'active':
+      return sortEligible;
+    case 'reserved':
+      return sortReserved;
+    default:
+      return sortAll;
+  }
 };

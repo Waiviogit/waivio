@@ -159,6 +159,7 @@ export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
 export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wallet);
+export const hasMoreGuestActions = state => fromWallet.hasMoreGuestActions(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
@@ -171,6 +172,9 @@ export const getRewriteLinks = state => fromSettings.getRewriteLinks(state.setti
 export const getUpvoteSetting = state => fromSettings.getUpvoteSetting(state.settings);
 export const getExitPageSetting = state => fromSettings.getExitPageSetting(state.settings);
 export const getRewardSetting = state => fromSettings.getRewardSetting(state.settings);
+export const getHiveBeneficiaryAccount = state =>
+  fromSettings.getHiveBeneficiaryAccount(state.settings);
+export const isOpenLinkModal = state => fromSettings.isOpenLinkModal(state.settings);
 
 export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(state.wallet);
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);

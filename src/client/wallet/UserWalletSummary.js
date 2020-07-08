@@ -87,117 +87,119 @@ const UserWalletSummary = ({
   sbdRate,
   steemRateLoading,
   isGuest,
-}) => (
-  <div className="UserWalletSummary">
-    <div className="UserWalletSummary__item">
-      <img
-        className="UserWalletSummary__icon hive"
-        src="/images/icons/logo-hive-wallet.svg"
-        alt="hive"
-      />
-      <div className="UserWalletSummary__label">
-        <FormattedMessage id="hive" defaultMessage="Hive" />
-      </div>
-      <div className="UserWalletSummary__value">
-        {loading ? (
-          <Loading />
-        ) : (
-          <span>
-            <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
-            {' HIVE'}
-          </span>
-        )}
-      </div>
-    </div>
-    {!isGuest && (
-      <React.Fragment>
-        <div className="UserWalletSummary__item">
-          <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
-          <div className="UserWalletSummary__label">
-            <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
-          </div>
-          <div className="UserWalletSummary__value">
-            {loading || loadingGlobalProperties ? (
-              <Loading />
-            ) : (
-              <span className={`${user.to_withdraw ? 'red' : ''}`}>
-                <FormattedNumber
-                  value={parseFloat(
-                    formatter.vestToSteem(
-                      user.vesting_shares,
-                      totalVestingShares,
-                      totalVestingFundSteem,
-                    ),
-                  )}
-                />
-                {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
-                {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
-                {' HP'}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="UserWalletSummary__item">
-          <i className="iconfont icon-Dollar UserWalletSummary__icon" />
-          <div className="UserWalletSummary__label">
-            <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
-          </div>
-          <div className="UserWalletSummary__value">
-            {loading ? (
-              <Loading />
-            ) : (
-              <span>
-                <FormattedNumber value={parseFloat(user.sbd_balance)} />
-                {' HBD'}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="UserWalletSummary__item">
-          <i className="iconfont icon-savings UserWalletSummary__icon" />
-          <div className="UserWalletSummary__label">
-            <FormattedMessage id="savings" defaultMessage="Savings" />
-          </div>
-          <div className="UserWalletSummary__value">
-            {loading ? (
-              <Loading />
-            ) : (
-              <span>
-                <FormattedNumber value={parseFloat(user.savings_balance)} />
-                {' HIVE, '}
-                <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
-                {' HBD'}
-              </span>
-            )}
-          </div>
-        </div>
-      </React.Fragment>
-    )}
-    {!(loading || loadingGlobalProperties || steemRateLoading) && (
+}) => {
+  const estAccValue = isGuest ? (
+    <USDDisplay value={user.balance * steemRate} />
+  ) : (
+    <USDDisplay
+      value={calculateEstAccountValue(
+        user,
+        totalVestingShares,
+        totalVestingFundSteem,
+        steemRate,
+        sbdRate,
+      )}
+    />
+  );
+
+  return (
+    <div className="UserWalletSummary">
       <div className="UserWalletSummary__item">
-        <i className="iconfont icon-people_fill UserWalletSummary__icon" />
+        <img
+          className="UserWalletSummary__icon hive"
+          src="/images/icons/logo-hive-wallet.svg"
+          alt="hive"
+        />
         <div className="UserWalletSummary__label">
-          <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
+          <FormattedMessage id="hive" defaultMessage="Hive" />
         </div>
         <div className="UserWalletSummary__value">
-          {isGuest ? (
-            <USDDisplay value={user.balance * steemRate} />
+          {loading ? (
+            <Loading />
           ) : (
-            <USDDisplay
-              value={calculateEstAccountValue(
-                user,
-                totalVestingShares,
-                totalVestingFundSteem,
-                steemRate,
-                sbdRate,
-              )}
-            />
+            <span>
+              <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
+              {' HIVE'}
+            </span>
           )}
         </div>
       </div>
-    )}
-  </div>
-);
+      {!isGuest && (
+        <React.Fragment>
+          <div className="UserWalletSummary__item">
+            <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
+            <div className="UserWalletSummary__label">
+              <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
+            </div>
+            <div className="UserWalletSummary__value">
+              {loading || loadingGlobalProperties ? (
+                <Loading />
+              ) : (
+                <span className={`${user.to_withdraw ? 'red' : ''}`}>
+                  <FormattedNumber
+                    value={parseFloat(
+                      formatter.vestToSteem(
+                        user.vesting_shares,
+                        totalVestingShares,
+                        totalVestingFundSteem,
+                      ),
+                    )}
+                  />
+                  {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
+                  {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
+                  {' HP'}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="UserWalletSummary__item">
+            <i className="iconfont icon-Dollar UserWalletSummary__icon" />
+            <div className="UserWalletSummary__label">
+              <FormattedMessage id="steem_dollar" defaultMessage="Hive Dollar" />
+            </div>
+            <div className="UserWalletSummary__value">
+              {loading ? (
+                <Loading />
+              ) : (
+                <span>
+                  <FormattedNumber value={parseFloat(user.sbd_balance)} />
+                  {' HBD'}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="UserWalletSummary__item">
+            <i className="iconfont icon-savings UserWalletSummary__icon" />
+            <div className="UserWalletSummary__label">
+              <FormattedMessage id="savings" defaultMessage="Savings" />
+            </div>
+            <div className="UserWalletSummary__value">
+              {loading ? (
+                <Loading />
+              ) : (
+                <span>
+                  <FormattedNumber value={parseFloat(user.savings_balance)} />
+                  {' HIVE, '}
+                  <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
+                  {' HBD'}
+                </span>
+              )}
+            </div>
+          </div>
+        </React.Fragment>
+      )}
+      {!(loading || loadingGlobalProperties || steemRateLoading) && (
+        <div className="UserWalletSummary__item">
+          <i className="iconfont icon-people_fill UserWalletSummary__icon" />
+          <div className="UserWalletSummary__label">
+            <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
+          </div>
+          <div className="UserWalletSummary__value">{estAccValue || 0}</div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,

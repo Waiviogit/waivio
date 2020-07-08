@@ -41,6 +41,7 @@ import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { getApprovedField } from '../../helpers/wObjectHelper';
 import { pendingSearch } from '../../search/Search';
+
 import './Topnav.less';
 
 @injectIntl
@@ -143,6 +144,12 @@ class Topnav extends React.Component {
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.handleClearSearchData();
+    }
   }
 
   getTranformSearchCountData = searchResults => {
@@ -351,9 +358,6 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="objects" fullScreenHidden>
                     <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
-                  </PopoverMenuItem>
                   <PopoverMenuItem key="wallet" fullScreenHidden>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
@@ -415,14 +419,16 @@ class Topnav extends React.Component {
         query: value,
       },
     });
-    this.setState({
-      searchBarValue: '',
-      searchData: '',
-      currentItem: '',
-      searchBarActive: false,
-      dropdownOpen: false,
-    });
-    this.handleClearSearchData();
+    if (this.props.searchByUser.some(item => item.account === value)) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: '',
+        searchBarActive: false,
+        dropdownOpen: false,
+      });
+      this.handleClearSearchData();
+    }
   }
 
   handleSearchAllResultsClick = () => {
