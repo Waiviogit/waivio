@@ -271,3 +271,37 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     }
   });
 };
+
+export const likeHistoryComment = (currentPost, weight = 10000, vote = 'like', retryCount = 0) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+  const isGuest = auth.isGuestUser;
+
+  if (!auth.isAuthenticated) {
+    return;
+  }
+
+  const voter = auth.user.name;
+  const TYPE = isGuest ? FAKE_LIKE_COMMENT.ACTION : LIKE_COMMENT.ACTION;
+
+  dispatch({
+    type: TYPE,
+    payload: {
+      promise: steemConnectAPI
+        .vote(voter, currentPost.author, currentPost.permlink, weight)
+        .then(data => {
+          if (data.status === 200) {
+            return { voter, rshares: '0', percent: weight, reputation: 0 };
+          }
+          return data;
+        }),
+    },
+  }).catch(err => {
+    if (err.res && err.res.status === 500 && retryCount <= 5) {
+      dispatch(likeHistoryComment(currentPost, weight, vote, retryCount + 1));
+    }
+  });
+};

@@ -28,9 +28,10 @@ const History = ({
   const [hasMore, setHasMore] = useState(false);
   const userName = useSelector(getAuthenticatedUserName);
   const sort = isHistory ? sortHistory : sortMessages;
+  const useLoader = true;
 
   const getHistory = useCallback(
-    async (username, sortChanged, activeFilters) => {
+    async (username, sortChanged, activeFilters, withLoader) => {
       const requestData = {
         onlyWithMessages: true,
         sort: sortChanged,
@@ -40,7 +41,9 @@ const History = ({
       };
       if (isHistory) requestData.guideNames = activeFilters.messagesSponsors;
       if (!isHistory) requestData.caseStatus = activeFilters.caseStatus;
-      await setLoadingCampaigns(true);
+      if (withLoader) {
+        await setLoadingCampaigns(true);
+      }
       await ApiClient.getHistory(requestData).then(data => {
         const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
         setLoadingCampaigns(false);
@@ -58,14 +61,14 @@ const History = ({
     sortChanged => {
       setLoadingCampaigns(true);
       setSortValue(sortChanged);
-      getHistory(userName, sortChanged, activeMessagesFilters);
+      getHistory(userName, sortChanged, activeMessagesFilters, useLoader);
     },
     [userName, activeMessagesFilters],
   );
 
   useEffect(() => {
     const sortForFilters = isHistory ? sortHistory : sortMessages;
-    getHistory(userName, sortForFilters, activeMessagesFilters);
+    getHistory(userName, sortForFilters, activeMessagesFilters, useLoader);
   }, [JSON.stringify(activeMessagesFilters)]);
 
   return (
@@ -88,6 +91,7 @@ const History = ({
           sortMessages,
           activeMessagesFilters,
           userName,
+          getHistory,
         }}
       />
     </div>

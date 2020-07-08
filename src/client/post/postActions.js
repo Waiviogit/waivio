@@ -95,6 +95,31 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   });
 };
 
+export const voteHistoryPost = (currentPost, author, permlink, weight) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+  const isGuest = auth.isGuestUser;
+  const post = currentPost;
+  const voter = auth.user.name;
+  const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
+
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  return dispatch({
+    type: TYPE,
+    payload: {
+      promise: steemConnectAPI
+        .vote(voter, post.author || author, post.permlink, weight)
+        .then(res => res),
+    },
+  });
+};
+
 export const reblogPost = (postId, userName) => dispatch =>
   dispatch({
     type: FAKE_REBLOG_POST,

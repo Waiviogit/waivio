@@ -7,6 +7,7 @@ import { find, get, isEmpty } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
+import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
@@ -54,6 +55,7 @@ class CampaignFooter extends React.Component {
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    getMessageHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -72,6 +74,7 @@ class CampaignFooter extends React.Component {
     discardPr: () => {},
     toggleModalDetails: () => {},
     isComment: false,
+    getMessageHistory: () => {},
   };
 
   constructor(props) {
@@ -79,7 +82,7 @@ class CampaignFooter extends React.Component {
 
     this.state = {
       sliderVisible: false,
-      commentsVisible: !props.post.children,
+      commentsVisible: false,
       sliderValue: 100,
       voteWorth: 0,
       modalVisible: false,
@@ -230,13 +233,13 @@ class CampaignFooter extends React.Component {
     const { proposition } = this.props;
     const hasComments = !isEmpty(proposition.conversation);
     if (hasComments) {
-      this.setState(prevState => ({ commentsVisible: !isVisible || !prevState.commentsVisible }));
+      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
   };
 
   render() {
-    const { commentsVisible, modalVisible, daysLeft, sliderVisible } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -254,6 +257,7 @@ class CampaignFooter extends React.Component {
       proposition,
       match,
       user,
+      getMessageHistory,
     } = this.props;
     const propositionStatus = get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
@@ -298,8 +302,23 @@ class CampaignFooter extends React.Component {
           />
         )}
         {hasComments && (
-          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={postCurrent} />
+          <div>
+            <CommentsMessages
+              show={commentsVisible}
+              user={user}
+              post={postCurrent}
+              getMessageHistory={getMessageHistory}
+            />{' '}
+          </div>
         )}
+        {!singlePostVew && isComment && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={this.state.currentPost}
+          />
+        )}
+
         <Modal
           closable
           maskClosable={false}

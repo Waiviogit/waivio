@@ -437,9 +437,26 @@ class Rewards extends React.Component {
   };
   // END Propositions
 
-  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName, match, messages) => {
+  campaignsLayoutWrapLayout = (
+    IsRequiredObjectWrap,
+    filterKey,
+    userName,
+    match,
+    messages,
+    getHistory,
+  ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const actualPropositions = isEmpty(messages) ? propositions : messages;
+
+    const getMessageHistory = () => {
+      const activeFilters = this.state.activeMessagesFilters;
+      const sortChanged =
+        filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
+      const useLoader = false;
+      console.log('getMessageHistory', userName, sortChanged, activeFilters, useLoader);
+      getHistory(userName, sortChanged, activeFilters, useLoader);
+    };
+
     const { intl } = this.props;
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -478,6 +495,7 @@ class Rewards extends React.Component {
                 history={this.props.history}
                 isAssign={isAssign}
                 match={this.props.match}
+                getMessageHistory={getMessageHistory}
               />
             ),
         ),
@@ -742,7 +760,7 @@ class Rewards extends React.Component {
                     )}
                   {(!isEmpty(sponsors) ||
                     match.params.filterKey === 'history' ||
-                      match.params.filterKey === 'messages') &&
+                    match.params.filterKey === 'messages') &&
                     !isCreate && (
                       <RewardsFiltersPanel
                         campaignsTypes={campaignsTypes}

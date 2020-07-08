@@ -40,6 +40,7 @@ const FilteredRewardsList = props => {
     messages,
     location,
     activeMessagesFilters,
+    getHistory,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -185,7 +186,14 @@ const FilteredRewardsList = props => {
           loadingMore={loading}
           loader={<Loading />}
         >
-          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match, messages)}
+          {campaignsLayoutWrapLayout(
+            IsRequiredObjectWrap,
+            filterKey,
+            userName,
+            match,
+            messages,
+            getHistory,
+          )}
         </ReduxInfiniteScroll>
       </div>
 
@@ -262,6 +270,7 @@ FilteredRewardsList.propTypes = {
   location: PropTypes.string.isRequired,
   sortHistory: PropTypes.string,
   sortMessages: PropTypes.string,
+  getHistory: PropTypes.func.isRequired,
 };
 
 export default FilteredRewardsList;
