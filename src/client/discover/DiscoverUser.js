@@ -7,6 +7,8 @@ import Avatar from '../components/Avatar';
 import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
+import './Discover.less';
+
 const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => {
   const parsedJSON = attempt(JSON.parse, user.posting_json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
