@@ -26,6 +26,7 @@ import {
   getPlatformName,
   getBeaxyWallet,
   getCurrenciesDescriptions,
+  hasMoreGuestActions,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -67,6 +68,7 @@ const initWalletsQuantity = 5;
         ? getBeaxyWallet(state)
         : [],
     currenciesDescriptions: getCurrenciesDescriptions(state),
+    demoHasMoreActions: hasMoreGuestActions(state),
   }),
   {
     getGlobalProperties,
@@ -96,6 +98,7 @@ class Wallet extends Component {
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
     beaxyBalance: PropTypes.arrayOf(PropTypes.shape()),
+    demoHasMoreActions: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -164,6 +167,7 @@ class Wallet extends Component {
       usersAccountHistory,
       cryptosPriceHistory,
       screenSize,
+      demoHasMoreActions,
     } = this.props;
 
     const { isShowMoreBeaxy } = this.state;
@@ -192,7 +196,7 @@ class Wallet extends Component {
         <UserDynamicListLoading />
       ) : (
         <UserWalletTransactions
-          isGuestUser={isGuest}
+          isGuestPage={isGuest}
           transactions={transactions}
           actions={actions}
           currentUsername={user.name}
@@ -201,6 +205,7 @@ class Wallet extends Component {
           getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
           loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
           userHasMoreActions={userHasMoreActions}
+          demoHasMoreActions={demoHasMoreActions}
         />
       );
 
