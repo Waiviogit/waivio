@@ -116,7 +116,7 @@ class Rewards extends React.Component {
     propositions: [],
     sponsors: [],
     sortHistory: 'reservation',
-    sortMessages: 'inquiry date',
+    sortMessages: 'inquiryDate',
     sortAll: 'proximity',
     sortEligible: 'proximity',
     sortReserved: 'proximity',
@@ -384,7 +384,7 @@ class Rewards extends React.Component {
     this.state.propositions.map(proposition => {
       const updatedProposition = proposition;
       // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition._id === propsId) {
+      if (updatedProposition._id && updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
             updatedProposition.objects[index].assigned = isAssign;
@@ -392,6 +392,8 @@ class Rewards extends React.Component {
             updatedProposition.objects[index].assigned = null;
           }
         });
+      } else {
+        return updatedProposition;
       }
       // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
@@ -453,7 +455,6 @@ class Rewards extends React.Component {
       const sortChanged =
         filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
       const useLoader = false;
-      console.log('getMessageHistory', userName, sortChanged, activeFilters, useLoader);
       getHistory(userName, sortChanged, activeFilters, useLoader);
     };
 

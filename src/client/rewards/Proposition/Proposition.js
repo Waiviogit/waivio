@@ -53,7 +53,7 @@ const Proposition = ({
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: authorizedUserName,
-      reservation_permlink: proposition.objects[0].permlink,
+      reservation_permlink: proposition.objects[0].permlink || proposition.users[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>

@@ -241,7 +241,7 @@ FilteredRewardsList.defaultProps = {
   activeMessagesFilters: {},
   userName: '',
   sortHistory: 'reservation',
-  sortMessages: 'inquiry date',
+  sortMessages: 'inquiryDate',
 };
 
 FilteredRewardsList.propTypes = {

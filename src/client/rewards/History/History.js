@@ -37,10 +37,16 @@ const History = ({
         sort: sortChanged,
         rewards: activeFilters.rewards,
         status: activeFilters.status,
-        userName: username,
       };
-      if (isHistory) requestData.guideNames = activeFilters.messagesSponsors;
-      if (!isHistory) requestData.caseStatus = activeFilters.caseStatus;
+      if (isHistory) {
+        requestData.guideNames = activeFilters.messagesSponsors;
+        requestData.userName = username;
+      }
+      if (!isHistory) {
+        requestData.caseStatus = activeFilters.caseStatus;
+        requestData.guideName = username;
+      }
+
       if (withLoader) {
         await setLoadingCampaigns(true);
       }
@@ -115,7 +121,7 @@ History.propTypes = {
 History.defaultProps = {
   setSortValue: () => {},
   sortHistory: 'reservation',
-  sortMessages: 'inquiry date',
+  sortMessages: 'inquiryDate',
   setActiveMessagesFilters: () => {},
 };
 

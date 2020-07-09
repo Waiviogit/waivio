@@ -112,7 +112,7 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition } = this.props;
+    const { proposition, match } = this.props;
     const author = get(proposition, ['objects', '0', 'author']);
     const permlink = get(proposition, ['objects', '0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
@@ -120,10 +120,11 @@ class CampaignFooter extends React.Component {
         this.setState({ currentPost: res }),
       );
     }
+    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
-        proposition.objects[0].reservationCreated,
+        isRewards ? proposition.objects[0].reservationCreated : proposition.users[0].createdAt,
         proposition.count_reservation_days,
       ),
     });
@@ -191,17 +192,15 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    discardPr(proposedWobj).then(({ isAssign }) => {
-      if (!isAssign) {
-        this.toggleModal();
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Reservation released. It will be available for reservation soon.',
-          }),
-          this.props.history.push(`/rewards/active`),
-        );
-      }
+    discardPr(proposedWobj).then(() => {
+      this.toggleModal();
+      message.success(
+        this.props.intl.formatMessage({
+          id: 'discarded_successfully',
+          defaultMessage: 'Reservation released. It will be available for reservation soon.',
+        }),
+        this.props.history.push(`/rewards/active`),
+      );
     });
   };
 
@@ -259,7 +258,10 @@ class CampaignFooter extends React.Component {
       user,
       getMessageHistory,
     } = this.props;
-    const propositionStatus = get(proposition, ['users', '0', 'status']);
+    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const propositionStatus = isRewards
+      ? get(proposition, ['status'])
+      : get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
     const hasComments = !isEmpty(proposition.conversation);
     const commentsAll = get(postCurrent, ['all']);
@@ -267,6 +269,7 @@ class CampaignFooter extends React.Component {
     const rootComment = get(commentsAll, [rootKey]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
+    const numberOfComments = commentsArr.length;
 
     return (
       <div className="CampaignFooter">
@@ -297,6 +300,7 @@ class CampaignFooter extends React.Component {
               match={match}
               user={user}
               toggleModal={this.toggleModal}
+              numberOfComments={numberOfComments}
             />
           )}
         </div>

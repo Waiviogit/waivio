@@ -1251,5 +1251,6 @@
   "reject_review": "Отклонить отзыв",
   "reinstate_reward": "Восстановить награду",
   "campaign_buttons_reachedLimit": "Достигнут предел",
-  "review": "Обзор"
+  "review": "Обзор",
+  "review_rejected": "Отзыв отклонен"
 }

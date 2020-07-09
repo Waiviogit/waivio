@@ -527,7 +527,7 @@ export const popoverDataHistory = {
 };
 
 export const popoverDataMessages = {
-  reserved: [
+  assigned: [
     {
       key: 'reserved',
       id: 'view_reservation',
@@ -610,7 +610,7 @@ export const popoverDataMessages = {
       defaultMessage: 'Add to blacklist',
     },
   ],
-  released: [
+  unassigned: [
     {
       key: 'reserved',
       id: 'view_reservation',
@@ -642,6 +642,10 @@ export const buttonsTitle = {
     defaultMessage: 'Rejected',
   },
   assigned: {
+    id: 'campaign_buttons_reserved',
+    defaultMessage: 'Reserved',
+  },
+  reserved: {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
   },

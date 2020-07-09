@@ -259,6 +259,45 @@ export const assignProposition = ({
   });
 };
 
+export const rejectReview = ({
+  companyAuthor,
+  companyPermlink,
+  reservationPermlink,
+  objPermlink,
+  appName,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const username = store.getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: companyAuthor,
+      parent_permlink: companyPermlink,
+      author: username,
+      permlink: reservationPermlink,
+      title: 'Reject review',
+      body: `<p>User ${username} (@${username}) has reject the review `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'reject_reservation_by_guide',
+          approved_object: objPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
 export const pendingUpdateSuccess = () => dispatch =>
   dispatch({
     type: SET_PENDING_UPDATE.SUCCESS,

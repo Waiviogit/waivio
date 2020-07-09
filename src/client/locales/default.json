@@ -1248,5 +1248,6 @@
   "reject_review": "Reject review",
   "reinstate_reward": "Reinstate reward",
   "campaign_buttons_reachedLimit": "Reached limit",
-  "review": "Review"
+  "review": "Review",
+  "review_rejected": "Review rejected"
 }
