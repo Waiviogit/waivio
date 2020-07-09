@@ -21,6 +21,7 @@ const initialState = {
   accountHistoryFilter: [],
   currentDisplayedActions: [],
   currentFilteredActions: [],
+  hasMoreGuestActions: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -87,6 +88,7 @@ export default function walletReducer(state = initialState, action) {
           ...state.usersAccountHistory,
           [usernameKey]: action.payload.userAccountHistory,
         },
+        hasMoreGuestActions: action.payload.hasMoreGuestActions,
         usersAccountHistoryLoading: false,
       };
     }
@@ -121,6 +123,7 @@ export default function walletReducer(state = initialState, action) {
             'actionCount',
           ),
         },
+        hasMoreGuestActions: action.payload.hasMoreGuestActions,
         loadingMoreUsersAccountHistory: false,
       };
     }
@@ -219,3 +222,4 @@ export const getUserHasMoreAccountHistory = (state, username) => {
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;
 export const getCurrentDisplayedActions = state => state.currentDisplayedActions;
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
+export const hasMoreGuestActions = state => state.hasMoreGuestActions;

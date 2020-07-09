@@ -1136,5 +1136,6 @@
   "market_order_created_last": "по рыночной цене)",
   "market_order_filled_first": "Рыночный ордер выполнен (купить ",
   "market_order_filled_last": "по цене ",
-  "profile_updated": "Профиль обновлен"
+  "profile_updated": "Профиль обновлен",
+  "no_results": "По запросу '{search}' ничего не найдено"
 }

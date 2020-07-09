@@ -187,6 +187,7 @@ export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(s
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);
 export const getUsersTransactions = state => fromWallet.getUsersTransactions(state.wallet);
 export const getUsersAccountHistory = state => fromWallet.getUsersAccountHistory(state.wallet);
+export const hasMoreGuestActions = state => fromWallet.hasMoreGuestActions(state.wallet);
 export const getUsersAccountHistoryLoading = state =>
   fromWallet.getUsersAccountHistoryLoading(state.wallet);
 export const getUsersEstAccountsValues = state =>

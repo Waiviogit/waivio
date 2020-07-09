@@ -17,26 +17,34 @@ class UserWalletTransactions extends React.Component {
     totalVestingFundSteem: PropTypes.string.isRequired,
     loadingMoreUsersAccountHistory: PropTypes.bool.isRequired,
     userHasMoreActions: PropTypes.bool.isRequired,
-    isGuestUser: PropTypes.bool,
+    isGuestPage: PropTypes.bool,
+    demoHasMoreActions: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
     transactions: [],
     actions: [],
     currentUsername: '',
-    isGuestUser: false,
+    isGuestPage: false,
   };
 
   handleLoadMore = () => {
-    const { currentUsername, actions } = this.props;
+    const { currentUsername, actions, isGuestPage } = this.props;
+    if (isGuestPage) {
+      let skip = 0;
+      const limit = 50;
+      if (actions.length >= limit) {
+        skip = actions.length;
+      }
+      this.props.getMoreUserAccountHistory(currentUsername, skip, limit);
+    }
+
     const lastAction = last(actions);
     const lastActionCount = lastAction ? lastAction.actionCount : -1;
     let limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
-
     if (lastActionCount === -1) {
       limit = defaultAccountLimit;
     }
-
     this.props.getMoreUserAccountHistory(currentUsername, lastActionCount, limit);
   };
 
@@ -48,7 +56,8 @@ class UserWalletTransactions extends React.Component {
       totalVestingFundSteem,
       loadingMoreUsersAccountHistory,
       userHasMoreActions,
-      isGuestUser,
+      isGuestPage,
+      demoHasMoreActions,
     } = this.props;
 
     if (transactions.length === 0 && !userHasMoreActions) {
@@ -59,7 +68,7 @@ class UserWalletTransactions extends React.Component {
       <div className="UserWalletTransactions">
         <ReduxInfiniteScroll
           loadMore={this.handleLoadMore}
-          hasMore={userHasMoreActions}
+          hasMore={isGuestPage ? demoHasMoreActions : userHasMoreActions}
           elementIsScrollable={false}
           threshold={500}
           loader={
@@ -72,7 +81,7 @@ class UserWalletTransactions extends React.Component {
           <div />
           {transactions.map(transaction => (
             <WalletTransaction
-              isGuestUser={isGuestUser}
+              isGuestUser={isGuestPage}
               key={`${transaction.trx_id}${transaction.actionCount}`}
               transaction={transaction}
               currentUsername={currentUsername}

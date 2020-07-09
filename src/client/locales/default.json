@@ -1167,5 +1167,6 @@
   "market_order_created_last": "at price Market)",
   "market_order_filled_first": "Market order filled (buy ",
   "market_order_filled_last": "at price ",
-  "profile_updated": "Profile updated"
+  "profile_updated": "Profile updated",
+  "no_results": "No results were found for '{search}' request"
 }
