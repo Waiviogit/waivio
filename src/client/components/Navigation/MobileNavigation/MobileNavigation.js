@@ -149,14 +149,14 @@ const MobileNavigation = ({ location, match }) => {
     default:
       break;
   }
-
+  const page = <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />;
   return (
     <React.Fragment>
       <div className="MobileNavigation">
         <span className="MobileNavigation__title">
           {pageName && (
             <span className="MobileNavigation__topic ttc">
-              <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />
+              {page}
               &nbsp; &gt; &nbsp;
             </span>
           )}
@@ -175,7 +175,7 @@ const MobileNavigation = ({ location, match }) => {
       <Modal
         className="MobileNavigation__filters-modal"
         footer={null}
-        title={pageName.toUpperCase()}
+        title={<span style={{ textTransform: 'uppercase' }}>{page}</span>}
         closable
         visible={isModalOpen}
         onCancel={() => setModalVisibility(false)}
