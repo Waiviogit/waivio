@@ -31,8 +31,9 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
     mapValues(menuConfig, menuSection => ({ isCollapsed: menuSection.isCollapsed })),
   );
 
-  const toggleBlock = section => () =>
+  const toggleBlock = section => () => {
     dispatch({ type: actionType.TOGGLE_BLOCK, section: section.name });
+  };
 
   const checkIsActive = (match, location) => {
     if (!match) return false;

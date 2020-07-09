@@ -61,7 +61,7 @@ const Discover = ({ intl, match, history }) => {
               </Tag>
             </div>
           )}
-          <MobileNavigation />
+          <MobileNavigation intl={intl} />
           <div className="Objects__content">
             <DiscoverContent searchString={match.params.search} />
           </div>

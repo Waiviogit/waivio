@@ -1229,5 +1229,6 @@
   "unlink_hive_account_message": "Do you want to unlink @{hiveUser} Hive account from your @{user} guest account?",
   "link_hive_account_info": "Guests are only allowed to make transfers to their own Hive accounts. This account should be first linked to the guest account.Once you have linked your Hive account, that account will be also registered as the beneficiary of all author and other rewards for guest account",
   "hive_account_link_rules": "I hereby confirm that this Hive account belongs to me and that I have full control of this account, including all the private keys associated with it.",
-  "imageSetter_upload_for_mobile": "Take or select photo"
+  "imageSetter_upload_for_mobile": "Take or select photo",
+  "menu_sections_personal": "Personal"
 }
