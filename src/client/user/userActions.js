@@ -7,6 +7,7 @@ import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName } from '../reducers';
+import { createCommentPermlink } from '../vendor/steemitHelpers';
 
 require('isomorphic-fetch');
 
@@ -261,19 +262,18 @@ export const assignProposition = ({
 
 export const rejectReview = ({
   companyAuthor,
-  companyPermlink,
+  username,
   reservationPermlink,
   objPermlink,
   appName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
-      parent_author: companyAuthor,
-      parent_permlink: companyPermlink,
-      author: username,
-      permlink: reservationPermlink,
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
       title: 'Reject review',
       body: `<p>User ${username} (@${username}) has reject the review `,
       json_metadata: JSON.stringify({
