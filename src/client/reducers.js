@@ -97,8 +97,6 @@ export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(st
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
 export const getIsMobile = state => fromApp.getIsMobile(state.app);
-export const getTranslationByKey = (state, key, defaultMessage) =>
-  fromApp.getTranslationByKey(state.app, key, defaultMessage);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
