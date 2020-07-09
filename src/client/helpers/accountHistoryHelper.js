@@ -18,9 +18,12 @@ export const getCustomJSONFilterType = actionDetails => {
   const customActionType = actionJSON[0];
   const customActionDetails = actionJSON[1];
   if (customActionType === accountHistoryConstants.FOLLOW) {
-    return isEmpty(customActionDetails.what)
-      ? `-${accountHistoryConstants.UNFOLLOWED}`
-      : `+${accountHistoryConstants.FOLLOWED}`;
+    if (customActionDetails.type_operation === 'follow_wobject') {
+      return `+${accountHistoryConstants.FOLLOWED}`;
+    } else if (customActionDetails.type_operation === 'unfollow_wobject') {
+      return `-${accountHistoryConstants.UNFOLLOWED}`;
+    }
+    return '';
   } else if (customActionType === accountHistoryConstants.REBLOG) {
     return accountHistoryConstants.REBLOGGED;
   } else if (customActionType === accountHistoryConstants.FOLLOW_WOBJECT) {
