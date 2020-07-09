@@ -42,6 +42,13 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
+  const isMessages = match.params.filterKey === 'messages';
+  const user = get(proposition, ['users', '0', 'name']);
+  const permlink = get(proposition, ['users', '0', 'permlink']);
+  const userName = isMessages ? user : authorizedUserName;
+  const parenAuthor = isMessages ? user : proposition.guide.name;
+  const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
+  const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -49,9 +56,6 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const user = get(proposition, ['users', '0', 'name']);
-    const userName = match.params.filterKey === 'messages' ? user : authorizedUserName;
-    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
@@ -61,8 +65,8 @@ const Proposition = ({
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
         requiredObjectName,
-        companyAuthor: proposition.guide.name,
-        companyPermlink: proposition.activation_permlink,
+        companyAuthor: parenAuthor,
+        companyPermlink: parentPermlink,
         objPermlink: obj.author_permlink,
         reservationPermlink: rejectData.reservation_permlink,
         unreservationPermlink,
