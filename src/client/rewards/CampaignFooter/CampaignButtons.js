@@ -69,6 +69,7 @@ export default class CampaignButtons extends React.Component {
       shareModalLoading: false,
       reactionsModalVisible: false,
       loadingEdit: false,
+      visible: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -188,6 +189,16 @@ export default class CampaignButtons extends React.Component {
     return popoverDataHistory[propositionStatus] || [];
   };
 
+  hide = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleVisibleChange = visible => {
+    this.setState({ visible });
+  };
+
   renderPostPopoverMenu() {
     const {
       pendingFollow,
@@ -252,8 +263,10 @@ export default class CampaignButtons extends React.Component {
       <Popover
         placement="bottomRight"
         trigger="click"
+        visible={this.state.visible}
+        onVisibleChange={this.handleVisibleChange}
         content={
-          <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
+          <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
             {match.params.filterKey === 'reserved' || match.params.filterKey === 'all'
               ? popoverMenu
               : map(this.getPopoverMenu(), item => {
