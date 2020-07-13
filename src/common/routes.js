@@ -229,7 +229,9 @@ const routes = [
           '/rewards/blacklist/whitelist',
           '/rewards/receivables',
           '/rewards/payables/@:userName',
+          '/rewards/payables/@:userName/:reservationPermlink',
           '/rewards/receivables/@:userName',
+          '/rewards/receivables/@:userName/:reservationPermlink',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -266,7 +268,17 @@ const routes = [
             component: PaymentCampaign,
           },
           {
+            path: '/rewards/payables/@:userName/:reservationPermlink',
+            exact: true,
+            component: PaymentCampaign,
+          },
+          {
             path: '/rewards/receivables/@:userName',
+            exact: true,
+            component: PaymentCampaign,
+          },
+          {
+            path: '/rewards/receivables/@:userName/:reservationPermlink',
             exact: true,
             component: PaymentCampaign,
           },

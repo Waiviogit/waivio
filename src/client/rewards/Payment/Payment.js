@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, includes } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -31,10 +31,20 @@ const Payment = ({
 }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
+  const { reservationPermlink } = match.params;
 
-  const requestParams = {
-    sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-    user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
+  const getRequestParams = () => {
+    if (reservationPermlink && includes(match.path, 'payables')) {
+      return {
+        sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
+        user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
+      };
+    }
+
+    return {
+      sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
+      user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
+    };
   };
 
   const isReceiverGuest =
@@ -46,7 +56,7 @@ const Payment = ({
   const currency = HIVE.symbol;
 
   useEffect(() => {
-    getLenders(requestParams)
+    getLenders(getRequestParams())
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
@@ -126,7 +136,14 @@ const Payment = ({
           },
         )}
       </div>
-      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
+      {!isEmpty(sponsors) && (
+        <PaymentTable
+          sponsors={sponsors}
+          isHive
+          reservationPermlink={match.params.reservationPermlink}
+          match={match}
+        />
+      )}
     </div>
   );
 };

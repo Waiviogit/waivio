@@ -5,7 +5,7 @@ import _ from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsors, isReports, isHive }) => (
+const PaymentTable = ({ intl, sponsors, isReports, isHive, reservationPermlink }) => (
   <table className="PaymentTable">
     <thead>
       <tr>
@@ -44,6 +44,7 @@ const PaymentTable = ({ intl, sponsors, isReports, isHive }) => (
             sponsor,
             isReports,
             isHive,
+            reservationPermlink,
           }}
         />
       ))}
@@ -56,11 +57,13 @@ PaymentTable.propTypes = {
   sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isReports: PropTypes.bool,
   isHive: PropTypes.bool,
+  reservationPermlink: PropTypes.string,
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
   isHive: false,
+  reservationPermlink: '',
 };
 
 export default injectIntl(PaymentTable);

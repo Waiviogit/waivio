@@ -305,8 +305,8 @@ export default class CampaignButtons extends React.Component {
                           <Link
                             to={
                               match.params.filterKey === 'messages'
-                                ? `/rewards/payables/@${userName}`
-                                : `/rewards/receivables/@${userName}`
+                                ? `/rewards/payables/@${propositionUserName}/${reservationPermlink}`
+                                : `/rewards/receivables/@${proposition.guideName}/${reservationPermlink}`
                             }
                           >
                             {intl.formatMessage({
