@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedNumber } from 'react-intl';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteScroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
@@ -16,7 +16,6 @@ import './UserReblogModal.less';
 const UserReblogModal = ({ visible, userNames, onCancel, unfollow, follow }) => {
   const [users, setUsers] = useState([]);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
-  const authenticatedUserName = useSelector(getAuthenticatedUserName);
 
   const loadMoreUsers = () => {
     getUsers({
@@ -111,7 +110,9 @@ const UserReblogModal = ({ visible, userNames, onCancel, unfollow, follow }) => 
   );
 };
 
-export default connect(null, {
+export default connect(state => ({
+authenticatedUserName: getAuthenticatedUserName(state),
+}), {
   unfollow: unfollowUser,
   follow: followUser,
 })(UserReblogModal);
@@ -122,4 +123,5 @@ UserReblogModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   unfollow: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
+  authenticatedUserName: PropTypes.string.isRequired
 };
