@@ -2,7 +2,7 @@ import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, get } from 'lodash';
+import { get } from 'lodash';
 import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
 import { DEFAULT_RADIUS } from '../../../common/constants/map';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -54,12 +54,13 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if (campaignParent || isEmpty(userLocation)) return;
+      if (campaignParent || !userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
     }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
 
     useEffect(() => {
+      if (!userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {

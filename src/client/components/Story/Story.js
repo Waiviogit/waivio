@@ -61,6 +61,7 @@ class Story extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
+    location: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -342,7 +343,7 @@ class Story extends React.Component {
       singlePostVew,
       sliderMode,
       defaultVotePercent,
-      match,
+      location,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
@@ -360,7 +361,9 @@ class Story extends React.Component {
       );
     } else if (
       (post.checkForFollow && post.checkForFollow.youFollows) ||
-      match.params.name !== post.author
+      (location.pathname === `/@${post.reblogged_by}` &&
+        location.pathname !== `/@${post.author}`) ||
+      (post.checkForFollow && location.pathname !== `/@${post.author}`)
     ) {
       rebloggedUI = (
         <div className="Story__reblog">
