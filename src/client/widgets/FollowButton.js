@@ -89,6 +89,7 @@ class FollowButton extends React.Component {
     const pending = followingType === 'user' ? user.pending : wobj.pending;
 
     if (authenticatedUserName === following || authenticatedUserName === user.name) return null;
+
     return (
       <Follow
         isFollowed={following}
