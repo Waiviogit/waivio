@@ -9,9 +9,9 @@ import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
 import { followUser, unfollowUser } from './usersActions';
+import Loading from '../components/Icon/Loading';
 
 import './UserReblogModal.less';
-import Loading from '../components/Icon/Loading';
 
 const UserReblogModal = ({ visible, userNames, onCancel, unfollow, follow }) => {
   const [users, setUsers] = useState([]);
