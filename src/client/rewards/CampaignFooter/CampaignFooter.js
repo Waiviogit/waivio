@@ -301,6 +301,7 @@ class CampaignFooter extends React.Component {
               user={user}
               toggleModal={this.toggleModal}
               numberOfComments={numberOfComments}
+              getMessageHistory={getMessageHistory}
             />
           )}
         </div>

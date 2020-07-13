@@ -49,6 +49,7 @@ const Proposition = ({
   const parenAuthor = isMessages ? user : proposition.guide.name;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+  const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -70,6 +71,7 @@ const Proposition = ({
         objPermlink: obj.author_permlink,
         reservationPermlink: rejectData.reservation_permlink,
         unreservationPermlink,
+        type,
       }),
     );
   };

@@ -309,6 +309,7 @@ export const declineProposition = ({
   unreservationPermlink,
   reservationPermlink,
   requiredObjectName,
+  type,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -322,7 +323,7 @@ export const declineProposition = ({
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
-          type: 'waivio_reject_object_campaign',
+          type,
           reservation_permlink: reservationPermlink,
         },
       }),

@@ -43,6 +43,7 @@ export default class CampaignButtons extends React.Component {
     rejectReview: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
+    getMessageHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -59,6 +60,7 @@ export default class CampaignButtons extends React.Component {
     toggleModalDetails: () => {},
     toggleModal: () => {},
     numberOfComments: null,
+    getMessageHistory: () => {},
   };
 
   constructor(props) {
@@ -151,6 +153,9 @@ export default class CampaignButtons extends React.Component {
             defaultMessage: 'Review rejected',
           }),
         );
+      })
+      .then(() => {
+        setTimeout(() => this.props.getMessageHistory(), 8000);
       })
       .catch(error => {
         console.log(error);
@@ -258,6 +263,7 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
+    const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
 
     return (
       <Popover
@@ -296,7 +302,13 @@ export default class CampaignButtons extends React.Component {
                     case 'show_report':
                       return (
                         <PopoverMenuItem key={item.key}>
-                          <Link to={`/rewards/receivables/@${user.name}`}>
+                          <Link
+                            to={
+                              match.params.filterKey === 'messages'
+                                ? `/rewards/payables/@${userName}`
+                                : `/rewards/receivables/@${userName}`
+                            }
+                          >
                             {intl.formatMessage({
                               id: item.id,
                               defaultMessage: item.defaultMessage,
@@ -328,13 +340,22 @@ export default class CampaignButtons extends React.Component {
                       );
                     case 'open_review':
                       return (
-                        <PopoverMenuItem key={item.key}>
-                          <Link to={`/@${user.name}/${reviewPermlink}`}>
-                            {intl.formatMessage({
-                              id: item.id,
-                              defaultMessage: item.defaultMessage,
-                            })}
-                          </Link>
+                        <PopoverMenuItem key={item.key} disabled={!reviewPermlink}>
+                          {reviewPermlink ? (
+                            <Link to={`/@${userName}/${reviewPermlink}`}>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </Link>
+                          ) : (
+                            <span>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </span>
+                          )}
                         </PopoverMenuItem>
                       );
                     default:

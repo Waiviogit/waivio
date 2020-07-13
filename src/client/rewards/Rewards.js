@@ -410,6 +410,7 @@ class Rewards extends React.Component {
     unreservationPermlink,
     reservationPermlink,
     requiredObjectName,
+    type,
   }) => {
     this.setState({ loadingAssignDiscard: true });
     return this.props
@@ -421,6 +422,7 @@ class Rewards extends React.Component {
         unreservationPermlink,
         reservationPermlink,
         requiredObjectName,
+        type,
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
