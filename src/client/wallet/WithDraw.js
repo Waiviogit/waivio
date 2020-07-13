@@ -254,7 +254,7 @@ const Withdraw = ({
                 id: 'est_account_value_withdraw',
                 defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
               },
-              { amount: isNaN(ceil(userEstAcc, 3)) ? 0 : ceil(userEstAcc, 3) },
+              { amount: `$${userEstAcc ? ceil(userEstAcc, 3) : '0.00'}` },
             )}
           </div>
           <Form.Item
