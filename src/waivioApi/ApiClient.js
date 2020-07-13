@@ -52,12 +52,23 @@ export const getRecommendedObjects = () =>
     }),
   }).then(res => res.json());
 
-export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0, isOnlyHashtags }) => {
+export const getObjects = ({
+  limit = 30,
+  locale = 'en-US',
+  skip = 0,
+  isOnlyHashtags,
+  follower,
+}) => {
   const reqData = { limit, locale, skip };
+
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      app: config.appName,
+      follower: follower,
+    },
     method: 'POST',
     body: JSON.stringify(reqData),
   }).then(res => res.json());
@@ -1098,9 +1109,15 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
     }),
   }).then(res => res.json());
 
-export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) =>
-  fetch(`${config.apiPrefix}${config.getUsers}`, {
-    headers,
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
+  const actualHeaders = userName
+    ? { ...headers, following: userName, follower: userName }
+    : headers;
+
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers: {
+      ...actualHeaders,
+    },
     method: 'POST',
     body: JSON.stringify({
       users: listUsers,
@@ -1109,6 +1126,7 @@ export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) =>
       limit,
     }),
   }).then(res => res.json());
+};
 
 export const setUserStatus = user =>
   fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {

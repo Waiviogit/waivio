@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate, get } from 'lodash';
+import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import { getApprovedField } from '../helpers/wObjectHelper';
+
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
@@ -46,12 +49,12 @@ const ObjectCardView = ({
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
 
-  const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
-    let url = avatar;
-    const parentAvatar = get(passedParent, ['avatar']);
-    if (!isEmpty(passedParent) && parentAvatar && avatar === DEFAULTS.AVATAR) {
-      url = passedParent.avatar;
-    }
+  const avatarLayout = () => {
+    const parentAvatar = getApprovedField(passedParent, 'avatar');
+    let url = getApprovedField(wObject, 'avatar') || parentAvatar;
+
+    if (!url) url = DEFAULTS.AVATAR;
+
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (

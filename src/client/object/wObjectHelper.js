@@ -440,7 +440,7 @@ export const mainerName = (votes, moderators, admins) => {
 
   const admin = votes
     .filter(vote => admins.includes(vote.voter))
-    .sort((after, before) => after.createdAt - before.createdAt)[0];
+    .sort((after, before) => before.createdAt - after.createdAt)[0];
 
   if (admin) {
     return mainObjCreator('admin', admin.voter, statusName(admin.percent));

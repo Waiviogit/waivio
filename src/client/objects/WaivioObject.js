@@ -1,5 +1,5 @@
-import { map } from 'lodash';
 import React, { useContext } from 'react';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
@@ -9,9 +9,10 @@ import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
 import { getClientWObj } from '../adapters';
+
 import './WaivioObject.less';
 
-const WaivioObject = ({ wobj }) => {
+const WaivioObject = ({ wobj, unfollow, follow }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const wObject = getClientWObj(wobj, usedLocale);
   const { address, default_name: defaultName, name, website } = wObject;
@@ -28,6 +29,7 @@ const WaivioObject = ({ wobj }) => {
   }
   const location = address && address[addressFields.city];
   const pathName = `/object/${wobj.author_permlink}`;
+
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
@@ -71,7 +73,13 @@ const WaivioObject = ({ wobj }) => {
                 </div>
               ))}
             <div className="WaivioObject__user__follow">
-              <FollowButton following={wobj.author_permlink} followingType="wobject" />
+              <FollowButton
+                wobj={wobj}
+                following={wobj.youFollows}
+                unfollowObject={unfollow}
+                followObject={follow}
+                followingType="wobject"
+              />
             </div>
           </div>
         </div>
@@ -83,6 +91,13 @@ const WaivioObject = ({ wobj }) => {
 
 WaivioObject.propTypes = {
   wobj: PropTypes.shape().isRequired,
+  unfollow: PropTypes.func,
+  follow: PropTypes.func,
+};
+
+WaivioObject.defaultProps = {
+  unfollow: () => {},
+  follow: () => {},
 };
 
 export default WaivioObject;
