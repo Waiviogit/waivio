@@ -452,12 +452,16 @@ class Rewards extends React.Component {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const actualPropositions = isEmpty(messages) ? propositions : messages;
 
-    const getMessageHistory = () => {
-      const activeFilters = this.state.activeMessagesFilters;
-      const sortChanged =
-        filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
-      const useLoader = false;
-      getHistory(userName, sortChanged, activeFilters, useLoader);
+    const getMessageHistory = async () => {
+      try {
+        const activeFilters = this.state.activeMessagesFilters;
+        const sortChanged =
+          filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
+
+        await getHistory(userName, sortChanged, activeFilters, false);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const { intl } = this.props;

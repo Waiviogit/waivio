@@ -55,18 +55,6 @@ const RewardsFiltersPanel = ({
     [setPayablesFilterValue, intl.formatMessage],
   );
 
-  // const statusTypesMessages = [
-  //   'pending',
-  //   'active',
-  //   'inactive',
-  //   'expired',
-  //   'deleted',
-  //   'payed',
-  //   'reachedLimit',
-  //   'onHold',
-  //   'suspended',
-  // ];
-
   const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
     () => ({
       campaignsTypesMessages: ['all', 'open', 'close'],

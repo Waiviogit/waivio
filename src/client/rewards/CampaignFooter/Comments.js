@@ -2,7 +2,7 @@ import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { find, get, pick } from 'lodash';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
 import {
@@ -17,7 +17,6 @@ import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { getCommentsPendingVotes } from '../../reducers';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import * as commentsActions from '../../comments/commentsActions';
 
@@ -35,12 +34,11 @@ const Comments = ({
   const [replying, setReplyOpen] = useState(false);
   const [editing, setEditOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pendingLike, setPendingLike] = useState(false);
+  const [pendingDisLike, setPendingDisLike] = useState(false);
   const [commentFormText, setCommentFormText] = useState('');
   const [commentSubmitted, setCommentSubmitted] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-
   const dispatch = useDispatch();
-  const pendingVotes = useSelector(getCommentsPendingVotes);
 
   const commentObj = useMemo(() => currentComment || get(post, ['firstAppeal']), [
     currentComment,
@@ -88,9 +86,6 @@ const Comments = ({
 
   const userUpVoted = userVote && userVote.percent > 0;
   const userDownVoted = userVote && userVote.percent < 0;
-  const pendingVote = find(pendingVotes, { id: postId });
-  const pendingLike = pendingVote && (pendingVote.percent > 0 || pendingVote.vote === 'like');
-  const pendingDisLike = pendingVote && (pendingVote.percent < 0 || pendingVote.vote === 'dislike');
   const editable = author === user.name;
 
   let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
@@ -98,35 +93,39 @@ const Comments = ({
     likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
   }
 
-  const onLikeClick = (id, weight = 10000) => {
-    const currentPost = find(post.all, obj => obj.post_id === id);
-    if (!userVote || userVote.percent <= 0) {
-      dispatch(voteHistoryPost(currentPost, author, permlink, weight)).then(res =>
-        console.log('res', res),
-      );
-    } else if (userVote.percent > 0) {
-      dispatch(voteHistoryPost(currentPost, author, permlink, 0));
-    }
-    // setTimeout(() => getMessageHistory(), 8000);
-  };
+  const onLikeClick = useCallback(
+    id => {
+      const currentPost = find(post.all, obj => obj.post_id === id);
+      const weight = !userVote || userVote.percent <= 0 ? 10000 : 0;
+      dispatch(voteHistoryPost(currentPost, author, permlink, weight))
+        .then(() => {
+          setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 8000);
+        })
+        .catch(() => setPendingLike(false));
+    },
+    [post, userVote, voteHistoryPost, getMessageHistory],
+  );
 
   const handleLikeClick = id => {
-    setIsLiked(!isLiked);
+    setPendingLike(true);
     onLikeClick(id);
   };
 
-  const onDislikeClick = id => {
-    const currentPost = find(post.all, obj => obj.post_id === id);
-    if (!userVote || userVote.percent < 0) {
-      dispatch(commentsActions.likeHistoryComment(currentPost, 0, 'dislike'));
-    } else {
-      dispatch(commentsActions.likeHistoryComment(currentPost, -10000, 'dislike'));
-    }
-    // setTimeout(() => getMessageHistory(), 8000);
-  };
+  const onDislikeClick = useCallback(
+    id => {
+      const currentPost = find(post.all, obj => obj.post_id === id);
+      const weight = !userVote || userVote.percent >= 0 ? -10000 : 0;
+      dispatch(voteHistoryPost(currentPost, author, permlink, weight))
+        .then(() => {
+          setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 8000);
+        })
+        .catch(() => setPendingDisLike(false));
+    },
+    [post, userVote, voteHistoryPost, getMessageHistory],
+  );
 
   const handleDislikeClick = id => {
-    setIsLiked(!isLiked);
+    setPendingDisLike(true);
     onDislikeClick(id);
   };
 
@@ -302,7 +301,7 @@ const Comments = ({
                     onActionInitiated,
                     parent: commentObj,
                     currentComment: getChildren(commentObj, post),
-                    onLikeClick: () => {},
+                    onLikeClick,
                     getMessageHistory,
                   }}
                 />

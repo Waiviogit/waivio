@@ -112,10 +112,7 @@ export const voteHistoryPost = (currentPost, author, permlink, weight) => (
     payload: {
       promise: steemConnectAPI
         .vote(voter, post.author || author, post.permlink, weight)
-        .then(res => {
-          setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1250);
-          return res;
-        }),
+        .then(res => res),
     },
   });
 };

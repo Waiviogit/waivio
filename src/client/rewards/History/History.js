@@ -32,33 +32,35 @@ const History = ({
 
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader) => {
-      const requestData = {
-        onlyWithMessages: true,
-        sort: sortChanged,
-        rewards: activeFilters.rewards,
-        status: activeFilters.status,
-      };
-      if (isHistory) {
-        requestData.guideNames = activeFilters.messagesSponsors;
-        requestData.userName = username;
-      }
-      if (!isHistory) {
-        requestData.caseStatus = activeFilters.caseStatus;
-        requestData.guideName = username;
-      }
+      try {
+        const requestData = {
+          onlyWithMessages: true,
+          sort: sortChanged,
+          rewards: activeFilters.rewards,
+          status: activeFilters.status,
+        };
+        if (isHistory) {
+          requestData.guideNames = activeFilters.messagesSponsors;
+          requestData.userName = username;
+        }
+        if (!isHistory) {
+          requestData.caseStatus = activeFilters.caseStatus;
+          requestData.guideName = username;
+        }
 
-      if (withLoader) {
-        await setLoadingCampaigns(true);
-      }
-      await ApiClient.getHistory(requestData).then(data => {
+        if (withLoader) {
+          await setLoadingCampaigns(true);
+        }
+        const data = await ApiClient.getHistory(requestData);
         const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
         setLoadingCampaigns(false);
         setMessages(data.campaigns || []);
         setMessagesSponsors(sponsors);
         setLoading(false);
         setHasMore(data.hasMore);
-      });
-      await setLoadingCampaigns(false);
+      } finally {
+        await setLoadingCampaigns(false);
+      }
     },
     [JSON.stringify(activeMessagesFilters), messagesSponsors],
   );
