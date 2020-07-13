@@ -408,9 +408,12 @@ class Topnav extends React.Component {
 
   handleSearchForInput(event) {
     const value = replacer(event.target.value, '@');
-    const pathname = this.props.searchByUser.some(item => item.account === value)
-      ? `/@${value}`
-      : '';
+    let pathname = '';
+    if (this.props.searchByUser.some(item => item.account === value)) {
+      pathname = `/@${value}`;
+    } else if (this.props.searchByUser.some(item => item.account === `waivio_${value}`)) {
+      pathname = `/@waivio_${value}`;
+    }
 
     this.props.resetSearchAutoCompete();
     this.props.history.push({
