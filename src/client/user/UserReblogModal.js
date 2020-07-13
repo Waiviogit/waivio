@@ -13,7 +13,14 @@ import Loading from '../components/Icon/Loading';
 
 import './UserReblogModal.less';
 
-const UserReblogModal = ({ visible, userNames, onCancel, unfollow, follow }) => {
+const UserReblogModal = ({
+  visible,
+  userNames,
+  onCancel,
+  unfollow,
+  follow,
+  authenticatedUserName,
+}) => {
   const [users, setUsers] = useState([]);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
 
@@ -110,12 +117,15 @@ const UserReblogModal = ({ visible, userNames, onCancel, unfollow, follow }) => 
   );
 };
 
-export default connect(state => ({
-authenticatedUserName: getAuthenticatedUserName(state),
-}), {
-  unfollow: unfollowUser,
-  follow: followUser,
-})(UserReblogModal);
+export default connect(
+  state => ({
+    authenticatedUserName: getAuthenticatedUserName(state),
+  }),
+  {
+    unfollow: unfollowUser,
+    follow: followUser,
+  },
+)(UserReblogModal);
 
 UserReblogModal.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -123,5 +133,5 @@ UserReblogModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   unfollow: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
-  authenticatedUserName: PropTypes.string.isRequired
+  authenticatedUserName: PropTypes.string.isRequired,
 };
