@@ -16,8 +16,8 @@ import './ReactionsList.less';
 @connect(
   state => ({
     isAuth: getIsAuthenticated(state),
-    moderatorsList: getObjectAdmins(state),
-    adminsList: getObjectModerators(state),
+    moderatorsList: getObjectModerators(state),
+    adminsList: getObjectAdmins(state),
   }),
   {
     unfollow: unfollowUser,

@@ -8,13 +8,14 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
 import { followWobject, unfollowWobject } from '../object/wobjActions';
-import { isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../reducers';
 
 const displayLimit = 30;
 
 @connect(
   state => ({
     isGuest: isGuestUser(state),
+    user: getAuthenticatedUserName(state),
   }),
   {
     followWobj: followWobject,
@@ -27,13 +28,14 @@ export default class ObjectList extends React.Component {
     unfollowWobj: PropTypes.func,
     followWobj: PropTypes.func,
     isGuest: PropTypes.bool,
+    user: PropTypes.string,
   };
   static defaultProps = {
     isOnlyHashtags: false,
     unfollowWobj: () => {},
     followWobj: () => {},
     isGuest: false,
-    authUser: '',
+    user: '',
   };
   state = {
     wobjs: [],
@@ -43,11 +45,25 @@ export default class ObjectList extends React.Component {
   };
 
   componentDidMount() {
-    ApiClient.getObjects({ limit: displayLimit, isOnlyHashtags: this.props.isOnlyHashtags }).then(
-      wobjs => {
+    ApiClient.getObjects({
+      limit: displayLimit,
+      isOnlyHashtags: this.props.isOnlyHashtags,
+      follower: this.props.user,
+    }).then(wobjs => {
+      this.setState({ wobjs: wobjs.wobjects });
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.user && this.props.user) {
+      ApiClient.getObjects({
+        limit: displayLimit,
+        isOnlyHashtags: this.props.isOnlyHashtags,
+        follower: this.props.user,
+      }).then(wobjs => {
         this.setState({ wobjs: wobjs.wobjects });
-      },
-    );
+      });
+    }
   }
 
   handleLoadMore = () => {
@@ -64,6 +80,7 @@ export default class ObjectList extends React.Component {
           limit: displayLimit,
           skip,
           isOnlyHashtags: this.props.isOnlyHashtags,
+          follower: this.props.user,
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,

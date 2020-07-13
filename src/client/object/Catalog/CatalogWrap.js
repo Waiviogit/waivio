@@ -332,7 +332,13 @@ class CatalogWrap extends React.Component {
     } else if (objects.length && objects[0].includes(listItem.author_permlink)) {
       item = this.renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} options={{ pathNameAvatar: linkTo }} />;
+      item = (
+        <ObjectCardView
+          wObject={listItem}
+          options={{ pathNameAvatar: linkTo }}
+          passedParent={this.props.wobject}
+        />
+      );
     }
     return <div key={`category-${listItem.id}`}>{item}</div>;
   };
