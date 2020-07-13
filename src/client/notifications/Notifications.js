@@ -33,6 +33,8 @@ import NotificationTransferFrom from '../components/Navigation/Notifications/Not
 import NotificationTransferVesting from '../components/Navigation/Notifications/NotificationTransferVesting';
 import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
+import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
+
 import './Notifications.less';
 
 class Notifications extends React.Component {
@@ -218,6 +220,15 @@ class Notifications extends React.Component {
               case notificationConstants.TRANSFER_FROM_SAVINGS:
                 return (
                   <NotificationTransferFromSavings
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CLAIM_REWARD:
+                return (
+                  <NotificationClaimReward
                     key={key}
                     notification={notification}
                     read={read}
