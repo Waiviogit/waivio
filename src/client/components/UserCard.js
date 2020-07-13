@@ -8,6 +8,7 @@ import './UserCard.less';
 
 const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator }) => {
   const status = moderator ? 'moderator' : 'admin';
+  // const followersCount = user.users.length;
 
   return (
     user && (
@@ -26,7 +27,12 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
               </span>
             )}
           </div>
-          {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
+          {alt && (
+            <span className={showFollow ? 'UserCard__alt BlockWeight' : 'UserCard__short'}>
+              {alt}
+            </span>
+          )}
+          <span className="reblogged">&middot;&nbsp;&nbsp;{` ${user.users} `}</span>
         </div>
         {showFollow && (
           <FollowButton

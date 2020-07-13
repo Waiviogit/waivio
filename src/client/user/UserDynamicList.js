@@ -40,6 +40,7 @@ class UserDynamicList extends React.Component {
   componentDidUpdate(prevProps) {
     const { fetcher, authUser } = this.props;
     const { users } = this.state;
+    console.log(users);
 
     if (!prevProps.authUser && authUser) {
       fetcher(users, authUser).then(newUsers =>
