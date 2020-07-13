@@ -60,7 +60,7 @@ export const getObjects = ({
   follower,
 }) => {
   const reqData = { limit, locale, skip };
-  console.log(follower);
+  
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
