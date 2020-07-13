@@ -99,7 +99,7 @@ const Comments = ({
       const weight = !userVote || userVote.percent <= 0 ? 10000 : 0;
       dispatch(voteHistoryPost(currentPost, author, permlink, weight))
         .then(() => {
-          setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 8000);
+          setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 10000);
         })
         .catch(() => setPendingLike(false));
     },
@@ -117,7 +117,7 @@ const Comments = ({
       const weight = !userVote || userVote.percent >= 0 ? -10000 : 0;
       dispatch(voteHistoryPost(currentPost, author, permlink, weight))
         .then(() => {
-          setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 8000);
+          setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 10000);
         })
         .catch(() => setPendingDisLike(false));
     },
