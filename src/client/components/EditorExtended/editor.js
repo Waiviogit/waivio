@@ -558,14 +558,13 @@ class MediumDraftEditor extends React.Component {
             placeholder={this.props.placeholder}
             spellCheck={editorEnabled && this.props.spellCheck}
           />
-          {this.props.sideButtons.length > 0 && showAddButton && (
+          {showAddButton && (
             <AddButton
               editorState={editorState}
               getEditorState={this.getEditorState}
               setEditorState={this.onChange}
               focus={this.focus}
               sideButtons={this.props.sideButtons}
-              withTitleLine={this.props.withTitle}
             />
           )}
           {!disableToolbar && (
