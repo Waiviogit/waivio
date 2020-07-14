@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import Avatar from './Avatar';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 export default class AvatarLightbox extends React.Component {
   static propTypes = {
@@ -44,7 +45,11 @@ export default class AvatarLightbox extends React.Component {
         )}
         {this.state.open && (
           <Lightbox
-            mainSrc={`https://images.hive.blog/u/${username}/avatar/large`}
+            mainSrc={
+              username && (username.includes(GUEST_PREFIX) || username.includes(BXY_GUEST_PREFIX))
+                ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`
+                : `https://images.hive.blog/u/${username}/avatar/large`
+            }
             onCloseRequest={this.handleCloseRequest}
           />
         )}
