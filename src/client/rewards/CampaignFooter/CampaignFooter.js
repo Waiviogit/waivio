@@ -332,7 +332,7 @@ class CampaignFooter extends React.Component {
             getMessageHistory={getMessageHistory}
           />
         )}
-        {!singlePostVew && isComment && !hasComments && (
+        {!singlePostVew && isComment && !hasComments && match.params.filterKey !== 'history' && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}
