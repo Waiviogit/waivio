@@ -202,3 +202,6 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
 
   return JSON.parse(approvedField.body);
 };
+
+/* eslint-enable no-underscore-dangle */
+/* eslint-enable camelcase */
