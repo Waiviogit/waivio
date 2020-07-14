@@ -37,6 +37,7 @@ const GuestSignUpFormContent = ({
           label={<FormattedMessage id="nickname" defaultMessage="Nickname" />}
         >
           {getFieldDecorator('username', {
+            getValueFromEvent: e => e.target.value.toLowerCase(),
             rules: [
               {
                 required: true,
@@ -60,9 +61,7 @@ const GuestSignUpFormContent = ({
                 validator: validateUserName,
               },
             ],
-          })(
-            <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
-          )}
+          })(<Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} />)}
         </Form.Item>
 
         <Form.Item>
