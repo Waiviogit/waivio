@@ -18,6 +18,7 @@ import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 
 const Proposition = ({
   intl,
@@ -67,6 +68,9 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
+  const currentUSDPrice = getCurrentUSDPrice();
+  console.log('currentUSDPrice', currentUSDPrice);
+  const amount = (proposition.reward / currentUSDPrice).toFixed(3);
 
   const reserveOnClickHandler = () => {
     const reserveData = {
@@ -85,7 +89,7 @@ const Proposition = ({
           companyId: proposition._id,
           primaryObjectName: requiredObjectName,
           secondaryObjectName: proposedWobj.name,
-          amount: proposition.reward,
+          amount,
           proposition,
           proposedWobj,
         }),

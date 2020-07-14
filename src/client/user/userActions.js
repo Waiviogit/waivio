@@ -217,6 +217,7 @@ export const assignProposition = ({
   proposition,
   proposedWobj,
 }) => (dispatch, getState, { steemConnectAPI }) => {
+  console.log('proposition', proposition);
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
@@ -236,7 +237,7 @@ export const assignProposition = ({
       author: username,
       permlink: resPermlink,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
+      body: `<p>User ${proposition.guide.alias} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
