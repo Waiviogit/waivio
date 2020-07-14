@@ -162,7 +162,7 @@ export const addActiveVotesInField = (wobj, field, category = '') => {
 
 export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
   const stringBodyFields = ['name', 'parent', 'avatar', 'description', 'background'];
-  const localeIndependentFields = ['status', 'map'];
+  const localeIndependentFields = ['status', 'map', 'avatar'];
 
   if (!wobj || !wobj.fields || !fieldName) return null;
 
@@ -185,7 +185,7 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
   const approveByMainer = approvedField.filter(field => {
     const mainer = mainerName(field.active_votes, wobj.moderators, wobj.admins);
 
-    return mainer && mainer.status === 'approve';
+    return mainer && mainer.status === 'approved';
   });
 
   if (approveByMainer.length) {
@@ -202,9 +202,6 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
 
   return JSON.parse(approvedField.body);
 };
-
-/* eslint-enable no-underscore-dangle */
-/* eslint-enable camelcase */
 
 /* eslint-enable no-underscore-dangle */
 /* eslint-enable camelcase */
