@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Modal } from 'antd';
+import { Form, Modal, message } from 'antd';
 import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -37,22 +37,22 @@ const Withdraw = ({
   const [currentCurrency, setCurrentCurrency] = useState('eth');
   const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [hiveCount, setHiveCount] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const hiveInput = useRef();
   const currencyInput = useRef();
   const hiveAmount = get(hiveInput, ['current', 'value'], 0);
   const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   const draftTransfer = store.get('withdrawData');
-  const userEstAcc =
-    get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * hiveAmount;
+  const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
   const isUserCanMakeTransfer =
-    Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveAmount);
+    Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
   const setHiveAmount = value => {
-    hiveInput.current.value = value;
+    if (get(hiveInput, ['current', 'value'], null)) hiveInput.current.value = value;
   };
   const setCurrencyAmount = value => {
-    currencyInput.current.value = value;
+    if (get(currencyInput, ['current', 'value'], null)) currencyInput.current.value = value;
   };
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
@@ -103,8 +103,15 @@ const Withdraw = ({
   }, [currentCurrency]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
+    if (input === 'hive') setHiveCount(validateValue);
+
     if (!isNaN(validateValue) && Number(validateValue)) {
-      estimateAmount(validateValue, input, output).then(r => outputSetter(r.outputAmount));
+      estimateAmount(validateValue, input, output)
+        .then(r => {
+          outputSetter(r.outputAmount);
+          if (output === 'hive') setHiveCount(r.outputAmount);
+        })
+        .catch(e => message.error(e.message));
     } else {
       outputSetter(0);
     }
@@ -142,6 +149,8 @@ const Withdraw = ({
     const currentBal = parseFloat(currentBalance);
 
     setHiveAmount(currentBal);
+    setHiveCount(currentBal);
+
     if (currentBal) {
       estimateAmount(currentBal, 'hive', currentCurrency).then(r =>
         setCurrencyAmount(r.outputAmount),
@@ -254,7 +263,7 @@ const Withdraw = ({
                 id: 'est_account_value_withdraw',
                 defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
               },
-              { amount: `$${userEstAcc ? ceil(userEstAcc, 3) : '0.00'}` },
+              { amount: ceil(hiveCount * hivePrice, 3) || '0,00' },
             )}
           </div>
           <Form.Item
