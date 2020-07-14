@@ -93,10 +93,9 @@ const Withdraw = ({
 
     if (currencyAmount) {
       estimateAmount(currencyAmount, currentCurrency, 'hive').then(r => {
-          setHiveAmount(r.outputAmount);
-          setHiveCount(r.outputAmount);
-        }
-      );
+        setHiveAmount(r.outputAmount);
+        setHiveCount(r.outputAmount);
+      });
     }
 
     if (walletAddress) {
@@ -112,10 +111,9 @@ const Withdraw = ({
         .then(r => {
           outputSetter(r.outputAmount);
           if (output === 'hive') setHiveCount(r.outputAmount);
-        }).catch(e => message.error(e.message));
-    } else {
-      outputSetter(0);
-    }
+        })
+        .catch(e => message.error(e.message));
+    } else if (output !== 'hive') outputSetter(0);
   };
 
   const switchButtonClassList = currency =>
