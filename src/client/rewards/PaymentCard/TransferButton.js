@@ -25,11 +25,12 @@ const TransferButton = ({
   openTransf,
 }) => {
   const isReceiverGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
-  const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
   const payableForRender = Math.abs(payable);
   const pathRecivables = match.path === '/rewards/receivables';
+  const isOverpayment = payable < 0;
+  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const handleClick = () => {
     if (!hiveBeneficiaryAccount && isGuest) {
       openLinkModal(true);

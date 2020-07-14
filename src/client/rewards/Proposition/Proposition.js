@@ -69,7 +69,6 @@ const Proposition = ({
 
   const [isReserved, setReservation] = useState(false);
   const currentUSDPrice = getCurrentUSDPrice();
-  console.log('currentUSDPrice', currentUSDPrice);
   const amount = (proposition.reward / currentUSDPrice).toFixed(3);
 
   const reserveOnClickHandler = () => {
@@ -98,7 +97,7 @@ const Proposition = ({
         if (isAssign) {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
-          history.push(`/rewards/reserved`);
+          history.push('/rewards/reserved');
         }
       })
       .catch(e => {

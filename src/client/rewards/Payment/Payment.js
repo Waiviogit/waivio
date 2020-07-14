@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, includes } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -40,8 +40,10 @@ const Payment = ({
   const isReceiverGuest =
     match.params.userName.startsWith(GUEST_PREFIX) ||
     match.params.userName.startsWith(BXY_GUEST_PREFIX);
+  const pathRecivables = includes(match.path, 'receivables');
+  const isOverpayment = payable < 0;
 
-  const memo = getMemo(isReceiverGuest);
+  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
 

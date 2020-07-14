@@ -331,8 +331,15 @@ export const payablesFilterData = location => [
   },
 ];
 
-export const getMemo = isReceiverGuest =>
-  isReceiverGuest ? REWARD.guestReward : REWARD.userReward;
+export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
+  if (pathRecivables && isOverpayment) {
+    return REWARD.overpayment_refund;
+  }
+  if (isReceiverGuest) {
+    return REWARD.guestReward;
+  }
+  return REWARD.userReward;
+};
 
 export const getContent = pathName => {
   if (pathName.includes('references')) {
