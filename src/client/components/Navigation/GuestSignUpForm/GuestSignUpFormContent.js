@@ -61,12 +61,7 @@ const GuestSignUpFormContent = ({
               },
             ],
           })(
-            <Input
-              placeholder="Enter nickname"
-              addonBefore={`@${GUEST_PREFIX}`}
-              maxLength={16}
-              onKeyDown={event => event.targer.value.toLowerCase()}
-            />,
+            <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
           )}
         </Form.Item>
 
