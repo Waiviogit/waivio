@@ -654,6 +654,9 @@ export const getHistory = ({
       onlyWithMessages,
       sort,
     };
+    /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
+    /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
+
     if (userName) {
       reqData.userName = userName;
       reqData.onlyWithMessages = false;

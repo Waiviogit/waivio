@@ -10,7 +10,7 @@ const PopoverMenu = ({ children, onSelect, bold, hide }) => (
       const onItemClick = useCallback(() => {
         onSelect(child.key);
         hide();
-      }, [child.key, onSelect, hide]);
+      }, [child.key]);
 
       return (
         <PopoverMenuItem

@@ -157,9 +157,7 @@ export default class CampaignButtons extends React.Component {
       .then(() => {
         setTimeout(() => this.props.getMessageHistory(), 8000);
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(e => message.error(e.message));
   };
 
   handleAddToBlacklistClick = () => {
@@ -399,12 +397,11 @@ export default class CampaignButtons extends React.Component {
               id: this.buttonsTitle.id,
               defaultMessage: this.buttonsTitle.defaultMessage,
             })}
-            {this.buttonsTitle.defaultMessage === 'Reserved'
-              ? `- ${daysLeft} ${intl.formatMessage({
-                  id: 'campaign_buttons_days_left',
-                  defaultMessage: 'days left',
-                })} `
-              : ''}
+            {this.buttonsTitle.defaultMessage === 'Reserved' &&
+              `- ${daysLeft} ${intl.formatMessage({
+                id: 'campaign_buttons_days_left',
+                defaultMessage: 'days left',
+              })} `}
           </div>
           <BTooltip
             title={intl.formatMessage({

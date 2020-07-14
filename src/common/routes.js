@@ -263,22 +263,12 @@ const routes = [
             component: Reports,
           },
           {
-            path: '/rewards/payables/@:userName',
+            path: '/rewards/payables/@:userName/:reservationPermlink?',
             exact: true,
             component: PaymentCampaign,
           },
           {
-            path: '/rewards/payables/@:userName/:reservationPermlink',
-            exact: true,
-            component: PaymentCampaign,
-          },
-          {
-            path: '/rewards/receivables/@:userName',
-            exact: true,
-            component: PaymentCampaign,
-          },
-          {
-            path: '/rewards/receivables/@:userName/:reservationPermlink',
+            path: '/rewards/receivables/@:userName/:reservationPermlink?',
             exact: true,
             component: PaymentCampaign,
           },

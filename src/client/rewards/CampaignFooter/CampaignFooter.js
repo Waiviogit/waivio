@@ -199,7 +199,7 @@ class CampaignFooter extends React.Component {
           id: 'discarded_successfully',
           defaultMessage: 'Reservation released. It will be available for reservation soon.',
         }),
-        this.props.history.push(`/rewards/active`),
+        this.props.history.push('/rewards/active'),
       );
     });
   };

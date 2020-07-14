@@ -14,7 +14,6 @@ import {
 } from 'react-intl';
 import { voteHistoryPost } from '../../post/postActions';
 import Avatar from '../../components/Avatar';
-import WeightTag from '../../components/WeightTag';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
@@ -47,7 +46,6 @@ const Comments = ({
 
   const {
     author,
-    author_reputation: authorReputation,
     created: commentCreated,
     body: postBody,
     active_votes: activeVotes,
@@ -59,7 +57,6 @@ const Comments = ({
     () =>
       pick(commentObj, [
         'author',
-        'author_reputation',
         'created',
         'body',
         'active_votes',
@@ -186,7 +183,6 @@ const Comments = ({
           <div className="Comment__text">
             <Link to={`/@${author}`}>
               <span className="username">{author}</span>
-              <WeightTag weight={authorReputation} />
             </Link>
             <span className="Comment__date">
               <BTooltip

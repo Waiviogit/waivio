@@ -1,5 +1,5 @@
 import { Checkbox } from 'antd';
-import _ from 'lodash';
+import { map, includes } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -71,9 +71,9 @@ const RewardsFiltersPanel = ({
           <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
-        {_.includes(location.pathname, 'all') ||
-        _.includes(location.pathname, 'active') ||
-        _.includes(location.pathname, 'reserved') ? (
+        {includes(location.pathname, 'all') ||
+        includes(location.pathname, 'active') ||
+        includes(location.pathname, 'reserved') ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -81,8 +81,8 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Rewards for`,
               })}:`}
             </div>
-            {_.map(campaignsTypes, type =>
-              filterLayout(type, 'types', _.includes(activeFilters.types, type)),
+            {map(campaignsTypes, type =>
+              filterLayout(type, 'types', includes(activeFilters.types, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -90,13 +90,13 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Sponsors`,
               })}:`}
             </div>
-            {_.map(sponsorsData, sponsor =>
-              filterLayout(sponsor, 'guideNames', _.includes(activeFilters.guideNames, sponsor)),
+            {map(sponsorsData, sponsor =>
+              filterLayout(sponsor, 'guideNames', includes(activeFilters.guideNames, sponsor)),
             )}
           </React.Fragment>
         ) : (
-          !_.includes(location.pathname, 'messages') &&
-          !_.includes(location.pathname, 'history') && (
+          !includes(location.pathname, 'messages') &&
+          !includes(location.pathname, 'history') && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
                 {location.pathname === '/rewards/payables'
@@ -109,7 +109,7 @@ const RewardsFiltersPanel = ({
                       defaultMessage: 'Receivables',
                     })}
               </div>
-              {_.map(payablesFilterData(location), payable =>
+              {map(payablesFilterData(location), payable =>
                 filterPaymentLayout(
                   payable,
                   activePayableFilters.some(f => f.filterName === payable.filterName),
@@ -126,8 +126,8 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Rewards`,
               })}:`}
             </div>
-            {_.map(rewardsTypesMessages, type =>
-              filterLayout(type, 'rewards', _.includes(activeMessagesFilters.rewards, type)),
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
               {location.pathname === '/rewards/messages'
@@ -141,14 +141,14 @@ const RewardsFiltersPanel = ({
                   })}
             </div>
             {location.pathname === '/rewards/messages'
-              ? _.map(campaignsTypesMessages, type =>
+              ? map(campaignsTypesMessages, type =>
                   filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
                 )
-              : _.map(sponsorsData, sponsor =>
+              : map(sponsorsData, sponsor =>
                   filterLayout(
                     sponsor,
                     'messagesSponsors',
-                    _.includes(activeMessagesFilters.messagesSponsors, sponsor),
+                    includes(activeMessagesFilters.messagesSponsors, sponsor),
                   ),
                 )}
           </React.Fragment>
