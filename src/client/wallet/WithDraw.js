@@ -49,10 +49,10 @@ const Withdraw = ({
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
   const setHiveAmount = value => {
-    if (get(hiveInput, ['current', 'value'], null)) hiveInput.current.value = value;
+    hiveInput.current.value = value;
   };
   const setCurrencyAmount = value => {
-    if (get(currencyInput, ['current', 'value'], null)) currencyInput.current.value = value;
+    currencyInput.current.value = value;
   };
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
@@ -92,8 +92,10 @@ const Withdraw = ({
     }
 
     if (currencyAmount) {
-      estimateAmount(currencyAmount, currentCurrency, 'hive').then(r =>
-        setHiveAmount(r.outputAmount),
+      estimateAmount(currencyAmount, currentCurrency, 'hive').then(r => {
+          setHiveAmount(r.outputAmount);
+          setHiveCount(r.outputAmount);
+        }
       );
     }
 
@@ -110,8 +112,7 @@ const Withdraw = ({
         .then(r => {
           outputSetter(r.outputAmount);
           if (output === 'hive') setHiveCount(r.outputAmount);
-        })
-        .catch(e => message.error(e.message));
+        }).catch(e => message.error(e.message));
     } else {
       outputSetter(0);
     }
