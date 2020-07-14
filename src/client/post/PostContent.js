@@ -32,6 +32,7 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
+import { getProxyImageURL } from '../helpers/image';
 
 @injectIntl
 @connect(
@@ -263,7 +264,7 @@ class PostContent extends React.Component {
           <meta name="og:title" property="og:title" content={metaTitle} />
           <meta name="og:type" property="og:type" content="article" />
           <meta name="og:url" property="og:url" content={url} />
-          <meta name="og:image" property="og:image" content={image} />
+          <meta name="og:image" property="og:image" content={getProxyImageURL(image)} />
           <meta name="og:description" property="og:description" content={desc} />
           <meta name="og:site_name" property="og:site_name" content="Waivio" />
           <meta name="article:tag" property="article:tag" content={category} />
