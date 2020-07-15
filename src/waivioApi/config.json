@@ -91,5 +91,6 @@
   "mailer": "/mailer",
   "confirmEmail": "/confirm-email-request",
   "validateAddress": "/validate-crypto-wallet",
-  "finalConfirmTransaction": "/confirm-transaction"
+  "finalConfirmTransaction": "/confirm-transaction",
+  "getWithdrawData": "/get-withdraw-data"
 }

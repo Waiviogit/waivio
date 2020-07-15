@@ -1282,6 +1282,16 @@ export const getPrivateEmail = userName => {
     .then(res => res.privateEmail);
 };
 
+export const getTransferDetails = withdrawId => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
