@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
@@ -42,6 +42,75 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
     reduce(sponsor.details.beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
   const time = isReports ? moment(sponsor.createdAt).format('h:mm:ss') : '';
+  const getOperation = useCallback(() => {
+    switch (sponsor.type) {
+      case 'overpayment_refund':
+        return (
+          <React.Fragment>
+            <span className="PaymentTable__action-item fw6">
+              {intl.formatMessage({
+                id: 'paymentTable_transfer',
+                defaultMessage: `Transfer`,
+              })}{' '}
+            </span>
+            {intl.formatMessage({
+              id: 'paymentTable_from',
+              defaultMessage: 'from',
+            })}{' '}
+            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.userName}</Link>{' '}
+            {intl.formatMessage({
+              id: 'paymentTable_review_to',
+              defaultMessage: 'to',
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>
+          </React.Fragment>
+        );
+      case 'transfer':
+      case 'demo_debt':
+        return (
+          <React.Fragment>
+            <span className="PaymentTable__action-item fw6">
+              {intl.formatMessage({
+                id: 'paymentTable_transfer',
+                defaultMessage: `Transfer`,
+              })}{' '}
+            </span>
+            {intl.formatMessage({
+              id: 'paymentTable_from',
+              defaultMessage: 'from',
+            })}{' '}
+            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+            {intl.formatMessage({
+              id: 'paymentTable_review_to',
+              defaultMessage: 'to',
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
+          </React.Fragment>
+        );
+      default:
+        return (
+          <React.Fragment>
+            <span className="PaymentTable__action-item fw6">
+              {intl.formatMessage({
+                id: 'paymentTable_review',
+                defaultMessage: 'Review',
+              })}
+            </span>{' '}
+            {intl.formatMessage({
+              id: 'paymentTable_review_by',
+              defaultMessage: 'by',
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
+            {intl.formatMessage({
+              id: 'paymentTable_requested_by',
+              defaultMessage: `requested by`,
+            })}{' '}
+            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
+          </React.Fragment>
+        );
+    }
+  }, [sponsor]);
+
   return (
     <tr>
       <td>
@@ -49,47 +118,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
       </td>
       <td>
         <div className="PaymentTable__action-wrap">
-          <div className="PaymentTable__action-items">
-            {sponsor.type === 'transfer' || sponsor.type === 'demo_debt' ? (
-              <React.Fragment>
-                <span className="PaymentTable__action-item fw6">
-                  {intl.formatMessage({
-                    id: 'paymentTable_transfer',
-                    defaultMessage: `Transfer`,
-                  })}{' '}
-                </span>
-                {intl.formatMessage({
-                  id: 'paymentTable_from',
-                  defaultMessage: 'from',
-                })}{' '}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
-                {intl.formatMessage({
-                  id: 'paymentTable_review_to',
-                  defaultMessage: 'to',
-                })}{' '}
-                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <span className="PaymentTable__action-item fw6">
-                  {intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: 'Review',
-                  })}
-                </span>{' '}
-                {intl.formatMessage({
-                  id: 'paymentTable_review_by',
-                  defaultMessage: 'by',
-                })}{' '}
-                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-                {intl.formatMessage({
-                  id: 'paymentTable_requested_by',
-                  defaultMessage: `requested by`,
-                })}{' '}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
-              </React.Fragment>
-            )}
-          </div>
+          <div className="PaymentTable__action-items">{getOperation()}</div>
           {sponsor && sponsor.details && sponsor.details.main_object && (
             <div className="PaymentTable__action-items">
               <div>
@@ -131,7 +160,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
         </div>
       </td>
       <td>
-        {sponsor.type === 'transfer' || sponsor.type === 'demo_debt' ? (
+        {sponsor.type === 'transfer' ||
+        sponsor.type === 'demo_debt' ||
+        sponsor.type === 'overpayment_refund' ? (
           <p>
             {intl.formatMessage({
               id: 'paymentTable_payment',
