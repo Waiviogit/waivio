@@ -27,8 +27,9 @@ const EmailConfirmation = ({
   const [isCheck, setCheck] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
+
   const currentEmail = email || newEmail;
-  const confirmationType = email ? 'confirmTransaction' : 'confirmEmail';
+  const confirmationType = 'confirmTransaction';
 
   const handleChangeEmail = () => {
     setIsVisibleConfirm(true);
@@ -105,7 +106,7 @@ const EmailConfirmation = ({
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={handleSendConfirmation}
         onCancel={handleCancel}
-        okButtonProps={{ disabled: (!email || !newEmail) && !isCheck }}
+        okButtonProps={{ disabled: !(email || newEmail) && !isCheck }}
       >
         <Form>
           <Form.Item

@@ -38,6 +38,7 @@ const WalletTransaction = ({
   totalVestingShares,
   totalVestingFundSteem,
   isGuestPage,
+  handleDetailsClick,
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
   const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
@@ -80,6 +81,8 @@ const WalletTransaction = ({
           memo={transactionDetails.memo}
           amount={getFormattedTransactionAmount(transactionDetails.amount)}
           timestamp={transaction.timestamp}
+          withdraw={transaction.withdraw}
+          getDetails={handleDetailsClick}
         />
       );
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
@@ -139,11 +142,13 @@ WalletTransaction.propTypes = {
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   isGuestPage: PropTypes.bool,
+  handleDetailsClick: PropTypes.func,
 };
 
 WalletTransaction.defaultProps = {
   transactionHistory: {},
   isGuestPage: false,
+  handleDetailsClick: () => {},
 };
 
 export default WalletTransaction;
