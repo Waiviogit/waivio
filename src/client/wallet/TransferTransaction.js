@@ -6,7 +6,15 @@ import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
-const TransferTransaction = ({ to, memo, amount, timestamp, isGuestPage }) => (
+const TransferTransaction = ({
+  to,
+  memo,
+  amount,
+  timestamp,
+  isGuestPage,
+  withdraw,
+  getDetails,
+}) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__avatar">
       <Avatar username={to} size={40} />
@@ -59,6 +67,11 @@ const TransferTransaction = ({ to, memo, amount, timestamp, isGuestPage }) => (
         )}
       </span>
       <span className="UserWalletTransactions__memo">{memo}</span>
+      {withdraw && (
+        <a onClick={() => getDetails(withdraw)} role="presentation">
+          <FormattedMessage id="details" defaultMessage="Details" />
+        </a>
+      )}
     </div>
   </div>
 );
@@ -69,6 +82,8 @@ TransferTransaction.propTypes = {
   amount: PropTypes.element,
   timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
+  withdraw: PropTypes.string,
+  getDetails: PropTypes.func,
 };
 
 TransferTransaction.defaultProps = {
@@ -77,6 +92,8 @@ TransferTransaction.defaultProps = {
   amount: <span />,
   timestamp: '',
   isGuestPage: false,
+  withdraw: '',
+  getDetails: () => {},
 };
 
 export default TransferTransaction;
