@@ -1245,7 +1245,6 @@
   "deposit_account": "Аккаунт отправителя",
   "deposit_transaction_hash": "Хэш транзакции депозита",
   "deposit_usd_value": "Депозит в долларах США",
-  "claim_reward_notify": "{account} получил в награду {rewardHBD}",
   "messages": "Сообщения",
   "inquiry_date": "Дата запроса",
   "latest": "Самый последний",
