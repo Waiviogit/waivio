@@ -52,7 +52,7 @@ export default class Slider extends React.Component {
 
   handleChange = debounce(value => {
     this.setState({ value }, () => {
-      if (this.props.isPostCashout) this.props.onChange(value);
+      this.props.onChange(value);
     });
   }, 300);
 
