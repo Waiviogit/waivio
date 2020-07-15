@@ -1231,5 +1231,6 @@
   "hive_account_link_rules": "I hereby confirm that this Hive account belongs to me and that I have full control of this account, including all the private keys associated with it.",
   "imageSetter_upload_for_mobile": "Take or select photo",
   "menu_sections_personal": "Personal",
-  "claim_reward_notify": "{account} claim reward {rewardHBD}"
+  "claim_reward_notify": "{account} claim reward {rewardHBD}",
+  "like_slider_message_cashout": "Votes after 7 days have no impact on the rewards."
 }
