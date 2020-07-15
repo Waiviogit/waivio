@@ -16,7 +16,7 @@ const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => (
         <Link to={`/@${user.name}`}>
           <Avatar username={user.name} size={40} />
         </Link>
-        <div className="Discover__user__profile BlocCenter">
+        <div className="Discover__user__profile">
           <div className="Discover__user__profile__header">
             <Link to={`/@${user.name}`}>
               <span className="Discover__user__name">
