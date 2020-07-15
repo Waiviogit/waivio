@@ -61,7 +61,9 @@ const GuestSignUpFormContent = ({
                 validator: validateUserName,
               },
             ],
-          })(<Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} />)}
+          })(
+            <Input placeholder="Enter nickname" addonBefore={`@${GUEST_PREFIX}`} maxLength={16} />,
+          )}
         </Form.Item>
 
         <Form.Item>
