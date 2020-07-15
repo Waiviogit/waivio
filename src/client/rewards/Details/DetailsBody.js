@@ -1,18 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
+import { getRate, getRewardFund } from '../../reducers';
 import './Details.less';
 
 const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
+  const rate = useSelector(getRate);
+  const rewardFund = useSelector(getRewardFund);
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const checked = Boolean(isEmpty(objectDetails.existAssigns));
+  const minExpertise =
+    (get(objectDetails, ['userRequirements', 'minExpertise']) / rewardFund.recent_claims) *
+    rewardFund.reward_balance.replace(' HIVE', '') *
+    rate *
+    1000000;
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -20,7 +29,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
-          <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
+          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
