@@ -43,21 +43,6 @@ const Proposition = ({
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
 
-  const getJsonData = () => {
-    try {
-      return JSON.parse(user.json_metadata);
-    } catch (err) {
-      message.error(
-        intl.formatMessage({
-          id: 'something_went_wrong',
-          defaultMessage: 'Something went wrong',
-        }),
-      );
-    }
-  };
-
-  const userName = get(getJsonData(), ['profile', 'name']);
-
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
     setModalDetailsOpen(!isModalDetailsOpen);
@@ -88,6 +73,19 @@ const Proposition = ({
   const amount = (proposition.reward / currentUSDPrice).toFixed(3);
 
   const reserveOnClickHandler = () => {
+    const getJsonData = () => {
+      try {
+        return JSON.parse(user.json_metadata);
+      } catch (err) {
+        message.error(
+          intl.formatMessage({
+            id: 'something_went_wrong',
+            defaultMessage: 'Something went wrong',
+          }),
+        );
+      }
+    };
+    const userName = get(getJsonData(), ['profile', 'name']);
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
