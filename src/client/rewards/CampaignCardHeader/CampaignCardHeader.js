@@ -12,11 +12,11 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
   const price = get(campaignData, ['objects', '0', 'reward']);
   const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
   const isMessages = match && match.params.filterKey === 'messages';
-  const rewardPriseHive = `${
+  const rewardPriceHive = `${
     !isEmpty(price) ? price.toFixed(3) : (campaignData.reward * currentUSDPrice).toFixed(3)
   } HIVE`;
-  const rewardPriseUsd = `${campaignData.reward} USD`;
-  const rewardPrise = isAssigned || isMessages ? rewardPriseHive : rewardPriseUsd;
+  const rewardPriceUsd = `${campaignData.reward} USD`;
+  const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -35,7 +35,7 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
           </span>
           <React.Fragment>
             <span className="CampaignCardHeader__data-colored">
-              <span className="fw6">{rewardPrise}</span>
+              <span className="fw6">{rewardPrice}</span>
             </span>
           </React.Fragment>
         </div>
