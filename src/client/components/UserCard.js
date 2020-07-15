@@ -32,7 +32,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
               {alt}
             </span>
           )}
-          <span className="reblogged">&middot;&nbsp;&nbsp;{` ${user.users} `}</span>
+          <span className="reblogged">&middot;&nbsp;&nbsp;{` ${user.followers_count} `}</span>
         </div>
         {showFollow && (
           <FollowButton
