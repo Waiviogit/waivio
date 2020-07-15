@@ -42,7 +42,7 @@ class UserWalletTransactions extends React.Component {
   };
 
   state = {
-    openDetailsModal: false,
+    isOpenDetailsModal: false,
     transferDetails: null,
   };
 
@@ -50,7 +50,7 @@ class UserWalletTransactions extends React.Component {
     getTransferDetails(key).then(data => {
       this.setState(() => ({
         transferDetails: data,
-        openDetailsModal: true,
+        isOpenDetailsModal: true,
       })).catch(e => message.error(e.message));
     });
   };
@@ -74,6 +74,9 @@ class UserWalletTransactions extends React.Component {
     }
   };
 
+  toggleDetailsModal = () =>
+    this.setState(prevState => ({ isOpenDetailsModal: !prevState.isOpenDetailsModal }));
+
   render() {
     const {
       currentUsername,
@@ -85,7 +88,7 @@ class UserWalletTransactions extends React.Component {
       demoTransactions,
       intl,
     } = this.props;
-    const { openDetailsModal, transferDetails } = this.state;
+    const { isOpenDetailsModal, transferDetails } = this.state;
 
     return (
       <React.Fragment>
@@ -129,14 +132,12 @@ class UserWalletTransactions extends React.Component {
         </div>
         {transferDetails && (
           <Modal
-            visible={openDetailsModal}
+            visible={isOpenDetailsModal}
             title={intl.formatMessage({
               id: 'transaction_details',
               defaultMessage: 'Transaction details',
             })}
-            onCancel={() =>
-              this.setState(prevState => ({ openDetailsModal: !prevState.openDetailsModal }))
-            }
+            onCancel={this.toggleDetailsModal}
             footer={null}
           >
             <div className="UserWalletTransactions__modal-row">
