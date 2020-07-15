@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -17,6 +17,7 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 import './Proposition.less';
 
 const Proposition = ({
@@ -30,6 +31,7 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
+  user,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -40,6 +42,21 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
+
+  const getJsonData = () => {
+    try {
+      return JSON.parse(user.json_metadata);
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'something_went_wrong',
+          defaultMessage: 'Something went wrong',
+        }),
+      );
+    }
+  };
+
+  const userName = get(getJsonData(), ['profile', 'name']);
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -67,6 +84,8 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
+  const currentUSDPrice = getCurrentUSDPrice();
+  const amount = (proposition.reward / currentUSDPrice).toFixed(3);
 
   const reserveOnClickHandler = () => {
     const reserveData = {
@@ -85,16 +104,17 @@ const Proposition = ({
           companyId: proposition._id,
           primaryObjectName: requiredObjectName,
           secondaryObjectName: proposedWobj.name,
-          amount: proposition.reward,
+          amount,
           proposition,
           proposedWobj,
+          userName,
         }),
       )
       .then(({ isAssign }) => {
         if (isAssign) {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
-          history.push(`/rewards/reserved`);
+          history.push('/rewards/reserved');
         }
       })
       .catch(e => {

@@ -16,11 +16,16 @@ const ReportFooter = ({ intl, toggleModal }) => {
       <div className="Report__modal-footer-notes">
         <div>
           *{' '}
-          {intl.formatMessage({
-            id: 'exchange_rate',
-            defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${reservationRate ||
-              'N/A'} USD).`,
-          })}
+          {intl.formatMessage(
+            {
+              id: 'exchange_rate',
+              defaultMessage:
+                'The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate} USD).',
+            },
+            {
+              reservationRate: reservationRate || 'N/A',
+            },
+          )}
         </div>
         <div>
           **{' '}
