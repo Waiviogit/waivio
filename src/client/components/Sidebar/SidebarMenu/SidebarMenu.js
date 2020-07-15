@@ -6,6 +6,8 @@ import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { getIsAuthenticated } from '../../../reducers';
 
+import './SidebarMenu.less';
+
 const actionType = { TOGGLE_BLOCK: 'toggleBlock' };
 function sidebarMenuReducer(state, action) {
   const { type, section } = action;
@@ -94,7 +96,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               disabled={Boolean(sectionItem.disabled)}
             >
               <span className="flex justify-between">
-                <span className="sidenav-discover-objects__item-text" title={itemName}>
+                <span className="sidebar-menu__item-text" title={itemName}>
                   {itemName}
                 </span>
                 {sectionItem.meta && <span>+{sectionItem.meta}</span>}
@@ -105,7 +107,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
       })}
       {menuSection.hasMore && (
         <div
-          className="sidenav-discover-objects__show-more"
+          className="sidebar-menu__show-more"
           role="presentation"
           onClick={loadMore(menuSection.name)}
         >

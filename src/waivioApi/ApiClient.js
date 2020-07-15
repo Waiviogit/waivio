@@ -1270,6 +1270,4 @@ export const getTransferHistory = (username, skip = 0, limit = 50) =>
     .then(data => data)
     .catch(err => err);
 
-// I don't read changes before commit
-
 export default null;
