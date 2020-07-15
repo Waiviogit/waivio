@@ -1236,9 +1236,18 @@ export const getPrivateEmail = userName => {
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}?onlyEmail=true`, {
     headers,
     method: 'GET',
-  })
-    .then(res => res.json())
+  }).then(res => res.json())
     .then(res => res.privateEmail);
+};
+
+export const getTransferDetails = withdrawId => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json())
 };
 
 // injected as extra argument in Redux Thunk
@@ -1255,10 +1264,9 @@ export const getTransferHistory = (username, skip = 0, limit = 50) =>
       headers,
       method: 'GET',
     },
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => err);
+  ).then(res => res.json())
+   .then(data => data)
+   .catch(err => err);
 
 // I don't read changes before commit
 

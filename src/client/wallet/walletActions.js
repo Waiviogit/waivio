@@ -96,7 +96,7 @@ const parseGuestActions = actions => {
       op_in_trx: 0,
       virtual_op: 0,
       timestamp: action.updatedAt.split('.')[0],
-      // timestamp: action.updatedAt,
+      withdraw: action.withdraw,
       op: [
         'transfer',
         {

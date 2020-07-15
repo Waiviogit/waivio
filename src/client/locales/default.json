@@ -1232,5 +1232,14 @@
   "imageSetter_upload_for_mobile": "Take or select photo",
   "menu_sections_personal": "Personal",
   "claim_reward_notify": "{account} claim reward {rewardHBD}",
-  "like_slider_message_cashout": "Votes after 7 days have no impact on the rewards."
+  "like_slider_message_cashout": "Votes after 7 days have no impact on the rewards.",
+  "transaction_details": "Transaction details",
+  "transaction_state": "Transaction State",
+  "time_local": "Time (local)",
+  "send_amount": "Send Amount",
+  "receive_amount": "Receive Amount",
+  "receive_address": "Receive Address",
+  "deposit_account": "Deposit account",
+  "deposit_transaction_hash": "Deposit Transaction Hash",
+  "deposit_usd_value": "Deposit USD Value"
 }
