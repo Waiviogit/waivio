@@ -1235,6 +1235,7 @@
   "imageSetter_upload_for_mobile": "Выберите фотографию",
   "menu_sections_personal": "Личный",
   "claim_reward_notify": "{account} получил в награду {rewardHBD}",
+  "like_slider_message_cashout": "Голоса после 7 дней не влияют на вознаграждение.",
   "transaction_details": "Детали транзакции",
   "transaction_state": "Состояние транзакции",
   "time_local": "Время (местное)",

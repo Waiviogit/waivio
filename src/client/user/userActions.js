@@ -216,6 +216,7 @@ export const assignProposition = ({
   amount,
   proposition,
   proposedWobj,
+  userName,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
@@ -236,7 +237,7 @@ export const assignProposition = ({
       author: username,
       permlink: resPermlink,
       title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
+      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
@@ -312,6 +313,7 @@ export const activateCampaign = (company, campaignPermlink) => (
   const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
+  const alias = get(company, ['guide', 'alias']);
   const detailsBody = getDetailsBody(
     company,
     proposedWobjName,
@@ -326,7 +328,7 @@ export const activateCampaign = (company, campaignPermlink) => (
       author: username,
       permlink: campaignPermlink,
       title: 'Activate rewards campaign',
-      body: `${username} (@${username}) activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
+      body: `${alias} (@${username}) has activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) with the target reward of $ ${company.reward} USD.  ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
