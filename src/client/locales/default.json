@@ -1241,7 +1241,7 @@
   "receive_address": "Receive Address",
   "deposit_account": "Deposit account",
   "deposit_transaction_hash": "Deposit Transaction Hash",
-  "deposit_usd_value": "Deposit USD Value"
+  "deposit_usd_value": "Deposit USD Value",
   "messages": "Messages",
   "inquiry_date": "Inquiry date",
   "latest": "Latest",
