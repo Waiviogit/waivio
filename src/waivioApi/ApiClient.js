@@ -1248,7 +1248,6 @@ export const getTransferDetails = withdrawId => {
       method: 'GET',
     },
   ).then(res => res.json())
-   .then(res => res);
 };
 
 // injected as extra argument in Redux Thunk
