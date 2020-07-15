@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { get, isEmpty, map } from 'lodash';
@@ -16,11 +16,13 @@ const ReportFooter = ({ intl, toggleModal }) => {
       <div className="Report__modal-footer-notes">
         <div>
           *{' '}
-          {intl.formatMessage({
-            id: 'exchange_rate',
-            defaultMessage: `The exchange rate is recorded at the time of reservation of the reward (1 HIVE = ${reservationRate ||
-              'N/A'} USD).`,
-          })}
+          <FormattedMessage
+            id="exchange_rate"
+            defaultMessage="The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate} USD)."
+            values={{
+              reservationRate: <span>{reservationRate || 'N/A'}</span>,
+            }}
+          />
         </div>
         <div>
           **{' '}
