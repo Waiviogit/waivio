@@ -120,7 +120,6 @@ const Proposition = ({
         }
       });
   };
-
   return (
     <div className="Proposition">
       <div className="Proposition__header">
