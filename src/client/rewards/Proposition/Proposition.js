@@ -42,7 +42,21 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-  const userName = get(JSON.parse(user.json_metadata), ['profile', 'name']);
+
+  const getJsonData = () => {
+    try {
+      return JSON.parse(user.json_metadata);
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'something_went_wrong',
+          defaultMessage: 'Something went wrong',
+        }),
+      );
+    }
+  };
+
+  const userName = get(getJsonData(), ['profile', 'name']);
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
