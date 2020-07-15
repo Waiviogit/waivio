@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import Avatar from './Avatar';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export default class AvatarLightbox extends React.Component {
   static propTypes = {
@@ -28,7 +28,7 @@ export default class AvatarLightbox extends React.Component {
   render() {
     const { username, size, isActive } = this.props;
     const lightboxSrc =
-      username && (username.includes(GUEST_PREFIX) || username.includes(BXY_GUEST_PREFIX))
+      username && guestUserRegex.test(username)
         ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`
         : `https://images.hive.blog/u/${username}/avatar/large`;
 
