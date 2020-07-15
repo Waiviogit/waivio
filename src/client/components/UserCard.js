@@ -13,7 +13,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
   return (
     user && (
       <div className="UserCard">
-        <div className="UserCard__left">
+        <div className={showFollow ? 'UserCard__left' : 'UserCard__sidebar'}>
           <div className="UserCard__wrap">
             <Link to={`/@${user.name}`}>
               <Avatar username={user.name} size={40} />
@@ -32,7 +32,9 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
               {alt}
             </span>
           )}
-          <span className="reblogged">&middot;&nbsp;&nbsp;{` ${user.followers_count} `}</span>
+          <span className={showFollow ? 'reblogged' : 'rebloggedFollowersNone'}>
+            &middot;&nbsp;&nbsp;{` ${user.followers_count} `}
+          </span>
         </div>
         {showFollow && (
           <FollowButton
