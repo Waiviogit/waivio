@@ -17,8 +17,8 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import './Proposition.less';
 import { getCurrentUSDPrice } from '../rewardsHelper';
+import './Proposition.less';
 
 const Proposition = ({
   intl,
