@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -31,6 +31,7 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
+  user,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -41,6 +42,7 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
+  const userName = get(JSON.parse(user.json_metadata), ['profile', 'name']);
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -91,6 +93,7 @@ const Proposition = ({
           amount,
           proposition,
           proposedWobj,
+          userName,
         }),
       )
       .then(({ isAssign }) => {
