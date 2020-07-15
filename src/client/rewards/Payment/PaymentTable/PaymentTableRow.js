@@ -10,6 +10,7 @@ import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
+import { TYPE } from '../../../../common/constants/rewards';
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
@@ -44,7 +45,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
   const time = isReports ? moment(sponsor.createdAt).format('h:mm:ss') : '';
   const getOperation = useCallback(() => {
     switch (sponsor.type) {
-      case 'overpayment_refund':
+      case TYPE.overpaymentRefund:
         return (
           <React.Fragment>
             <span className="PaymentTable__action-item fw6">
@@ -65,8 +66,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
             <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>
           </React.Fragment>
         );
-      case 'transfer':
-      case 'demo_debt':
+      case TYPE.transfer:
+      case TYPE.demoDebt:
         return (
           <React.Fragment>
             <span className="PaymentTable__action-item fw6">
@@ -160,9 +161,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive }) => {
         </div>
       </td>
       <td>
-        {sponsor.type === 'transfer' ||
-        sponsor.type === 'demo_debt' ||
-        sponsor.type === 'overpayment_refund' ? (
+        {sponsor.type === TYPE.transfer ||
+        sponsor.type === TYPE.demoDebt ||
+        sponsor.type === TYPE.overpaymentRefund ? (
           <p>
             {intl.formatMessage({
               id: 'paymentTable_payment',

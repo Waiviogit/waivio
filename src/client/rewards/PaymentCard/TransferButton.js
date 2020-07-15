@@ -2,17 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import {
-  BXY_GUEST_PREFIX,
-  GUEST_PREFIX,
-  WAIVIO_PARENT_PERMLINK,
-} from '../../../common/constants/waivio';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 
 const TransferButton = ({
   match,
@@ -24,7 +21,7 @@ const TransferButton = ({
   openLinkModal,
   openTransf,
 }) => {
-  const isReceiverGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
+  const isReceiverGuest = guestUserRegex.test(name);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
   const payableForRender = Math.abs(payable);

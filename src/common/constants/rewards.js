@@ -11,4 +11,10 @@ export const REWARD = {
   overpayment_refund: 'overpayment_refund',
 };
 
+export const TYPE = {
+  transfer: 'transfer',
+  demoDebt: 'demo_debt',
+  overpaymentRefund: 'overpayment_refund',
+};
+
 export default null;
