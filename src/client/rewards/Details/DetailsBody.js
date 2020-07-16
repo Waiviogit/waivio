@@ -1,27 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import { getRate, getRewardFund } from '../../reducers';
+import { getWeightValue } from '../../reducers';
 import './Details.less';
 
-const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
-  const rate = useSelector(getRate);
-  const rewardFund = useSelector(getRewardFund);
+const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const checked = Boolean(isEmpty(objectDetails.existAssigns));
-  const minExpertise =
-    (get(objectDetails, ['userRequirements', 'minExpertise']) / rewardFund.recent_claims) *
-    rewardFund.reward_balance.replace(' HIVE', '') *
-    rate *
-    1000000;
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -29,7 +22,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
-          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise}`}</div>
+          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
@@ -112,6 +105,16 @@ DetailsBody.propTypes = {
   objectDetails: PropTypes.shape().isRequired,
   proposedWobj: PropTypes.shape().isRequired,
   requiredObjectName: PropTypes.string.isRequired,
+  minExpertise: PropTypes.number,
 };
 
-export default injectIntl(DetailsBody);
+DetailsBody.defaultProps = {
+  minExpertise: 0,
+};
+
+export default connect((state, ownProp) => ({
+  minExpertise: getWeightValue(
+    state,
+    get(ownProp, ['objectDetails', 'userRequirements', 'minExpertise']),
+  ),
+}))(injectIntl(DetailsBody));
