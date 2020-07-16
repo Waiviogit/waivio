@@ -1244,5 +1244,7 @@
   "receive_address": "Адрес получателя",
   "deposit_account": "Аккаунт отправителя",
   "deposit_transaction_hash": "Хэш транзакции депозита",
-  "deposit_usd_value": "Депозит в долларах США"
+  "deposit_usd_value": "Депозит в долларах США",
+  "review_author_rewards": "Авторская награда: {title}",
+  "comments_author_rewards": "Авторская награда за комментарий: {title}"
 }

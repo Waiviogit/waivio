@@ -1241,5 +1241,7 @@
   "receive_address": "Receive Address",
   "deposit_account": "Deposit account",
   "deposit_transaction_hash": "Deposit Transaction Hash",
-  "deposit_usd_value": "Deposit USD Value"
+  "deposit_usd_value": "Deposit USD Value",
+  "review_author_rewards": "Author rewards: {title}",
+  "comments_author_rewards": "Author rewards for comments: {title}"
 }
