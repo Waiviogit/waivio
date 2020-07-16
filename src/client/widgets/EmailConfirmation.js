@@ -23,13 +23,14 @@ const EmailConfirmation = ({
   userName,
   isGuest,
   closeWithdrawModal,
+  isSettings,
 }) => {
   const [isCheck, setCheck] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 
   const currentEmail = email || newEmail;
-  const confirmationType = 'confirmTransaction';
+  const confirmationType = isSettings ? 'confirmEmail' : 'confirmTransaction';
 
   const handleChangeEmail = () => {
     setIsVisibleConfirm(true);
@@ -193,12 +194,19 @@ const EmailConfirmation = ({
 
 EmailConfirmation.propTypes = {
   intl: PropTypes.shape().isRequired,
-  visible: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
+  handleClose: PropTypes.func,
   email: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
+  isSettings: PropTypes.bool,
+};
+
+EmailConfirmation.defaultProps = {
+  visible: false,
+  isSettings: false,
+  handleClose: () => {},
 };
 
 export default connect(
