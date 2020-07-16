@@ -318,7 +318,6 @@ Withdraw.propTypes = {
   cryptosPriceHistory: PropTypes.shape().isRequired,
   getPrivateEmail: PropTypes.func.isRequired,
 };
-
 export default connect(
   state => ({
     user: getAuthenticatedUser(state),
