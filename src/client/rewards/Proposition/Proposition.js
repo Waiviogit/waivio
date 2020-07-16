@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
