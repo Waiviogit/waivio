@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import _ from 'lodash';
 import USDDisplay from './Utils/USDDisplay';
-import { calculatePayout } from '../vendor/steemitHelpers';
+import { calculatePayout, isPostCashout } from '../vendor/steemitHelpers';
 
 const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) =>
   _.isNumber(amount) &&
@@ -83,21 +83,7 @@ const PayoutDetail = ({ intl, post }) => {
         defaultMessage="Promoted: {amount}"
         amount={promotionCost}
       />
-      {cashoutInTime ? (
-        <div>
-          <AmountWithLabel
-            id="payout_potential_payout_amount"
-            defaultMessage="Potential Payout: {amount}"
-            amount={potentialPayout}
-          />
-          {beneficaries}
-          <FormattedMessage
-            id="payout_will_release_in_time"
-            defaultMessage="Will release {time}"
-            values={{ time: intl.formatRelative(cashoutInTime) }}
-          />
-        </div>
-      ) : (
+      {isPostCashout(post) ? (
         <div>
           <AmountWithLabel
             id="payout_total_past_payout_amount"
@@ -113,6 +99,20 @@ const PayoutDetail = ({ intl, post }) => {
             id="payout_curators_payout_amount"
             defaultMessage="Curators payout: {amount}"
             amount={curatorPayouts}
+          />
+        </div>
+      ) : (
+        <div>
+          <AmountWithLabel
+            id="payout_potential_payout_amount"
+            defaultMessage="Potential Payout: {amount}"
+            amount={potentialPayout}
+          />
+          {beneficaries}
+          <FormattedMessage
+            id="payout_will_release_in_time"
+            defaultMessage="Will release {time}"
+            values={{ time: intl.formatRelative(cashoutInTime) }}
           />
         </div>
       )}
