@@ -799,7 +799,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
       }
       if (!globalReport) {
         preparedObject = {
-          userName: user,
+          userName: user || sponsor,
         };
         if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
         if (obj.payable) preparedObject.payable = obj.payable;
