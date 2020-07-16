@@ -1071,6 +1071,23 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .catch(err => err);
 };
 
+export const sendPendingTransfer = async ({ sponsor, userName, amount, transactionId, memo }) => {
+  const body = {
+    sponsor,
+    userName,
+    amount,
+    transactionId,
+    memo,
+  };
+  return fetch(`${config.campaignApiPrefix}${config.payments}${config.setPendingStatus}`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
 export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink) => {
   let res;
   if (startPermlink) {

@@ -91,5 +91,6 @@
   "confirmEmail": "/confirm-email-request",
   "validateAddress": "/validate-crypto-wallet",
   "finalConfirmTransaction": "/confirm-transaction",
-  "getWithdrawData": "/get-withdraw-data"
+  "getWithdrawData": "/get-withdraw-data",
+  "setPendingStatus": "/set-pending-transfer"
 }
