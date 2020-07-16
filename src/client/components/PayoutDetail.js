@@ -57,7 +57,6 @@ const PayoutDetail = ({ intl, post }) => {
     payoutLimitHit,
     potentialPayout,
     promotionCost,
-    cashoutInTime,
     isPayoutDeclined,
     pastPayouts,
     authorPayouts,
@@ -112,7 +111,7 @@ const PayoutDetail = ({ intl, post }) => {
           <FormattedMessage
             id="payout_will_release_in_time"
             defaultMessage="Will release {time}"
-            values={{ time: intl.formatRelative(cashoutInTime) }}
+            values={{ time: intl.formatRelative(post.cashout_time) }}
           />
         </div>
       )}
