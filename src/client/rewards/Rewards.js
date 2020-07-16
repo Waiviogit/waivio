@@ -336,6 +336,7 @@ class Rewards extends React.Component {
     amount,
     proposition,
     proposedWobj,
+    userName,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
@@ -351,6 +352,7 @@ class Rewards extends React.Component {
         amount,
         proposition,
         proposedWobj,
+        userName,
       })
       .then(() => {
         message.success(
@@ -463,8 +465,7 @@ class Rewards extends React.Component {
         console.log(error);
       }
     };
-
-    const { intl } = this.props;
+    const { intl, user } = this.props;
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
@@ -501,6 +502,7 @@ class Rewards extends React.Component {
                 assigned={wobj.assigned}
                 history={this.props.history}
                 isAssign={isAssign}
+                user={user}
                 match={this.props.match}
                 getMessageHistory={getMessageHistory}
               />

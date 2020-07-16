@@ -7,7 +7,7 @@ import store from 'store';
 
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
-import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
+import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 
@@ -912,7 +912,7 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) =>
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {}) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
@@ -1074,11 +1074,11 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: ACCOUNT_UPDATE,
+            id: GUEST_ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
               json_metadata: '',
-              posting_json_metadata: JSON.stringify(json_metadata),
+              posting_json_metadata: JSON.stringify({ ...json_metadata, version: 2 }),
             }),
           },
         ],
@@ -1299,7 +1299,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 50) =>
+export const getTransferHistory = (username, skip = 0, limit = 10) =>
   fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
@@ -1310,7 +1310,5 @@ export const getTransferHistory = (username, skip = 0, limit = 50) =>
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
-
-// I don't read changes before commit
 
 export default null;

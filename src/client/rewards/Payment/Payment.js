@@ -9,14 +9,11 @@ import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
-import {
-  BXY_GUEST_PREFIX,
-  GUEST_PREFIX,
-  WAIVIO_PARENT_PERMLINK,
-} from '../../../common/constants/waivio';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 import './Payment.less';
 
 // eslint-disable-next-line no-shadow
@@ -47,11 +44,11 @@ const Payment = ({
     };
   };
 
-  const isReceiverGuest =
-    match.params.userName.startsWith(GUEST_PREFIX) ||
-    match.params.userName.startsWith(BXY_GUEST_PREFIX);
+  const isReceiverGuest = guestUserRegex.test(match.params.userName);
+  const pathRecivables = includes(match.path, 'receivables');
+  const isOverpayment = payable < 0;
 
-  const memo = getMemo(isReceiverGuest);
+  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
 
