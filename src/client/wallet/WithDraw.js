@@ -74,7 +74,6 @@ const Withdraw = ({
 
   useEffect(() => {
     if (draftTransfer) {
-      setHiveAmount(draftTransfer.hiveAmount);
       setCurrentCurrency(draftTransfer.currentCurrency);
       setWalletAddress(draftTransfer.walletAddress);
       walletAddressValidation(
@@ -134,7 +133,6 @@ const Withdraw = ({
   const handleRequest = () => {
     setIsLoading(true);
     store.set('withdrawData', {
-      hiveAmount,
       walletAddress,
       currentCurrency,
     });
