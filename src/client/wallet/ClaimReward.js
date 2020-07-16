@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  FormattedMessage,
-  FormattedRelative,
-  FormattedNumber,
-  FormattedDate,
-  FormattedTime,
-} from 'react-intl';
+import { FormattedMessage, FormattedRelative, FormattedNumber } from 'react-intl';
 import formatter from '../helpers/steemitFormatter';
 import BTooltip from '../components/BTooltip';
+import { epochToUTC } from '../helpers/formatter';
 
 const getFormattedPayout = (
   rewardSteem,
@@ -97,12 +92,12 @@ const ClaimReward = ({
         <BTooltip
           title={
             <span>
-              <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
           }
         >
           <span>
-            <FormattedRelative value={`${timestamp}Z`} />
+            <FormattedRelative value={epochToUTC(timestamp)} />
           </span>
         </BTooltip>
       </span>

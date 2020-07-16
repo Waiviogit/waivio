@@ -1,18 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
+import { connect } from 'react-redux';
+
 import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
+import { followWobject, unfollowWobject } from '../object/wobjActions';
+import { getAuthenticatedUserName, isGuestUser } from '../reducers';
 
 const displayLimit = 30;
 
+@connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    user: getAuthenticatedUserName(state),
+  }),
+  {
+    followWobj: followWobject,
+    unfollowWobj: unfollowWobject,
+  },
+)
 export default class ObjectList extends React.Component {
   static propTypes = {
     isOnlyHashtags: PropTypes.bool,
+    unfollowWobj: PropTypes.func,
+    followWobj: PropTypes.func,
+    isGuest: PropTypes.bool,
+    user: PropTypes.string,
   };
   static defaultProps = {
     isOnlyHashtags: false,
+    unfollowWobj: () => {},
+    followWobj: () => {},
+    isGuest: false,
+    user: '',
   };
   state = {
     wobjs: [],
@@ -22,11 +45,25 @@ export default class ObjectList extends React.Component {
   };
 
   componentDidMount() {
-    ApiClient.getObjects({ limit: displayLimit, isOnlyHashtags: this.props.isOnlyHashtags }).then(
-      wobjs => {
+    ApiClient.getObjects({
+      limit: displayLimit,
+      isOnlyHashtags: this.props.isOnlyHashtags,
+      follower: this.props.user,
+    }).then(wobjs => {
+      this.setState({ wobjs: wobjs.wobjects });
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.user && this.props.user) {
+      ApiClient.getObjects({
+        limit: displayLimit,
+        isOnlyHashtags: this.props.isOnlyHashtags,
+        follower: this.props.user,
+      }).then(wobjs => {
         this.setState({ wobjs: wobjs.wobjects });
-      },
-    );
+      });
+    }
   }
 
   handleLoadMore = () => {
@@ -43,6 +80,7 @@ export default class ObjectList extends React.Component {
           limit: displayLimit,
           skip,
           isOnlyHashtags: this.props.isOnlyHashtags,
+          follower: this.props.user,
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,
@@ -52,6 +90,63 @@ export default class ObjectList extends React.Component {
         );
       },
     );
+  };
+
+  unFollow = permlink => {
+    const matchWobjIndex = this.state.wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...this.state.wobjs];
+    wobjectsArray.splice(matchWobjIndex, 1, {
+      ...wobjectsArray[matchWobjIndex],
+      pending: true,
+    });
+
+    this.setState({ wobjs: [...wobjectsArray] });
+    this.props.unfollowWobj(permlink).then(res => {
+      if ((res.value.ok && this.props.isGuest) || !res.message) {
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          youFollows: false,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          pending: false,
+        });
+      }
+
+      this.setState({ wobjs: [...wobjectsArray] });
+    });
+  };
+
+  follow = permlink => {
+    const matchWobjectIndex = this.state.wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...this.state.wobjs];
+
+    wobjectsArray.splice(matchWobjectIndex, 1, {
+      ...wobjectsArray[matchWobjectIndex],
+      pending: true,
+    });
+
+    this.setState({ wobjs: [...wobjectsArray] });
+    this.props.followWobj(permlink).then(res => {
+      if ((this.props.isGuest && res.value.ok) || !res.message) {
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          youFollows: true,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          pending: false,
+        });
+      }
+
+      this.setState({ wobjs: [...wobjectsArray] });
+    });
   };
 
   render() {
@@ -69,7 +164,15 @@ export default class ObjectList extends React.Component {
         loadingMore={loading}
         loader={<Loading />}
       >
-        {wobjs.length && wobjs.map(wobj => <WaivioObject wobj={wobj} key={wobj.author_permlink} />)}
+        {wobjs.length &&
+          wobjs.map(wobj => (
+            <WaivioObject
+              wobj={wobj}
+              key={wobj.author_permlink}
+              unfollow={this.unFollow}
+              follow={this.follow}
+            />
+          ))}
       </ReduxInfiniteScroll>
     );
   }

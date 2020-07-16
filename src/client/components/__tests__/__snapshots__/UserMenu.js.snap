@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<UserMenu /> renders without exploding 1`] = `
+exports[`<UserMenu />  should render without exploding 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <UserMenu
@@ -46,6 +46,7 @@ ShallowWrapper {
           style={
             Object {
               "height": 46,
+              "overflowY": "hidden",
               "width": "100%",
             }
           }
@@ -197,6 +198,7 @@ ShallowWrapper {
             style={
               Object {
                 "height": 46,
+                "overflowY": "hidden",
                 "width": "100%",
               }
             }
@@ -468,6 +470,7 @@ ShallowWrapper {
             "renderView": [Function],
             "style": Object {
               "height": 46,
+              "overflowY": "hidden",
               "width": "100%",
             },
             "tagName": "div",
@@ -952,6 +955,7 @@ ShallowWrapper {
             style={
               Object {
                 "height": 46,
+                "overflowY": "hidden",
                 "width": "100%",
               }
             }
@@ -1103,6 +1107,7 @@ ShallowWrapper {
               style={
                 Object {
                   "height": 46,
+                  "overflowY": "hidden",
                   "width": "100%",
                 }
               }
@@ -1374,6 +1379,7 @@ ShallowWrapper {
               "renderView": [Function],
               "style": Object {
                 "height": 46,
+                "overflowY": "hidden",
                 "width": "100%",
               },
               "tagName": "div",

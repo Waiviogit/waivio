@@ -19,6 +19,9 @@ class MapWrap extends React.Component {
     customControl: PropTypes.node,
     onCustomControlClick: PropTypes.func,
     setMapArea: PropTypes.func.isRequired,
+    match: PropTypes.shape().isRequired,
+    primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
+    zoomMap: PropTypes.number,
   };
 
   static defaultProps = {
@@ -27,6 +30,8 @@ class MapWrap extends React.Component {
     center: [],
     customControl: null,
     onCustomControlClick: () => {},
+    primaryObjectCoordinates: [],
+    zoomMap: 0,
   };
 
   state = {
@@ -66,7 +71,18 @@ class MapWrap extends React.Component {
   };
 
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects, customControl, setMapArea } = this.props;
+    const {
+      intl,
+      userLocation,
+      onMarkerClick,
+      wobjects,
+      customControl,
+      setMapArea,
+      getAreaSearchData,
+      match,
+      primaryObjectCoordinates,
+      zoomMap,
+    } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
@@ -106,6 +122,11 @@ class MapWrap extends React.Component {
             customControl={customControl}
             onCustomControlClick={this.handleCustomControlClick}
             setMapArea={setMapArea}
+            intl={intl}
+            getAreaSearchData={getAreaSearchData}
+            match={match}
+            primaryObjectCoordinates={primaryObjectCoordinates}
+            zoomMap={zoomMap}
           />
         )}
       </div>

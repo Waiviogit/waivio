@@ -1,18 +1,21 @@
-import React from 'react';
-import { Tag } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { getTextByFilterKey } from './rewardsHelper';
+import { isEmpty, map, get } from 'lodash';
+import { getTextByFilterKey, getSort } from './rewardsHelper';
+import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
+import FilterModal from './FilterModal';
 
 const FilteredRewardsList = props => {
   const {
     hasMore,
-    IsRequiredObjectWrap,
     loading,
     filterKey,
     userName,
@@ -21,13 +24,25 @@ const FilteredRewardsList = props => {
     intl,
     isSearchAreaFilter,
     resetMapFilter,
-    sort,
+    sortEligible,
+    sortAll,
+    sortReserved,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
+    sponsors,
+    activeFilters,
+    setFilterValue,
+    campaignsTypes,
   } = props;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const sort = getSort(match, sortAll, sortEligible, sortReserved);
+
+  const showMap = () => dispatch(setMapFullscreenMode(true));
+  const IsRequiredObjectWrap = !match.params.campaignParent;
   return !loadingCampaigns ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -50,7 +65,7 @@ const FilteredRewardsList = props => {
             to={`/object/${propositions[0].requiredObject}`}
             className="FilteredRewardsList__header-text"
           >
-            {propositions[0].required_object.default_name}
+            {get(propositions, ['0', 'required_object', 'default_name'])}
           </Link>
         </div>
       ) : (
@@ -72,6 +87,38 @@ const FilteredRewardsList = props => {
           </SortSelector.Item>
         </SortSelector>
       )}
+      {!isEmpty(sponsors) && (
+        <div className="FilteredRewardsList__filters-tags-block">
+          <span className="FilteredRewardsList__filters-topic ttc">
+            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+          </span>
+          {map(activeFilters, (filterValues, filterName) =>
+            map(filterValues, filterValue => (
+              <Tag
+                key={`${filterName}:${filterValue}`}
+                closable
+                onClose={() => setFilterValue(filterValue, filterName)}
+              >
+                {filterValue}
+              </Tag>
+            )),
+          )}
+          <span
+            className="FilteredRewardsList__filters-selector underline ttl"
+            role="presentation"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+          </span>
+        </div>
+      )}
+      {!isEmpty(sponsors) && (
+        <div className="FilteredRewardsList__filters-toggle-map tc">
+          <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
+            {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+          </Button>
+        </div>
+      )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -83,6 +130,25 @@ const FilteredRewardsList = props => {
           {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
         </ReduxInfiniteScroll>
       </div>
+
+      <Modal
+        className="FilteredRewardsList__filters-modal"
+        footer={null}
+        title={intl.formatMessage({
+          id: 'filter_rewards',
+          defaultMessage: 'Filter rewards',
+        })}
+        closable
+        visible={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <FilterModal
+          intl={intl}
+          activeFilters={activeFilters}
+          filters={{ types: campaignsTypes, guideNames: sponsors }}
+          setFilterValue={setFilterValue}
+        />
+      </Modal>
     </React.Fragment>
   ) : (
     <Loading />
@@ -93,27 +159,41 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'reward',
+  sortReserved: 'proximity',
+  sortAll: 'proximity',
+  sortEligible: 'proximity',
   loadingCampaigns: false,
   loading: false,
+  sponsors: [],
+  campaignsTypes: [],
+  setFilterValue: () => {},
+  handleLoadMore: () => {},
+  resetMapFilter: () => {},
+  activeFilters: {},
+  userName: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
-  IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
-  resetMapFilter: PropTypes.func.isRequired,
-  sort: PropTypes.string,
+  resetMapFilter: PropTypes.func,
+  sortAll: PropTypes.string,
+  sortReserved: PropTypes.string,
+  sortEligible: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
-  handleLoadMore: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func,
+  sponsors: PropTypes.arrayOf(PropTypes.string),
+  activeFilters: PropTypes.shape(),
+  setFilterValue: PropTypes.func,
+  campaignsTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;

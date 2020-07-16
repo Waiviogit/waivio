@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Modal, Checkbox } from 'antd';
+import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import DetailsBody from './DetailsBody';
+import DetailsPostRequirments from './DetailsPostRequirments';
 import './Details.less';
 
 const Details = ({
@@ -16,26 +17,42 @@ const Details = ({
   loading,
   reserveOnClickHandler,
   assigned,
-  isReserved,
   proposedWobj,
   isReviewDetails,
   requiredObjectName,
+  isEligible,
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const isCamaignReserved =
-    !(assigned !== null && !assigned && !isReserved) ||
-    loading ||
-    objectDetails.isReservedSiblingObj;
+    !(assigned !== null && !assigned) || loading || objectDetails.isReservedSiblingObj;
 
-  const isEligible =
-    objectDetails.requirement_filters.expertise &&
-    objectDetails.requirement_filters.followers &&
-    objectDetails.requirement_filters.posts &&
-    objectDetails.requirement_filters.not_blacklisted;
+  const isExpired = objectDetails.status === 'expired';
+  const isInActive = objectDetails.status === 'inactive';
 
-  let indexItem = 1;
+  const getRequiredObjectName = () => {
+    let result;
+    if (requiredObjectName.includes('&')) {
+      result = requiredObjectName.replace('&', '%26');
+    } else {
+      result = requiredObjectName;
+    }
+    return result;
+  };
+
+  const getProposedWobjName = () => {
+    let result;
+    if (proposedWobj.name && proposedWobj.name.includes('&')) {
+      result = proposedWobj.name.replace('&', '%26');
+    } else {
+      result = proposedWobj.name;
+    }
+    return result;
+  };
+
+  const objName = getRequiredObjectName();
+  const proposedWobjName = getProposedWobjName();
 
   return (
     <Modal
@@ -48,143 +65,22 @@ const Details = ({
       footer={null}
       width={768}
     >
-      <CampaignCardHeader campaignData={objectDetails} isDetails />
-      <div className="Details__text-wrap">
-        {!isReviewDetails && (
-          <React.Fragment>
-            <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
-            <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
-            <div className="Details__criteria-wrap">
-              <div className="Details__criteria-row">
-                <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
-                <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
-              </div>
-              <div className="Details__criteria-row">
-                <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
-                <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
-              </div>
-              <div className="Details__criteria-row">
-                <Checkbox checked={objectDetails.requirement_filters.posts} disabled />
-                <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
-              </div>
-              {!!objectDetails.frequency_assign && (
-                <div className="Details__criteria-row">
-                  <Checkbox checked disabled />
-                  <div>
-                    {messageData.receivedRewardFrom}
-                    <Link
-                      to={`/@${objectDetails.guide.name}`}
-                    >{` @${objectDetails.guide.name} `}</Link>
-                    {messageData.forReviewing}
-                    <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
-                      {` ${requiredObjectName} `}
-                    </Link>
-                    {messageData.inTheLast}
-                  </div>
-                </div>
-              )}
-              <div className="Details__criteria-row">
-                <Checkbox checked={objectDetails.requirement_filters.not_blacklisted} disabled />
-                <div>
-                  {messageData.accountNotBlacklisted}
-                  <Link
-                    to={`/@${objectDetails.guide.name}`}
-                  >{` @${objectDetails.guide.name} `}</Link>
-                  {messageData.referencedAccounts}
-                </div>
-              </div>
-            </div>
-          </React.Fragment>
-        )}
-        <div className="Details__text fw6 mv3">{messageData.postRequirements}:</div>
-        <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
-        <div className="Details__criteria-wrap">
-          <div className="Details__criteria-row Details__criteria-row--mobile">
-            {/* eslint-disable-next-line no-plusplus */}
-            {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
-            <Link className="ml1" to={`/object/${proposedWobj.name}`}>
-              {proposedWobj.name}
-            </Link>
-            ;
-          </div>
-          {objectDetails.requirements.receiptPhoto && (
-            /* eslint-disable-next-line no-plusplus */
-            <div className="Details__criteria-row">{`${indexItem++}. ${
-              messageData.photoReceipt
-            }`}</div>
-          )}
-          <div className="Details__criteria-row nowrap">
-            {/* eslint-disable-next-line no-plusplus */}
-            {`${indexItem++}. ${messageData.linkTo}`}
-            <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
-              {proposedWobj.name}
-            </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${proposedWobj.author_permlink}`}
-              >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
-            </span>
-            ;
-          </div>
-          <div className="Details__criteria-row nowrap">
-            {/* eslint-disable-next-line no-plusplus */}
-            {`${indexItem++}. ${messageData.linkTo}`}
-            <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-              {requiredObjectName}
-            </Link>
-            <span className="no-visible">
-              :
-              <Link
-                className="Details__criteria-link ml1"
-                to={`/object/${objectDetails.requiredObject}`}
-              >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
-            </span>
-            ;
-          </div>
-          <div className="Details__criteria-row">
-            {objectDetails.description &&
-              /* eslint-disable-next-line no-plusplus */
-              `${indexItem++}. ${messageData.additionalRequirements}: ${objectDetails.description}`}
-          </div>
-        </div>
-        <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
-        {!isReviewDetails && (
-          <React.Fragment>
-            <div className="Details__text fw6 mv3">{messageData.reward}:</div>
-            <span>
-              {messageData.amountRewardDetermined}(
-              <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
-              {!isEmpty(objectDetails.match_bots) &&
-                objectDetails.match_bots.map(bot => (
-                  <React.Fragment>
-                    ,
-                    <Link className="ml1" to={`/@${bot}`}>
-                      {`@${bot}`}
-                    </Link>
-                  </React.Fragment>
-                ))}
-              ){messageData.countTowardsPaymentRewards}
-            </span>
-
-            <div className="Details__text fw6 mv3">{messageData.legal}:</div>
-            <span>
-              {messageData.makingReservation}
-              <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
-                {messageData.legalTermsAndConditions}
-              </Link>
-              {!isEmpty(objectDetails.agreementObjects) && ` ${messageData.includingTheFollowing}`}
-              {!isEmpty(objectDetails.agreementObjects) &&
-                objectDetails.agreementObjects.map(obj => (
-                  <Link className="ml1" to={`/object/${obj}/page`}>
-                    {obj}
-                  </Link>
-                ))}
-            </span>
-          </React.Fragment>
-        )}
-      </div>
+      <CampaignCardHeader campaignData={objectDetails} />
+      {!isReviewDetails ? (
+        <DetailsBody
+          objectDetails={objectDetails}
+          intl={intl}
+          proposedWobj={proposedWobj}
+          requiredObjectName={requiredObjectName}
+        />
+      ) : (
+        <DetailsPostRequirments
+          proposedWobj={proposedWobj}
+          requiredObjectName={requiredObjectName}
+          intl={intl}
+          objectDetails={objectDetails}
+        />
+      )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={toggleModal}>{messageData.cancel}</Button>
@@ -192,7 +88,7 @@ const Details = ({
             <Button
               type="primary"
               loading={loading}
-              disabled={isCamaignReserved && !isEligible}
+              disabled={!isEligible || isInActive || isExpired}
               onClick={reserveOnClickHandler}
             >
               {!isCamaignReserved ? messageData.reserve : messageData.reserved}
@@ -200,7 +96,7 @@ const Details = ({
           ) : (
             <Link
               // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${requiredObjectName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobj.name}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
+              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
             >
               <Button type="primary">
                 {intl.formatMessage({
@@ -223,12 +119,17 @@ Details.propTypes = {
   objectDetails: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   reserveOnClickHandler: PropTypes.func.isRequired,
-  assigned: PropTypes.bool.isRequired,
-  isReserved: PropTypes.bool.isRequired,
+  assigned: PropTypes.bool,
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
+  isEligible: PropTypes.bool.isRequired,
+};
+
+Details.defaultProps = {
+  loading: false,
+  assigned: false,
 };
 export default injectIntl(Details);

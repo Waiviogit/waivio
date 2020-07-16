@@ -32,6 +32,7 @@ import { getHtml } from '../components/Story/Body';
 import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
+import { getProxyImageURL } from '../helpers/image';
 
 @injectIntl
 @connect(
@@ -85,6 +86,7 @@ class PostContent extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    isOriginalPost: PropTypes.string,
   };
 
   static defaultProps = {
@@ -103,6 +105,7 @@ class PostContent extends React.Component {
     followUser: () => {},
     unfollowUser: () => {},
     push: () => {},
+    isOriginalPost: '',
   };
 
   constructor(props) {
@@ -112,28 +115,56 @@ class PostContent extends React.Component {
   }
 
   componentDidMount() {
-    const { hash } = window.location;
+    this.renderWithCommentsSettings();
+  }
+
+  componentDidUpdate() {
+    this.renderWithCommentsSettings();
+  }
+
+  renderWithCommentsSettings = () => {
+    const { hash, pathname } = window.location;
+    const { content } = this.props;
     // PostContent renders only when content is loaded so it's good moment to scroll to comments.
-    if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z-.]+\/[a-zA-Z-]+/.test(hash)) {
+    if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z0-9-.]+\/[a-zA-Z0-9-]+/.test(hash)) {
+      if (
+        typeof window !== 'undefined' &&
+        content.guestInfo &&
+        content.guestInfo.userId &&
+        pathname.indexOf(content.guestInfo.userId) === -1
+      )
+        window.history.replaceState(
+          {},
+          '',
+          `/@${content.guestInfo.userId}/${content.permlink}${window.location.hash}`,
+        );
+
       const el = document.getElementById('comments');
       if (el) el.scrollIntoView({ block: 'start' });
     }
-  }
+  };
+
+  getAuthorName = post =>
+    post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
 
   handleLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
+    const authorName = post.guestInfo ? post.root_author : post.author;
+
     if (sliderMode && !postState.isLiked) {
-      this.props.votePost(post.id, post.author, post.permlink, weight);
+      this.props.votePost(post.id, authorName, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, post.author, post.permlink, 0);
+      this.props.votePost(post.id, authorName, post.permlink, 0);
     } else {
-      this.props.votePost(post.id, post.author, post.permlink, defaultVotePercent);
+      this.props.votePost(post.id, authorName, post.permlink, defaultVotePercent);
     }
   };
 
   handleReportClick(post, postState) {
     const weight = postState.isReported ? 0 : -10000;
-    this.props.votePost(post.id, post.author, post.permlink, weight);
+    const authorName = post.guestInfo ? post.root_author : post.author;
+
+    this.props.votePost(post.id, authorName, post.permlink, weight);
   }
 
   handleShareClick = post => this.props.reblog(post.id);
@@ -141,11 +172,12 @@ class PostContent extends React.Component {
   handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
-    const isFollowed = this.props.followingList.includes(post.author);
+    const authorName = this.getAuthorName(post);
+    const isFollowed = this.props.followingList.includes(authorName);
     if (isFollowed) {
-      this.props.unfollowUser(post.author);
+      this.props.unfollowUser(authorName);
     } else {
-      this.props.followUser(post.author);
+      this.props.followUser(authorName);
     }
   };
 
@@ -172,6 +204,7 @@ class PostContent extends React.Component {
       rewardFund,
       defaultVotePercent,
       appUrl,
+      isOriginalPost,
     } = this.props;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -190,7 +223,7 @@ class PostContent extends React.Component {
         : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(content.author),
+      userFollowed: followingList.includes(this.getAuthorName(content)),
     };
 
     const pendingLike =
@@ -203,20 +236,21 @@ class PostContent extends React.Component {
       (pendingLikes[content.id].weight < 0 ||
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
-    const { title, category, created, author, body } = content;
+    const { title, category, created, body, guestInfo } = content;
+    const authorName = this.getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
-    const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
+    const desc = `${truncate(bodyText, { length: 143 })} by ${authorName}`;
+    const image =
+      postMetaImage ||
+      getAvatarURL(authorName) ||
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
       dropCategory(content.url),
-      content.guestInfo,
+      guestInfo,
     )}`;
-    const url = `${waivioHost}${replaceBotWithGuestName(
-      dropCategory(content.url),
-      content.guestInfo,
-    )}`;
+    const url = `${waivioHost}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
 
@@ -226,20 +260,24 @@ class PostContent extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <link rel="amphtml" href={ampUrl} />
-          <meta property="description" content={desc} />
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image} />
-          <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Waivio" />
-          <meta property="article:tag" content={category} />
-          <meta property="article:published_time" content={created} />
-          <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@waivio'} />
-          <meta property="twitter:title" content={metaTitle} />
-          <meta property="twitter:description" content={desc} />
-          <meta property="twitter:image" content={image} />
+          <meta name="description" property="description" content={desc} />
+          <meta name="og:title" property="og:title" content={metaTitle} />
+          <meta name="og:type" property="og:type" content="article" />
+          <meta name="og:url" property="og:url" content={url} />
+          <meta name="og:image" property="og:image" content={getProxyImageURL(image)} />
+          <meta name="og:description" property="og:description" content={desc} />
+          <meta name="og:site_name" property="og:site_name" content="Waivio" />
+          <meta name="article:tag" property="article:tag" content={category} />
+          <meta name="article:published_time" property="article:published_time" content={created} />
+          <meta
+            name="twitter:card"
+            property="twitter:card"
+            content={image ? 'summary_large_image' : 'summary'}
+          />
+          <meta name="twitter:site" property="twitter:site" content={'@waivio'} />
+          <meta name="twitter:title" property="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" property="twitter:description" content={desc} />
+          <meta name="twitter:image" property="twitter:image" content={image} />
         </Helmet>
         <StoryFull
           user={user}
@@ -249,11 +287,11 @@ class PostContent extends React.Component {
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
-          pendingFollow={pendingFollows.includes(content.author)}
+          pendingFollow={pendingFollows.includes(authorName)}
           pendingBookmark={pendingBookmarks.includes(content.id)}
           saving={saving}
           rewardFund={rewardFund}
-          ownPost={author === user.name}
+          ownPost={authorName === user.name}
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
           onLikeClick={this.handleLikeClick}
@@ -262,6 +300,7 @@ class PostContent extends React.Component {
           onSaveClick={this.handleSaveClick}
           onFollowClick={this.handleFollowClick}
           onEditClick={this.handleEditClick}
+          isOriginalPost={isOriginalPost}
         />
       </div>
     );

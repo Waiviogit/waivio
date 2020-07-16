@@ -1,30 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
-import { useDispatch } from 'react-redux';
+import { isEmpty, includes } from 'lodash';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
+import { openLinkHiveAccountModal } from '../../settings/settingsActions';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
+import { HIVE } from '../../../common/constants/cryptos';
+import { getMemo } from '../rewardsHelper';
+import { guestUserRegex } from '../../helpers/regexHelpers';
 import './Payment.less';
-import { GUEST_PREFIX } from '../../../common/constants/waivio';
 
 // eslint-disable-next-line no-shadow
-const Payment = ({ match, intl, userName }) => {
+const Payment = ({
+  match,
+  intl,
+  userName,
+  isGuest,
+  hiveBeneficiaryAccount,
+  openLinkModal,
+  openTransf,
+}) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
-
-  const dispatch = useDispatch();
 
   const requestParams = {
     sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
     user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
   };
 
-  const isReceiverGuest = match.params.userName.startsWith(GUEST_PREFIX);
-  const memo = isReceiverGuest ? 'guest_reward' : 'user_reward';
+  const isReceiverGuest = guestUserRegex.test(match.params.userName);
+  const pathRecivables = includes(match.path, 'receivables');
+  const isOverpayment = payable < 0;
+
+  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
+  const app = WAIVIO_PARENT_PERMLINK;
+  const currency = HIVE.symbol;
 
   useEffect(() => {
     getLenders(requestParams)
@@ -52,6 +68,14 @@ const Payment = ({ match, intl, userName }) => {
   }
 
   const name = match.params.userName;
+  const userReward = `"id":"user_reward"`;
+  const payableForRender = Math.abs(payable);
+  const handleClick = () => {
+    if (!hiveBeneficiaryAccount && isGuest) {
+      openLinkModal(true);
+    }
+    openTransf(name, payableForRender, currency, memo, app);
+  };
 
   return (
     <div className="Payment">
@@ -63,18 +87,20 @@ const Payment = ({ match, intl, userName }) => {
           <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
-          {isPayables && payable && (
-            <Action
-              className="WalletSidebar__transfer"
-              primary
-              onClick={() => dispatch(openTransfer(name, payable, 'HIVE', memo))}
-            >
+          {(isPayables && payable > 0) || (!isPayables && payable < 0) ? (
+            <Action className="WalletSidebar__transfer" primary onClick={handleClick}>
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable} HIVE`}
+              {` ${
+                isPayables
+                  ? payable && payable.toFixed(3)
+                  : payableForRender && payableForRender.toFixed(3)
+              } HIVE`}
             </Action>
+          ) : (
+            ''
           )}
         </div>
       </div>
@@ -86,12 +112,18 @@ const Payment = ({ match, intl, userName }) => {
           })}
           :
         </div>
-        {intl.formatMessage({
-          id: 'payment_page_transfers_with_hashtag_included',
-          defaultMessage: 'Only transfer with hashtag "#waivio" are included',
-        })}
+        {intl.formatMessage(
+          {
+            id: 'payment_page_transfers_with_user_reward_included',
+            defaultMessage:
+              'Only transfer with {userRewards} instructions are processed as rewards payments',
+          },
+          {
+            userReward,
+          },
+        )}
       </div>
-      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
     </div>
   );
 };
@@ -100,6 +132,26 @@ Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  isGuest: PropTypes.bool,
+  hiveBeneficiaryAccount: PropTypes.string,
+  openLinkModal: PropTypes.func,
+  openTransf: PropTypes.func,
 };
 
-export default injectIntl(Payment);
+Payment.defaultProps = {
+  isGuest: false,
+  hiveBeneficiaryAccount: '',
+  openLinkModal: () => {},
+  openTransf: () => {},
+};
+
+export default connect(
+  state => ({
+    isGuest: isGuestUser(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
+  }),
+  {
+    openLinkModal: openLinkHiveAccountModal,
+    openTransf: openTransfer,
+  },
+)(injectIntl(Payment));

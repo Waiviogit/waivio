@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
-import find from 'lodash/find';
+import { message, Modal } from 'antd';
+import { find, has } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -12,7 +12,8 @@ import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
-import { delay } from '../rewardsHelpers';
+import { getContent } from '../../../waivioApi/ApiClient';
+
 import './CampaignFooter.less';
 
 @injectIntl
@@ -84,6 +85,7 @@ class CampaignFooter extends React.Component {
       reservedUser: {},
       daysLeft: 0,
       loading: false,
+      currentPost: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -107,6 +109,14 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition } = this.props;
+    if (
+      has(proposition, ['objects', '0', 'author']) &&
+      has(proposition, ['objects', '0', 'permlink'])
+    ) {
+      getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
+        this.setState({ currentPost: res }),
+      );
+    }
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
@@ -138,12 +148,14 @@ class CampaignFooter extends React.Component {
     }
   };
 
-  handleFollowClick(post) {
+  handleFollowClick() {
     const { userFollowed } = this.props.postState;
+    const { proposition } = this.props;
+
     if (userFollowed) {
-      this.props.unfollowUser(post.parent_author);
+      this.props.unfollowUser(proposition.guideName);
     } else {
-      this.props.followUser(post.parent_author);
+      this.props.followUser(proposition.guideName);
     }
   }
 
@@ -172,18 +184,22 @@ class CampaignFooter extends React.Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  };
+  toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    discardPr(proposedWobj)
-      .then(() => {
+    discardPr(proposedWobj).then(({ isAssign }) => {
+      if (!isAssign) {
         this.toggleModal();
-      })
-      .then(() => delay(1500))
-      .then(() => this.props.history.push(`/rewards/active`));
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Reservation released. It will be available for reservation soon.',
+          }),
+          this.props.history.push(`/rewards/active`),
+        );
+      }
+    });
   };
 
   handlePostPopoverMenuClick(key) {
@@ -218,7 +234,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -233,14 +249,15 @@ class CampaignFooter extends React.Component {
       toggleModalDetails,
       requiredObjectName,
       loading,
+      proposition,
     } = this.props;
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          {this.state.sliderVisible && (
+          {sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
-          {!this.state.sliderVisible && (
+          {!sliderVisible && (
             <CampaignButtons
               daysLeft={daysLeft}
               toggleModalDetails={toggleModalDetails}
@@ -257,10 +274,11 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
+              propositionGuideName={proposition.guide.name}
             />
           )}
         </div>
-        {this.state.sliderVisible && (
+        {sliderVisible && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
@@ -268,7 +286,11 @@ class CampaignFooter extends React.Component {
           />
         )}
         {!singlePostVew && isComment && (
-          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={this.state.currentPost}
+          />
         )}
         <Modal
           closable

@@ -15,6 +15,7 @@ import {
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import {
+  getIsStartSearchAutoComplete,
   getAuthenticatedUserMetaData,
   getAutoCompleteSearchResults,
   getIsLoadingNotifications,
@@ -36,10 +37,12 @@ import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
-
-import './Topnav.less';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
+import { getApprovedField } from '../../helpers/wObjectHelper';
+import { pendingSearch } from '../../search/Search';
+
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -52,6 +55,7 @@ import WeightTag from '../WeightTag';
     notifications: getNotifications(state),
     userMetaData: getAuthenticatedUserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
+    isStartSearchAutoComplete: getIsStartSearchAutoComplete(state),
   }),
   {
     searchObjectsAutoCompete,
@@ -88,6 +92,7 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    isStartSearchAutoComplete: PropTypes.bool,
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
@@ -99,6 +104,7 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
+    isStartSearchAutoComplete: false,
   };
 
   static markers = {
@@ -140,13 +146,9 @@ class Topnav extends React.Component {
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchBarValue !== this.state.searchBarValue &&
-      this.state.searchBarValue !== ''
-    ) {
-      this.debouncedSearchByUser(this.state.searchBarValue);
-      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.handleClearSearchData();
     }
   }
 
@@ -158,6 +160,7 @@ class Topnav extends React.Component {
       : null;
     const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
     const countArr = [{ name: 'All', count: countAllSearch }];
+
     if (!isEmpty(wobjectsCounts)) {
       const wobjList = listOfObjectTypes.reduce((acc, i) => {
         const index = wobjectsCounts.findIndex(obj => obj.object_type === i);
@@ -171,6 +174,7 @@ class Topnav extends React.Component {
 
       forEach(wobjList, current => {
         const obj = {};
+
         obj.name = current.object_type;
         obj.count = current.count;
         obj.type = 'wobject';
@@ -183,19 +187,25 @@ class Topnav extends React.Component {
     if (usersCount) {
       countArr.push({ name: 'Users', count: usersCount, type: 'user' });
     }
+
     return countArr;
   };
 
   debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
 
-  debouncedSearchByObject = debounce((searchString, objType) =>
-    this.props.searchObjectsAutoCompete(searchString, objType),
+  debouncedSearchByObject = debounce(
+    (searchString, objType) => this.props.searchObjectsAutoCompete(searchString, objType),
+    300,
   );
 
-  debouncedSearchByUser = debounce(searchString => this.props.searchUsersAutoCompete(searchString));
+  debouncedSearchByUser = debounce(
+    searchString => this.props.searchUsersAutoCompete(searchString),
+    300,
+  );
 
-  debouncedSearchByObjectTypes = debounce(searchString =>
-    this.props.searchObjectTypesAutoCompete(searchString),
+  debouncedSearchByObjectTypes = debounce(
+    searchString => this.props.searchObjectTypesAutoCompete(searchString),
+    300,
   );
 
   handleMoreMenuSelect(key) {
@@ -267,6 +277,7 @@ class Topnav extends React.Component {
         );
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
+
     return (
       <div
         className={classNames('Topnav__menu-container', {
@@ -347,9 +358,6 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="objects" fullScreenHidden>
                     <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
-                  </PopoverMenuItem>
                   <PopoverMenuItem key="wallet" fullScreenHidden>
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
@@ -377,6 +385,7 @@ class Topnav extends React.Component {
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
+
     this.setState(
       {
         searchBarActive: !searchBarActive,
@@ -399,29 +408,37 @@ class Topnav extends React.Component {
 
   handleSearchForInput(event) {
     const value = replacer(event.target.value, '@');
-    const { searchData } = this.state;
-    const search = searchData.type === Topnav.markers.USER ? '' : `search=${value}`;
-    const pathname = searchData.type === Topnav.markers.USER ? `/@${value}` : '/discover-objects';
+    const checkIsUserExist = inpValue =>
+      this.props.searchByUser.some(item => item.account === inpValue);
+    const waivioValue = `waivio_${value}`;
+    let pathname = '';
+    if (checkIsUserExist(value)) {
+      pathname = `/@${value}`;
+    } else if (checkIsUserExist(waivioValue)) {
+      pathname = `/@${waivioValue}`;
+    }
     this.props.resetSearchAutoCompete();
     this.props.history.push({
       pathname,
-      search,
       state: {
         query: value,
       },
     });
-    this.setState({
-      searchBarValue: '',
-      searchData: '',
-      currentItem: '',
-      searchBarActive: false,
-      dropdownOpen: false,
-    });
-    this.handleClearSearchData();
+    if (this.props.searchByUser.some(item => item.account === value)) {
+      this.setState({
+        searchBarValue: '',
+        searchData: '',
+        currentItem: '',
+        searchBarActive: false,
+        dropdownOpen: false,
+      });
+      this.handleClearSearchData();
+    }
   }
 
   handleSearchAllResultsClick = () => {
     const { searchData, searchBarValue } = this.state;
+
     this.handleOnBlur();
     let redirectUrl = '';
 
@@ -442,19 +459,30 @@ class Topnav extends React.Component {
   };
 
   handleAutoCompleteSearch(value) {
-    this.debouncedSearch(value);
-    this.setState({ dropdownOpen: true });
+    this.setState({ dropdownOpen: true, searchBarValue: value });
+    this.handleSearch(value);
   }
+
+  handleSearch = value => {
+    const { searchBarValue } = this.state;
+    this.debouncedSearch(searchBarValue);
+    if (searchBarValue === value) {
+      this.debouncedSearchByUser(searchBarValue);
+      this.debouncedSearchByObjectTypes(searchBarValue);
+    }
+  };
 
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === Topnav.markers.SELECT_BAR) {
       const optionValue = value.split('#')[1];
+
       if (value === `${Topnav.markers.SELECT_BAR}#All`) {
         this.setState({
           searchData: '',
           dropdownOpen: true,
           currentItem: optionValue,
         });
+
         return;
       }
       const nextState = {
@@ -469,15 +497,18 @@ class Topnav extends React.Component {
       if (data.props.type === 'wobject') {
         this.setState(nextState);
         this.debouncedSearchByObject(this.state.searchBarValue, optionValue);
+
         return;
       }
 
       if (data.props.type === 'user' || data.props.type === 'type') {
         this.setState(nextState);
+
         return;
       }
     }
     let redirectUrl = '';
+
     switch (data.props.marker) {
       case Topnav.markers.USER:
         redirectUrl = `/@${value.replace('user', '')}`;
@@ -585,8 +616,9 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          const wobjName = getApprovedField(option, objectFields.name) || option.default_name;
           const parent = option.parent;
+
           return wobjName ? (
             <AutoComplete.Option
               marker={Topnav.markers.WOBJ}
@@ -665,11 +697,13 @@ class Topnav extends React.Component {
         dataSource.push(this.wobjectTypeSearchLayout(searchByObjectType));
       }
     }
+
     return dataSource;
   }
 
   searchSelectBar = searchResults => {
     const options = this.getTranformSearchCountData(searchResults);
+
     return (
       <AutoComplete.OptGroup key={Topnav.markers.SELECT_BAR} label=" ">
         {map(options, option => (
@@ -716,8 +750,8 @@ class Topnav extends React.Component {
   renderTitle = title => <span>{title}</span>;
 
   render() {
-    const { intl, autoCompleteSearchResults } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { intl, autoCompleteSearchResults, isStartSearchAutoComplete } = this.props;
+    const { searchBarActive, dropdownOpen, searchBarValue } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -754,7 +788,11 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={formattedAutoCompleteDropdown}
+                dataSource={
+                  isStartSearchAutoComplete
+                    ? pendingSearch(searchBarValue, intl)
+                    : formattedAutoCompleteDropdown
+                }
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}

@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { filter, difference } from 'lodash';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign, inactivateCampaign } from '../../user/userActions';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, isGuestUser } from '../../reducers';
+import CampaignRewardsHistoryTable from '../Manage/CampaignRewardsHistoryTable/CampaignRewardsHistoryTable';
 import Error401 from '../../statics/Error401';
 import './Manage.less';
 
@@ -15,6 +17,7 @@ import './Manage.less';
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
+    isGuest: isGuestUser(state),
   }),
   { activateCampaign, inactivateCampaign },
 )
@@ -25,12 +28,15 @@ class Manage extends React.Component {
     user: PropTypes.shape(),
     activateCampaign: PropTypes.func,
     inactivateCampaign: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
   static defaultProps = {
     userName: '',
     user: {},
     activateCampaign: () => {},
     inactivateCampaign: () => {},
+    isGuest: false,
+    guestBalance: null,
   };
   state = {
     campaigns: [],
@@ -83,8 +89,8 @@ class Manage extends React.Component {
         <div>
           **{' '}
           {intl.formatMessage({
-            id: 'only_inactive_campaigns',
-            defaultMessage: `Only inactive campaigns can be edited`,
+            id: 'only_pending_campaigns',
+            defaultMessage: `Only pending campaigns can be edited`,
           })}
         </div>
       </React.Fragment>
@@ -92,11 +98,20 @@ class Manage extends React.Component {
   };
 
   render() {
-    // eslint-disable-next-line no-shadow
-    const { intl, activateCampaign, inactivateCampaign, user, userName } = this.props;
+    const { intl, user, userName, isGuest } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
+    const activeAndPendingCampaigns = filter(
+      campaigns,
+      campaign =>
+        campaign.status === 'active' ||
+        campaign.status === 'pending' ||
+        campaign.status === 'onHold' ||
+        campaign.status === 'reachedLimit',
+    );
+    const historyCampaigns = difference(campaigns, activeAndPendingCampaigns);
+
     return (
       <div className="Manage">
         {userName ? (
@@ -108,19 +123,24 @@ class Manage extends React.Component {
                   defaultMessage: `Account balance (HIVE)`,
                 })}
               </div>
-              <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
+              <BalanceTable
+                isGuest={isGuest}
+                guestBalance={user.balance || null}
+                intl={intl}
+                budgetTotal={budgetTotal}
+              />
               <div className="Manage__account-balance-wrap-text-content">{balanceContent}</div>
               <div className="Manage__rewards-campaign-wrap">
                 <div className="Manage__rewards-campaign-wrap-title">
                   {intl.formatMessage({
-                    id: 'manage_page_manage_campaign',
-                    defaultMessage: `Manage rewards campaign`,
+                    id: 'manage_page_active_and_pending_campaign',
+                    defaultMessage: 'Active and pending campaigns',
                   })}
                 </div>
                 <CampaignRewardsTable
-                  activateCampaign={activateCampaign}
-                  inactivateCampaign={inactivateCampaign}
-                  campaigns={campaigns}
+                  activateCampaign={this.props.activateCampaign}
+                  inactivateCampaign={this.props.inactivateCampaign}
+                  campaigns={activeAndPendingCampaigns}
                   userName={user.name}
                 />
                 <div className="Manage__rewards-campaign-wrap-text-content">
@@ -136,6 +156,15 @@ class Manage extends React.Component {
                 })}{' '}
               </Link>
             </button>
+            <div className="Manage__rewards-campaign-wrap">
+              <div className="Manage__rewards-campaign-wrap-title">
+                {intl.formatMessage({
+                  id: 'object_history',
+                  defaultMessage: 'History',
+                })}
+              </div>
+              <CampaignRewardsHistoryTable userName={user.name} campaigns={historyCampaigns} />
+            </div>
           </React.Fragment>
         ) : (
           <Error401 />

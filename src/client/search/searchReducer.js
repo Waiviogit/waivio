@@ -1,4 +1,4 @@
-import { compact, concat, get, isEmpty, map, sortBy } from 'lodash';
+import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
@@ -9,6 +9,14 @@ const initialState = {
   searchResults: [],
   autoCompleteSearchResults: [],
   searchObjectsResults: [],
+  usersForDiscoverPage: {
+    result: [],
+    loading: false,
+  },
+  beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
+  isStartSearchAutoComplete: false,
+  isStartSearchUser: false,
+  isStartSearchObject: false,
 };
 
 export default (state = initialState, action) => {
@@ -43,6 +51,11 @@ export default (state = initialState, action) => {
         loading: false,
         searchError: true,
       };
+    case searchActions.AUTO_COMPLETE_SEARCH.START:
+      return {
+        ...state,
+        isStartSearchAutoComplete: true,
+      };
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
       const { followingUsersList } = action.meta;
@@ -53,6 +66,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         autoCompleteSearchResults: isEmpty(search) ? [] : result,
+        isStartSearchAutoComplete: false,
       };
     }
     case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
@@ -63,6 +77,11 @@ export default (state = initialState, action) => {
         searchUsersResults: [],
       };
     }
+    case searchActions.SEARCH_OBJECTS.START:
+      return {
+        ...state,
+        isStartSearchObject: true,
+      };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
       const { result, search, locale } = action.payload;
       return {
@@ -70,6 +89,7 @@ export default (state = initialState, action) => {
         searchObjectsResults: isEmpty(search)
           ? []
           : result.map(serverWObj => getClientWObj(serverWObj, locale)),
+        isStartSearchObject: false,
       };
     }
     case searchActions.SEARCH_OBJECTS.ERROR: {
@@ -82,19 +102,211 @@ export default (state = initialState, action) => {
         searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
-
+    case searchActions.SEARCH_USERS.START:
+      return {
+        ...state,
+        isStartSearchUser: true,
+      };
     case searchActions.SEARCH_USERS.SUCCESS: {
       const { result, search } = action.payload;
 
       return {
         ...state,
         searchUsersResults: isEmpty(search) ? [] : result,
+        isStartSearchUser: false,
       };
     }
+
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.START: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [],
+          loading: true,
+        },
+      };
+    }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.SUCCESS: {
+      const { result } = action.payload;
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result,
+          loading: false,
+        },
+      };
+    }
+    case searchActions.SEARCH_USERS_FOR_DISCOVER_PAGE.ERROR: {
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          result: [...state.usersForDiscoverPage.result],
+          loading: false,
+        },
+      };
+    }
+
+    case searchActions.RESET_SEARCH_USERS_FOR_DISCOVER_PAGE: {
+      return {
+        ...state,
+        usersForDiscoverPage: [],
+      };
+    }
+
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
         searchObjectsResults: [],
+      };
+    }
+    case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+        youFollows: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.UNFOLLOW_SEARCH_USER.START: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: true,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.UNFOLLOW_SEARCH_USER.ERROR: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.FOLLOW_SEARCH_USER.START: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: true,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+    case searchActions.FOLLOW_SEARCH_USER.SUCCESS: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        youFollows: true,
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.FOLLOW_SEARCH_USER.ERROR: {
+      const findExperts = state.usersForDiscoverPage.result.findIndex(
+        user => user.account === action.meta.username,
+      );
+
+      state.usersForDiscoverPage.result.splice(findExperts, 1, {
+        ...state.usersForDiscoverPage.result[findExperts],
+        pending: false,
+      });
+
+      return {
+        ...state,
+        usersForDiscoverPage: {
+          ...state.usersForDiscoverPage,
+          result: [...state.usersForDiscoverPage.result],
+        },
+      };
+    }
+
+    case searchActions.SAVE_BENEFICIARIES_USERS.ACTION: {
+      const key = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers, { account: key, weight: 0 }];
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiariesUsers,
+      };
+    }
+
+    case searchActions.UPDATE_BENEFICIARIES_USERS.ACTION: {
+      const { name, percent } = action.payload;
+      const newBeneficiariesUsers = [...state.beneficiariesUsers];
+      const benefIndex = findIndex(newBeneficiariesUsers, user => user.account === name);
+      newBeneficiariesUsers[benefIndex].weight = percent * 100;
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiariesUsers,
+      };
+    }
+
+    case searchActions.REMOVE_BENEFICIARIES_USERS.ACTION: {
+      const newBeneficiarieUsers = [...state.beneficiariesUsers];
+      remove(newBeneficiarieUsers, user => user.account === action.payload);
+      return {
+        ...state,
+        beneficiariesUsers: newBeneficiarieUsers,
+      };
+    }
+
+    case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
+      return {
+        ...state,
+        beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
       };
     }
     default:
@@ -107,4 +319,9 @@ export const getSearchResults = state => state.searchResults;
 export const getAutoCompleteSearchResults = state => state.autoCompleteSearchResults;
 export const getSearchObjectsResults = state => state.searchObjectsResults;
 export const getSearchUsersResults = state => state.searchUsersResults;
+export const getSearchUsersResultsForDiscoverPage = state => state.usersForDiscoverPage;
 export const searchObjectTypesResults = state => state.searchObjectTypesResults;
+export const getBeneficiariesUsers = state => state.beneficiariesUsers;
+export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
+export const getIsStartSearchUser = state => state.isStartSearchUser;
+export const getIsStartSearchObject = state => state.isStartSearchObject;

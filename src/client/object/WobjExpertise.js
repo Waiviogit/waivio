@@ -10,12 +10,12 @@ export default class WobjExpertise extends React.Component {
 
   static limit = 30;
 
-  fetcher = skip => {
+  fetcher = (skip, name = '') => {
     const { match } = this.props;
 
     return new Promise(async resolve => {
       const data = await getWobjectsExpertise(
-        'notAUser',
+        name,
         match.params.name,
         skip.length,
         WobjExpertise.limit,

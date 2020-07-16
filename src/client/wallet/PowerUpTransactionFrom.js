@@ -1,46 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
+import { epochToUTC } from '../helpers/formatter';
 
-const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
+const PowerUpTransactionFrom = ({ timestamp, amount, from, to }) => (
   <div className="UserWalletTransactions__transaction">
     <div className="UserWalletTransactions__icon-container">
       <i className="iconfont icon-flashlight_fill UserWalletTransactions__icon" />
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
-        <div>
-          {to === from ? (
+        {to === from ? (
+          <React.Fragment>
             <FormattedMessage id="powered_up" defaultMessage="Powered up " />
-          ) : (
+            <span className="UserWalletTransactions__payout">{amount}</span>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
             <FormattedMessage
-              id="powered_up_to"
-              defaultMessage="Powered up {to} "
+              id="powered_up_from"
+              defaultMessage="Powered up from {from} "
               values={{
-                to: (
-                  <Link to={`/@${to}`}>
-                    <span className="username">{to}</span>
+                from: (
+                  <Link to={`/@${from}`}>
+                    <span className="username">{from}</span>
                   </Link>
                 ),
               }}
             />
-          )}
-        </div>
-
-        <span className="UserWalletTransactions__payout">{amount}</span>
+            <span className="UserWalletTransactions__received">
+              {'+ '}
+              {amount}
+            </span>
+          </React.Fragment>
+        )}
       </div>
       <span className="UserWalletTransactions__timestamp">
         <BTooltip
           title={
             <span>
-              <FormattedDate value={`${timestamp}Z`} /> <FormattedTime value={`${timestamp}Z`} />
+              <FormattedRelative value={epochToUTC(timestamp)} />
             </span>
           }
         >
           <span>
-            <FormattedRelative value={`${timestamp}Z`} />
+            <FormattedRelative value={epochToUTC(timestamp)} />
           </span>
         </BTooltip>
       </span>
@@ -48,11 +54,11 @@ const PowerUpTransaction = ({ timestamp, amount, to, from }) => (
   </div>
 );
 
-PowerUpTransaction.propTypes = {
+PowerUpTransactionFrom.propTypes = {
   timestamp: PropTypes.string.isRequired,
   amount: PropTypes.element.isRequired,
-  to: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
 };
 
-export default PowerUpTransaction;
+export default PowerUpTransactionFrom;

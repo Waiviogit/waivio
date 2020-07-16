@@ -17,7 +17,6 @@ import {
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
 import { notify } from '../app/Notification/notificationActions';
-import './Comments.less';
 
 @connect(
   state => ({
@@ -89,21 +88,17 @@ export default class Comments extends React.Component {
 
   componentDidMount() {
     if (this.props.show && this.props.post.children !== 0) {
-      this.props.getComments(
-        this.props.post.id,
-        this.props.post.append_field_name ? this.props.post.author_original : null,
-      );
+      const postId = this.props.post.id || this.props.post.permlink;
+      this.props.getComments(postId);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { post, show } = this.props;
+    const postId = nextProps.post.id || nextProps.post.permlink;
 
     if (nextProps.show && (nextProps.post.id !== post.id || !show)) {
-      this.props.getComments(
-        nextProps.post.id,
-        this.props.post.append_field_name ? this.props.post.author_original : null,
-      );
+      this.props.getComments(postId);
     }
   }
 

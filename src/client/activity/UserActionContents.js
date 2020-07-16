@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { get, map, includes } from 'lodash';
 import * as accountHistory from '../../common/constants/accountHistory';
 
 const UserActionContents = ({ actionType, actionDetails }) => {
@@ -10,17 +10,24 @@ const UserActionContents = ({ actionType, actionDetails }) => {
     // We have a parser for these ops, however we cannot parse
     // every custom json since it's flexible and there is no
     // standard for the structure of custom_json ops.
-    if (_.includes(accountHistory.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
+
+    if (get(actionDetails, 'id') === accountHistory.FOLLOW_WOBJECT) {
       return null;
     }
-  } else if (_.includes(accountHistory.PARSED_PROPERTIES, actionType)) {
+    if (get(actionDetails, 'id') === accountHistory.UNFOLLOW_WOBJECT) {
+      return null;
+    }
+    if (includes(accountHistory.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
+      return null;
+    }
+  } else if (includes(accountHistory.PARSED_PROPERTIES, actionType)) {
     return null;
   }
 
   return (
     <table className="UserActivityActions__contents">
       <tbody>
-        {_.map(actionDetails, (details, property) => (
+        {map(actionDetails, (details, property) => (
           <tr className="UserActivityActions__contents__item" key={property}>
             <td className="UserActivityActions__contents__label">
               <div>{property}</div>

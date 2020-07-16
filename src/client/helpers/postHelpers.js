@@ -80,16 +80,17 @@ export function getContentImages(content, parsed = false) {
   const parsedBody = parsed ? content : getHtml(content, {}, 'text');
 
   return extractImageTags(parsedBody).map(tag =>
-    unescape(tag.src.replace('https://steemitimages.com/0x0/', '')),
+    unescape(tag.src.replace('https://images.hive.blog/0x0/', '')),
   );
 }
 
-export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
+export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, campaignId) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
     community: appName,
     app: `${appName}/${appVersion}`,
     format: 'markdown',
+    timeOfPostCreation: Date.now() + 3000,
   };
 
   metaData = {
@@ -120,6 +121,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   if (waivioData) {
     metaData[WAIVIO_META_FIELD_NAME] = waivioData;
   }
+  if (campaignId) metaData.campaignId = campaignId;
 
   return metaData;
 }
@@ -152,7 +154,7 @@ export function getObjectUrl(objPermlink) {
 export function getInitialState(props) {
   let state = {
     campaign: props.campaignId ? { id: props.campaignId } : null,
-    draftId: uuidv4(),
+    draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title:

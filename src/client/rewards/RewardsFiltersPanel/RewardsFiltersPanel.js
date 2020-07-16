@@ -3,6 +3,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { payablesFilterData } from '../rewardsHelper';
 import './RewardsFiltersPanel.less';
 
 const RewardsFiltersPanel = ({
@@ -33,19 +34,6 @@ const RewardsFiltersPanel = ({
       </div>
     </div>
   );
-
-  const payablesFilterData = [
-    {
-      filterName: 'days',
-      value: location.pathname === '/rewards/payables' ? 15 : 30,
-      defaultMessage: `Over {value} days`,
-    },
-    {
-      filterName: 'payable',
-      value: location.pathname === '/rewards/payables' ? 10 : 20,
-      defaultMessage: `Over {value} HIVE`,
-    },
-  ];
 
   return (
     <div className="RewardsFiltersPanel">
@@ -80,16 +68,16 @@ const RewardsFiltersPanel = ({
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {location.pathname === '/rewards/payables'
-                ? `${intl.formatMessage({
+                ? intl.formatMessage({
                     id: 'payables',
                     defaultMessage: 'Payables',
-                  })}:`
-                : `${intl.formatMessage({
-                    id: 'receivables',
+                  })
+                : intl.formatMessage({
+                    id: 'sidenav_rewards_receivables',
                     defaultMessage: 'Receivables',
-                  })}:`}
+                  })}
             </div>
-            {_.map(payablesFilterData, payable =>
+            {_.map(payablesFilterData(location), payable =>
               filterPaymentLayout(
                 payable,
                 activePayableFilters.some(f => f.filterName === payable.filterName),

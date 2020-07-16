@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -9,40 +9,174 @@ import WeightTag from '../WeightTag';
 import Avatar from '../Avatar';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getRecommendTopics, getRecommendExperts } from '../../user/userActions';
+import { followWobject, unfollowWobject } from '../../object/wobjActions';
 import { newUserRecommendTopics, newUserRecommendExperts } from '../../../common/constants/waivio';
 import { setUsersStatus } from '../../settings/settingsActions';
 import { getUserFeedContent } from '../../feed/feedActions';
+import { followUser, unfollowUser } from '../../user/usersActions';
+import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import { getRecommendTopic, getUsers } from '../../../waivioApi/ApiClient';
 
 import './WelcomeModal.less';
 
 const WelcomeModal = ({
   isAuthorization,
-  recommendedTopics,
-  recommendedExperts,
   intl,
   userName,
   followingList,
   followingObjectsList,
   location,
+  isGuest,
 }) => {
   const dispatch = useDispatch();
   const [isOpenTopicsModal, setIsOpenTopicsModal] = useState(false);
   const [isOpenUsersModal, setIsOpenUsersModal] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [wobjs, setWobjs] = useState([]);
   const followingKeysList = Object.keys(followingList);
   const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
-  useEffect(() => {
-    dispatch(getRecommendTopics());
-    dispatch(getRecommendExperts());
-  }, []);
 
   useEffect(() => {
     if (haveFollowing) {
       dispatch(setUsersStatus());
-    } else if (isAuthorization && recommendedTopics.length && recommendedExperts.length) {
+    } else {
+      const userList = Object.values(newUserRecommendExperts).reduce(
+        (arr, acc) => [...acc, ...arr],
+        [],
+      );
+      const topicList = Object.values(newUserRecommendTopics).reduce(
+        (arr, acc) => [...acc, ...arr],
+        [],
+      );
+
+      getRecommendTopic(topicList.length, 'en-US', 0, topicList).then(res => {
+        if (res && res.wobjects) setWobjs(res.wobjects);
+      });
+      getUsers({ listUsers: userList, limit: userList.length }).then(res => {
+        if (res && res.users) setUsers(res.users);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthorization && wobjs.length && users.length) {
       setIsOpenTopicsModal(true);
     }
-  }, [isAuthorization, recommendedTopics, recommendedExperts]);
+  }, [isAuthorization, wobjs, users]);
+
+  const unFollow = name => {
+    const matchUserIndex = users.findIndex(user => user.name === name);
+    const usersArray = [...users];
+    usersArray.splice(matchUserIndex, 1, {
+      ...usersArray[matchUserIndex],
+      pending: true,
+    });
+
+    setUsers([...usersArray]);
+    dispatch(unfollowUser(name)).then(res => {
+      if ((res.value.ok && isGuest) || !res.message) {
+        usersArray.splice(matchUserIndex, 1, {
+          ...usersArray[matchUserIndex],
+          youFollows: false,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        usersArray.splice(matchUserIndex, 1, {
+          ...usersArray[matchUserIndex],
+          pending: false,
+        });
+      }
+
+      setUsers([...usersArray]);
+    });
+  };
+
+  const follow = name => {
+    const matchUserIndex = users.findIndex(user => user.name === name);
+    const usersArray = [...users];
+
+    usersArray.splice(matchUserIndex, 1, {
+      ...usersArray[matchUserIndex],
+      pending: true,
+    });
+
+    setUsers([...usersArray]);
+    dispatch(followUser(name)).then(res => {
+      if ((isGuest && res.value.ok) || !res.message) {
+        usersArray.splice(matchUserIndex, 1, {
+          ...usersArray[matchUserIndex],
+          youFollows: true,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        usersArray.splice(matchUserIndex, 1, {
+          ...usersArray[matchUserIndex],
+          pending: false,
+        });
+      }
+
+      setUsers([...usersArray]);
+    });
+  };
+
+  const unFollowObj = permlink => {
+    const matchWobjIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...wobjs];
+    wobjectsArray.splice(matchWobjIndex, 1, {
+      ...wobjectsArray[matchWobjIndex],
+      pending: true,
+    });
+
+    setWobjs([...wobjectsArray]);
+    dispatch(unfollowWobject(permlink)).then(res => {
+      if ((res.value.ok && isGuest) || !res.message) {
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          youFollows: false,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjIndex, 1, {
+          ...wobjectsArray[matchWobjIndex],
+          pending: false,
+        });
+      }
+
+      setWobjs([...wobjectsArray]);
+    });
+  };
+
+  const followObj = permlink => {
+    const matchWobjectIndex = wobjs.findIndex(wobj => wobj.author_permlink === permlink);
+    const wobjectsArray = [...wobjs];
+
+    wobjectsArray.splice(matchWobjectIndex, 1, {
+      ...wobjectsArray[matchWobjectIndex],
+      pending: true,
+    });
+
+    setWobjs([...wobjectsArray]);
+    dispatch(followWobject(permlink)).then(res => {
+      if ((isGuest && res.value.ok) || !res.message) {
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          youFollows: true,
+          pending: false,
+        });
+      } else {
+        message.error(res.value.statusText);
+        wobjectsArray.splice(matchWobjectIndex, 1, {
+          ...wobjectsArray[matchWobjectIndex],
+          pending: false,
+        });
+      }
+
+      setWobjs([...wobjectsArray]);
+    });
+  };
 
   const getRecommendList = (fullList, listWithCategory) =>
     fullList.filter(topic => {
@@ -54,61 +188,61 @@ const WelcomeModal = ({
   const topic = [
     {
       name: 'news',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.news),
+      list: getRecommendList(wobjs, newUserRecommendTopics.news),
     },
     {
       name: 'lifestyle',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.lifestyle),
+      list: getRecommendList(wobjs, newUserRecommendTopics.lifestyle),
     },
     {
       name: 'entertainment',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.entertainment),
+      list: getRecommendList(wobjs, newUserRecommendTopics.entertainment),
     },
     {
       name: 'cryptos',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.cryptos),
+      list: getRecommendList(wobjs, newUserRecommendTopics.cryptos),
     },
     {
       name: 'stocks',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.stocks),
+      list: getRecommendList(wobjs, newUserRecommendTopics.stocks),
     },
     {
       name: 'more',
-      list: getRecommendList(recommendedTopics, newUserRecommendTopics.more),
+      list: getRecommendList(wobjs, newUserRecommendTopics.more),
     },
   ];
   const userList = [
     {
       name: 'politics',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.politics),
+      list: getRecommendList(users, newUserRecommendExperts.politics),
     },
     {
       name: 'economy',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.economy),
+      list: getRecommendList(users, newUserRecommendExperts.economy),
     },
     {
       name: 'science',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.science),
+      list: getRecommendList(users, newUserRecommendExperts.science),
     },
     {
       name: 'hive',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.hive),
+      list: getRecommendList(users, newUserRecommendExperts.hive),
     },
     {
       name: 'cryptos',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.cryptos),
+      list: getRecommendList(users, newUserRecommendExperts.cryptos),
     },
     {
       name: 'entertainment',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.entertainment),
+      list: getRecommendList(users, newUserRecommendExperts.entertainment),
     },
     {
       name: 'health',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.health),
+      list: getRecommendList(users, newUserRecommendExperts.health),
     },
     {
       name: 'travel',
-      list: getRecommendList(recommendedExperts, newUserRecommendExperts.travel),
+      list: getRecommendList(users, newUserRecommendExperts.travel),
     },
   ];
 
@@ -146,6 +280,7 @@ const WelcomeModal = ({
               setIsOpenUsersModal(true);
               setIsOpenTopicsModal(false);
             }}
+            key="next"
           >
             {intl.formatMessage({ id: 'next', defaultMessage: 'Next' })}
           </button>,
@@ -174,7 +309,14 @@ const WelcomeModal = ({
                 </div>
                 <div className="WelcomeModal__mini-block">
                   <WeightTag weight={theme.weight} />
-                  <FollowButton following={theme.default_name} followingType="wobject" secondary />
+                  <FollowButton
+                    following={theme.youFollows}
+                    followingType="wobject"
+                    wobj={theme}
+                    secondary
+                    unfollowObject={unFollowObj}
+                    followObject={followObj}
+                  />
                 </div>
               </div>
             ))}
@@ -189,7 +331,12 @@ const WelcomeModal = ({
           defaultMessage: 'Select experts to follow',
         })}
         footer={[
-          <Link to={'/'} className="WelcomeModal__button" onClick={handleCloseSecondModal}>
+          <Link
+            to={'/'}
+            className="WelcomeModal__button"
+            key="open"
+            onClick={handleCloseSecondModal}
+          >
             {intl.formatMessage({ id: 'open_my_feed', defaultMessage: 'Open my feed' })}
           </Link>,
         ]}
@@ -213,7 +360,14 @@ const WelcomeModal = ({
                 </div>
                 <div className="WelcomeModal__mini-block">
                   <WeightTag weight={theme.wobjects_weight} />
-                  <FollowButton following={theme.name} followingType="user" secondary />
+                  <FollowButton
+                    following={theme.youFollows}
+                    user={theme}
+                    followUser={follow}
+                    unfollowUser={unFollow}
+                    followingType="user"
+                    secondary
+                  />
                 </div>
               </div>
             ))}
@@ -231,13 +385,12 @@ WelcomeModal.propTypes = {
     PropTypes.string,
   ]),
   followingList: PropTypes.shape({}).isRequired,
-  recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
   userName: PropTypes.string,
   location: PropTypes.string,
+  isGuest: PropTypes.bool,
 };
 
 WelcomeModal.defaultProps = {
@@ -245,15 +398,15 @@ WelcomeModal.defaultProps = {
   followingList: {},
   userName: '',
   location: '',
+  isGuest: false,
 };
 
 const mapStateToProps = state => ({
   isAuthorization: state.auth.isAuthenticated,
   followingList: state.user.following.list,
   followingObjectsList: state.user.followingObjects.list,
-  recommendedTopics: state.user.recommendedTopics,
-  recommendedExperts: state.user.recommendedExperts,
-  userName: state.auth.user.name,
+  userName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
 });
 
-export default injectIntl(connect(mapStateToProps)(WelcomeModal));
+export default injectIntl(connect(mapStateToProps, null)(WelcomeModal));

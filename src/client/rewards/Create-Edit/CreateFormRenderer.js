@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
-import { isEmpty, map } from 'lodash';
+import { injectIntl } from 'react-intl';
+import { isEmpty, map, get } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -15,6 +16,7 @@ const { Option } = Select;
 
 const CreateFormRenderer = props => {
   const {
+    match,
     handlers,
     campaignName,
     campaignType,
@@ -45,9 +47,12 @@ const CreateFormRenderer = props => {
     getFieldValue,
     commissionAgreement,
     campaignId,
-    isCampaignActive,
-    iAgree,
+    isPending,
+    isDuplicate,
+    intl,
   } = props;
+
+  const currentItemId = get(match, ['params', 'campaignId']);
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
@@ -57,10 +62,11 @@ const CreateFormRenderer = props => {
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
+    compensationAccount,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
-  const disabled = isCampaignActive || loading;
+  const disabled = (!isDuplicate && !isPending && !isEmpty(campaignId)) || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
@@ -72,11 +78,6 @@ const CreateFormRenderer = props => {
       </div>
     ) : null;
 
-  const activeCampaignWarn = isCampaignActive ? (
-    <div className="notEnoughMoneyWarn">
-      {handlers.messageFactory('active_campaign_warn', 'Only pending campaigns could be edited')}
-    </div>
-  ) : null;
   const renderCompensationAccount =
     !isEmpty(compensationAccount) && compensationAccount.account ? (
       <div className="CreateReward__objects-wrap">
@@ -156,14 +157,31 @@ const CreateFormRenderer = props => {
   return (
     <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
-      {activeCampaignWarn}
 
       <Form
         layout="vertical"
         onSubmit={handlers.handleSubmit}
         className={loading && 'CreateReward__loading'}
       >
-        <Form.Item label={fields.campaignName.label}>
+        <Form.Item>
+          {!isEmpty(match.params) ? (
+            <div className="CreateReward__createDuplicate">
+              <div className="CreateReward__first">*</div>
+              <div className="CreateReward__second">
+                {fields.campaignName.label}{' '}
+                {
+                  <Link to={`/rewards/createDuplicate/${currentItemId}`} title="Create a duplicate">
+                    ({fields.createDuplicate.text})
+                  </Link>
+                }
+              </div>
+            </div>
+          ) : (
+            <div className="CreateReward__createDuplicate">
+              <div className="CreateReward__first">*</div>
+              <div className="CreateReward__second">{fields.campaignName.label}</div>
+            </div>
+          )}
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
             initialValue: campaignName,
@@ -204,7 +222,9 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.sponsorsList.label}>
-          {getFieldDecorator(fields.sponsorsList.name)(
+          {getFieldDecorator(fields.sponsorsList.name, {
+            initialValue: sponsorsList,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}
@@ -220,7 +240,9 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.compensationAccount.label}>
-          {getFieldDecorator(fields.compensationAccount.name)(
+          {getFieldDecorator(fields.compensationAccount.name, {
+            initialValue: compensationAccount,
+          })(
             <SearchUsersAutocomplete
               allowClear={false}
               disabled={disabled}
@@ -269,7 +291,7 @@ const CreateFormRenderer = props => {
             valuePropName: fields.checkboxReceiptPhoto.valuePropName,
             initialValue: receiptPhoto,
           })(
-            <Checkbox defaultChecked={receiptPhoto} disabled={disabled}>
+            <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title huge-text">
                 {fields.checkboxReceiptPhoto.title}
               </span>
@@ -367,7 +389,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.eligibleDays.name, {
             rules: fields.eligibleDays.rules,
             initialValue: eligibleDays,
-          })(<Input type="number" disabled={disabled} defaultValue={eligibleDays} />)}
+          })(<Input type="number" disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
         </Form.Item>
 
@@ -397,7 +419,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.usersLegalNotice.name, {
             rules: fields.usersLegalNotice.rules,
             initialValue: usersLegalNotice,
-          })(<Input.TextArea disabled={disabled} defaultValue={usersLegalNotice} />)}
+          })(<Input.TextArea disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
 
@@ -405,23 +427,30 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,
             valuePropName: fields.checkboxAgree.valuePropName,
-            initialValue: iAgree,
           })(
             <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title ant-form-item-required">
                 {fields.checkboxAgree.textBeforeLink}
-                <Link to={fields.checkboxAgree.link.to}>{fields.checkboxAgree.link.text}</Link>
+                <Link to={fields.checkboxAgree.link.to}>{fields.checkboxAgree.link.text} </Link>
                 {fields.checkboxAgree.textAfterLink}
               </span>
             </Checkbox>,
           )}
         </Form.Item>
-
         <Form.Item label={fields.expiredAt.label}>
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,
             initialValue: expiredAt,
-          })(<DatePicker allowClear={false} disabled={disabled} />)}
+          })(
+            <DatePicker
+              allowClear={false}
+              disabled={disabled}
+              placeholder={intl.formatMessage({
+                id: 'date_picker_placeholder',
+                defaultMessage: 'Select date',
+              })}
+            />,
+          )}
         </Form.Item>
 
         <Form.Item label={fields.commissionAgreement.label}>
@@ -484,6 +513,7 @@ CreateFormRenderer.defaultProps = {
   commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
+  isPending: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -533,8 +563,10 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
-  isCampaignActive: PropTypes.bool.isRequired,
-  iAgree: PropTypes.bool,
+  isPending: PropTypes.bool,
+  isDuplicate: PropTypes.bool.isRequired,
+  match: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default CreateFormRenderer;
+export default injectIntl(CreateFormRenderer);

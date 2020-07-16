@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedNumber } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteScroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
@@ -8,12 +8,22 @@ import { Modal, Tabs } from 'antd';
 import DiscoverUser from '../discover/DiscoverUser';
 import { getUsers } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
+import { followUser, unfollowUser } from './usersActions';
+import Loading from '../components/Icon/Loading';
+
 import './UserReblogModal.less';
 
-const UserReblogModal = ({ visible, userNames, onCancel }) => {
+const UserReblogModal = ({
+  visible,
+  userNames,
+  onCancel,
+  unfollow,
+  follow,
+  authenticatedUserName,
+}) => {
   const [users, setUsers] = useState([]);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
-  const authenticatedUserName = useSelector(getAuthenticatedUserName);
+
   const loadMoreUsers = () => {
     getUsers({
       listUsers: userNames,
@@ -23,6 +33,48 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
     }).then(data => {
       setUsers([...users, ...data.users]);
       setHasMoreUsers(data.hasMore);
+    });
+  };
+  const followUsr = user => {
+    const usersList = [...users];
+    const findUserIndex = usersList.findIndex(usr => user === usr.name);
+
+    usersList.splice(findUserIndex, 1, {
+      ...usersList[findUserIndex],
+      pending: true,
+    });
+
+    setUsers([...usersList]);
+    follow(user).then(() => {
+      usersList.splice(findUserIndex, 1, {
+        ...usersList[findUserIndex],
+        pending: false,
+        youFollows: true,
+      });
+
+      setUsers([...usersList]);
+    });
+  };
+
+  const unfollowUsr = user => {
+    const usersList = [...users];
+    const findUserIndex = usersList.findIndex(usr => user === usr.name);
+
+    usersList.splice(findUserIndex, 1, {
+      ...usersList[findUserIndex],
+      pending: true,
+    });
+
+    setUsers([...usersList]);
+
+    unfollow(user).then(() => {
+      usersList.splice(findUserIndex, 1, {
+        ...usersList[findUserIndex],
+        youFollows: false,
+        pending: false,
+      });
+
+      setUsers([...usersList]);
     });
   };
 
@@ -40,15 +92,21 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
         >
           <Scrollbars autoHide style={{ height: '400px' }}>
             <InfiniteScroll
-              pageStart={0}
               loadMore={loadMoreUsers}
               hasMore={hasMoreUsers}
               useWindow={false}
+              loader={<Loading />}
             >
               <div className="UserReblogModal__content">
                 {users.map(user => (
-                  // eslint-disable-next-line no-underscore-dangle
-                  <DiscoverUser key={user._id} user={user} isReblogged />
+                  <DiscoverUser
+                    // eslint-disable-next-line no-underscore-dangle
+                    key={user._id}
+                    user={user}
+                    isReblogged
+                    unfollow={unfollowUsr}
+                    follow={followUsr}
+                  />
                 ))}
               </div>
             </InfiniteScroll>
@@ -59,10 +117,21 @@ const UserReblogModal = ({ visible, userNames, onCancel }) => {
   );
 };
 
-export default UserReblogModal;
+export default connect(
+  state => ({
+    authenticatedUserName: getAuthenticatedUserName(state),
+  }),
+  {
+    unfollow: unfollowUser,
+    follow: followUser,
+  },
+)(UserReblogModal);
 
 UserReblogModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   userNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   onCancel: PropTypes.func.isRequired,
+  unfollow: PropTypes.func.isRequired,
+  follow: PropTypes.func.isRequired,
+  authenticatedUserName: PropTypes.string.isRequired,
 };

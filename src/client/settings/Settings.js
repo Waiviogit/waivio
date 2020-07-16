@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Select, Radio, Checkbox } from 'antd';
+import { Select, Radio, Checkbox, Modal } from 'antd';
 import {
   getIsReloading,
   getLocale,
@@ -16,6 +16,9 @@ import {
   getRewriteLinks,
   getUpvoteSetting,
   getExitPageSetting,
+  isGuestUser,
+  getAuthenticatedUserName,
+  getHiveBeneficiaryAccount,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -28,9 +31,10 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import './Settings.less';
-import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import LinkHiveAccountModal from './LinkHiveAccountModal';
+
+import './Settings.less';
 
 @requiresLogin
 @injectIntl
@@ -47,6 +51,9 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
     loading: getIsSettingsLoading(state),
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
+    isGuest: isGuestUser(state),
+    user: getAuthenticatedUserName(state),
+    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   { reload, saveSettings, notify },
 )
@@ -67,6 +74,10 @@ export default class Settings extends React.Component {
     notify: PropTypes.func,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
+    isGuest: PropTypes.bool,
+    resetSearchAutoCompete: PropTypes.func,
+    hiveBeneficiaryAccount: PropTypes.string.isRequired,
+    user: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -81,9 +92,13 @@ export default class Settings extends React.Component {
     rewriteLinks: false,
     upvoteSetting: true,
     exitPageSetting: true,
+    isGuest: false,
     reload: () => {},
     saveSettings: () => {},
     notify: () => {},
+    user: '',
+    history: {},
+    resetSearchAutoCompete: () => {},
   };
 
   constructor(props) {
@@ -100,6 +115,10 @@ export default class Settings extends React.Component {
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
       upvoteSetting: props.exitPageSetting,
+      hiveBeneficiaryAccount: props.hiveBeneficiaryAccount,
+      searchBarActive: '',
+      dropdownOpen: false,
+      showModal: false,
     };
   }
 
@@ -114,6 +133,7 @@ export default class Settings extends React.Component {
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
       exitPageSetting: this.props.exitPageSetting,
+      hiveBeneficiaryAccount: this.props.hiveBeneficiaryAccount,
     });
   }
 
@@ -159,6 +179,51 @@ export default class Settings extends React.Component {
     }
   }
 
+  unlinkHiveAccount = () => {
+    const { user, intl } = this.props;
+
+    Modal.confirm({
+      title: intl.formatMessage({
+        id: 'unlink_hive_account',
+        defaultMessage: 'Unlink Hive account',
+      }),
+      content: this.props.intl.formatMessage(
+        {
+          id: 'unlink_hive_account_message',
+          defaultMessage:
+            'Do you want to unlink @{hiveUser} Hive account from your @{user} guest account?',
+        },
+        {
+          hiveUser: this.state.hiveBeneficiaryAccount,
+          user,
+        },
+      ),
+      onOk: () => {
+        this.setState({ hiveBeneficiaryAccount: '' });
+        this.props
+          .saveSettings({
+            hiveBeneficiaryAccount: '',
+          })
+          .then(() =>
+            this.props.notify(
+              this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
+              'success',
+            ),
+          );
+      },
+    });
+  };
+
+  hideAutoCompleteDropdown = value => {
+    this.setState(
+      {
+        hiveBeneficiaryAccount: value.account,
+        showSelectAccount: true,
+      },
+      this.props.resetSearchAutoCompete,
+    );
+  };
+
   handleSave = () => {
     this.props
       .saveSettings({
@@ -171,6 +236,7 @@ export default class Settings extends React.Component {
         upvoteSetting: this.state.upvoteSetting,
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
+        hiveBeneficiaryAccount: this.state.hiveBeneficiaryAccount,
       })
       .then(() =>
         this.props.notify(
@@ -178,6 +244,17 @@ export default class Settings extends React.Component {
           'success',
         ),
       );
+  };
+
+  handleUnselectUser = () => {
+    this.setState({
+      searchBarValue: '',
+      hiveBeneficiaryAccount: '',
+    });
+  };
+
+  handleOkModal = () => {
+    this.setState({ showModal: false });
   };
 
   handleLocaleChange = locale => this.setState({ locale });
@@ -200,15 +277,17 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
       loading,
+      isGuest,
     } = this.props;
     const {
       votingPower,
       locale,
       showNSFWPosts,
       nightmode,
-      rewriteLinks,
       upvoteSetting,
       exitPageSetting,
+      hiveBeneficiaryAccount,
+      showModal,
     } = this.state;
 
     const initialLanguages =
@@ -297,12 +376,12 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="language" defaultMessage="Language" />
+                    <FormattedMessage id="language" defaultMessage="Interface language" />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="language_info"
-                      defaultMessage="What language do you want to use on Waivio?"
+                      defaultMessage="Select the preferred language of the website and objects"
                     />
                   </p>
                   <Select
@@ -316,12 +395,15 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="post_languages" defaultMessage="Posts languages" />
+                    <FormattedMessage
+                      id="post_languages"
+                      defaultMessage="Content language preferences"
+                    />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="post_languages_info"
-                      defaultMessage="In which languages do you want to read posts?"
+                      defaultMessage="Content from the blockchain (posts, comments) will be filtered according to these preferences"
                     />
                   </p>
                   <Select
@@ -384,26 +466,6 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="rewrite_links_details"
-                      defaultMessage="You can enable this option to replace Steemit.com links with Waivio links."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="rewrite_links"
-                      checked={rewriteLinks}
-                      onChange={this.handleRewriteLinksChange}
-                    >
-                      <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
                     <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                   </h3>
                   <p>
@@ -415,8 +477,9 @@ export default class Settings extends React.Component {
                   <div className="Settings__section__checkbox">
                     <Checkbox
                       name="upvote_setting"
-                      checked={upvoteSetting}
+                      checked={!isGuest ? upvoteSetting : false}
                       onChange={this.handleUpvoteSettingChange}
+                      disabled={isGuest}
                     >
                       <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                     </Checkbox>
@@ -442,22 +505,51 @@ export default class Settings extends React.Component {
                     </Checkbox>
                   </div>
                 </div>
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage
+                      id="linked_hive_account"
+                      defaultMessage="Linked Hive account"
+                    />
+                  </h3>
+                  <p>
+                    <FormattedMessage
+                      id="linked_hive_account_details"
+                      defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
+                    />
+                  </p>
+                  {hiveBeneficiaryAccount ? (
+                    <div>
+                      <span>@{hiveBeneficiaryAccount}</span>(
+                      <a role="presentation" onClick={this.unlinkHiveAccount}>
+                        <FormattedMessage id="unlink" defaultMessage="unlink" />
+                      </a>
+                      )
+                    </div>
+                  ) : (
+                    <a role="presentation" onClick={() => this.setState({ showModal: true })}>
+                      <FormattedMessage
+                        id="linked_you_hive_account"
+                        defaultMessage="Link your Hive account"
+                      />
+                    </a>
+                  )}
+                </div>
                 <Action primary big loading={loading} onClick={this.handleSave}>
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
-                <div className="Settings__version">
-                  <p>
-                    <FormattedMessage
-                      id="version"
-                      defaultMessage="Version: {version}"
-                      values={{ version: packageJson.version }}
-                    />
-                  </p>
-                </div>
               </div>
             )}
           </div>
         </div>
+        <LinkHiveAccountModal
+          handleOk={this.handleOkModal}
+          handleSelect={this.hideAutoCompleteDropdown}
+          handleClose={() => this.setState({ showModal: false })}
+          showModal={showModal}
+          hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+          handleUnselectUser={this.handleUnselectUser}
+        />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil, some } from 'lodash';
+import { filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -27,8 +27,6 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
-import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
 
 import './Story.less';
 
@@ -46,7 +44,6 @@ class Story extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
-    votePostUpdate: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -64,6 +61,7 @@ class Story extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
+    location: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -106,36 +104,6 @@ class Story extends React.Component {
     this.handleFollowClick = this.handleFollowClick.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
   }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
-  }
-
-  getApprovalTagLayoyt = () => {
-    const percent = calculateApprovePercent(this.props.post.active_votes);
-    const { formatMessage } = this.props.intl;
-    return (
-      <React.Fragment>
-        <Tag>
-          <span>
-            Approval:{' '}
-            <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
-              {percent.toFixed(2)}%
-            </span>
-          </span>
-        </Tag>
-        {this.props.post.upvotedByModerator ? (
-          <span className="Story__approvedByAdmin">
-            {formatMessage({ id: 'approved_by_admin', defaultMessage: 'Approved by admin' })}
-          </span>
-        ) : (
-          <span className="MinPercent">
-            {formatMessage({ id: 'min_70_is_required', defaultMessage: 'Min 70% is required' })}
-          </span>
-        )}
-      </React.Fragment>
-    );
-  };
 
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
@@ -216,25 +184,11 @@ class Story extends React.Component {
     return weight;
   };
 
-  handleLikeClick(post, postState, weight = 10000, type) {
-    const { sliderMode, defaultVotePercent, votePost, votePostUpdate, user } = this.props;
+  handleLikeClick(post, postState, weight = 10000) {
+    const { sliderMode, defaultVotePercent, votePost } = this.props;
     const author = post.guestInfo && !post.depth ? post.root_author : post.author;
 
-    if (post.append_field_name) {
-      const upVotes = getAppendUpvotes(post.active_votes);
-      const isLiked = post.isLiked || some(upVotes, { voter: user.name });
-      const postId = `${post.author}/${post.permlink}`;
-
-      if (isLiked) {
-        votePostUpdate(postId, post.author, post.permlink, 0, type);
-      } else {
-        if (sliderMode && !isLiked) {
-          votePostUpdate(postId, post.author, post.permlink, defaultVotePercent, type);
-        }
-
-        votePostUpdate(postId, post.author, post.permlink, weight, type);
-      }
-    } else if (sliderMode && !postState.isLiked) {
+    if (sliderMode && !postState.isLiked) {
       votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
       votePost(post.id, author, post.permlink, 0);
@@ -243,27 +197,14 @@ class Story extends React.Component {
     }
   }
 
-  handleReportClick(post, postState, isRejectField, myWeight, type) {
+  handleReportClick(post, postState, isRejectField) {
     let weight = postState.isReported ? 0 : -10000;
-
-    if (post.append_field_name) {
-      const downVotes = getAppendDownvotes(post.active_votes);
-      const isReject = post.isReject || some(downVotes, { voter: this.props.user.name });
-      const postId = `${post.author}/${post.permlink}`;
-
-      if (isReject) {
-        this.props.votePostUpdate(postId, post.author, post.permlink, 0, type);
-      } else {
-        this.props.votePostUpdate(postId, post.author, post.permlink, myWeight, type);
-      }
-    } else {
-      if (isRejectField) {
-        weight = postState.isReported ? 0 : 9999;
-      }
-
-      const author = post.author_original || post.author;
-      this.props.votePost(post.id, author, post.permlink, weight);
+    if (isRejectField) {
+      weight = postState.isReported ? 0 : 9999;
     }
+
+    const author = post.author_original || post.author;
+    this.props.votePost(post.id, author, post.permlink, weight);
   }
 
   handleShareClick(post) {
@@ -323,7 +264,7 @@ class Story extends React.Component {
     const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
+    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -347,7 +288,7 @@ class Story extends React.Component {
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
-    const postURL = replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
+    const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
     if (isReplyPreview) {
       history.push(postURL);
@@ -374,7 +315,7 @@ class Story extends React.Component {
 
     return showStoryPreview ? (
       <a
-        href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+        href={replaceBotWithGuestName(`/@${post.id}`, post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
@@ -402,13 +343,28 @@ class Story extends React.Component {
       singlePostVew,
       sliderMode,
       defaultVotePercent,
+      location,
     } = this.props;
+    const rebloggedUser = get(post, ['reblogged_users'], []);
+    const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
 
     if (isPostDeleted(post)) return <div />;
 
-    if (post.reblogged_by && post.reblogged_by.length) {
+    if (isRebloggedPost) {
+      rebloggedUI = (
+        <div className="Story__reblog">
+          <i className="iconfont icon-share1" />
+          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
+        </div>
+      );
+    } else if (
+      (post.checkForFollow && post.checkForFollow.youFollows) ||
+      (location.pathname === `/@${post.reblogged_by}` &&
+        location.pathname !== `/@${post.author}`) ||
+      (post.checkForFollow && location.pathname !== `/@${post.author}`)
+    ) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
@@ -423,13 +379,6 @@ class Story extends React.Component {
               ),
             }}
           />
-        </div>
-      );
-    } else if (postState.isReblogged) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
         </div>
       );
     }
@@ -484,20 +433,8 @@ class Story extends React.Component {
               className="Story__content__title"
             >
               <h2>
-                {post.append_field_name ? (
-                  <React.Fragment>
-                    <FormattedMessage
-                      id={`object_field_${post.append_field_name}`}
-                      defaultMessage={post.append_field_name}
-                    />
-                    {!isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                    {post.title || post.root_title}
-                  </React.Fragment>
-                )}
+                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                {post.title || post.root_title}
               </h2>
             </a>
             {this.renderStoryPreview()}

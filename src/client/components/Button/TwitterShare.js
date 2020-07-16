@@ -4,7 +4,12 @@ import { getTwitterShareURL } from '../../helpers/socialProfiles';
 import './ShareButton.less';
 
 const TwitterShare = ({ url, text }) => (
-  <a className="ShareButton" href={getTwitterShareURL(text, url)} target="_blank">
+  <a
+    className="ShareButton"
+    href={getTwitterShareURL(text, url)}
+    rel="noopener noreferrer"
+    target="_blank"
+  >
     <div className="ShareButton__contents ShareButton__contents__twitter">
       <i className="iconfont icon-twitter ShareButton__icon" />
     </div>

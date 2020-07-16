@@ -1,23 +1,22 @@
 import filesize from 'filesize';
+import { unescape } from 'he';
+import base58 from 'bs58';
 
-const IMG_PROXY = 'https://steemitimages.com/0x0/';
-const IMG_PROXY_PREVIEW = 'https://steemitimages.com/600x800/';
-const IMG_PROXY_SMALL = 'https://steemitimages.com/40x40/';
+const IMG_PROXY_PREVIEW = 'https://images.hive.blog/800x600/';
+const IMG_PROXY_SMALL = 'https://images.hive.blog/p/';
+const IMG_PROXY = 'https://images.hive.blog/0x0/';
 
 export const MAXIMUM_UPLOAD_SIZE = 15728640;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
-  if (
-    url.includes('.digitaloceanspaces.com') ||
-    url.indexOf('https://ipfs.busy.org') === 0 ||
-    url.indexOf('https://gateway.ipfs.io') === 0
-  ) {
-    return url;
-  } else if (type === 'preview') {
-    return `${IMG_PROXY_PREVIEW}${url}`;
-  } else if (type === 'small') {
-    return `${IMG_PROXY_SMALL}${url}`;
+  if (type === 'preview') {
+    try {
+      const urlEncoded = base58.encode(new Buffer(unescape(url)));
+      return `${IMG_PROXY_PREVIEW}${IMG_PROXY_SMALL}${urlEncoded}`;
+    } catch (e) {
+      console.warn('\tEncode img url error. Image url:', url);
+    }
   }
   return `${IMG_PROXY}${url}`;
 };

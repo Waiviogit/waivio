@@ -3,19 +3,15 @@ import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
-import {
-  BENEFICIARY_ACCOUNT,
-  BENEFICIARY_PERCENT,
-  REFERRAL_PERCENT,
-} from '../../helpers/constants';
+import { REFERRAL_PERCENT } from '../../helpers/constants';
 import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
 import { jsonParse } from '../../helpers/formatter';
-import { parseBlockChainError } from '../../helpers/errorMiddleware';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
-import { getAuthenticatedUserName } from '../../reducers';
+import { clearBeneficiariesUsers } from '../../search/searchActions';
+import { getAuthenticatedUserName, getHiveBeneficiaryAccount } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -128,6 +124,8 @@ const broadcastComment = (
   permlink,
   referral,
   authUsername,
+  beneficiaries,
+  isReview,
 ) => {
   const operations = [];
   const commentOp = [
@@ -162,12 +160,6 @@ const broadcastComment = (
     commentOptionsConfig.percent_steem_dollars = 0;
   }
 
-  const beneficiaries = [];
-
-  if (beneficiary) {
-    beneficiaries.push({ account: BENEFICIARY_ACCOUNT, weight: BENEFICIARY_PERCENT });
-  }
-
   if (referral && referral !== authUsername) {
     beneficiaries.push({ account: referral, weight: REFERRAL_PERCENT });
   }
@@ -190,10 +182,10 @@ const broadcastComment = (
     ]);
   }
 
-  return steemConnectAPI.broadcast(operations);
+  return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData) {
+export function createPost(postData, beneficiaries, isReview) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -218,8 +210,13 @@ export function createPost(postData) {
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;
+    const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const newBody =
       isUpdating && !isGuest ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
+    const guestBeneficiary = hiveBeneficiaryAccount
+      ? [{ account: hiveBeneficiaryAccount, weight: 9700 }, ...beneficiaries]
+      : [{ account: 'waivio.hpower', weight: 10000 }];
+    const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
@@ -232,66 +229,81 @@ export function createPost(postData) {
       }
     }
 
+    const getErrorText = msg => msg.split(':')[1];
+
     dispatch({
-      type: CREATE_POST,
-      payload: {
-        promise: getPermLink.then(permlink =>
-          broadcastComment(
-            steemConnectAPI,
-            isUpdating,
-            parentAuthor,
-            parentPermlink,
-            author,
-            title,
-            newBody,
-            jsonMetadata,
-            reward,
-            beneficiary,
-            !isUpdating && !isGuest && upvote,
-            permlink,
-            referral,
-            authUser.name,
-          )
-            .then(result => {
-              if (draftId) {
-                batch(() => {
-                  dispatch(deleteDraft(draftId));
-                  dispatch(addEditedPost(permlink));
-                });
-              }
-              if (isGuest) {
-                if (upvote) {
-                  steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-                }
-                if (result.status === 200) {
-                  dispatch(notify('Your post will be posted soon', 'success'));
-                  dispatch(push('/'));
-                }
-              } else {
-                dispatch(push(`/@${author}/${permlink}`));
-              }
-
-              if (window.analytics) {
-                window.analytics.track('Post', {
-                  category: 'post',
-                  label: 'submit',
-                  value: 10,
-                });
-              }
-
-              if (result.status === 429) {
-                dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
-              }
-
-              return result;
-            })
-            .catch(err => {
-              dispatch(
-                notify(err.error.message || parseBlockChainError(err.error_description), 'error'),
-              );
-            }),
-        ),
-      },
+      type: CREATE_POST_START,
     });
+
+    getPermLink.then(permlink =>
+      broadcastComment(
+        steemConnectAPI,
+        isUpdating,
+        parentAuthor,
+        parentPermlink,
+        author,
+        title,
+        newBody,
+        jsonMetadata,
+        reward,
+        beneficiary,
+        !isUpdating && !isGuest && upvote,
+        permlink,
+        referral,
+        authUser.name,
+        currentBeneficiaries,
+        isReview,
+      )
+        .then(result => {
+          if (draftId) {
+            batch(() => {
+              dispatch(deleteDraft(draftId));
+              dispatch(addEditedPost(permlink));
+            });
+          }
+          if (isGuest) {
+            if (upvote) {
+              steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+            }
+            if (result.status === 200) {
+              dispatch(notify('Your post will be posted soon', 'success'));
+              dispatch(push('/'));
+            }
+          } else {
+            setTimeout(() => dispatch(push(`/@${author}/${permlink}`)), 3000);
+          }
+
+          if (window.analytics) {
+            window.analytics.track('Post', {
+              category: 'post',
+              label: 'submit',
+              value: 10,
+            });
+          }
+
+          if (result.status === 429) {
+            dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            dispatch({
+              type: CREATE_POST_ERROR,
+            });
+          }
+
+          dispatch(clearBeneficiariesUsers());
+          return result;
+        })
+        .catch(err => {
+          let errorText = 'Error';
+          dispatch({
+            type: CREATE_POST_ERROR,
+            payload: err,
+          });
+          if (err.error && err.error.message) {
+            errorText = err.error.message;
+          } else if (err.error_description) {
+            errorText = getErrorText(err.error_description);
+          }
+          dispatch(notify(errorText, 'error'));
+        }),
+    );
   };
 }

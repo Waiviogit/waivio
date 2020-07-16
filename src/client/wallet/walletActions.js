@@ -1,7 +1,7 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
-import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 import {
   getAccountHistory,
   getDynamicGlobalProperties,
@@ -9,7 +9,9 @@ import {
   defaultAccountLimit,
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getTransferHistory } from '../../waivioApi/ApiClient';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -20,6 +22,11 @@ export const GET_USER_ACCOUNT_HISTORY = createAsyncActionType('@users/GET_USER_A
 export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
+export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
+);
+
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
   '@users/GET_USER_EST_ACCOUNT_VALUE',
 );
@@ -35,7 +42,7 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
@@ -43,6 +50,7 @@ export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '')
       amount,
       currency,
       memo,
+      app,
     },
   });
 
@@ -88,13 +96,14 @@ const parseGuestActions = actions => {
       op_in_trx: 0,
       virtual_op: 0,
       timestamp: action.updatedAt.split('.')[0],
-      // timestamp: action.updatedAt,
+      withdraw: action.withdraw,
       op: [
         'transfer',
         {
           ...transferDirection,
           amount: `${action.amount} HIVE`,
           memo: action.memo || '',
+          typeTransfer: action.type,
         },
       ],
       actionCount: index + 1,
@@ -122,27 +131,8 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getUserAccountHistory = username => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
-  return dispatch({
-    type: GET_USER_ACCOUNT_HISTORY.ACTION,
-    payload: {
-      promise: getAccountHistory(username, { isGuest }).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions, isGuest);
-
-        return {
-          username,
-          userWalletTransactions: parsedUserActions.userWalletTransactions,
-          userAccountHistory: parsedUserActions.userAccountHistory,
-          balance: get(userActions, ['payable'], null),
-        };
-      }),
-    },
-  });
-};
-
 export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX);
+  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
@@ -152,6 +142,7 @@ export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
+          hasMoreGuestActions: get(userActions, ['hasMore'], false),
         };
       }),
     },
@@ -185,7 +176,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
   const { wallet } = getState();
   const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
-  const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
+  const currentUsersActions = get(usersAccountHistory, username, []);
   const lastDisplayedAction = last(currentDisplayedActions);
 
   if (isEmpty(lastDisplayedAction)) {
@@ -221,3 +212,64 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
     dispatch(getMoreUserAccountHistory(username, lastActionCount, limit));
   }
 };
+
+export const getUserAccountHistory = username => dispatch => {
+  const isGuest = guestUserRegex.test(username);
+  return dispatch({
+    type: GET_USER_ACCOUNT_HISTORY.ACTION,
+    payload: {
+      promise: getAccountHistory(username, { isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
+
+        return {
+          username,
+          userWalletTransactions: parsedUserActions.userWalletTransactions,
+          userAccountHistory: parsedUserActions.userAccountHistory,
+          balance: get(userActions, ['payable'], null),
+          hasMoreGuestActions: get(userActions, ['hasMore'], false),
+        };
+      }),
+    },
+  });
+};
+
+export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
+  dispatch({
+    type: GET_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistory(username, skip, limit)
+        .then(data => ({
+          username,
+          transactionsHistory: data.wallet,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => console.log(error)),
+    },
+  });
+
+export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch =>
+  dispatch({
+    type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistory(username, skip, limit)
+        .then(data => ({
+          username,
+          transactionsHistory: data.wallet,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => console.log(error)),
+    },
+  });
+
+export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
+export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
+
+export const openWithdraw = () => dispatch =>
+  dispatch({
+    type: OPEN_WITHDRAW,
+  });
+
+export const closeWithdraw = () => dispatch =>
+  dispatch({
+    type: CLOSE_WITHDRAW,
+  });

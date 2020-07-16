@@ -1,9 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { Icon } from 'antd';
 import urlParse from 'url-parse';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
@@ -12,14 +12,13 @@ import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
+import { unfollowUser, followUser } from '../user/usersActions';
 
 import './UserHeader.less';
 
 const UserHeader = ({
   username,
   user,
-  handle,
-  wobjWeight,
   vestingShares,
   isSameUser,
   coverImage,
@@ -29,26 +28,27 @@ const UserHeader = ({
   intl,
   rewardFund,
   rate,
+  unfollow,
+  follow,
+  isGuest,
 }) => {
-  const style = hasCover
-    ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
-    : {};
+  const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
   let location = null;
   let website = null;
   let about = null;
   let lastActive;
 
-  if (user && user.json_metadata && user.json_metadata !== '') {
+  if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
     lastActive = intl.formatRelative(Date.parse(user.updatedAt));
 
-    if (user.json_metadata.profile) {
-      location = user.json_metadata.profile.location;
-      website = user.json_metadata.profile.website;
-      about = user.json_metadata.profile.about;
+    if (user.posting_json_metadata.profile) {
+      location = user.posting_json_metadata.profile.location;
+      website = user.posting_json_metadata.profile.website;
+      about = user.posting_json_metadata.profile.about;
     } else {
       try {
-        metadata = JSON.parse(user.json_metadata);
+        metadata = JSON.parse(user.posting_json_metadata);
         location = metadata && get(metadata, 'profile.location');
         website = metadata && get(metadata, 'profile.website');
         about = metadata && get(metadata, 'profile.about');
@@ -73,15 +73,17 @@ const UserHeader = ({
       ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
       : 0;
 
+  const guestPrefix = ' (guest)';
+
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox username={handle} size={100} isActive={isActive} />
+        <AvatarLightbox username={user.name} size={100} isActive={isActive} />
         <div className="UserHeader__user">
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
               {username}
-              <WeightTag weight={wobjWeight} />
+              <WeightTag weight={user.wobjects_weight} />
             </h2>
             <div className="UserHeader__user__buttons">
               <div
@@ -96,14 +98,21 @@ const UserHeader = ({
                     </Action>
                   </Link>
                 ) : (
-                  <FollowButton following={handle} followingType="user" />
+                  <FollowButton
+                    unfollowUser={unfollow}
+                    followUser={follow}
+                    following={user.youFollows}
+                    user={user}
+                    followingType="user"
+                  />
                 )}
               </div>
             </div>
           </div>
           <div className="UserHeader__handle-rank-container">
             <div className="UserHeader__row UserHeader__handle">
-              @{handle}
+              @{user.name}
+              {isGuest && guestPrefix}
               {isFollowing && (
                 <span className="UserHeader__follows-you">
                   <FormattedMessage id="follows_you" defaultMessage="Follows you" />
@@ -142,11 +151,7 @@ const UserHeader = ({
             <div>
               <i className="iconfont icon-dollar text-icon" />
               <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-              {isNaN(voteWorth) ? (
-                <Icon type="loading" className="text-icon-right" />
-              ) : (
-                <USDDisplay value={voteWorth} />
-              )}
+              {isNaN(voteWorth) ? <USDDisplay value={0} /> : <USDDisplay value={voteWorth} />}
             </div>
           </div>
           <div className="UserHeader__info-fields">
@@ -172,9 +177,7 @@ const UserHeader = ({
 UserHeader.propTypes = {
   user: PropTypes.shape(),
   rate: PropTypes.number.isRequired,
-  handle: PropTypes.string,
   username: PropTypes.string,
-  wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
@@ -186,19 +189,27 @@ UserHeader.propTypes = {
     reward_balance: PropTypes.string,
   }).isRequired,
   intl: PropTypes.shape().isRequired,
+  unfollow: PropTypes.func.isRequired,
+  follow: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
   user: {},
   username: '',
   handle: '',
-  wobjWeight: '0',
   vestingShares: 0,
   isSameUser: false,
   coverImage: '',
   hasCover: false,
   isFollowing: false,
   onTransferClick: () => {},
+  isGuest: false,
 };
 
-export default injectIntl(UserHeader);
+export default injectIntl(
+  connect(null, {
+    unfollow: unfollowUser,
+    follow: followUser,
+  })(UserHeader),
+);

@@ -53,7 +53,7 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: 'YouTube',
-      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/maxresdefault.jpg',
+      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/0.jpg',
       id: youtubeId,
       embed: this.youtube(url, youtubeId, options),
     };
@@ -62,7 +62,9 @@ SteemEmbed.get = function(url, options) {
       type: 'video',
       url: url,
       provider_name: 'DTube',
-      thumbnail: 'https://steemitimages.com/p/2bP4pJr4wVimqCWjYimXJe2cnCgnDRpfUuhFnossqSE',
+      thumbnail:
+        options.thumbnail ||
+        'https://waivio.nyc3.digitaloceanspaces.com/1588765219_b21a550e-5fa2-45e1-801c-4325b26fd5bf',
       id: dTubeId,
       embed: this.dTube(url, dTubeId, options),
     };

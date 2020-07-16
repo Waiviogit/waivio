@@ -6,27 +6,51 @@ import Avatar from '../components/Avatar';
 
 import './UserCard.less';
 
-const UserCard = ({ user, alt, showFollow }) => (
-  <div className="UserCard">
-    <div className="UserCard__left">
-      <div className="UserCard__wrap">
-        <Link to={`/@${user.name}`}>
-          <Avatar username={user.name} size={40} />
-        </Link>
-        <Link to={`/@${user.name}`}>
-          <span className="username">{user.name}</span>
-        </Link>
+const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator }) => {
+  const status = moderator ? 'moderator' : 'admin';
+
+  return (
+    user && (
+      <div className="UserCard">
+        <div className="UserCard__left">
+          <div className="UserCard__wrap">
+            <Link to={`/@${user.name}`}>
+              <Avatar username={user.name} size={40} />
+            </Link>
+            <Link to={`/@${user.name}`}>
+              <span className="username">{user.name}</span>
+            </Link>
+            {(admin || moderator) && (
+              <span>
+                &nbsp;(<span className="UserCard__status">{status}</span>)
+              </span>
+            )}
+          </div>
+          {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
+        </div>
+        {showFollow && (
+          <FollowButton
+            unfollowUser={unfollow}
+            followUser={follow}
+            following={user.youFollows}
+            user={user}
+            followingType="user"
+            secondary
+          />
+        )}
       </div>
-      {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
-    </div>
-    {showFollow && <FollowButton following={user.name} followingType="user" secondary />}
-  </div>
-);
+    )
+  );
+};
 
 UserCard.propTypes = {
   user: PropTypes.shape(),
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
+  unfollow: PropTypes.func,
+  follow: PropTypes.func,
+  admin: PropTypes.bool,
+  moderator: PropTypes.bool,
 };
 
 UserCard.defaultProps = {
@@ -34,6 +58,10 @@ UserCard.defaultProps = {
   user: {},
   showFollow: true,
   authUser: '',
+  unfollow: () => {},
+  follow: () => {},
+  admin: false,
+  moderator: false,
 };
 
 export default UserCard;

@@ -1,10 +1,11 @@
 import React from 'react';
-import { has, size, attempt, isEmpty, reduce } from 'lodash';
+import { has, size, attempt, isEmpty, reduce, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import {
   getAuthenticatedUser,
   getFetchFollowListError,
@@ -15,22 +16,30 @@ import {
   getIsFetchingFollowingList,
   getIsLoaded,
   isGuestUser,
+  getUsersAccountHistory,
 } from '../reducers';
+import { getUserAccountHistory } from '../wallet/walletActions';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
 import './LetsGetStarted.less';
 
-@connect(state => ({
-  authenticatedUser: getAuthenticatedUser(state),
-  followingList: getFollowingList(state),
-  isAuthFetching: getIsAuthFetching(state),
-  isFetchingFollowingList: getIsFetchingFollowingList(state),
-  loaded: getIsLoaded(state),
-  authenticated: getIsAuthenticated(state),
-  followingFetched: getFollowingFetched(state),
-  fetchFollowListError: getFetchFollowListError(state),
-  isGuest: isGuestUser(state),
-}))
+@connect(
+  state => ({
+    authenticatedUser: getAuthenticatedUser(state),
+    followingList: getFollowingList(state),
+    isAuthFetching: getIsAuthFetching(state),
+    isFetchingFollowingList: getIsFetchingFollowingList(state),
+    loaded: getIsLoaded(state),
+    authenticated: getIsAuthenticated(state),
+    followingFetched: getFollowingFetched(state),
+    fetchFollowListError: getFetchFollowListError(state),
+    isGuest: isGuestUser(state),
+    usersAccountHistory: getUsersAccountHistory(state),
+  }),
+  {
+    getUserAccountHistory,
+  },
+)
 class LetsGetStarted extends React.Component {
   static propTypes = {
     followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -42,20 +51,34 @@ class LetsGetStarted extends React.Component {
     followingFetched: PropTypes.bool.isRequired,
     fetchFollowListError: PropTypes.bool.isRequired,
     isGuest: PropTypes.bool,
+    usersAccountHistory: PropTypes.shape(),
+    getUserAccountHistory: PropTypes.func,
   };
 
   static defaultProps = {
     isGuest: false,
+    usersAccountHistory: {},
+    getUserAccountHistory: () => {},
   };
 
-  static getCurrentUserState(authenticatedUser, followingList, isGuest) {
+  static getCurrentUserState(authenticatedUser, followingList, isGuest, usersAccountHistory) {
+    const accountHistory = get(usersAccountHistory, authenticatedUser.name, []);
+    const hasLikes = [];
+
+    // eslint-disable-next-line array-callback-return,consistent-return,no-unused-expressions
+    !isGuest &&
+      // eslint-disable-next-line array-callback-return,consistent-return
+      accountHistory.map(item => {
+        const historyElement = item.op[0];
+        if (historyElement === accountHistoryConstants.VOTE) {
+          return hasLikes.push(historyElement);
+        }
+      });
     const hasPost =
       authenticatedUser.last_root_post &&
       authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
-    const hasVoted = isGuest
-      ? true
-      : authenticatedUser.last_vote_time !== authenticatedUser.created;
-    const jsonMetadata = attempt(JSON.parse, authenticatedUser.json_metadata);
+    const hasVoted = !!(isGuest || hasLikes.length);
+    const jsonMetadata = attempt(JSON.parse, authenticatedUser.posting_json_metadata);
     const hasProfile =
       has(jsonMetadata, 'profile.name') &&
       has(jsonMetadata, 'profile.about') &&
@@ -77,7 +100,14 @@ class LetsGetStarted extends React.Component {
       props.authenticatedUser,
       props.followingList,
       props.isGuest,
+      props.usersAccountHistory,
     );
+  }
+
+  componentDidMount() {
+    if (isEmpty(this.props.usersAccountHistory[this.props.authenticatedUser.name])) {
+      this.props.getUserAccountHistory(this.props.authenticatedUser.name);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -86,6 +116,7 @@ class LetsGetStarted extends React.Component {
       nextProps.authenticatedUser,
       nextProps.followingList,
       nextProps.isGuest,
+      nextProps.usersAccountHistory,
     );
     const diffHasProfile = this.state.hasProfile !== newUserState.hasProfile;
     const diffHasPost = this.state.hasPost !== newUserState.hasPost;
@@ -178,8 +209,8 @@ class LetsGetStarted extends React.Component {
                 })}
               >
                 <FormattedMessage
-                  id="follow_steemians"
-                  defaultMessage="Follow {amount} steemians"
+                  id="follow_users"
+                  defaultMessage="Follow {amount} users"
                   values={{ amount: 5 }}
                 />
               </span>

@@ -9,6 +9,7 @@
   padding: 10px 14px;
   justify-content: space-between;
   margin-bottom: 10px;
+  cursor: pointer;
 
   &__content {
     display: flex;
@@ -37,6 +38,10 @@
 
         &-pay {
           display: flex;
+
+          span {
+            padding-top: 4px;
+          }
 
           .WalletSidebar__transfer {
             margin-bottom: 0;
@@ -85,6 +90,18 @@
 
 .PaymentCard__end-wrap-icon :hover {
   cursor: pointer;
+}
+
+.Payment {
+  &__title-pay {
+    .WalletSidebar__transfer {
+      &.Action--primary:disabled {
+        background-color: @white-smoke !important;
+        border-color: @white-gainsboro !important;
+        color: @blue-botticelli !important;
+      }
+    }
+  }
 }
 
 @import 'PaymentCard-nightmode';

@@ -24,7 +24,8 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     toggleModalDetails: PropTypes.func,
-    requiredObjectName: PropTypes.bool.isRequired,
+    requiredObjectName: PropTypes.string.isRequired,
+    propositionGuideName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -113,11 +114,12 @@ export default class CampaignButtons extends React.Component {
       pendingFollow,
       pendingFollowObject,
       postState,
-      post,
       handlePostPopoverMenuClick,
       requiredObjectName,
+      propositionGuideName,
     } = this.props;
-    const followText = this.getFollowText(postState.userFollowed, `@${post.parent_author}`);
+    const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
+
     const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
 
     let popoverMenu = [];

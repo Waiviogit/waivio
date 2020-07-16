@@ -1,8 +1,9 @@
-import { each, find, omit } from 'lodash';
+import { each, find, omit, get } from 'lodash';
 import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
+import { FAKE_REBLOG_POST } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -37,6 +38,7 @@ const initialState = {
   pendingLikes: {},
   list: {},
   postsStates: {},
+  lastId: null,
 };
 
 const posts = (state = initialState, action) => {
@@ -64,6 +66,9 @@ const posts = (state = initialState, action) => {
       const list = {
         ...state.list,
       };
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
       const postsStates = {
         ...state.postsStates,
       };
@@ -77,11 +82,11 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-
       return {
         ...state,
         list,
         postsStates,
+        lastId,
       };
     }
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
@@ -107,11 +112,15 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       return {
         ...state,
         list,
         postsStates,
+        lastId,
       };
     }
     case postsActions.GET_CONTENT.START:
@@ -148,6 +157,10 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
+      const lastId =
+        // eslint-disable-next-line no-underscore-dangle
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+
       return {
         ...state,
         list: {
@@ -160,6 +173,7 @@ const posts = (state = initialState, action) => {
             id: key,
           },
         },
+        lastId,
         postsStates: {
           ...state.postsStates,
           [key]: {
@@ -226,71 +240,15 @@ const posts = (state = initialState, action) => {
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
 
-    case postsActions.VOTE_UPDATE_START: {
-      const matchPost = state.list[action.payload.postId];
-
+    case FAKE_REBLOG_POST: {
+      const rebloggedPost = state.list[action.payload.postId];
       return {
         ...state,
         list: {
           ...state.list,
           [action.payload.postId]: {
-            ...matchPost,
-            loading: true,
-          },
-        },
-      };
-    }
-
-    case postsActions.VOTE_UPDATE_SUCCESS: {
-      const matchPost = state.list[action.payload.postId];
-      const percent = action.payload.type === 'approve' ? 100 : -100;
-      const voterIndex = matchPost.active_votes.findIndex(
-        vote => vote.voter === action.payload.voter,
-      );
-      const newVoter = {
-        voter: action.payload.voter,
-        percent: action.payload.weight && percent,
-        rshares_weight: 1,
-        weight: action.payload.weight,
-      };
-      let list = [...matchPost.active_votes];
-
-      if (voterIndex >= 0) {
-        if (!action.payload.weight) {
-          list.splice(voterIndex, 1);
-        } else {
-          list.splice(voterIndex, 1, newVoter);
-        }
-      } else {
-        list = [...matchPost.active_votes, newVoter];
-      }
-
-      return {
-        ...state,
-        list: {
-          ...state.list,
-          [action.payload.postId]: {
-            ...matchPost,
-            type: action.payload.type,
-            active_votes: list,
-            loading: false,
-            isLiked: action.payload.weight % 10 === 0 && action.payload.weight !== 0,
-            isReject: action.payload.weight % 10 !== 0 && action.payload.weight !== 0,
-          },
-        },
-      };
-    }
-
-    case postsActions.VOTE_UPDATE_REJECT: {
-      const matchPost = state.list[action.payload.postId];
-
-      return {
-        ...state,
-        list: {
-          ...state.list,
-          [action.payload.postId]: {
-            ...matchPost,
-            loading: false,
+            ...rebloggedPost,
+            reblogged_users: [...rebloggedPost.reblogged_users, action.payload.userName],
           },
         },
       };
@@ -304,13 +262,13 @@ const posts = (state = initialState, action) => {
 export default posts;
 
 export const getPosts = state => state.list;
-export const getPostContent = (state, author, permlink) =>
-  Object.values(state.list).find(post => post.author === author && post.permlink === permlink);
+export const getPostContent = (state, permlink) =>
+  Object.values(state.list).find(post => post.permlink === permlink);
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] &&
-  state.postsStates[`${author}/${permlink}}`].fetching;
+  get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);
 export const getIsPostLoaded = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].loaded;
+  get(state, ['postsStates', `${author}/${permlink}`, 'loaded']);
 export const getIsPostFailed = (state, author, permlink) =>
-  state.postsStates[`${author}/${permlink}}`] && state.postsStates[`${author}/${permlink}}`].failed;
+  get(state, ['postsStates', `${author}/${permlink}`, 'failed']);
+export const getLastPostId = state => state.lastId;

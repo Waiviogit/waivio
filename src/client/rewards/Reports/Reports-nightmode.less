@@ -1,0 +1,192 @@
+@import (reference) '../../styles/custom.less';
+
+.nightmode {
+  .ant-calendar-time-picker-btn-disabled {
+    color: #f5f5f5 !important;
+    cursor: not-allowed;
+  }
+
+  .ant-calendar-ok-btn-disabled {
+    cursor: not-allowed !important;
+  }
+
+  .ant-calendar-today-btn-disabled {
+    color: transparent !important;
+  }
+
+  .ant-calendar-day-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-time-picker-select,
+  .ant-calendar-picker-container,
+  .ant-calendar-time-picker-select-option-selected {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-time-picker-select-option-selected {
+    background-color: @grey-empress;
+    border-bottom: 1px solid @white-smoke;
+  }
+
+  .ant-calendar-time-picker-select li:hover {
+    background-color: @grey-empress;
+  }
+
+  .ant-calendar-year-panel-header,
+  .ant-calendar-month-panel-header,
+  .ant-calendar-decade-panel-header,
+  .ant-calendar-year-panel-tbody,
+  .ant-calendar-month-panel-tbody,
+  .ant-calendar-decade-panel-tbody {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-year-panel-decade-select-content,
+  .ant-calendar-month-panel-year-select-content,
+  .ant-calendar-decade-panel-decade,
+  .ant-calendar-year-panel-year,
+  .ant-calendar-month-panel-month,
+  .ant-calendar-decade-panel-century {
+    color: @white-smoke;
+  }
+
+  .ant-calendar-year-panel-last-decade-cell,
+  .ant-calendar-year-panel-next-decade-cell {
+    .ant-calendar-year-panel-year {
+      color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-year-panel-year:hover,
+  .ant-calendar-month-panel-month:hover,
+  .ant-calendar-decade-panel-decade:hover {
+    background: @grey-empress !important;
+  }
+
+  .ant-calendar-prev-year-btn:hover::before {
+    border-color: @white-smoke;
+  }
+
+  .ant-calendar-decade-panel-last-century-cell,
+  .ant-calendar-decade-panel-next-century-cell {
+    .ant-calendar-decade-panel-decade {
+      color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-month-panel-header {
+    .ant-calendar-month-panel-prev-year-btn:hover::before,
+    .ant-calendar-month-panel-prev-year-btn:hover::after,
+    .ant-calendar-month-panel-next-year-btn:hover::before,
+    .ant-calendar-month-panel-next-year-btn:hover::after {
+      border-color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-header {
+    border-bottom: 1px solid @normal-grey;
+
+    .ant-calendar-prev-year-btn:hover::before,
+    .ant-calendar-prev-year-btn:hover::after,
+    .ant-calendar-next-year-btn:hover::before,
+    .ant-calendar-next-year-btn:hover::after,
+    .ant-calendar-prev-month-btn:hover::before,
+    .ant-calendar-prev-month-btn:hover::after,
+    .ant-calendar-next-month-btn:hover::before,
+    .ant-calendar-next-month-btn:hover::after {
+      border-color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-year-panel-header {
+    .ant-calendar-year-panel-prev-decade-btn:hover::before,
+    .ant-calendar-year-panel-prev-decade-btn:hover::after,
+    .ant-calendar-year-panel-next-decade-btn:hover::before,
+    .ant-calendar-year-panel-next-decade-btn:hover::after {
+      border-color: @white-smoke;
+    }
+  }
+
+  .ant-calendar-picker-icon {
+    color: @white;
+  }
+
+  .ant-calendar {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    color: @white-smoke;
+  }
+
+  .ant-calendar-input {
+    background-color: @grey-nero;
+    color: @white;
+  }
+
+  .ant-calendar-month-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-year-select {
+    color: @white-smoke !important;
+  }
+
+  .ant-calendar-date {
+    color: @white-smoke;
+    background: @normal-grey;
+  }
+
+  .ant-calendar-date:hover {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-last-month-cell .ant-calendar-date {
+    color: @normal-grey;
+  }
+
+  .ant-calendar-input-wrap {
+    border-bottom: 1px solid @normal-grey;
+  }
+
+  .ant-calendar-footer {
+    border-top: 1px solid @normal-grey;
+  }
+
+  .ant-calendar-selected-day .ant-calendar-date {
+    background: @normal-grey;
+    color: @orange-hot;
+  }
+
+  .ant-calendar-selected-day .ant-calendar-date:hover {
+    background: @grey-nero;
+  }
+
+  .ant-checkbox-inner {
+    background-color: @grey-nero;
+  }
+
+  .ant-calendar-cell.ant-calendar-next-month-btn-day > .ant-calendar-date {
+    color: @normal-grey;
+  }
+
+  .has-error .ant-input,
+  .has-error .ant-input:hover {
+    background-color: @grey-nero;
+  }
+
+  .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: @blue-darkGrayish;
+  }
+
+  .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: @blue-darkGrayish;
+  }
+
+  .ant-select-selection__clear {
+    background-color: transparent;
+  }
+
+  .ant-select-selection__clear > i {
+    color: @blue-heather;
+  }
+}

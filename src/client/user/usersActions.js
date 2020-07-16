@@ -1,23 +1,19 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getAccount = name => dispatch => {
-  dispatch({
+export const getUserAccount = name => (dispatch, getState) => {
+  const state = getState();
+  const authUser = getAuthenticatedUserName(state);
+
+  return dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name),
+    payload: ApiClient.getUserAccount(name, false, authUser),
     meta: { username: name },
   }).catch(() => {});
 };
-
-export const getUserAccount = name => dispatch =>
-  dispatch({
-    type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name),
-    meta: { username: name },
-  }).catch(() => {});
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';
 export const GET_RANDOM_EXPERTS_START = '@users/GET_RANDOM_EXPERTS_START';
@@ -59,4 +55,64 @@ export const getUserMetadata = () => (dispatch, getState) => {
     });
   }
   return dispatch({ type: GET_USER_METADATA.ERROR, payload: Promise.resolve(null) });
+};
+
+export const UNFOLLOW_USER = createAsyncActionType('@users/UNFOLLOW_USER');
+
+export const unfollowUser = (username, top = false) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: UNFOLLOW_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+    },
+    meta: {
+      username,
+      top,
+    },
+  });
+};
+export const FOLLOW_USER = createAsyncActionType('@user/FOLLOW_USER');
+
+export const followUser = (username, top = false) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: FOLLOW_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+    },
+    meta: {
+      username,
+      top,
+    },
+  });
+};
+
+export const GET_USER_PRIVATE_EMAIL = createAsyncActionType('@user/GET_USER_PRIVATE_EMAIL');
+
+export const getUserPrivateEmail = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  if (userName) {
+    return dispatch({
+      type: GET_USER_PRIVATE_EMAIL.ACTION,
+      payload: ApiClient.getPrivateEmail(userName),
+    });
+  }
+  return dispatch({ type: GET_USER_PRIVATE_EMAIL.ERROR, payload: Promise.resolve(null) });
 };

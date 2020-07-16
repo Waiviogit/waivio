@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { includes, get } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import Avatar from '../components/Avatar';
@@ -111,9 +112,29 @@ class UserActionIcon extends React.Component {
         return get(actionDetails, 'author', '');
     }
   }
+
+  getTypeOperation = () => {
+    const { actionDetails } = this.props;
+    const customActionDetails = JSON.parse(actionDetails.json)[1];
+    return customActionDetails.type_operation;
+  };
+
   render() {
+    const { actionDetails } = this.props;
     const iconName = this.getIcon();
     const avatarUsername = this.getAvatarUsername();
+
+    if (includes(accountHistoryConstants.PARSED_CUSTOM_JSON_FOLLOW_WOBJECT, actionDetails.id)) {
+      return (
+        <div className="UserActivityActions__icon__container">
+          {this.getTypeOperation() === accountHistoryConstants.FOLLOW_WOBJECT ? (
+            <Icon type="file-done" />
+          ) : (
+            <Icon type="file-excel" />
+          )}
+        </div>
+      );
+    }
 
     if (iconName) {
       return (

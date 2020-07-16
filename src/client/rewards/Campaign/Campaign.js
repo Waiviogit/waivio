@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import { getClientWObj } from '../../adapters';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
@@ -14,27 +13,17 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const requiredObject = proposition.campaigns
     ? getClientWObj(proposition, usedLocale)
     : getClientWObj(proposition.required_object, usedLocale);
-  const currentUSDPrice = getCurrentUSDPrice();
   const minReward = proposition.campaigns
     ? proposition.campaigns.min_reward
     : proposition.min_reward;
   const maxReward = proposition.campaigns
     ? proposition.campaigns.max_reward
     : proposition.max_reward;
-  const rewardPrise = currentUSDPrice
-    ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
-    : `${maxReward} HIVE`;
-  const rewardMax =
-    // eslint-disable-next-line no-nested-ternary
-    maxReward !== minReward
-      ? currentUSDPrice
-        ? `${(currentUSDPrice * maxReward).toFixed(2)} USD`
-        : `${maxReward} HIVE`
-      : '';
+  const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   };
-
   return (
     <div className="Campaign">
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
@@ -63,7 +52,6 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
               </span>
               <span>
                 <span className="fw6 ml1">{`${rewardMax}`}</span>
-                {' USD '}
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -78,6 +66,7 @@ Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
+  // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
 };
 

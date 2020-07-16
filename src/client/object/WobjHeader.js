@@ -11,10 +11,17 @@ import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
-import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
 import { AppSharedContext } from '../Wrapper';
+import {
+  accessTypesArr,
+  addActiveVotesInField,
+  calculateApprovePercent,
+  getApprovedField,
+  haveAccess,
+} from '../helpers/wObjectHelper';
+import { followWobject, unfollowWobject } from './wobjActions';
+
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({
@@ -25,6 +32,8 @@ const WobjHeader = ({
   toggleViewEditMode,
   authenticated,
   isMobile,
+  followWobj,
+  unfollowWobj,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
@@ -32,9 +41,11 @@ const WobjHeader = ({
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parentName = wobject.parent
-    ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
-    : '';
+  const parent = wobject.parent && addActiveVotesInField(wobject, wobject.parent);
+  const parentName =
+    parent &&
+    calculateApprovePercent(parent.active_votes, parent.weight, wobject) >= 70 &&
+    (getApprovedField(wobject.parent, objectFields.name) || wobject.default_name);
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -51,8 +62,11 @@ const WobjHeader = ({
     if (isMobile) return `${link}/about`;
     if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
       return `${link}/${wobject.object_type}`;
+
     return `${link}/reviews`;
   };
+  const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
+  const isHashtag = wobject.object_type === 'hashtag';
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -73,11 +87,17 @@ const WobjHeader = ({
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={wobject.name}>
-                {wobject.name}
+              <div className="ObjectHeader__text" title={name}>
+                {name}
               </div>
               <div className="ObjectHeader__controls">
-                <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
+                <FollowButton
+                  followObject={followWobj}
+                  unfollowObject={unfollowWobj}
+                  following={wobject.youFollows}
+                  wobj={wobject}
+                  followingType="wobject"
+                />
                 {accessExtend && authenticated && (
                   <Link to={getLink()}>
                     <Button onClick={toggleViewEditMode}>
@@ -99,7 +119,7 @@ const WobjHeader = ({
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
               {/* eslint-disable-next-line no-nested-ternary */}
-              {canEdit && !descriptionShort ? (
+              {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
@@ -135,6 +155,8 @@ WobjHeader.propTypes = {
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
   isMobile: PropTypes.bool,
+  followWobj: PropTypes.func,
+  unfollowWobj: PropTypes.func,
 };
 
 WobjHeader.defaultProps = {
@@ -145,8 +167,14 @@ WobjHeader.defaultProps = {
   username: '',
   toggleViewEditMode: () => {},
   isMobile: false,
+  followWobj: () => {},
+  unfollowWobj: () => {},
 };
 
 const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
 
-export default injectIntl(connect(mapStateToProps)(WobjHeader));
+export default injectIntl(
+  connect(mapStateToProps, { followWobj: followWobject, unfollowWobj: unfollowWobject })(
+    WobjHeader,
+  ),
+);

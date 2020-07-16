@@ -13,8 +13,9 @@ export const WAIVIO_POST_TYPE = {
 export const PRIMARY_COLOR = '#f87007';
 
 export const GUEST_PREFIX = 'waivio_';
+export const BXY_GUEST_PREFIX = 'bxy_';
 
-export const BANK_ACCOUNT = 'waiviobank';
+export const BANK_ACCOUNT = 'waivio.hive';
 
 export const newUserRecommendTopics = {
   news: ['politics', 'science'],
@@ -24,6 +25,7 @@ export const newUserRecommendTopics = {
   stocks: ['trading', 'gold', 'stocks'],
   more: ['funny', 'cats', 'beer', 'poll'],
 };
+
 export const newUserRecommendExperts = {
   politics: ['theouterlight', 'honeybee', 'ura-soul', 'johnvibes', 'corbettreport'],
   economy: ['themoneygps', 'joshsigurdson', 'x22report'],
@@ -36,3 +38,11 @@ export const newUserRecommendExperts = {
 };
 
 export const POST_AUTHOR_FOR_REWARDS_COMMENTS = 'monterey';
+
+export const CRYPTO_FOR_VALIDATE_WALLET = {
+  btc: 'bitcoin',
+  ltc: 'litecoin',
+  eth: 'ethereum',
+};
+
+export const CRYPTO_LIST_FOR_WALLET = ['btc', 'ltc', 'eth'];

@@ -19,9 +19,13 @@ export const validatorMessagesCreator = messageFactory => ({
     'reward_not_exceed_budget',
     'The reward should not exceed the budget',
   ),
-  reservationPeriod: messageFactory(
+  minReservationPeriod: messageFactory(
     'reserve_period_one_day',
     'The reservation period must be at least one day',
+  ),
+  maxReservationPeriod: messageFactory(
+    'reserve_period_thirty_days',
+    'The reservation period must not exceed thirty days',
   ),
   photosQuality: messageFactory('not_less_zero_photos', 'Should not be less than zero photos'),
   commission: messageFactory(
@@ -55,6 +59,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   checkPrimaryObject: messageFactory('add_primary_object', 'Add primary object'),
   checkSecondaryObject: messageFactory('add_secondary_object', 'Add secondary object'),
+  checkCompensationAccount: messageFactory('add_compensation_account', 'Add compensation account'),
 });
 
 export const validatorsCreator = (
@@ -76,8 +81,13 @@ export const validatorsCreator = (
   },
 
   checkReservationPeriod: (rule, value, callback) => {
-    // eslint-disable-next-line no-unused-expressions
-    value < 1 && value !== '' ? callback(messages.reservationPeriod) : callback();
+    if (value < 1 && value !== '') {
+      callback(messages.minReservationPeriod);
+    } else if (value > 30) {
+      callback(messages.maxReservationPeriod);
+    } else {
+      callback();
+    }
   },
 
   checkPhotosQuantity: (rule, value, callback) => {
@@ -106,8 +116,7 @@ export const validatorsCreator = (
   },
 
   checkExpireDate: (rule, value, callback) => {
-    const currentDay = new Date().getDate();
-    if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
+    if (value && value.unix() * 1000 < Date.now()) {
       callback(messages.expiredDate);
     } else {
       callback();
@@ -138,7 +147,7 @@ export const validatorsCreator = (
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
-    const budgetValue = getFieldValue('budget');
+    const budgetValue = Number(getFieldValue('budget'));
     if (value > 0 && value < 0.001) callback(messages.rewardsLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);

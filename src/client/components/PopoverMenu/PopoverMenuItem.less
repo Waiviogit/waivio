@@ -1,28 +1,12 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins.less';
 
 .PopoverMenuItem {
   height: 30px !important;
-  text-transform: capitalize;
 
   & > a {
-    font-size: 14px !important;
-    font-weight: 500;
-    color: #99aab5 !important;
-    height: 30px !important;
-    line-height: 30px !important;
-
-    &:hover {
-      color: @primary-color !important;
-    }
-
-    &[disabled] {
-      color: #c2ccd3 !important;
-    }
-
-    & > span {
-      white-space: nowrap;
-    }
+    .menu-item-link();
   }
 
   &--bold {

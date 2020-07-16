@@ -1,13 +1,24 @@
 import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
-import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+  isGuestUser,
+} from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
-import { updateGuestProfile } from '../../waivioApi/ApiClient';
+import {
+  getGuestPaymentsHistory,
+  getPrivateEmail,
+  updateGuestProfile,
+} from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
+import history from '../history';
+import { clearGuestAuthData, getGuestAccessToken } from '../helpers/localStorageHelpers';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -28,7 +39,25 @@ export const LOGOUT = '@auth/LOGOUT';
 
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
+export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
+
 const loginError = createAction(LOGIN_ERROR);
+
+const isUserLoaded = state =>
+  getIsLoaded(state) && (Cookie.get('access_token') || getGuestAccessToken());
+
+export const getAuthGuestBalance = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
+  if (isGuest) {
+    return dispatch({
+      type: UPDATE_GUEST_BALANCE.ACTION,
+      payload: getGuestPaymentsHistory(userName),
+    });
+  }
+  return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
+};
 
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
@@ -39,19 +68,25 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   let isGuest = null;
 
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
+  const guestAccessToken = getGuestAccessToken();
+  isGuest = Boolean(guestAccessToken);
 
-  if (getIsLoaded(state)) {
+  if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await setToken(accessToken, socialNetwork, regData);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+        const userData = await setToken(accessToken, socialNetwork, regData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+        const privateEmail = await getPrivateEmail(userData.name);
+
+        resolve({
+          account: userData,
+          userMetaData,
+          privateEmail,
+          socialNetwork,
+          isGuestUser: true,
+        });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
         reject(e);
@@ -64,23 +99,32 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
+        const privateEmail = await getPrivateEmail(scUserData.name);
+
+        resolve({
+          ...scUserData,
+          userMetaData,
+          privateEmail,
+          isGuestUser: isGuest,
+        });
       } catch (e) {
         reject(e);
       }
     });
   }
+
   return dispatch({
     type: LOGIN,
     payload: {
       promise,
     },
     meta: {
-      refresh: getIsLoaded(state),
+      refresh: isUserLoaded(state),
     },
   }).catch(e => {
     console.warn(e);
     dispatch(loginError());
+
     return e;
   });
 };
@@ -97,22 +141,30 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
 
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
+  let accessToken = Cookie.get('access_token');
+
   if (state.auth.isGuestUser) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('accessTokenExpiration');
-    localStorage.removeItem('socialName');
-    localStorage.removeItem('guestName');
+    accessToken = getGuestAccessToken();
+    clearGuestAuthData();
     if (window) {
-      // eslint-disable-next-line no-unused-expressions
-      window.FB && window.FB.logout();
-      // eslint-disable-next-line no-unused-expressions
-      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
+      if (window.FB) {
+        window.FB.getLoginStatus(res => {
+          if (res.status === 'connected') window.FB.logout();
+        });
+      }
+
+      if (window.gapi && window.gapi.auth2) {
+        const authInstance = window.gapi.auth2.getAuthInstance();
+
+        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
+      }
     }
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
   }
-  busyAPI.close();
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
+  history.push('/');
 
   dispatch({
     type: LOGOUT,
@@ -125,7 +177,8 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
   if (typeof localStorage !== 'undefined') {
-    const guestAccessToken = localStorage.getItem('accessToken');
+    const guestAccessToken = getGuestAccessToken();
+
     if (guestAccessToken) {
       method = 'guest_login';
       accessToken = guestAccessToken;
@@ -158,8 +211,10 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(state.auth.user.json_metadata);
+  const json_metadata = JSON.parse(state.auth.user.posting_json_metadata);
+
   json_metadata.profile = { ...json_metadata.profile, ...values };
+
   return dispatch({
     type: UPDATE_PROFILE,
     payload: {
@@ -167,6 +222,7 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
         if (data.statuscode === 200) {
           return { isProfileUpdated: false };
         }
+
         return { isProfileUpdated: true };
       }),
     },

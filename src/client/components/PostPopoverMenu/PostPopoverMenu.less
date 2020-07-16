@@ -1,0 +1,38 @@
+@import (reference) '../../styles/mixins.less';
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.Popover__shared-link {
+  display: block;
+  border-top: 1px solid @white-gainsboro;
+  line-height: 50px !important;
+  height: 50px !important;
+  color: @blue-botticelli;
+
+  @media @medium {
+    .menu-item-link();
+
+    border-top: none;
+  }
+
+  .iconfont {
+    font-size: 20px;
+    margin-right: 8px;
+
+    &.icon-twitter {
+      color: @blue-botticelli;
+
+      @media @medium {
+        color: @twitter-link-color;
+      }
+    }
+
+    &.icon-facebook {
+      color: @blue-botticelli;
+
+      @media @medium {
+        color: @facebook-background-color;
+      }
+    }
+  }
+}

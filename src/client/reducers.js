@@ -23,6 +23,7 @@ import objectTypeReducer, * as fromObjectType from '../client/objectTypes/object
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
+import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
 
 export default history =>
   combineReducers({
@@ -48,6 +49,7 @@ export default history =>
     append: appendReducer,
     gallery: galleryReducer,
     map: mapReducer,
+    rewards: rewardsReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -60,10 +62,11 @@ export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
+export const getAuthenticatedUserPrivateEmail = state =>
+  fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, author, permlink) =>
-  fromPosts.getPostContent(state.posts, author, permlink);
+export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
@@ -71,6 +74,7 @@ export const getIsPostLoaded = (state, author, permlink) =>
   fromPosts.getIsPostLoaded(state.posts, author, permlink);
 export const getIsPostFailed = (state, author, permlink) =>
   fromPosts.getIsPostFailed(state.posts, author, permlink);
+export const getLastPostId = state => fromPosts.getLastPostId(state.posts);
 
 export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
 export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);
@@ -92,6 +96,7 @@ export const getTranslations = state => fromApp.getTranslations(state.app);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
+export const getIsMobile = state => fromApp.getIsMobile(state.app);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 
@@ -125,6 +130,7 @@ export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdat
 export const getFollowingObjectsUpdatesByType = (state, objType) =>
   fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
 export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
+export const getPendingUpdate = state => fromUser.getPendingUpdate(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>
@@ -139,6 +145,7 @@ export const getTopExpertsHasMore = state => fromUsers.getTopExpertsHasMore(stat
 export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
+export const getAllUsers = state => fromUsers.getAllUsers(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
@@ -147,9 +154,12 @@ export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
 export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
 export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getTransferMemo = state => fromWallet.getTransferMemo(state.wallet);
+export const getTransferApp = state => fromWallet.getTransferApp(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
+export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wallet);
+export const hasMoreGuestActions = state => fromWallet.hasMoreGuestActions(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
@@ -162,10 +172,15 @@ export const getRewriteLinks = state => fromSettings.getRewriteLinks(state.setti
 export const getUpvoteSetting = state => fromSettings.getUpvoteSetting(state.settings);
 export const getExitPageSetting = state => fromSettings.getExitPageSetting(state.settings);
 export const getRewardSetting = state => fromSettings.getRewardSetting(state.settings);
+export const getHiveBeneficiaryAccount = state =>
+  fromSettings.getHiveBeneficiaryAccount(state.settings);
+export const isOpenLinkModal = state => fromSettings.isOpenLinkModal(state.settings);
 
 export const getTotalVestingShares = state => fromWallet.getTotalVestingShares(state.wallet);
 export const getTotalVestingFundSteem = state => fromWallet.getTotalVestingFundSteem(state.wallet);
 export const getUsersTransactions = state => fromWallet.getUsersTransactions(state.wallet);
+export const getTransactions = state => fromWallet.getTransactions(state.wallet);
+export const getUserHasMore = state => fromWallet.getUserHasMore(state.wallet);
 export const getUsersAccountHistory = state => fromWallet.getUsersAccountHistory(state.wallet);
 export const getUsersAccountHistoryLoading = state =>
   fromWallet.getUsersAccountHistoryLoading(state.wallet);
@@ -184,7 +199,6 @@ export const getCurrentDisplayedActions = state =>
   fromWallet.getCurrentDisplayedActions(state.wallet);
 export const getCurrentFilteredActions = state =>
   fromWallet.getCurrentFilteredActions(state.wallet);
-export const getGuestUserBalance = state => fromWallet.getGuestUserBalance(state.wallet);
 
 export const getSearchLoading = state => fromSearch.getSearchLoading(state.search);
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
@@ -192,11 +206,20 @@ export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
 export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(state.search);
+export const getSearchUsersResultsForDiscoverPage = state =>
+  fromSearch.getSearchUsersResultsForDiscoverPage(state.search);
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
+export const getBeneficiariesUsers = state => fromSearch.getBeneficiariesUsers(state.search);
+export const getIsStartSearchAutoComplete = state =>
+  fromSearch.getIsStartSearchAutoComplete(state.search);
+export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
+export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
+export const getObjectAdmins = state => fromObject.getObjectAdmins(state.object);
+export const getObjectModerators = state => fromObject.getObjectModerators(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
@@ -210,6 +233,9 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getFilteredObjectsMap = state =>
   fromObjectType.getFilteredObjectsMap(state.objectType);
+
+export const getUpdatedMapDiscover = state =>
+  fromObjectType.getUpdatedMapDiscover(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
@@ -225,6 +251,11 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getObjectsMap = state => fromMap.getObjectsMap(state.map);
+export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
+
+export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
+export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
 
 // common selectors
 

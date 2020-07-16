@@ -22,11 +22,12 @@ export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
     autoCompleteSearchResults: {},
+    userName: '',
   };
 
   constructor(props) {
@@ -237,6 +238,18 @@ export default class SidenavRewards extends React.Component {
                   )}
                   <li>
                     <NavLink
+                      to={`/rewards/reports`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: 'sidenav_rewards_reports',
+                        defaultMessage: `Reports`,
+                      })}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
                       to={`/rewards/match-bot`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
@@ -244,6 +257,18 @@ export default class SidenavRewards extends React.Component {
                       {intl.formatMessage({
                         id: 'matchBot',
                         defaultMessage: `Match bot`,
+                      })}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to={`/rewards/blacklist`}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: 'blacklist',
+                        defaultMessage: `Blacklist`,
                       })}
                     </NavLink>
                   </li>

@@ -37,6 +37,12 @@ export const TYPES_OF_MENU_ITEM = {
 
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
+export const sortingMenuName = {
+  menuList: objectFields.listItem,
+  menuPage: objectFields.pageContent,
+  menuButton: objectFields.button,
+};
+
 export const objectFieldsWithInnerData = [
   'newsFilter',
   'address',
@@ -125,6 +131,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.galleryAlbum,
         objectFields.tagCategory,
         objectFields.categoryItem,
+        objectFields.workTime,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -139,6 +146,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.galleryAlbum,
         objectFields.tagCategory,
         objectFields.categoryItem,
+        objectFields.status,
+        objectFields.workTime,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

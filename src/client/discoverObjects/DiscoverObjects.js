@@ -30,9 +30,10 @@ const DiscoverObjects = ({ intl, history, match }) => {
           {intl.formatMessage({ id: 'objects_title', defaultMessage: 'Discover objects' })} - Waivio
         </title>
         <meta
+          name="og:image"
           property="og:image"
           content={
-            'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
           }
         />
       </Helmet>

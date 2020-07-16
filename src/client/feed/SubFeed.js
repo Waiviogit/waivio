@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, uniq } from 'lodash';
 import { showPostModal } from '../app/appActions';
 import {
   getFeedContent,
@@ -75,7 +75,6 @@ class SubFeed extends React.Component {
     const category = match.params.category;
 
     if (!loaded && Cookie.get('access_token')) return;
-
     if (match.url === '/' && authenticated) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isAuthHomeFeed: true });
@@ -149,11 +148,11 @@ class SubFeed extends React.Component {
       failed = getFeedFailedFromState(sortBy, match.params.category, feed);
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, match.params.category);
     }
-
+    content = uniq(content);
     const empty = isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
-
     const ready = loaded && fetched && !isFetching;
+
     return (
       <div>
         {isAuthHomeFeed && <LetsGetStarted />}

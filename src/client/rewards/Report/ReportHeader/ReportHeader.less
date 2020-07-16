@@ -1,0 +1,191 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.ReportHeader {
+  display: flex;
+  font-size: 20px;
+  font-weight: 500;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid @blue-hawkesBlue;
+  flex-direction: column;
+  color: @black;
+
+  @media @small {
+    flex-direction: row;
+  }
+
+  &__name {
+    font-weight: normal;
+  }
+
+  &__data {
+    white-space: nowrap;
+
+    &-colored {
+      color: @orange-hot;
+
+      .usd {
+        color: @black;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &__user-info {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: 0.9em;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px 160px 15px;
+      font-size: 20px;
+      color: @black;
+      font-weight: 600;
+    }
+
+    &__sponsor {
+      &-header {
+        font-size: 20px;
+        color: @black;
+        font-weight: 600;
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      &-content {
+        display: flex;
+      }
+
+      &-name-wrap {
+        margin-left: 10px;
+        max-width: calc(100vw - 210px);
+        flex-direction: column;
+
+        &-alias {
+          font-weight: bold;
+          color: @black-text-basic;
+        }
+
+        &-row {
+          display: flex;
+          align-items: center;
+          font-size: medium;
+
+          &-name {
+            font-weight: 500;
+            color: @blue-botticelli;
+            padding-right: 10px;
+          }
+        }
+      }
+    }
+
+    &__user {
+      &-header {
+        font-size: 20px;
+        color: @black;
+        font-weight: 600;
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      &-content {
+        display: flex;
+      }
+
+      &-name-wrap {
+        margin-left: 10px;
+        max-width: calc(100vw - 210px);
+        flex-direction: column;
+
+        &-alias {
+          font-weight: bold;
+          color: @black-text-basic;
+        }
+
+        &-row {
+          display: flex;
+          align-items: center;
+          font-size: medium;
+
+          &-name {
+            font-weight: 500;
+            color: @blue-botticelli;
+            padding-right: 10px;
+          }
+        }
+      }
+    }
+
+    .username {
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+
+    .total-paid {
+      display: flex;
+      white-space: nowrap;
+      font-weight: 500;
+      color: @blue-botticelli;
+
+      @media @small {
+        flex-direction: column;
+      }
+
+      &__colon {
+        padding-right: 0.5rem;
+
+        @media @small {
+          display: none;
+        }
+      }
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 120px 50px;
+
+      @media @small {
+        flex-direction: row;
+      }
+    }
+  }
+
+  &__campaignInfo {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    color: @black;
+    font-weight: 600;
+    margin-bottom: 10px;
+    border-bottom: 1px solid @blue-hawkesBlue;
+
+    div {
+      padding-bottom: 10px;
+    }
+
+    &-date {
+      color: @orange-hot;
+      font-weight: normal;
+    }
+
+    &-title {
+      color: @black-text-basic;
+      font-weight: 500;
+    }
+
+    &-links {
+      font-weight: normal;
+    }
+  }
+}
+
+@import 'ReportHeader-nightmode';

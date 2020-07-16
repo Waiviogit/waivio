@@ -7,10 +7,11 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
+import ruRU from 'antd/lib/locale-provider/ru_RU';
+import ukUA from 'antd/lib/locale-provider/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
-  getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -18,8 +19,15 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
+  isGuestUser,
+  getStatusWithdraw,
 } from './reducers';
-import { login, logout, busyLogin } from './auth/authActions';
+import {
+  login,
+  logout,
+  busyLogin,
+  getAuthGuestBalance as dispatchGetAuthGuestBalance,
+} from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
@@ -29,15 +37,16 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
-import { GUEST_PREFIX } from '../common/constants/waivio';
+import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import ErrorBoundary from './ErrorBoundary';
+import Withdraw from './wallet/WithDraw';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
 @withRouter
 @connect(
   state => ({
-    loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
     isAuthenticated: getIsAuthenticated(state),
@@ -48,6 +57,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
+    isGuest: isGuestUser(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     login,
@@ -60,9 +71,10 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
+    dispatchGetAuthGuestBalance,
   },
 )
-export default class Wrapper extends React.PureComponent {
+class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
@@ -84,6 +96,8 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
+    isWithdrawOpen: PropTypes.bool.isRequired,
+    dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
   static defaultProps = {
@@ -102,28 +116,27 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
+    dispatchGetAuthGuestBalance: () => {},
+    isGuest: false,
   };
 
-  static async fetchData({ store, req }) {
-    await store.dispatch(login());
-
+  static fetchData({ store, req }) {
     const appUrl = url.format({
       protocol: req.protocol,
       host: req.get('host'),
     });
-
-    store.dispatch(setAppUrl(appUrl));
-
     const state = store.getState();
-
     let activeLocale = getLocale(state);
     if (activeLocale === 'auto') {
       activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
     }
+    const lang = loadLanguage(activeLocale);
 
-    const lang = await loadLanguage(activeLocale);
-
-    store.dispatch(setUsedLocale(lang));
+    return Promise.all([
+      store.dispatch(login()),
+      store.dispatch(setAppUrl(appUrl)),
+      store.dispatch(setUsedLocale(lang)),
+    ]);
   }
 
   constructor(props) {
@@ -133,6 +146,7 @@ export default class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
+  // eslint-disable-next-line consistent-return
   componentDidMount() {
     this.props.login().then(() => {
       batch(() => {
@@ -143,8 +157,10 @@ export default class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.getRebloggedList();
         this.props.getRate();
+        this.props.dispatchGetAuthGuestBalance();
       });
     });
+
     batch(() => {
       this.props.getRewardFund();
       this.props.getRebloggedList();
@@ -152,6 +168,7 @@ export default class Wrapper extends React.PureComponent {
     });
   }
 
+  // eslint-disable-next-line consistent-return
   componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
 
@@ -160,6 +177,7 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   componentDidUpdate() {
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
@@ -219,6 +237,17 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  getAntdLocale = language => {
+    switch (language.id) {
+      case 'ru-RU':
+        return ruRU;
+      case 'uk-UA':
+        return ukUA;
+      default:
+        return enUS;
+    }
+  };
+
   render() {
     const {
       user,
@@ -231,14 +260,15 @@ export default class Wrapper extends React.PureComponent {
     } = this.props;
 
     const language = findLanguage(usedLocale);
+    const antdLocale = this.getAntdLocale(language);
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <ConfigProvider locale={enUS}>
+        <ConfigProvider locale={antdLocale}>
           <AppSharedContext.Provider
             value={{
               usedLocale,
-              isGuestUser: username && username.startsWith(GUEST_PREFIX),
+              isGuestUser: username && guestUserRegex.test(username),
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
@@ -253,6 +283,7 @@ export default class Wrapper extends React.PureComponent {
                 />
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
+                {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
@@ -265,3 +296,5 @@ export default class Wrapper extends React.PureComponent {
     );
   }
 }
+
+export default ErrorBoundary(Wrapper);

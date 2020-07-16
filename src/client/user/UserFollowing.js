@@ -7,7 +7,7 @@ import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 import './UserFollowing.less';
-import { getUser, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getUser, isGuestUser } from '../reducers';
 import { notify } from '../app/Notification/notificationActions';
 
 const TabPane = Tabs.TabPane;
@@ -15,6 +15,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   (state, ownProps) => ({
     user: getUser(state, ownProps.match.params.name),
+    authUser: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
   }),
   {
@@ -25,6 +26,11 @@ export default class UserFollowing extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    authUser: PropTypes.string,
+  };
+
+  static defaultProps = {
+    authUser: '',
   };
 
   static limit = 50;
@@ -42,6 +48,7 @@ export default class UserFollowing extends React.Component {
       this.props.match.params.name,
       this.limit,
       this.skip,
+      this.props.authUser,
     );
     const users = response.users;
     this.skip += this.limit;
@@ -49,8 +56,8 @@ export default class UserFollowing extends React.Component {
   }
 
   objectFetcher = skip => {
-    const { match } = this.props;
-    return getWobjectFollowing(match.params.name, skip, UserFollowing.limit);
+    const { match, authUser } = this.props;
+    return getWobjectFollowing(match.params.name, skip, UserFollowing.limit, authUser);
   };
 
   render() {

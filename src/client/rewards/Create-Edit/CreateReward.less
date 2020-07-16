@@ -11,6 +11,11 @@
     border-top: @base-border;
   }
 
+  &__second {
+    color: @black;
+    font-weight: 500;
+  }
+
   &__loading {
     filter: blur(2px);
   }
@@ -53,6 +58,19 @@
     }
   }
 
+  &__createDuplicate {
+    margin-bottom: 8px;
+    color: @black;
+    display: flex;
+    align-items: baseline;
+  }
+
+  &__first {
+    color: @red-danger;
+    font-size: 25px;
+    line-height: 5px;
+  }
+
   .feed-layout {
     .center {
       float: left;
@@ -68,14 +86,6 @@
       }
     }
   }
-}
-
-.CreateReward__object-message-validate.enable-require {
-  display: block !important;
-}
-
-.CreateReward__object-message-validate.enable-review {
-  display: block !important;
 }
 
 .CreateReward__item-title.ant-form-item-required {

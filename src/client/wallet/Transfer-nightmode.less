@@ -3,6 +3,25 @@
 
 .nightmode {
   .Transfer {
+    &__search-content-wrap {
+      &-current {
+        border: 1px solid @normal-grey;
+      }
+    }
+
+    &__delete-icon {
+      color: @white-gainsboro;
+    }
+
+    &__search-dropdown-container.ant-select-dropdown {
+      position: fixed;
+      border-radius: 0 0 4px 4px;
+      background-color: @grey-nero;
+      border-right: @border-width-base @border-style-base @grey-mortar;
+      border-left: @border-width-base @border-style-base @grey-mortar;
+      border-bottom: @border-width-base @border-style-base @grey-mortar;
+      box-shadow: none;
+    }
     &__amount {
       &__input {
         &:focus,
@@ -12,6 +31,7 @@
               border: @border-width-base @border-style-base @normal-grey;
               border-right: 0;
             }
+
             .ant-input-group-addon {
               border: @border-width-base @border-style-base @normal-grey;
             }
@@ -23,11 +43,11 @@
     .has-error {
       .Transfer__amount {
         .Transfer__usd-value {
-          border: @border-width-base @border-style-base @red-6 !important;
-          border-right: 0 !important;
           border-left: 0 !important;
         }
-        .ant-input-group-addon {
+
+        .Transfer__amount__input,
+        .ant-input {
           border: @border-width-base @border-style-base @red-6 !important;
         }
       }

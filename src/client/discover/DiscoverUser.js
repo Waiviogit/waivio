@@ -7,8 +7,10 @@ import Avatar from '../components/Avatar';
 import FollowButton from '../widgets/FollowButton';
 import WeightTag from '../../client/components/WeightTag';
 
-const DiscoverUser = ({ user, isReblogged }) => {
-  const parsedJSON = attempt(JSON.parse, user.json_metadata);
+import './Discover.less';
+
+const DiscoverUser = ({ user, isReblogged, unfollow, follow }) => {
+  const parsedJSON = attempt(JSON.parse, user.posting_json_metadata);
   const userJSON = isError(parsedJSON) ? {} : parsedJSON;
   const profileName = get(userJSON, ['profile', 'name']);
 
@@ -39,7 +41,15 @@ const DiscoverUser = ({ user, isReblogged }) => {
                 </span>
               )}
               <div className="Discover__user__follow">
-                <FollowButton following={user.name} followingType="user" secondary={isReblogged} />
+                <FollowButton
+                  following={user.youFollows}
+                  user={user}
+                  unfollowUser={unfollow}
+                  followingType="user"
+                  secondary={isReblogged}
+                  followUser={follow}
+                  top
+                />
               </div>
             </div>
           </div>
@@ -53,10 +63,14 @@ const DiscoverUser = ({ user, isReblogged }) => {
 DiscoverUser.propTypes = {
   user: PropTypes.shape().isRequired,
   isReblogged: PropTypes.bool,
+  unfollow: PropTypes.func,
+  follow: PropTypes.func,
 };
 
 DiscoverUser.defaultProps = {
   isReblogged: false,
+  unfollow: () => {},
+  follow: () => {},
 };
 
 export default DiscoverUser;

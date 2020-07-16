@@ -237,7 +237,6 @@ class Comment extends React.Component {
     const editable = isGuest ? comment.authorGuest === user.name : comment.author === user.name;
     const commentAuthorReputation = isGuest ? 0 : formatter.reputation(comment.author_reputation);
     const showCommentContent = commentAuthorReputation >= 0 || showHiddenComment;
-
     let content = null;
 
     const commentEditor = props => {
@@ -291,7 +290,7 @@ class Comment extends React.Component {
         <div className="Comment__text">
           <Link to={`/@${author}`}>
             <span className="username">{author}</span>
-            <WeightTag weight={comment.author_wobjects_weight} />
+            <WeightTag weight={comment.author_reputation} />
             {author === rootPostAuthor && (
               <BTooltip
                 title={intl.formatMessage({
