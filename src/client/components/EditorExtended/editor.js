@@ -8,10 +8,12 @@ import {
   ContentBlock,
   genKey,
   Modifier,
+  // CompositeDecorator,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
-import { OrderedMap } from 'immutable';
+import { OrderedMap, Map } from 'immutable';
+import { map } from 'lodash';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -28,13 +30,58 @@ import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink
 import ImageSideButton from './components/sides/ImageSideButton';
 
 import './index.less';
+import EditorSlider from '../EditorSlider/EditorSlider';
+import { getSelectionCoords, getSelectionRange } from './model/content';
+
+const urlCreator = window.URL || window.webkitURL;
+
+const customBlockRenderer = (setEditorState, getEditorState) => contentBlock => {
+  const type = contentBlock.getType();
+
+  switch (type) {
+    case Block.SLIDER:
+      return {
+        component: EditorSlider,
+        props: {
+          getEditorState,
+          setEditorState,
+        },
+      };
+
+    default:
+      return null;
+  }
+};
+
+// function findLinkEntities(contentBlock, callback, contentState) {
+//   contentBlock.findEntityRanges(
+//     (character) => {
+//       const entityKey = character.getEntity();
+//       return (
+//         entityKey !== null &&
+//         contentState.getEntity(entityKey).getType() === 'LINK'
+//       );
+//     },
+//     callback
+//   );
+// }
+
+// const Link = (props) => {
+//   const { url } = props.contentState.getEntity(props.entityKey).getData();
+//
+//   return (
+//     <a href={url} title={url} className="ed-link">
+//       {props.children}
+//     </a>
+//   );
+// };
 
 /*
 A wrapper over `draft-js`'s default **Editor** component which provides
 some built-in customisations like custom blocks (todo, caption, etc) and
 some key handling for ease of use so that users' mouse usage is minimum.
 */
-class MediumDraftEditor extends React.Component {
+export default class MediumDraftEditor extends React.Component {
   static propTypes = {
     beforeInput: PropTypes.func,
     keyBindingFn: PropTypes.func,
@@ -114,8 +161,49 @@ class MediumDraftEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    // const decorator = new CompositeDecorator([
+    //   {
+    //     strategy: findLinkEntities,
+    //     component: Link,
+    //   },
+    // ]);
+    //
+    // this.state = {
+    //   inlineToolbar: { show: false },
+    //   editorState: EditorState.createEmpty(decorator)
+    // };
+
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
+    // this.onChange = (editorState, cb) => {
+    //   this.props.onChange(editorState, cb);
+    // };
+
     this.onChange = (editorState, cb) => {
+      if (!editorState.getSelection().isCollapsed()) {
+        const selectionRange = getSelectionRange();
+
+        if (!selectionRange) {
+          this.setState({ inlineToolbar: { show: false } });
+
+          return;
+        }
+
+        const selectionCoords = getSelectionCoords(selectionRange);
+
+        this.setState({
+          inlineToolbar: {
+            show: true,
+            position: {
+              top: selectionCoords.offsetTop,
+              left: selectionCoords.offsetLeft,
+            },
+          },
+        });
+      } else {
+        this.setState({ inlineToolbar: { show: false } });
+      }
+
+      this.setState({ editorState });
       this.props.onChange(editorState, cb);
     };
 
@@ -128,7 +216,31 @@ class MediumDraftEditor extends React.Component {
     this.toggleBlockType = this._toggleBlockType.bind(this); // eslint-disable-line
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this); // eslint-disable-line
     this.setLink = this.setLink.bind(this);
-    this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
+    // this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
+    this.blockRendererFn = customBlockRenderer(this.onChange, this.getEditorState);
+
+    this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
+  }
+
+  handleDroppedFiles(selection, files) {
+    const filteredFiles = files.filter(file => file.type.indexOf(Block.IMAGE) === 0);
+
+    if (!filteredFiles.length) {
+      return 'not_handled';
+    }
+
+    this.onChange(
+      addNewBlockAt(
+        this.state.editorState,
+        selection.getAnchorKey(),
+        Block.SLIDER,
+        new Map({
+          slides: map(filteredFiles, file => ({ url: urlCreator.createObjectURL(file) })),
+        }),
+      ),
+    );
+
+    return 'handled';
   }
 
   /**
@@ -557,6 +669,7 @@ class MediumDraftEditor extends React.Component {
             keyBindingFn={this.props.keyBindingFn}
             placeholder={this.props.placeholder}
             spellCheck={editorEnabled && this.props.spellCheck}
+            handleDroppedFiles={this.handleDroppedFiles}
           />
           {showAddButton && (
             <AddButton
@@ -597,5 +710,3 @@ class MediumDraftEditor extends React.Component {
     );
   }
 }
-
-export default MediumDraftEditor;

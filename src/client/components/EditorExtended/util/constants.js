@@ -24,6 +24,7 @@ export const Block = {
   IMAGE: 'atomic:image',
   BREAK: 'atomic:break',
   STORY_TITLE: 'story-title',
+  SLIDER: 'SLIDER',
 };
 
 export const Inline = {
