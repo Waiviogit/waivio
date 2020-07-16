@@ -96,6 +96,8 @@ export const calculatePayout = post => {
   return payoutDetails;
 };
 
+export const isPostCashout = post => Date.parse(post.cashout_time) < Date.now();
+
 export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
   const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
   const sbdMedian = await steemAPI.sendAsync('get_current_median_history_price', []);

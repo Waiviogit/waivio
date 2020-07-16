@@ -257,7 +257,7 @@ export const getDetailsBody = (
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the Terms and Conditions of the Service Agreement <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
@@ -331,8 +331,15 @@ export const payablesFilterData = location => [
   },
 ];
 
-export const getMemo = isReceiverGuest =>
-  isReceiverGuest ? REWARD.guestReward : REWARD.userReward;
+export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
+  if (pathRecivables && isOverpayment) {
+    return REWARD.overpayment_refund;
+  }
+  if (isReceiverGuest) {
+    return REWARD.guestReward;
+  }
+  return REWARD.userReward;
+};
 
 export const getContent = pathName => {
   if (pathName.includes('references')) {

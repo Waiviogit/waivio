@@ -27,7 +27,6 @@ const ObjectAvatar = ({ item, size }) => {
     calculateApprovePercent(parent.active_votes, parent.weight, parent) >= 70 &&
     getApprovedField(parent, 'avatar');
   let url = getApprovedField(item, 'avatar') || parentAvatar;
-
   if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
   if (url) {

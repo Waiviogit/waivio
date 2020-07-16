@@ -237,6 +237,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           to: notification.to,
         },
       );
+    case notificationConstants.CLAIM_REWARD:
+      return intl.formatMessage(
+        {
+          id: 'claim_reward_notify',
+          defaultMessage: '{account} claim reward {rewardHBD}',
+        },
+        {
+          account: notification.account,
+          rewardHBD: notification.rewardHBD,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -284,6 +295,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.new_recovery_account}`;
     case notificationConstants.TRANSFER_FROM_SAVINGS:
       return `/@${notification.from}/transfers`;
+    case notificationConstants.CLAIM_REWARD:
+      return `/@${notification.account}`;
     default:
       return '/notifications-list';
   }
@@ -328,6 +341,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.account_to_recover;
     case notificationConstants.TRANSFER_FROM_SAVINGS:
       return notification.from;
+    case notificationConstants.CLAIM_REWARD:
+      return notification.account;
     default:
       return currentAuthUsername;
   }

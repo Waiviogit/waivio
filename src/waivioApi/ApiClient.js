@@ -7,7 +7,7 @@ import store from 'store';
 
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
-import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
+import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 
@@ -52,12 +52,23 @@ export const getRecommendedObjects = () =>
     }),
   }).then(res => res.json());
 
-export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0, isOnlyHashtags }) => {
+export const getObjects = ({
+  limit = 30,
+  locale = 'en-US',
+  skip = 0,
+  isOnlyHashtags,
+  follower,
+}) => {
   const reqData = { limit, locale, skip };
+
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      app: config.appName,
+      follower: follower,
+    },
     method: 'POST',
     body: JSON.stringify(reqData),
   }).then(res => res.json());
@@ -1022,11 +1033,11 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: ACCOUNT_UPDATE,
+            id: GUEST_ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
               json_metadata: '',
-              posting_json_metadata: JSON.stringify(json_metadata),
+              posting_json_metadata: JSON.stringify({ ...json_metadata, version: 2 }),
             }),
           },
         ],
@@ -1098,9 +1109,15 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
     }),
   }).then(res => res.json());
 
-export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) =>
-  fetch(`${config.apiPrefix}${config.getUsers}`, {
-    headers,
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
+  const actualHeaders = userName
+    ? { ...headers, following: userName, follower: userName }
+    : headers;
+
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers: {
+      ...actualHeaders,
+    },
     method: 'POST',
     body: JSON.stringify({
       users: listUsers,
@@ -1109,6 +1126,7 @@ export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) =>
       limit,
     }),
   }).then(res => res.json());
+};
 
 export const setUserStatus = user =>
   fetch(`${config.apiPrefix}${config.user}/${user}${config.setUserStatus}`, {
@@ -1223,6 +1241,16 @@ export const getPrivateEmail = userName => {
     .then(res => res.privateEmail);
 };
 
+export const getTransferDetails = withdrawId => {
+  return fetch(
+    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  ).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
@@ -1241,7 +1269,5 @@ export const getTransferHistory = (username, skip = 0, limit = 50) =>
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);
-
-// I don't read changes before commit
 
 export default null;

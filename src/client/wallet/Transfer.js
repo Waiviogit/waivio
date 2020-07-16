@@ -407,7 +407,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!(isGuest && hiveBeneficiaryAccount) && !amount ? (
+        {!(isGuest && hiveBeneficiaryAccount) && !amount && (
           <span
             role="presentation"
             onClick={() =>
@@ -419,7 +419,7 @@ export default class Transfer extends React.Component {
             }
             className="iconfont icon-delete Transfer__delete-icon"
           />
-        ) : null}
+        )}
       </div>
     );
   };

@@ -37,6 +37,7 @@ const GuestSignUpFormContent = ({
           label={<FormattedMessage id="nickname" defaultMessage="Nickname" />}
         >
           {getFieldDecorator('username', {
+            getValueFromEvent: e => e.target.value.toLowerCase(),
             rules: [
               {
                 required: true,

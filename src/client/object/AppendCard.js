@@ -19,8 +19,6 @@ import Slider from '../components/Slider/Slider';
 import AppendObjButtons from '../components/StoryFooter/AppendObjButtons';
 import {
   getAuthenticatedUser,
-  getRate,
-  getRewardFund,
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
@@ -30,8 +28,8 @@ import { getAppendDownvotes, getAppendUpvotes } from '../helpers/voteHelpers';
 import { voteAppends } from './wobjActions';
 import Payout from '../components/StoryFooter/Payout';
 import Confirmation from '../components/StoryFooter/Confirmation';
-import { getVoteValue } from '../helpers/user';
 import ApprovingCard from './ApprovingCard';
+import { calculateVotePowerForSlider, isPostCashout } from '../vendor/steemitHelpers';
 
 import '../components/Story/Story.less';
 import '../components/StoryFooter/StoryFooter.less';
@@ -77,11 +75,11 @@ const AppendCard = props => {
     }
   }
 
-  function handleSliderChange(value) {
-    const { user, rewardFund, rate, isGuest } = props;
+  async function handleSliderChange(value) {
+    const { user, post, isGuest } = props;
     const voteWorthCalc = isGuest
       ? 0
-      : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
+      : await calculateVotePowerForSlider(user.name, value, post.creator, post.permlink);
 
     setVoteWorth(voteWorthCalc);
     setSliderValue(value);
@@ -191,7 +189,12 @@ const AppendCard = props => {
           )}
         </div>
         {visibleSlider && !isLiked && (
-          <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
+          <Slider
+            value={sliderValue}
+            voteWorth={voteWorth}
+            onChange={handleSliderChange}
+            isPostCashout={isPostCashout(props.post)}
+          />
         )}
         <Comments show={commentsVisible} isQuickComments post={props.post} />
       </div>
@@ -206,8 +209,6 @@ AppendCard.propTypes = {
   user: PropTypes.shape().isRequired,
   sliderMode: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool.isRequired,
-  rewardFund: PropTypes.shape().isRequired,
-  rate: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -216,8 +217,6 @@ const mapStateToProps = state => ({
   showNSFWPosts: getShowNSFWPosts(state),
   user: getAuthenticatedUser(state),
   isGuest: isGuestUser(state),
-  rewardFund: getRewardFund(state),
-  rate: getRate(state),
 });
 
 export default connect(mapStateToProps, {

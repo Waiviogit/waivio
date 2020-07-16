@@ -17,6 +17,7 @@ export const TRANSFER_FROM = 'transferFrom';
 export const TRANSFER_TO_VESTING = 'transfer_to_vesting';
 export const CHANGE_RECOVERY_ACCOUNT = 'change_recovery_account';
 export const TRANSFER_FROM_SAVINGS = 'transfer_from_savings';
+export const CLAIM_REWARD = 'claimReward';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -38,6 +39,7 @@ export const PARSED_NOTIFICATIONS = [
   TRANSFER_TO_VESTING,
   CHANGE_RECOVERY_ACCOUNT,
   TRANSFER_FROM_SAVINGS,
+  CLAIM_REWARD,
 ];
 
 export const BUSY_API_TYPES = {
