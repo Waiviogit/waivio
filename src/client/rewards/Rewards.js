@@ -400,10 +400,11 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const { intl, user } = this.props;
-    if (size(propositions) !== 0) {
+    const propositionsUniq = uniqBy(propositions, 'required_object._id');
+    if (size(propositionsUniq) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
-          propositions,
+          propositionsUniq,
           proposition =>
             proposition &&
             proposition.required_object && (
@@ -441,7 +442,7 @@ class Rewards extends React.Component {
             ),
         ),
       );
-    } else if (!fetched && isEmpty(propositions)) {
+    } else if (!fetched && isEmpty(propositionsUniq)) {
       return `${intl.formatMessage({
         id: 'noProposition',
         defaultMessage: `No reward matches the criteria`,
