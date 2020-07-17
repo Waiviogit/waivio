@@ -212,7 +212,10 @@ export function createPost(postData, beneficiaries, isReview) {
     const isGuest = state.auth.isGuestUser;
     const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const newBody =
-      isUpdating && !isGuest ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
+      isUpdating && !isGuest && !isReview
+        ? getBodyPatchIfSmaller(postData.originalBody, body)
+        : body;
+
     const guestBeneficiary = hiveBeneficiaryAccount
       ? [{ account: hiveBeneficiaryAccount, weight: 9700 }, ...beneficiaries]
       : [{ account: 'waivio.hpower', weight: 10000 }];

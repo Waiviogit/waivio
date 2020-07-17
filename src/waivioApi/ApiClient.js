@@ -635,6 +635,47 @@ export const getPropositions = ({
       .catch(error => reject(error));
   });
 
+export const getHistory = ({
+  limit = 30,
+  skip = 0,
+  guideName,
+  userName,
+  onlyWithMessages,
+  sort,
+  caseStatus,
+  rewards,
+  status,
+  guideNames,
+}) =>
+  new Promise((resolve, reject) => {
+    const reqData = {
+      limit,
+      skip,
+      onlyWithMessages,
+      sort,
+    };
+    /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
+    /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
+
+    if (userName) {
+      reqData.userName = userName;
+      reqData.onlyWithMessages = false;
+    }
+    if (guideName) reqData.guideName = guideName;
+    if (!isEmpty(rewards)) reqData.rewards = rewards;
+    if (!isEmpty(status)) reqData.status = status;
+    if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(

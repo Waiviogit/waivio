@@ -836,5 +836,7 @@
   "find_user": "Знайти користувача",
   "manage_page_active_and_pending_campaign": "Активні та очікувані кампанії",
   "currency": "Валюта",
-  "paid_hive": "Сплачено (HIVE)"
+  "paid_hive": "Сплачено (HIVE)",
+  "review": "Огляд",
+  "review_rejected": "Огляд відхилено"
 }

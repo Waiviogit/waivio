@@ -12,6 +12,7 @@ export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
+export const LIKE_POST_HISTORY = '@post/LIKE_POST_HISTORY';
 
 export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
@@ -92,6 +93,30 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           percent: weight,
         }
       : { postId, voter, weight },
+  });
+};
+
+export const voteHistoryPost = (currentPost, author, permlink, weight) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+  const post = currentPost;
+  const voter = auth.user.name;
+  const TYPE = LIKE_POST_HISTORY;
+
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  return dispatch({
+    type: TYPE,
+    payload: {
+      promise: steemConnectAPI
+        .vote(voter, post.author || author, post.permlink, weight)
+        .then(res => res),
+    },
   });
 };
 
