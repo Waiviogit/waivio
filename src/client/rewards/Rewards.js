@@ -31,7 +31,6 @@ import {
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
-  getUpdatedMap,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -70,7 +69,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
-    updated: getUpdatedMap(state),
   }),
   {
     assignProposition,
@@ -98,14 +96,12 @@ class Rewards extends React.Component {
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
-    updated: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
     wobjects: [],
-    updated: false,
   };
 
   state = {
@@ -145,14 +141,13 @@ class Rewards extends React.Component {
   }
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
-    const { username, match, isFullscreenMode, updated } = this.props;
+    const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     if (!isSecondaryObjectsCards) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
-        updated,
       );
     }
   };
@@ -220,11 +215,7 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = (
-    { username, match, area, sort, radius, activeFilters, limit },
-    isMap,
-    updated,
-  ) => {
+  getPropositions = ({ username, match, area, sort, radius, activeFilters, limit }, isMap) => {
     this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
       preparePropositionReqData({
@@ -237,7 +228,7 @@ class Rewards extends React.Component {
         types: activeFilters.types,
         limit,
         simplified: !!isMap,
-        firstMapLoad: !!isMap && !updated,
+        firstMapLoad: !!isMap,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -259,7 +250,7 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       }
-      if (!!isMap && !updated) {
+      if (isMap) {
         const zoomMap = getZoom(data.radius);
         this.setState({
           zoomMap,
