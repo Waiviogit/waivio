@@ -1264,5 +1264,9 @@
   "reinstate_reward": "Восстановить награду",
   "campaign_buttons_reachedLimit": "Достигнут предел",
   "review": "Обзор",
-  "review_rejected": "Отзыв отклонен"
+  "review_rejected": "Отзыв отклонен",
+  "withdrawal_confirmations": "Подтверждение вывода",
+  "email_link_details": "Все запросы на вывод средств должны быть подтверждены по электронной почте.",
+  "guests_account_settings": "Настройки учетной записи гостя",
+  "guest_settings": "Гостевые настройки"
 }

@@ -21,9 +21,10 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import LinkHiveAccountModal from './LinkHiveAccountModal';
+import EmailConfirmation from '../widgets/EmailConfirmation';
+import { getUserPrivateEmail } from '../user/usersActions';
 
 import './Settings.less';
-import EmailConfirmation from '../widgets/EmailConfirmation';
 
 @requiresLogin
 @injectIntl
@@ -36,7 +37,7 @@ import EmailConfirmation from '../widgets/EmailConfirmation';
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
     privateEmail: getAuthenticatedUserPrivateEmail(state),
   }),
-  { reload, saveSettings, notify },
+  { reload, saveSettings, notify, getUserPrivateEmail },
 )
 export default class GuestsSettings extends React.Component {
   static propTypes = {
@@ -49,6 +50,7 @@ export default class GuestsSettings extends React.Component {
     hiveBeneficiaryAccount: PropTypes.string.isRequired,
     privateEmail: PropTypes.string.isRequired,
     user: PropTypes.string.isRequired,
+    getUserPrivateEmail: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -81,6 +83,7 @@ export default class GuestsSettings extends React.Component {
 
   componentDidMount() {
     this.props.reload();
+    this.props.getUserPrivateEmail(this.props.user);
   }
 
   unlinkHiveAccount = () => {

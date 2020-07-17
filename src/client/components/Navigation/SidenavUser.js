@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import './Sidenav.less';
 import { useSelector } from 'react-redux';
 import { isGuestUser } from '../../reducers';
+
+import './Sidenav.less';
 
 const SidenavUser = () => {
   const [menuCondition, setMenuCondition] = useState({

@@ -1261,5 +1261,9 @@
   "reinstate_reward": "Reinstate reward",
   "campaign_buttons_reachedLimit": "Reached limit",
   "review": "Review",
-  "review_rejected": "Review rejected"
+  "review_rejected": "Review rejected",
+  "withdrawal_confirmations": "Withdrawal confirmations",
+  "email_link_details": "All withdrawal requests must be confirmed by e-mail.",
+  "guests_account_settings": "Guests Account Settings",
+  "guest_settings": "Guests Settings"
 }

@@ -31,6 +31,8 @@ const EmailConfirmation = ({
 
   const currentEmail = email || newEmail;
   const confirmationType = isSettings ? 'confirmEmail' : 'confirmTransaction';
+  const isOpenConfirm = isSettings && email ? visible : isVisibleConfirm;
+  const isOpenModal = isSettings && email ? false : visible;
 
   const handleChangeEmail = () => {
     setIsVisibleConfirm(true);
@@ -91,11 +93,15 @@ const EmailConfirmation = ({
       })
       .catch(e => message.error(e.message));
   };
+  const onCancel = () => {
+    if (isSettings && email) handleCancel();
+    else setIsVisibleConfirm(false);
+  };
 
   return (
     <React.Fragment>
       <Modal
-        visible={visible}
+        visible={isOpenModal}
         title={intl.formatMessage({
           id: 'blocktrades_exchange_request',
           defaultMessage: 'Blocktrades.us exchange request',
@@ -150,8 +156,8 @@ const EmailConfirmation = ({
           id: 'email_change_request',
           defaultMessage: 'Email change request',
         })}
-        visible={isVisibleConfirm}
-        onCancel={() => setIsVisibleConfirm(false)}
+        visible={isOpenConfirm}
+        onCancel={onCancel}
         onOk={() => handleSendConfirmation('pullEmail')}
       >
         <div>
