@@ -8,12 +8,13 @@ import {
   ContentBlock,
   genKey,
   Modifier,
-  // CompositeDecorator,
+  CompositeDecorator,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import uuidv4 from 'uuid/v4';
+import { get } from 'lodash';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
-import { OrderedMap, Map } from 'immutable';
-import { map } from 'lodash';
+import { OrderedMap } from 'immutable';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -26,17 +27,26 @@ import keyBindingFn from './util/keybinding';
 import { Block, Entity as E, HANDLED, NOT_HANDLED, KEY_COMMANDS } from './util/constants';
 import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
-import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
+import {
+  getCurrentBlock,
+  resetBlockWithType,
+  addNewBlockAt,
+  isCursorBetweenLink,
+  // addNewBlock
+} from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 
 import './index.less';
 import EditorSlider from '../EditorSlider/EditorSlider';
 import { getSelectionCoords, getSelectionRange } from './model/content';
+import { findLinkEntities } from './components/entities/link';
+import ObjectLink from './components/entities/objectlink';
 
-const urlCreator = window.URL || window.webkitURL;
+// const urlCreator = window.URL || window.webkitURL;
 
 const customBlockRenderer = (setEditorState, getEditorState) => contentBlock => {
   const type = contentBlock.getType();
+  // console.log('type: ', type)
 
   switch (type) {
     case Block.SLIDER:
@@ -161,19 +171,23 @@ export default class MediumDraftEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    // const decorator = new CompositeDecorator([
-    //   {
-    //     strategy: findLinkEntities,
-    //     component: Link,
-    //   },
-    // ]);
-    //
-    // this.state = {
-    //   inlineToolbar: { show: false },
-    //   editorState: EditorState.createEmpty(decorator)
-    // };
+    const decorator = new CompositeDecorator([
+      {
+        strategy: findLinkEntities,
+        component: ObjectLink,
+      },
+    ]);
+
+    this.state = {
+      inlineToolbar: { show: false },
+      editorState: EditorState.createEmpty(decorator),
+    };
 
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
+    // this.onChange = (editorState, cb) => {
+    //   this.props.onChange(editorState, cb);
+    // };
+
     // this.onChange = (editorState, cb) => {
     //   this.props.onChange(editorState, cb);
     // };
@@ -222,26 +236,71 @@ export default class MediumDraftEditor extends React.Component {
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
   }
 
-  handleDroppedFiles(selection, files) {
-    const filteredFiles = files.filter(file => file.type.indexOf(Block.IMAGE) === 0);
+  encodeImageFileAsURL = (blob, callback) => {
+    console.log('blob: ', blob);
+    const formData = new FormData();
+
+    formData.append('file', blob);
+
+    return fetch(`https://www.waivio.com/api/image`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log('res: ', res);
+        callback(res.image, blob.name);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  handleDroppedFiles = async (selection, files) => {
+    const uploadedImages = [];
+    const filteredFiles = files.filter(file => file.type.indexOf('image/') === 0);
+    const firstImage = get(uploadedImages, '[0]', null);
+    console.log('firstImage: ', firstImage);
+
+    const insertImage = (file, fileName = 'image') => {
+      console.log('disableAndInsertImage: ', file, fileName);
+      const newImage = {
+        src: file,
+        name: fileName,
+        id: uuidv4(),
+      };
+      uploadedImages.push(newImage);
+    };
 
     if (!filteredFiles.length) {
       return 'not_handled';
     }
 
-    this.onChange(
-      addNewBlockAt(
-        this.state.editorState,
-        selection.getAnchorKey(),
-        Block.SLIDER,
-        new Map({
-          slides: map(filteredFiles, file => ({ url: urlCreator.createObjectURL(file) })),
-        }),
-      ),
-    );
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of files) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.encodeImageFileAsURL(file, insertImage);
+    }
+
+    console.log('uploadedImages: ', uploadedImages);
+
+    // Todo uncomment!
+    // this.onChange(
+    //   addNewBlock(
+    //     this.state.editorState,
+    //     selection.getAnchorKey(),
+    //     Block.IMAGE, {
+    //       src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
+    //       alt: image.name,
+    //     }
+    //     // new Map({
+    //     //   slides: map(filteredFiles, file => ({ url: urlCreator.createObjectURL(file) })),
+    //     // }),
+    //   ),
+    // );
 
     return 'handled';
-  }
+  };
 
   /**
    * Implemented to provide nesting of upto 2 levels in ULs or OLs.

@@ -31,13 +31,14 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
-
+  console.log('currentImages: ', currentImages);
   useEffect(() => {
     if (currentImages.length) {
       onImageLoaded(currentImages);
     }
   }, [currentImages]);
 
+  // For image pasted for link
   const checkIsImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
     if (isSameLink) {
@@ -66,6 +67,7 @@ const ImageSetter = ({
     }
   };
 
+  // For image pasted for link
   const handleOnUploadImageByLink = image => {
     if (currentImages.length >= 25) {
       message.error(
@@ -103,6 +105,7 @@ const ImageSetter = ({
       const uploadedImages = [];
       const images = Object.values(e.target.files);
       setFileImages(images);
+      console.log('fileImages: ', fileImages);
       if (images.length > 25 || currentImages.length + images.length > 25) {
         message.error(
           intl.formatMessage({
@@ -113,6 +116,7 @@ const ImageSetter = ({
         return;
       }
       const disableAndInsertImage = (image, imageName = 'image') => {
+        console.log('disableAndInsertImage: ', image, imageName);
         const newImage = {
           src: image,
           name: imageName,
@@ -134,6 +138,8 @@ const ImageSetter = ({
             `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
           );
         } else {
+          console.log('await');
+          console.log('await image: ', image);
           /* eslint-disable no-await-in-loop */
           await onImageUpload(image, disableAndInsertImage, onErrorLoadImage);
         }

@@ -29,6 +29,7 @@ Adds a new block (currently replaces an empty block) at the current cursor posit
 of the given `newType`.
 */
 export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData = {}) => {
+  console.log('initialData: ', initialData);
   const selectionState = editorState.getSelection();
   if (!selectionState.isCollapsed()) {
     return editorState;
@@ -130,7 +131,13 @@ export const addNewBlockAt = (
   });
 
   const newBlockMap = blocksBefore
-    .concat([[pivotBlockKey, block], [newBlockKey, newBlock]], blocksAfter)
+    .concat(
+      [
+        [pivotBlockKey, block],
+        [newBlockKey, newBlock],
+      ],
+      blocksAfter,
+    )
     .toOrderedMap();
 
   const selection = editorState.getSelection();

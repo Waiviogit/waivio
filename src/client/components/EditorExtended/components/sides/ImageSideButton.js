@@ -36,6 +36,7 @@ export default class ImageSideButton extends React.Component {
   handleOnOk = () => {
     if (this.state.currentImage.length) {
       const image = this.state.currentImage[0];
+      console.log('handleOnOk image: ', image);
       this.props.setEditorState(
         addNewBlock(this.props.getEditorState(), Block.IMAGE, {
           // fix for issue with loading large images to digital-ocean
@@ -49,10 +50,14 @@ export default class ImageSideButton extends React.Component {
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
 
-  onLoadingImage = value => this.setState({ isLoading: value });
+  onLoadingImage = value => {
+    this.setState({ isLoading: value });
+    console.log('onLoadingImage: ', value);
+  };
 
   getImages = image => {
     this.setState({ currentImage: image });
+    console.log('getImages: ', image);
   };
 
   // For testing - don't load images to ipfs
