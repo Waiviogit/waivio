@@ -54,6 +54,7 @@ export const getObjectInfo = (authorPermlink, username, requiredField) => dispat
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
+// eslint-disable-next-line consistent-return
 export const createWaivioObject = postData => (dispatch, getState) => {
   const { auth, settings } = getState();
 
@@ -69,7 +70,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
       payload: {
         promise: new Promise((resolve, reject) =>
           ApiClient.getObject(wobj.name, auth.user.name)
-            .then(() => reject('Object is exist'))
+            .then(() => reject('object_exist'))
             .catch(() => {
               const requestBody = {
                 author: auth.user.name,
