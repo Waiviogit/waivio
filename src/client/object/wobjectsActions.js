@@ -98,7 +98,8 @@ export const createWaivioObject = postData => (dispatch, getState) => {
         ),
       },
     });
-  } else if (wobj.type !== 'hashtag') {
+  }
+  if (wobj.type !== 'hashtag') {
     return dispatch({
       type: CREATE_WOBJECT,
       payload: {
