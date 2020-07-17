@@ -60,7 +60,7 @@ class UserWalletTransactions extends React.Component {
   handleLoadMore = () => {
     const { currentUsername } = this.props;
     let skip = 0;
-    const limit = 50;
+    const limit = 10;
     if (this.isGuestPage()) {
       if (this.props.actions.length >= limit) {
         skip = this.props.actions.length;
