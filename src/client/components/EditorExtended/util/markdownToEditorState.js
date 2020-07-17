@@ -276,10 +276,6 @@ function mdToDraftjs({ title, body } = { title: '', body: '' }, withTitle = true
       const prevBlock = last(blocks);
       console.log({ prevBlock });
 
-      // if (prevBlock && prevBlock.type === Block.IMAGE && prevBlock.text === result.text) {
-      //   return true; // skip iteration
-      // }
-
       blocks.push({
         text: result.text,
         type: result.blockStyle,
