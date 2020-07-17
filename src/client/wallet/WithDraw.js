@@ -84,17 +84,10 @@ const Withdraw = ({
   }, []);
 
   useEffect(() => {
-    if (hiveAmount && !currencyAmount) {
+    if (hiveAmount) {
       estimateAmount(hiveAmount, 'hive', currentCurrency).then(r =>
         setCurrencyAmount(r.outputAmount),
       );
-    }
-
-    if (currencyAmount) {
-      estimateAmount(currencyAmount, currentCurrency, 'hive').then(r => {
-        setHiveAmount(r.outputAmount);
-        setHiveCount(r.outputAmount);
-      });
     }
 
     if (walletAddress) {
@@ -130,11 +123,17 @@ const Withdraw = ({
     walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
   };
 
+  const setWalletAddressForScanner = address => {
+    setWalletAddress(address);
+    walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
+  };
+
   const handleRequest = () => {
     setIsLoading(true);
     store.set('withdrawData', {
       walletAddress,
       currentCurrency,
+      hiveAmount: hiveCount,
     });
     getPrivateEmail(user.name).then(() => {
       setShowConfirm(true);
@@ -209,6 +208,7 @@ const Withdraw = ({
               onChange={e => debounceAmountHive(e.currentTarget.value)}
               type="number"
               className="Withdraw__input-text"
+              step="any"
             />
             <div className="Withdraw__switcher-wrapper">
               <span className="Withdraw__switcher-button Withdraw__switcher-button--active">
@@ -240,6 +240,7 @@ const Withdraw = ({
               onChange={e => debounceAmountCurrency(e.currentTarget.value)}
               placeholder={0}
               className="Withdraw__input-text"
+              step="any"
             />
             <div className="Withdraw__switcher-wrapper">
               {CRYPTO_LIST_FOR_WALLET.map(crypto => (
@@ -298,7 +299,7 @@ const Withdraw = ({
       {isShowScanner && (
         <QrModal
           visible={isShowScanner}
-          setDataScan={setWalletAddress}
+          setDataScan={setWalletAddressForScanner}
           handleClose={setShowScanner}
         />
       )}

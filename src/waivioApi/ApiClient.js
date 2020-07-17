@@ -635,6 +635,47 @@ export const getPropositions = ({
       .catch(error => reject(error));
   });
 
+export const getHistory = ({
+  limit = 30,
+  skip = 0,
+  guideName,
+  userName,
+  onlyWithMessages,
+  sort,
+  caseStatus,
+  rewards,
+  status,
+  guideNames,
+}) =>
+  new Promise((resolve, reject) => {
+    const reqData = {
+      limit,
+      skip,
+      onlyWithMessages,
+      sort,
+    };
+    /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
+    /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
+
+    if (userName) {
+      reqData.userName = userName;
+      reqData.onlyWithMessages = false;
+    }
+    if (guideName) reqData.guideName = guideName;
+    if (!isEmpty(rewards)) reqData.rewards = rewards;
+    if (!isEmpty(status)) reqData.status = status;
+    if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(
@@ -871,7 +912,7 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) =>
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {}) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
@@ -1258,7 +1299,7 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 50) =>
+export const getTransferHistory = (username, skip = 0, limit = 10) =>
   fetch(
     `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
     {
