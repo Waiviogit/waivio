@@ -12,7 +12,6 @@ import {
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
-import { get } from 'lodash';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { OrderedMap } from 'immutable';
 
@@ -27,64 +26,13 @@ import keyBindingFn from './util/keybinding';
 import { Block, Entity as E, HANDLED, NOT_HANDLED, KEY_COMMANDS } from './util/constants';
 import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
-import {
-  getCurrentBlock,
-  resetBlockWithType,
-  addNewBlockAt,
-  isCursorBetweenLink,
-  // addNewBlock
-} from './model';
+import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 
 import './index.less';
-import EditorSlider from '../EditorSlider/EditorSlider';
 import { getSelectionCoords, getSelectionRange } from './model/content';
 import { findLinkEntities } from './components/entities/link';
 import ObjectLink from './components/entities/objectlink';
-
-// const urlCreator = window.URL || window.webkitURL;
-
-const customBlockRenderer = (setEditorState, getEditorState) => contentBlock => {
-  const type = contentBlock.getType();
-  // console.log('type: ', type)
-
-  switch (type) {
-    case Block.SLIDER:
-      return {
-        component: EditorSlider,
-        props: {
-          getEditorState,
-          setEditorState,
-        },
-      };
-
-    default:
-      return null;
-  }
-};
-
-// function findLinkEntities(contentBlock, callback, contentState) {
-//   contentBlock.findEntityRanges(
-//     (character) => {
-//       const entityKey = character.getEntity();
-//       return (
-//         entityKey !== null &&
-//         contentState.getEntity(entityKey).getType() === 'LINK'
-//       );
-//     },
-//     callback
-//   );
-// }
-
-// const Link = (props) => {
-//   const { url } = props.contentState.getEntity(props.entityKey).getData();
-//
-//   return (
-//     <a href={url} title={url} className="ed-link">
-//       {props.children}
-//     </a>
-//   );
-// };
 
 /*
 A wrapper over `draft-js`'s default **Editor** component which provides
@@ -184,15 +132,9 @@ export default class MediumDraftEditor extends React.Component {
     };
 
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
-    // this.onChange = (editorState, cb) => {
-    //   this.props.onChange(editorState, cb);
-    // };
-
-    // this.onChange = (editorState, cb) => {
-    //   this.props.onChange(editorState, cb);
-    // };
 
     this.onChange = (editorState, cb) => {
+      // New
       if (!editorState.getSelection().isCollapsed()) {
         const selectionRange = getSelectionRange();
 
@@ -230,17 +172,14 @@ export default class MediumDraftEditor extends React.Component {
     this.toggleBlockType = this._toggleBlockType.bind(this); // eslint-disable-line
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this); // eslint-disable-line
     this.setLink = this.setLink.bind(this);
-    // this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
-    this.blockRendererFn = customBlockRenderer(this.onChange, this.getEditorState);
+    this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
 
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
   }
 
-  encodeImageFileAsURL = (blob, callback) => {
-    console.log('blob: ', blob);
+  encodeImageFileAsURL = (file, callback) => {
     const formData = new FormData();
-
-    formData.append('file', blob);
+    formData.append('file', file);
 
     return fetch(`https://www.waivio.com/api/image`, {
       method: 'POST',
@@ -248,8 +187,7 @@ export default class MediumDraftEditor extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log('res: ', res);
-        callback(res.image, blob.name);
+        callback(res.image, file.name);
       })
       .catch(err => {
         console.log(err);
@@ -259,11 +197,8 @@ export default class MediumDraftEditor extends React.Component {
   handleDroppedFiles = async (selection, files) => {
     const uploadedImages = [];
     const filteredFiles = files.filter(file => file.type.indexOf('image/') === 0);
-    const firstImage = get(uploadedImages, '[0]', null);
-    console.log('firstImage: ', firstImage);
 
     const insertImage = (file, fileName = 'image') => {
-      console.log('disableAndInsertImage: ', file, fileName);
       const newImage = {
         src: file,
         name: fileName,
@@ -282,23 +217,15 @@ export default class MediumDraftEditor extends React.Component {
       await this.encodeImageFileAsURL(file, insertImage);
     }
 
-    console.log('uploadedImages: ', uploadedImages);
-
-    // Todo uncomment!
-    // this.onChange(
-    //   addNewBlock(
-    //     this.state.editorState,
-    //     selection.getAnchorKey(),
-    //     Block.IMAGE, {
-    //       src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-    //       alt: image.name,
-    //     }
-    //     // new Map({
-    //     //   slides: map(filteredFiles, file => ({ url: urlCreator.createObjectURL(file) })),
-    //     // }),
-    //   ),
-    // );
-
+    // eslint-disable-next-line array-callback-return
+    uploadedImages.map(item => {
+      this.onChange(
+        addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {
+          src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
+          alt: item.name,
+        }),
+      );
+    });
     return 'handled';
   };
 
