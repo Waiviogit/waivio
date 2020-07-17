@@ -31,7 +31,8 @@ const Proposition = ({
   post,
   authorizedUserName,
   history,
-  user,
+  match,
+  getMessageHistory,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -42,6 +43,14 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
+  const isMessages = match.params.filterKey === 'messages';
+  const user = get(proposition, ['users', '0', 'name']);
+  const permlink = get(proposition, ['users', '0', 'permlink']);
+  const userName = isMessages ? user : authorizedUserName;
+  const parenAuthor = isMessages ? user : proposition.guide.name;
+  const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
+  const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+  const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
   const toggleModalDetails = ({ value }) => {
     if (value) setReviewDetails(value);
@@ -49,21 +58,21 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
-      user_name: authorizedUserName,
-      reservation_permlink: proposition.objects[0].permlink,
+      user_name: userName,
+      reservation_permlink: proposition.objects[0].permlink || proposition.users[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>
       discardProposition({
         requiredObjectName,
-        companyAuthor: proposition.guide.name,
-        companyPermlink: proposition.activation_permlink,
+        companyAuthor: parenAuthor,
+        companyPermlink: parentPermlink,
         objPermlink: obj.author_permlink,
         reservationPermlink: rejectData.reservation_permlink,
         unreservationPermlink,
+        type,
       }),
     );
   };
@@ -128,11 +137,10 @@ const Proposition = ({
         }
       });
   };
-
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} />
+        <CampaignCardHeader campaignData={proposition} match={match} />
       </div>
       <div className="Proposition__card">
         <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
@@ -145,7 +153,9 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {assigned ? (
+        {assigned ||
+        get(match, ['params', 'filterKey']) === 'history' ||
+        get(match, ['params', 'filterKey']) === 'messages' ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -156,6 +166,8 @@ const Proposition = ({
             proposition={proposition}
             toggleModalDetails={toggleModalDetails}
             history={history}
+            match={match}
+            getMessageHistory={getMessageHistory}
           />
         ) : (
           <React.Fragment>

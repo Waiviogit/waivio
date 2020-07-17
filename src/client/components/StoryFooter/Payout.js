@@ -11,9 +11,7 @@ import './Payout.less';
 
 const Payout = ({ intl, post }) => {
   const payout = calculatePayout(post);
-  const currentPayout = isPostCashout(post)
-    ? payout.pastPayouts || payout.potentialPayout
-    : payout.potentialPayout;
+  const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
 
   return (
     <span className="Payout">
