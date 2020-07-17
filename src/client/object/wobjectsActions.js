@@ -99,39 +99,38 @@ export const createWaivioObject = postData => (dispatch, getState) => {
       },
     });
   }
-  if (wobj.type !== 'hashtag') {
-    return dispatch({
-      type: CREATE_WOBJECT,
-      payload: {
-        promise: createPermlink(wobj.id, auth.user.name, '', WAIVIO_PARENT_PERMLINK).then(
-          permlink => {
-            const requestBody = {
-              author: auth.user.name,
-              title: `${wobj.name} - waivio object`,
-              body: `Waivio object "${wobj.name}" has been created`,
-              permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
-              objectName: wobj.name,
-              locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
-              type: wobj.type,
-              isExtendingOpen: Boolean(wobj.isExtendingOpen),
-              isPostingOpen: Boolean(wobj.isPostingOpen),
-              parentAuthor: wobj.parentAuthor,
-              parentPermlink: wobj.parentPermlink,
-            };
-            return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-              if (follow) {
-                dispatch(followObject(response.permlink));
-              }
 
-              dispatch(voteObject(response.async, response.permlink, votePower));
+  return dispatch({
+    type: CREATE_WOBJECT,
+    payload: {
+      promise: createPermlink(wobj.id, auth.user.name, '', WAIVIO_PARENT_PERMLINK).then(
+        permlink => {
+          const requestBody = {
+            author: auth.user.name,
+            title: `${wobj.name} - waivio object`,
+            body: `Waivio object "${wobj.name}" has been created`,
+            permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+            objectName: wobj.name,
+            locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
+            type: wobj.type,
+            isExtendingOpen: Boolean(wobj.isExtendingOpen),
+            isPostingOpen: Boolean(wobj.isPostingOpen),
+            parentAuthor: wobj.parentAuthor,
+            parentPermlink: wobj.parentPermlink,
+          };
+          return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+            if (follow) {
+              dispatch(followObject(response.permlink));
+            }
 
-              return response;
-            });
-          },
-        ),
-      },
-    });
-  }
+            dispatch(voteObject(response.async, response.permlink, votePower));
+
+            return response;
+          });
+        },
+      ),
+    },
+  });
 };
 
 export const ADD_ITEM_TO_LIST = '@wobj/ADD_ITEM_TO_LIST';
