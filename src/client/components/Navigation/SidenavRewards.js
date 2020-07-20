@@ -51,8 +51,20 @@ export default class SidenavRewards extends React.Component {
     };
   }
 
+  componentDidMount() {
+    getRewardsGeneralCounts(this.props.userName).then(data =>
+      this.setState({
+        rewardsCount: {
+          hasReceivables: data.has_receivable,
+          historyCount: data.count_history_campaigns,
+          createdCampaignsCount: data.count_campaigns,
+        },
+      }),
+    );
+  }
+
   componentDidUpdate(nextProps) {
-    if (this.props.userName || this.props.userName !== nextProps.userName) {
+    if (this.props.userName !== nextProps.userName) {
       getRewardsGeneralCounts(this.props.userName).then(data =>
         this.setState({
           rewardsCount: {
