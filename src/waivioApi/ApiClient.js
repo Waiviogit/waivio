@@ -1108,7 +1108,6 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     body: JSON.stringify(body),
   })
     .then(res => res.json())
-    .then(data => data)
     .catch(err => err);
 };
 
@@ -1120,14 +1119,12 @@ export const sendPendingTransfer = async ({ sponsor, userName, amount, transacti
     transactionId,
     memo,
   };
-
   return fetch(`${config.campaignApiPrefix}${config.payments}${config.setPendingStatus}`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
   })
     .then(res => res.json())
-    .then(data => data)
     .catch(err => err);
 };
 
