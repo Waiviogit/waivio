@@ -76,7 +76,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
                 author: auth.user.name,
                 title: `${wobj.name} - waivio object`,
                 body: `Waivio object "${wobj.name}" has been created`,
-                permlink: `${wobj.name}`,
+                permlink: wobj.name,
                 objectName: wobj.name,
                 locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
                 type: wobj.type,
@@ -123,7 +123,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
               dispatch(followObject(response.permlink));
             }
 
-            dispatch(voteObject(response.async, response.permlink, votePower));
+            dispatch(voteObject(response.author, response.permlink, votePower));
 
             return response;
           });
