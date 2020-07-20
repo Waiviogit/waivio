@@ -140,7 +140,7 @@ class CreateRewardForm extends React.Component {
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
-      const minExpertise = minExpertiseValue.toFixed(2);
+      const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
