@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Select, Radio, Checkbox, Modal } from 'antd';
+import { Select, Radio, Checkbox } from 'antd';
 import {
   getIsReloading,
   getLocale,
@@ -17,8 +17,6 @@ import {
   getUpvoteSetting,
   getExitPageSetting,
   isGuestUser,
-  getAuthenticatedUserName,
-  getHiveBeneficiaryAccount,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -32,7 +30,6 @@ import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import LinkHiveAccountModal from './LinkHiveAccountModal';
 
 import './Settings.less';
 
@@ -52,8 +49,6 @@ import './Settings.less';
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
     isGuest: isGuestUser(state),
-    user: getAuthenticatedUserName(state),
-    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   { reload, saveSettings, notify },
 )
@@ -75,9 +70,6 @@ export default class Settings extends React.Component {
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
-    resetSearchAutoCompete: PropTypes.func,
-    hiveBeneficiaryAccount: PropTypes.string.isRequired,
-    user: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -115,10 +107,8 @@ export default class Settings extends React.Component {
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
       upvoteSetting: props.exitPageSetting,
-      hiveBeneficiaryAccount: props.hiveBeneficiaryAccount,
       searchBarActive: '',
       dropdownOpen: false,
-      showModal: false,
     };
   }
 
@@ -133,7 +123,6 @@ export default class Settings extends React.Component {
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
       exitPageSetting: this.props.exitPageSetting,
-      hiveBeneficiaryAccount: this.props.hiveBeneficiaryAccount,
     });
   }
 
@@ -179,51 +168,6 @@ export default class Settings extends React.Component {
     }
   }
 
-  unlinkHiveAccount = () => {
-    const { user, intl } = this.props;
-
-    Modal.confirm({
-      title: intl.formatMessage({
-        id: 'unlink_hive_account',
-        defaultMessage: 'Unlink Hive account',
-      }),
-      content: this.props.intl.formatMessage(
-        {
-          id: 'unlink_hive_account_message',
-          defaultMessage:
-            'Do you want to unlink @{hiveUser} Hive account from your @{user} guest account?',
-        },
-        {
-          hiveUser: this.state.hiveBeneficiaryAccount,
-          user,
-        },
-      ),
-      onOk: () => {
-        this.setState({ hiveBeneficiaryAccount: '' });
-        this.props
-          .saveSettings({
-            hiveBeneficiaryAccount: '',
-          })
-          .then(() =>
-            this.props.notify(
-              this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
-              'success',
-            ),
-          );
-      },
-    });
-  };
-
-  hideAutoCompleteDropdown = value => {
-    this.setState(
-      {
-        hiveBeneficiaryAccount: value.account,
-        showSelectAccount: true,
-      },
-      this.props.resetSearchAutoCompete,
-    );
-  };
-
   handleSave = () => {
     this.props
       .saveSettings({
@@ -236,7 +180,6 @@ export default class Settings extends React.Component {
         upvoteSetting: this.state.upvoteSetting,
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
-        hiveBeneficiaryAccount: this.state.hiveBeneficiaryAccount,
       })
       .then(() =>
         this.props.notify(
@@ -244,17 +187,6 @@ export default class Settings extends React.Component {
           'success',
         ),
       );
-  };
-
-  handleUnselectUser = () => {
-    this.setState({
-      searchBarValue: '',
-      hiveBeneficiaryAccount: '',
-    });
-  };
-
-  handleOkModal = () => {
-    this.setState({ showModal: false });
   };
 
   handleLocaleChange = locale => this.setState({ locale });
@@ -286,8 +218,6 @@ export default class Settings extends React.Component {
       nightmode,
       upvoteSetting,
       exitPageSetting,
-      hiveBeneficiaryAccount,
-      showModal,
     } = this.state;
 
     const initialLanguages =
@@ -518,22 +448,6 @@ export default class Settings extends React.Component {
                       defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
                     />
                   </p>
-                  {hiveBeneficiaryAccount ? (
-                    <div>
-                      <span>@{hiveBeneficiaryAccount}</span>(
-                      <a role="presentation" onClick={this.unlinkHiveAccount}>
-                        <FormattedMessage id="unlink" defaultMessage="unlink" />
-                      </a>
-                      )
-                    </div>
-                  ) : (
-                    <a role="presentation" onClick={() => this.setState({ showModal: true })}>
-                      <FormattedMessage
-                        id="linked_you_hive_account"
-                        defaultMessage="Link your Hive account"
-                      />
-                    </a>
-                  )}
                 </div>
                 <Action primary big loading={loading} onClick={this.handleSave}>
                   <FormattedMessage id="save" defaultMessage="Save" />
@@ -542,14 +456,6 @@ export default class Settings extends React.Component {
             )}
           </div>
         </div>
-        <LinkHiveAccountModal
-          handleOk={this.handleOkModal}
-          handleSelect={this.hideAutoCompleteDropdown}
-          handleClose={() => this.setState({ showModal: false })}
-          showModal={showModal}
-          hiveBeneficiaryAccount={hiveBeneficiaryAccount}
-          handleUnselectUser={this.handleUnselectUser}
-        />
       </div>
     );
   }
