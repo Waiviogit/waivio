@@ -8,7 +8,14 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({ proposition, filterKey, history, intl }) => {
+const Campaign = ({
+  proposition,
+  filterKey,
+  history,
+  intl,
+  rewardPriseCatalogWrap,
+  rewardMaxCatalogWrap,
+}) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = proposition.campaigns
     ? getClientWObj(proposition, usedLocale)
@@ -29,7 +36,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
-          {!rewardMax ? (
+          {!rewardMax && !rewardMaxCatalogWrap ? (
             <React.Fragment>
               <span>
                 {intl.formatMessage({
@@ -38,7 +45,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrise}</span>
+                <span className="fw6 ml1">{rewardPrise || rewardPriseCatalogWrap}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -51,7 +58,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax}`}</span>
+                <span className="fw6 ml1">{`${rewardMax || rewardMaxCatalogWrap}`}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -68,10 +75,14 @@ Campaign.propTypes = {
   filterKey: PropTypes.string.isRequired,
   // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
+  rewardPriseCatalogWrap: PropTypes.string,
+  rewardMaxCatalogWrap: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
+  rewardPriseCatalogWrap: '',
+  rewardMaxCatalogWrap: '',
 };
 
 export default injectIntl(withRouter(Campaign));
