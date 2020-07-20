@@ -23,13 +23,16 @@ const EmailConfirmation = ({
   userName,
   isGuest,
   closeWithdrawModal,
+  isSettings,
 }) => {
   const [isCheck, setCheck] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 
   const currentEmail = email || newEmail;
-  const confirmationType = 'confirmTransaction';
+  const confirmationType = isSettings ? 'confirmEmail' : 'confirmTransaction';
+  const isOpenConfirm = isSettings && email ? visible : isVisibleConfirm;
+  const isOpenModal = isSettings && email ? false : visible;
 
   const handleChangeEmail = () => {
     setIsVisibleConfirm(true);
@@ -90,11 +93,15 @@ const EmailConfirmation = ({
       })
       .catch(e => message.error(e.message));
   };
+  const onCancel = () => {
+    if (isSettings && email) handleCancel();
+    else setIsVisibleConfirm(false);
+  };
 
   return (
     <React.Fragment>
       <Modal
-        visible={visible}
+        visible={isOpenModal}
         title={intl.formatMessage({
           id: 'blocktrades_exchange_request',
           defaultMessage: 'Blocktrades.us exchange request',
@@ -149,8 +156,8 @@ const EmailConfirmation = ({
           id: 'email_change_request',
           defaultMessage: 'Email change request',
         })}
-        visible={isVisibleConfirm}
-        onCancel={() => setIsVisibleConfirm(false)}
+        visible={isOpenConfirm}
+        onCancel={onCancel}
         onOk={() => handleSendConfirmation('pullEmail')}
       >
         <div>
@@ -193,12 +200,19 @@ const EmailConfirmation = ({
 
 EmailConfirmation.propTypes = {
   intl: PropTypes.shape().isRequired,
-  visible: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
+  handleClose: PropTypes.func,
   email: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
+  isSettings: PropTypes.bool,
+};
+
+EmailConfirmation.defaultProps = {
+  visible: false,
+  isSettings: false,
+  handleClose: () => {},
 };
 
 export default connect(

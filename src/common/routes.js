@@ -37,6 +37,10 @@ const Settings = Loadable({
   loader: () => import('../client/settings/Settings'),
   loading: Loading,
 });
+const GuestsSettings = Loadable({
+  loader: () => import('../client/settings/GuestsSettings'),
+  loading: Loading,
+});
 const ProfileSettings = Loadable({
   loader: () => import('../client/settings/ProfileSettings'),
   loading: Loading,
@@ -361,6 +365,11 @@ const routes = [
         path: '/invite',
         exact: true,
         component: Invite,
+      },
+      {
+        path: '/guests-settings',
+        exact: true,
+        component: GuestsSettings,
       },
       {
         path: '/discover-objects/:typeName?',
