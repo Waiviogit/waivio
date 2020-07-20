@@ -70,8 +70,7 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { primaryObjectCoordinates, zoomMap } = this.props;
-    const { zoom } = this.state;
+    const { primaryObjectCoordinates } = this.props;
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
       !isEmpty(nextProps.primaryObjectCoordinates)
@@ -81,7 +80,7 @@ class MapOS extends React.Component {
         center: [nextProps.primaryObjectCoordinates[1], nextProps.primaryObjectCoordinates[0]],
       });
     }
-    if ((zoomMap === 0 && nextProps.zoomMap) || (zoom === 0 && nextProps.zoomMap)) {
+    if (nextProps.zoomMap) {
       this.setState({ zoom: nextProps.zoomMap });
     }
   }

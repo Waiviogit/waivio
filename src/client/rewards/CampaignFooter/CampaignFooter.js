@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -258,7 +258,10 @@ class CampaignFooter extends React.Component {
       user,
       getMessageHistory,
     } = this.props;
-    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const isRewards =
+      match.params.filterKey === 'reserved' ||
+      match.params.filterKey === 'all' ||
+      includes(match.path, 'object');
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
