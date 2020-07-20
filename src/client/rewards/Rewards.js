@@ -452,7 +452,8 @@ class Rewards extends React.Component {
     getHistory,
   ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
-    const actualPropositions = isEmpty(messages) ? propositions : messages;
+    const propositionsUniq = uniqBy(propositions, 'required_object._id');
+    const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
 
     const getMessageHistory = async () => {
       try {
