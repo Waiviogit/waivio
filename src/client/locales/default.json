@@ -410,6 +410,7 @@
   "value_error_long": "Value can't be longer than {value} characters.",
   "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
   "create_object_error": "Couldn't create the object",
+  "object_exist": "Such an object already exists",
   "create_object_success": "Object has been created and saved to HIVE blockchain, in a few minutes it will be available in search.",
   "post_languages_info": "Content from the blockchain (posts, comments) will be filtered according to these preferences",
   "post_languages": "Content language preferences",
