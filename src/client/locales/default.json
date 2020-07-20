@@ -1261,5 +1261,7 @@
   "reinstate_reward": "Reinstate reward",
   "campaign_buttons_reachedLimit": "Reached limit",
   "review": "Review",
-  "review_rejected": "Review rejected"
+  "review_rejected": "Review rejected",
+  "review_author_rewards": "Author rewards: {title}",
+  "comments_author_rewards": "Author rewards for comments: {title}"
 }
