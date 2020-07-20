@@ -31,6 +31,7 @@ const RewardsComponent = memo(
     sortEligible,
     sortAll,
     sortReserved,
+    campaignsTypes,
   }) => {
     const dispatch = useDispatch();
 
@@ -99,6 +100,7 @@ const RewardsComponent = memo(
             resetMapFilter,
             handleLoadMore,
             userName: username,
+            campaignsTypes,
           }}
         />
       </div>
@@ -127,6 +129,7 @@ RewardsComponent.propTypes = {
   sortEligible: PropTypes.string,
   sortAll: PropTypes.string,
   sortReserved: PropTypes.string,
+  campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 RewardsComponent.defaultProps = {

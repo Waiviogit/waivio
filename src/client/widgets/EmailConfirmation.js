@@ -113,7 +113,7 @@ const EmailConfirmation = ({
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={handleSendConfirmation}
         onCancel={handleCancel}
-        okButtonProps={{ disabled: !(email || newEmail) && !isCheck }}
+        okButtonProps={{ disabled: !((email || newEmail) && isCheck) }}
       >
         <Form>
           <Form.Item

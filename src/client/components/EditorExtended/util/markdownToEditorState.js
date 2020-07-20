@@ -273,10 +273,7 @@ function mdToDraftjs({ title, body } = { title: '', body: '' }, withTitle = true
     // eslint-disable-next-line
     paragraphs.forEach(paragraph => {
       const result = parseMdLine(paragraph, entityMap, extraStyles);
-      const prevBlock = last(blocks);
-      if (prevBlock && prevBlock.type === Block.IMAGE && prevBlock.text === result.text) {
-        return true; // skip iteration
-      }
+
       blocks.push({
         text: result.text,
         type: result.blockStyle,
