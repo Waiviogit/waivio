@@ -1264,5 +1264,7 @@
   "reinstate_reward": "Восстановить награду",
   "campaign_buttons_reachedLimit": "Достигнут предел",
   "review": "Обзор",
-  "review_rejected": "Отзыв отклонен"
+  "review_rejected": "Отзыв отклонен",
+  "review_author_rewards": "Авторская награда: {title}",
+  "comments_author_rewards": "Авторская награда за комментарий: {title}"
 }
