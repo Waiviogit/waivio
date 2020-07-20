@@ -134,7 +134,6 @@ export default class MediumDraftEditor extends React.Component {
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {
-      // New
       if (!editorState.getSelection().isCollapsed()) {
         const selectionRange = getSelectionRange();
 
@@ -216,9 +215,9 @@ export default class MediumDraftEditor extends React.Component {
       // eslint-disable-next-line no-await-in-loop
       await this.encodeImageFileAsURL(file, insertImage);
     }
-
     // eslint-disable-next-line array-callback-return
-    uploadedImages.map(item => {
+    uploadedImages.forEach(item => {
+      this.onChange(addNewBlockAt(this.state.editorState, 's_content', Block.UNSTYLED, {}));
       this.onChange(
         addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {
           src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,

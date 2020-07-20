@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { CompositeDecorator, EditorState } from 'draft-js';
 import { injectIntl } from 'react-intl';
 import { Icon, Modal } from 'antd';
 import { addNewBlock } from '../../model';
-import { Block } from '../..';
+import { Block, findLinkEntities } from '../..';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
 import withEditor from '../../../Editor/withEditor';
+import ObjectLink from '../entities/objectlink';
 
 @withEditor
 @injectIntl
@@ -19,14 +21,27 @@ export default class ImageSideButton extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const decorator = new CompositeDecorator([
+      {
+        strategy: findLinkEntities,
+        component: ObjectLink,
+      },
+    ]);
+
     this.state = {
       isModal: false,
       isLoadingImage: false,
       isLoading: false,
       currentImage: [],
+      editorState: EditorState.createEmpty(decorator),
     };
 
     this.onClick = this.onClick.bind(this);
+
+    this.onChange = editorState => {
+      this.setState({ editorState });
+    };
   }
 
   onClick() {
