@@ -398,7 +398,7 @@ export default class CampaignButtons extends React.Component {
               defaultMessage: this.buttonsTitle.defaultMessage,
             })}
             {this.buttonsTitle.defaultMessage === 'Reserved' &&
-              `- ${daysLeft} ${intl.formatMessage({
+              ` - ${daysLeft}  ${intl.formatMessage({
                 id: 'campaign_buttons_days_left',
                 defaultMessage: 'days left',
               })} `}
@@ -432,7 +432,7 @@ export default class CampaignButtons extends React.Component {
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
-              {propositionUserName}
+              <Link to={`/@${propositionUserName}`}>{propositionUserName}</Link>
             </div>
             <WeightTag weight={propositionUserWeight} />
           </div>

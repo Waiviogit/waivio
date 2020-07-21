@@ -55,7 +55,7 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if (campaignParent || !userLocation.lat || !userLocation.lon) return;
+      if ((campaignParent && !userLocation.lat) || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
     }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);

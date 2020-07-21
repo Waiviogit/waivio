@@ -636,7 +636,7 @@ export const getPropositions = ({
   });
 
 export const getHistory = ({
-  limit = 30,
+  limit = 10,
   skip = 0,
   guideName,
   userName,
