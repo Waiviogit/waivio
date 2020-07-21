@@ -9,18 +9,22 @@ import { epochToUTC } from '../helpers/formatter';
 
 const validateTitle = (details, username) => {
   const postPermlink = details && details.post_permlink;
+  const postParentAuthor = details && details.post_parent_author;
+  const postParentPermlink = details && details.post_parent_permlink;
   const title = details && details.title;
-  const reviewPost = details && details.title.search('Review:');
-  const url = `/@${username}/${postPermlink}`;
+  const post = details && postParentAuthor === '';
 
-  if (reviewPost === 0) {
+  const urlComment = `/@${postParentAuthor}/${postParentPermlink}#@${username}/${postPermlink}`;
+
+  if (post) {
+    const urlPost = `/@${username}/${postPermlink}`;
     return (
       <FormattedMessage
         id="review_author_rewards"
         defaultMessage="Author rewards: {title}"
         values={{
           title: (
-            <Link to={url}>
+            <Link to={urlPost}>
               <span className="username">{truncate(title, { length: 30 })}</span>
             </Link>
           ),
@@ -34,7 +38,7 @@ const validateTitle = (details, username) => {
       defaultMessage="Author rewards for comments: {title}"
       values={{
         title: (
-          <Link to={url}>
+          <Link to={urlComment}>
             <span className="username">{truncate(title, { length: 15 })}</span>
           </Link>
         ),
