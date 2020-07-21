@@ -292,8 +292,8 @@ export default class ObjectFeed extends React.Component {
     };
     const minReward = currentProposition ? get(currentProposition[0], ['min_reward']) : 0;
     const maxReward = currentProposition ? get(currentProposition[0], ['max_reward']) : 0;
-    const rewardPrise = `${minReward} USD`;
-    const rewardMax = maxReward !== minReward ? `${maxReward} USD` : '';
+    const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+    const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
     const getFeedProposition = () => {
       if (wobject && isEmpty(wobject.parent) && !isEmpty(currentProposition)) {
         return (
