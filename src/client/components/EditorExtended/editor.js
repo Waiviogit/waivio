@@ -219,10 +219,12 @@ export default class MediumDraftEditor extends React.Component {
     uploadedImages.forEach(item => {
       this.onChange(addNewBlockAt(this.state.editorState, 's_content', Block.UNSTYLED, {}));
       this.onChange(
-        addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {
-          src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
-          alt: item.name,
-        }),
+        EditorState.moveFocusToEnd(
+          addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {
+            src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
+            alt: item.name,
+          }),
+        ),
       );
     });
     return 'handled';
