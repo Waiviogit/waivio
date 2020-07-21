@@ -633,6 +633,7 @@ class Rewards extends React.Component {
       activeMessagesFilters,
       sortHistory,
       sortMessages,
+      loadingAssignDiscard,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -666,6 +667,7 @@ class Rewards extends React.Component {
       sort,
       handleSortChange: this.handleSortChange,
       loadingCampaigns,
+      loadingAssignDiscard,
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
