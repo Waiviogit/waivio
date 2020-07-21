@@ -155,7 +155,6 @@ const CampaignRewardsTableRow = ({
       toggleModal(true);
     }
   };
-  console.log('activationStatus', activationStatus);
 
   return (
     <React.Fragment>
