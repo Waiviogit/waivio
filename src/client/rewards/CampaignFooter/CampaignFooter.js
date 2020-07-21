@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { find, has } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
+import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
@@ -53,6 +54,8 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
+    getMessageHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -71,6 +74,7 @@ class CampaignFooter extends React.Component {
     discardPr: () => {},
     toggleModalDetails: () => {},
     isComment: false,
+    getMessageHistory: () => {},
   };
 
   constructor(props) {
@@ -78,7 +82,7 @@ class CampaignFooter extends React.Component {
 
     this.state = {
       sliderVisible: false,
-      commentsVisible: !props.post.children,
+      commentsVisible: false,
       sliderValue: 100,
       voteWorth: 0,
       modalVisible: false,
@@ -108,19 +112,19 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition } = this.props;
-    if (
-      has(proposition, ['objects', '0', 'author']) &&
-      has(proposition, ['objects', '0', 'permlink'])
-    ) {
+    const { proposition, match } = this.props;
+    const author = get(proposition, ['objects', '0', 'author']);
+    const permlink = get(proposition, ['objects', '0', 'permlink']);
+    if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
         this.setState({ currentPost: res }),
       );
     }
+    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
-        proposition.objects[0].reservationCreated,
+        isRewards ? proposition.objects[0].reservationCreated : proposition.users[0].createdAt,
         proposition.count_reservation_days,
       ),
     });
@@ -188,17 +192,15 @@ class CampaignFooter extends React.Component {
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    discardPr(proposedWobj).then(({ isAssign }) => {
-      if (!isAssign) {
-        this.toggleModal();
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Reservation released. It will be available for reservation soon.',
-          }),
-          this.props.history.push(`/rewards/active`),
-        );
-      }
+    discardPr(proposedWobj).then(() => {
+      this.toggleModal();
+      message.success(
+        this.props.intl.formatMessage({
+          id: 'discarded_successfully',
+          defaultMessage: 'Reservation released. It will be available for reservation soon.',
+        }),
+        this.props.history.push('/rewards/active'),
+      );
     });
   };
 
@@ -227,7 +229,9 @@ class CampaignFooter extends React.Component {
   };
 
   toggleCommentsVisibility = isVisible => {
-    if (this.props.post.children > 0) {
+    const { proposition } = this.props;
+    const hasComments = !isEmpty(proposition.conversation);
+    if (hasComments) {
       this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
@@ -250,7 +254,26 @@ class CampaignFooter extends React.Component {
       requiredObjectName,
       loading,
       proposition,
+      match,
+      user,
+      getMessageHistory,
     } = this.props;
+    const isRewards =
+      match.params.filterKey === 'reserved' ||
+      match.params.filterKey === 'all' ||
+      includes(match.path, 'object');
+    const propositionStatus = isRewards
+      ? get(proposition, ['status'])
+      : get(proposition, ['users', '0', 'status']);
+    const postCurrent = proposition.conversation;
+    const hasComments = !isEmpty(proposition.conversation);
+    const commentsAll = get(postCurrent, ['all']);
+    const rootKey = findKey(commentsAll, ['depth', 2]);
+    const rootComment = get(commentsAll, [rootKey]);
+    const repliesKeys = get(commentsAll, [rootKey, 'replies']);
+    const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
+    const numberOfComments = commentsArr.length;
+
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -275,6 +298,13 @@ class CampaignFooter extends React.Component {
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
+              propositionStatus={propositionStatus}
+              proposition={proposition}
+              match={match}
+              user={user}
+              toggleModal={this.toggleModal}
+              numberOfComments={numberOfComments}
+              getMessageHistory={getMessageHistory}
             />
           )}
         </div>
@@ -285,13 +315,34 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!singlePostVew && isComment && (
+        {hasComments &&
+          map(commentsArr, currentComment => (
+            <div>
+              <CommentsMessages
+                show={commentsVisible}
+                user={user}
+                post={postCurrent}
+                getMessageHistory={getMessageHistory}
+                currentComment={currentComment}
+              />
+            </div>
+          ))}
+        {hasComments && commentsVisible && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={rootComment}
+            getMessageHistory={getMessageHistory}
+          />
+        )}
+        {!singlePostVew && isComment && !hasComments && match.params.filterKey !== 'history' && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}
             post={this.state.currentPost}
           />
         )}
+
         <Modal
           closable
           maskClosable={false}

@@ -159,6 +159,7 @@ export default class ObjectFeed extends React.Component {
               assigned={wobj.assigned}
               history={this.props.history}
               isAssign={this.state.isAssign}
+              match={this.props.match}
             />
           ),
       ),
