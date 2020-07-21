@@ -168,7 +168,6 @@ export default class Transfer extends React.Component {
         currency: HIVE.symbol,
       });
     }
-    console.log('searchBarValue: ', this.state.searchBarValue);
   }
 
   handleOkModal = () =>
