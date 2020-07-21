@@ -329,7 +329,7 @@ class CatalogWrap extends React.Component {
     const minReward = propositions
       ? min(map(propositions, proposition => proposition.reward))
       : null;
-    const rewardPriseCatalogWrap = minReward ? `${minReward.toFixed(2)} USD` : '';
+    const rewardPriceCatalogWrap = minReward ? `${minReward.toFixed(2)} USD` : '';
     const maxReward = propositions
       ? max(map(propositions, proposition => proposition.reward))
       : null;
@@ -339,7 +339,7 @@ class CatalogWrap extends React.Component {
       <Campaign
         proposition={propositions[0]}
         filterKey="all"
-        rewardPriseCatalogWrap={!rewardMaxCatalogWrap ? rewardPriseCatalogWrap : null}
+        rewardPriceCatalogWrap={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
         rewardMaxCatalogWrap={rewardMaxCatalogWrap || null}
         key={`${propositions[0].required_object.author_permlink}${propositions[0].required_object.createdAt}`}
         userName={userName}

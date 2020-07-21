@@ -13,7 +13,7 @@ const Campaign = ({
   filterKey,
   history,
   intl,
-  rewardPriseCatalogWrap,
+  rewardPriceCatalogWrap,
   rewardMaxCatalogWrap,
 }) => {
   const { usedLocale } = useContext(AppSharedContext);
@@ -26,7 +26,7 @@ const Campaign = ({
   const maxReward = proposition.campaigns
     ? proposition.campaigns.max_reward
     : proposition.max_reward;
-  const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
+  const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
   const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
@@ -45,7 +45,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrise || rewardPriseCatalogWrap}</span>
+                <span className="fw6 ml1">{rewardPrice || rewardPriceCatalogWrap}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -73,15 +73,14 @@ Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
-  // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
-  rewardPriseCatalogWrap: PropTypes.string,
+  rewardPriceCatalogWrap: PropTypes.string,
   rewardMaxCatalogWrap: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
-  rewardPriseCatalogWrap: '',
+  rewardPriceCatalogWrap: '',
   rewardMaxCatalogWrap: '',
 };
 
