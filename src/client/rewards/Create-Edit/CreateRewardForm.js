@@ -140,7 +140,7 @@ class CreateRewardForm extends React.Component {
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
-      const minExpertise = minExpertiseValue.toFixed(2);
+      const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -233,9 +233,9 @@ class CreateRewardForm extends React.Component {
       whitelist_users: [],
       count_reservation_days: data.reservationPeriod,
       userRequirements: {
-        minFollowers: data.minFollowers,
-        minPosts: data.minPosts,
-        minExpertise: minExpertisePrepared,
+        minFollowers: data.minFollowers || 0,
+        minPosts: data.minPosts || 0,
+        minExpertise: minExpertisePrepared || 0,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
