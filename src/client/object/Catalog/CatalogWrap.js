@@ -567,7 +567,7 @@ class CatalogWrap extends React.Component {
 
     return (
       <div>
-        {propositions && this.renderCampaign(propositions)}
+        {!isEmpty(propositions) && this.renderCampaign(propositions)}
         <div className="CatalogWrap__breadcrumb">
           <Breadcrumb separator={'>'}>
             {map(breadcrumb, (crumb, index, crumbsArr) => (
