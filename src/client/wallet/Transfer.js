@@ -28,7 +28,7 @@ import {
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
 } from '../reducers';
-import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
+import { sendGuestTransfer } from '../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
@@ -352,26 +352,7 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-
-    getUserAccount(value, false).then(result => {
-      if (!isEmpty(result)) {
-        callback();
-      } else {
-        callback([
-          new Error(
-            intl.formatMessage(
-              {
-                id: 'to_error_not_found_username',
-                defaultMessage: "Couldn't find user with name {username}.",
-              },
-              {
-                username: value,
-              },
-            ),
-          ),
-        ]);
-      }
-    });
+    callback();
   };
 
   validateBalance = (rule, value, callback) => {
