@@ -150,7 +150,7 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards, firstMapLoad }) => {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
@@ -158,6 +158,7 @@ class Rewards extends React.Component {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
+        firstMapLoad,
       );
     }
   };
@@ -257,7 +258,11 @@ class Rewards extends React.Component {
     }
   };
 
-  getPropositions = ({ username, match, area, sort, radius, activeFilters, limit }, isMap) => {
+  getPropositions = (
+    { username, match, area, sort, radius, activeFilters, limit },
+    isMap,
+    firstMapLoad,
+  ) => {
     this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
       preparePropositionReqData({
@@ -270,7 +275,7 @@ class Rewards extends React.Component {
         types: activeFilters.types,
         limit,
         simplified: !!isMap,
-        firstMapLoad: !!isMap,
+        firstMapLoad: !!isMap && firstMapLoad,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -292,7 +297,7 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       }
-      if (isMap) {
+      if (isMap && firstMapLoad) {
         const zoomMap = getZoom(data.radius);
         this.setState({
           zoomMap,
