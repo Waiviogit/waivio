@@ -33,6 +33,7 @@ const Proposition = ({
   history,
   match,
   getMessageHistory,
+  user,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -44,10 +45,10 @@ const Proposition = ({
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
   const isMessages = match.params.filterKey === 'messages';
-  const user = get(proposition, ['users', '0', 'name']);
+  const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
-  const userName = isMessages ? user : authorizedUserName;
-  const parenAuthor = isMessages ? user : proposition.guide.name;
+  const userName = isMessages ? propositionUserName : authorizedUserName;
+  const parenAuthor = isMessages ? propositionUserName : proposition.guide.name;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
