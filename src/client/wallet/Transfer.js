@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isNull, isEmpty, isNaN } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
-import { closeTransfer } from './walletActions';
+import { closeTransfer, sendPendingTransfer } from './walletActions';
 import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
@@ -67,6 +68,7 @@ const InputGroup = Input.Group;
     notify,
     saveSettings,
     openLinkHiveAccountModal,
+    sendPendingTransfer,
   },
 )
 @Form.create()
@@ -92,6 +94,7 @@ export default class Transfer extends React.Component {
     saveSettings: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
+    sendPendingTransfer: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -226,7 +229,19 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form, isGuest, memo, app } = this.props;
+    const {
+      form,
+      isGuest,
+      memo,
+      app,
+      sendPendingTransfer: sendPendingTransferAction,
+      amount,
+      to,
+      user,
+    } = this.props;
+    const sponsor = user.name;
+    const transactionId = uuidv4();
+    const userName = to;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -282,6 +297,7 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
+        sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
         this.props.closeTransfer();
       }
     });
