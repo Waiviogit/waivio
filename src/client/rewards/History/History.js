@@ -12,6 +12,7 @@ const History = ({
   intl,
   campaignsLayoutWrapLayout,
   activeMessagesFilters,
+  activeHistoryFilters,
   messagesSponsors,
   setMessagesSponsors,
   match,
@@ -62,22 +63,32 @@ const History = ({
         await setLoadingCampaigns(false);
       }
     },
-    [JSON.stringify(activeMessagesFilters), messagesSponsors],
+    [JSON.stringify(activeMessagesFilters), JSON.stringify(activeHistoryFilters), messagesSponsors],
   );
 
   const handleSortChange = useCallback(
     sortChanged => {
       setLoadingCampaigns(true);
       setSortValue(sortChanged);
-      getHistory(userName, sortChanged, activeMessagesFilters, useLoader);
+      getHistory(
+        userName,
+        sortChanged,
+        isHistory ? activeHistoryFilters : activeMessagesFilters,
+        useLoader,
+      );
     },
-    [userName, activeMessagesFilters],
+    [userName, activeMessagesFilters, activeHistoryFilters],
   );
 
   useEffect(() => {
     const sortForFilters = isHistory ? sortHistory : sortMessages;
-    getHistory(userName, sortForFilters, activeMessagesFilters, useLoader);
-  }, [JSON.stringify(activeMessagesFilters)]);
+    getHistory(
+      userName,
+      sortForFilters,
+      isHistory ? activeHistoryFilters : activeMessagesFilters,
+      useLoader,
+    );
+  }, [JSON.stringify(activeMessagesFilters), JSON.stringify(activeHistoryFilters)]);
 
   return (
     <div className="history">
@@ -112,6 +123,7 @@ History.propTypes = {
   location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   activeMessagesFilters: PropTypes.shape().isRequired,
+  activeHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   setMessagesSponsors: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
