@@ -1316,15 +1316,18 @@ export const waivioAPI = {
 };
 
 export const getTransferHistory = (username, skip = 0, limit = 10) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => err);
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;
