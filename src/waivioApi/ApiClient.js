@@ -912,12 +912,13 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {}) =>
-  new Promise((resolve, reject) => {
+export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 } = {}) => {
+  const token = await getValidTokenData();
+  return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
-        headers,
+        headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
         method: 'GET',
       },
     )
@@ -925,6 +926,8 @@ export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {})
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
+
 // endregion
 
 // region Guest user's requests
@@ -1316,15 +1319,18 @@ export const waivioAPI = {
 };
 
 export const getTransferHistory = (username, skip = 0, limit = 10) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => err);
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;

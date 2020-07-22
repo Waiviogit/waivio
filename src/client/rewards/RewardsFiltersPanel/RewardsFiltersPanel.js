@@ -17,6 +17,7 @@ const RewardsFiltersPanel = ({
   intl,
   location,
   activeMessagesFilters,
+  activeHistoryFilters,
   messagesSponsors,
   setActiveMessagesFilters,
 }) => {
@@ -150,7 +151,7 @@ const RewardsFiltersPanel = ({
               })}:`}
             </div>
             {map(rewardsTypesMessages, type =>
-              filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
+              filterLayout(type, 'rewards', includes(activeHistoryFilters.rewards, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
               {intl.formatMessage({
@@ -162,7 +163,7 @@ const RewardsFiltersPanel = ({
               filterLayout(
                 sponsor,
                 'messagesSponsors',
-                includes(activeMessagesFilters.messagesSponsors, sponsor),
+                includes(activeHistoryFilters.messagesSponsors, sponsor),
               ),
             )}
           </React.Fragment>
@@ -177,6 +178,7 @@ RewardsFiltersPanel.propTypes = {
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
   activeMessagesFilters: PropTypes.shape(),
+  activeHistoryFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
@@ -191,6 +193,7 @@ RewardsFiltersPanel.defaultProps = {
   campaignsTypes: [],
   activeFilters: {},
   activeMessagesFilters: {},
+  activeHistoryFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);
