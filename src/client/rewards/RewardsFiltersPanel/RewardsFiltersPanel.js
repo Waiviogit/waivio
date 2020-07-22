@@ -119,7 +119,29 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' || location.pathname === '/rewards/history' ? (
+        {location.pathname === '/rewards/messages' && (
+          <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'case_status',
+                defaultMessage: 'Case status',
+              })}:`}
+            </div>
+            {map(campaignsTypesMessages, type =>
+              filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
+            )}
+          </React.Fragment>
+        )}
+        {location.pathname === '/rewards/history' && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -131,30 +153,19 @@ const RewardsFiltersPanel = ({
               filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
-              {location.pathname === '/rewards/messages'
-                ? intl.formatMessage({
-                    id: 'case_status',
-                    defaultMessage: 'Case status',
-                  })
-                : intl.formatMessage({
-                    id: 'sponsors',
-                    defaultMessage: 'Sponsors',
-                  })}
+              {intl.formatMessage({
+                id: 'sponsors',
+                defaultMessage: 'Sponsors',
+              })}
             </div>
-            {location.pathname === '/rewards/messages'
-              ? map(campaignsTypesMessages, type =>
-                  filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
-                )
-              : map(sponsorsData, sponsor =>
-                  filterLayout(
-                    sponsor,
-                    'messagesSponsors',
-                    includes(activeMessagesFilters.messagesSponsors, sponsor),
-                  ),
-                )}
+            {map(sponsorsData, sponsor =>
+              filterLayout(
+                sponsor,
+                'messagesSponsors',
+                includes(activeMessagesFilters.messagesSponsors, sponsor),
+              ),
+            )}
           </React.Fragment>
-        ) : (
-          ''
         )}
       </div>
     </div>
