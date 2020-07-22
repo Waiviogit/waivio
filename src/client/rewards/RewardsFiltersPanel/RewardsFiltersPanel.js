@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
+import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
 const RewardsFiltersPanel = ({
@@ -59,7 +60,7 @@ const RewardsFiltersPanel = ({
   const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
     () => ({
       campaignsTypesMessages: ['all', 'open', 'close'],
-      rewardsTypesMessages: ['assigned', 'unassigned', 'completed', 'rejected', 'expired'],
+      rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
       sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
     }),
     [sponsors, messagesSponsors, location.pathname],
@@ -119,7 +120,29 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' || location.pathname === '/rewards/history' ? (
+        {location.pathname === '/rewards/messages' && (
+          <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'case_status',
+                defaultMessage: 'Case status',
+              })}:`}
+            </div>
+            {map(campaignsTypesMessages, type =>
+              filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
+            )}
+          </React.Fragment>
+        )}
+        {location.pathname === '/rewards/history' && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -128,53 +151,22 @@ const RewardsFiltersPanel = ({
               })}:`}
             </div>
             {map(rewardsTypesMessages, type =>
-              filterLayout(
-                type,
-                'rewards',
-                includes(
-                  location.pathname === '/rewards/messages'
-                    ? activeMessagesFilters.rewards
-                    : activeHistoryFilters.rewards,
-                  type,
-                ),
-              ),
+              filterLayout(type, 'rewards', includes(activeHistoryFilters.rewards, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
-              {location.pathname === '/rewards/messages'
-                ? intl.formatMessage({
-                    id: 'case_status',
-                    defaultMessage: 'Case status',
-                  })
-                : intl.formatMessage({
-                    id: 'sponsors',
-                    defaultMessage: 'Sponsors',
-                  })}
+              {intl.formatMessage({
+                id: 'sponsors',
+                defaultMessage: 'Sponsors',
+              })}
             </div>
-            {location.pathname === '/rewards/messages'
-              ? map(campaignsTypesMessages, type =>
-                  filterLayout(
-                    type,
-                    'caseStatus',
-                    location.pathname === '/rewards/messages'
-                      ? activeMessagesFilters.caseStatus === type
-                      : activeHistoryFilters.caseStatus === type,
-                  ),
-                )
-              : map(sponsorsData, sponsor =>
-                  filterLayout(
-                    sponsor,
-                    'messagesSponsors',
-                    includes(
-                      location.pathname === '/rewards/messages'
-                        ? activeMessagesFilters.messagesSponsors
-                        : activeHistoryFilters.messagesSponsors,
-                      sponsor,
-                    ),
-                  ),
-                )}
+            {map(sponsorsData, sponsor =>
+              filterLayout(
+                sponsor,
+                'messagesSponsors',
+                includes(activeHistoryFilters.messagesSponsors, sponsor),
+              ),
+            )}
           </React.Fragment>
-        ) : (
-          ''
         )}
       </div>
     </div>

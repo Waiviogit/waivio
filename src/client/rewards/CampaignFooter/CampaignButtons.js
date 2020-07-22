@@ -417,7 +417,7 @@ export default class CampaignButtons extends React.Component {
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
-          <div>
+          <div className="Buttons__wrap-text">
             {intl.formatMessage({
               id: this.buttonsTitle.id,
               defaultMessage: this.buttonsTitle.defaultMessage,

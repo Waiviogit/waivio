@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -95,6 +95,7 @@ export default class Transfer extends React.Component {
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -239,6 +240,7 @@ export default class Transfer extends React.Component {
       amount,
       to,
       user,
+      history,
     } = this.props;
     const sponsor = user.name;
     const transactionId = uuidv4();
@@ -298,7 +300,8 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
+        if (includes(history.location.pathname, 'payables'))
+          sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
         this.props.closeTransfer();
       }
     });
