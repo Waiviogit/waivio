@@ -7,7 +7,10 @@ import { useSelector } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../reducers';
-import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+} from '../../../common/constants/rewards';
 
 const History = ({
   intl,
@@ -37,6 +40,9 @@ const History = ({
       const rewards = map(activeFilters.rewards, item =>
         Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
       );
+      const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
+        key => CAMPAIGNS_TYPES_MESSAGES[key] === activeFilters.caseStatus,
+      );
       try {
         const requestData = {
           onlyWithMessages: true,
@@ -50,7 +56,7 @@ const History = ({
           requestData.userName = username;
         }
         if (!isHistory) {
-          requestData.caseStatus = activeFilters.caseStatus;
+          requestData.caseStatus = caseStatus;
           requestData.guideName = username;
         }
 
