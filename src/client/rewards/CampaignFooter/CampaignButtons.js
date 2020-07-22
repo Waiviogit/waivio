@@ -282,10 +282,7 @@ export default class CampaignButtons extends React.Component {
         .catch(() => console.log(e));
     };
 
-    const closeModalReport = () => {
-      if (this.state.isModalReportOpen)
-        this.setState({ isModalReportOpen: !this.state.isModalReportOpen });
-    };
+    const closeModalReport = () => this.setState({ isModalReportOpen: false });
 
     return (
       <Popover
