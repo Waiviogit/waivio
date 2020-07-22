@@ -17,4 +17,12 @@ export const TYPE = {
   overpaymentRefund: 'overpayment_refund',
 };
 
+export const REWARDS_TYPES_MESSAGES = {
+  assigned: 'Reserved',
+  completed: 'Completed',
+  unassigned: 'Released',
+  expired: 'Expired',
+  rejected: 'Rejected',
+};
+
 export default null;

@@ -37,6 +37,10 @@ const Settings = Loadable({
   loader: () => import('../client/settings/Settings'),
   loading: Loading,
 });
+const GuestsSettings = Loadable({
+  loader: () => import('../client/settings/GuestsSettings'),
+  loading: Loading,
+});
 const ProfileSettings = Loadable({
   loader: () => import('../client/settings/ProfileSettings'),
   loading: Loading,
@@ -205,6 +209,10 @@ const RewardsComponent = Loadable({
   loader: () => import('../client/rewards/RewardsComponent/RewardsComponent'),
   loading: Loading,
 });
+const HistoryCampaign = Loadable({
+  loader: () => import('../client/rewards/History/History'),
+  loading: Loading,
+});
 
 const routes = [
   {
@@ -224,8 +232,8 @@ const routes = [
           '/rewards/blacklist/references',
           '/rewards/blacklist/whitelist',
           '/rewards/receivables',
-          '/rewards/payables/@:userName',
-          '/rewards/receivables/@:userName',
+          '/rewards/payables/@:userName/:reservationPermlink?',
+          '/rewards/receivables/@:userName/:reservationPermlink?',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -257,12 +265,12 @@ const routes = [
             component: Reports,
           },
           {
-            path: '/rewards/payables/@:userName',
+            path: '/rewards/payables/@:userName/:reservationPermlink?',
             exact: true,
             component: PaymentCampaign,
           },
           {
-            path: '/rewards/receivables/@:userName',
+            path: '/rewards/receivables/@:userName/:reservationPermlink?',
             exact: true,
             component: PaymentCampaign,
           },
@@ -270,6 +278,16 @@ const routes = [
             path: '/rewards/match-bot',
             exact: true,
             component: MatchBotCampaign,
+          },
+          {
+            path: '/rewards/history',
+            exact: true,
+            component: HistoryCampaign,
+          },
+          {
+            path: '/rewards/messages',
+            exact: true,
+            component: HistoryCampaign,
           },
           {
             path: '/rewards/blacklist',
@@ -347,6 +365,11 @@ const routes = [
         path: '/invite',
         exact: true,
         component: Invite,
+      },
+      {
+        path: '/guests-settings',
+        exact: true,
+        component: GuestsSettings,
       },
       {
         path: '/discover-objects/:typeName?',

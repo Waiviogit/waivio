@@ -7,6 +7,7 @@ import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName } from '../reducers';
+import { createCommentPermlink } from '../vendor/steemitHelpers';
 
 require('isomorphic-fetch');
 
@@ -260,6 +261,44 @@ export const assignProposition = ({
   });
 };
 
+export const rejectReview = ({
+  companyAuthor,
+  username,
+  reservationPermlink,
+  objPermlink,
+  appName,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Reject review',
+      body: `<p>Sponsor ${username} (@${username}) has rejected the review `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'reject_reservation_by_guide',
+          approved_object: objPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
 export const pendingUpdateSuccess = () => dispatch =>
   dispatch({
     type: SET_PENDING_UPDATE.SUCCESS,
@@ -271,6 +310,7 @@ export const declineProposition = ({
   unreservationPermlink,
   reservationPermlink,
   requiredObjectName,
+  type,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -284,7 +324,7 @@ export const declineProposition = ({
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
-          type: 'waivio_reject_object_campaign',
+          type,
           reservation_permlink: reservationPermlink,
         },
       }),
