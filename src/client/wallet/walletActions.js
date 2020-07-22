@@ -247,10 +247,13 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
           username,
           transactionsHistory: data.wallet,
           hasMore: data.hasMore,
+          operationNum: data.operationNum,
         }))
         .catch(error => console.log(error)),
     },
   });
+
+export const GET_ERROR_LOADING_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
 
 export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch =>
   dispatch({
@@ -261,8 +264,14 @@ export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch
           username,
           transactionsHistory: data.wallet,
           hasMore: data.hasMore,
+          operationNum: data.operationNum,
         }))
-        .catch(error => console.log(error)),
+        .catch(error => {
+          console.log(error);
+          return dispatch({
+            type: GET_ERROR_LOADING_TRANSACTIONS,
+          });
+        }),
     },
   });
 

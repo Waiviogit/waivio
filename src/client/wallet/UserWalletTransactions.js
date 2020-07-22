@@ -30,6 +30,7 @@ class UserWalletTransactions extends React.Component {
     intl: PropTypes.shape({
       formatMessage: PropTypes.func.isRequired,
     }).isRequired,
+    isErrorLoading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -39,6 +40,7 @@ class UserWalletTransactions extends React.Component {
     getMoreUserTransactionHistory: () => {},
     demoTransactions: [],
     actions: [],
+    isErrorLoading: false,
   };
 
   state = {
@@ -97,6 +99,7 @@ class UserWalletTransactions extends React.Component {
       demoHasMoreActions,
       demoTransactions,
       intl,
+      isErrorLoading,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
 
@@ -109,9 +112,11 @@ class UserWalletTransactions extends React.Component {
             elementIsScrollable={false}
             threshold={500}
             loader={
-              <div className="UserWalletTransactions__loader">
-                <Loading />
-              </div>
+              !isErrorLoading && (
+                <div className="UserWalletTransactions__loader">
+                  <Loading />
+                </div>
+              )
             }
           >
             <div />
