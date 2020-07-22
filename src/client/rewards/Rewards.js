@@ -31,7 +31,6 @@ import {
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
-  getUpdatedMap,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -70,7 +69,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
-    updated: getUpdatedMap(state),
   }),
   {
     assignProposition,
@@ -98,14 +96,12 @@ class Rewards extends React.Component {
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
-    updated: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
     wobjects: [],
-    updated: false,
   };
 
   state = {
@@ -115,6 +111,8 @@ class Rewards extends React.Component {
     hasMore: false,
     propositions: [],
     sponsors: [],
+    sortHistory: 'reservation',
+    sortMessages: 'inquiryDate',
     sortAll: 'proximity',
     sortEligible: 'proximity',
     sortReserved: 'proximity',
@@ -126,8 +124,22 @@ class Rewards extends React.Component {
     activePayableFilters: [],
     isSearchAreaFilter: false,
     isAssign: false,
+    messagesSponsors: [],
+    messages: [],
     zoomMap: 0,
     fetched: true,
+    activeMessagesFilters: {
+      caseStatus: '',
+      rewards: [],
+      status: [],
+      messagesSponsors: [],
+    },
+    activeHistoryFilters: {
+      caseStatus: '',
+      rewards: [],
+      status: [],
+      messagesSponsors: [],
+    },
   };
 
   componentDidMount() {
@@ -144,15 +156,15 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
-    const { username, match, isFullscreenMode, updated } = this.props;
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards, firstMapLoad }) => {
+    const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     if (!isSecondaryObjectsCards) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
-        updated,
+        firstMapLoad,
       );
     }
   };
@@ -178,6 +190,10 @@ class Rewards extends React.Component {
         return this.setState({ sortEligible: sort });
       case 'reserved':
         return this.setState({ sortReserved: sort });
+      case 'history':
+        return this.setState({ sortHistory: sort });
+      case 'messages':
+        return this.setState({ sortMessages: sort });
       default:
         return this.setState({ sortAll: sort });
     }
@@ -192,6 +208,49 @@ class Rewards extends React.Component {
     }
     this.setState({ loadingCampaigns: true, activeFilters });
   };
+
+  setActiveMessagesFilters = (filterValue, key) => {
+    const { match } = this.props;
+    const filterKey = match.params.filterKey;
+    const activeFilters =
+      filterKey === 'history' ? this.state.activeHistoryFilters : this.state.activeMessagesFilters;
+    switch (key) {
+      case 'rewards':
+      case 'messagesSponsors':
+        if (includes(activeFilters[key], filterValue)) {
+          remove(activeFilters[key], f => f === filterValue);
+        } else {
+          activeFilters[key].push(filterValue);
+        }
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
+        break;
+      case 'caseStatus':
+        if (activeFilters[key] === filterValue) {
+          activeFilters[key] = '';
+        } else {
+          activeFilters[key] = filterValue;
+        }
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
+        break;
+      default:
+        break;
+    }
+    this.setState(
+      filterKey === 'history'
+        ? { loadingCampaigns: true, activeHistoryFilters: activeFilters }
+        : { loadingCampaigns: true, activeMessagesFilters: activeFilters },
+    );
+  };
+
+  setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
 
   setPayablesFilterValue = filterValue => {
     let activeFilters = [...this.state.activePayableFilters];
@@ -223,7 +282,7 @@ class Rewards extends React.Component {
   getPropositions = (
     { username, match, area, sort, radius, activeFilters, limit },
     isMap,
-    updated,
+    firstMapLoad,
   ) => {
     this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
@@ -237,7 +296,7 @@ class Rewards extends React.Component {
         types: activeFilters.types,
         limit,
         simplified: !!isMap,
-        firstMapLoad: !!isMap && !updated,
+        firstMapLoad: !!isMap && firstMapLoad,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -259,7 +318,7 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       }
-      if (!!isMap && !updated) {
+      if (isMap && firstMapLoad) {
         const zoomMap = getZoom(data.radius);
         this.setState({
           zoomMap,
@@ -344,7 +403,7 @@ class Rewards extends React.Component {
     this.state.propositions.map(proposition => {
       const updatedProposition = proposition;
       // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition._id === propsId) {
+      if (updatedProposition._id && updatedProposition._id === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
             updatedProposition.objects[index].assigned = isAssign;
@@ -352,6 +411,8 @@ class Rewards extends React.Component {
             updatedProposition.objects[index].assigned = null;
           }
         });
+      } else {
+        return updatedProposition;
       }
       // eslint-disable-next-line no-underscore-dangle
       if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
@@ -368,6 +429,7 @@ class Rewards extends React.Component {
     unreservationPermlink,
     reservationPermlink,
     requiredObjectName,
+    type,
   }) => {
     this.setState({ loadingAssignDiscard: true });
     return this.props
@@ -379,6 +441,7 @@ class Rewards extends React.Component {
         unreservationPermlink,
         reservationPermlink,
         requiredObjectName,
+        type,
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
@@ -397,13 +460,39 @@ class Rewards extends React.Component {
   };
   // END Propositions
 
-  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
+  campaignsLayoutWrapLayout = (
+    IsRequiredObjectWrap,
+    filterKey,
+    userName,
+    match,
+    messages,
+    getHistory,
+  ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
+    const propositionsUniq = match.params.campaignParent
+      ? propositions
+      : uniqBy(propositions, 'required_object._id');
+    const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
+
+    const getMessageHistory = async () => {
+      try {
+        const activeFilters =
+          filterKey === 'history'
+            ? this.state.activeHistoryFilters
+            : this.state.activeMessagesFilters;
+        const sortChanged =
+          filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
+
+        await getHistory(userName, sortChanged, activeFilters, false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     const { intl, user } = this.props;
-    if (size(propositions) !== 0) {
+    if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
-          propositions,
+          actualPropositions,
           proposition =>
             proposition &&
             proposition.required_object && (
@@ -417,7 +506,7 @@ class Rewards extends React.Component {
         );
       }
 
-      return map(propositions, proposition =>
+      return map(actualPropositions, proposition =>
         map(
           proposition.objects,
           wobj =>
@@ -437,11 +526,13 @@ class Rewards extends React.Component {
                 history={this.props.history}
                 isAssign={isAssign}
                 user={user}
+                match={this.props.match}
+                getMessageHistory={getMessageHistory}
               />
             ),
         ),
       );
-    } else if (!fetched && isEmpty(propositions)) {
+    } else if (!fetched && isEmpty(actualPropositions)) {
       return `${intl.formatMessage({
         id: 'noProposition',
         defaultMessage: `No reward matches the criteria`,
@@ -558,15 +649,22 @@ class Rewards extends React.Component {
       sort,
       loadingCampaigns,
       zoomMap,
+      messagesSponsors,
       fetched,
       area,
       radius,
       sortEligible,
       sortAll,
       sortReserved,
+      activeMessagesFilters,
+      activeHistoryFilters,
+      sortHistory,
+      sortMessages,
+      loadingAssignDiscard,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
-    const IsRequiredObjectWrap = !match.params.campaignParent;
+    const IsRequiredObjectWrap =
+      !match.params.campaignParent && match.params.filterKey !== 'history';
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate =
@@ -596,6 +694,7 @@ class Rewards extends React.Component {
       sort,
       handleSortChange: this.handleSortChange,
       loadingCampaigns,
+      loadingAssignDiscard,
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
@@ -613,6 +712,13 @@ class Rewards extends React.Component {
       sortEligible,
       sortAll,
       sortReserved,
+      activeMessagesFilters,
+      activeHistoryFilters,
+      setMessagesSponsors: this.setMessagesSponsors,
+      messagesSponsors,
+      sortHistory,
+      sortMessages,
+      setActiveMessagesFilters: this.setActiveMessagesFilters,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
@@ -673,29 +779,39 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(userLocation) && !isCreate && (
-                    <MapWrap
-                      setMapArea={this.setMapArea}
-                      userLocation={userLocation}
-                      wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                      match={match}
-                      primaryObjectCoordinates={primaryObjectCoordinates}
-                      zoomMap={zoomMap}
-                    />
-                  )}
-                  {!isEmpty(sponsors) && !isCreate && (
-                    <RewardsFiltersPanel
-                      campaignsTypes={campaignsTypes}
-                      sponsors={sponsors}
-                      activeFilters={activeFilters}
-                      activePayableFilters={activePayableFilters}
-                      setFilterValue={this.setFilterValue}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
-                      location={location}
-                    />
-                  )}
+                  {!isEmpty(userLocation) &&
+                    !isCreate &&
+                    match.params.filterKey !== 'history' &&
+                    match.params.filterKey !== 'messages' && (
+                      <MapWrap
+                        setMapArea={this.setMapArea}
+                        userLocation={userLocation}
+                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                        match={match}
+                        primaryObjectCoordinates={primaryObjectCoordinates}
+                        zoomMap={zoomMap}
+                      />
+                    )}
+                  {(!isEmpty(sponsors) ||
+                    match.params.filterKey === 'history' ||
+                    match.params.filterKey === 'messages') &&
+                    !isCreate && (
+                      <RewardsFiltersPanel
+                        campaignsTypes={campaignsTypes}
+                        sponsors={sponsors}
+                        activeFilters={activeFilters}
+                        activePayableFilters={activePayableFilters}
+                        setFilterValue={this.setFilterValue}
+                        setPayablesFilterValue={this.setPayablesFilterValue}
+                        location={location}
+                        activeMessagesFilters={activeMessagesFilters}
+                        activeHistoryFilters={activeHistoryFilters}
+                        messagesSponsors={messagesSponsors}
+                        setActiveMessagesFilters={this.setActiveMessagesFilters}
+                      />
+                    )}
                 </div>
               </Affix>
             )}

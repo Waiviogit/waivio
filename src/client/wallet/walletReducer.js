@@ -1,4 +1,4 @@
-import { get, uniqBy, slice, filter, concat, last, uniqWith, isEqual } from 'lodash';
+import { get, slice, filter, concat, last, uniqWith, isEqual } from 'lodash';
 import * as walletActions from './walletActions';
 import { actionsFilter, ACTIONS_DISPLAY_LIMIT } from '../helpers/accountHistoryHelper';
 
@@ -25,6 +25,8 @@ const initialState = {
   hasMoreGuestActions: false,
   transactionsHistoryLoading: false,
   withdrawOpen: false,
+  isErrorLoading: false,
+  operationNum: null,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -115,6 +117,7 @@ export default function walletReducer(state = initialState, action) {
           [usernameKey]: action.payload.transactionsHistory,
         },
         hasMore: action.payload.hasMore,
+        operationNum: action.payload.operationNum,
         transactionsHistoryLoading: false,
       };
     }
@@ -136,7 +139,9 @@ export default function walletReducer(state = initialState, action) {
           ),
         },
         hasMore: action.payload.hasMore,
+        operationNum: action.payload.operationNum,
         loadingMoreTransactions: false,
+        getIsErrorLoading: false,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.ERROR:
@@ -161,16 +166,16 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         usersTransactions: {
           ...state.usersTransactions,
-          [usernameKey]: uniqBy(
+          [usernameKey]: uniqWith(
             userCurrentWalletTransactions.concat(action.payload.userWalletTransactions),
-            'actionCount',
+            isEqual,
           ),
         },
         usersAccountHistory: {
           ...state.usersAccountHistory,
-          [usernameKey]: uniqBy(
+          [usernameKey]: uniqWith(
             userCurrentAccountHistory.concat(action.payload.userAccountHistory),
-            'actionCount',
+            isEqual,
           ),
         },
         hasMoreGuestActions: action.payload.hasMoreGuestActions,
@@ -252,6 +257,11 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         withdrawOpen: false,
       };
+    case walletActions.GET_ERROR_LOADING_TRANSACTIONS:
+      return {
+        ...state,
+        isErrorLoading: true,
+      };
     default:
       return state;
   }
@@ -285,3 +295,5 @@ export const getCurrentDisplayedActions = state => state.currentDisplayedActions
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
 export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
+export const getIsErrorLoading = state => state.isErrorLoading;
+export const getOperationNum = state => state.operationNum;

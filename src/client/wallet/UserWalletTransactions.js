@@ -30,6 +30,7 @@ class UserWalletTransactions extends React.Component {
     intl: PropTypes.shape({
       formatMessage: PropTypes.func.isRequired,
     }).isRequired,
+    isErrorLoading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -39,6 +40,7 @@ class UserWalletTransactions extends React.Component {
     getMoreUserTransactionHistory: () => {},
     demoTransactions: [],
     actions: [],
+    isErrorLoading: false,
   };
 
   state = {
@@ -60,7 +62,7 @@ class UserWalletTransactions extends React.Component {
   handleLoadMore = () => {
     const { currentUsername } = this.props;
     let skip = 0;
-    const limit = 50;
+    const limit = 10;
     if (this.isGuestPage()) {
       if (this.props.actions.length >= limit) {
         skip = this.props.actions.length;
@@ -77,6 +79,16 @@ class UserWalletTransactions extends React.Component {
   toggleDetailsModal = () =>
     this.setState(prevState => ({ isOpenDetailsModal: !prevState.isOpenDetailsModal }));
 
+  getTransactionStatus = () => {
+    const { transferDetails } = this.state;
+
+    if (transferDetails.status && transferDetails.status === 'success') {
+      return transferDetails.confirmed ? transferDetails.status : 'pending';
+    }
+
+    return transferDetails.status;
+  };
+
   render() {
     const {
       currentUsername,
@@ -87,6 +99,7 @@ class UserWalletTransactions extends React.Component {
       demoHasMoreActions,
       demoTransactions,
       intl,
+      isErrorLoading,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
 
@@ -99,9 +112,11 @@ class UserWalletTransactions extends React.Component {
             elementIsScrollable={false}
             threshold={500}
             loader={
-              <div className="UserWalletTransactions__loader">
-                <Loading />
-              </div>
+              !isErrorLoading && (
+                <div className="UserWalletTransactions__loader">
+                  <Loading />
+                </div>
+              )
             }
           >
             <div />
@@ -147,17 +162,19 @@ class UserWalletTransactions extends React.Component {
                   defaultMessage: 'Transaction State',
                 })}
               </div>
-              <div>{upperFirst(transferDetails.status)}</div>
+              <div>{upperFirst(this.getTransactionStatus())}</div>
             </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'time_local',
-                  defaultMessage: 'Time (local)',
-                })}
+            {transferDetails.confirmed && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'time_local',
+                    defaultMessage: 'Time (local)',
+                  })}
+                </div>
+                <div>{moment(transferDetails.confirmed).format('MMMM Do YYYY, h:mm:ss a')}</div>
               </div>
-              <div>{moment(transferDetails.confirmed).format('MMMM Do YYYY, h:mm:ss a')}</div>
-            </div>
+            )}
             <div className="UserWalletTransactions__modal-row">
               <div className="UserWalletTransactions__modal-subtitle">
                 {intl.formatMessage({
@@ -165,19 +182,21 @@ class UserWalletTransactions extends React.Component {
                   defaultMessage: 'Send Amount',
                 })}
               </div>
-              <div>{transferDetails.amount} HIVE</div>
+              <div>{transferDetails.amount || transferDetails.sendAmount} HIVE</div>
             </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'receive_amount',
-                  defaultMessage: 'Receive Amount',
-                })}
+            {transferDetails.outputAmount && transferDetails.outputCoinType && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'receive_amount',
+                    defaultMessage: 'Receive Amount',
+                  })}
+                </div>
+                <div>{`${
+                  transferDetails.outputAmount
+                } ${transferDetails.outputCoinType.toUpperCase()}`}</div>
               </div>
-              <div>{`${
-                transferDetails.outputAmount
-              } ${transferDetails.outputCoinType.toUpperCase()}`}</div>
-            </div>
+            )}
             <div className="UserWalletTransactions__modal-row">
               <div className="UserWalletTransactions__modal-subtitle">
                 {intl.formatMessage({
@@ -185,44 +204,52 @@ class UserWalletTransactions extends React.Component {
                   defaultMessage: 'Receive Address',
                 })}
               </div>
-              <div>{transferDetails.address}</div>
+              <div>{transferDetails.address || transferDetails.receiveAddress}</div>
             </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'deposit_account',
-                  defaultMessage: 'Deposit account',
-                })}
+            {transferDetails.account && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'deposit_account',
+                    defaultMessage: 'Deposit account',
+                  })}
+                </div>
+                <div>{transferDetails.account}</div>
               </div>
-              <div>{transferDetails.account}</div>
-            </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'deposit_transaction_hash',
-                  defaultMessage: 'Deposit Transaction Hash',
-                })}
+            )}
+            {transferDetails.transactionHash && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'deposit_transaction_hash',
+                    defaultMessage: 'Deposit Transaction Hash',
+                  })}
+                </div>
+                <div>{transferDetails.transactionHash}</div>
               </div>
-              <div>{transferDetails.transactionHash}</div>
-            </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'deposit_usd_value',
-                  defaultMessage: 'Deposit USD Value',
-                })}
+            )}
+            {transferDetails.usdValue && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'deposit_usd_value',
+                    defaultMessage: 'Deposit USD Value',
+                  })}
+                </div>
+                <div>{transferDetails.usdValue}</div>
               </div>
-              <div>{transferDetails.usdValue}</div>
-            </div>
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'memo',
-                  defaultMessage: 'Memo',
-                })}
+            )}
+            {transferDetails.memo && (
+              <div className="UserWalletTransactions__modal-row">
+                <div className="UserWalletTransactions__modal-subtitle">
+                  {intl.formatMessage({
+                    id: 'memo',
+                    defaultMessage: 'Memo',
+                  })}
+                </div>
+                <div>{transferDetails.memo}</div>
               </div>
-              <div>{transferDetails.memo}</div>
-            </div>
+            )}
           </Modal>
         )}
       </React.Fragment>

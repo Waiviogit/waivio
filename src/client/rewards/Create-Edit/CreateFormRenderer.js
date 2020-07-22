@@ -364,24 +364,21 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.minExpertise.label}>
           {getFieldDecorator(fields.minExpertise.name, {
             rules: fields.minExpertise.rules,
-            initialValue: minExpertise,
-          })(<Input type="number" disabled={disabled} />)}
+          })(<Input type="number" placeholder={minExpertise} disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.minExpertise.caption}</div>
         </Form.Item>
 
         <Form.Item label={fields.minFollowers.label}>
           {getFieldDecorator(fields.minFollowers.name, {
             rules: fields.minFollowers.rules,
-            initialValue: minFollowers,
-          })(<Input type="number" disabled={disabled} />)}
+          })(<Input type="number" placeholder={minFollowers} disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.minFollowers.caption}</div>
         </Form.Item>
 
         <Form.Item label={fields.minPosts.label}>
           {getFieldDecorator(fields.minPosts.name, {
             rules: fields.minPosts.rules,
-            initialValue: minPosts,
-          })(<Input type="number" disabled={disabled} />)}
+          })(<Input type="number" placeholder={minPosts} disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.minPosts.caption}</div>
         </Form.Item>
 
