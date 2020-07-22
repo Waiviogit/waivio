@@ -134,6 +134,12 @@ class Rewards extends React.Component {
       status: [],
       messagesSponsors: [],
     },
+    activeHistoryFilters: {
+      caseStatus: '',
+      rewards: [],
+      status: [],
+      messagesSponsors: [],
+    },
   };
 
   componentDidMount() {
@@ -204,7 +210,10 @@ class Rewards extends React.Component {
   };
 
   setActiveMessagesFilters = (filterValue, key) => {
-    const activeFilters = this.state.activeMessagesFilters;
+    const { match } = this.props;
+    const filterKey = match.params.filterKey;
+    const activeFilters =
+      filterKey === 'history' ? this.state.activeHistoryFilters : this.state.activeMessagesFilters;
     switch (key) {
       case 'rewards':
       case 'messagesSponsors':
@@ -213,7 +222,11 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key].push(filterValue);
         }
-        this.setState({ activeMessagesFilters: activeFilters });
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
         break;
       case 'caseStatus':
         if (activeFilters[key] === filterValue) {
@@ -221,12 +234,20 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key] = filterValue;
         }
-        this.setState({ activeMessagesFilters: activeFilters });
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
         break;
       default:
         break;
     }
-    this.setState({ loadingCampaigns: true, activeMessagesFilters: activeFilters });
+    this.setState(
+      filterKey === 'history'
+        ? { loadingCampaigns: true, activeHistoryFilters: activeFilters }
+        : { loadingCampaigns: true, activeMessagesFilters: activeFilters },
+    );
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
@@ -455,7 +476,10 @@ class Rewards extends React.Component {
 
     const getMessageHistory = async () => {
       try {
-        const activeFilters = this.state.activeMessagesFilters;
+        const activeFilters =
+          filterKey === 'history'
+            ? this.state.activeHistoryFilters
+            : this.state.activeMessagesFilters;
         const sortChanged =
           filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
 
@@ -633,6 +657,7 @@ class Rewards extends React.Component {
       sortAll,
       sortReserved,
       activeMessagesFilters,
+      activeHistoryFilters,
       sortHistory,
       sortMessages,
       loadingAssignDiscard,
@@ -688,6 +713,7 @@ class Rewards extends React.Component {
       sortAll,
       sortReserved,
       activeMessagesFilters,
+      activeHistoryFilters,
       setMessagesSponsors: this.setMessagesSponsors,
       messagesSponsors,
       sortHistory,
@@ -781,6 +807,7 @@ class Rewards extends React.Component {
                         setPayablesFilterValue={this.setPayablesFilterValue}
                         location={location}
                         activeMessagesFilters={activeMessagesFilters}
+                        activeHistoryFilters={activeHistoryFilters}
                         messagesSponsors={messagesSponsors}
                         setActiveMessagesFilters={this.setActiveMessagesFilters}
                       />
