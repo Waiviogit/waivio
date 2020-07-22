@@ -104,7 +104,10 @@ class MapOS extends React.Component {
       const firstMapLoad = true;
       this.updateMap(firstMapLoad);
     }
-    if ((prevState.zoom !== zoom && prevState.zoom !== 0) || !isEqual(prevState.center, center)) {
+    if (
+      (prevState.zoom !== zoom && prevState.zoom !== 0) ||
+      (!isEqual(prevState.center, center) && isEqual(prevProps.match, this.props.match))
+    ) {
       this.updateMap();
     }
   }

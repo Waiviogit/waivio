@@ -81,7 +81,7 @@ const FilteredRewardsList = props => {
           defaultMessage: 'Reservation',
         },
         {
-          key: 'inquiryDate',
+          key: 'lastAction',
           id: 'action_date',
           defaultMessage: 'Action (date)',
         },

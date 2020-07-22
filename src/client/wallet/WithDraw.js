@@ -212,15 +212,13 @@ const Withdraw = ({
                 debounceAmountHive(e.currentTarget.value);
               }}
               type="number"
-              className="Withdraw__input-text"
+              className="Withdraw__input-text Withdraw__input-text--send-input"
               step="any"
               value={hiveAmount}
             />
-            <div className="Withdraw__switcher-wrapper">
-              <span className="Withdraw__switcher-button Withdraw__switcher-button--active">
-                HIVE
-              </span>
-            </div>
+            <span className="Withdraw__switcher-button Withdraw__switcher-button--active">
+              HIVE
+            </span>
           </div>
           <div className="Withdraw__subtitle">
             <FormattedMessage
