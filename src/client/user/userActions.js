@@ -276,7 +276,7 @@ export const rejectReview = ({
       author: companyAuthor,
       permlink: createCommentPermlink(username, reservationPermlink),
       title: 'Reject review',
-      body: `<p>Sponsor ${username} (@${username}) has rejected the review `,
+      body: `Sponsor ${username} (@${username}) has rejected the review `,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
