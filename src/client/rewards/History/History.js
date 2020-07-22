@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { map, findKey, partial, isEqual, uniq } from 'lodash';
+import { map, uniq } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
@@ -34,9 +34,8 @@ const History = ({
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
       const rewards = map(activeFilters.rewards, item =>
-        findKey(REWARDS_TYPES_MESSAGES, partial(isEqual, item)),
+        Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
       );
-
       try {
         const requestData = {
           onlyWithMessages: true,
