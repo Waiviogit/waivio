@@ -25,6 +25,7 @@ const initialState = {
   hasMoreGuestActions: false,
   transactionsHistoryLoading: false,
   withdrawOpen: false,
+  isErrorLoading: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -137,6 +138,7 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMore: action.payload.hasMore,
         loadingMoreTransactions: false,
+        getIsErrorLoading: false,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.ERROR:
@@ -252,6 +254,11 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         withdrawOpen: false,
       };
+    case walletActions.GET_ERROR_LOADING_TRANSACTIONS:
+      return {
+        ...state,
+        isErrorLoading: true,
+      };
     default:
       return state;
   }
@@ -285,3 +292,4 @@ export const getCurrentDisplayedActions = state => state.currentDisplayedActions
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
 export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
+export const getIsErrorLoading = state => state.isErrorLoading;
