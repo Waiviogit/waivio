@@ -286,7 +286,7 @@ const Comments = ({
                 'Comment__replies--never-indent': depth >= 5,
               })}
             >
-              {children && (
+              {Boolean(children) && (
                 <Comments
                   {...{
                     intl,
