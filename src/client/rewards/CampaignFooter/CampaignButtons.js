@@ -15,12 +15,14 @@ import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists } from '../rewardsActions';
+import { changeBlackAndWhiteLists, setDataForSingleReport } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
+import { getReport } from '../../../waivioApi/ApiClient';
+import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
-@connect(null, { rejectReview, changeBlackAndWhiteLists })
+@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -44,6 +46,7 @@ export default class CampaignButtons extends React.Component {
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
+    setDataForSingleReport: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -72,6 +75,7 @@ export default class CampaignButtons extends React.Component {
       reactionsModalVisible: false,
       loadingEdit: false,
       visible: false,
+      isModalReportOpen: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -262,6 +266,23 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
+    const toggleModalReport = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const requestParams = {
+        guideName: proposition.guideName,
+        userName,
+        reservationPermlink,
+      };
+      getReport(requestParams)
+        .then(data => {
+          this.props.setDataForSingleReport(data);
+        })
+        .then(() => this.setState({ isModalReportOpen: !this.state.isModalReportOpen }))
+        .catch(() => console.log(e));
+    };
+
+    const closeModalReport = () => this.setState({ isModalReportOpen: false });
 
     return (
       <Popover
@@ -300,18 +321,22 @@ export default class CampaignButtons extends React.Component {
                     case 'show_report':
                       return (
                         <PopoverMenuItem key={item.key}>
-                          <Link
-                            to={
-                              match.params.filterKey === 'messages'
-                                ? `/rewards/payables/@${propositionUserName}/${reservationPermlink}`
-                                : `/rewards/receivables/@${proposition.guideName}/${reservationPermlink}`
-                            }
+                          <div
+                            className="PaymentTable__report"
+                            onClick={toggleModalReport}
+                            role="presentation"
                           >
-                            {intl.formatMessage({
-                              id: item.id,
-                              defaultMessage: item.defaultMessage,
-                            })}
-                          </Link>
+                            <span>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </span>
+                          </div>
+                          <Report
+                            isModalReportOpen={this.state.isModalReportOpen}
+                            toggleModal={closeModalReport}
+                          />
                         </PopoverMenuItem>
                       );
                     case 'reject_review':
@@ -392,13 +417,13 @@ export default class CampaignButtons extends React.Component {
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
-          <div>
+          <div className="Buttons__wrap-text">
             {intl.formatMessage({
               id: this.buttonsTitle.id,
               defaultMessage: this.buttonsTitle.defaultMessage,
             })}
             {this.buttonsTitle.defaultMessage === 'Reserved' &&
-              `- ${daysLeft} ${intl.formatMessage({
+              ` - ${daysLeft} ${intl.formatMessage({
                 id: 'campaign_buttons_days_left',
                 defaultMessage: 'days left',
               })} `}
@@ -432,7 +457,7 @@ export default class CampaignButtons extends React.Component {
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
-              {propositionUserName}
+              <Link to={`/@${propositionUserName}`}>{propositionUserName}</Link>
             </div>
             <WeightTag weight={propositionUserWeight} />
           </div>

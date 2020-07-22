@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
+import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
 const RewardsFiltersPanel = ({
@@ -16,6 +17,7 @@ const RewardsFiltersPanel = ({
   intl,
   location,
   activeMessagesFilters,
+  activeHistoryFilters,
   messagesSponsors,
   setActiveMessagesFilters,
 }) => {
@@ -58,7 +60,7 @@ const RewardsFiltersPanel = ({
   const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
     () => ({
       campaignsTypesMessages: ['all', 'open', 'close'],
-      rewardsTypesMessages: ['assigned', 'unassigned', 'completed', 'rejected', 'expired'],
+      rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
       sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
     }),
     [sponsors, messagesSponsors, location.pathname],
@@ -118,8 +120,17 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' || location.pathname === '/rewards/history' ? (
+        {location.pathname === '/rewards/messages' && (
           <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'case_status',
+                defaultMessage: 'Case status',
+              })}:`}
+            </div>
+            {map(campaignsTypesMessages, type =>
+              filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
+            )}
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
                 id: 'mobnav_rewards',
@@ -129,31 +140,33 @@ const RewardsFiltersPanel = ({
             {map(rewardsTypesMessages, type =>
               filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
             )}
-            <div className="RewardsFiltersPanel__title-text">
-              {location.pathname === '/rewards/messages'
-                ? intl.formatMessage({
-                    id: 'case_status',
-                    defaultMessage: 'Case status',
-                  })
-                : intl.formatMessage({
-                    id: 'sponsors',
-                    defaultMessage: 'Sponsors',
-                  })}
-            </div>
-            {location.pathname === '/rewards/messages'
-              ? map(campaignsTypesMessages, type =>
-                  filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
-                )
-              : map(sponsorsData, sponsor =>
-                  filterLayout(
-                    sponsor,
-                    'messagesSponsors',
-                    includes(activeMessagesFilters.messagesSponsors, sponsor),
-                  ),
-                )}
           </React.Fragment>
-        ) : (
-          ''
+        )}
+        {location.pathname === '/rewards/history' && (
+          <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeHistoryFilters.rewards, type)),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {intl.formatMessage({
+                id: 'sponsors',
+                defaultMessage: 'Sponsors',
+              })}
+            </div>
+            {map(sponsorsData, sponsor =>
+              filterLayout(
+                sponsor,
+                'messagesSponsors',
+                includes(activeHistoryFilters.messagesSponsors, sponsor),
+              ),
+            )}
+          </React.Fragment>
         )}
       </div>
     </div>
@@ -165,6 +178,7 @@ RewardsFiltersPanel.propTypes = {
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
   activeMessagesFilters: PropTypes.shape(),
+  activeHistoryFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
@@ -179,6 +193,7 @@ RewardsFiltersPanel.defaultProps = {
   campaignsTypes: [],
   activeFilters: {},
   activeMessagesFilters: {},
+  activeHistoryFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);

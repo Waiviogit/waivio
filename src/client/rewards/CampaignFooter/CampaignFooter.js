@@ -113,12 +113,10 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition, match } = this.props;
-    const author = get(proposition, ['objects', '0', 'author']);
-    const permlink = get(proposition, ['objects', '0', 'permlink']);
+    const author = get(proposition, ['users', '0', 'name']);
+    const permlink = get(proposition, ['users', '0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
-        this.setState({ currentPost: res }),
-      );
+      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     // eslint-disable-next-line react/no-did-mount-set-state
@@ -335,7 +333,7 @@ class CampaignFooter extends React.Component {
             getMessageHistory={getMessageHistory}
           />
         )}
-        {!singlePostVew && isComment && !hasComments && match.params.filterKey !== 'history' && (
+        {!singlePostVew && isComment && !hasComments && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}

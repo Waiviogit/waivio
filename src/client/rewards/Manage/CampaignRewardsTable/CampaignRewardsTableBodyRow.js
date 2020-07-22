@@ -22,7 +22,10 @@ const CampaignRewardsTableRow = ({
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
-  const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
+  const isChecked =
+    currentItem.status === 'active' ||
+    currentItem.status === 'payed' ||
+    currentItem.status === 'reachedLimit';
   const isInactive =
     currentItem.status === 'inactive' ||
     currentItem.status === 'expired' ||

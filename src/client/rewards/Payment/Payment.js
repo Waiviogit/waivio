@@ -31,7 +31,7 @@ const Payment = ({
   const { reservationPermlink } = match.params;
 
   const getRequestParams = () => {
-    if (reservationPermlink && includes(match.path, 'payables')) {
+    if (reservationPermlink || includes(match.path, 'payables')) {
       return {
         sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
         user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
@@ -63,7 +63,7 @@ const Payment = ({
 
   let titleName;
   let isPayables;
-  if (match.path === '/rewards/payables/@:userName') {
+  if (includes(match.path, 'payables')) {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',
       defaultMessage: 'Payables',
