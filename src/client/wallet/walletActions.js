@@ -247,6 +247,7 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
           username,
           transactionsHistory: data.wallet,
           hasMore: data.hasMore,
+          operationNum: data.operationNum,
         }))
         .catch(error => console.log(error)),
     },
@@ -259,11 +260,15 @@ export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
       promise: getTransferHistory(username, skip, limit)
-        .then(data => ({
-          username,
-          transactionsHistory: data.wallet,
-          hasMore: data.hasMore,
-        }))
+        .then(data => {
+          console.log(data);
+          return {
+            username,
+            transactionsHistory: data.wallet,
+            hasMore: data.hasMore,
+            operationNum: data.operationNum,
+          };
+        })
         .catch(error => {
           console.log(error);
           return dispatch({

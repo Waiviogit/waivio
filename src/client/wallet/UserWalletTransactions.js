@@ -31,6 +31,7 @@ class UserWalletTransactions extends React.Component {
       formatMessage: PropTypes.func.isRequired,
     }).isRequired,
     isErrorLoading: PropTypes.bool,
+    // operationNum: PropTypes.number,
   };
 
   static defaultProps = {
@@ -41,6 +42,7 @@ class UserWalletTransactions extends React.Component {
     demoTransactions: [],
     actions: [],
     isErrorLoading: false,
+    operationNum: null,
   };
 
   state = {

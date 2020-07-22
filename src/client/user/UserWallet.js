@@ -14,6 +14,7 @@ import {
   getIsErrorLoading,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
+  getOperationNum,
   getScreenSize,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -57,6 +58,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
     isErrorLoading: getIsErrorLoading(state),
+    operationNum: getOperationNum(state),
   }),
   {
     getGlobalProperties,
@@ -92,6 +94,7 @@ class Wallet extends Component {
     getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
     isErrorLoading: PropTypes.bool,
+    operationNum: PropTypes.number,
   };
 
   static defaultProps = {
@@ -103,6 +106,7 @@ class Wallet extends Component {
     getMoreUserTransactionHistory: () => {},
     ownPage: false,
     isErrorLoading: false,
+    operationNum: null,
   };
 
   componentDidMount() {
@@ -150,6 +154,7 @@ class Wallet extends Component {
       usersTransactions,
       usersAccountHistory,
       isErrorLoading,
+      operationNum,
     } = this.props;
 
     const userKey = user.name;
@@ -186,6 +191,7 @@ class Wallet extends Component {
         demoHasMoreActions={demoHasMoreActions}
         actions={actions}
         isErrorLoading={isErrorLoading}
+        operationNum={operationNum}
       />
     );
 

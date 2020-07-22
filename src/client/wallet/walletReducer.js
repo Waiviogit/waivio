@@ -26,6 +26,7 @@ const initialState = {
   transactionsHistoryLoading: false,
   withdrawOpen: false,
   isErrorLoading: false,
+  operationNum: null,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -116,6 +117,7 @@ export default function walletReducer(state = initialState, action) {
           [usernameKey]: action.payload.transactionsHistory,
         },
         hasMore: action.payload.hasMore,
+        operationNum: action.payload.operationNum,
         transactionsHistoryLoading: false,
       };
     }
@@ -137,6 +139,7 @@ export default function walletReducer(state = initialState, action) {
           ),
         },
         hasMore: action.payload.hasMore,
+        operationNum: action.payload.operationNum,
         loadingMoreTransactions: false,
         getIsErrorLoading: false,
       };
@@ -293,3 +296,4 @@ export const getCurrentFilteredActions = state => state.currentFilteredActions;
 export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
 export const getIsErrorLoading = state => state.isErrorLoading;
+export const getOperationNum = state => state.operationNum;
