@@ -533,127 +533,111 @@ export const popoverDataHistory = {
   ],
 };
 
-export const popoverDataMessages = {
-  assigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'release',
-      id: 'campaign_buttons_release',
-      defaultMessage: 'Release reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-    {
-      key: 'delete',
-      id: 'delete_from_blacklist',
-      defaultMessage: 'Delete from blacklist',
-    },
-  ],
-  completed: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'completed',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'completed',
-      id: 'show_report',
-      defaultMessage: 'Show report',
-    },
-    {
-      key: 'reject',
-      id: 'reject_review',
-      defaultMessage: 'Reject review',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-    {
-      key: 'delete',
-      id: 'delete_from_blacklist',
-      defaultMessage: 'Delete from blacklist',
-    },
-  ],
-  rejected: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'rejected',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'rejected',
-      id: 'rejection_note',
-      defaultMessage: 'Rejection note',
-    },
-    {
-      key: 'reinstate',
-      id: 'reinstate_reward',
-      defaultMessage: 'Reinstate reward',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-    {
-      key: 'delete',
-      id: 'delete_from_blacklist',
-      defaultMessage: 'Delete from blacklist',
-    },
-  ],
-  expired: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-    {
-      key: 'delete',
-      id: 'delete_from_blacklist',
-      defaultMessage: 'Delete from blacklist',
-    },
-  ],
-  unassigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-    {
-      key: 'delete',
-      id: 'delete_from_blacklist',
-      defaultMessage: 'Delete from blacklist',
-    },
-  ],
+export const getPopoverDataMessages = ({ propositionStatus, isUserInBlacklist }) => {
+  switch (propositionStatus) {
+    case 'assigned':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'release',
+          id: 'campaign_buttons_release',
+          defaultMessage: 'Release reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'completed':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'completed',
+          id: 'open_review',
+          defaultMessage: 'Open review',
+        },
+        {
+          key: 'completed',
+          id: 'show_report',
+          defaultMessage: 'Show report',
+        },
+        {
+          key: 'reject',
+          id: 'reject_review',
+          defaultMessage: 'Reject review',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'rejected':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'rejected',
+          id: 'open_review',
+          defaultMessage: 'Open review',
+        },
+        {
+          key: 'rejected',
+          id: 'rejection_note',
+          defaultMessage: 'Rejection note',
+        },
+        {
+          key: 'reinstate',
+          id: 'reinstate_reward',
+          defaultMessage: 'Reinstate reward',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'expired':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'unassigned':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    default:
+      return {};
+  }
 };
 
 export const buttonsTitle = {

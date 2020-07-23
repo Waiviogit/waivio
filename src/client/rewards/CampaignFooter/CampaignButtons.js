@@ -10,7 +10,7 @@ import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
+import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview } from '../../user/userActions';
@@ -224,8 +224,9 @@ export default class CampaignButtons extends React.Component {
 
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
+    const { isUserInBlacklist } = this.state;
     if (match.params.filterKey === 'messages') {
-      return popoverDataMessages[propositionStatus] || [];
+      return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
   };
