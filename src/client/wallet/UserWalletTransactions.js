@@ -71,10 +71,7 @@ class UserWalletTransactions extends React.Component {
       }
       this.props.getMoreUserAccountHistory(currentUsername, skip, limit);
     } else {
-      if (this.props.transactions.length >= limit) {
-        skip = this.props.transactions.length;
-      }
-      this.props.getMoreUserTransactionHistory(currentUsername, skip, limit, operationNum);
+      this.props.getMoreUserTransactionHistory(currentUsername, operationNum);
     }
   };
 
