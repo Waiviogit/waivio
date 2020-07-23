@@ -42,7 +42,7 @@ class UserWalletTransactions extends React.Component {
     demoTransactions: [],
     actions: [],
     isErrorLoading: false,
-    operationNum: null,
+    operationNum: undefined,
   };
 
   state = {

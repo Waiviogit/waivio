@@ -1318,19 +1318,19 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 10, operationNum) => {
-  let url = `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`;
-  const number = `&operationNum=${operationNum}`;
-  return new Promise((resolve, reject) => {
-    fetch(operationNum ? url + number : url, {
-      headers,
-      method: 'GET',
-    })
+export const getTransferHistory = (username, skip = 0, limit = 10, operationNum = -1) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}&operationNum=${operationNum}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
 
 export default null;
