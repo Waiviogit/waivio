@@ -12,6 +12,7 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import FilterModal from './FilterModal';
+import { REWARDS_TYPES_MESSAGES, CAMPAIGN_TYPES_MESSAGES } from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
@@ -41,6 +42,8 @@ const FilteredRewardsList = props => {
     location,
     activeMessagesFilters,
     getHistory,
+    activeHistoryFilters,
+    setActiveMessagesFilters,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +55,23 @@ const FilteredRewardsList = props => {
     !match.params.campaignParent &&
     match.params.filterKey !== 'history' &&
     match.params.filterKey !== 'messages';
+
+  const getFiltersForTags = useMemo(() => {
+    if (location === '/rewards/history') {
+      return activeHistoryFilters;
+    } else if (location === '/rewards/messages') {
+      return activeMessagesFilters;
+    }
+    return activeFilters;
+  }, [location, activeHistoryFilters, activeMessagesFilters, activeFilters]);
+
+  const setFilters = useMemo(
+    () =>
+      location === '/rewards/history' || location === '/rewards/messages'
+        ? setActiveMessagesFilters
+        : setFilterValue,
+    [location, setActiveMessagesFilters, setFilterValue],
+  );
 
   const sortRewards = useMemo(() => {
     if (location === '/rewards/messages') {
@@ -146,22 +166,37 @@ const FilteredRewardsList = props => {
           ))}
         </SortSelector>
       )}
-      {!isEmpty(sponsors) && (
+      {(!isEmpty(sponsors) ||
+        match.params.filterKey === 'history' ||
+        match.params.filterKey === 'messages') && (
         <div className="FilteredRewardsList__filters-tags-block">
           <span className="FilteredRewardsList__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
           </span>
-          {map(activeFilters, (filterValues, filterName) =>
-            map(filterValues, filterValue => (
-              <Tag
-                key={`${filterName}:${filterValue}`}
-                closable
-                onClose={() => setFilterValue(filterValue, filterName)}
-              >
-                {filterValue}
-              </Tag>
-            )),
-          )}
+          {map(getFiltersForTags, (filterValues, filterName) => {
+            if (filterName !== 'caseStatus') {
+              return map(filterValues, filterValue => (
+                <Tag
+                  key={`${filterName}:${filterValue}`}
+                  closable
+                  onClose={() => setFilters(filterValue, filterName)}
+                >
+                  {filterValue}
+                </Tag>
+              ));
+            } else if (!isEmpty(filterValues)) {
+              return (
+                <Tag
+                  key={`${filterName}:${filterValues}`}
+                  closable
+                  onClose={() => setFilters(filterValues, filterName)}
+                >
+                  {filterValues}
+                </Tag>
+              );
+            }
+            return null;
+          })}
           <span
             className="FilteredRewardsList__filters-selector underline ttl"
             role="presentation"
@@ -213,7 +248,18 @@ const FilteredRewardsList = props => {
           activeFilters={activeFilters}
           activeMessagesFilters={activeMessagesFilters}
           filters={{ types: campaignsTypes, guideNames: sponsors }}
+          filtersHistory={{
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+            messagesSponsors: sponsors,
+          }}
+          filtersMessages={{
+            caseStatus: CAMPAIGN_TYPES_MESSAGES,
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+          }}
           setFilterValue={setFilterValue}
+          match={match}
+          activeHistoryFilters={activeHistoryFilters}
+          setActiveMessagesFilters={setActiveMessagesFilters}
         />
       </Modal>
     </React.Fragment>
@@ -242,6 +288,8 @@ FilteredRewardsList.defaultProps = {
   userName: '',
   sortHistory: 'reservation',
   sortMessages: 'inquiryDate',
+  activeHistoryFilters: {},
+  setActiveMessagesFilters: () => {},
 };
 
 FilteredRewardsList.propTypes = {
@@ -271,6 +319,8 @@ FilteredRewardsList.propTypes = {
   sortHistory: PropTypes.string,
   sortMessages: PropTypes.string,
   getHistory: PropTypes.func.isRequired,
+  activeHistoryFilters: PropTypes.shape(),
+  setActiveMessagesFilters: PropTypes.func,
 };
 
 export default FilteredRewardsList;

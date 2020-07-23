@@ -20,6 +20,7 @@ const History = ({
   setSortValue,
   sortHistory,
   sortMessages,
+  setActiveMessagesFilters,
 }) => {
   const location = useLocation();
   const isHistory = location.pathname === '/rewards/history';
@@ -104,7 +105,13 @@ const History = ({
     if (hasMore) {
       setLoading(true);
       const sortForFilters = isHistory ? sortHistory : sortMessages;
-      getHistory(userName, sortForFilters, activeMessagesFilters, false, true);
+      getHistory(
+        userName,
+        sortForFilters,
+        isHistory ? activeHistoryFilters : activeMessagesFilters,
+        false,
+        true,
+      );
     }
   };
 
@@ -130,6 +137,8 @@ const History = ({
           userName,
           getHistory,
           handleLoadMore,
+          activeHistoryFilters,
+          setActiveMessagesFilters,
         }}
       />
     </div>

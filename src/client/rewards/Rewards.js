@@ -131,13 +131,9 @@ class Rewards extends React.Component {
     activeMessagesFilters: {
       caseStatus: '',
       rewards: [],
-      status: [],
-      messagesSponsors: [],
     },
     activeHistoryFilters: {
-      caseStatus: '',
       rewards: [],
-      status: [],
       messagesSponsors: [],
     },
   };
