@@ -106,7 +106,7 @@ class Wallet extends Component {
     getMoreUserTransactionHistory: () => {},
     ownPage: false,
     isErrorLoading: false,
-    operationNum: undefined,
+    operationNum: -1,
   };
 
   componentDidMount() {
