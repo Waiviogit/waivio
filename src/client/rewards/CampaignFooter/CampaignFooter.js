@@ -56,6 +56,7 @@ class CampaignFooter extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     getMessageHistory: PropTypes.func,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -75,6 +76,7 @@ class CampaignFooter extends React.Component {
     toggleModalDetails: () => {},
     isComment: false,
     getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -255,6 +257,7 @@ class CampaignFooter extends React.Component {
       match,
       user,
       getMessageHistory,
+      blacklistUsers,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -303,6 +306,7 @@ class CampaignFooter extends React.Component {
               toggleModal={this.toggleModal}
               numberOfComments={numberOfComments}
               getMessageHistory={getMessageHistory}
+              blacklistUsers={blacklistUsers}
             />
           )}
         </div>

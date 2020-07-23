@@ -15,14 +15,14 @@ import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport } from '../rewardsActions';
+import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
-@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport })
+@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -47,6 +47,8 @@ export default class CampaignButtons extends React.Component {
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
     setDataForSingleReport: PropTypes.func.isRequired,
+    getBlacklist: PropTypes.func.isRequired,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -64,6 +66,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -88,7 +91,8 @@ export default class CampaignButtons extends React.Component {
   }
 
   componentDidMount() {
-    this.getIsUserInBlackList();
+    const { blacklistUsers } = this.props;
+    this.getIsUserInBlackList(blacklistUsers);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -169,24 +173,30 @@ export default class CampaignButtons extends React.Component {
       .catch(e => message.error(e.message));
   };
 
-  getIsUserInBlackList = () => {
+  getIsUserInBlackList = blacklistUsers => {
     const { proposition } = this.props;
-    const isUserInBlacklist = includes(
-      proposition.blacklist_users,
-      get(proposition, ['users', '0', 'name']),
-    );
+    const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
     this.setState({ isUserInBlacklist });
     return isUserInBlacklist;
   };
 
   handleChangeBlacklistClick = () => {
     const { proposition } = this.props;
-    const isUserInBlacklist = this.getIsUserInBlackList();
+    const { isUserInBlacklist } = this.state;
     const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
     const idsUsers = [];
     idsUsers.push(get(proposition, ['users', '0', 'name']));
     return this.props
       .changeBlackAndWhiteLists(id, idsUsers)
+      .then(() => {
+        setTimeout(() => {
+          this.props.getBlacklist(proposition.guideName).then(data => {
+            const blacklist = get(data, ['value', 'blackList', 'blackList']);
+            const blacklistNames = map(blacklist, user => user.name);
+            this.getIsUserInBlackList(blacklistNames);
+          });
+        }, 7000);
+      })
       .then(() => {
         this.setState({ isUserInBlacklist: id === 'addUsersToBlackList' });
         message.success(
