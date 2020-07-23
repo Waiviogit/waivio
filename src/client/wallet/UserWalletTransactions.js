@@ -31,6 +31,7 @@ class UserWalletTransactions extends React.Component {
       formatMessage: PropTypes.func.isRequired,
     }).isRequired,
     isErrorLoading: PropTypes.bool,
+    operationNum: PropTypes.number,
   };
 
   static defaultProps = {
@@ -41,6 +42,7 @@ class UserWalletTransactions extends React.Component {
     demoTransactions: [],
     actions: [],
     isErrorLoading: false,
+    operationNum: null,
   };
 
   state = {
@@ -60,7 +62,7 @@ class UserWalletTransactions extends React.Component {
   isGuestPage = () => guestUserRegex.test(this.props.user && this.props.user.name);
 
   handleLoadMore = () => {
-    const { currentUsername } = this.props;
+    const { currentUsername, operationNum } = this.props;
     let skip = 0;
     const limit = 10;
     if (this.isGuestPage()) {
@@ -72,7 +74,7 @@ class UserWalletTransactions extends React.Component {
       if (this.props.transactions.length >= limit) {
         skip = this.props.transactions.length;
       }
-      this.props.getMoreUserTransactionHistory(currentUsername, skip, limit);
+      this.props.getMoreUserTransactionHistory(currentUsername, skip, limit, operationNum);
     }
   };
 
