@@ -188,7 +188,7 @@ export default class CampaignButtons extends React.Component {
     return this.props
       .changeBlackAndWhiteLists(id, idsUsers)
       .then(() => {
-        this.getIsUserInBlackList();
+        this.setState({ isUserInBlacklist: id === 'addUsersToBlackList' });
         message.success(
           this.props.intl.formatMessage(
             isUserInBlacklist
