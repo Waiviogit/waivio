@@ -1318,10 +1318,10 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 10) =>
+export const getTransferHistory = (username, skip = 0, limit = 10, operationNum = -1) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}&operationNum=${operationNum}`,
       {
         headers,
         method: 'GET',
