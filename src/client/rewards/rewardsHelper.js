@@ -550,6 +550,11 @@ export const popoverDataMessages = {
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
     },
+    {
+      key: 'delete',
+      id: 'delete_from_blacklist',
+      defaultMessage: 'Delete from blacklist',
+    },
   ],
   completed: [
     {
@@ -576,6 +581,11 @@ export const popoverDataMessages = {
       key: 'add',
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
+    },
+    {
+      key: 'delete',
+      id: 'delete_from_blacklist',
+      defaultMessage: 'Delete from blacklist',
     },
   ],
   rejected: [
@@ -604,6 +614,11 @@ export const popoverDataMessages = {
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
     },
+    {
+      key: 'delete',
+      id: 'delete_from_blacklist',
+      defaultMessage: 'Delete from blacklist',
+    },
   ],
   expired: [
     {
@@ -616,6 +631,11 @@ export const popoverDataMessages = {
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
     },
+    {
+      key: 'delete',
+      id: 'delete_from_blacklist',
+      defaultMessage: 'Delete from blacklist',
+    },
   ],
   unassigned: [
     {
@@ -627,6 +647,11 @@ export const popoverDataMessages = {
       key: 'add',
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
+    },
+    {
+      key: 'delete',
+      id: 'delete_from_blacklist',
+      defaultMessage: 'Delete from blacklist',
     },
   ],
 };
