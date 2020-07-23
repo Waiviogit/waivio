@@ -226,6 +226,7 @@ export default class MediumDraftEditor extends React.Component {
           }),
         ),
       );
+      console.log('this.state.editorState: ', this.state.editorState.toJS());
     });
     return 'handled';
   };
