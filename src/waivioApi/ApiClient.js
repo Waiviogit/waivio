@@ -839,10 +839,18 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
         };
       }
       if (!globalReport) {
-        preparedObject = {
-          userName: user || sponsor,
-        };
-        if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
+        if (sponsor) {
+          preparedObject = {
+            sponsor: sponsor,
+          };
+        } else {
+          preparedObject = {
+            userName: user,
+          };
+        }
+
+        if (obj.days || obj.moreDays || obj.otherDays)
+          preparedObject.days = obj.days || obj.moreDays || obj.otherDays;
         if (obj.payable) preparedObject.payable = obj.payable;
       }
       return preparedObject;

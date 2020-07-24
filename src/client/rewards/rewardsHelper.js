@@ -309,23 +309,49 @@ export const getProcessingFee = data => {
   }
 };
 
-export const payablesFilterData = location => [
-  {
-    filterName: 'days',
-    value: location.pathname === '/rewards/payables' ? 7 : 15,
-    defaultMessage: `Over {value} days`,
-  },
-  {
-    filterName: 'moreDays',
-    value: location.pathname === '/rewards/payables' ? 15 : 30,
-    defaultMessage: `Over {value} days`,
-  },
-  {
-    filterName: 'payable',
-    value: location.pathname === '/rewards/payables' ? 10 : 20,
-    defaultMessage: `Over {value} HIVE`,
-  },
-];
+export const payablesFilterData = location => {
+  if (location.pathname === '/rewards/payables') {
+    return [
+      {
+        filterName: 'days',
+        value: 7,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'moreDays',
+        value: 15,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'otherDays',
+        value: 30,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'payable',
+        value: 10,
+        defaultMessage: `Over {value} HIVE`,
+      },
+    ];
+  }
+  return [
+    {
+      filterName: 'days',
+      value: 15,
+      defaultMessage: `Over {value} days`,
+    },
+    {
+      filterName: 'moreDays',
+      value: 30,
+      defaultMessage: `Over {value} days`,
+    },
+    {
+      filterName: 'payable',
+      value: 20,
+      defaultMessage: `Over {value} HIVE`,
+    },
+  ];
+};
 
 export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
   if (pathRecivables && isOverpayment) {
