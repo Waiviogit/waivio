@@ -100,7 +100,7 @@ class Wallet extends Component {
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
-    clearTransactionsGistory: PropTypes.func,
+    clearTransactionsHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -114,7 +114,7 @@ class Wallet extends Component {
     isErrorLoading: false,
     operationNum: -1,
     isloadingMoreTransactions: false,
-    clearTransactionsGistory: () => {},
+    clearTransactionsHistory: () => {},
   };
 
   componentDidMount() {
@@ -147,7 +147,7 @@ class Wallet extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearTransactionsGistory();
+    this.props.clearTransactionsHistory();
   }
 
   render() {
