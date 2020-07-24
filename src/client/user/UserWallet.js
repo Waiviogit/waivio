@@ -33,7 +33,7 @@ import {
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
   getUserAccountHistory,
-  clearTransactionsGistory,
+  clearTransactionsHistory,
 } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
@@ -70,7 +70,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
     getUserAccountHistory,
-    clearTransactionsGistory,
+    clearTransactionsHistory,
   },
 )
 class Wallet extends Component {

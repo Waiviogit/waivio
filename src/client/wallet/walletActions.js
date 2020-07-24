@@ -277,7 +277,7 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
 
 export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
 
-export const clearTransactionsGistory = () => dispatch =>
+export const clearTransactionsHistory = () => dispatch =>
   dispatch({
     type: CLEAR_TRANSACTIONS_HISTORY,
   });
