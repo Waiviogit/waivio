@@ -192,6 +192,7 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         hasMore: false,
         operationNum: -1,
+        transactionsHistory: {},
       };
     case walletActions.GET_USER_EST_ACCOUNT_VALUE.START:
       return {
