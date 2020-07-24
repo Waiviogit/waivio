@@ -238,11 +238,11 @@ export const getUserAccountHistory = username => dispatch => {
   });
 };
 
-export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
+export const getUserTransactionHistory = (username, operationNum) => dispatch =>
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, skip, limit)
+      promise: getTransferHistory(username, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
@@ -255,11 +255,11 @@ export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
 
 export const GET_ERROR_LOADING_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
 
-export const getMoreUserTransactionHistory = (username, skip, limit, operationNum) => dispatch =>
+export const getMoreUserTransactionHistory = (username, operationNum) => dispatch =>
   dispatch({
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, skip, limit, operationNum)
+      promise: getTransferHistory(username, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
