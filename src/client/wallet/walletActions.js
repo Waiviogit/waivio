@@ -275,6 +275,13 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
     },
   });
 
+export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
+
+export const clearTransactionsGistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TRANSACTIONS_HISTORY,
+  });
+
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
 export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
 

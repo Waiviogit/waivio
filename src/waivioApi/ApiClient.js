@@ -1318,9 +1318,8 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, limit = 10, operationNum = -1) => {
-  console.log('username: ', username);
-  return new Promise((resolve, reject) => {
+export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
+  new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}`,
       {
@@ -1333,6 +1332,5 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) => {
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
 
 export default null;

@@ -65,7 +65,6 @@ class UserWalletTransactions extends React.Component {
 
   handleLoadMore = () => {
     const { currentUsername, operationNum, isloadingMoreTransactions } = this.props;
-    // console.log('handleLoadMore_currentUsername: ', currentUsername)
     let skip = 0;
     const limit = 10;
     if (this.isGuestPage()) {
@@ -106,7 +105,6 @@ class UserWalletTransactions extends React.Component {
       isErrorLoading,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
-    console.log('hasMore: ', hasMore);
     return (
       <React.Fragment>
         <div className="UserWalletTransactions">

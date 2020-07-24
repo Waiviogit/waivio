@@ -33,6 +33,7 @@ import {
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
   getUserAccountHistory,
+  clearTransactionsGistory,
 } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
@@ -69,6 +70,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
     getUserAccountHistory,
+    clearTransactionsGistory,
   },
 )
 class Wallet extends Component {
@@ -98,6 +100,7 @@ class Wallet extends Component {
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
+    clearTransactionsGistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -111,6 +114,7 @@ class Wallet extends Component {
     isErrorLoading: false,
     operationNum: -1,
     isloadingMoreTransactions: false,
+    clearTransactionsGistory: () => {},
   };
 
   componentDidMount() {
@@ -121,7 +125,6 @@ class Wallet extends Component {
       isCurrentUser,
       authenticatedUserName,
       transactionsHistory,
-      operationNum,
     } = this.props;
 
     const username = isCurrentUser
@@ -136,12 +139,15 @@ class Wallet extends Component {
       this.props.getUserAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[username]) && !operationNum) {
-      console.log('componentDidMount: ', operationNum);
+    if (isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
 
     this.props.getUserAccountHistory(username);
+  }
+
+  componentWillUnmount() {
+    this.props.clearTransactionsGistory();
   }
 
   render() {
