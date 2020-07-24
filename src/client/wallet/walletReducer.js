@@ -26,7 +26,7 @@ const initialState = {
   transactionsHistoryLoading: false,
   withdrawOpen: false,
   isErrorLoading: false,
-  operationNum: null,
+  operationNum: -1,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -297,3 +297,4 @@ export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
 export const getIsErrorLoading = state => state.isErrorLoading;
 export const getOperationNum = state => state.operationNum;
+export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;

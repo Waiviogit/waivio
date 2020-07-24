@@ -12,6 +12,7 @@ import {
   getAuthenticatedUserName,
   getCryptosPriceHistory,
   getIsErrorLoading,
+  getIsloadingMoreTransactions,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
   getOperationNum,
@@ -59,6 +60,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     hasMore: getUserHasMore(state),
     isErrorLoading: getIsErrorLoading(state),
     operationNum: getOperationNum(state),
+    isloadingMoreTransactions: getIsloadingMoreTransactions(state),
   }),
   {
     getGlobalProperties,
@@ -95,6 +97,7 @@ class Wallet extends Component {
     usersAccountHistory: PropTypes.shape().isRequired,
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
+    isloadingMoreTransactions: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -107,6 +110,7 @@ class Wallet extends Component {
     ownPage: false,
     isErrorLoading: false,
     operationNum: -1,
+    isloadingMoreTransactions: false,
   };
 
   componentDidMount() {
@@ -117,6 +121,7 @@ class Wallet extends Component {
       isCurrentUser,
       authenticatedUserName,
       transactionsHistory,
+      operationNum,
     } = this.props;
 
     const username = isCurrentUser
@@ -131,7 +136,8 @@ class Wallet extends Component {
       this.props.getUserAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[username])) {
+    if (isEmpty(transactionsHistory[username]) && !operationNum) {
+      console.log('componentDidMount: ', operationNum);
       this.props.getUserTransactionHistory(username);
     }
 
@@ -155,6 +161,7 @@ class Wallet extends Component {
       usersAccountHistory,
       isErrorLoading,
       operationNum,
+      isloadingMoreTransactions,
     } = this.props;
 
     const userKey = user.name;
@@ -192,6 +199,7 @@ class Wallet extends Component {
         actions={actions}
         isErrorLoading={isErrorLoading}
         operationNum={operationNum}
+        isloadingMoreTransactions={isloadingMoreTransactions}
       />
     );
 
