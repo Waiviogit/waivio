@@ -163,6 +163,8 @@ export const getStatusWithdraw = state => fromWallet.getStatusWithdraw(state.wal
 export const hasMoreGuestActions = state => fromWallet.hasMoreGuestActions(state.wallet);
 export const getIsErrorLoading = state => fromWallet.getIsErrorLoading(state.wallet);
 export const getOperationNum = state => fromWallet.getOperationNum(state.wallet);
+export const getIsloadingMoreTransactions = state =>
+  fromWallet.getIsloadingMoreTransactions(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
