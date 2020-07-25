@@ -28,11 +28,11 @@ import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
-
-import './index.less';
-import { encodeImageFileAsURL, getSelectionCoords, getSelectionRange } from './model/content';
+import { encodeImageFileAsURL } from './model/content';
 import { findLinkEntities } from './components/entities/link';
 import ObjectLink from './components/entities/objectlink';
+
+import './index.less';
 
 /*
 A wrapper over `draft-js`'s default **Editor** component which provides
@@ -134,30 +134,6 @@ export default class MediumDraftEditor extends React.Component {
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {
-      if (!editorState.getSelection().isCollapsed()) {
-        const selectionRange = getSelectionRange();
-
-        if (!selectionRange) {
-          this.setState({ inlineToolbar: { show: false } });
-
-          return;
-        }
-
-        const selectionCoords = getSelectionCoords(selectionRange);
-
-        this.setState({
-          inlineToolbar: {
-            show: true,
-            position: {
-              top: selectionCoords.offsetTop,
-              left: selectionCoords.offsetLeft,
-            },
-          },
-        });
-      } else {
-        this.setState({ inlineToolbar: { show: false } });
-      }
-
       this.setState({ editorState });
       this.props.onChange(editorState, cb);
     };
