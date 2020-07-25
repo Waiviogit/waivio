@@ -127,7 +127,6 @@ export default class MediumDraftEditor extends React.Component {
     ]);
 
     this.state = {
-      inlineToolbar: { show: false },
       editorState: EditorState.createEmpty(decorator),
     };
 
@@ -164,7 +163,7 @@ export default class MediumDraftEditor extends React.Component {
     }
 
     // Only support one image
-    if (event.length !== 1) {
+    if (event.length > 1) {
       console.error('only support one image');
       return;
     }
