@@ -1,46 +1,37 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { CompositeDecorator, EditorState, ContentBlock, genKey } from 'draft-js';
 import { injectIntl } from 'react-intl';
 import { Icon, Modal } from 'antd';
-// import {addNewBlock, addNewBlockAt} from '../../model';
-import { Block, findLinkEntities } from '../..';
+import { addNewBlock } from '../../model';
+import { Block } from '../..';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
 import withEditor from '../../../Editor/withEditor';
-import ObjectLink from '../entities/objectlink';
 
 @withEditor
 @injectIntl
 export default class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    // setEditorState: PropTypes.func.isRequired,
-    // getEditorState: PropTypes.func.isRequired,
-    // close: PropTypes.func.isRequired,
+    setEditorState: PropTypes.func.isRequired,
+    getEditorState: PropTypes.func.isRequired,
+    close: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
-
-    const decorator = new CompositeDecorator([
-      {
-        strategy: findLinkEntities,
-        component: ObjectLink,
-      },
-    ]);
 
     this.state = {
       isModal: false,
       isLoadingImage: false,
       isLoading: false,
       currentImage: [],
-      editorState: EditorState.createEmpty(decorator),
+      editorState: this.props.getEditorState(),
     };
 
     this.onClick = this.onClick.bind(this);
 
     this.onChange = editorState => {
-      this.setState({ editorState });
+      this.props.setEditorState(editorState);
     };
   }
 
@@ -48,33 +39,18 @@ export default class ImageSideButton extends React.Component {
     this.setState({ isModal: true });
   }
 
-  inserNewBlockToContentState = image => {
-    console.log('inserNewBlockToContentState: ', image);
-    const content = this.state.editorState.getCurrentContent();
-    const blockMap = content.getBlockMap();
-    const newBlock = new ContentBlock({
-      key: genKey(),
-      src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-      alt: image.name,
-      type: Block.IMAGE,
-    });
-    console.log('newBlock: ', newBlock);
-    const newBlockMap = blockMap
-      .toSeq()
-      .concat([[newBlock.getKey(), newBlock]])
-      .toOrderedMap();
-    return content.merge({
-      blockMap: newBlockMap,
-    });
-    // return
-  };
-
   handleOnOk = () => {
-    // if (this.state.currentImage.length) {
-    //   const images = this.state.currentImage;
-    //   images.forEach(image => this.inserNewBlockToContentState(image));
-    // }
-    // this.props.close();
+    if (this.state.currentImage.length) {
+      const image = this.state.currentImage[0];
+      this.props.setEditorState(
+        addNewBlock(this.props.getEditorState(), Block.IMAGE, {
+          // fix for issue with loading large images to digital-ocean
+          src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
+          alt: image.name,
+        }),
+      );
+    }
+    this.props.close();
   };
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });

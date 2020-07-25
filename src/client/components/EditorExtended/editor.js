@@ -174,7 +174,52 @@ export default class MediumDraftEditor extends React.Component {
     this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
 
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
+    this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
+
+  handlePastedFiles = async e => {
+    const selection = this.state.editorState.getSelection();
+    const key = selection.getAnchorKey();
+    const uploadedImages = [];
+
+    if (e.length === 0) {
+      console.error('no image found');
+      return;
+    }
+
+    // Only support one image
+    if (e.length !== 1) {
+      console.error('only support one image');
+      return;
+    }
+
+    // get image
+    const image = e[0];
+
+    const insertImage = (file, fileName = 'image') => {
+      const newImage = {
+        src: file,
+        name: fileName,
+        id: uuidv4(),
+      };
+      uploadedImages.push(newImage);
+    };
+
+    await this.encodeImageFileAsURL(image, insertImage);
+
+    const currentImage = uploadedImages[0];
+    this.onChange(addNewBlockAt(this.state.editorState, 's_content', Block.UNSTYLED, {}));
+    this.onChange(
+      EditorState.moveFocusToEnd(
+        addNewBlockAt(this.state.editorState, key, Block.IMAGE, {
+          src: `${
+            currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
+          }`,
+          alt: currentImage.name,
+        }),
+      ),
+    );
+  };
 
   encodeImageFileAsURL = (file, callback) => {
     const formData = new FormData();
@@ -226,7 +271,6 @@ export default class MediumDraftEditor extends React.Component {
           }),
         ),
       );
-      console.log('this.state.editorState: ', this.state.editorState.toJS());
     });
     return 'handled';
   };
@@ -658,6 +702,7 @@ export default class MediumDraftEditor extends React.Component {
             placeholder={this.props.placeholder}
             spellCheck={editorEnabled && this.props.spellCheck}
             handleDroppedFiles={this.handleDroppedFiles}
+            handlePastedFiles={this.handlePastedFiles}
           />
           {showAddButton && (
             <AddButton
