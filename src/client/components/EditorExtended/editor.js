@@ -30,7 +30,7 @@ import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink
 import ImageSideButton from './components/sides/ImageSideButton';
 
 import './index.less';
-import { getSelectionCoords, getSelectionRange } from './model/content';
+import { encodeImageFileAsURL, getSelectionCoords, getSelectionRange } from './model/content';
 import { findLinkEntities } from './components/entities/link';
 import ObjectLink from './components/entities/objectlink';
 
@@ -177,24 +177,24 @@ export default class MediumDraftEditor extends React.Component {
     this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
 
-  handlePastedFiles = async e => {
+  handlePastedFiles = async event => {
     const selection = this.state.editorState.getSelection();
     const key = selection.getAnchorKey();
     const uploadedImages = [];
 
-    if (e.length === 0) {
+    if (event.length === 0) {
       console.error('no image found');
       return;
     }
 
     // Only support one image
-    if (e.length !== 1) {
+    if (event.length !== 1) {
       console.error('only support one image');
       return;
     }
 
     // get image
-    const image = e[0];
+    const image = event[0];
 
     const insertImage = (file, fileName = 'image') => {
       const newImage = {
@@ -205,10 +205,10 @@ export default class MediumDraftEditor extends React.Component {
       uploadedImages.push(newImage);
     };
 
-    await this.encodeImageFileAsURL(image, insertImage);
+    await encodeImageFileAsURL(image, insertImage);
 
     const currentImage = uploadedImages[0];
-    this.onChange(addNewBlockAt(this.state.editorState, 's_content', Block.UNSTYLED, {}));
+    this.onChange(addNewBlockAt(this.state.editorState, key, Block.UNSTYLED, {}));
     this.onChange(
       EditorState.moveFocusToEnd(
         addNewBlockAt(this.state.editorState, key, Block.IMAGE, {
@@ -219,23 +219,6 @@ export default class MediumDraftEditor extends React.Component {
         }),
       ),
     );
-  };
-
-  encodeImageFileAsURL = (file, callback) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return fetch(`https://www.waivio.com/api/image`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(res => res.json())
-      .then(res => {
-        callback(res.image, file.name);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   handleDroppedFiles = async (selection, files) => {
@@ -258,11 +241,13 @@ export default class MediumDraftEditor extends React.Component {
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       // eslint-disable-next-line no-await-in-loop
-      await this.encodeImageFileAsURL(file, insertImage);
+      await encodeImageFileAsURL(file, insertImage);
     }
     // eslint-disable-next-line array-callback-return
     uploadedImages.forEach(item => {
-      this.onChange(addNewBlockAt(this.state.editorState, 's_content', Block.UNSTYLED, {}));
+      this.onChange(
+        addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.UNSTYLED, {}),
+      );
       this.onChange(
         EditorState.moveFocusToEnd(
           addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {

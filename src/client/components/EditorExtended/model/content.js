@@ -53,3 +53,20 @@ export const getSelectionCoords = selectionRange => {
 
   return { offsetLeft, offsetTop };
 };
+
+export const encodeImageFileAsURL = (file, callback) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return fetch(`https://www.waivio.com/api/image`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(res => {
+      callback(res.image, file.name);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};

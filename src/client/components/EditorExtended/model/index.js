@@ -30,7 +30,6 @@ of the given `newType`.
 */
 
 export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData = {}) => {
-  console.log('addNewBlock: ', initialData);
   const selectionState = editorState.getSelection();
   if (!selectionState.isCollapsed()) {
     return editorState;
@@ -111,7 +110,6 @@ export const addNewBlockAt = (
   newBlockType = Block.UNSTYLED,
   initialData = {},
 ) => {
-  console.log('addNewBlockAt: ', initialData);
   const content = editorState.getCurrentContent();
   const blockMap = content.getBlockMap();
   const block = blockMap.get(pivotBlockKey);
