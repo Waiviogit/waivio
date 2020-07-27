@@ -8,7 +8,6 @@ import {
   ContentBlock,
   genKey,
   Modifier,
-  CompositeDecorator,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
@@ -30,8 +29,6 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 import ImageSideButton from './components/sides/ImageSideButton';
 import { encodeImageFileAsURL } from './model/content';
-import { findLinkEntities } from './components/entities/link';
-import ObjectLink from './components/entities/objectlink';
 
 import './index.less';
 
@@ -121,17 +118,6 @@ export default class MediumDraftEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const decorator = new CompositeDecorator([
-      {
-        strategy: findLinkEntities,
-        component: ObjectLink,
-      },
-    ]);
-
-    this.state = {
-      editorState: EditorState.createEmpty(decorator),
-    };
 
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
