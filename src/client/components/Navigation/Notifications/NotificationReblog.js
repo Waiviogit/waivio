@@ -47,7 +47,6 @@ NotificationReblog.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
-  currentAuthUsername: '',
 };
 
 export default NotificationReblog;
