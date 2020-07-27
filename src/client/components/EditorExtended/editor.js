@@ -218,6 +218,7 @@ export default class MediumDraftEditor extends React.Component {
       // eslint-disable-next-line no-await-in-loop
       await encodeImageFileAsURL(file, insertImage);
     }
+
     // eslint-disable-next-line array-callback-return
     uploadedImages.forEach(item => {
       this.onChange(
