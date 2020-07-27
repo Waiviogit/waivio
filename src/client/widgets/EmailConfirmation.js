@@ -28,6 +28,7 @@ const EmailConfirmation = ({
   const [isCheck, setCheck] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const currentEmail = email || newEmail;
   const confirmationType = isSettings ? 'confirmEmail' : 'confirmTransaction';
@@ -64,6 +65,7 @@ const EmailConfirmation = ({
 
   const handleSendConfirmation = (changeEmail = '') => {
     const type = changeEmail === 'pullEmail' ? changeEmail : confirmationType;
+    setIsLoading(true);
 
     sendEmailConfirmation(userName, type, currentEmail, isGuest)
       .then(r => {
@@ -91,7 +93,8 @@ const EmailConfirmation = ({
 
         handleClose(false);
       })
-      .catch(e => message.error(e.message));
+      .catch(e => message.error(e.message))
+      .finally(() => setIsLoading(false));
   };
   const onCancel = () => {
     if (isSettings && email) handleCancel();
@@ -113,7 +116,13 @@ const EmailConfirmation = ({
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={handleSendConfirmation}
         onCancel={handleCancel}
-        okButtonProps={{ disabled: !(email || newEmail) && !isCheck }}
+        okButtonProps={{
+          disabled: !((email || newEmail) && isCheck),
+          loading: isLoading,
+        }}
+        cancelButtonProps={{
+          disabled: isLoading,
+        }}
       >
         <Form>
           <Form.Item

@@ -31,7 +31,6 @@ import {
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
-  getUpdatedMap,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -70,7 +69,6 @@ import { getZoom } from '../components/Maps/mapHelper';
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
-    updated: getUpdatedMap(state),
   }),
   {
     assignProposition,
@@ -98,14 +96,12 @@ class Rewards extends React.Component {
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
-    updated: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
     wobjects: [],
-    updated: false,
   };
 
   state = {
@@ -138,6 +134,12 @@ class Rewards extends React.Component {
       status: [],
       messagesSponsors: [],
     },
+    activeHistoryFilters: {
+      caseStatus: '',
+      rewards: [],
+      status: [],
+      messagesSponsors: [],
+    },
   };
 
   componentDidMount() {
@@ -154,15 +156,15 @@ class Rewards extends React.Component {
     }
   }
 
-  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards }) => {
-    const { username, match, isFullscreenMode, updated } = this.props;
+  setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards, firstMapLoad }) => {
+    const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
     if (!isSecondaryObjectsCards) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
-        updated,
+        firstMapLoad,
       );
     }
   };
@@ -208,7 +210,10 @@ class Rewards extends React.Component {
   };
 
   setActiveMessagesFilters = (filterValue, key) => {
-    const activeFilters = this.state.activeMessagesFilters;
+    const { match } = this.props;
+    const filterKey = match.params.filterKey;
+    const activeFilters =
+      filterKey === 'history' ? this.state.activeHistoryFilters : this.state.activeMessagesFilters;
     switch (key) {
       case 'rewards':
       case 'messagesSponsors':
@@ -217,7 +222,11 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key].push(filterValue);
         }
-        this.setState({ activeMessagesFilters: activeFilters });
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
         break;
       case 'caseStatus':
         if (activeFilters[key] === filterValue) {
@@ -225,12 +234,20 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key] = filterValue;
         }
-        this.setState({ activeMessagesFilters: activeFilters });
+        this.setState(
+          filterKey === 'history'
+            ? { activeHistoryFilters: activeFilters }
+            : { activeMessagesFilters: activeFilters },
+        );
         break;
       default:
         break;
     }
-    this.setState({ loadingCampaigns: true, activeMessagesFilters: activeFilters });
+    this.setState(
+      filterKey === 'history'
+        ? { loadingCampaigns: true, activeHistoryFilters: activeFilters }
+        : { loadingCampaigns: true, activeMessagesFilters: activeFilters },
+    );
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
@@ -265,7 +282,7 @@ class Rewards extends React.Component {
   getPropositions = (
     { username, match, area, sort, radius, activeFilters, limit },
     isMap,
-    updated,
+    firstMapLoad,
   ) => {
     this.setState({ loadingCampaigns: !isMap });
     ApiClient.getPropositions(
@@ -279,7 +296,7 @@ class Rewards extends React.Component {
         types: activeFilters.types,
         limit,
         simplified: !!isMap,
-        firstMapLoad: !!isMap && !updated,
+        firstMapLoad: !!isMap && firstMapLoad,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -301,7 +318,7 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       }
-      if (!!isMap && !updated) {
+      if (isMap && firstMapLoad) {
         const zoomMap = getZoom(data.radius);
         this.setState({
           zoomMap,
@@ -452,11 +469,17 @@ class Rewards extends React.Component {
     getHistory,
   ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
-    const actualPropositions = isEmpty(messages) ? propositions : messages;
+    const propositionsUniq = match.params.campaignParent
+      ? propositions
+      : uniqBy(propositions, 'required_object._id');
+    const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
 
     const getMessageHistory = async () => {
       try {
-        const activeFilters = this.state.activeMessagesFilters;
+        const activeFilters =
+          filterKey === 'history'
+            ? this.state.activeHistoryFilters
+            : this.state.activeMessagesFilters;
         const sortChanged =
           filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
 
@@ -634,8 +657,10 @@ class Rewards extends React.Component {
       sortAll,
       sortReserved,
       activeMessagesFilters,
+      activeHistoryFilters,
       sortHistory,
       sortMessages,
+      loadingAssignDiscard,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -669,6 +694,7 @@ class Rewards extends React.Component {
       sort,
       handleSortChange: this.handleSortChange,
       loadingCampaigns,
+      loadingAssignDiscard,
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
@@ -687,6 +713,7 @@ class Rewards extends React.Component {
       sortAll,
       sortReserved,
       activeMessagesFilters,
+      activeHistoryFilters,
       setMessagesSponsors: this.setMessagesSponsors,
       messagesSponsors,
       sortHistory,
@@ -780,6 +807,7 @@ class Rewards extends React.Component {
                         setPayablesFilterValue={this.setPayablesFilterValue}
                         location={location}
                         activeMessagesFilters={activeMessagesFilters}
+                        activeHistoryFilters={activeHistoryFilters}
                         messagesSponsors={messagesSponsors}
                         setActiveMessagesFilters={this.setActiveMessagesFilters}
                       />

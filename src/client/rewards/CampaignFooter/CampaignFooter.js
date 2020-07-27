@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -113,12 +113,10 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition, match } = this.props;
-    const author = get(proposition, ['objects', '0', 'author']);
-    const permlink = get(proposition, ['objects', '0', 'permlink']);
+    const author = get(proposition, ['users', '0', 'name']);
+    const permlink = get(proposition, ['users', '0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(proposition.objects[0].author, proposition.objects[0].permlink).then(res =>
-        this.setState({ currentPost: res }),
-      );
+      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     // eslint-disable-next-line react/no-did-mount-set-state
@@ -258,7 +256,10 @@ class CampaignFooter extends React.Component {
       user,
       getMessageHistory,
     } = this.props;
-    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const isRewards =
+      match.params.filterKey === 'reserved' ||
+      match.params.filterKey === 'all' ||
+      includes(match.path, 'object');
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
@@ -332,7 +333,7 @@ class CampaignFooter extends React.Component {
             getMessageHistory={getMessageHistory}
           />
         )}
-        {!singlePostVew && isComment && !hasComments && match.params.filterKey !== 'history' && (
+        {!singlePostVew && isComment && !hasComments && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}

@@ -63,6 +63,20 @@ export default class SidenavRewards extends React.Component {
     );
   }
 
+  componentDidUpdate(nextProps) {
+    if (this.props.userName !== nextProps.userName) {
+      getRewardsGeneralCounts(this.props.userName).then(data =>
+        this.setState({
+          rewardsCount: {
+            hasReceivables: data.has_receivable,
+            historyCount: data.count_history_campaigns,
+            createdCampaignsCount: data.count_campaigns,
+          },
+        }),
+      );
+    }
+  }
+
   toggleMenuCondition = menuItem => {
     const { menuCondition } = this.state;
     this.setState({

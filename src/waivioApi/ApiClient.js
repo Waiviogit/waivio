@@ -636,7 +636,7 @@ export const getPropositions = ({
   });
 
 export const getHistory = ({
-  limit = 30,
+  limit = 10,
   skip = 0,
   guideName,
   userName,
@@ -840,7 +840,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
       }
       if (!globalReport) {
         preparedObject = {
-          userName: user,
+          userName: user || sponsor,
         };
         if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
         if (obj.payable) preparedObject.payable = obj.payable;
@@ -912,12 +912,13 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {}) =>
-  new Promise((resolve, reject) => {
+export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 } = {}) => {
+  const token = await getValidTokenData();
+  return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
-        headers,
+        headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
         method: 'GET',
       },
     )
@@ -925,6 +926,8 @@ export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 10 } = {})
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+};
+
 // endregion
 
 // region Guest user's requests
@@ -1108,7 +1111,23 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     body: JSON.stringify(body),
   })
     .then(res => res.json())
-    .then(data => data)
+    .catch(err => err);
+};
+
+export const sendPendingTransfer = async ({ sponsor, userName, amount, transactionId, memo }) => {
+  const body = {
+    sponsor,
+    userName,
+    amount,
+    transactionId,
+    memo,
+  };
+  return fetch(`${config.campaignApiPrefix}${config.payments}${config.setPendingStatus}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
     .catch(err => err);
 };
 
@@ -1299,16 +1318,19 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, skip = 0, limit = 10) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => err);
+export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;

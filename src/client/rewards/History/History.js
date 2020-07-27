@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { map, uniqBy } from 'lodash';
+import { map, uniq } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../reducers';
+import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
 
 const History = ({
   intl,
   campaignsLayoutWrapLayout,
   activeMessagesFilters,
+  activeHistoryFilters,
   messagesSponsors,
   setMessagesSponsors,
   match,
@@ -31,14 +33,18 @@ const History = ({
   const useLoader = true;
 
   const getHistory = useCallback(
-    async (username, sortChanged, activeFilters, withLoader) => {
+    async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
+      const rewards = map(activeFilters.rewards, item =>
+        Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
+      );
       try {
         const requestData = {
           onlyWithMessages: true,
           sort: sortChanged,
-          rewards: activeFilters.rewards,
+          rewards,
           status: activeFilters.status,
         };
+        requestData.skip = loadMore ? messages.length : 0;
         if (isHistory) {
           requestData.guideNames = activeFilters.messagesSponsors;
           requestData.userName = username;
@@ -52,32 +58,55 @@ const History = ({
           await setLoadingCampaigns(true);
         }
         const data = await ApiClient.getHistory(requestData);
-        const sponsors = map(uniqBy(data.campaigns, 'guideName'), campaign => campaign.guideName);
         setLoadingCampaigns(false);
-        setMessages(data.campaigns || []);
-        setMessagesSponsors(sponsors);
+        setMessages(loadMore ? messages.concat(data.campaigns) : data.campaigns);
+        setMessagesSponsors(uniq(messagesSponsors.concat(data.sponsors)));
         setLoading(false);
         setHasMore(data.hasMore);
       } finally {
         await setLoadingCampaigns(false);
       }
     },
-    [JSON.stringify(activeMessagesFilters), messagesSponsors],
+    [
+      JSON.stringify(activeMessagesFilters),
+      JSON.stringify(activeHistoryFilters),
+      messagesSponsors,
+      hasMore,
+      messagesSponsors,
+    ],
   );
 
   const handleSortChange = useCallback(
     sortChanged => {
       setLoadingCampaigns(true);
       setSortValue(sortChanged);
-      getHistory(userName, sortChanged, activeMessagesFilters, useLoader);
+      getHistory(
+        userName,
+        sortChanged,
+        isHistory ? activeHistoryFilters : activeMessagesFilters,
+        useLoader,
+      );
     },
-    [userName, activeMessagesFilters],
+    [userName, activeMessagesFilters, activeHistoryFilters],
   );
 
   useEffect(() => {
     const sortForFilters = isHistory ? sortHistory : sortMessages;
-    getHistory(userName, sortForFilters, activeMessagesFilters, useLoader);
-  }, [JSON.stringify(activeMessagesFilters)]);
+    getHistory(
+      userName,
+      sortForFilters,
+      isHistory ? activeHistoryFilters : activeMessagesFilters,
+      useLoader,
+    );
+  }, [JSON.stringify(activeMessagesFilters), JSON.stringify(activeHistoryFilters)]);
+
+  const handleLoadMore = () => {
+    if (hasMore) {
+      setLoading(true);
+      const sortForFilters = isHistory ? sortHistory : sortMessages;
+      getHistory(userName, sortForFilters, activeMessagesFilters, false, true);
+    }
+  };
 
   return (
     <div className="history">
@@ -100,6 +129,7 @@ const History = ({
           activeMessagesFilters,
           userName,
           getHistory,
+          handleLoadMore,
         }}
       />
     </div>
@@ -112,6 +142,7 @@ History.propTypes = {
   location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   activeMessagesFilters: PropTypes.shape().isRequired,
+  activeHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   setMessagesSponsors: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,

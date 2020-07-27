@@ -39,21 +39,23 @@ const Withdraw = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
+  const [hiveAmount, setHiveAmount] = useState('');
+  const [currencyAmount, setCurrencyAmount] = useState('');
   const hiveInput = useRef();
   const currencyInput = useRef();
-  const hiveAmount = get(hiveInput, ['current', 'value'], 0);
-  const currencyAmount = get(currencyInput, ['current', 'value'], 0);
+  // const hiveAmount = get(hiveInput, ['current', 'value'], 0);
+  // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   const draftTransfer = store.get('withdrawData');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const currentBalance = isGuest ? `${user.balance} HIVE` : user.balance;
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
-  const setHiveAmount = value => {
-    hiveInput.current.value = value;
-  };
-  const setCurrencyAmount = value => {
-    currencyInput.current.value = value;
-  };
+  // const setHiveAmount = value => {
+  //   hiveInput.current.value = value;
+  // };
+  // const setCurrencyAmount = value => {
+  //   currencyInput.current.value = value;
+  // };
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
 
@@ -84,17 +86,10 @@ const Withdraw = ({
   }, []);
 
   useEffect(() => {
-    if (hiveAmount && !currencyAmount) {
+    if (hiveAmount) {
       estimateAmount(hiveAmount, 'hive', currentCurrency).then(r =>
         setCurrencyAmount(r.outputAmount),
       );
-    }
-
-    if (currencyAmount) {
-      estimateAmount(currencyAmount, currentCurrency, 'hive').then(r => {
-        setHiveAmount(r.outputAmount);
-        setHiveCount(r.outputAmount);
-      });
     }
 
     if (walletAddress) {
@@ -130,12 +125,17 @@ const Withdraw = ({
     walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
   };
 
+  const setWalletAddressForScanner = address => {
+    setWalletAddress(address);
+    walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
+  };
+
   const handleRequest = () => {
     setIsLoading(true);
     store.set('withdrawData', {
-      hiveAmount,
       walletAddress,
       currentCurrency,
+      hiveAmount: hiveCount,
     });
     getPrivateEmail(user.name).then(() => {
       setShowConfirm(true);
@@ -207,15 +207,18 @@ const Withdraw = ({
             <input
               placeholder={0}
               ref={hiveInput}
-              onChange={e => debounceAmountHive(e.currentTarget.value)}
+              onChange={e => {
+                setHiveAmount(e.currentTarget.value);
+                debounceAmountHive(e.currentTarget.value);
+              }}
               type="number"
-              className="Withdraw__input-text"
+              className="Withdraw__input-text Withdraw__input-text--send-input"
+              step="any"
+              value={hiveAmount}
             />
-            <div className="Withdraw__switcher-wrapper">
-              <span className="Withdraw__switcher-button Withdraw__switcher-button--active">
-                HIVE
-              </span>
-            </div>
+            <span className="Withdraw__switcher-button Withdraw__switcher-button--active">
+              HIVE
+            </span>
           </div>
           <div className="Withdraw__subtitle">
             <FormattedMessage
@@ -238,9 +241,14 @@ const Withdraw = ({
             <input
               type="number"
               ref={currencyInput}
-              onChange={e => debounceAmountCurrency(e.currentTarget.value)}
+              onChange={e => {
+                setCurrencyAmount(e.currentTarget.value);
+                debounceAmountCurrency(e.currentTarget.value);
+              }}
               placeholder={0}
               className="Withdraw__input-text"
+              step="any"
+              value={currencyAmount}
             />
             <div className="Withdraw__switcher-wrapper">
               {CRYPTO_LIST_FOR_WALLET.map(crypto => (
@@ -299,7 +307,7 @@ const Withdraw = ({
       {isShowScanner && (
         <QrModal
           visible={isShowScanner}
-          setDataScan={setWalletAddress}
+          setDataScan={setWalletAddressForScanner}
           handleClose={setShowScanner}
         />
       )}

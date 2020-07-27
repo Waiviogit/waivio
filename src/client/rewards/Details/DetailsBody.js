@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
+import { getWeightValue } from '../../reducers';
 import './Details.less';
 
-const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
+const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
@@ -20,7 +22,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName }) 
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
-          <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
+          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
@@ -103,6 +105,16 @@ DetailsBody.propTypes = {
   objectDetails: PropTypes.shape().isRequired,
   proposedWobj: PropTypes.shape().isRequired,
   requiredObjectName: PropTypes.string.isRequired,
+  minExpertise: PropTypes.number,
 };
 
-export default injectIntl(DetailsBody);
+DetailsBody.defaultProps = {
+  minExpertise: 0,
+};
+
+export default connect((state, ownProp) => ({
+  minExpertise: getWeightValue(
+    state,
+    get(ownProp, ['objectDetails', 'userRequirements', 'minExpertise']),
+  ),
+}))(injectIntl(DetailsBody));
