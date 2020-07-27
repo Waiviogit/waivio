@@ -25,14 +25,9 @@ export default class ImageSideButton extends React.Component {
       isLoadingImage: false,
       isLoading: false,
       currentImage: [],
-      editorState: this.props.getEditorState(),
     };
 
     this.onClick = this.onClick.bind(this);
-
-    this.onChange = editorState => {
-      this.props.setEditorState(editorState);
-    };
   }
 
   onClick() {
