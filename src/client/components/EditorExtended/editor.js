@@ -14,6 +14,7 @@ import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { OrderedMap } from 'immutable';
+import { message } from 'antd';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -84,6 +85,7 @@ export default class MediumDraftEditor extends React.Component {
     showLinkEditToolbar: PropTypes.bool,
     toolbarConfig: PropTypes.shape(),
     processURL: PropTypes.func,
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -114,6 +116,7 @@ export default class MediumDraftEditor extends React.Component {
     handleKeyCommand: null,
     handleReturn: () => {},
     handlePastedText: () => {},
+    intl: {},
   };
 
   constructor(props) {
@@ -153,6 +156,12 @@ export default class MediumDraftEditor extends React.Component {
   }
 
   handlePastedFiles = async event => {
+    message.info(
+      this.props.intl.formatMessage({
+        id: 'notify_uploading_image',
+        defaultMessage: 'Uploading image',
+      }),
+    );
     const selection = this.state.editorState.getSelection();
     const key = selection.getAnchorKey();
     const uploadedImages = [];
@@ -197,6 +206,13 @@ export default class MediumDraftEditor extends React.Component {
   };
 
   handleDroppedFiles = async (selection, files) => {
+    message.info(
+      this.props.intl.formatMessage({
+        id: 'notify_uploading_image',
+        defaultMessage: 'Uploading image',
+      }),
+    );
+
     const uploadedImages = [];
     const filteredFiles = files.filter(file => file.type.indexOf('image/') === 0);
 
