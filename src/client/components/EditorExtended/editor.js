@@ -136,7 +136,6 @@ export default class MediumDraftEditor extends React.Component {
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
 
     this.onChange = (editorState, cb) => {
-      this.setState({ editorState });
       this.props.onChange(editorState, cb);
     };
 
@@ -162,8 +161,10 @@ export default class MediumDraftEditor extends React.Component {
         defaultMessage: 'Uploading image',
       }),
     );
-    const selection = this.state.editorState.getSelection();
+
+    const selection = this.props.editorState.getSelection();
     const key = selection.getAnchorKey();
+
     const uploadedImages = [];
 
     if (event.length === 0) {
@@ -192,16 +193,14 @@ export default class MediumDraftEditor extends React.Component {
     await encodeImageFileAsURL(image, insertImage);
 
     const currentImage = uploadedImages[0];
-    this.onChange(addNewBlockAt(this.state.editorState, key, Block.UNSTYLED, {}));
+    this.onChange(addNewBlockAt(this.props.editorState, key, Block.UNSTYLED, {}));
     this.onChange(
-      EditorState.moveFocusToEnd(
-        addNewBlockAt(this.state.editorState, key, Block.IMAGE, {
-          src: `${
-            currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
-          }`,
-          alt: currentImage.name,
-        }),
-      ),
+      addNewBlockAt(this.props.editorState, key, Block.IMAGE, {
+        src: `${
+          currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
+        }`,
+        alt: currentImage.name,
+      }),
     );
   };
 
@@ -238,18 +237,16 @@ export default class MediumDraftEditor extends React.Component {
     // eslint-disable-next-line array-callback-return
     uploadedImages.forEach(item => {
       this.onChange(
-        addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.UNSTYLED, {}),
+        addNewBlockAt(this.props.editorState, selection.getAnchorKey(), Block.UNSTYLED, {}),
       );
       this.onChange(
-        EditorState.moveFocusToEnd(
-          addNewBlockAt(this.state.editorState, selection.getAnchorKey(), Block.IMAGE, {
-            src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
-            alt: item.name,
-          }),
-        ),
+        addNewBlockAt(this.props.editorState, selection.getAnchorKey(), Block.IMAGE, {
+          src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
+          alt: item.name,
+        }),
       );
     });
-    return 'handled';
+    return HANDLED;
   };
 
   /**

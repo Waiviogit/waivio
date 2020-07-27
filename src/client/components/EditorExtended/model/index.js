@@ -53,9 +53,8 @@ export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData =
       blockMap: blockMap.set(key, newBlock),
       selectionAfter: selectionState,
     });
-    const newEditorState = EditorState.push(editorState, newContentState, 'change-block-type');
 
-    return EditorState.moveSelectionToEnd(newEditorState);
+    return EditorState.push(editorState, newContentState, 'change-block-type');
   }
   return editorState;
 };
@@ -146,8 +145,8 @@ export const addNewBlockAt = (
 
   const newContent = content.merge({
     blockMap: newBlockMap,
-    selectionBefore: selection,
-    selectionAfter: selection.merge({
+    selectionAfter: selection,
+    selectionBefore: selection.merge({
       anchorKey: newBlockKey,
       anchorOffset: 0,
       focusKey: newBlockKey,
@@ -155,8 +154,7 @@ export const addNewBlockAt = (
       isBackward: false,
     }),
   });
-  const newEditorState = EditorState.push(editorState, newContent, 'split-block');
-  return EditorState.moveSelectionToEnd(newEditorState);
+  return EditorState.push(editorState, newContent, 'split-block');
 };
 
 /**

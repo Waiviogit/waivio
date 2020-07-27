@@ -98,7 +98,7 @@ const parseGuestActions = actions => {
       trx_in_block: 1,
       op_in_trx: 0,
       virtual_op: 0,
-      timestamp: action.updatedAt.split('.')[0],
+      timestamp: action.createdAt.split('.')[0],
       withdraw: action.withdraw,
       op: [
         'transfer',
