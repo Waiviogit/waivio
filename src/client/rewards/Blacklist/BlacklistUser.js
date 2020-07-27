@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
@@ -7,10 +7,16 @@ import { get } from 'lodash';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 
-const BlacklistUser = ({ intl, user, handleDeleteUsers, loading }) => {
+const BlacklistUser = ({ intl, user, handleDeleteUsers }) => {
+  const [loading, setLoading] = useState(false);
   const userName = user.name || get(user, ['user', 'name']);
   const userWeight = user.wobjects_weight || get(user, ['user', 'wobjects_weight']);
-  console.log('user', user);
+
+  const handleDelUsers = async () => {
+    await setLoading(true);
+    await handleDeleteUsers(userName);
+    await setLoading(false);
+  };
 
   return (
     <div key={userName} className="Blacklist__user">
@@ -31,7 +37,7 @@ const BlacklistUser = ({ intl, user, handleDeleteUsers, loading }) => {
             <div className="Blacklist__user__profile__delete">
               <Button
                 type="primary"
-                onClick={() => handleDeleteUsers(userName)}
+                onClick={() => handleDelUsers()}
                 loading={loading}
                 id={userName}
               >
@@ -53,11 +59,6 @@ BlacklistUser.propTypes = {
   user: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   handleDeleteUsers: PropTypes.func.isRequired,
-  loading: PropTypes.bool,
-};
-
-BlacklistUser.defaultProps = {
-  loading: false,
 };
 
 export default injectIntl(BlacklistUser);

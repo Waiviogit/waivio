@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { filter, get, includes, isEmpty, map } from 'lodash';
+import { filter, get, isEmpty, map } from 'lodash';
 import classNames from 'classnames';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
@@ -17,7 +17,7 @@ import './Blacklist.less';
 const BlacklistContent = ({
   intl,
   userName,
-  pathName,
+  listType,
   blacklistUsers,
   saveBlacklistUsers,
   whiteListUsers,
@@ -26,19 +26,18 @@ const BlacklistContent = ({
   saveFollowLists,
 }) => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const successDeleteMessage = getSuccessDeleteMessage(users, pathName);
+  const successDeleteMessage = getSuccessDeleteMessage(users, listType);
   const setUserBlacklist = user => setUsers([...users, user]);
 
   const getUsersForRender = useMemo(() => {
-    if (includes(pathName, 'whitelist')) {
+    if (listType === 'whitelist') {
       return whiteListUsers;
-    } else if (includes(pathName, 'references')) {
+    } else if (listType === 'references') {
       return followListsUsers;
     }
     return blacklistUsers;
-  }, [pathName, whiteListUsers, followListsUsers, blacklistUsers]);
+  }, [listType, whiteListUsers, followListsUsers, blacklistUsers]);
 
   const removeUser = user => {
     const newUsers = filter(users, obj => obj.account !== user.account);
@@ -46,12 +45,12 @@ const BlacklistContent = ({
   };
 
   const getTitle = useMemo(() => {
-    if (includes(pathName, 'whitelist')) {
+    if (listType === 'whitelist') {
       return intl.formatMessage({
         id: 'whitelist',
         defaultMessage: 'Whitelist',
       });
-    } else if (includes(pathName, 'references')) {
+    } else if (listType === 'references') {
       return intl.formatMessage({
         id: 'references',
         defaultMessage: 'References',
@@ -61,44 +60,53 @@ const BlacklistContent = ({
       id: 'blacklist',
       defaultMessage: 'Blacklist',
     });
-  }, [pathName, intl]);
+  }, [listType, intl]);
 
   const clearUsers = () => setUsers([]);
 
+  const handleGetBlacklist = async messageSuccess => {
+    try {
+      const data = await dispatch(getBlacklist(userName));
+      if (listType === 'whitelist') {
+        const whiteList = get(data, ['value', 'blackList', 'whiteList']);
+        await saveWhitelistUsers(whiteList);
+      } else if (listType === 'references') {
+        const followLists = get(data, ['value', 'blackList', 'followLists']);
+        await saveFollowLists(followLists);
+      } else {
+        const blacklist = get(data, ['value', 'blackList', 'blackList']);
+        await saveBlacklistUsers(blacklist);
+      }
+      message.success(
+        intl.formatMessage({
+          id: messageSuccess.id,
+          defaultMessage: messageSuccess.defaultMessage,
+        }),
+      );
+      clearUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteUsers = async user => {
-    let id = 'removeUsersFromBlackList';
-    if (pathName.includes('whitelist')) id = 'removeUsersFromWhiteList';
-    if (pathName.includes('references')) id = 'unFollowAnotherBlacklist';
-    setLoading(true);
-    dispatch(changeBlackAndWhiteLists(id, [user]))
-      .then(() => {
-        setTimeout(() => {
-          dispatch(getBlacklist(userName))
-            .then(data => {
-              if (includes(pathName, 'whitelist')) {
-                const whiteList = get(data, ['value', 'blackList', 'whiteList']);
-                saveWhitelistUsers(whiteList);
-              } else if (includes(pathName, 'references')) {
-                const followLists = get(data, ['value', 'blackList', 'followLists']);
-                saveFollowLists(followLists);
-              } else {
-                const blacklist = get(data, ['value', 'blackList', 'blackList']);
-                saveBlacklistUsers(blacklist);
-              }
-            })
-            .then(() => {
-              message.success(
-                intl.formatMessage({
-                  id: successDeleteMessage.id,
-                  defaultMessage: successDeleteMessage.defaultMessage,
-                }),
-              );
-              clearUsers();
-              setLoading(false);
-            });
-        }, 7000);
-      })
-      .catch(err => console.error(err));
+    try {
+      let id = 'removeUsersFromBlackList';
+      if (listType === 'whitelist') id = 'removeUsersFromWhiteList';
+      if (listType === 'references') id = 'unFollowAnotherBlacklist';
+      if (user) {
+        await dispatch(changeBlackAndWhiteLists(id, [user]));
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            handleGetBlacklist(successDeleteMessage)
+              .then(() => resolve())
+              .catch(error => reject(error));
+          }, 7000);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderUser = !isEmpty(users)
@@ -107,8 +115,8 @@ const BlacklistContent = ({
       ))
     : null;
 
-  const title = pathName ? getContent(pathName).title : '';
-  const caption = pathName ? getContent(pathName).caption : '';
+  const title = listType ? getContent(listType).title : '';
+  const caption = listType ? getContent(listType).caption : '';
 
   return (
     <div className="Blacklist__content">
@@ -133,17 +141,18 @@ const BlacklistContent = ({
           id: caption.id,
           defaultMessage: caption.defaultMessage,
         })}{' '}
-        {!pathName.includes('references') && <Link to={`/@${userName}`}>{userName}</Link>}
+        {listType !== 'references' && <Link to={`/@${userName}`}>{userName}</Link>}
       </div>
       <div className="Blacklist__content-objects-wrap">{renderUser}</div>
       <BlacklistFooter
         users={users}
-        pathName={pathName}
+        listType={listType}
         clearUsers={clearUsers}
         userName={userName}
         saveBlacklistUsers={saveBlacklistUsers}
         saveWhitelistUsers={saveWhitelistUsers}
         saveFollowLists={saveFollowLists}
+        handleGetBlacklist={handleGetBlacklist}
       />
       <div className="Blacklist__content-title-blacklist">{getTitle}</div>
       <div
@@ -153,12 +162,7 @@ const BlacklistContent = ({
       >
         {!isEmpty(getUsersForRender)
           ? map(getUsersForRender, user => (
-              <BlacklistUser
-                user={user}
-                handleDeleteUsers={handleDeleteUsers}
-                loading={loading}
-                pathName={pathName}
-              />
+              <BlacklistUser user={user} handleDeleteUsers={handleDeleteUsers} />
             ))
           : intl.formatMessage({
               id: 'your_list_is_empty',
@@ -172,7 +176,7 @@ const BlacklistContent = ({
 BlacklistContent.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
-  pathName: PropTypes.string,
+  listType: PropTypes.string,
   blacklistUsers: PropTypes.arrayOf(PropTypes.shape()),
   saveBlacklistUsers: PropTypes.func.isRequired,
   saveWhitelistUsers: PropTypes.func.isRequired,
@@ -183,7 +187,7 @@ BlacklistContent.propTypes = {
 
 BlacklistContent.defaultProps = {
   userName: '',
-  pathName: '',
+  listType: '',
   blacklistUsers: [],
   whiteListUsers: [],
   followListsUsers: [],

@@ -337,8 +337,8 @@ export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
   return REWARD.userReward;
 };
 
-export const getContent = pathName => {
-  if (pathName.includes('references')) {
+export const getContent = listType => {
+  if (listType === 'references') {
     return {
       title: {
         id: 'recognize_other_users_blacklists',
@@ -352,7 +352,7 @@ export const getContent = pathName => {
     };
   }
 
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     return {
       title: {
         id: 'add_user_to_whitelist',
@@ -378,14 +378,14 @@ export const getContent = pathName => {
   };
 };
 
-export const getSuccessAddMessage = (userNames, pathName) => {
-  if (pathName.includes('references')) {
+export const getSuccessAddMessage = (userNames, listType) => {
+  if (listType === 'references') {
     return {
       id: 'you_subscribed_to_other_users_blacklists',
       defaultMessage: "You subscribed to other users' blacklists",
     };
   }
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     if (userNames.length > 1) {
       return {
         id: 'users_were_added_to_whitelist',
@@ -410,14 +410,14 @@ export const getSuccessAddMessage = (userNames, pathName) => {
   };
 };
 
-export const getSuccessDeleteMessage = (userNames, pathName) => {
-  if (pathName.includes('references')) {
+export const getSuccessDeleteMessage = (userNames, listType) => {
+  if (listType === 'references') {
     return {
       id: 'you_unsubscribed_from_other_users_blacklists',
       defaultMessage: "You unsubscribed from other users' blacklists",
     };
   }
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     if (userNames.length > 1) {
       return {
         id: 'users_were_deleted_from_whitelist',
