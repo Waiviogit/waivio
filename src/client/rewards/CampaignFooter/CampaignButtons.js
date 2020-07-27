@@ -176,8 +176,7 @@ export default class CampaignButtons extends React.Component {
   getIsUserInBlackList = blacklistUsers => {
     const { proposition } = this.props;
     const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
-    this.setState({ isUserInBlacklist });
-    return isUserInBlacklist;
+    return this.setState({ isUserInBlacklist });
   };
 
   handleChangeBlacklistClick = () => {
