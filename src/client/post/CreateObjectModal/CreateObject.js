@@ -202,7 +202,6 @@ class CreateObject extends React.Component {
       isSingleType,
     } = this.props;
     const { loading } = this.state;
-
     const Option = Select.Option;
 
     LANGUAGES.forEach(lang => {
@@ -254,6 +253,14 @@ class CreateObject extends React.Component {
                       },
                       { value: 100 },
                     ),
+                  },
+                  {
+                    pattern:
+                      defaultObjectType === 'hashtag' ? /^[a-z0-9_.-]*$/ : /^[a-zA-Z0-9_.-]*$/,
+                    message: intl.formatMessage({
+                      id: 'value_error_upper_case',
+                      defaultMessage: 'You can use only lowercase for hashtag name',
+                    }),
                   },
                   {
                     required: true,

@@ -1243,5 +1243,6 @@
   "receive_address": "Адрес получателя",
   "deposit_account": "Аккаунт отправителя",
   "deposit_transaction_hash": "Хэш транзакции депозита",
-  "deposit_usd_value": "Депозит в долларах США"
+  "deposit_usd_value": "Депозит в долларах США",
+  "value_error_upper_case": "Вы можете использовать только строчные буквы для имени хэштега"
 }
