@@ -238,16 +238,16 @@ export const getUserAccountHistory = username => dispatch => {
   });
 };
 
-export const getUserTransactionHistory = (username, operationNum) => dispatch =>
+export const getUserTransactionHistory = (username, limit, operationNum) => dispatch =>
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, operationNum)
+      promise: getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
-          hasMore: data.hasMore,
           operationNum: data.operationNum,
+          hasMore: data.hasMore,
         }))
         .catch(error => console.log(error)),
     },
@@ -255,16 +255,16 @@ export const getUserTransactionHistory = (username, operationNum) => dispatch =>
 
 export const GET_ERROR_LOADING_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
 
-export const getMoreUserTransactionHistory = (username, operationNum) => dispatch =>
+export const getMoreUserTransactionHistory = (username, limit, operationNum) => dispatch =>
   dispatch({
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, operationNum)
+      promise: getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
-          hasMore: data.hasMore,
           operationNum: data.operationNum,
+          hasMore: data.hasMore,
         }))
         .catch(error => {
           console.log(error);
@@ -273,6 +273,13 @@ export const getMoreUserTransactionHistory = (username, operationNum) => dispatc
           });
         }),
     },
+  });
+
+export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
+
+export const clearTransactionsHistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TRANSACTIONS_HISTORY,
   });
 
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
