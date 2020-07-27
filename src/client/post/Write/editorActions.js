@@ -11,7 +11,7 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpe
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
-import { getAuthenticatedUserName } from '../../reducers';
+import { getAuthenticatedUserName, getHiveBeneficiaryAccount } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -210,8 +210,16 @@ export function createPost(postData, beneficiaries, isReview) {
     const state = getState();
     const authUser = state.auth.user;
     const isGuest = state.auth.isGuestUser;
+    const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const newBody =
-      isUpdating && !isGuest ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
+      isUpdating && !isGuest && !isReview
+        ? getBodyPatchIfSmaller(postData.originalBody, body)
+        : body;
+
+    const guestBeneficiary = hiveBeneficiaryAccount
+      ? [{ account: hiveBeneficiaryAccount, weight: 9700 }, ...beneficiaries]
+      : [{ account: 'waivio.hpower', weight: 10000 }];
+    const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
@@ -246,7 +254,7 @@ export function createPost(postData, beneficiaries, isReview) {
         permlink,
         referral,
         authUser.name,
-        beneficiaries,
+        currentBeneficiaries,
         isReview,
       )
         .then(result => {

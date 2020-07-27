@@ -57,7 +57,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isReloading: false,
-        user: action.payload.account || state.user,
+        user: {
+          ...state.user,
+          ...action.payload.account,
+        },
       };
 
     case types.RELOAD_ERROR:

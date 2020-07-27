@@ -120,11 +120,7 @@ class AdvanceSettings extends Component {
               </div>
               {!isUpdating && (
                 <div className="beneficiary-settings">
-                  <BeneficiariesWeights
-                    intl={intl}
-                    isGuest={isGuest}
-                    hiveBeneficiaryAccount={hiveBeneficiaryAccount}
-                  />
+                  <BeneficiariesWeights intl={intl} isGuest={isGuest} />
                 </div>
               )}
             </React.Fragment>
@@ -153,7 +149,12 @@ class AdvanceSettings extends Component {
                     defaultMessage: 'Share {share}% of this post rewards with Waivio',
                   },
                   { share: BENEFICIARY_PERCENT / 100 },
-                )}
+                )}{' '}
+                {hiveBeneficiaryAccount &&
+                  `${intl.formatMessage({
+                    id: 'and',
+                    defaultMessage: 'and',
+                  })}  97% ${hiveBeneficiaryAccount}`}
               </div>
               <div className="rewards-settings__guest">
                 <span>{intl.formatMessage({ id: 'note', defaultMessage: 'Note' })}:</span>{' '}
