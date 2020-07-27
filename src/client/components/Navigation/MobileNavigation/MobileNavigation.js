@@ -184,6 +184,7 @@ const MobileNavigation = ({ location, match }) => {
         visible={isModalOpen}
         onCancel={() => setModalVisibility(false)}
       >
+        TopNavigation
         <LeftSidebar />
       </Modal>
     </React.Fragment>

@@ -1266,5 +1266,6 @@
   "email_link_details": "All withdrawal requests must be confirmed by e-mail.",
   "guests_account_settings": "Guests Account Settings",
   "guest_settings": "Guests Settings",
-  "mobnav_guest_settings": "Guests Settings"
+  "mobnav_guest_settings": "Guests Settings",
+  "register_email": "Register email"
 }
