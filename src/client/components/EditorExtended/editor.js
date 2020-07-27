@@ -140,6 +140,7 @@ export default class MediumDraftEditor extends React.Component {
     this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
 
+  // Copy/paste method
   handlePastedFiles = async event => {
     message.info(
       this.props.intl.formatMessage({
@@ -164,7 +165,7 @@ export default class MediumDraftEditor extends React.Component {
       return;
     }
 
-    // get image
+    // Get image
     const image = event[0];
 
     const insertImage = (file, fileName = 'image') => {
@@ -176,9 +177,11 @@ export default class MediumDraftEditor extends React.Component {
       uploadedImages.push(newImage);
     };
 
+    // Prepare URL on images
     await encodeImageFileAsURL(image, insertImage);
 
     const currentImage = uploadedImages[0];
+    // Add empty block after image
     this.onChange(addNewBlockAt(this.props.editorState, key, Block.UNSTYLED, {}));
     this.onChange(
       addNewBlockAt(this.props.editorState, key, Block.IMAGE, {
@@ -190,6 +193,7 @@ export default class MediumDraftEditor extends React.Component {
     );
   };
 
+  // Drug and drop method
   handleDroppedFiles = async (selection, files) => {
     message.info(
       this.props.intl.formatMessage({
