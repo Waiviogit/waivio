@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { map, uniq } from 'lodash';
+import { get, map, uniq } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FilteredRewardsList from '../FilteredRewardsList';
+import { getBlacklist } from '../rewardsActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../reducers';
-import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+} from '../../../common/constants/rewards';
 
 const History = ({
   intl,
@@ -23,12 +27,14 @@ const History = ({
   setActiveMessagesFilters,
 }) => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const isHistory = location.pathname === '/rewards/history';
 
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [blacklistUsers, setBlacklistUsers] = useState([]);
   const userName = useSelector(getAuthenticatedUserName);
   const sort = isHistory ? sortHistory : sortMessages;
   const useLoader = true;
@@ -37,6 +43,9 @@ const History = ({
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
       const rewards = map(activeFilters.rewards, item =>
         Object.keys(REWARDS_TYPES_MESSAGES).find(key => REWARDS_TYPES_MESSAGES[key] === item),
+      );
+      const caseStatus = Object.keys(CAMPAIGNS_TYPES_MESSAGES).find(
+        key => CAMPAIGNS_TYPES_MESSAGES[key] === activeFilters.caseStatus,
       );
       try {
         const requestData = {
@@ -51,7 +60,7 @@ const History = ({
           requestData.userName = username;
         }
         if (!isHistory) {
-          requestData.caseStatus = activeFilters.caseStatus;
+          requestData.caseStatus = caseStatus;
           requestData.guideName = username;
         }
 
@@ -99,6 +108,13 @@ const History = ({
       isHistory ? activeHistoryFilters : activeMessagesFilters,
       useLoader,
     );
+    if (!isHistory) {
+      dispatch(getBlacklist(userName)).then(data => {
+        const blacklist = get(data, ['value', 'blackList', 'blackList']);
+        const blacklistNames = map(blacklist, user => user.name);
+        setBlacklistUsers(blacklistNames);
+      });
+    }
   }, [JSON.stringify(activeMessagesFilters), JSON.stringify(activeHistoryFilters)]);
 
   const handleLoadMore = () => {
@@ -137,6 +153,7 @@ const History = ({
           userName,
           getHistory,
           handleLoadMore,
+          blacklistUsers,
           activeHistoryFilters,
           setActiveMessagesFilters,
         }}

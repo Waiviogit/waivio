@@ -59,7 +59,7 @@ const RewardsFiltersPanel = ({
 
   const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
     () => ({
-      campaignsTypesMessages: CAMPAIGN_TYPES_MESSAGES,
+      campaignsTypesMessages: Object.values(CAMPAIGN_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
       sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
     }),

@@ -44,6 +44,7 @@ const FilteredRewardsList = props => {
     getHistory,
     activeHistoryFilters,
     setActiveMessagesFilters,
+    blacklistUsers,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -228,6 +229,7 @@ const FilteredRewardsList = props => {
             match,
             messages,
             getHistory,
+            blacklistUsers,
           )}
         </ReduxInfiniteScroll>
       </div>
@@ -288,6 +290,7 @@ FilteredRewardsList.defaultProps = {
   userName: '',
   sortHistory: 'reservation',
   sortMessages: 'inquiryDate',
+  blacklistUsers: [],
   activeHistoryFilters: {},
   setActiveMessagesFilters: () => {},
 };
@@ -319,6 +322,7 @@ FilteredRewardsList.propTypes = {
   sortHistory: PropTypes.string,
   sortMessages: PropTypes.string,
   getHistory: PropTypes.func.isRequired,
+  blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   activeHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
 };

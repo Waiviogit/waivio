@@ -25,6 +25,10 @@ export const REWARDS_TYPES_MESSAGES = {
   rejected: 'Rejected',
 };
 
-export const CAMPAIGN_TYPES_MESSAGES = ['all', 'open', 'close'];
+export const CAMPAIGNS_TYPES_MESSAGES = {
+  all: 'all',
+  open: 'open',
+  close: 'closed',
+};
 
 export default null;
