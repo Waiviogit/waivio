@@ -261,11 +261,15 @@ class Rewards extends React.Component {
         break;
       case 'days':
       case 'moreDays':
+      case 'otherDays':
       default:
         if (findIndex(activeFilters, { filterName: filterValue.filterName }) === -1) {
           activeFilters = filter(
             activeFilters,
-            item => item.filterName !== 'days' && item.filterName !== 'moreDays',
+            item =>
+              item.filterName !== 'days' &&
+              item.filterName !== 'moreDays' &&
+              item.filterName !== 'otherDays',
           );
           activeFilters.push(filterValue);
         } else {
