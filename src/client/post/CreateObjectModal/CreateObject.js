@@ -259,7 +259,8 @@ class CreateObject extends React.Component {
                       defaultObjectType === 'hashtag' ? /^[a-z0-9_.-]*$/ : /^[a-zA-Z0-9_.-]*$/,
                     message: intl.formatMessage({
                       id: 'value_error_upper_case',
-                      defaultMessage: 'You can use only lowercase for hashtag name',
+                      defaultMessage:
+                        'Lowercase letters, numbers, period, underscore and hyphen are allowed',
                     }),
                   },
                   {
