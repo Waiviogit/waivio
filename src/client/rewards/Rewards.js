@@ -471,6 +471,7 @@ class Rewards extends React.Component {
     match,
     messages,
     getHistory,
+    blacklistUsers,
   ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const propositionsUniq = match.params.campaignParent
@@ -532,6 +533,7 @@ class Rewards extends React.Component {
                 user={user}
                 match={this.props.match}
                 getMessageHistory={getMessageHistory}
+                blacklistUsers={blacklistUsers}
               />
             ),
         ),
