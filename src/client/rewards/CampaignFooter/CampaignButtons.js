@@ -5,24 +5,24 @@ import { Icon, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get } from 'lodash';
+import { map, get, includes } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
+import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport } from '../rewardsActions';
+import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
-@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport })
+@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -47,6 +47,8 @@ export default class CampaignButtons extends React.Component {
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
     setDataForSingleReport: PropTypes.func.isRequired,
+    getBlacklist: PropTypes.func.isRequired,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -64,6 +66,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -76,6 +79,7 @@ export default class CampaignButtons extends React.Component {
       loadingEdit: false,
       visible: false,
       isModalReportOpen: false,
+      isUserInBlacklist: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -84,6 +88,11 @@ export default class CampaignButtons extends React.Component {
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
     this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
+  }
+
+  componentDidMount() {
+    const { blacklistUsers } = this.props;
+    this.getIsUserInBlackList(blacklistUsers);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -164,19 +173,43 @@ export default class CampaignButtons extends React.Component {
       .catch(e => message.error(e.message));
   };
 
-  handleAddToBlacklistClick = () => {
+  getIsUserInBlackList = blacklistUsers => {
     const { proposition } = this.props;
-    const id = 'addUsersToBlackList';
+    const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
+    return this.setState({ isUserInBlacklist });
+  };
+
+  handleChangeBlacklistClick = () => {
+    const { proposition } = this.props;
+    const { isUserInBlacklist } = this.state;
+    const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
     const idsUsers = [];
     idsUsers.push(get(proposition, ['users', '0', 'name']));
     return this.props
       .changeBlackAndWhiteLists(id, idsUsers)
       .then(() => {
+        setTimeout(() => {
+          this.props.getBlacklist(proposition.guideName).then(data => {
+            const blacklist = get(data, ['value', 'blackList', 'blackList']);
+            const blacklistNames = map(blacklist, user => user.name);
+            this.getIsUserInBlackList(blacklistNames);
+          });
+        }, 7000);
+      })
+      .then(() => {
+        this.setState({ isUserInBlacklist: id === 'addUsersToBlackList' });
         message.success(
-          this.props.intl.formatMessage({
-            id: 'user_was_added_to_blacklist',
-            defaultMessage: 'Users were added to blacklist',
-          }),
+          this.props.intl.formatMessage(
+            isUserInBlacklist
+              ? {
+                  id: 'user_was_deleted_from_blacklist',
+                  defaultMessage: 'User was deleted from the blacklist',
+                }
+              : {
+                  id: 'user_was_added_to_blacklist',
+                  defaultMessage: 'Users were added to blacklist',
+                },
+          ),
         );
       })
       .catch(error => {
@@ -190,8 +223,9 @@ export default class CampaignButtons extends React.Component {
 
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
+    const { isUserInBlacklist } = this.state;
     if (match.params.filterKey === 'messages') {
-      return popoverDataMessages[propositionStatus] || [];
+      return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
   };
@@ -220,6 +254,7 @@ export default class CampaignButtons extends React.Component {
       user,
       toggleModal,
     } = this.props;
+    const { isUserInBlacklist } = this.state;
 
     const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
 
@@ -352,8 +387,19 @@ export default class CampaignButtons extends React.Component {
                       );
                     case 'add_to_blacklist':
                       return (
-                        <PopoverMenuItem key={item.key}>
-                          <div role="presentation" onClick={this.handleAddToBlacklistClick}>
+                        <PopoverMenuItem key={item.key} disabled={isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'delete_from_blacklist':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={!isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
                             {intl.formatMessage({
                               id: item.id,
                               defaultMessage: item.defaultMessage,

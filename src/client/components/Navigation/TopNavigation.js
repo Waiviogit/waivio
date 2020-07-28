@@ -21,6 +21,7 @@ const LINKS = {
   TOOLS_EDIT_PROFILE: '/edit-profile',
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
+  TOOLS_SETTINGS_GUESTS: '/guests-settings',
   ABOUT: '/object/ylr-waivio',
   NOTIFICATIONS: '/notifications-list',
   USERS: '/discover',
@@ -35,6 +36,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_EDIT_PROFILE,
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
+  LINKS.TOOLS_SETTINGS_GUESTS,
 ];
 
 const TopNavigation = ({ location: { pathname } }) => {
