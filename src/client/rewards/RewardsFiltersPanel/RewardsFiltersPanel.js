@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
-import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+} from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
 const RewardsFiltersPanel = ({
@@ -59,7 +62,7 @@ const RewardsFiltersPanel = ({
 
   const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
     () => ({
-      campaignsTypesMessages: ['all', 'open', 'close'],
+      campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
       sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
     }),

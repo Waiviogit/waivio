@@ -1271,5 +1271,8 @@
   "email_link_details": "Все запросы на вывод средств должны быть подтверждены по электронной почте.",
   "guests_account_settings": "Настройки учетной записи гостя",
   "guest_settings": "Гостевые настройки",
+  "mobnav_guest_settings": "Гостевые настройки",
+  "register_email": "Зарегистрируйте емайл",
+  "guest_settings": "Гостевые настройки",
   "your_list_is_empty": "Ваш список пустой"
 }
