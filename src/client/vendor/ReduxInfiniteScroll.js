@@ -125,7 +125,9 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   renderLoader() {
-    return this.props.loadingMore && this.props.showLoader ? this.props.loader : undefined;
+    return this.props.loadingMore || (this.props.hasMore && this.props.showLoader)
+      ? this.props.loader
+      : undefined;
   }
 
   _assignHolderClass() {

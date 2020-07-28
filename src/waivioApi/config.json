@@ -39,6 +39,7 @@
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "history": "/history",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
@@ -91,5 +92,6 @@
   "confirmEmail": "/confirm-email-request",
   "validateAddress": "/validate-crypto-wallet",
   "finalConfirmTransaction": "/confirm-transaction",
-  "getWithdrawData": "/get-withdraw-data"
+  "getWithdrawData": "/get-withdraw-data",
+  "setPendingStatus": "/set-pending-transfer"
 }

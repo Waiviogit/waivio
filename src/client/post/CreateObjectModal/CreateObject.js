@@ -177,7 +177,7 @@ class CreateObject extends React.Component {
             console.log('\tObject creation:: ', error);
             this.props.notify(
               this.props.intl.formatMessage({
-                id: 'create_object_error',
+                id: error,
                 defaultMessage: 'Something went wrong. Object is not created',
               }),
               'error',

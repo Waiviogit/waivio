@@ -54,6 +54,7 @@ export const getObjectInfo = (authorPermlink, username, requiredField) => dispat
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
+// eslint-disable-next-line consistent-return
 export const createWaivioObject = postData => (dispatch, getState) => {
   const { auth, settings } = getState();
 
@@ -62,6 +63,42 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   }
 
   const { votePower, follow, ...wobj } = postData;
+
+  if (wobj.type === 'hashtag') {
+    return dispatch({
+      type: CREATE_WOBJECT,
+      payload: {
+        promise: new Promise((resolve, reject) =>
+          ApiClient.getObject(wobj.name, auth.user.name)
+            .then(() => reject('object_exist'))
+            .catch(() => {
+              const requestBody = {
+                author: auth.user.name,
+                title: `${wobj.name} - waivio object`,
+                body: `Waivio object "${wobj.name}" has been created`,
+                permlink: wobj.name,
+                objectName: wobj.name,
+                locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
+                type: wobj.type,
+                isExtendingOpen: Boolean(wobj.isExtendingOpen),
+                isPostingOpen: Boolean(wobj.isPostingOpen),
+                parentAuthor: wobj.parentAuthor,
+                parentPermlink: wobj.parentPermlink,
+              };
+              return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+                if (follow) {
+                  dispatch(followObject(response.permlink));
+                }
+
+                dispatch(voteObject(response.author, response.permlink, votePower));
+
+                return resolve(response);
+              });
+            }),
+        ),
+      },
+    });
+  }
 
   return dispatch({
     type: CREATE_WOBJECT,

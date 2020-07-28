@@ -1,9 +1,10 @@
 import { Checkbox } from 'antd';
-import _ from 'lodash';
+import { map, includes } from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { payablesFilterData } from '../rewardsHelper';
+import { REWARDS_TYPES_MESSAGES } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
 const RewardsFiltersPanel = ({
@@ -15,24 +16,54 @@ const RewardsFiltersPanel = ({
   setPayablesFilterValue,
   intl,
   location,
+  activeMessagesFilters,
+  activeHistoryFilters,
+  messagesSponsors,
+  setActiveMessagesFilters,
 }) => {
-  const filterLayout = (filterName, key, checked) => (
-    <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
-      <Checkbox onChange={() => setFilterValue(filterName, key)} checked={checked} />
-      <div className="RewardsFiltersPanel__name">{filterName}</div>
-    </div>
+  const handleChange = useCallback(
+    (filterName, key) => {
+      if (location.pathname !== '/rewards/history' && location.pathname !== '/rewards/messages') {
+        setFilterValue(filterName, key);
+      } else {
+        setActiveMessagesFilters(filterName, key);
+      }
+    },
+    [location.pathname, setFilterValue, setActiveMessagesFilters],
   );
 
-  const filterPaymentLayout = (obj, checked) => (
-    <div key={`${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
-      <Checkbox onChange={() => setPayablesFilterValue(obj)} checked={checked} />
-      <div className="RewardsFiltersPanel__name">
-        {intl.formatMessage(
-          { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
-          { value: obj.value },
-        )}
+  const filterLayout = useCallback(
+    (filterName, key, checked) => (
+      <div key={`${key}-${filterName}`} className="RewardsFiltersPanel__item-wrap">
+        <Checkbox onChange={() => handleChange(filterName, key)} checked={checked} />
+        <div className="RewardsFiltersPanel__name">{filterName}</div>
       </div>
-    </div>
+    ),
+    [handleChange],
+  );
+
+  const filterPaymentLayout = useCallback(
+    (obj, checked) => (
+      <div key={`${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
+        <Checkbox onChange={() => setPayablesFilterValue(obj)} checked={checked} />
+        <div className="RewardsFiltersPanel__name">
+          {intl.formatMessage(
+            { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
+            { value: obj.value },
+          )}
+        </div>
+      </div>
+    ),
+    [setPayablesFilterValue, intl.formatMessage],
+  );
+
+  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
+    () => ({
+      campaignsTypesMessages: ['all', 'open', 'close'],
+      rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
+      sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
+    }),
+    [sponsors, messagesSponsors, location.pathname],
   );
 
   return (
@@ -42,8 +73,9 @@ const RewardsFiltersPanel = ({
           <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
-        {location.pathname !== '/rewards/payables' &&
-        location.pathname !== '/rewards/receivables' ? (
+        {includes(location.pathname, 'all') ||
+        includes(location.pathname, 'active') ||
+        includes(location.pathname, 'reserved') ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -51,8 +83,8 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Rewards for`,
               })}:`}
             </div>
-            {_.map(campaignsTypes, type =>
-              filterLayout(type, 'types', _.includes(activeFilters.types, type)),
+            {map(campaignsTypes, type =>
+              filterLayout(type, 'types', includes(activeFilters.types, type)),
             )}
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -60,27 +92,78 @@ const RewardsFiltersPanel = ({
                 defaultMessage: `Sponsors`,
               })}:`}
             </div>
-            {_.map(sponsors, sponsor =>
-              filterLayout(sponsor, 'guideNames', _.includes(activeFilters.guideNames, sponsor)),
+            {map(sponsorsData, sponsor =>
+              filterLayout(sponsor, 'guideNames', includes(activeFilters.guideNames, sponsor)),
             )}
           </React.Fragment>
         ) : (
+          !includes(location.pathname, 'messages') &&
+          !includes(location.pathname, 'history') && (
+            <React.Fragment>
+              <div className="RewardsFiltersPanel__title-text">
+                {location.pathname === '/rewards/payables'
+                  ? intl.formatMessage({
+                      id: 'payables',
+                      defaultMessage: 'Payables',
+                    })
+                  : intl.formatMessage({
+                      id: 'sidenav_rewards_receivables',
+                      defaultMessage: 'Receivables',
+                    })}
+              </div>
+              {map(payablesFilterData(location), payable =>
+                filterPaymentLayout(
+                  payable,
+                  activePayableFilters.some(f => f.filterName === payable.filterName),
+                ),
+              )}
+            </React.Fragment>
+          )
+        )}
+        {location.pathname === '/rewards/messages' && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
-              {location.pathname === '/rewards/payables'
-                ? intl.formatMessage({
-                    id: 'payables',
-                    defaultMessage: 'Payables',
-                  })
-                : intl.formatMessage({
-                    id: 'sidenav_rewards_receivables',
-                    defaultMessage: 'Receivables',
-                  })}
+              {`${intl.formatMessage({
+                id: 'case_status',
+                defaultMessage: 'Case status',
+              })}:`}
             </div>
-            {_.map(payablesFilterData(location), payable =>
-              filterPaymentLayout(
-                payable,
-                activePayableFilters.some(f => f.filterName === payable.filterName),
+            {map(campaignsTypesMessages, type =>
+              filterLayout(type, 'caseStatus', activeMessagesFilters.caseStatus === type),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeMessagesFilters.rewards, type)),
+            )}
+          </React.Fragment>
+        )}
+        {location.pathname === '/rewards/history' && (
+          <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeHistoryFilters.rewards, type)),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {intl.formatMessage({
+                id: 'sponsors',
+                defaultMessage: 'Sponsors',
+              })}
+            </div>
+            {map(sponsorsData, sponsor =>
+              filterLayout(
+                sponsor,
+                'messagesSponsors',
+                includes(activeHistoryFilters.messagesSponsors, sponsor),
               ),
             )}
           </React.Fragment>
@@ -94,17 +177,23 @@ RewardsFiltersPanel.propTypes = {
   sponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeFilters: PropTypes.shape().isRequired,
+  activeMessagesFilters: PropTypes.shape(),
+  activeHistoryFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
   setPayablesFilterValue: PropTypes.func.isRequired,
+  setActiveMessagesFilters: PropTypes.func.isRequired,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 RewardsFiltersPanel.defaultProps = {
   sponsors: [],
   campaignsTypes: [],
   activeFilters: {},
+  activeMessagesFilters: {},
+  activeHistoryFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);

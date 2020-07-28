@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, isNaN } from 'lodash';
+import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
-import { closeTransfer } from './walletActions';
+import { closeTransfer, sendPendingTransfer } from './walletActions';
 import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
@@ -27,7 +28,7 @@ import {
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
 } from '../reducers';
-import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
+import { sendGuestTransfer } from '../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
 import { BANK_ACCOUNT } from '../../common/constants/waivio';
 import { guestUserRegex } from '../helpers/regexHelpers';
@@ -67,6 +68,7 @@ const InputGroup = Input.Group;
     notify,
     saveSettings,
     openLinkHiveAccountModal,
+    sendPendingTransfer,
   },
 )
 @Form.create()
@@ -92,6 +94,8 @@ export default class Transfer extends React.Component {
     saveSettings: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
+    sendPendingTransfer: PropTypes.func.isRequired,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -128,6 +132,7 @@ export default class Transfer extends React.Component {
     currency: Transfer.CURRENCIES.HIVE,
     oldAmount: undefined,
     searchBarValue: '',
+    searchName: '',
     dropdownOpen: false,
     currentEstimate: null,
     isSelected: false,
@@ -226,7 +231,20 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form, isGuest, memo, app } = this.props;
+    const {
+      form,
+      isGuest,
+      memo,
+      app,
+      sendPendingTransfer: sendPendingTransferAction,
+      amount,
+      to,
+      user,
+      history,
+    } = this.props;
+    const sponsor = user.name;
+    const transactionId = uuidv4();
+    const userName = to;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -282,6 +300,8 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
+        if (includes(history.location.pathname, 'payables'))
+          sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
         this.props.closeTransfer();
       }
     });
@@ -336,26 +356,7 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-
-    getUserAccount(value, false).then(result => {
-      if (!isEmpty(result)) {
-        callback();
-      } else {
-        callback([
-          new Error(
-            intl.formatMessage(
-              {
-                id: 'to_error_not_found_username',
-                defaultMessage: "Couldn't find user with name {username}.",
-              },
-              {
-                username: value,
-              },
-            ),
-          ),
-        ]);
-      }
-    });
+    callback();
   };
 
   validateBalance = (rule, value, callback) => {
@@ -392,8 +393,9 @@ export default class Transfer extends React.Component {
 
   showSelectedUser = () => {
     const { to, hiveBeneficiaryAccount, isGuest, form, amount } = this.props;
-    const { searchBarValue } = this.state;
-    const userName = isEmpty(searchBarValue) ? to : searchBarValue;
+    const { searchName } = this.state;
+
+    const userName = isEmpty(searchName) ? to : searchName;
     const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
     if (isGuest && hiveBeneficiaryAccount && !form.getFieldValue('to')) {
       this.props.form.setFieldsValue({
@@ -413,7 +415,7 @@ export default class Transfer extends React.Component {
             onClick={() =>
               this.setState({
                 isSelected: false,
-                searchBarValue: '',
+                searchName: '',
                 isClosedFind: true,
               })
             }
@@ -425,14 +427,14 @@ export default class Transfer extends React.Component {
   };
 
   handleUserSelect = selected => {
-    this.setState({ isSelected: true, isClosedFind: false, searchBarValue: selected.account });
+    this.setState({ isSelected: true, isClosedFind: false, searchName: selected.account });
     if (selected && this.props.isGuest && !this.props.hiveBeneficiaryAccount)
       this.setState({ hiveBeneficiaryAccount: selected.account });
   };
 
   handleUnselectUser = () => {
     this.setState({
-      searchBarValue: '',
+      searchName: '',
       hiveBeneficiaryAccount: '',
     });
   };
