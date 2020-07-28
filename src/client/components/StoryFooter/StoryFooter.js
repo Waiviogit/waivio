@@ -8,7 +8,7 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
-import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
+import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 
 import './StoryFooter.less';
 
@@ -171,6 +171,7 @@ class StoryFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
+            isPostCashout={isPostCashout(post)}
           />
         )}
         {!singlePostVew && (

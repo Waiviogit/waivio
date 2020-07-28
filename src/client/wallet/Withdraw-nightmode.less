@@ -4,7 +4,7 @@
 .nightmode {
   .Withdraw {
     &__title-footer {
-      color: @black;
+      color: @white;
     }
 
     &__wrapper-footer {
@@ -28,18 +28,10 @@
       }
     }
 
-    &__input-wrapper {
-      border: 1px solid @normal-grey;
-    }
-
     &__input-text {
       background: transparent;
       color: @white;
-    }
-
-    &__switcher-wrapper {
-      background-color: transparent;
-      border-left: 1px solid @normal-grey;
+      border-color: @normal-grey;
     }
 
     &__switcher-button {
@@ -72,6 +64,10 @@
         &:first-child {
           border-radius: 4px 0 0 4px;
           border-left: 1px solid @orange-hot;
+
+          @media @small {
+            border-radius: 0;
+          }
         }
 
         &:last-child {

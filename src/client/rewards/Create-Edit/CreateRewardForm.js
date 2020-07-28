@@ -1,4 +1,4 @@
-import { isEmpty, map, includes } from 'lodash';
+import { isEmpty, map, includes, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { getClientWObj } from '../../adapters';
 import { AppSharedContext } from '../../Wrapper';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../../waivioApi/config';
-import { getRate, getRewardFund } from '../../reducers';
+import { getRate, getRewardFund, getWeightValue } from '../../reducers';
 import './CreateReward.less';
 
 @withRouter
@@ -23,6 +23,10 @@ import './CreateReward.less';
   state => ({
     rate: getRate(state),
     rewardFund: getRewardFund(state),
+    minExpertiseValue: getWeightValue(
+      state,
+      get(state, ['campaign', 'userRequirements', 'minExpertise']),
+    ),
   }),
   {},
 )
@@ -39,6 +43,7 @@ class CreateRewardForm extends React.Component {
     usedLocale: PropTypes.string,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    minExpertiseValue: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
@@ -46,6 +51,7 @@ class CreateRewardForm extends React.Component {
     usedLocale: 'en-US',
     form: {},
     currentSteemDollarPrice: 0,
+    minExpertiseValue: 0,
   };
   state = {
     campaignName: '',
@@ -86,7 +92,7 @@ class CreateRewardForm extends React.Component {
   };
 
   componentDidMount = async () => {
-    const { rate, rewardFund } = this.props;
+    const { minExpertiseValue } = this.props;
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -134,12 +140,7 @@ class CreateRewardForm extends React.Component {
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
-      const minExpertise = (
-        (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
-        rewardFund.reward_balance.replace(' HIVE', '') *
-        rate *
-        1000000
-      ).toFixed(4);
+      const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -232,9 +233,9 @@ class CreateRewardForm extends React.Component {
       whitelist_users: [],
       count_reservation_days: data.reservationPeriod,
       userRequirements: {
-        minFollowers: data.minFollowers,
-        minPosts: data.minPosts,
-        minExpertise: minExpertisePrepared,
+        minFollowers: data.minFollowers || 0,
+        minPosts: data.minPosts || 0,
+        minExpertise: minExpertisePrepared || 0,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,

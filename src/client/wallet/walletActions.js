@@ -12,6 +12,7 @@ import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryH
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getTransferHistory } from '../../waivioApi/ApiClient';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -41,6 +42,8 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
+
+export const SET_PENDING_TRANSFER = '@wallet/SET_PENDING_TRANSFER';
 
 export const openTransfer = (userName, amount = 0, currency = 'HIVE', memo = '', app) => dispatch =>
   dispatch({
@@ -104,6 +107,8 @@ const parseGuestActions = actions => {
           amount: `${action.amount} HIVE`,
           memo: action.memo || '',
           typeTransfer: action.type,
+          details: action.details || null,
+          username: action.userName,
         },
       ],
       actionCount: index + 1,
@@ -233,32 +238,48 @@ export const getUserAccountHistory = username => dispatch => {
   });
 };
 
-export const getUserTransactionHistory = (username, skip, limit) => dispatch =>
+export const getUserTransactionHistory = (username, limit, operationNum) => dispatch =>
   dispatch({
     type: GET_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, skip, limit)
+      promise: getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
+          operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
         .catch(error => console.log(error)),
     },
   });
 
-export const getMoreUserTransactionHistory = (username, skip, limit) => dispatch =>
+export const GET_ERROR_LOADING_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
+
+export const getMoreUserTransactionHistory = (username, limit, operationNum) => dispatch =>
   dispatch({
     type: GET_MORE_TRANSACTIONS_HISTORY.ACTION,
     payload: {
-      promise: getTransferHistory(username, skip, limit)
+      promise: getTransferHistory(username, limit, operationNum)
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
+          operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
-        .catch(error => console.log(error)),
+        .catch(error => {
+          console.log(error);
+          return dispatch({
+            type: GET_ERROR_LOADING_TRANSACTIONS,
+          });
+        }),
     },
+  });
+
+export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
+
+export const clearTransactionsHistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TRANSACTIONS_HISTORY,
   });
 
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
@@ -272,4 +293,16 @@ export const openWithdraw = () => dispatch =>
 export const closeWithdraw = () => dispatch =>
   dispatch({
     type: CLOSE_WITHDRAW,
+  });
+
+export const sendPendingTransfer = ({
+  sponsor,
+  userName,
+  amount,
+  transactionId,
+  memo,
+}) => dispatch =>
+  dispatch({
+    type: SET_PENDING_TRANSFER,
+    payload: ApiClient.sendPendingTransfer({ sponsor, userName, amount, transactionId, memo }),
   });

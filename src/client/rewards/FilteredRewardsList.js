@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
@@ -27,6 +27,8 @@ const FilteredRewardsList = props => {
     sortEligible,
     sortAll,
     sortReserved,
+    sortHistory,
+    sortMessages,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
@@ -35,14 +37,75 @@ const FilteredRewardsList = props => {
     activeFilters,
     setFilterValue,
     campaignsTypes,
+    messages,
+    location,
+    activeMessagesFilters,
+    getHistory,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const sort = getSort(match, sortAll, sortEligible, sortReserved);
+  const sort = getSort(match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
-  const IsRequiredObjectWrap = !match.params.campaignParent;
+  const IsRequiredObjectWrap =
+    !match.params.campaignParent &&
+    match.params.filterKey !== 'history' &&
+    match.params.filterKey !== 'messages';
+
+  const sortRewards = useMemo(() => {
+    if (location === '/rewards/messages') {
+      return [
+        {
+          key: 'inquiryDate',
+          id: 'inquiry_date',
+          defaultMessage: 'Inquiry date',
+        },
+        {
+          key: 'latest',
+          id: 'latest',
+          defaultMessage: 'Latest',
+        },
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+      ];
+    }
+    if (location === '/rewards/history') {
+      return [
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+        {
+          key: 'lastAction',
+          id: 'action_date',
+          defaultMessage: 'Action (date)',
+        },
+      ];
+    }
+    return [
+      {
+        key: 'reward',
+        id: 'amount_sort',
+        defaultMessage: 'amount',
+      },
+      {
+        key: 'date',
+        id: 'expiry_sort',
+        defaultMessage: 'expiry',
+      },
+      {
+        key: 'proximity',
+        id: 'proximity_sort',
+        defaultMessage: 'proximity',
+      },
+    ];
+  }, [location]);
+
   return !loadingCampaigns ? (
     <React.Fragment>
       <RewardBreadcrumb
@@ -53,13 +116,17 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        location={location}
       />
       {isSearchAreaFilter && (
         <Tag className="ttc" key="search-area-filter" closable onClose={resetMapFilter}>
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
+      {!IsRequiredObjectWrap &&
+      filterKey !== 'history' &&
+      propositions.length &&
+      propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}
@@ -70,21 +137,13 @@ const FilteredRewardsList = props => {
         </div>
       ) : (
         <SortSelector sort={sort} onChange={handleSortChange}>
-          <SortSelector.Item key="reward">
-            <FormattedMessage id="amount_sort" defaultMessage="amount">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="date">
-            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="proximity">
-            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
+          {map(sortRewards, item => (
+            <SortSelector.Item key={item.key}>
+              <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
+                {msg => msg}
+              </FormattedMessage>
+            </SortSelector.Item>
+          ))}
         </SortSelector>
       )}
       {!isEmpty(sponsors) && (
@@ -127,7 +186,14 @@ const FilteredRewardsList = props => {
           loadingMore={loading}
           loader={<Loading />}
         >
-          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
+          {campaignsLayoutWrapLayout(
+            IsRequiredObjectWrap,
+            filterKey,
+            userName,
+            match,
+            messages,
+            getHistory,
+          )}
         </ReduxInfiniteScroll>
       </div>
 
@@ -145,6 +211,7 @@ const FilteredRewardsList = props => {
         <FilterModal
           intl={intl}
           activeFilters={activeFilters}
+          activeMessagesFilters={activeMessagesFilters}
           filters={{ types: campaignsTypes, guideNames: sponsors }}
           setFilterValue={setFilterValue}
         />
@@ -166,11 +233,15 @@ FilteredRewardsList.defaultProps = {
   loading: false,
   sponsors: [],
   campaignsTypes: [],
+  messages: [],
   setFilterValue: () => {},
   handleLoadMore: () => {},
   resetMapFilter: () => {},
   activeFilters: {},
+  activeMessagesFilters: {},
   userName: '',
+  sortHistory: 'reservation',
+  sortMessages: 'inquiryDate',
 };
 
 FilteredRewardsList.propTypes = {
@@ -192,8 +263,14 @@ FilteredRewardsList.propTypes = {
   handleLoadMore: PropTypes.func,
   sponsors: PropTypes.arrayOf(PropTypes.string),
   activeFilters: PropTypes.shape(),
+  activeMessagesFilters: PropTypes.shape(),
   setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
+  messages: PropTypes.arrayOf(PropTypes.shape()),
+  location: PropTypes.string.isRequired,
+  sortHistory: PropTypes.string,
+  sortMessages: PropTypes.string,
+  getHistory: PropTypes.func.isRequired,
 };
 
 export default FilteredRewardsList;

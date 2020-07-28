@@ -71,6 +71,9 @@ const WalletTransaction = ({
             memo={transactionDetails.memo}
             amount={getFormattedTransactionAmount(transactionDetails.amount)}
             timestamp={transaction.timestamp}
+            details={transactionDetails.details}
+            type={transactionDetails.typeTransfer}
+            username={transactionDetails.username}
           />
         );
       }
