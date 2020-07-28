@@ -359,37 +359,40 @@ class ObjectInfo extends React.Component {
       const fieldsCount = getFieldsCount(wobject, name);
       const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
 
-      return shouldDisplay && (content || accessExtend) ? (
-        <div className="field-info">
-          <React.Fragment>
-            {accessExtend && (
-              <div className="field-info__title">
-                <Proposition
-                  objectID={wobject.author_permlink}
-                  fieldName={name}
-                  objName={wobject.name || wobject.default_name}
-                  handleSelectField={this.handleSelectField}
-                  selectedField={selectedField}
-                  linkTo={
-                    name === objectFields.pageContent
-                      ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
-                      : ''
-                  }
-                />
-                {fieldsCount}
-              </div>
-            )}
-            {content ? (
-              <div
-                className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
-                data-test={`${name}-field-view`}
-              >
-                {content}
-              </div>
-            ) : null}
-          </React.Fragment>
-        </div>
-      ) : null;
+      return (
+        shouldDisplay &&
+        (content || accessExtend) && (
+          <div className="field-info">
+            <React.Fragment>
+              {accessExtend && (
+                <div className="field-info__title">
+                  <Proposition
+                    objectID={wobject.author_permlink}
+                    fieldName={name}
+                    objName={wobject.name || wobject.default_name}
+                    handleSelectField={this.handleSelectField}
+                    selectedField={selectedField}
+                    linkTo={
+                      name === objectFields.pageContent
+                        ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
+                        : ''
+                    }
+                  />
+                  {fieldsCount}
+                </div>
+              )}
+              {content && (
+                <div
+                  className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
+                  data-test={`${name}-field-view`}
+                >
+                  {content}
+                </div>
+              )}
+            </React.Fragment>
+          </div>
+        )
+      );
     };
 
     const getMenuSectionLink = item => {
@@ -445,29 +448,27 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         <div className="object-sidebar__menu-items">
-          {isEditMode && (
-            <React.Fragment>
-              {listItem(
-                TYPES_OF_MENU_ITEM.LIST,
-                menuLists && menuLists.map(item => getMenuSectionLink(item)),
-              )}
-              {listItem(
-                TYPES_OF_MENU_ITEM.PAGE,
-                menuPages && menuPages.map(item => getMenuSectionLink(item)),
-              )}
-              {listItem(
-                objectFields.button,
-                button &&
-                  button.title &&
-                  button.link &&
-                  getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
-              )}
-              {listItem(
-                objectFields.newsFilter,
-                newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
-              )}
-            </React.Fragment>
-          )}
+          <React.Fragment>
+            {listItem(
+              TYPES_OF_MENU_ITEM.LIST,
+              menuLists && menuLists.map(item => getMenuSectionLink(item)),
+            )}
+            {listItem(
+              TYPES_OF_MENU_ITEM.PAGE,
+              menuPages && menuPages.map(item => getMenuSectionLink(item)),
+            )}
+            {listItem(
+              objectFields.button,
+              button &&
+                button.title &&
+                button.link &&
+                getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
+            )}
+            {listItem(
+              objectFields.newsFilter,
+              newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+            )}
+          </React.Fragment>
           {!isEditMode &&
             menuLists &&
             sortListItemsBy(

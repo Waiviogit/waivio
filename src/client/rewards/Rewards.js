@@ -131,13 +131,9 @@ class Rewards extends React.Component {
     activeMessagesFilters: {
       caseStatus: '',
       rewards: [],
-      status: [],
-      messagesSponsors: [],
     },
     activeHistoryFilters: {
-      caseStatus: '',
       rewards: [],
-      status: [],
       messagesSponsors: [],
     },
   };
@@ -265,11 +261,15 @@ class Rewards extends React.Component {
         break;
       case 'days':
       case 'moreDays':
+      case 'otherDays':
       default:
         if (findIndex(activeFilters, { filterName: filterValue.filterName }) === -1) {
           activeFilters = filter(
             activeFilters,
-            item => item.filterName !== 'days' && item.filterName !== 'moreDays',
+            item =>
+              item.filterName !== 'days' &&
+              item.filterName !== 'moreDays' &&
+              item.filterName !== 'otherDays',
           );
           activeFilters.push(filterValue);
         } else {
@@ -467,6 +467,7 @@ class Rewards extends React.Component {
     match,
     messages,
     getHistory,
+    blacklistUsers,
   ) => {
     const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
     const propositionsUniq = match.params.campaignParent
@@ -528,6 +529,7 @@ class Rewards extends React.Component {
                 user={user}
                 match={this.props.match}
                 getMessageHistory={getMessageHistory}
+                blacklistUsers={blacklistUsers}
               />
             ),
         ),
