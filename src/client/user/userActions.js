@@ -299,6 +299,46 @@ export const rejectReview = ({
   });
 };
 
+export const increaseReward = ({
+  companyAuthor,
+  username,
+  reservationPermlink,
+  objPermlink,
+  appName,
+  amount,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Increase reward',
+      body: `Sponsor ${username} (@${username}) has increased the reward `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'waivio_raise_review_reward',
+          riseAmount: amount,
+          activationPermlink: objPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
 export const pendingUpdateSuccess = () => dispatch =>
   dispatch({
     type: SET_PENDING_UPDATE.SUCCESS,

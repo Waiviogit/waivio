@@ -550,6 +550,11 @@ export const popoverDataMessages = {
       id: 'add_to_blacklist',
       defaultMessage: 'Add to blacklist',
     },
+    {
+      key: 'add',
+      id: 'increase_reward',
+      defaultMessage: 'Increase reward',
+    },
   ],
   completed: [
     {

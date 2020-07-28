@@ -838,5 +838,6 @@
   "currency": "Валюта",
   "paid_hive": "Сплачено (HIVE)",
   "review": "Огляд",
-  "review_rejected": "Огляд відхилено"
+  "review_rejected": "Огляд відхилено",
+  "increase_reward" : "Збільшуйте нагороду"
 }
