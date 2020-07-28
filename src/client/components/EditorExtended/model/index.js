@@ -28,6 +28,7 @@ export const getCurrentBlock = editorState => {
 Adds a new block (currently replaces an empty block) at the current cursor position
 of the given `newType`.
 */
+
 export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData = {}) => {
   const selectionState = editorState.getSelection();
   if (!selectionState.isCollapsed()) {
@@ -52,6 +53,7 @@ export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData =
       blockMap: blockMap.set(key, newBlock),
       selectionAfter: selectionState,
     });
+
     return EditorState.push(editorState, newContentState, 'change-block-type');
   }
   return editorState;
@@ -130,15 +132,21 @@ export const addNewBlockAt = (
   });
 
   const newBlockMap = blocksBefore
-    .concat([[pivotBlockKey, block], [newBlockKey, newBlock]], blocksAfter)
+    .concat(
+      [
+        [pivotBlockKey, block],
+        [newBlockKey, newBlock],
+      ],
+      blocksAfter,
+    )
     .toOrderedMap();
 
   const selection = editorState.getSelection();
 
   const newContent = content.merge({
     blockMap: newBlockMap,
-    selectionBefore: selection,
-    selectionAfter: selection.merge({
+    selectionAfter: selection,
+    selectionBefore: selection.merge({
       anchorKey: newBlockKey,
       anchorOffset: 0,
       focusKey: newBlockKey,

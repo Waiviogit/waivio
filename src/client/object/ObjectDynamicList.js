@@ -1,9 +1,10 @@
-import _ from 'lodash';
+import { size, union, map } from 'lodash';
 import React from 'react';
 import { message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
@@ -11,6 +12,7 @@ import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { followWobject, unfollowWobject } from './wobjActions';
 import { getAuthenticatedUserName, isGuestUser } from '../reducers';
+import { changeCounterFollow } from '../user/usersActions';
 
 import './ObjectDynamicList.less';
 
@@ -23,8 +25,14 @@ class ObjectDynamicList extends React.Component {
     expertize: PropTypes.bool,
     unfollowWobj: PropTypes.func,
     followWobj: PropTypes.func,
+    changeCounterFollow: PropTypes.func,
     isGuest: PropTypes.bool,
     authUser: PropTypes.string,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -33,6 +41,7 @@ class ObjectDynamicList extends React.Component {
     expertize: false,
     unfollowWobj: () => {},
     followWobj: () => {},
+    changeCounterFollow: () => {},
     isGuest: false,
     authUser: '',
   };
@@ -57,8 +66,8 @@ class ObjectDynamicList extends React.Component {
             this.setState(
               state => ({
                 loading: false,
-                hasMore: _.size(newWobjects.wobjects) === limit,
-                wobjects: _.union(state.wobjects, newWobjects.wobjects),
+                hasMore: size(newWobjects.wobjects) === limit,
+                wobjects: union(state.wobjects, newWobjects.wobjects),
               }),
               () => {
                 handleObjectCount(newWobjects.wobjects_count, isOnlyHashtags);
@@ -68,7 +77,7 @@ class ObjectDynamicList extends React.Component {
             this.setState(state => ({
               loading: false,
               hasMore: newWobjects.length === limit,
-              wobjects: _.union(state.wobjects, newWobjects),
+              wobjects: union(state.wobjects, newWobjects),
             }));
           }
         });
@@ -99,7 +108,7 @@ class ObjectDynamicList extends React.Component {
           pending: false,
         });
       }
-
+      this.props.changeCounterFollow(this.props.match.params.name, 'object');
       this.setState({ wobjects: [...wobjectsArray] });
     });
   };
@@ -130,7 +139,7 @@ class ObjectDynamicList extends React.Component {
           pending: false,
         });
       }
-
+      this.props.changeCounterFollow(this.props.match.params.name, 'object', true);
       this.setState({ wobjects: [...wobjectsArray] });
     });
   };
@@ -149,7 +158,7 @@ class ObjectDynamicList extends React.Component {
           loader={<Loading />}
           loadMore={this.handleLoadMore}
         >
-          {_.map(wobjects, wo => (
+          {map(wobjects, wo => (
             <ObjectCard
               key={wo.author_permlink}
               wobject={wo}
@@ -169,13 +178,16 @@ class ObjectDynamicList extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    isGuest: isGuestUser(state),
-    authUser: getAuthenticatedUserName(state),
-  }),
-  {
-    followWobj: followWobject,
-    unfollowWobj: unfollowWobject,
-  },
-)(ObjectDynamicList);
+export default withRouter(
+  connect(
+    state => ({
+      isGuest: isGuestUser(state),
+      authUser: getAuthenticatedUserName(state),
+    }),
+    {
+      followWobj: followWobject,
+      unfollowWobj: unfollowWobject,
+      changeCounterFollow,
+    },
+  )(ObjectDynamicList),
+);

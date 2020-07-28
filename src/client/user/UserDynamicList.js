@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router';
+
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { followUser, unfollowUser } from './usersActions';
+import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
 import { getAuthenticatedUserName, isGuestUser } from '../reducers';
 
 import './UserDynamicList.less';
@@ -21,6 +23,12 @@ class UserDynamicList extends React.Component {
     followUser: PropTypes.func.isRequired,
     authUser: PropTypes.string.isRequired,
     isGuest: PropTypes.bool.isRequired,
+    changeCounterFollow: PropTypes.func.isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }).isRequired,
   };
   static defaultProps = {
     showAuthorizedUser: false,
@@ -100,6 +108,7 @@ class UserDynamicList extends React.Component {
         });
       }
 
+      this.props.changeCounterFollow(this.props.match.params.name, 'user');
       this.setState({ users: [...usersArray] });
     });
   };
@@ -129,6 +138,7 @@ class UserDynamicList extends React.Component {
         });
       }
 
+      this.props.changeCounterFollow(this.props.match.params.name, 'user', true);
       this.setState({ users: [...usersArray] });
     });
   };
@@ -171,7 +181,10 @@ class UserDynamicList extends React.Component {
   }
 }
 
-export default connect(
-  state => ({ isGuest: isGuestUser(state), authUser: getAuthenticatedUserName(state) }),
-  { unfollowUser, followUser },
-)(UserDynamicList);
+export default withRouter(
+  connect(state => ({ isGuest: isGuestUser(state), authUser: getAuthenticatedUserName(state) }), {
+    unfollowUser,
+    followUser,
+    changeCounterFollow,
+  })(UserDynamicList),
+);

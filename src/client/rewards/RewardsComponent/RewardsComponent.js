@@ -32,6 +32,7 @@ const RewardsComponent = memo(
     sortAll,
     sortReserved,
     campaignsTypes,
+    setFilterValue,
   }) => {
     const dispatch = useDispatch();
 
@@ -101,6 +102,8 @@ const RewardsComponent = memo(
             handleLoadMore,
             userName: username,
             campaignsTypes,
+            setFilterValue,
+            activeFilters,
           }}
         />
       </div>
@@ -130,6 +133,7 @@ RewardsComponent.propTypes = {
   sortAll: PropTypes.string,
   sortReserved: PropTypes.string,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  setFilterValue: PropTypes.func,
 };
 
 RewardsComponent.defaultProps = {
@@ -144,6 +148,7 @@ RewardsComponent.defaultProps = {
   resetMapFilter: () => {},
   handleLoadMore: () => {},
   setSortValue: () => {},
+  setFilterValue: () => {},
   userLocation: {},
   sortEligible: 'proximity',
   sortAll: 'proximity',

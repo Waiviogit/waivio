@@ -138,6 +138,7 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [action.meta.username]: {
             ...state.users[action.meta.username],
+            followers_count: state.users[action.meta.username].followers_count - 1,
             youFollows: false,
             pending: false,
           },
@@ -264,6 +265,7 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [action.meta.username]: {
             ...state.users[action.meta.username],
+            followers_count: state.users[action.meta.username].followers_count + 1,
             youFollows: true,
             pending: false,
           },
@@ -302,6 +304,18 @@ export default function usersReducer(state = initialState, action) {
         },
       };
     }
+
+    case actions.CHANGE_COUNTER:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.payload.username]: {
+            ...state.users[action.payload.username],
+            [action.payload.key]: action.payload.counter,
+          },
+        },
+      };
 
     case GET_USER_ACCOUNT_HISTORY.SUCCESS: {
       // we get balance in payload only for guest users

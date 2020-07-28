@@ -297,7 +297,10 @@ export const getAllFollowingObjects = (username, skip, limit, authUser) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers: actualHeaders,
+      headers: {
+        ...actualHeaders,
+        app: config.appName,
+      },
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
@@ -331,7 +334,10 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser) =>
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
-      headers: actualHeaders,
+      headers: {
+        ...actualHeaders,
+        app: config.appName,
+      },
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -379,6 +385,7 @@ export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 
         headers: {
           follower,
           ...headers,
+          app: config.appName,
         },
         method: 'GET',
       },
@@ -524,6 +531,7 @@ export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectType
         ...headers,
         following: user,
         follower: user,
+        app: config.appName,
       },
       method: 'POST',
       body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
@@ -839,10 +847,18 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
         };
       }
       if (!globalReport) {
-        preparedObject = {
-          userName: user || sponsor,
-        };
-        if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
+        if (sponsor) {
+          preparedObject = {
+            sponsor: sponsor,
+          };
+        } else {
+          preparedObject = {
+            userName: user,
+          };
+        }
+
+        if (obj.days || obj.moreDays || obj.otherDays)
+          preparedObject.days = obj.days || obj.moreDays || obj.otherDays;
         if (obj.payable) preparedObject.payable = obj.payable;
       }
       return preparedObject;

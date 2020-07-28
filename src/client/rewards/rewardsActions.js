@@ -65,17 +65,13 @@ export const setDataForGlobalReport = payload => dispatch =>
 
 export const CHANGE_BLACK_AND_WHITE_LISTS = '@rewards/CHANGE_BLACK_AND_WHITE_LISTS';
 
-export const changeBlackAndWhiteLists = (id, usersNames, isFollow) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const changeBlackAndWhiteLists = (id, user) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   return dispatch({
     type: CHANGE_BLACK_AND_WHITE_LISTS,
     payload: {
-      promise: steemConnectAPI.changeBlackAndWhiteLists(username, id, usersNames, isFollow),
+      promise: steemConnectAPI.changeBlackAndWhiteLists(username, id, user),
     },
   });
 };
