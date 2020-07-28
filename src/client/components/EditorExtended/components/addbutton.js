@@ -35,18 +35,6 @@ export default class AddButton extends React.Component {
     const { editorState } = newProps;
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    // if (
-    //   !selectionState.isCollapsed() ||
-    //   selectionState.anchorKey !== selectionState.focusKey ||
-    //   contentState
-    //     .getBlockForKey(selectionState.getAnchorKey())
-    //     .getType()
-    //     .indexOf('atomic') >= 0
-    // ) {
-    //   // console.log('no sel');
-    //   this.hideBlock();
-    //   return;
-    // }
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
 
@@ -68,11 +56,6 @@ export default class AddButton extends React.Component {
       return;
     }
     this.blockKey = bkey;
-    // if (block.getLength() > 0) {
-    //   // console.log('no len');
-    //   this.hideBlock();
-    //   return;
-    // }
     setTimeout(this.findNode, 0);
   }
 
