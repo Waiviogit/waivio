@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import Avatar from '../../components/Avatar';
 import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
@@ -13,7 +13,7 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
   const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
   const isMessages = match && match.params.filterKey === 'messages';
   const rewardPriceHive = `${
-    !isEmpty(price) ? price.toFixed(3) : (campaignData.reward * currentUSDPrice).toFixed(3)
+    price ? price.toFixed(3) : (campaignData.reward * currentUSDPrice).toFixed(3)
   } HIVE`;
   const rewardPriceUsd = `${campaignData.reward} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
