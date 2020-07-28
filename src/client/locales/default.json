@@ -1269,5 +1269,7 @@
   "email_link_details": "All withdrawal requests must be confirmed by e-mail.",
   "guests_account_settings": "Guests Account Settings",
   "guest_settings": "Guests Settings",
-  "value_error_upper_case": "You can use only lowercase for hashtag name"
+  "value_error_upper_case": "You can use only lowercase for hashtag name",
+  "mobnav_guest_settings": "Guests Settings",
+  "register_email": "Register email"
 }
