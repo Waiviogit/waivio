@@ -25,34 +25,31 @@ export default class AddButton extends React.Component {
     this.sideControl = null;
 
     this.findNode = this.findNode.bind(this);
-    this.hideBlock = this.hideBlock.bind(this);
+    // this.hideBlock = this.hideBlock.bind(this);
     this.openToolbar = this.openToolbar.bind(this);
     this.renderControlElem = this.renderControlElem.bind(this);
   }
 
   // To show + button only when text length == 0
   componentWillReceiveProps(newProps) {
-    const { editorState, withTitleLine } = newProps;
+    const { editorState } = newProps;
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    if (
-      !selectionState.isCollapsed() ||
-      selectionState.anchorKey !== selectionState.focusKey ||
-      contentState
-        .getBlockForKey(selectionState.getAnchorKey())
-        .getType()
-        .indexOf('atomic') >= 0
-    ) {
-      // console.log('no sel');
-      this.hideBlock();
-      return;
-    }
+    // if (
+    //   !selectionState.isCollapsed() ||
+    //   selectionState.anchorKey !== selectionState.focusKey ||
+    //   contentState
+    //     .getBlockForKey(selectionState.getAnchorKey())
+    //     .getType()
+    //     .indexOf('atomic') >= 0
+    // ) {
+    //   // console.log('no sel');
+    //   this.hideBlock();
+    //   return;
+    // }
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
-    if (block.getLength() > 0 || (withTitleLine && block === contentState.getFirstBlock())) {
-      this.hideBlock();
-      return;
-    }
+
     if (block.getType() !== this.blockType) {
       this.blockType = block.getType();
       if (block.getLength() === 0) {
@@ -64,8 +61,6 @@ export default class AddButton extends React.Component {
     if (this.blockKey === bkey) {
       // console.log('block exists');
       if (block.getLength() > 0) {
-        this.hideBlock();
-      } else {
         this.setState({
           visible: true,
         });
@@ -73,23 +68,23 @@ export default class AddButton extends React.Component {
       return;
     }
     this.blockKey = bkey;
-    if (block.getLength() > 0) {
-      // console.log('no len');
-      this.hideBlock();
-      return;
-    }
+    // if (block.getLength() > 0) {
+    //   // console.log('no len');
+    //   this.hideBlock();
+    //   return;
+    // }
     setTimeout(this.findNode, 0);
   }
 
-  hideBlock() {
-    if (this.state.visible) {
-      this.setState({
-        visible: false,
-        isOpen: false,
-        isControlElem: false,
-      });
-    }
-  }
+  // hideBlock() {
+  //   if (this.state.visible) {
+  //     this.setState({
+  //       visible: false,
+  //       isOpen: false,
+  //       isControlElem: false,
+  //     });
+  //   }
+  // }
 
   openToolbar() {
     this.setState(

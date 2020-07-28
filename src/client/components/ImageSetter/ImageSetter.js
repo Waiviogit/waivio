@@ -272,7 +272,7 @@ ImageSetter.propTypes = {
 };
 
 ImageSetter.defaultProps = {
-  isMultiple: false,
+  isMultiple: true,
   defaultImage: '',
   isRequired: false,
   isTitle: true,

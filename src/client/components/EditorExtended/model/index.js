@@ -1,6 +1,6 @@
-import { List, Map } from 'immutable';
+import { List, Map, OrderedMap } from 'immutable';
 
-import { ContentBlock, EditorState, genKey } from 'draft-js';
+import { ContentBlock, EditorState, genKey, ContentState, SelectionState } from 'draft-js';
 import { Block, Entity } from '../util/constants';
 
 /*
@@ -55,6 +55,40 @@ export const addNewBlock = (editorState, newType = Block.UNSTYLED, initialData =
     return EditorState.push(editorState, newContentState, 'change-block-type');
   }
   return editorState;
+};
+
+export const addBlockAfter = (editorState, keyBefore, blockType, blockParams) => {
+  const newBlock = new ContentBlock({
+    key: genKey(),
+    type: blockType,
+    text: '',
+    characterList: List(),
+    depth: 0,
+    data: Map(getDefaultBlockData(blockType, blockParams)),
+  });
+
+  const contentState = editorState.getCurrentContent();
+  const oldBlockMap = contentState.getBlockMap();
+  const newBlockMap = OrderedMap().withMutations(map => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [k, v] of oldBlockMap.entries()) {
+      map.set(k, v);
+
+      if (keyBefore === k) {
+        map.set(newBlock.key, newBlock);
+      }
+    }
+  });
+
+  return EditorState.forceSelection(
+    EditorState.push(
+      editorState,
+      ContentState.createFromBlockArray(Array.from(newBlockMap.values()))
+        .set('selectionBefore', contentState.getSelectionBefore())
+        .set('selectionAfter', contentState.getSelectionAfter()),
+    ),
+    SelectionState.createEmpty(newBlock.key),
+  );
 };
 
 /*
@@ -130,7 +164,13 @@ export const addNewBlockAt = (
   });
 
   const newBlockMap = blocksBefore
-    .concat([[pivotBlockKey, block], [newBlockKey, newBlock]], blocksAfter)
+    .concat(
+      [
+        [pivotBlockKey, block],
+        [newBlockKey, newBlock],
+      ],
+      blocksAfter,
+    )
     .toOrderedMap();
 
   const selection = editorState.getSelection();
