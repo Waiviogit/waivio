@@ -1,6 +1,6 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated, getUser } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -115,4 +115,22 @@ export const getUserPrivateEmail = () => (dispatch, getState) => {
     });
   }
   return dispatch({ type: GET_USER_PRIVATE_EMAIL.ERROR, payload: Promise.resolve(null) });
+};
+
+export const CHANGE_COUNTER = '@users/CHANGE_COUNTER';
+
+export const changeCounterFollow = (username, type, follow = false) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getUser(state, username);
+  const key = type === 'user' ? 'users_following_count' : 'objects_following_count';
+  const counter = follow ? userName[key] + 1 : userName[key] - 1;
+
+  return dispatch({
+    type: CHANGE_COUNTER,
+    payload: {
+      counter,
+      username,
+      key,
+    },
+  });
 };
