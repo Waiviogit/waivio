@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedNumber } from 'react-intl';
-import { Icon, Button, message } from 'antd';
+import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -13,7 +13,7 @@ import Popover from '../../components/Popover';
 import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview } from '../../user/userActions';
+import { rejectReview, increaseReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
@@ -22,7 +22,7 @@ import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
-@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport })
+@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport, increaseReward })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -43,6 +43,7 @@ export default class CampaignButtons extends React.Component {
     user: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func,
     rejectReview: PropTypes.func.isRequired,
+    increaseReward: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
@@ -76,6 +77,8 @@ export default class CampaignButtons extends React.Component {
       loadingEdit: false,
       visible: false,
       isModalReportOpen: false,
+      isOpenModalEnterAmount: false,
+      value: '',
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -149,6 +152,49 @@ export default class CampaignButtons extends React.Component {
         reservationPermlink,
         objPermlink,
         appName,
+      })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'review_rejected',
+            defaultMessage: 'Review rejected',
+          }),
+        );
+      })
+      .then(() => {
+        setTimeout(() => this.props.getMessageHistory(), 8000);
+      })
+      .catch(e => message.error(e.message));
+  };
+
+  openModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: true });
+  closeModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: false });
+  handleChangeValue = value => {
+    this.setState({ value });
+  };
+
+  handleOkClick = () => {
+    this.handleIncreaseReward();
+    this.setState({ value: '' });
+  };
+  handleCancel = () => this.setState({ isOpenModalEnterAmount: false, value: '' });
+
+  handleIncreaseReward = () => {
+    const { proposition } = this.props;
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    const companyAuthor = get(proposition, ['guide', 'name']);
+    const companyPermlink = get(proposition, 'activation_permlink');
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+    const userName = get(proposition, ['users', '0', 'name']);
+    const amount = this.state.value;
+    return this.props
+      .increaseReward({
+        companyAuthor,
+        companyPermlink,
+        username: userName,
+        reservationPermlink,
+        appName,
+        amount,
       })
       .then(() => {
         message.success(
@@ -350,6 +396,17 @@ export default class CampaignButtons extends React.Component {
                           </div>
                         </PopoverMenuItem>
                       );
+                    case 'increase_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.openModalEnterAmount}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
                     case 'add_to_blacklist':
                       return (
                         <PopoverMenuItem key={item.key}>
@@ -410,6 +467,7 @@ export default class CampaignButtons extends React.Component {
       user,
       proposition,
     } = this.props;
+    const { value, isOpenModalEnterAmount } = this.state;
     const isAssigned = get(proposition, ['objects', '0', 'assigned']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
@@ -471,6 +529,21 @@ export default class CampaignButtons extends React.Component {
             {'>'}
           </Link>
         )}
+        <Modal
+          visible={isOpenModalEnterAmount}
+          onOk={this.handleOkClick}
+          onCancel={this.handleCancel}
+          style={{ width: '100px' }}
+        >
+          <InputNumber
+            placeholder={intl.formatMessage({
+              id: 'enter_amount',
+              defaultMessage: `Enter amount`,
+            })}
+            onChange={this.handleChangeValue}
+            value={value}
+          />
+        </Modal>
       </div>
     );
   }
