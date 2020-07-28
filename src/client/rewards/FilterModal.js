@@ -36,6 +36,7 @@ const FilterModal = ({ intl, filters, activeFilters, setFilterValue, activePayab
   const renderValues = (filterName, filterValues) =>
     map(sortStrings(filterValues), value => {
       const isChecked = get(activeFilters, [filterName], []).some(active => active === value);
+      console.log(filterName);
       return (
         <div key={`${filterName}_${value}`} className="collapsible-block__item">
           <Checkbox
