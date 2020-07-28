@@ -1245,6 +1245,7 @@
   "deposit_account": "Аккаунт отправителя",
   "deposit_transaction_hash": "Хэш транзакции депозита",
   "deposit_usd_value": "Депозит в долларах США",
+  "value_error_upper_case": "Допускаются строчные буквы, цифры, точка, подчеркивание и дефис",
   "messages": "Сообщения",
   "inquiry_date": "Дата запроса",
   "latest": "Самый последний",
