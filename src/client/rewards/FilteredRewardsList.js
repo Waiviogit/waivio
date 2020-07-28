@@ -12,7 +12,7 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import FilterModal from './FilterModal';
-import { REWARDS_TYPES_MESSAGES, CAMPAIGN_TYPES_MESSAGES } from '../../common/constants/rewards';
+import { REWARDS_TYPES_MESSAGES, CAMPAIGNS_TYPES_MESSAGES } from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
@@ -125,7 +125,7 @@ const FilteredRewardsList = props => {
         defaultMessage: 'proximity',
       },
     ];
-  }, [location]);
+  }, [location, intl]);
 
   return !loadingCampaigns ? (
     <React.Fragment>
@@ -255,7 +255,7 @@ const FilteredRewardsList = props => {
             messagesSponsors: sponsors,
           }}
           filtersMessages={{
-            caseStatus: CAMPAIGN_TYPES_MESSAGES,
+            caseStatus: CAMPAIGNS_TYPES_MESSAGES,
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
           }}
           setFilterValue={setFilterValue}
