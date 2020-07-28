@@ -2,21 +2,16 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import Avatar from '../../components/Avatar';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData, match }) => {
-  const currentUSDPrice = getCurrentUSDPrice();
+const CampaignCardHeader = ({ intl, campaignData }) => {
   const price = get(campaignData, ['objects', '0', 'reward']);
   const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
-  const isMessages = match && match.params.filterKey === 'messages';
-  const rewardPriceHive = `${
-    !isEmpty(price) ? price.toFixed(3) : (campaignData.reward * currentUSDPrice).toFixed(3)
-  } HIVE`;
-  const rewardPriceUsd = `${campaignData.reward} USD`;
-  const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
+  const rewardPriseHive = `${price ? price.toFixed(3) : 0} HIVE`;
+  const rewardPriseUsd = `${campaignData.reward} USD`;
+  const rewardPrise = isAssigned ? rewardPriseHive : rewardPriseUsd;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -35,7 +30,7 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
           </span>
           <React.Fragment>
             <span className="CampaignCardHeader__data-colored">
-              <span className="fw6">{rewardPrice}</span>
+              <span className="fw6">{rewardPrise}</span>
             </span>
           </React.Fragment>
         </div>
@@ -78,7 +73,6 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(CampaignCardHeader);

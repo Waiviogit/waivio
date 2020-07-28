@@ -97,7 +97,6 @@ class DiscoverObjectsContent extends Component {
     userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
-    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -273,7 +272,6 @@ class DiscoverObjectsContent extends Component {
       filteredObjects,
       hasMoreObjects,
       userName,
-      match,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -378,7 +376,6 @@ class DiscoverObjectsContent extends Component {
                     loading={loadingAssign}
                     key={`${wObj.author_permlink}`}
                     assigned={proposition.assigned}
-                    match={match}
                   />
                 ));
               }

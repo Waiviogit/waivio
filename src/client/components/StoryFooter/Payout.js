@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
-import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
+import { calculatePayout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import USDDisplay from '../Utils/USDDisplay';
 import PayoutDetail from '../PayoutDetail';
@@ -11,7 +11,8 @@ import './Payout.less';
 
 const Payout = ({ intl, post }) => {
   const payout = calculatePayout(post);
-  const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
+  const currentPayout =
+    Date.parse(payout.cashoutInTime) < Date.now() ? payout.totalPayout : payout.potentialPayout;
 
   return (
     <span className="Payout">

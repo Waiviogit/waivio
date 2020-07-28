@@ -11,11 +11,8 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
-  getIsErrorLoading,
-  getIsloadingMoreTransactions,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
-  getOperationNum,
   getScreenSize,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -33,7 +30,6 @@ import {
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
   getUserAccountHistory,
-  clearTransactionsHistory,
 } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
@@ -59,9 +55,6 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     usersTransactions: getUsersTransactions(state),
     transactionsHistory: getTransactions(state),
     hasMore: getUserHasMore(state),
-    isErrorLoading: getIsErrorLoading(state),
-    operationNum: getOperationNum(state),
-    isloadingMoreTransactions: getIsloadingMoreTransactions(state),
   }),
   {
     getGlobalProperties,
@@ -70,7 +63,6 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     getUserTransactionHistory,
     getMoreUserTransactionHistory,
     getUserAccountHistory,
-    clearTransactionsHistory,
   },
 )
 class Wallet extends Component {
@@ -97,10 +89,6 @@ class Wallet extends Component {
     usersTransactions: PropTypes.shape().isRequired,
     getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
-    isErrorLoading: PropTypes.bool,
-    operationNum: PropTypes.number,
-    isloadingMoreTransactions: PropTypes.bool,
-    clearTransactionsHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -111,10 +99,6 @@ class Wallet extends Component {
     hasMore: false,
     getMoreUserTransactionHistory: () => {},
     ownPage: false,
-    isErrorLoading: false,
-    operationNum: -1,
-    isloadingMoreTransactions: false,
-    clearTransactionsHistory: () => {},
   };
 
   componentDidMount() {
@@ -146,10 +130,6 @@ class Wallet extends Component {
     this.props.getUserAccountHistory(username);
   }
 
-  componentWillUnmount() {
-    this.props.clearTransactionsHistory();
-  }
-
   render() {
     const {
       user,
@@ -165,9 +145,6 @@ class Wallet extends Component {
       hasMore,
       usersTransactions,
       usersAccountHistory,
-      isErrorLoading,
-      operationNum,
-      isloadingMoreTransactions,
     } = this.props;
 
     const userKey = user.name;
@@ -203,9 +180,6 @@ class Wallet extends Component {
         demoTransactions={demoTransactions}
         demoHasMoreActions={demoHasMoreActions}
         actions={actions}
-        isErrorLoading={isErrorLoading}
-        operationNum={operationNum}
-        isloadingMoreTransactions={isloadingMoreTransactions}
       />
     );
 

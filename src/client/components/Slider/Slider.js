@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { debounce } from 'lodash';
-
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
-
 import './Slider.less';
 
 @injectIntl
@@ -14,14 +12,12 @@ export default class Slider extends React.Component {
     value: PropTypes.number,
     voteWorth: PropTypes.number,
     onChange: PropTypes.func,
-    isPostCashout: PropTypes.bool,
   };
 
   static defaultProps = {
     value: 100,
     voteWorth: 0,
     onChange: () => {},
-    isPostCashout: false,
   };
 
   state = {
@@ -71,21 +67,6 @@ export default class Slider extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { isPostCashout } = this.props;
-    const currentText = isPostCashout ? (
-      <FormattedMessage
-        id="like_slider_message_cashout"
-        defaultMessage="Votes after 7 days have no impact on the rewards."
-      />
-    ) : (
-      <FormattedMessage
-        id="like_slider_info"
-        defaultMessage="Your vote will be worth {amount}."
-        values={{
-          amount: <USDDisplay value={this.getCurrentValue()} />,
-        }}
-      />
-    );
 
     return (
       <div className="Slider">
@@ -95,7 +76,15 @@ export default class Slider extends React.Component {
           tipFormatter={this.formatTip}
         />
         <div className="Slider__info">
-          <h3>{currentText}</h3>
+          <h3>
+            <FormattedMessage
+              id="like_slider_info"
+              defaultMessage="Your vote will be worth {amount}."
+              values={{
+                amount: <USDDisplay value={this.getCurrentValue()} />,
+              }}
+            />
+          </h3>
         </div>
       </div>
     );

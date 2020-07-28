@@ -65,12 +65,12 @@ class MapOS extends React.Component {
   componentDidMount() {
     const { radius, center } = this.state;
     const { setMapArea } = this.props;
-    setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
+    setMapArea({ radius, coordinates: center, isMap: true });
     document.addEventListener('click', this.handleClick);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { primaryObjectCoordinates, zoomMap, match } = this.props;
+    const { primaryObjectCoordinates, zoomMap } = this.props;
     const { zoom } = this.state;
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
@@ -81,12 +81,7 @@ class MapOS extends React.Component {
         center: [nextProps.primaryObjectCoordinates[1], nextProps.primaryObjectCoordinates[0]],
       });
     }
-    if (
-      (zoomMap === 0 && nextProps.zoomMap) ||
-      (zoom === 0 && nextProps.zoomMap) ||
-      match.params.filterKey !== nextProps.match.params.filterKey ||
-      match.params.campaignParent !== nextProps.match.params.campaignParent
-    ) {
+    if ((zoomMap === 0 && nextProps.zoomMap) || (zoom === 0 && nextProps.zoomMap)) {
       this.setState({ zoom: nextProps.zoomMap });
     }
   }
@@ -97,17 +92,10 @@ class MapOS extends React.Component {
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
 
-    if (
-      (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match)) ||
-      prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
-    ) {
-      const firstMapLoad = true;
-      this.updateMap(firstMapLoad);
+    if (propsMatch !== prevPropsMatch && prevProps.match !== this.props.match) {
+      this.updateMap();
     }
-    if (
-      (prevState.zoom !== zoom && prevState.zoom !== 0) ||
-      (!isEqual(prevState.center, center) && isEqual(prevProps.match, this.props.match))
-    ) {
+    if ((prevState.zoom !== zoom && prevState.zoom !== 0) || !isEqual(prevState.center, center)) {
       this.updateMap();
     }
   }
@@ -116,19 +104,13 @@ class MapOS extends React.Component {
     this.props.resetUpdatedFlag();
   }
 
-  updateMap = firstMapLoad => {
+  updateMap = () => {
     const { match } = this.props;
     const isSecondaryObjectsCards = !isEmpty(match.params.campaignParent);
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({
-      radius: newRadius,
-      coordinates: center,
-      isMap: true,
-      isSecondaryObjectsCards,
-      firstMapLoad,
-    });
+    setMapArea({ radius: newRadius, coordinates: center, isMap: true, isSecondaryObjectsCards });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {

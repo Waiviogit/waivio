@@ -146,11 +146,11 @@ export default class ProfileSettings extends React.Component {
         if (isGuest) {
           updateProfile(userName, cleanValues)
             .then(data => {
-              if (isChangedAvatar || isChangedCover || data.value.isProfileUpdated) {
+              if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
                 message.success(
                   intl.formatMessage({
-                    id: 'profile_updated',
-                    defaultMessage: 'Profile updated',
+                    id: 'changes_take_effect_later',
+                    defaultMessage: 'Changes will take effect later',
                   }),
                 );
 

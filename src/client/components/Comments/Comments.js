@@ -44,7 +44,6 @@ class Comments extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
-    getMessageHistory: PropTypes.func,
   };
 
   static defaultProps = {
@@ -61,7 +60,6 @@ class Comments extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
-    getMessageHistory: () => {},
   };
 
   constructor(props) {
@@ -180,11 +178,6 @@ class Comments extends React.Component {
           commentFormText: '',
           commentSubmitted: true,
         });
-      })
-      .then(() => {
-        if (this.props.getMessageHistory) {
-          setTimeout(() => this.props.getMessageHistory(), 8000);
-        }
       })
       .catch(() => {
         this.setState({

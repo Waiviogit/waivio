@@ -31,7 +31,6 @@ const RewardsComponent = memo(
     sortEligible,
     sortAll,
     sortReserved,
-    campaignsTypes,
   }) => {
     const dispatch = useDispatch();
 
@@ -55,7 +54,7 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if ((campaignParent && !userLocation.lat) || !userLocation.lon) return;
+      if (campaignParent || !userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
     }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
@@ -100,7 +99,6 @@ const RewardsComponent = memo(
             resetMapFilter,
             handleLoadMore,
             userName: username,
-            campaignsTypes,
           }}
         />
       </div>
@@ -129,7 +127,6 @@ RewardsComponent.propTypes = {
   sortEligible: PropTypes.string,
   sortAll: PropTypes.string,
   sortReserved: PropTypes.string,
-  campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 RewardsComponent.defaultProps = {

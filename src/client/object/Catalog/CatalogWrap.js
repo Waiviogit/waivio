@@ -2,7 +2,7 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq, filter, max, min } from 'lodash';
+import { get, has, isEmpty, isEqual, map, forEach, uniq, filter } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -42,7 +42,6 @@ import {
 } from '../../user/userActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
-import Campaign from '../../rewards/Campaign/Campaign';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
@@ -318,34 +317,10 @@ class CatalogWrap extends React.Component {
               assigned={wobj.assigned}
               history={this.props.history}
               isAssign={this.state.isAssign}
-              match={this.props.match}
             />
           ),
       ),
     );
-
-  renderCampaign = propositions => {
-    const { userName } = this.state;
-    const minReward = propositions
-      ? min(map(propositions, proposition => proposition.reward))
-      : null;
-    const rewardPriceCatalogWrap = minReward ? `${minReward.toFixed(2)} USD` : '';
-    const maxReward = propositions
-      ? max(map(propositions, proposition => proposition.reward))
-      : null;
-    const rewardMaxCatalogWrap = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
-
-    return (
-      <Campaign
-        proposition={propositions[0]}
-        filterKey="all"
-        rewardPriceCatalogWrap={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
-        rewardMaxCatalogWrap={rewardMaxCatalogWrap || null}
-        key={`${propositions[0].required_object.author_permlink}${propositions[0].required_object.createdAt}`}
-        userName={userName}
-      />
-    );
-  };
 
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
@@ -507,15 +482,7 @@ class CatalogWrap extends React.Component {
   // END Propositions
 
   render() {
-    const {
-      sort,
-      wobjNested,
-      listItems,
-      breadcrumb,
-      loading,
-      loadingPropositions,
-      propositions,
-    } = this.state;
+    const { sort, wobjNested, listItems, breadcrumb, loading, loadingPropositions } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
     const currWobject = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
@@ -567,7 +534,6 @@ class CatalogWrap extends React.Component {
 
     return (
       <div>
-        {!isEmpty(propositions) && this.renderCampaign(propositions)}
         <div className="CatalogWrap__breadcrumb">
           <Breadcrumb separator={'>'}>
             {map(breadcrumb, (crumb, index, crumbsArr) => (

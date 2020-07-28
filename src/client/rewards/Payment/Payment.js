@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes } from 'lodash';
+import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -9,11 +9,14 @@ import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import {
+  BXY_GUEST_PREFIX,
+  GUEST_PREFIX,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
 import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
-import { guestUserRegex } from '../../helpers/regexHelpers';
 import './Payment.less';
 
 // eslint-disable-next-line no-shadow
@@ -28,32 +31,22 @@ const Payment = ({
 }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
-  const { reservationPermlink } = match.params;
 
-  const getRequestParams = () => {
-    if (reservationPermlink || includes(match.path, 'payables')) {
-      return {
-        sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-        user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      };
-    }
-
-    return {
-      sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-    };
+  const requestParams = {
+    sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
+    user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
   };
 
-  const isReceiverGuest = guestUserRegex.test(match.params.userName);
-  const pathRecivables = includes(match.path, 'receivables');
-  const isOverpayment = payable < 0;
+  const isReceiverGuest =
+    match.params.userName.startsWith(GUEST_PREFIX) ||
+    match.params.userName.startsWith(BXY_GUEST_PREFIX);
 
-  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
+  const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
 
   useEffect(() => {
-    getLenders(getRequestParams())
+    getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
@@ -63,7 +56,7 @@ const Payment = ({
 
   let titleName;
   let isPayables;
-  if (includes(match.path, 'payables')) {
+  if (match.path === '/rewards/payables/@:userName') {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',
       defaultMessage: 'Payables',
@@ -133,14 +126,7 @@ const Payment = ({
           },
         )}
       </div>
-      {!isEmpty(sponsors) && (
-        <PaymentTable
-          sponsors={sponsors}
-          isHive
-          reservationPermlink={match.params.reservationPermlink}
-          match={match}
-        />
-      )}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} isHive />}
     </div>
   );
 };

@@ -32,7 +32,6 @@
     &.collapsible-block {
       padding: 0;
     }
-
     .collapsible-block {
       &__title {
         display: flex;
@@ -79,7 +78,9 @@
         }
 
         .sidenav-discover-objects__item-text {
-          .sidenav-item-text();
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
 

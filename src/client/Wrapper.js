@@ -282,7 +282,7 @@ class Wrapper extends React.PureComponent {
                   location={history.location}
                 />
                 {renderRoutes(this.props.route.routes)}
-                <Transfer history={history} />
+                <Transfer />
                 {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />

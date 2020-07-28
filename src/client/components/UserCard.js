@@ -8,14 +8,11 @@ import './UserCard.less';
 
 const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator }) => {
   const status = moderator ? 'moderator' : 'admin';
-  const cardView = showFollow ? 'UserCard__left' : 'UserCard__sidebar';
-  const weightBlock = showFollow ? 'UserCard__alt BlockWeight' : 'UserCard__short';
-  const followersCountBlock = showFollow ? 'reblogged' : 'rebloggedFollowersNone';
 
   return (
     user && (
       <div className="UserCard">
-        <div className={cardView}>
+        <div className="UserCard__left">
           <div className="UserCard__wrap">
             <Link to={`/@${user.name}`}>
               <Avatar username={user.name} size={40} />
@@ -29,10 +26,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
               </span>
             )}
           </div>
-          {alt && <span className={weightBlock}>{alt}</span>}
-          <span className={followersCountBlock}>
-            {user.followers_count && `· ${user.followers_count} `}
-          </span>
+          {alt && <span className={showFollow ? 'UserCard__alt' : 'UserCard__short'}>{alt}</span>}
         </div>
         {showFollow && (
           <FollowButton

@@ -46,12 +46,10 @@ function buildFollowingUpdatesMenuConfig(updates) {
         items: objects.map(followingObject => {
           const clientObj = getClientWObj(followingObject);
           return {
-            name: clientObj.name || clientObj.id,
-            intlId: clientObj.name || clientObj.id,
+            name: clientObj.name,
+            intlId: clientObj.name || 'unknown_object',
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/feed/${clientObj.id}?category=${
-              clientObj.object_type
-            }&name=${clientObj.name || clientObj.id}`,
+            linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
             isUntranslatable: true,
           };
         }),

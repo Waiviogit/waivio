@@ -8,14 +8,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({
-  proposition,
-  filterKey,
-  history,
-  intl,
-  rewardPriceCatalogWrap,
-  rewardMaxCatalogWrap,
-}) => {
+const Campaign = ({ proposition, filterKey, history, intl }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = proposition.campaigns
     ? getClientWObj(proposition, usedLocale)
@@ -26,7 +19,7 @@ const Campaign = ({
   const maxReward = proposition.campaigns
     ? proposition.campaigns.max_reward
     : proposition.max_reward;
-  const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
+  const rewardPrise = minReward ? `${minReward.toFixed(2)} USD` : '';
   const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
@@ -36,7 +29,7 @@ const Campaign = ({
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
-          {!rewardMax && !rewardMaxCatalogWrap ? (
+          {!rewardMax ? (
             <React.Fragment>
               <span>
                 {intl.formatMessage({
@@ -45,7 +38,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrice || rewardPriceCatalogWrap}</span>
+                <span className="fw6 ml1">{rewardPrise}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -58,7 +51,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax || rewardMaxCatalogWrap}`}</span>
+                <span className="fw6 ml1">{`${rewardMax}`}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -73,15 +66,12 @@ Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
+  // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
-  rewardPriceCatalogWrap: PropTypes.string,
-  rewardMaxCatalogWrap: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
-  rewardPriceCatalogWrap: '',
-  rewardMaxCatalogWrap: '',
 };
 
 export default injectIntl(withRouter(Campaign));

@@ -63,20 +63,6 @@ export default class SidenavRewards extends React.Component {
     );
   }
 
-  componentDidUpdate(nextProps) {
-    if (this.props.userName !== nextProps.userName) {
-      getRewardsGeneralCounts(this.props.userName).then(data =>
-        this.setState({
-          rewardsCount: {
-            hasReceivables: data.has_receivable,
-            historyCount: data.count_history_campaigns,
-            createdCampaignsCount: data.count_campaigns,
-          },
-        }),
-      );
-    }
-  }
-
   toggleMenuCondition = menuItem => {
     const { menuCondition } = this.state;
     this.setState({
@@ -259,18 +245,6 @@ export default class SidenavRewards extends React.Component {
                       {intl.formatMessage({
                         id: 'sidenav_rewards_reports',
                         defaultMessage: `Reports`,
-                      })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to={`/rewards/messages`}
-                      className="sidenav-discover-objects__item"
-                      activeClassName="Sidenav__item--active"
-                    >
-                      {intl.formatMessage({
-                        id: 'messages',
-                        defaultMessage: `Messages`,
                       })}
                     </NavLink>
                   </li>

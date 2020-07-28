@@ -2,8 +2,6 @@
 @import (reference) '../styles/modules/variables.less';
 
 .Withdraw {
-  font-size: 16px;
-
   &__title {
     margin-bottom: 0 !important;
   }
@@ -46,64 +44,38 @@
   }
 
   &__input-wrapper {
-    border: none;
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-
-    &:first-of-type {
-      flex-wrap: nowrap;
-    }
+    border: 1px solid @white-gainsboro;
+    display: inline-block;
+    border-radius: 4px;
+    padding-left: 3px;
 
     @media @small {
-      flex-wrap: nowrap;
+      padding-left: 5px;
     }
   }
 
   &__input-text {
-    border: 1px solid @white-gainsboro;
+    border: none;
     outline: none;
-    padding: 4px 11px;
-    width: 100%;
-    height: 38px;
-    border-radius: 4px;
-
-    @media @small {
-      border-right: none;
-      border-radius: 4px 0 0 4px;
-    }
-
-    &--send-input {
-      width: 66%;
-      border-right: none;
-      border-radius: 4px 0 0 4px;
-
-      @media @small {
-        width: 100%;
-      }
-    }
   }
 
   &__switcher-wrapper {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 15px;
+    padding: 2px;
+    display: inline-block;
+    background-color: @blue-alabaster;
+    justify-content: center;
+    border-left: 1px solid @white-gainsboro;
+    border-radius: 0 4px 4px 0;
 
     @media @small {
-      width: auto;
+      padding: 4px 15px;
       font-size: 18px;
-      margin: 0;
     }
   }
 
   &__subtitle {
     display: block;
-    margin: 5px 0 20px;
-
-    @media @small {
-      margin-top: 10px;
-    }
+    margin: 10px 0 20px;
   }
 
   &__switcher-button {
@@ -113,18 +85,9 @@
     background-color: @white;
     padding: 2px;
     cursor: pointer;
-    width: 34%;
-    height: 38px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:first-of-type {
-      border-radius: 0 4px 4px 0;
-    }
+    font-size: 15px;
 
     @media @small {
-      width: 85px;
       padding: 2px 10px;
       font-size: 18px;
     }
@@ -137,10 +100,6 @@
       &:first-child {
         border-radius: 4px 0 0 4px;
         border-left: 1px solid @white-gainsboro;
-
-        @media @small {
-          border-radius: 0;
-        }
       }
 
       &:last-child {
@@ -162,10 +121,6 @@
       &:first-child {
         border-radius: 4px 0 0 4px;
         border-left: 1px solid @orange-hot;
-
-        @media @small {
-          border-radius: 0;
-        }
       }
 
       &:last-child {
@@ -206,7 +161,7 @@
     border: 1px solid @white-gainsboro;
     outline: none;
     border-radius: 4px;
-    padding: 4px 11px;
+    padding: 0 5px;
     flex-basis: 70%;
   }
 
@@ -233,11 +188,8 @@
   }
 
   &__modal.ant-modal {
-    .ant-modal-content {
-      .ant-modal-body,
-      .ant-modal-footer {
-        padding: 24px;
-      }
+    .ant-modal-content .ant-modal-body {
+      padding: 24px 10px;
     }
   }
 

@@ -81,10 +81,8 @@ export const defaultAccountLimit = 500;
 
 const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
   SteemAPI.sendAsync('get_account_history', [account, from, limit]);
-
-const getGuestAccountHistory = (account, from = 0, limit = 10) =>
+const getGuestAccountHistory = (account, from = 0, limit = 20) =>
   getGuestPaymentsHistory(account, { skip: from, limit });
-
 export const getAccountHistory = (account, { from, limit, isGuest = false }) => {
   if (isGuest) {
     return getGuestAccountHistory(account, from, limit);

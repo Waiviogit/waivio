@@ -24,6 +24,10 @@ export const preparePropositionReqData = ({ username, match, limit = 10, sort, .
     reqData[argName] = args[argName];
   });
 
+  if (match.params.filterKey === 'history') {
+    reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
+  }
+
   return reqData;
 };
 
@@ -253,7 +257,7 @@ export const getDetailsBody = (
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the Terms and Conditions of the Service Agreement <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
@@ -327,15 +331,8 @@ export const payablesFilterData = location => [
   },
 ];
 
-export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
-  if (pathRecivables && isOverpayment) {
-    return REWARD.overpayment_refund;
-  }
-  if (isReceiverGuest) {
-    return REWARD.guestReward;
-  }
-  return REWARD.userReward;
-};
+export const getMemo = isReceiverGuest =>
+  isReceiverGuest ? REWARD.guestReward : REWARD.userReward;
 
 export const getContent = pathName => {
   if (pathName.includes('references')) {
@@ -454,220 +451,14 @@ export const getNoBlacklistMessage = userNames => {
   };
 };
 
-export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages) => {
+export const getSort = (match, sortAll, sortEligible, sortReserved) => {
   const filterKey = get(match, ['params', 'filterKey']);
   switch (filterKey) {
     case 'active':
       return sortEligible;
     case 'reserved':
       return sortReserved;
-    case 'history':
-      return sortHistory;
-    case 'messages':
-      return sortMessages;
     default:
       return sortAll;
   }
-};
-
-export const popoverDataHistory = {
-  assigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'release',
-      id: 'campaign_buttons_release',
-      defaultMessage: 'Release reservation',
-    },
-  ],
-  completed: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'completed',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'show',
-      id: 'show_report',
-      defaultMessage: 'Show report',
-    },
-  ],
-  rejected: [
-    {
-      key: 'rejected',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'rejected',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'rejected',
-      id: 'rejection_note',
-      defaultMessage: 'Rejection note',
-    },
-  ],
-  expired: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-  ],
-  unassigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-  ],
-};
-
-export const popoverDataMessages = {
-  assigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'release',
-      id: 'campaign_buttons_release',
-      defaultMessage: 'Release reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  completed: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'completed',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'completed',
-      id: 'show_report',
-      defaultMessage: 'Show report',
-    },
-    {
-      key: 'reject',
-      id: 'reject_review',
-      defaultMessage: 'Reject review',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  rejected: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'rejected',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'rejected',
-      id: 'rejection_note',
-      defaultMessage: 'Rejection note',
-    },
-    {
-      key: 'reinstate',
-      id: 'reinstate_reward',
-      defaultMessage: 'Reinstate reward',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  expired: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  unassigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-};
-
-export const buttonsTitle = {
-  expired: {
-    id: 'expired',
-    defaultMessage: 'Expired',
-  },
-  unassigned: {
-    id: 'released',
-    defaultMessage: 'Released',
-  },
-  completed: {
-    id: 'completed',
-    defaultMessage: 'Completed',
-  },
-  rejected: {
-    id: 'rejected',
-    defaultMessage: 'Rejected',
-  },
-  assigned: {
-    id: 'campaign_buttons_reserved',
-    defaultMessage: 'Reserved',
-  },
-  reserved: {
-    id: 'campaign_buttons_reserved',
-    defaultMessage: 'Reserved',
-  },
-  default: {
-    id: 'campaign_buttons_reserved',
-    defaultMessage: 'Reserved',
-  },
-};
-
-export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  if (location === '/rewards/messages') {
-    return intl.formatMessage({
-      id: 'messages',
-      defaultMessage: `Messages`,
-    });
-  }
-  return intl.formatMessage(rewardText[filterKey]);
 };

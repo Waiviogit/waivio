@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import {
+  BXY_GUEST_PREFIX,
+  GUEST_PREFIX,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../wallet/walletActions';
 import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
-import { guestUserRegex } from '../../helpers/regexHelpers';
 
 const TransferButton = ({
   match,
@@ -21,13 +24,12 @@ const TransferButton = ({
   openLinkModal,
   openTransf,
 }) => {
-  const isReceiverGuest = guestUserRegex.test(name);
+  const isReceiverGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
+  const memo = getMemo(isReceiverGuest);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
   const payableForRender = Math.abs(payable);
   const pathRecivables = match.path === '/rewards/receivables';
-  const isOverpayment = payable < 0;
-  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const handleClick = () => {
     if (!hiveBeneficiaryAccount && isGuest) {
       openLinkModal(true);

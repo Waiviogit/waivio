@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty, includes } from 'lodash';
+import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -86,7 +86,6 @@ class EditPost extends Component {
     saveDraft: PropTypes.func,
     isGuest: PropTypes.bool,
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
-    history: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -181,10 +180,8 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const { history } = this.props;
     const postData = this.buildPost();
-    const isReview =
-      !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
+    const isReview = !isEmpty(this.state.campaign);
     this.props.createPost(postData, this.props.beneficiaries, isReview);
   }
 

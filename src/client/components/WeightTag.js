@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon, Tag } from 'antd';
 import { isNil, isNaN } from 'lodash';
-import { connect } from 'react-redux';
-import { getRate, getRewardFund, getWeightValue } from '../reducers';
+import { useSelector } from 'react-redux';
+import { getRate, getRewardFund } from '../reducers';
 import WeightDisplay from './Utils/WeightDisplay';
 
-const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
+const WeightTag = ({ intl, weight }) => {
+  // redux-store
+  const rate = useSelector(getRate);
+  const rewardFund = useSelector(getRewardFund);
   const isValidWeight = !isNil(weight) && !isNaN(weight);
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const tagTitle = intl.formatMessage({
@@ -15,11 +18,16 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
     defaultMessage:
       'Total payout for all related posts in USD, without bidbots and upvote services',
   });
-  if (isFullParams && isValidWeight && weightValue) {
-    const expertize = weightValue > 0 ? weightValue : 0;
+  if (isFullParams && isValidWeight) {
+    const value =
+      (weight / rewardFund.recent_claims) *
+      rewardFund.reward_balance.replace(' HIVE', '') *
+      rate *
+      1000000;
+    const expertize = value > 0 ? value : 0;
     return (
       <span className="Weight" title={tagTitle}>
-        {isNaN(weightValue) ? (
+        {isNaN(value) ? (
           <Icon type="loading" className="text-icon-right" />
         ) : (
           <Tag>
@@ -35,19 +43,10 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
 WeightTag.propTypes = {
   intl: PropTypes.shape().isRequired,
   weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  rewardFund: PropTypes.shape().isRequired,
-  rate: PropTypes.number,
-  weightValue: PropTypes.number,
 };
 
 WeightTag.defaultProps = {
   weight: 0,
-  rate: 0,
-  weightValue: 0,
 };
 
-export default connect((state, ownProp) => ({
-  weightValue: getWeightValue(state, ownProp.weight),
-  rate: getRate(state),
-  rewardFund: getRewardFund(state),
-}))(injectIntl(WeightTag));
+export default injectIntl(WeightTag);

@@ -167,7 +167,6 @@ export default class UserList extends React.Component {
                 moderator={vote.moderator}
                 follow={this.followUser}
                 unfollow={this.unfollowUser}
-                showFollow={false}
                 alt={
                   <span>
                     <USDDisplay value={voteValue(vote)} />

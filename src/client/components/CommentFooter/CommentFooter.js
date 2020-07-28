@@ -2,21 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import find from 'lodash/find';
+import { getVoteValue } from '../../helpers/user';
 import Slider from '../Slider/Slider';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
-import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
-import { isGuestUser } from '../../reducers';
-
+import { getRate } from '../../reducers';
 import './CommentFooter.less';
 
 @connect(state => ({
-  isGuest: isGuestUser(state),
+  rate: getRate(state),
 }))
 export default class CommentFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
+    rewardFund: PropTypes.shape().isRequired,
+    rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     sliderMode: PropTypes.bool,
     editable: PropTypes.bool,
@@ -32,7 +33,6 @@ export default class CommentFooter extends React.Component {
     onDislikeClick: PropTypes.func,
     onReplyClick: PropTypes.func,
     onEditClick: PropTypes.func,
-    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -47,7 +47,6 @@ export default class CommentFooter extends React.Component {
     onDislikeClick: () => {},
     onReplyClick: () => {},
     onEditClick: () => {},
-    isGuest: false,
   };
 
   state = {
@@ -98,12 +97,15 @@ export default class CommentFooter extends React.Component {
 
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
-  handleSliderChange = async value => {
-    const { isGuest, user, comment } = this.props;
-    const voteWorth = isGuest
-      ? 0
-      : await calculateVotePowerForSlider(user.name, value, comment.author, comment.permlink);
-
+  handleSliderChange = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
     this.setState({ sliderValue: value, voteWorth });
   };
 
@@ -148,7 +150,6 @@ export default class CommentFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
-            isPostCashout={isPostCashout(comment)}
           />
         )}
       </div>

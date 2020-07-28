@@ -7,7 +7,7 @@ import store from 'store';
 
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
-import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
+import { ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
 
@@ -297,10 +297,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers: {
-        ...actualHeaders,
-        app: config.appName,
-      },
+      headers: actualHeaders,
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
@@ -334,10 +331,7 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser) =>
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
-      headers: {
-        ...actualHeaders,
-        app: config.appName,
-      },
+      headers: actualHeaders,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -385,7 +379,6 @@ export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 
         headers: {
           follower,
           ...headers,
-          app: config.appName,
         },
         method: 'GET',
       },
@@ -531,7 +524,6 @@ export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectType
         ...headers,
         following: user,
         follower: user,
-        app: config.appName,
       },
       method: 'POST',
       body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
@@ -634,47 +626,6 @@ export const getPropositions = ({
     const url = getUrl(match);
 
     fetch(url, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify(reqData),
-    })
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
-export const getHistory = ({
-  limit = 10,
-  skip = 0,
-  guideName,
-  userName,
-  onlyWithMessages,
-  sort,
-  caseStatus,
-  rewards,
-  status,
-  guideNames,
-}) =>
-  new Promise((resolve, reject) => {
-    const reqData = {
-      limit,
-      skip,
-      onlyWithMessages,
-      sort,
-    };
-    /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
-    /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
-
-    if (userName) {
-      reqData.userName = userName;
-      reqData.onlyWithMessages = false;
-    }
-    if (guideName) reqData.guideName = guideName;
-    if (!isEmpty(rewards)) reqData.rewards = rewards;
-    if (!isEmpty(status)) reqData.status = status;
-    if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
-    if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -848,7 +799,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }) => {
       }
       if (!globalReport) {
         preparedObject = {
-          userName: user || sponsor,
+          userName: user,
         };
         if (obj.days || obj.moreDays) preparedObject.days = obj.days || obj.moreDays;
         if (obj.payable) preparedObject.payable = obj.payable;
@@ -920,13 +871,12 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 } = {}) => {
-  const token = await getValidTokenData();
-  return new Promise((resolve, reject) => {
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 } = {}) =>
+  new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
-        headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
+        headers,
         method: 'GET',
       },
     )
@@ -934,8 +884,6 @@ export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 }
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
-
 // endregion
 
 // region Guest user's requests
@@ -1085,11 +1033,11 @@ export const updateGuestProfile = async (username, json_metadata) => {
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: GUEST_ACCOUNT_UPDATE,
+            id: ACCOUNT_UPDATE,
             json: JSON.stringify({
               account: username,
               json_metadata: '',
-              posting_json_metadata: JSON.stringify({ ...json_metadata, version: 2 }),
+              posting_json_metadata: JSON.stringify(json_metadata),
             }),
           },
         ],
@@ -1119,23 +1067,7 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     body: JSON.stringify(body),
   })
     .then(res => res.json())
-    .catch(err => err);
-};
-
-export const sendPendingTransfer = async ({ sponsor, userName, amount, transactionId, memo }) => {
-  const body = {
-    sponsor,
-    userName,
-    amount,
-    transactionId,
-    memo,
-  };
-  return fetch(`${config.campaignApiPrefix}${config.payments}${config.setPendingStatus}`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-  })
-    .then(res => res.json())
+    .then(data => data)
     .catch(err => err);
 };
 
@@ -1326,19 +1258,18 @@ export const waivioAPI = {
   getUserAccount,
 };
 
-export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
-  new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+export const getTransferHistory = (username, skip = 0, limit = 50) =>
+  fetch(
+    `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+
+// I don't read changes before commit
 
 export default null;
