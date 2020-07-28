@@ -111,7 +111,6 @@
     "react-router-config": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scroll": "^1.6.4",
-    "react-sortable-hoc": "^1.11.0",
     "react-transition-group": "^2.8.0",
     "react-visibility-sensor": "^3.10.1",
     "reading-time": "^1.1.0",

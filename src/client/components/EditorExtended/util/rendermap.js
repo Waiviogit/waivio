@@ -25,9 +25,6 @@ const RenderMap = Map({
   [Block.STORY_TITLE]: {
     element: 'h1',
   },
-  [Block.SLIDER]: {
-    element: 'SLIDER',
-  },
 }).merge(DefaultDraftBlockRenderMap);
 
 export default RenderMap;
