@@ -309,23 +309,49 @@ export const getProcessingFee = data => {
   }
 };
 
-export const payablesFilterData = location => [
-  {
-    filterName: 'days',
-    value: location.pathname === '/rewards/payables' ? 7 : 15,
-    defaultMessage: `Over {value} days`,
-  },
-  {
-    filterName: 'moreDays',
-    value: location.pathname === '/rewards/payables' ? 15 : 30,
-    defaultMessage: `Over {value} days`,
-  },
-  {
-    filterName: 'payable',
-    value: location.pathname === '/rewards/payables' ? 10 : 20,
-    defaultMessage: `Over {value} HIVE`,
-  },
-];
+export const payablesFilterData = location => {
+  if (location.pathname === '/rewards/payables') {
+    return [
+      {
+        filterName: 'days',
+        value: 7,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'moreDays',
+        value: 15,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'otherDays',
+        value: 30,
+        defaultMessage: `Over {value} days`,
+      },
+      {
+        filterName: 'payable',
+        value: 10,
+        defaultMessage: `Over {value} HIVE`,
+      },
+    ];
+  }
+  return [
+    {
+      filterName: 'days',
+      value: 15,
+      defaultMessage: `Over {value} days`,
+    },
+    {
+      filterName: 'moreDays',
+      value: 30,
+      defaultMessage: `Over {value} days`,
+    },
+    {
+      filterName: 'payable',
+      value: 20,
+      defaultMessage: `Over {value} HIVE`,
+    },
+  ];
+};
 
 export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
   if (pathRecivables && isOverpayment) {
@@ -337,8 +363,8 @@ export const getMemo = (isReceiverGuest, pathRecivables, isOverpayment) => {
   return REWARD.userReward;
 };
 
-export const getContent = pathName => {
-  if (pathName.includes('references')) {
+export const getContent = listType => {
+  if (listType === 'references') {
     return {
       title: {
         id: 'recognize_other_users_blacklists',
@@ -352,7 +378,7 @@ export const getContent = pathName => {
     };
   }
 
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     return {
       title: {
         id: 'add_user_to_whitelist',
@@ -378,14 +404,14 @@ export const getContent = pathName => {
   };
 };
 
-export const getSuccessAddMessage = (userNames, pathName) => {
-  if (pathName.includes('references')) {
+export const getSuccessAddMessage = (userNames, listType) => {
+  if (listType === 'references') {
     return {
       id: 'you_subscribed_to_other_users_blacklists',
       defaultMessage: "You subscribed to other users' blacklists",
     };
   }
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     if (userNames.length > 1) {
       return {
         id: 'users_were_added_to_whitelist',
@@ -410,14 +436,14 @@ export const getSuccessAddMessage = (userNames, pathName) => {
   };
 };
 
-export const getSuccessDeleteMessage = (userNames, pathName) => {
-  if (pathName.includes('references')) {
+export const getSuccessDeleteMessage = (userNames, listType) => {
+  if (listType === 'references') {
     return {
       id: 'you_unsubscribed_from_other_users_blacklists',
       defaultMessage: "You unsubscribed from other users' blacklists",
     };
   }
-  if (pathName.includes('whitelist')) {
+  if (listType === 'whitelist') {
     if (userNames.length > 1) {
       return {
         id: 'users_were_deleted_from_whitelist',
@@ -533,102 +559,111 @@ export const popoverDataHistory = {
   ],
 };
 
-export const popoverDataMessages = {
-  assigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'release',
-      id: 'campaign_buttons_release',
-      defaultMessage: 'Release reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  completed: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'completed',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'completed',
-      id: 'show_report',
-      defaultMessage: 'Show report',
-    },
-    {
-      key: 'reject',
-      id: 'reject_review',
-      defaultMessage: 'Reject review',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  rejected: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'rejected',
-      id: 'open_review',
-      defaultMessage: 'Open review',
-    },
-    {
-      key: 'rejected',
-      id: 'rejection_note',
-      defaultMessage: 'Rejection note',
-    },
-    {
-      key: 'reinstate',
-      id: 'reinstate_reward',
-      defaultMessage: 'Reinstate reward',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  expired: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
-  unassigned: [
-    {
-      key: 'reserved',
-      id: 'view_reservation',
-      defaultMessage: 'View reservation',
-    },
-    {
-      key: 'add',
-      id: 'add_to_blacklist',
-      defaultMessage: 'Add to blacklist',
-    },
-  ],
+export const getPopoverDataMessages = ({ propositionStatus, isUserInBlacklist }) => {
+  switch (propositionStatus) {
+    case 'assigned':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'release',
+          id: 'campaign_buttons_release',
+          defaultMessage: 'Release reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'completed':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'completed',
+          id: 'open_review',
+          defaultMessage: 'Open review',
+        },
+        {
+          key: 'completed',
+          id: 'show_report',
+          defaultMessage: 'Show report',
+        },
+        {
+          key: 'reject',
+          id: 'reject_review',
+          defaultMessage: 'Reject review',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'rejected':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: 'rejected',
+          id: 'open_review',
+          defaultMessage: 'Open review',
+        },
+        {
+          key: 'rejected',
+          id: 'rejection_note',
+          defaultMessage: 'Rejection note',
+        },
+        {
+          key: 'reinstate',
+          id: 'reinstate_reward',
+          defaultMessage: 'Reinstate reward',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'expired':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    case 'unassigned':
+      return [
+        {
+          key: 'reserved',
+          id: 'view_reservation',
+          defaultMessage: 'View reservation',
+        },
+        {
+          key: isUserInBlacklist ? 'delete' : 'add',
+          id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
+          defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
+        },
+      ];
+    default:
+      return {};
+  }
 };
 
 export const buttonsTitle = {

@@ -424,6 +424,7 @@ class EditorInput extends React.Component {
           )}
           {isImage && (
             <ImageSetter
+              isMultiple
               onImageLoaded={this.getImages}
               onLoadingImage={this.onLoadingImage}
               isRequired

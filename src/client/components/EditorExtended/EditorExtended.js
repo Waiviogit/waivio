@@ -40,6 +40,7 @@ class Editor extends React.Component {
     }).isRequired,
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    intl: PropTypes.shape(),
   };
   static defaultProps = {
     intl: {},
@@ -132,6 +133,7 @@ class Editor extends React.Component {
             onChange={this.handleContentChange}
             sideButtons={SIDE_BUTTONS}
             withTitle={this.props.withTitle}
+            intl={this.props.intl}
           />
         ) : null}
       </div>

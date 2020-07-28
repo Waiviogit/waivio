@@ -34,6 +34,7 @@ const Proposition = ({
   match,
   getMessageHistory,
   user,
+  blacklistUsers,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -169,6 +170,7 @@ const Proposition = ({
             history={history}
             match={match}
             getMessageHistory={getMessageHistory}
+            blacklistUsers={blacklistUsers}
           />
         ) : (
           <React.Fragment>

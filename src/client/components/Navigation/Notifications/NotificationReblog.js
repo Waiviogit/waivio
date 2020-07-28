@@ -7,9 +7,9 @@ import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../helpers/formatter';
 import './Notification.less';
 
-const NotificationReblog = ({ notification, read, onClick, currentAuthUsername }) => (
+const NotificationReblog = ({ notification, read, onClick }) => (
   <Link
-    to={`/@${currentAuthUsername}/${notification.permlink}`}
+    to={`/@${notification.account}`}
     className={classNames('Notification', {
       'Notification--unread': !read,
     })}
@@ -41,14 +41,12 @@ NotificationReblog.propTypes = {
     timestamp: PropTypes.number,
   }),
   onClick: PropTypes.func,
-  currentAuthUsername: PropTypes.string,
 };
 
 NotificationReblog.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
-  currentAuthUsername: '',
 };
 
 export default NotificationReblog;
