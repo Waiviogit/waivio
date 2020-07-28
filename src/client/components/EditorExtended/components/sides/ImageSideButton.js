@@ -19,6 +19,7 @@ export default class ImageSideButton extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       isModal: false,
       isLoadingImage: false,
@@ -51,9 +52,7 @@ export default class ImageSideButton extends React.Component {
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
-  getImages = image => {
-    this.setState({ currentImage: image });
-  };
+  getImages = image => this.setState({ currentImage: image });
 
   // For testing - don't load images to ipfs
   // onChange(e) {

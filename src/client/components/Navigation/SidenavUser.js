@@ -84,7 +84,7 @@ const SidenavUser = () => {
                 className="sidenav-discover-objects__item"
                 activeClassName="Sidenav__item--active"
               >
-                <FormattedMessage id="guests_settings" defaultMessage="Guests Settings" />
+                <FormattedMessage id="guest_settings" defaultMessage="Guests Settings" />
               </NavLink>
             </li>
           )}

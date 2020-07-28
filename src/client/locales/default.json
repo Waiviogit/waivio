@@ -1269,5 +1269,10 @@
   "email_link_details": "All withdrawal requests must be confirmed by e-mail.",
   "guests_account_settings": "Guests Account Settings",
   "guest_settings": "Guests Settings",
-  "increase_reward" : "Increase reward"
+  "increase_reward" : "Increase reward",
+  "value_error_upper_case": "Lowercase letters, numbers, period, underscore and hyphen are allowed",
+  "mobnav_guest_settings": "Guests Settings",
+  "register_email": "Register email",
+  "guest_settings": "Guests Settings",
+  "your_list_is_empty": "Your list is empty"
 }

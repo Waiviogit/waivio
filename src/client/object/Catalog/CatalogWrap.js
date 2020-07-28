@@ -43,6 +43,7 @@ import {
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
+
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
@@ -567,58 +568,63 @@ class CatalogWrap extends React.Component {
 
     return (
       <div>
-        {!isEmpty(propositions) && this.renderCampaign(propositions)}
-        <div className="CatalogWrap__breadcrumb">
-          <Breadcrumb separator={'>'}>
-            {map(breadcrumb, (crumb, index, crumbsArr) => (
-              <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                {(index || !hasType(wobject, OBJ_TYPE.LIST)) && index === crumbsArr.length - 1 ? (
-                  <React.Fragment>
-                    <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
-                    <Link
-                      className="CatalogWrap__breadcrumb__obj-page-link"
-                      to={{ pathname: `/object/${crumb.id}` }}
-                    >
-                      <i className="iconfont icon-send PostModal__icon" />
-                    </Link>
-                  </React.Fragment>
-                ) : (
-                  <Link
-                    className="CatalogWrap__breadcrumb__link"
-                    to={{ pathname: location.pathname, hash: crumb.path }}
-                    title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                      crumb.name
-                    }`}
-                  >
-                    {crumb.name}
-                  </Link>
-                )}
-              </Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
-          {get(wobjNested, [objectFields.title], undefined) ? (
-            <div className="fw5 pt3">{wobjNested.title}</div>
-          ) : null}
-        </div>
-
-        {isEditMode && (
-          <div className="CatalogWrap__add-item">
-            <AddItemModal
-              wobject={currWobject}
-              itemsIdsToOmit={itemsIdsToOmit}
-              onAddItem={this.handleAddItem}
-            />
-          </div>
-        )}
-
-        {(isListObject && loading) || loadingPropositions ? (
-          <Loading />
-        ) : (
+        {!hasType(currWobject, OBJ_TYPE.PAGE) && (
           <React.Fragment>
-            <div className="CatalogWrap__sort">{sortSelector}</div>
-            <div className="CatalogWrap">
-              <div>{this.getMenuList()}</div>
+            {!isEmpty(propositions) && this.renderCampaign(propositions)}
+            <div className="CatalogWrap__breadcrumb">
+              <Breadcrumb separator={'>'}>
+                {map(breadcrumb, (crumb, index, crumbsArr) => (
+                  <Breadcrumb.Item key={`crumb-${crumb.name}`}>
+                    {(index || !hasType(wobject, OBJ_TYPE.LIST)) &&
+                    index === crumbsArr.length - 1 ? (
+                      <React.Fragment>
+                        <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
+                        <Link
+                          className="CatalogWrap__breadcrumb__obj-page-link"
+                          to={{ pathname: `/object/${crumb.id}` }}
+                        >
+                          <i className="iconfont icon-send PostModal__icon" />
+                        </Link>
+                      </React.Fragment>
+                    ) : (
+                      <Link
+                        className="CatalogWrap__breadcrumb__link"
+                        to={{ pathname: location.pathname, hash: crumb.path }}
+                        title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                          crumb.name
+                        }`}
+                      >
+                        {crumb.name}
+                      </Link>
+                    )}
+                  </Breadcrumb.Item>
+                ))}
+              </Breadcrumb>
+              {get(wobjNested, [objectFields.title], undefined) && (
+                <div className="fw5 pt3">{wobjNested.title}</div>
+              )}
             </div>
+
+            {isEditMode && (
+              <div className="CatalogWrap__add-item">
+                <AddItemModal
+                  wobject={currWobject}
+                  itemsIdsToOmit={itemsIdsToOmit}
+                  onAddItem={this.handleAddItem}
+                />
+              </div>
+            )}
+
+            {(isListObject && loading) || loadingPropositions ? (
+              <Loading />
+            ) : (
+              <React.Fragment>
+                <div className="CatalogWrap__sort">{sortSelector}</div>
+                <div className="CatalogWrap">
+                  <div>{this.getMenuList()}</div>
+                </div>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
         {hasType(currWobject, OBJ_TYPE.PAGE) && !isEmpty(wobjNested) && (
