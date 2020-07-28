@@ -89,6 +89,7 @@ export default class CampaignButtons extends React.Component {
       isOpenModalEnterAmount: false,
       value: '',
       isUserInBlacklist: false,
+      isLoading: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -189,46 +190,57 @@ export default class CampaignButtons extends React.Component {
   };
 
   openModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: true });
+
   closeModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: false });
+
   handleChangeValue = value => {
     this.setState({ value });
   };
 
   handleOkClick = () => {
-    this.handleIncreaseReward();
-    this.setState({ value: '' });
+    const { value } = this.state;
+    if (value > 0) {
+      this.setState({ isLoading: true });
+      this.handleIncreaseReward().then(() => this.setState({ isLoading: false, value: '' }));
+    }
   };
+
   handleCancel = () => this.setState({ isOpenModalEnterAmount: false, value: '' });
 
-  handleIncreaseReward = () => {
-    const { proposition } = this.props;
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-    const companyAuthor = get(proposition, ['guide', 'name']);
-    const companyPermlink = get(proposition, 'activation_permlink');
-    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
-    const userName = get(proposition, ['users', '0', 'name']);
-    const amount = this.state.value;
-    return this.props
-      .increaseReward({
+  handleIncreaseReward = async () => {
+    try {
+      const { proposition } = this.props;
+      const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+      const companyAuthor = get(proposition, ['guide', 'name']);
+      const companyPermlink = get(proposition, 'activation_permlink');
+      const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+      const userName = get(proposition, ['users', '0', 'name']);
+      const amount = this.state.value;
+      await this.props.increaseReward({
         companyAuthor,
         companyPermlink,
         username: userName,
         reservationPermlink,
         appName,
         amount,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'review_rejected',
-            defaultMessage: 'Review rejected',
-          }),
-        );
-      })
-      .then(() => {
-        setTimeout(() => this.props.getMessageHistory(), 8000);
-      })
-      .catch(e => message.error(e.message));
+      });
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.props
+            .getMessageHistory()
+            .then(() => resolve())
+            .catch(error => reject(error));
+        }, 10000);
+      });
+      message.success(
+        this.props.intl.formatMessage({
+          id: 'reward_has_been_increased',
+          defaultMessage: 'Reward has been increased',
+        }),
+      );
+    } catch (e) {
+      message.error(e.message);
+    }
   };
 
   handleAddToBlacklistClick = () => {
@@ -519,7 +531,7 @@ export default class CampaignButtons extends React.Component {
       user,
       proposition,
     } = this.props;
-    const { value, isOpenModalEnterAmount } = this.state;
+    const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', 'assigned']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
@@ -586,14 +598,20 @@ export default class CampaignButtons extends React.Component {
           onOk={this.handleOkClick}
           onCancel={this.handleCancel}
           style={{ width: '100px' }}
+          width={250}
+          okButtonProps={{ loading: isLoading }}
         >
           <InputNumber
             placeholder={intl.formatMessage({
-              id: 'enter_amount',
-              defaultMessage: `Enter amount`,
+              id: 'enter_amount_in_hive',
+              defaultMessage: `Enter amount in HIVE`,
             })}
             onChange={this.handleChangeValue}
             value={value}
+            min={0}
+            step={0.01}
+            autoFocus
+            onPressEnter={this.handleOkClick}
           />
         </Modal>
       </div>

@@ -1274,5 +1274,7 @@
   "mobnav_guest_settings": "Guests Settings",
   "register_email": "Register email",
   "guest_settings": "Guests Settings",
-  "your_list_is_empty": "Your list is empty"
+  "your_list_is_empty": "Your list is empty",
+  "enter_amount_in_hive": "Enter amount in HIVE",
+  "reward_has_been_increased": "Reward has been increased"
 }
