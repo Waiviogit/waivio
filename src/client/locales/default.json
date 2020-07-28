@@ -1270,5 +1270,7 @@
   "guests_account_settings": "Guests Account Settings",
   "guest_settings": "Guests Settings",
   "mobnav_guest_settings": "Guests Settings",
-  "register_email": "Register email"
+  "register_email": "Register email",
+  "guest_settings": "Guests Settings",
+  "your_list_is_empty": "Your list is empty"
 }

@@ -1,128 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import { Button, message } from 'antd';
-import { map, filter, get, isEmpty } from 'lodash';
-import { changeBlackAndWhiteLists, getBlacklist } from '../rewardsActions';
-import {
-  getSuccessAddMessage,
-  getSuccessDeleteMessage,
-  getNoBlacklistMessage,
-} from '../rewardsHelper';
+import { Button } from 'antd';
+import { map, isEmpty } from 'lodash';
+import { changeBlackAndWhiteLists } from '../rewardsActions';
+import { getSuccessAddMessage } from '../rewardsHelper';
 import './Blacklist.less';
 
-const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
+const BlacklistFooter = ({ intl, users, listType, handleGetBlacklist }) => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const usersNames = map(users, user => user.account);
-  const successAddMessage = getSuccessAddMessage(users, pathName);
-  const successDeleteMessage = getSuccessDeleteMessage(users, pathName);
-  const noBlacklistsMessage = getNoBlacklistMessage(users);
-
-  const getUsersBlacklist = names => {
-    const promises = map(names, name =>
-      dispatch(getBlacklist(name)).then(data => {
-        const id = get(data, ['value', 'blackList', '_id']);
-        return id;
-      }),
-    );
-    return Promise.all(promises);
-  };
+  const successAddMessage = getSuccessAddMessage(users, listType);
 
   const handleAddUsers = async () => {
-    let id = 'addUsersToBlackList';
-    if (pathName.includes('whitelist')) id = 'addUsersToWhiteList';
-    if (pathName.includes('references')) {
-      const isFollow = Boolean(pathName.includes('references'));
-      id = 'followAnotherBlacklist';
+    if (!isEmpty(usersNames)) {
+      await setLoading(true);
       try {
-        let idsUsers = await getUsersBlacklist(usersNames);
-        idsUsers = filter(idsUsers, user => user);
-        if (!isEmpty(idsUsers)) {
-          await dispatch(changeBlackAndWhiteLists(id, idsUsers, isFollow));
-          clearUsers();
-          message.success(
-            intl.formatMessage({
-              id: successAddMessage.id,
-              defaultMessage: successAddMessage.defaultMessage,
-            }),
-          );
-        } else {
-          message.error(
-            intl.formatMessage({
-              id: noBlacklistsMessage.id,
-              defaultMessage: noBlacklistsMessage.defaultMessage,
-            }),
-          );
-        }
-      } catch (error) {
-        console.error(error);
-      }
-      return;
-    }
-    dispatch(changeBlackAndWhiteLists(id, usersNames))
-      .then(() => {
-        clearUsers();
-        message.success(
-          intl.formatMessage({
-            id: successAddMessage.id,
-            defaultMessage: successAddMessage.defaultMessage,
-          }),
-        );
-      })
-      .catch(err => console.error(err));
-  };
+        let id = 'addUsersToBlackList';
+        if (listType === 'whitelist') id = 'addUsersToWhiteList';
+        if (listType === 'references') id = 'followAnotherBlacklist';
 
-  const handleDeleteUsers = async () => {
-    let id = 'removeUsersFromBlackList';
-    if (pathName.includes('whitelist')) id = 'removeUsersFromWhiteList';
-    if (pathName.includes('references')) {
-      const isFollow = Boolean(pathName.includes('references'));
-      id = 'unFollowAnotherBlacklist';
-      try {
-        let idsUsers = await getUsersBlacklist(usersNames);
-        idsUsers = filter(idsUsers, user => user);
-        if (!isEmpty(idsUsers)) {
-          await dispatch(changeBlackAndWhiteLists(id, idsUsers, isFollow));
-          clearUsers();
-          message.success(
-            intl.formatMessage({
-              id: successDeleteMessage.id,
-              defaultMessage: successDeleteMessage.defaultMessage,
-            }),
-          );
-        } else {
-          message.error(
-            intl.formatMessage({
-              id: noBlacklistsMessage.id,
-              defaultMessage: noBlacklistsMessage.defaultMessage,
-            }),
-          );
-        }
+        await dispatch(changeBlackAndWhiteLists(id, usersNames));
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            handleGetBlacklist(successAddMessage)
+              .then(() => resolve())
+              .catch(error => reject(error));
+          }, 7000);
+        });
+        await setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
-      return;
     }
-
-    dispatch(changeBlackAndWhiteLists(id, usersNames))
-      .then(() => {
-        clearUsers();
-        message.success(
-          intl.formatMessage({
-            id: successDeleteMessage.id,
-            defaultMessage: successDeleteMessage.defaultMessage,
-          }),
-        );
-      })
-      .catch(err => console.error(err));
   };
 
   return (
     <div className="Blacklist__footer">
       <div className="Blacklist__footer-add">
-        <Button type="primary" onClick={handleAddUsers}>
-          {pathName.includes('references')
+        <Button type="primary" onClick={handleAddUsers} loading={loading}>
+          {listType === 'references'
             ? intl.formatMessage({
                 id: 'subscribe',
                 defaultMessage: 'Subscribe',
@@ -133,19 +52,6 @@ const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
               })}
         </Button>
       </div>
-      <div className="Blacklist__footer-delete">
-        <Button type="primary" onClick={handleDeleteUsers}>
-          {pathName.includes('references')
-            ? intl.formatMessage({
-                id: 'unsubscribe',
-                defaultMessage: 'unsubscribe',
-              })
-            : intl.formatMessage({
-                id: 'matchBot_btn_delete',
-                defaultMessage: 'Delete',
-              })}
-        </Button>
-      </div>
     </div>
   );
 };
@@ -153,13 +59,13 @@ const BlacklistFooter = ({ intl, users, pathName, clearUsers }) => {
 BlacklistFooter.propTypes = {
   intl: PropTypes.shape().isRequired,
   users: PropTypes.arrayOf(PropTypes.shape()),
-  pathName: PropTypes.string,
-  clearUsers: PropTypes.func.isRequired,
+  listType: PropTypes.string,
+  handleGetBlacklist: PropTypes.func.isRequired,
 };
 
 BlacklistFooter.defaultProps = {
   users: [],
-  pathName: '',
+  listType: '',
 };
 
 export default injectIntl(BlacklistFooter);
