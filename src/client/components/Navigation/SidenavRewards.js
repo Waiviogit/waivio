@@ -7,6 +7,7 @@ import {
   getAuthenticatedUserName,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
+  isGuestUser,
 } from '../../reducers';
 import './Sidenav.less';
 import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
@@ -17,11 +18,13 @@ import ModalSignIn from './ModlaSignIn/ModalSignIn';
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
   userName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
+    isGuest: PropTypes.string.isRequired,
     userName: PropTypes.string,
   };
 
@@ -88,7 +91,7 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated } = this.props;
+    const { intl, authenticated, isGuest } = this.props;
     const { menuCondition, rewardsCount } = this.state;
     const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
     return (
@@ -188,27 +191,29 @@ export default class SidenavRewards extends React.Component {
                   )}
                 </React.Fragment>
               )}
-              <div
-                className="Sidenav__title-wrap"
-                onClick={() => this.toggleMenuCondition('campaigns')}
-                role="presentation"
-              >
-                <div className="Sidenav__title-item">
-                  {intl.formatMessage({
-                    id: 'campaigns',
-                    defaultMessage: `Campaigns`,
-                  })}
-                  :
+              {!isGuest && (
+                <div
+                  className="Sidenav__title-wrap"
+                  onClick={() => this.toggleMenuCondition('campaigns')}
+                  role="presentation"
+                >
+                  <div className="Sidenav__title-item">
+                    {intl.formatMessage({
+                      id: 'campaigns',
+                      defaultMessage: `Campaigns`,
+                    })}
+                    :
+                  </div>
+                  <div className="Sidenav__title-icon">
+                    {!menuCondition.campaigns ? (
+                      <i className="iconfont icon-addition" />
+                    ) : (
+                      <i className="iconfont icon-offline" />
+                    )}
+                  </div>
                 </div>
-                <div className="Sidenav__title-icon">
-                  {!menuCondition.campaigns ? (
-                    <i className="iconfont icon-addition" />
-                  ) : (
-                    <i className="iconfont icon-offline" />
-                  )}
-                </div>
-              </div>
-              {menuCondition.campaigns && (
+              )}
+              {!isGuest && menuCondition.campaigns && (
                 <React.Fragment>
                   <li>
                     <NavLink
