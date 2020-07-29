@@ -185,12 +185,12 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
       })
-      .then(() => {
+      .then(() =>
         this.props.notify(
           this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
           'success',
-        );
-      })
+        ),
+      )
       .then(() =>
         window.setTimeout(() => {
           this.props.history.push(`/@${this.props.user.name}`);
