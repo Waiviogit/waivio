@@ -88,4 +88,35 @@
   }
 }
 
+@media (max-width: 414px) {
+  .ReportTableRewards {
+    font-size: 14px;
+
+    &__header {
+      font-size: 16px;
+    }
+
+    &.maxWidth {
+      width: 30%;
+      padding-left: 5px;
+    }
+
+    & tbody td {
+      font-size: 11px;
+    }
+
+    .ReportTableRewardsRow {
+      &__total,
+      &__amount {
+        font-size: 12px;
+      }
+
+      &__name,
+      &__total {
+        padding-left: 5px;
+      }
+    }
+  }
+}
+
 @import 'ReportTableRewards-nightmode';

@@ -904,6 +904,8 @@
   "payables": "Задолженность",
   "filter_payable": "Больше {value} HIVE",
   "filter_days": "Больше {value} дней",
+  "filter_moreDays": "Больше {value} дней",
+  "filter_otherDays": "Больше {value} дней",
   "filter_payment": "Больше {payment} HIVE",
   "submit": "Отправить",
   "check_review_requirements_title": "Данный обзор не соответствует некоторым требованиям.",

@@ -761,6 +761,8 @@
   "payables": "Заборгованість",
   "filter_payable": "Бiльше {value} HIVE",
   "filter_days": "Бiльше {days} днiв",
+  "filter_moreDays": "Бiльше {days} днiв",
+  "filter_otherDays": "Бiльше {days} днiв",
   "filter_payment": "Бiльше {payment} HIVE",
   "submit": "Надіслати",
   "check_review_requirements_title": "Даний огляд не відповідає деяким вимогам.",

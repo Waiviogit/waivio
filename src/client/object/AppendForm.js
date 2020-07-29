@@ -625,7 +625,7 @@ export default class AppendForm extends Component {
     } else {
       const fields = form.getFieldsValue();
       if (fields[currentField]) {
-        const triggerValue = this.trimText(fields[currentField]);
+        const triggerValue = fields[currentField];
         if (triggerValue)
           form.setFieldsValue({
             [currentField]: triggerValue,
