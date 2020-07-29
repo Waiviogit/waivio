@@ -83,6 +83,6 @@ export const saveNotificationsSettings = (userNotifications, userName) =>
         },
       }),
     )
-    .then(resp => resp.user_metadata.notifications_last_timestamp);
+    .then(resp => resp.user_metadata);
 
 export default getMetadata;

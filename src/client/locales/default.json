@@ -1280,11 +1280,16 @@
   "mentions": "Mentions",
   "downvotes": "Downvotes",
   "wallet_transactions": "Wallet transactions",
-  "incoming_transfers": "Incoming transfers (min. amount: {input} USD)",
+  "incoming_transfers": "Incoming transfers",
   "internal_market": "Internal market (HIVE/HBD conversions)",
   "power_ups": "Power ups",
   "claimed_rewards": "Claimed rewards",
   "my_posts": "My posts",
   "my_comments": "My comments",
-  "my_likes": "My likes"
+  "my_likes": "My likes",
+  "status_change_notify": "Status changed",
+  "activation_campaign_notify":  "Activation campaign",
+  "security_alerts":  "Security alerts (always on)",
+  "security_alerts_info":  "Outgoing transfers, power downs, withdrawals from savings, delegations, password recovery requests, recovery address changes, app authorizations",
+  "min_amount": "min. amount: {input} USD"
 }

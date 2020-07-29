@@ -73,22 +73,17 @@ export const notificationType = {
       name: 'downvote',
     },
     {
-      id: 'replies',
-      defaultMessage: 'Replies',
-      name: 'reply',
-    },
-    {
-      id: 'follows',
-      defaultMessage: 'Follows',
+      id: 'follow',
+      defaultMessage: 'Follow',
       name: 'follow',
     },
     {
-      id: 'status_change',
+      id: 'status_change_notify',
       defaultMessage: 'Status changed',
       name: 'statusChange',
     },
     {
-      id: 'activation_campaign',
+      id: 'activation_campaign_notify',
       defaultMessage: 'Activation campaign',
       name: 'activationCampaign',
     },
@@ -100,9 +95,9 @@ export const notificationType = {
       name: 'fillOrder',
     },
     {
-      id: 'powerUp',
+      id: 'power_ups',
       defaultMessage: 'Power ups',
-      name: 'power_ups',
+      name: 'powerUp',
     },
     {
       id: 'claimed_rewards',

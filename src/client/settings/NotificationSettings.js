@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Checkbox, Form, Input } from 'antd';
+import { Checkbox, Form, InputNumber, message } from 'antd';
 import { updateProfile, reload } from '../auth/authActions';
 import {
   getIsReloading,
-  getAuthenticatedUser,
   isGuestUser,
   getAuthenticatedUserNotificationsSettings,
+  getAuthenticatedUserName,
 } from '../reducers';
 import { getMetadata } from '../helpers/postingMetadata';
 import withEditor from '../components/Editor/withEditor';
@@ -22,6 +23,7 @@ import { saveNotificationsSettings } from '../helpers/metadata';
 import { notificationType } from '../../common/constants/waivio';
 
 import './Settings.less';
+import { updateUserMetadata } from '../user/usersActions';
 
 function mapPropsToFields(props) {
   const metadata = getMetadata(props.user);
@@ -43,7 +45,7 @@ function mapPropsToFields(props) {
 @injectIntl
 @connect(
   state => ({
-    user: getAuthenticatedUser(state),
+    userName: getAuthenticatedUserName(state),
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
     settingsNotifications: getAuthenticatedUserNotificationsSettings(state),
@@ -51,7 +53,7 @@ function mapPropsToFields(props) {
   {
     updateProfile,
     reload,
-    saveNotificationsSettings,
+    updateUserMetadata,
   },
 )
 @Form.create({
@@ -61,19 +63,13 @@ function mapPropsToFields(props) {
 export default class NotificationSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    saveNotificationsSettings: PropTypes.func.isRequired,
     settingsNotifications: PropTypes.shape().isRequired,
+    userName: PropTypes.string,
+    updateUserMetadata: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
     userName: '',
-    user: {},
-    history: {},
-    isGuest: false,
-    updateProfile: () => {},
-    reload: () => {},
   };
 
   constructor(props) {
@@ -89,7 +85,6 @@ export default class NotificationSettings extends React.Component {
         reply: props.settingsNotifications.reply,
         statusChange: props.settingsNotifications.statusChange,
         transfer: props.settingsNotifications.transfer,
-        withdraw_route: props.settingsNotifications.withdraw_route,
         witness_vote: props.settingsNotifications.witness_vote,
         myPost: props.settingsNotifications.myPost,
         myComment: props.settingsNotifications.myComment,
@@ -97,18 +92,24 @@ export default class NotificationSettings extends React.Component {
         like: props.settingsNotifications.like,
         downvote: props.settingsNotifications.downvote,
         claimReward: props.settingsNotifications.claimReward,
+        powerUp: props.settingsNotifications.powerUp,
       },
 
       isLoading: false,
     };
   }
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
-
     this.setState({ isLoading: true });
-    this.props.saveNotificationsSettings.then();
-  }
+    saveNotificationsSettings(this.state.notifications, this.props.userName)
+      .then(res => {
+        this.setState({ isLoading: false });
+        this.props.updateUserMetadata(res);
+        message.success(this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }));
+      })
+      .catch(err => message.error(err.message));
+  };
 
   onChangeCheckbox = fields =>
     this.setState(prevState => ({
@@ -120,8 +121,7 @@ export default class NotificationSettings extends React.Component {
     }));
 
   render() {
-    const { notifications } = this.state.notifications;
-
+    const { notifications } = this.state;
     return (
       <div className="shifted">
         <Helmet>
@@ -152,8 +152,8 @@ export default class NotificationSettings extends React.Component {
                   </h3>
                 </div>
                 <div className="Settings__section">
-                  {notificationType['сommunityActions'].map(notify => (
-                    <div className="Settings__section__checkbox" key={notifications[notify.name]}>
+                  {notificationType.сommunityActions.map(notify => (
+                    <div className="Settings__section__checkbox" key={notify.name}>
                       <Checkbox
                         checked={notifications[notify.name]}
                         onChange={() => this.onChangeCheckbox(notify.name)}
@@ -171,20 +171,69 @@ export default class NotificationSettings extends React.Component {
                     />
                     :
                   </h3>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox checked={notifications.transfer}>
+                  <div className="Settings__section__checkbox Settings__section--flex-wrapper">
+                    <Checkbox
+                      checked={notifications.transfer}
+                      onChange={() => this.onChangeCheckbox('transfer')}
+                    >
                       <FormattedMessage
                         id="incoming_transfers"
-                        defaultMessage="Incoming transfers (min. amount: {input} USD)"
-                        values={{ input: <Input defaultValue={notifications.minimalTransfer} /> }}
+                        defaultMessage="Incoming transfers"
                       />
                     </Checkbox>
+                    (
+                    <FormattedMessage
+                      id="min_amount"
+                      defaultMessage="min. amount: {input} USD"
+                      values={{
+                        input: (
+                          <InputNumber
+                            step={0.1}
+                            min={0}
+                            size="small"
+                            defaultValue={notifications.minimalTransfer}
+                            onChange={e =>
+                              this.setState(prevState => ({
+                                ...prevState,
+                                notifications: {
+                                  ...prevState.notifications,
+                                  minimalTransfer: e,
+                                },
+                              }))
+                            }
+                          />
+                        ),
+                      }}
+                    />
+                    )
                   </div>
+                  {notificationType.walletTransactions.map(notify => (
+                    <div className="Settings__section__checkbox" key={notify.name}>
+                      <Checkbox
+                        checked={notifications[notify.name]}
+                        onChange={() => this.onChangeCheckbox(notify.name)}
+                      >
+                        <FormattedMessage id={notify.id} defaultMessage={notify.defaultMessage} />
+                      </Checkbox>
+                    </div>
+                  ))}
                 </div>
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="my_actions" defaultMessage="My actions" />:
                   </h3>
+                </div>
+                <div className="Settings__section">
+                  {notificationType.myActions.map(notify => (
+                    <div className="Settings__section__checkbox" key={notify.name}>
+                      <Checkbox
+                        checked={notifications[notify.name]}
+                        onChange={() => this.onChangeCheckbox(notify.name)}
+                      >
+                        <FormattedMessage id={notify.id} defaultMessage={notify.defaultMessage} />
+                      </Checkbox>
+                    </div>
+                  ))}
                 </div>
                 <div className="Settings__section">
                   <h3>
@@ -205,7 +254,13 @@ export default class NotificationSettings extends React.Component {
                     </div>
                   </div>
                 </div>
-                <Action primary big type="submit" disabled loading={this.state.isLoading}>
+                <Action
+                  primary
+                  big
+                  type="submit"
+                  disabled={isEqual(this.props.settingsNotifications, notifications)}
+                  loading={this.state.isLoading}
+                >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
               </div>

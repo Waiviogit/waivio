@@ -1,6 +1,10 @@
 import { get } from 'lodash';
 import * as types from './authActions';
-import { GET_USER_METADATA, GET_USER_PRIVATE_EMAIL } from '../user/usersActions';
+import {
+  GET_USER_METADATA,
+  GET_USER_PRIVATE_EMAIL,
+  UPDATE_USER_METADATA,
+} from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -112,6 +116,16 @@ export default (state = initialState, action) => {
       }
 
       return state;
+    }
+
+    case UPDATE_USER_METADATA: {
+      return {
+        ...state,
+        userMetaData: {
+          ...state.userMetaData,
+          ...action.payload,
+        },
+      };
     }
 
     case types.UPDATE_PROFILE_ERROR:
