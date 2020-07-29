@@ -45,4 +45,88 @@ export const CRYPTO_FOR_VALIDATE_WALLET = {
   eth: 'ethereum',
 };
 
+export const notificationType = {
+  сommunityActions: [
+    {
+      id: 'likes',
+      defaultMessage: 'Likes',
+      name: 'like',
+    },
+    {
+      id: 're_blogs',
+      defaultMessage: 'Re-blogs',
+      name: 'reblog',
+    },
+    {
+      id: 'replies',
+      defaultMessage: 'Replies',
+      name: 'reply',
+    },
+    {
+      id: 'mentions',
+      defaultMessage: 'Mentions',
+      name: 'mention',
+    },
+    {
+      id: 'downvotes',
+      defaultMessage: 'Downvotes',
+      name: 'downvote',
+    },
+    {
+      id: 'replies',
+      defaultMessage: 'Replies',
+      name: 'reply',
+    },
+    {
+      id: 'follows',
+      defaultMessage: 'Follows',
+      name: 'follow',
+    },
+    {
+      id: 'status_change',
+      defaultMessage: 'Status changed',
+      name: 'statusChange',
+    },
+    {
+      id: 'activation_campaign',
+      defaultMessage: 'Activation campaign',
+      name: 'activationCampaign',
+    },
+  ],
+  walletTransactions: [
+    {
+      id: 'internal_market',
+      defaultMessage: 'Internal market (HIVE/HBD conversions)',
+      name: 'fillOrder',
+    },
+    {
+      id: 'powerUp',
+      defaultMessage: 'Power ups',
+      name: 'power_ups',
+    },
+    {
+      id: 'claimed_rewards',
+      defaultMessage: 'Claimed rewards',
+      name: 'claimReward',
+    },
+  ],
+  myActions: [
+    {
+      id: 'my_posts',
+      defaultMessage: 'My posts',
+      name: 'myPost',
+    },
+    {
+      id: 'my_comments',
+      defaultMessage: 'My comments',
+      name: 'myComment',
+    },
+    {
+      id: 'my_likes',
+      defaultMessage: 'My likes',
+      name: 'myLike',
+    },
+  ],
+};
+
 export const CRYPTO_LIST_FOR_WALLET = ['btc', 'ltc', 'eth'];

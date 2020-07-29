@@ -1251,13 +1251,17 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
   const transactionInfo = store.get('withdrawData');
   const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
+  let transactionData;
 
-  const transactionData = {
-    outputCoinType: transactionInfo.currentCurrency,
-    inputCoinType: 'hive',
-    amount,
-    address: transactionInfo.walletAddress,
-  };
+  if (type === 'confirmTransaction') {
+    transactionData = {
+      outputCoinType: transactionInfo.currentCurrency,
+      inputCoinType: 'hive',
+      amount,
+      address: transactionInfo.walletAddress,
+    };
+  }
+
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
   const body =
     type === 'confirmTransaction'

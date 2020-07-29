@@ -1273,6 +1273,13 @@
   "guest_settings": "Гостевые настройки",
   "mobnav_guest_settings": "Гостевые настройки",
   "register_email": "Зарегистрируйте емайл",
-  "guest_settings": "Гостевые настройки",
-  "your_list_is_empty": "Ваш список пустой"
+  "your_list_is_empty": "Ваш список пустой",
+  "notification_settings": "Настройки нотификаций",
+  "mobnav_notification_settings": "Нотификации",
+  "сommunity_actions": "Действия сообщества",
+  "likes": "Мне нравится",
+  "re_blogs": "Поделились",
+  "mentions": "Упоминания",
+  "downvotes": "Дизлайки",
+  "wallet_transactions": "Транзакции кошелька"
 }

@@ -1271,6 +1271,20 @@
   "guest_settings": "Guests Settings",
   "mobnav_guest_settings": "Guests Settings",
   "register_email": "Register email",
-  "guest_settings": "Guests Settings",
-  "your_list_is_empty": "Your list is empty"
+  "your_list_is_empty": "Your list is empty",
+  "notification_settings": "Notification Settings",
+  "mobnav_notification_settings": "Notifications",
+  "сommunity_actions": "Community actions",
+  "likes": "Likes",
+  "re_blogs": "Re-blogs",
+  "mentions": "Mentions",
+  "downvotes": "Downvotes",
+  "wallet_transactions": "Wallet transactions",
+  "incoming_transfers": "Incoming transfers (min. amount: {input} USD)",
+  "internal_market": "Internal market (HIVE/HBD conversions)",
+  "power_ups": "Power ups",
+  "claimed_rewards": "Claimed rewards",
+  "my_posts": "My posts",
+  "my_comments": "My comments",
+  "my_likes": "My likes"
 }

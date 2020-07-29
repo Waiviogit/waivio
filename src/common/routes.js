@@ -41,6 +41,10 @@ const GuestsSettings = Loadable({
   loader: () => import('../client/settings/GuestsSettings'),
   loading: Loading,
 });
+const NotificationSettings = Loadable({
+  loader: () => import('../client/settings/NotificationSettings'),
+  loading: Loading,
+});
 const ProfileSettings = Loadable({
   loader: () => import('../client/settings/ProfileSettings'),
   loading: Loading,
@@ -358,6 +362,11 @@ const routes = [
         path: '/guests-settings',
         exact: true,
         component: GuestsSettings,
+      },
+      {
+        path: '/notification-settings',
+        exact: true,
+        component: NotificationSettings,
       },
       {
         path: '/discover-objects/:typeName?',
