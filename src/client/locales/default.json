@@ -1272,6 +1272,7 @@
   "value_error_upper_case": "Lowercase letters, numbers, period, underscore and hyphen are allowed",
   "mobnav_guest_settings": "Guests Settings",
   "register_email": "Register email",
-  "guest_settings": "Guests Settings",
-  "your_list_is_empty": "Your list is empty"
+  "your_list_is_empty": "Your list is empty",
+  "proposal_payment_from": "Proposal payment from {steem_dao}",
+  "proposal_payment_to": "Proposal payment to {receiver}"
 }
