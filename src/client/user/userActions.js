@@ -316,7 +316,7 @@ export const increaseReward = ({
       author: companyAuthor,
       permlink: createCommentPermlink(username, reservationPermlink),
       title: 'Increase reward',
-      body: `Sponsor ${userName} (@${userName}) has increased the reward to ${amount} HIVE`,
+      body: `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {
