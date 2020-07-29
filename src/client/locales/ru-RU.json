@@ -1277,7 +1277,9 @@
   "increase_reward" : "Увеличить вознаграждение",
   "mobnav_guest_settings": "Гостевые настройки",
   "register_email": "Зарегистрируйте емайл",
-  "your_list_is_empty": "Ваш список пустой",
   "enter_amount_in_hive": "Введите сумму в HIVE",
-  "reward_has_been_increased": "Награда была увеличена"
+  "reward_has_been_increased": "Награда была увеличена",
+  "your_list_is_empty": "Ваш список пустой",
+  "proposal_payment_from": "Предложение оплаты от {steem_dao}",
+  "proposal_payment_to": "Предложение оплаты для {receiver}"
 }
