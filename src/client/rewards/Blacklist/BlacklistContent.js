@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { filter, get, isEmpty, map } from 'lodash';
+import { filter, get, isEmpty, map, reverse } from 'lodash';
 import classNames from 'classnames';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../Create-Edit/ReviewItem';
@@ -32,11 +32,11 @@ const BlacklistContent = ({
 
   const getUsersForRender = useMemo(() => {
     if (listType === 'whitelist') {
-      return whiteListUsers;
+      return reverse(whiteListUsers);
     } else if (listType === 'references') {
-      return followListsUsers;
+      return reverse(followListsUsers);
     }
-    return blacklistUsers;
+    return reverse(blacklistUsers);
   }, [listType, whiteListUsers, followListsUsers, blacklistUsers]);
 
   const removeUser = user => {
