@@ -1,4 +1,4 @@
-import { isEmpty, map, includes } from 'lodash';
+import { isEmpty, map, includes, ceil } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -144,12 +144,13 @@ class CreateRewardForm extends React.Component {
 
       // const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
       const minExpertise = !isEmpty(rewardFund)
-        ? (
+        ? ceil(
             (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
-            rewardFund.reward_balance.replace(' HIVE', '') *
-            rate *
-            1000000
-          ).toFixed(2)
+              rewardFund.reward_balance.replace(' HIVE', '') *
+              rate *
+              1000000,
+            2,
+          )
         : null;
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state

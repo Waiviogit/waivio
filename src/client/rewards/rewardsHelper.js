@@ -4,6 +4,7 @@ import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { REWARD } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
+import { getRate, getRewardFund } from '../reducers';
 
 export const displayLimit = 10;
 
@@ -222,11 +223,19 @@ export const getDetailsBody = (
 ) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
+  const rate = useSelector(getRate);
+  const rewardFund = useSelector(getRewardFund);
+  const minExpertise = (
+    (proposition.userRequirements.minExpertise / rewardFund.recent_claims) *
+    rewardFund.reward_balance.replace(' HIVE', '') *
+    rate *
+    1000000
+  ).toFixed(2);
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
 <ul>
-    <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
+    <li>Minimum Waivio expertise: ${minExpertise}</li>
     <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
 </ul>`;

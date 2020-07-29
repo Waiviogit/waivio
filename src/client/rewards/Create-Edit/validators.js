@@ -36,6 +36,10 @@ export const validatorMessagesCreator = messageFactory => ({
     'reputation_cannot_be_negative',
     'The Waivio reputation cannot be negative',
   ),
+  minExpertiseValue: messageFactory(
+    'minimum_expertise_cannot_have_more_then_two_decimals',
+    'The Waivio reputation cannot have more then two digits after the decimal point',
+  ),
   steemReputation: messageFactory(
     'steem_reputation_from_100_to_100',
     'The Hive reputation must be from -100 to 100',
@@ -101,8 +105,14 @@ export const validatorsCreator = (
   },
 
   checkMinExpertise: (rule, value, callback) => {
+    let newValue;
+    const dec = value.indexOf('.');
+    if (value.length > dec + 3) {
+      callback(messages.minExpertiseValue);
+      newValue = parseFloat(value).toFixed(2);
+    }
     // eslint-disable-next-line no-unused-expressions
-    value < 0 && value !== '' ? callback(messages.minExpertise) : callback();
+    newValue < 0 && newValue !== '' ? callback(messages.minExpertise) : callback();
   },
 
   checkSteemReputation: (rule, value, callback) => {
