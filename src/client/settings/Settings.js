@@ -17,6 +17,7 @@ import {
   getUpvoteSetting,
   getExitPageSetting,
   isGuestUser,
+  getAuthenticatedUser,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -37,6 +38,7 @@ import './Settings.less';
 @injectIntl
 @connect(
   state => ({
+    user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     locale: getLocale(state),
     readLanguages: getReadLanguages(state),
@@ -70,6 +72,8 @@ export default class Settings extends React.Component {
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
+    user: PropTypes.string,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -181,11 +185,16 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
       })
-      .then(() =>
+      .then(() => {
         this.props.notify(
           this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
           'success',
-        ),
+        );
+      })
+      .then(() =>
+        window.setTimeout(() => {
+          this.props.history.push(`/@${this.props.user.name}`);
+        }, 1000),
       );
   };
 
