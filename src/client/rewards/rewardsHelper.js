@@ -578,6 +578,11 @@ export const getPopoverDataMessages = ({ propositionStatus, isUserInBlacklist })
           id: isUserInBlacklist ? 'delete_from_blacklist' : 'add_to_blacklist',
           defaultMessage: isUserInBlacklist ? 'Delete from blacklist' : 'Add to blacklist',
         },
+        {
+          key: 'add',
+          id: 'increase_reward',
+          defaultMessage: 'Increase reward',
+        },
       ];
     case 'completed':
       return [

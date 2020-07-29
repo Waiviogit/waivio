@@ -72,12 +72,11 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
             });
           }
 
-          // // Delay to make sure you get the latest data (unknown issue with API)
           if (!isGuest) {
             setTimeout(
               () =>
                 dispatch(getContent(post.author_original || votedPostAuthor, post.permlink, true)),
-              1250,
+              2000,
             );
           }
           return res;
