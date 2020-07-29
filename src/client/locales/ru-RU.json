@@ -1274,8 +1274,10 @@
   "email_link_details": "Все запросы на вывод средств должны быть подтверждены по электронной почте.",
   "guests_account_settings": "Настройки учетной записи гостя",
   "guest_settings": "Гостевые настройки",
+  "increase_reward" : "Увеличить вознаграждение",
   "mobnav_guest_settings": "Гостевые настройки",
   "register_email": "Зарегистрируйте емайл",
-  "guest_settings": "Гостевые настройки",
-  "your_list_is_empty": "Ваш список пустой"
+  "your_list_is_empty": "Ваш список пустой",
+  "enter_amount_in_hive": "Введите сумму в HIVE",
+  "reward_has_been_increased": "Награда была увеличена"
 }
