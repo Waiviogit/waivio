@@ -1,28 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedNumber } from 'react-intl';
-import { Icon, Button, message } from 'antd';
+import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get } from 'lodash';
+import { map, get, includes } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
-import { popoverDataHistory, popoverDataMessages, buttonsTitle } from '../rewardsHelper';
+import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview } from '../../user/userActions';
+import { rejectReview, increaseReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport } from '../rewardsActions';
+import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
-@connect(null, { rejectReview, changeBlackAndWhiteLists, setDataForSingleReport })
+@connect(null, {
+  rejectReview,
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  increaseReward,
+})
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -43,10 +49,13 @@ export default class CampaignButtons extends React.Component {
     user: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func,
     rejectReview: PropTypes.func.isRequired,
+    increaseReward: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
     setDataForSingleReport: PropTypes.func.isRequired,
+    getBlacklist: PropTypes.func.isRequired,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -64,6 +73,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -76,6 +86,10 @@ export default class CampaignButtons extends React.Component {
       loadingEdit: false,
       visible: false,
       isModalReportOpen: false,
+      isOpenModalEnterAmount: false,
+      value: '',
+      isUserInBlacklist: false,
+      isLoading: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -84,6 +98,11 @@ export default class CampaignButtons extends React.Component {
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
     this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
+  }
+
+  componentDidMount() {
+    const { blacklistUsers } = this.props;
+    this.getIsUserInBlackList(blacklistUsers);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -164,19 +183,95 @@ export default class CampaignButtons extends React.Component {
       .catch(e => message.error(e.message));
   };
 
-  handleAddToBlacklistClick = () => {
+  getIsUserInBlackList = blacklistUsers => {
     const { proposition } = this.props;
-    const id = 'addUsersToBlackList';
+    const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
+    return this.setState({ isUserInBlacklist });
+  };
+
+  openModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: true });
+
+  handleChangeValue = value => {
+    this.setState({ value });
+  };
+
+  handleOkClick = () => {
+    const { value } = this.state;
+    if (value > 0) {
+      this.setState({ isLoading: true });
+      this.handleIncreaseReward().then(() => this.setState({ isLoading: false, value: '' }));
+    }
+  };
+
+  handleCancel = () => this.setState({ isOpenModalEnterAmount: false, value: '' });
+
+  handleIncreaseReward = async () => {
+    try {
+      const { proposition } = this.props;
+      const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+      const companyAuthor = get(proposition, ['guide', 'name']);
+      const companyPermlink = get(proposition, 'activation_permlink');
+      const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+      const userName = get(proposition, ['users', '0', 'name']);
+      const amount = this.state.value;
+      await this.props.increaseReward({
+        companyAuthor,
+        companyPermlink,
+        username: userName,
+        reservationPermlink,
+        appName,
+        amount,
+      });
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.props
+            .getMessageHistory()
+            .then(() => resolve())
+            .catch(error => reject(error));
+        }, 10000);
+      });
+      message.success(
+        this.props.intl.formatMessage({
+          id: 'reward_has_been_increased',
+          defaultMessage: 'Reward has been increased',
+        }),
+      );
+    } catch (e) {
+      message.error(e.message);
+    }
+  };
+
+  handleChangeBlacklistClick = () => {
+    const { proposition } = this.props;
+    const { isUserInBlacklist } = this.state;
+    const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
     const idsUsers = [];
     idsUsers.push(get(proposition, ['users', '0', 'name']));
     return this.props
       .changeBlackAndWhiteLists(id, idsUsers)
       .then(() => {
+        setTimeout(() => {
+          this.props.getBlacklist(proposition.guideName).then(data => {
+            const blacklist = get(data, ['value', 'blackList', 'blackList']);
+            const blacklistNames = map(blacklist, user => user.name);
+            this.getIsUserInBlackList(blacklistNames);
+          });
+        }, 7000);
+      })
+      .then(() => {
+        this.setState({ isUserInBlacklist: id === 'addUsersToBlackList' });
         message.success(
-          this.props.intl.formatMessage({
-            id: 'user_was_added_to_blacklist',
-            defaultMessage: 'Users were added to blacklist',
-          }),
+          this.props.intl.formatMessage(
+            isUserInBlacklist
+              ? {
+                  id: 'user_was_deleted_from_blacklist',
+                  defaultMessage: 'User was deleted from the blacklist',
+                }
+              : {
+                  id: 'user_was_added_to_blacklist',
+                  defaultMessage: 'Users were added to blacklist',
+                },
+          ),
         );
       })
       .catch(error => {
@@ -190,8 +285,9 @@ export default class CampaignButtons extends React.Component {
 
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
+    const { isUserInBlacklist } = this.state;
     if (match.params.filterKey === 'messages') {
-      return popoverDataMessages[propositionStatus] || [];
+      return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
   };
@@ -220,6 +316,7 @@ export default class CampaignButtons extends React.Component {
       user,
       toggleModal,
     } = this.props;
+    const { isUserInBlacklist } = this.state;
 
     const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
 
@@ -350,10 +447,32 @@ export default class CampaignButtons extends React.Component {
                           </div>
                         </PopoverMenuItem>
                       );
-                    case 'add_to_blacklist':
+                    case 'increase_reward':
                       return (
                         <PopoverMenuItem key={item.key}>
-                          <div role="presentation" onClick={this.handleAddToBlacklistClick}>
+                          <div role="presentation" onClick={this.openModalEnterAmount}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'add_to_blacklist':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'delete_from_blacklist':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={!isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
                             {intl.formatMessage({
                               id: item.id,
                               defaultMessage: item.defaultMessage,
@@ -410,6 +529,7 @@ export default class CampaignButtons extends React.Component {
       user,
       proposition,
     } = this.props;
+    const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', 'assigned']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
@@ -471,6 +591,27 @@ export default class CampaignButtons extends React.Component {
             {'>'}
           </Link>
         )}
+        <Modal
+          visible={isOpenModalEnterAmount}
+          onOk={this.handleOkClick}
+          onCancel={this.handleCancel}
+          style={{ width: '100px' }}
+          width={250}
+          okButtonProps={{ loading: isLoading }}
+        >
+          <InputNumber
+            placeholder={intl.formatMessage({
+              id: 'enter_amount_in_hive',
+              defaultMessage: `Enter amount in HIVE`,
+            })}
+            onChange={this.handleChangeValue}
+            value={value}
+            min={0}
+            step={0.01}
+            autoFocus
+            onPressEnter={this.handleOkClick}
+          />
+        </Modal>
       </div>
     );
   }

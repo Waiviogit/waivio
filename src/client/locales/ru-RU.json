@@ -904,6 +904,8 @@
   "payables": "Задолженность",
   "filter_payable": "Больше {value} HIVE",
   "filter_days": "Больше {value} дней",
+  "filter_moreDays": "Больше {value} дней",
+  "filter_otherDays": "Больше {value} дней",
   "filter_payment": "Больше {payment} HIVE",
   "submit": "Отправить",
   "check_review_requirements_title": "Данный обзор не соответствует некоторым требованиям.",
@@ -1245,6 +1247,7 @@
   "deposit_account": "Аккаунт отправителя",
   "deposit_transaction_hash": "Хэш транзакции депозита",
   "deposit_usd_value": "Депозит в долларах США",
+  "value_error_upper_case": "Допускаются строчные буквы, цифры, точка, подчеркивание и дефис",
   "messages": "Сообщения",
   "inquiry_date": "Дата запроса",
   "latest": "Самый последний",
@@ -1270,5 +1273,13 @@
   "withdrawal_confirmations": "Подтверждение вывода",
   "email_link_details": "Все запросы на вывод средств должны быть подтверждены по электронной почте.",
   "guests_account_settings": "Настройки учетной записи гостя",
-  "guest_settings": "Гостевые настройки"
+  "guest_settings": "Гостевые настройки",
+  "increase_reward" : "Увеличить вознаграждение",
+  "mobnav_guest_settings": "Гостевые настройки",
+  "register_email": "Зарегистрируйте емайл",
+  "enter_amount_in_hive": "Введите сумму в HIVE",
+  "reward_has_been_increased": "Награда была увеличена",
+  "your_list_is_empty": "Ваш список пустой",
+  "proposal_payment_from": "Предложение оплаты от {steem_dao}",
+  "proposal_payment_to": "Предложение оплаты для {receiver}"
 }
