@@ -892,6 +892,8 @@
   "peyment_nov": "Nov",
   "peyment_dec": "Dec",
   "filter_days": "Over {value} days",
+  "filter_moreDays": "Over {value} days",
+  "filter_otherDays": "Over {value} days",
   "filter_payable": "Over {value} HIVE",
   "discover": "discover",
   "personal": "personal",
