@@ -191,8 +191,6 @@ export default class CampaignButtons extends React.Component {
 
   openModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: true });
 
-  closeModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: false });
-
   handleChangeValue = value => {
     this.setState({ value });
   };
