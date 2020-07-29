@@ -1225,6 +1225,12 @@ export const getWalletCryptoPriceHistory = symbols =>
     },
   ).then(res => res.json());
 
+export const getCurrentHivePrice = () =>
+  fetch(`${config.currenciesApiPrefix}${config.reservationCurrency}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+
 export const checkFollowing = (user, users = []) => {
   const queryString = users.length
     ? users.reduce((acc, usr, index) => {

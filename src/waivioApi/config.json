@@ -93,5 +93,6 @@
   "validateAddress": "/validate-crypto-wallet",
   "finalConfirmTransaction": "/confirm-transaction",
   "getWithdrawData": "/get-withdraw-data",
-  "setPendingStatus": "/set-pending-transfer"
+  "setPendingStatus": "/set-pending-transfer",
+  "reservationCurrency": "/reservationCurrency"
 }
