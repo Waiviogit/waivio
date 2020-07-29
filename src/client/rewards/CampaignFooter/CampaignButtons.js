@@ -241,7 +241,7 @@ export default class CampaignButtons extends React.Component {
     }
   };
 
-  handleAddToBlacklistClick = () => {
+  handleChangeBlacklistClick = () => {
     const { proposition } = this.props;
     const { isUserInBlacklist } = this.state;
     const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
