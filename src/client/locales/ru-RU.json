@@ -1276,6 +1276,6 @@
   "register_email": "Зарегистрируйте емайл",
   "guest_settings": "Гостевые настройки",
   "your_list_is_empty": "Ваш список пустой",
-  "proposal_payment_from": "Предложение оплаты от steem.dao",
+  "proposal_payment_from": "Предложение оплаты от {steem.dao}",
   "proposal_payment_to": "Предложение оплаты для {receiver}"
 }
