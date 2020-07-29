@@ -1257,20 +1257,24 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
 };
 
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
-  const transactionInfo = store.get('withdrawData');
-  const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
-
-  const transactionData = {
-    outputCoinType: transactionInfo.currentCurrency,
-    inputCoinType: 'hive',
-    amount,
-    address: transactionInfo.walletAddress,
-  };
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
-  const body =
-    type === 'confirmTransaction'
-      ? { userName, type, email, isGuest, transactionData }
-      : { userName, type, email, isGuest };
+  let body = { userName, type, email, isGuest };
+
+  if (type === 'confirmTransaction') {
+    const transactionInfo = store.get('withdrawData');
+    const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
+    const transactionData = {
+      outputCoinType: transactionInfo.currentCurrency,
+      inputCoinType: 'hive',
+      amount,
+      address: transactionInfo.walletAddress,
+    };
+
+    body = {
+      ...body,
+      transactionData,
+    };
+  }
 
   return fetch(`${config.campaignApiPrefix}${config.mailer}${config.confirmEmail}`, {
     headers: {
