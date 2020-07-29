@@ -48,8 +48,8 @@ export default class SidenavRewards extends React.Component {
       },
       rewardsCount: {
         hasReceivables: false,
-        historyCount: 0,
         createdCampaignsCount: 0,
+        countTookPartCampaigns: 0,
       },
     };
   }
@@ -59,7 +59,7 @@ export default class SidenavRewards extends React.Component {
       this.setState({
         rewardsCount: {
           hasReceivables: data.has_receivable,
-          historyCount: data.count_history_campaigns,
+          countTookPartCampaigns: data.count_took_part_campaigns,
           createdCampaignsCount: data.count_campaigns,
         },
       }),
@@ -72,7 +72,7 @@ export default class SidenavRewards extends React.Component {
         this.setState({
           rewardsCount: {
             hasReceivables: data.has_receivable,
-            historyCount: data.count_history_campaigns,
+            countTookPartCampaigns: data.count_took_part_campaigns,
             createdCampaignsCount: data.count_campaigns,
           },
         }),
@@ -93,7 +93,7 @@ export default class SidenavRewards extends React.Component {
   render() {
     const { intl, authenticated, isGuest } = this.props;
     const { menuCondition, rewardsCount } = this.state;
-    const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
+    const { hasReceivables, countTookPartCampaigns, createdCampaignsCount } = rewardsCount;
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -175,7 +175,7 @@ export default class SidenavRewards extends React.Component {
                       </NavLink>
                     </li>
                   ) : null}
-                  {!!historyCount && (
+                  {!!countTookPartCampaigns && (
                     <li>
                       <NavLink
                         to={`/rewards/history`}
@@ -191,27 +191,39 @@ export default class SidenavRewards extends React.Component {
                   )}
                 </React.Fragment>
               )}
-              {!isGuest && (
-                <div
-                  className="Sidenav__title-wrap"
-                  onClick={() => this.toggleMenuCondition('campaigns')}
-                  role="presentation"
-                >
-                  <div className="Sidenav__title-item">
-                    {intl.formatMessage({
-                      id: 'campaigns',
-                      defaultMessage: `Campaigns`,
-                    })}
-                    :
-                  </div>
-                  <div className="Sidenav__title-icon">
-                    {!menuCondition.campaigns ? (
-                      <i className="iconfont icon-addition" />
-                    ) : (
-                      <i className="iconfont icon-offline" />
-                    )}
-                  </div>
+              <div
+                className="Sidenav__title-wrap"
+                onClick={() => this.toggleMenuCondition('campaigns')}
+                role="presentation"
+              >
+                <div className="Sidenav__title-item">
+                  {intl.formatMessage({
+                    id: 'campaigns',
+                    defaultMessage: `Campaigns`,
+                  })}
+                  :
                 </div>
+                <div className="Sidenav__title-icon">
+                  {!menuCondition.campaigns ? (
+                    <i className="iconfont icon-addition" />
+                  ) : (
+                    <i className="iconfont icon-offline" />
+                  )}
+                </div>
+              </div>
+              {isGuest && menuCondition.campaigns && (
+                <li>
+                  <NavLink
+                    to={`/rewards/reports`}
+                    className="sidenav-discover-objects__item"
+                    activeClassName="Sidenav__item--active"
+                  >
+                    {intl.formatMessage({
+                      id: 'sidenav_rewards_reports',
+                      defaultMessage: `Reports`,
+                    })}
+                  </NavLink>
+                </li>
               )}
               {!isGuest && menuCondition.campaigns && (
                 <React.Fragment>
