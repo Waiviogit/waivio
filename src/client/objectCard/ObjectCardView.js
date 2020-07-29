@@ -50,7 +50,8 @@ const ObjectCardView = ({
   const ratings = getObjectRatings();
 
   const avatarLayout = () => {
-    const parentAvatar = getApprovedField(passedParent, 'avatar');
+    const parent = wObject.parent || passedParent;
+    const parentAvatar = getApprovedField(parent, 'avatar');
     let url = getApprovedField(wObject, 'avatar') || parentAvatar;
 
     if (!url) url = DEFAULTS.AVATAR;

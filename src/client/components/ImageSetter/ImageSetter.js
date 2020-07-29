@@ -31,13 +31,13 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
-
   useEffect(() => {
     if (currentImages.length) {
       onImageLoaded(currentImages);
     }
   }, [currentImages]);
 
+  // For image pasted for link
   const checkIsImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
     if (isSameLink) {
@@ -66,6 +66,7 @@ const ImageSetter = ({
     }
   };
 
+  // For image pasted for link
   const handleOnUploadImageByLink = image => {
     if (currentImages.length >= 25) {
       message.error(
@@ -272,7 +273,7 @@ ImageSetter.propTypes = {
 };
 
 ImageSetter.defaultProps = {
-  isMultiple: false,
+  isMultiple: true,
   defaultImage: '',
   isRequired: false,
   isTitle: true,
