@@ -143,7 +143,7 @@ class CreateRewardForm extends React.Component {
       );
 
       // const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
-      const minExpertise = rewardFund
+      const minExpertise = !isEmpty(rewardFund)
         ? (
             (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
             rewardFund.reward_balance.replace(' HIVE', '') *
