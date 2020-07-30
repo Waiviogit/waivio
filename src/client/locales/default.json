@@ -1291,5 +1291,6 @@
   "activation_campaign_notify":  "Activation campaign",
   "security_alerts":  "Security alerts (always on)",
   "security_alerts_info":  "Outgoing transfers, power downs, withdrawals from savings, delegations, password recovery requests, recovery address changes, app authorizations",
-  "min_amount": "min. amount: {input} USD"
+  "min_amount": "min. amount: {input} USD",
+  "settings_notify": "settings"
 }

@@ -74,8 +74,15 @@ class Notifications extends React.Component {
         <div className="NotificationsPage__title">
           <h1>
             <FormattedMessage id="notifications" defaultMessage="Notifications" />
+            (<a href={"/notification-settings"}><FormattedMessage id="settings_notify" defaultMessage="settings" /></a>)
           </h1>
         </div>
+        <p>
+          You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentios yoy, follows you, transfers funds to you, and so on.
+        </p>
+        <p>
+          Open the Telegram chart with <b>@WaivioNotificationsBot</b> and enter the Hive usernames to subscribes.
+        </p>
         <div className="NotificationsPage__content">
           {loadingNotifications && (
             <div className="NotificationsPage__loading">
