@@ -6,13 +6,7 @@ import { isEqual } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Checkbox, Form, InputNumber, message } from 'antd';
 import { updateProfile, reload } from '../auth/authActions';
-import {
-  getIsReloading,
-  isGuestUser,
-  getAuthenticatedUserNotificationsSettings,
-  getAuthenticatedUserName,
-} from '../reducers';
-import { getMetadata } from '../helpers/postingMetadata';
+import { getAuthenticatedUserNotificationsSettings, getAuthenticatedUserName } from '../reducers';
 import withEditor from '../components/Editor/withEditor';
 import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
@@ -21,33 +15,15 @@ import requiresLogin from '../auth/requiresLogin';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { saveNotificationsSettings } from '../helpers/metadata';
 import { notificationType } from '../../common/constants/waivio';
-
-import './Settings.less';
 import { updateUserMetadata } from '../user/usersActions';
 
-function mapPropsToFields(props) {
-  const metadata = getMetadata(props.user);
-
-  const profile = metadata.profile || {};
-
-  return Object.keys(profile).reduce(
-    (a, b) => ({
-      ...a,
-      [b]: Form.createFormField({
-        value: profile[b],
-      }),
-    }),
-    {},
-  );
-}
+import './Settings.less';
 
 @requiresLogin
 @injectIntl
 @connect(
   state => ({
     userName: getAuthenticatedUserName(state),
-    reloading: getIsReloading(state),
-    isGuest: isGuestUser(state),
     settingsNotifications: getAuthenticatedUserNotificationsSettings(state),
   }),
   {
@@ -56,9 +32,6 @@ function mapPropsToFields(props) {
     updateUserMetadata,
   },
 )
-@Form.create({
-  mapPropsToFields,
-})
 @withEditor
 export default class NotificationSettings extends React.Component {
   static propTypes = {
