@@ -18,6 +18,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen }) => (
         })}
       </div>
     }
+    zIndex={10000}
     closable
     onCancel={toggleModal}
     maskClosable={false}

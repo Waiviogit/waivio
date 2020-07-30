@@ -10,8 +10,10 @@ import ClaimReward from './ClaimReward';
 import WalletFillOrderTransferred from './WalletFillOrderTransferred';
 import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
-import './UserWalletTransactions.less';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
+import WalletProposalPay from './WalletProposalPay';
+
+import './UserWalletTransactions.less';
 
 const getFormattedTransactionAmount = (amount, currency) => {
   if (!amount) {
@@ -132,6 +134,17 @@ const WalletTransaction = ({
           timestamp={transaction.timestamp}
           openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
           currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+        />
+      );
+    case accountHistoryConstants.PROPOSAL_PAY:
+      return (
+        <WalletProposalPay
+          receiver={transactionDetails.receiver}
+          payment={getFormattedTransactionAmount(transactionDetails.payment)}
+          timestamp={transaction.timestamp}
+          withdraw={transaction.withdraw}
+          getDetails={handleDetailsClick}
+          currentUsername={currentUsername}
         />
       );
     default:

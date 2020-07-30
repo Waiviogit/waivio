@@ -7,6 +7,7 @@ import {
   getAuthenticatedUserName,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
+  isGuestUser,
 } from '../../reducers';
 import './Sidenav.less';
 import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
@@ -17,11 +18,13 @@ import ModalSignIn from './ModlaSignIn/ModalSignIn';
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
   userName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
+    isGuest: PropTypes.string.isRequired,
     userName: PropTypes.string,
   };
 
@@ -45,8 +48,8 @@ export default class SidenavRewards extends React.Component {
       },
       rewardsCount: {
         hasReceivables: false,
-        historyCount: 0,
         createdCampaignsCount: 0,
+        countTookPartCampaigns: 0,
       },
     };
   }
@@ -56,7 +59,7 @@ export default class SidenavRewards extends React.Component {
       this.setState({
         rewardsCount: {
           hasReceivables: data.has_receivable,
-          historyCount: data.count_history_campaigns,
+          countTookPartCampaigns: data.count_took_part_campaigns,
           createdCampaignsCount: data.count_campaigns,
         },
       }),
@@ -69,7 +72,7 @@ export default class SidenavRewards extends React.Component {
         this.setState({
           rewardsCount: {
             hasReceivables: data.has_receivable,
-            historyCount: data.count_history_campaigns,
+            countTookPartCampaigns: data.count_took_part_campaigns,
             createdCampaignsCount: data.count_campaigns,
           },
         }),
@@ -88,9 +91,9 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated } = this.props;
+    const { intl, authenticated, isGuest } = this.props;
     const { menuCondition, rewardsCount } = this.state;
-    const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
+    const { hasReceivables, countTookPartCampaigns, createdCampaignsCount } = rewardsCount;
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -172,7 +175,7 @@ export default class SidenavRewards extends React.Component {
                       </NavLink>
                     </li>
                   ) : null}
-                  {!!historyCount && (
+                  {!!countTookPartCampaigns && (
                     <li>
                       <NavLink
                         to={`/rewards/history`}
@@ -208,7 +211,21 @@ export default class SidenavRewards extends React.Component {
                   )}
                 </div>
               </div>
-              {menuCondition.campaigns && (
+              {isGuest && menuCondition.campaigns && (
+                <li>
+                  <NavLink
+                    to={`/rewards/reports`}
+                    className="sidenav-discover-objects__item"
+                    activeClassName="Sidenav__item--active"
+                  >
+                    {intl.formatMessage({
+                      id: 'sidenav_rewards_reports',
+                      defaultMessage: `Reports`,
+                    })}
+                  </NavLink>
+                </li>
+              )}
+              {!isGuest && menuCondition.campaigns && (
                 <React.Fragment>
                   <li>
                     <NavLink

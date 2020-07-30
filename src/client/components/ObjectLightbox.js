@@ -66,7 +66,6 @@ export default class ObjectLightbox extends Component {
         ) : (
           <React.Fragment>
             <a role="presentation" onClick={this.handleAvatarClick}>
-              .
               <ObjectAvatar item={wobject} parent={this.state.parent} size={size} />
             </a>
             {this.state.open && (
