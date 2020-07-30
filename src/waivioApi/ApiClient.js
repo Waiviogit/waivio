@@ -41,7 +41,7 @@ export function handleValidateCampaignErrors(response) {
 
 export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: { ...headers, app: config.appName },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -76,7 +76,10 @@ export const getObjects = ({
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requiredFields = [] }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      app: config.appName,
+    },
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
@@ -458,7 +461,7 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
-      headers: actualHeader,
+      headers: { ...actualHeader, app: config.appName },
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -489,7 +492,10 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
     fetch(
       `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+        },
         method: 'GET',
       },
     )

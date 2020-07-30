@@ -34,6 +34,7 @@ const LeftSidebar = () => (
     <Route path="/settings" component={SidenavUser} />
     <Route path="/invite" component={SidenavUser} />
     <Route path="/guests-settings" component={SidenavUser} />
+    <Route path="/notification-settings" component={SidenavUser} />
     <Route path="/" component={SidebarMenu} />
   </Switch>
 );
