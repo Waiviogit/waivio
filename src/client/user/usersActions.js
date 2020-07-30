@@ -134,3 +134,18 @@ export const changeCounterFollow = (username, type, follow = false) => (dispatch
     },
   });
 };
+
+export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
+  '@users/GET_REWARDS_GENERAL_COUNTS',
+);
+
+export const getRewardsGeneralCounts = () => (dispatch, getState) => {
+  const state = getState();
+  const authUserName = getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_REWARDS_GENERAL_COUNTS.ACTION,
+    payload: {
+      promise: ApiClient.getRewardsGeneralCounts({ userName: authUserName }),
+    },
+  });
+};

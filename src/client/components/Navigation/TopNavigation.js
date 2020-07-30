@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getAuthenticatedUser } from '../../reducers';
+import { getRewardsGeneralCounts } from '../../user/usersActions';
 import './TopNavigation.less';
 
 const LINKS = {
@@ -41,6 +42,15 @@ const TOOLS_URLS = [
 
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
+  const dispatch = useDispatch();
+  const [tabType, setTabType] = useState('');
+  useEffect(() => {
+    if (authenticatedUser) {
+      dispatch(getRewardsGeneralCounts({ userName: authenticatedUser.name })).then(data =>
+        setTabType(data.tabType),
+      );
+    }
+  }, []);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
@@ -66,7 +76,7 @@ const TopNavigation = ({ location: { pathname } }) => {
             </li>
             <li className="TopNavigation__item">
               <Link
-                to={`${LINKS.REWARDS}/all`}
+                to={`${LINKS.REWARDS}/${tabType}`}
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
                 })}

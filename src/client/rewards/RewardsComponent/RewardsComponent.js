@@ -16,6 +16,7 @@ const RewardsComponent = memo(
     activeFilters,
     area,
     getPropositions,
+    getPropositionsByStatus,
     intl,
     campaignsLayoutWrapLayout,
     loading,
@@ -33,6 +34,7 @@ const RewardsComponent = memo(
     sortReserved,
     campaignsTypes,
     setFilterValue,
+    fetched,
   }) => {
     const dispatch = useDispatch();
 
@@ -56,22 +58,21 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if ((campaignParent && !userLocation.lat) || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
+      if (username) getPropositionsByStatus({ username, sort });
+    }, []);
 
     useEffect(() => {
       if (!userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      if (!fetched) getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
         delay(6000).then(() => {
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, filterKeyParams]);
+    }, [campaignParent, filterKeyParams, fetched]);
 
     useEffect(() => {
       if (campaignParent) return;
@@ -117,6 +118,7 @@ RewardsComponent.propTypes = {
   area: PropTypes.arrayOf(PropTypes.number),
   radius: PropTypes.number,
   getPropositions: PropTypes.func.isRequired,
+  getPropositionsByStatus: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   hasMore: PropTypes.bool,
@@ -134,6 +136,7 @@ RewardsComponent.propTypes = {
   sortReserved: PropTypes.string,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   setFilterValue: PropTypes.func,
+  fetched: PropTypes.bool,
 };
 
 RewardsComponent.defaultProps = {
@@ -153,6 +156,7 @@ RewardsComponent.defaultProps = {
   sortEligible: 'proximity',
   sortAll: 'proximity',
   sortReserved: 'proximity',
+  fetched: true,
 };
 
 export default RewardsComponent;
