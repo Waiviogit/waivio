@@ -144,7 +144,7 @@ export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
 export const getAuthenticatedUserNotificationsSettings = state =>
-  state.userMetaData.settings.userNotifications;
+  get(state, ['userMetaData', 'settings', 'userNotifications'], {});
 export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
 export const getAuthenticatedUserAvatar = state => {
   let jsonMetadata = get(state, 'user.posting_json_metadata');
