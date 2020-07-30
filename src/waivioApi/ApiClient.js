@@ -41,7 +41,7 @@ export function handleValidateCampaignErrors(response) {
 
 export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers: {...headers, app: config.appName},
+    headers: { ...headers, app: config.appName },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -78,7 +78,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
-      app: config.appName
+      app: config.appName,
     },
     method: 'POST',
     body: JSON.stringify({
@@ -300,7 +300,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser) => {
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
-      headers: {...actualHeaders, app: config.appName},
+      headers: { ...actualHeaders, app: config.appName },
       body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
@@ -454,7 +454,7 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
-      headers: {...actualHeader, app: config.appName},
+      headers: { ...actualHeader, app: config.appName },
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -487,7 +487,7 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
       {
         headers: {
           ...headers,
-          app: config.appName
+          app: config.appName,
         },
         method: 'GET',
       },
