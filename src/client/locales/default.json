@@ -1279,5 +1279,6 @@
   "enter_amount_in_hive": "Enter amount in HIVE",
   "reward_has_been_increased": "Reward has been increased",
   "proposal_payment_from": "Proposal payment from {steem_dao}",
-  "proposal_payment_to": "Proposal payment to {receiver}"
+  "proposal_payment_to": "Proposal payment to {receiver}",
+  "minimum_expertise_cannot_have_more_then_two_decimals": "The Waivio reputation cannot have more then two digits after the decimal point"
 }

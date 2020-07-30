@@ -105,14 +105,13 @@ export const validatorsCreator = (
   },
 
   checkMinExpertise: (rule, value, callback) => {
-    let newValue;
-    const dec = value.indexOf('.');
+    const dec = String(value).indexOf('.');
     if (value.length > dec + 3) {
       callback(messages.minExpertiseValue);
-      newValue = parseFloat(value).toFixed(2);
+    } else if (value < 0 && value !== '') {
+      callback(messages.minExpertise);
     }
-    // eslint-disable-next-line no-unused-expressions
-    newValue < 0 && newValue !== '' ? callback(messages.minExpertise) : callback();
+    callback();
   },
 
   checkSteemReputation: (rule, value, callback) => {

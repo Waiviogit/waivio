@@ -1,4 +1,4 @@
-import { isEmpty, map, includes, ceil } from 'lodash';
+import { isEmpty, map, includes, floor } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -94,7 +94,6 @@ class CreateRewardForm extends React.Component {
   componentDidMount = async () => {
     const { rate, rewardFund } = this.props;
     // const { minExpertiseValue } = this.props;
-    // console.log('minExpertiseValue', minExpertiseValue)
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -144,14 +143,14 @@ class CreateRewardForm extends React.Component {
 
       // const minExpertise = minExpertiseValue ? minExpertiseValue.toFixed(2) : 0;
       const minExpertise = !isEmpty(rewardFund)
-        ? ceil(
+        ? floor(
             (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
               rewardFund.reward_balance.replace(' HIVE', '') *
               rate *
               1000000,
             2,
           )
-        : null;
+        : 0;
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
@@ -243,9 +242,9 @@ class CreateRewardForm extends React.Component {
       whitelist_users: [],
       count_reservation_days: data.reservationPeriod,
       userRequirements: {
-        minFollowers: data.minFollowers || 0,
-        minPosts: data.minPosts || 0,
-        minExpertise: minExpertisePrepared || 0,
+        minFollowers: data.minFollowers,
+        minPosts: data.minPosts,
+        minExpertise: minExpertisePrepared,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
