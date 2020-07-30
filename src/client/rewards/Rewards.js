@@ -149,10 +149,13 @@ class Rewards extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
     if (match.path !== this.props.match.path) {
-      this.setState({ activePayableFilters: [], propositionsReserved: [] });
+      this.setState({ activePayableFilters: [] });
     }
-    if (match.params.filterKey !== this.props.match.params.filterKey) {
+    if (match.params.filterKey !== 'reserved') {
       this.setState({ propositionsReserved: [] });
+    }
+    if (match.params.filterKey === 'reserved') {
+      this.setState({ propositions: [] });
     }
   }
 
@@ -286,17 +289,28 @@ class Rewards extends React.Component {
   getPropositionsByStatus = ({ username, sort }) => {
     this.setState({ loadingCampaigns: true });
     getRewardsGeneralCounts({ userName: username, sort }).then(data => {
-      if (data.tabType === 'reserved') {
-        this.props.history.push('/rewards/reserved/');
-      }
       const sponsors = sortBy(data.sponsors);
       this.setState({
-        fetched: false,
         sponsors,
-        propositionsReserved: data.campaigns,
         hasMore: data.hasMore,
         loadingCampaigns: false,
       });
+      if (data.tabType === 'reserved') {
+        this.setState({
+          propositionsReserved: data.campaigns,
+        });
+        this.props.history.push('/rewards/reserved/');
+      } else if (data.tabType === 'eligible') {
+        this.props.history.push('/rewards/active/');
+        this.setState({
+          propositions: data.campaigns,
+        });
+      } else {
+        this.props.history.push('/rewards/all/');
+        this.setState({
+          propositions: data.campaigns,
+        });
+      }
     });
   };
 
@@ -510,7 +524,7 @@ class Rewards extends React.Component {
     if (!isEmpty(propositionsReserved)) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
-      propositionsUniq = propositions;
+      propositionsUniq = uniqBy(propositions, '_id');
     } else {
       propositionsUniq = uniqBy(propositions, 'required_object._id');
     }
@@ -704,6 +718,7 @@ class Rewards extends React.Component {
       sortHistory,
       sortMessages,
       loadingAssignDiscard,
+      propositionsReserved,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -763,6 +778,7 @@ class Rewards extends React.Component {
       sortHistory,
       sortMessages,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
+      propositionsReserved,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);

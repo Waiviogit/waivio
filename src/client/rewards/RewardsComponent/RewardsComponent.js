@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import React, { useEffect, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,7 +34,6 @@ const RewardsComponent = memo(
     sortReserved,
     campaignsTypes,
     setFilterValue,
-    fetched,
   }) => {
     const dispatch = useDispatch();
 
@@ -51,6 +50,7 @@ const RewardsComponent = memo(
     const campaignParent = get(match, ['params', 'campaignParent']);
     const filterKeyParams = get(match, ['params', 'filterKey']);
     const history = useHistory();
+    const prevFilterKeyParams = useRef(undefined);
 
     const handleSortChange = sortRewards => {
       setSortValue(sortRewards);
@@ -63,16 +63,21 @@ const RewardsComponent = memo(
     }, []);
 
     useEffect(() => {
+      if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
+        prevFilterKeyParams.current = filterKeyParams;
+        return;
+      }
       if (!userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      if (!fetched) getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      prevFilterKeyParams.current = filterKeyParams;
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
         delay(6000).then(() => {
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, filterKeyParams, fetched]);
+    }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
 
     useEffect(() => {
       if (campaignParent) return;
@@ -136,7 +141,6 @@ RewardsComponent.propTypes = {
   sortReserved: PropTypes.string,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   setFilterValue: PropTypes.func,
-  fetched: PropTypes.bool,
 };
 
 RewardsComponent.defaultProps = {
@@ -156,7 +160,6 @@ RewardsComponent.defaultProps = {
   sortEligible: 'proximity',
   sortAll: 'proximity',
   sortReserved: 'proximity',
-  fetched: true,
 };
 
 export default RewardsComponent;

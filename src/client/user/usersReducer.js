@@ -337,7 +337,6 @@ export default function usersReducer(state = initialState, action) {
     }
 
     case actions.GET_REWARDS_GENERAL_COUNTS.SUCCESS: {
-      console.log('action.payload', action.payload);
       return {
         ...state,
         tabType: action.payload.tabType,

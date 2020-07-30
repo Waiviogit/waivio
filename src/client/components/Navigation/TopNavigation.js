@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
@@ -6,7 +6,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, getTabType } from '../../reducers';
 import { getRewardsGeneralCounts } from '../../user/usersActions';
 import './TopNavigation.less';
 
@@ -43,12 +43,11 @@ const TOOLS_URLS = [
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const dispatch = useDispatch();
-  const [tabType, setTabType] = useState('');
+  const tabType = useSelector(getTabType);
+  const newTabType = useMemo(() => (tabType === 'eligible' ? 'active' : tabType), [tabType]);
   useEffect(() => {
     if (authenticatedUser) {
-      dispatch(getRewardsGeneralCounts({ userName: authenticatedUser.name })).then(data =>
-        setTabType(data.tabType),
-      );
+      dispatch(getRewardsGeneralCounts({ userName: authenticatedUser.name }));
     }
   }, []);
   const isRouteMathed =
@@ -76,7 +75,7 @@ const TopNavigation = ({ location: { pathname } }) => {
             </li>
             <li className="TopNavigation__item">
               <Link
-                to={`${LINKS.REWARDS}/${tabType}`}
+                to={`${LINKS.REWARDS}/${newTabType}`}
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
                 })}
