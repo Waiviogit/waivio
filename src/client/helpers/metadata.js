@@ -69,4 +69,20 @@ export const saveNotificationsLastTimestamp = (lastTimestamp, userName) =>
     )
     .then(resp => resp.user_metadata.notifications_last_timestamp);
 
+export const saveNotificationsSettings = (userNotifications, userName) =>
+  getMetadata(userName)
+    .then(metadata =>
+      updateUserMetadata(userName, {
+        ...metadata,
+        settings: {
+          ...metadata.settings,
+          userNotifications: {
+            ...metadata.settings.userNotifications,
+            ...userNotifications,
+          },
+        },
+      }),
+    )
+    .then(resp => resp.user_metadata);
+
 export default getMetadata;

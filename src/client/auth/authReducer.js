@@ -1,6 +1,10 @@
 import { get } from 'lodash';
 import * as types from './authActions';
-import { GET_USER_METADATA, GET_USER_PRIVATE_EMAIL } from '../user/usersActions';
+import {
+  GET_USER_METADATA,
+  GET_USER_PRIVATE_EMAIL,
+  UPDATE_USER_METADATA,
+} from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -114,6 +118,16 @@ export default (state = initialState, action) => {
       return state;
     }
 
+    case UPDATE_USER_METADATA: {
+      return {
+        ...state,
+        userMetaData: {
+          ...state.userMetaData,
+          ...action.payload,
+        },
+      };
+    }
+
     case types.UPDATE_PROFILE_ERROR:
       return state;
 
@@ -129,6 +143,8 @@ export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
+export const getAuthenticatedUserNotificationsSettings = state =>
+  get(state, ['userMetaData', 'settings', 'userNotifications'], {});
 export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
 export const getAuthenticatedUserAvatar = state => {
   let jsonMetadata = get(state, 'user.posting_json_metadata');

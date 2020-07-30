@@ -90,6 +90,15 @@ const SidenavUser = () => {
           )}
           <li>
             <NavLink
+              to="/notification-settings"
+              className="sidenav-discover-objects__item"
+              activeClassName="Sidenav__item--active"
+            >
+              <FormattedMessage id="notifications" defaultMessage="Notifications" />
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/invite"
               className="sidenav-discover-objects__item"
               activeClassName="Sidenav__item--active"
