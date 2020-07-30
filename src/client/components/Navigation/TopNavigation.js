@@ -23,6 +23,7 @@ const LINKS = {
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
+  TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio',
   NOTIFICATIONS: '/notifications-list',
   USERS: '/discover',
@@ -38,6 +39,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
   LINKS.TOOLS_SETTINGS_GUESTS,
+  LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
 ];
 
 const TopNavigation = ({ location: { pathname } }) => {
@@ -97,7 +99,7 @@ const TopNavigation = ({ location: { pathname } }) => {
             {!isEmpty(authenticatedUser) && (
               <li className="TopNavigation__item">
                 <Link
-                  to={`${LINKS.TOOLS_DRAFTS}`}
+                  to={`${LINKS.TOOLS_SETTINGS_NOTIFICATIONS}`}
                   className={classNames('TopNavigation__link', {
                     'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
                       pathname.includes(feedUrl),

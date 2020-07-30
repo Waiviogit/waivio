@@ -60,6 +60,8 @@ export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
 export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
+export const getAuthenticatedUserNotificationsSettings = state =>
+  fromAuth.getAuthenticatedUserNotificationsSettings(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 export const getAuthenticatedUserPrivateEmail = state =>

@@ -141,6 +141,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'guest_settings';
       break;
+    case '/notification-settings':
+      pageName = 'tools';
+      filterName = 'notification_settings';
+      break;
     case '/':
       if (!authenticated) {
         pageName = pages.hive.id;

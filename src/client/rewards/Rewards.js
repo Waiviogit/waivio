@@ -398,6 +398,7 @@ class Rewards extends React.Component {
     proposition,
     proposedWobj,
     userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
@@ -414,6 +415,7 @@ class Rewards extends React.Component {
         proposition,
         proposedWobj,
         userName,
+        currencyId,
       })
       .then(() => {
         message.success(
