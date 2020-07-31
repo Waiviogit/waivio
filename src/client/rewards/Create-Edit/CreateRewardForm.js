@@ -269,11 +269,9 @@ class CreateRewardForm extends React.Component {
     handleAddSponsorToList: obj => {
       const sponsors = [...this.state.sponsorsList, obj];
 
-      if (sponsors.length <= 5) {
-        this.setState({ sponsorsList: [...sponsors] }, () =>
-          this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList }),
-        );
-      }
+      this.setState({ sponsorsList: [...sponsors] }, () =>
+        this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList }),
+      );
     },
 
     removeSponsorObject: obj => {
