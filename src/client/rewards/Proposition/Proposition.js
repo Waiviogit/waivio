@@ -12,12 +12,15 @@ import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
+import {
+  rejectReservationCampaign,
+  reserveActivatedCampaign,
+  getCurrentHivePrice,
+} from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
 import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import './Proposition.less';
 
 const Proposition = ({
@@ -80,8 +83,6 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
-  const currentUSDPrice = getCurrentUSDPrice();
-  const amount = (proposition.reward / currentUSDPrice).toFixed(3);
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
@@ -103,41 +104,47 @@ const Proposition = ({
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
-    reserveActivatedCampaign(reserveData)
-      .then(() =>
-        assignProposition({
-          companyAuthor: proposition.guide.name,
-          companyPermlink: proposition.activation_permlink,
-          resPermlink: reserveData.reservation_permlink,
-          objPermlink: wobj.author_permlink,
-          companyId: proposition._id,
-          primaryObjectName: requiredObjectName,
-          secondaryObjectName: proposedWobj.name,
-          amount,
-          proposition,
-          proposedWobj,
-          userName,
-        }),
-      )
-      .then(({ isAssign }) => {
-        if (isAssign) {
-          setModalDetailsOpen(!isModalDetailsOpen);
-          setReservation(true);
-          history.push('/rewards/reserved');
-        }
-      })
-      .catch(e => {
-        if (e.error_description || e.message) {
-          message.error(e.error_description || e.message);
-        } else {
-          message.error(
-            intl.formatMessage({
-              id: 'something_went_wrong',
-              defaultMessage: 'Something went wrong',
-            }),
-          );
-        }
-      });
+    getCurrentHivePrice().then(res => {
+      const currencyId = res.id;
+      const currentHivePrice = res.hiveCurrency;
+      const amount = (proposition.reward / currentHivePrice).toFixed(3);
+      reserveActivatedCampaign(reserveData)
+        .then(() =>
+          assignProposition({
+            companyAuthor: proposition.guide.name,
+            companyPermlink: proposition.activation_permlink,
+            resPermlink: reserveData.reservation_permlink,
+            objPermlink: wobj.author_permlink,
+            companyId: proposition._id,
+            primaryObjectName: requiredObjectName,
+            secondaryObjectName: proposedWobj.name,
+            amount,
+            proposition,
+            proposedWobj,
+            userName,
+            currencyId,
+          }),
+        )
+        .then(({ isAssign }) => {
+          if (isAssign) {
+            setModalDetailsOpen(!isModalDetailsOpen);
+            setReservation(true);
+            history.push('/rewards/reserved');
+          }
+        })
+        .catch(e => {
+          if (e.error_description || e.message) {
+            message.error(e.error_description || e.message);
+          } else {
+            message.error(
+              intl.formatMessage({
+                id: 'something_went_wrong',
+                defaultMessage: 'Something went wrong',
+              }),
+            );
+          }
+        });
+    });
   };
   return (
     <div className="Proposition">

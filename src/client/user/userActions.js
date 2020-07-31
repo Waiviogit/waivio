@@ -218,6 +218,7 @@ export const assignProposition = ({
   proposition,
   proposedWobj,
   userName,
+  currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
@@ -244,6 +245,7 @@ export const assignProposition = ({
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
+          currencyId,
         },
       }),
     },

@@ -60,6 +60,8 @@ export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
 export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
+export const getAuthenticatedUserNotificationsSettings = state =>
+  fromAuth.getAuthenticatedUserNotificationsSettings(state.auth);
 export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUserAvatar(state.auth);
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 export const getAuthenticatedUserPrivateEmail = state =>
@@ -261,6 +263,12 @@ export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
+export const getTabType = state => fromRewards.getTabType(state.rewards);
+export const getHasReceivables = state => fromRewards.getHasReceivables(state.rewards);
+export const getCountTookPartCampaigns = state =>
+  fromRewards.getCountTookPartCampaigns(state.rewards);
+export const getCreatedCampaignsCount = state =>
+  fromRewards.getCreatedCampaignsCount(state.rewards);
 
 // common selectors
 
