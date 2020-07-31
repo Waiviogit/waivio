@@ -1,6 +1,19 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../components/Story/StoryFull';
 
+.waiv-editor {
+  border: 1px solid @white-gainsboro;
+  background-color: @white;
+  width: 92%;
+  margin-left: 23px;
+  border-radius: 4px;
+
+  @media @small, @medium {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
 .md-RichEditor-root {
   //background: @white;
   box-sizing: border-box;
@@ -12,7 +25,7 @@
 
 .md-RichEditor-title {
   border: none;
-  background-color: #191e23;
+  background-color: @white;
   color: @white-smoke;
   width: 100%;
   padding: 0 0 0 6px;
@@ -20,6 +33,7 @@
   font-size: 32px;
   font-weight: bold;
   margin-left: 12px;
+  caret-color: @black;
 
   @media @small, @medium {
     margin-left: 0;

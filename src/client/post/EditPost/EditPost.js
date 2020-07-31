@@ -388,8 +388,19 @@ class EditPost extends Component {
               titleValue={titleValue}
             />
 
-            <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
+            <div>
+              {intl.formatMessage({
+                id: 'editor_search_elements',
+                defaultMessage: 'Attach hashtags, objects, pages, etc.',
+              })}
+            </div>
+            <SearchObjectsAutocomplete
+              placeholder={intl.formatMessage({
+                id: 'editor_search_object_by_name',
+                defaultMessage: 'Search by name',
+              })}
+              handleSelect={this.handleObjectSelect}
+            />
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (

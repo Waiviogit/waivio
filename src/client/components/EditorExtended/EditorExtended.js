@@ -147,16 +147,19 @@ class Editor extends React.Component {
     return (
       <React.Fragment>
         <div className="waiv-editor">
-          <input
+          <textarea
             maxLength="255"
             className="md-RichEditor-title"
-            placeholder="Title"
+            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
             onChange={this.getValueFromTitle}
           />
           {isMounted ? (
             <MediumDraftEditor
               ref={this.refsEditor}
-              placeholder="Write your story..."
+              placeholder={this.props.intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Write your story...',
+              })}
               editorEnabled={editorEnabled && this.props.enabled}
               editorState={editorState}
               beforeInput={this.handleBeforeInput}
