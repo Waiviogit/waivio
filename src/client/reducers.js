@@ -263,6 +263,12 @@ export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
+export const getTabType = state => fromRewards.getTabType(state.rewards);
+export const getHasReceivables = state => fromRewards.getHasReceivables(state.rewards);
+export const getCountTookPartCampaigns = state =>
+  fromRewards.getCountTookPartCampaigns(state.rewards);
+export const getCreatedCampaignsCount = state =>
+  fromRewards.getCreatedCampaignsCount(state.rewards);
 
 // common selectors
 
