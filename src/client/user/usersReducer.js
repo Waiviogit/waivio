@@ -336,16 +336,6 @@ export default function usersReducer(state = initialState, action) {
       };
     }
 
-    case actions.GET_REWARDS_GENERAL_COUNTS.SUCCESS: {
-      return {
-        ...state,
-        tabType: action.payload.tabType,
-        hasReceivables: action.payload.has_receivable,
-        countTookPartCampaigns: action.payload.count_took_part_campaigns,
-        createdCampaignsCount: action.payload.count_campaigns,
-      };
-    }
-
     default: {
       return state;
     }
@@ -354,10 +344,6 @@ export default function usersReducer(state = initialState, action) {
 
 export const getAllUsers = state => get(state, 'users', {});
 export const getUser = (state, username) => get(state, ['users', username], {});
-export const getTabType = state => state.tabType;
-export const getHasReceivables = state => state.hasReceivables;
-export const getCountTookPartCampaigns = state => state.countTookPartCampaigns;
-export const getCreatedCampaignsCount = state => state.createdCampaignsCount;
 export const getIsUserFetching = (state, username) => getUser(state, username).fetching || false;
 export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;

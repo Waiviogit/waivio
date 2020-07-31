@@ -797,7 +797,7 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 }) =>
+export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers,

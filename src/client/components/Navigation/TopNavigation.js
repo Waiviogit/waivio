@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getAuthenticatedUser, getTabType } from '../../reducers';
-import { getRewardsGeneralCounts } from '../../user/usersActions';
+import { getRewardsGeneralCounts } from '../../rewards/rewardsActions';
 import './TopNavigation.less';
 
 const LINKS = {

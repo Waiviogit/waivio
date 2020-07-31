@@ -149,10 +149,6 @@ export const getRandomExperts = state => fromUsers.getRandomExperts(state.users)
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
 export const getAllUsers = state => fromUsers.getAllUsers(state.users);
-export const getTabType = state => fromUsers.getTabType(state.users);
-export const getHasReceivables = state => fromUsers.getHasReceivables(state.users);
-export const getCountTookPartCampaigns = state => fromUsers.getCountTookPartCampaigns(state.users);
-export const getCreatedCampaignsCount = state => fromUsers.getCreatedCampaignsCount(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
@@ -267,6 +263,12 @@ export const getUpdatedMap = state => fromMap.getUpdatedMap(state.map);
 
 export const getSingleReportData = state => fromRewards.getSingleReportData(state.rewards);
 export const getGlobalReportData = state => fromRewards.getGlobalReportData(state.rewards);
+export const getTabType = state => fromRewards.getTabType(state.rewards);
+export const getHasReceivables = state => fromRewards.getHasReceivables(state.rewards);
+export const getCountTookPartCampaigns = state =>
+  fromRewards.getCountTookPartCampaigns(state.rewards);
+export const getCreatedCampaignsCount = state =>
+  fromRewards.getCreatedCampaignsCount(state.rewards);
 
 // common selectors
 
