@@ -611,6 +611,7 @@ export const getPropositions = ({
   match,
   simplified,
   firstMapLoad,
+  isMap,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -636,6 +637,7 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
+    if (!isMap && match.params.filterKey === 'reserved') reqData.update = true;
 
     const url = getUrl(match);
 
@@ -795,13 +797,16 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = userName =>
+export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
         userName: userName,
+        sort,
+        limit,
+        skip,
       }),
     })
       .then(res => res.json())

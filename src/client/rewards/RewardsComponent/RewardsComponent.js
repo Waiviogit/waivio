@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import React, { useEffect, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ const RewardsComponent = memo(
     activeFilters,
     area,
     getPropositions,
+    getPropositionsByStatus,
     intl,
     campaignsLayoutWrapLayout,
     loading,
@@ -49,6 +50,7 @@ const RewardsComponent = memo(
     const campaignParent = get(match, ['params', 'campaignParent']);
     const filterKeyParams = get(match, ['params', 'filterKey']);
     const history = useHistory();
+    const prevFilterKeyParams = useRef(undefined);
 
     const handleSortChange = sortRewards => {
       setSortValue(sortRewards);
@@ -56,22 +58,26 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if ((campaignParent && !userLocation.lat) || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-    }, [JSON.stringify(userLocation), JSON.stringify(activeFilters)]);
+      if (username) getPropositionsByStatus({ username, sort });
+    }, []);
 
     useEffect(() => {
+      if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
+        prevFilterKeyParams.current = filterKeyParams;
+        return;
+      }
       if (!userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      prevFilterKeyParams.current = filterKeyParams;
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
         delay(6000).then(() => {
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, filterKeyParams]);
+    }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
 
     useEffect(() => {
       if (campaignParent) return;
@@ -117,6 +123,7 @@ RewardsComponent.propTypes = {
   area: PropTypes.arrayOf(PropTypes.number),
   radius: PropTypes.number,
   getPropositions: PropTypes.func.isRequired,
+  getPropositionsByStatus: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   hasMore: PropTypes.bool,
