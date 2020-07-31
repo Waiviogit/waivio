@@ -4,7 +4,21 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty, includes } from 'lodash';
+import {
+  debounce,
+  get,
+  has,
+  kebabCase,
+  throttle,
+  uniqBy,
+  isEmpty,
+  includes,
+  find,
+  indexOf,
+  uniqWith,
+  concat,
+  isEqual,
+} from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -154,7 +168,10 @@ class EditPost extends Component {
 
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
-    const linkedObjects = getLinkedObjects(rawContent);
+    const linkedObjects = uniqWith(
+      concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
+      isEqual,
+    );
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
@@ -188,8 +205,11 @@ class EditPost extends Component {
     this.props.createPost(postData, this.props.beneficiaries, isReview);
   }
 
-  handleToggleLinkedObject(objId, isLinked) {
+  handleToggleLinkedObject(objId, isLinked, uniqId) {
     const { linkedObjects, objPercentage } = this.state;
+    const currentObj = find(linkedObjects, { _id: uniqId });
+    const switchableObj = indexOf(linkedObjects, currentObj);
+    linkedObjects.splice(switchableObj, 1);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
