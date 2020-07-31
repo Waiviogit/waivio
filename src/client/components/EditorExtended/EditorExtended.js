@@ -1,14 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { convertToRaw } from 'draft-js';
+import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual } from 'lodash';
-import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
+import {
+  Editor as MediumDraftEditor,
+  createEditorState,
+  fromMarkdown,
+  Entity,
+  findLinkEntities,
+} from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { getClientWObj } from '../../adapters';
+import ObjectLink, { findObjEntities } from './components/entities/objectlink';
+import Link from './components/entities/link';
 
 const SIDE_BUTTONS = [
   {
@@ -28,6 +36,17 @@ const SIDE_BUTTONS = [
     component: SeparatorButton,
   },
 ];
+
+const defaultDecorators = new CompositeDecorator([
+  {
+    strategy: findObjEntities,
+    component: ObjectLink,
+  },
+  {
+    strategy: findLinkEntities,
+    component: Link,
+  },
+]);
 
 class Editor extends React.Component {
   static propTypes = {
@@ -54,7 +73,8 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
-      editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
+      // editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
+      editorState: EditorState.createEmpty(defaultDecorators),
     };
 
     this.onChange = editorState => {
@@ -122,21 +142,24 @@ class Editor extends React.Component {
   render() {
     const { editorState, isMounted, editorEnabled } = this.state;
     return (
-      <div className="waiv-editor">
-        {isMounted ? (
-          <MediumDraftEditor
-            ref={this.refsEditor}
-            placeholder=""
-            editorEnabled={editorEnabled && this.props.enabled}
-            editorState={editorState}
-            beforeInput={this.handleBeforeInput}
-            onChange={this.handleContentChange}
-            sideButtons={SIDE_BUTTONS}
-            withTitle={this.props.withTitle}
-            intl={this.props.intl}
-          />
-        ) : null}
-      </div>
+      <React.Fragment>
+        <div className="waiv-editor">
+          <input className="md-RichEditor-title" placeholder="Title" />
+          {isMounted ? (
+            <MediumDraftEditor
+              ref={this.refsEditor}
+              placeholder="Write your story..."
+              editorEnabled={editorEnabled && this.props.enabled}
+              editorState={editorState}
+              beforeInput={this.handleBeforeInput}
+              onChange={this.handleContentChange}
+              sideButtons={SIDE_BUTTONS}
+              withTitle={this.props.withTitle}
+              intl={this.props.intl}
+            />
+          ) : null}
+        </div>
+      </React.Fragment>
     );
   }
 }
