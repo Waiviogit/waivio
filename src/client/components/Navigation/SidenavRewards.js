@@ -4,30 +4,40 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  getAuthenticatedUserName,
   getAutoCompleteSearchResults,
   getIsAuthenticated,
+  isGuestUser,
+  getHasReceivables,
+  getCountTookPartCampaigns,
+  getCreatedCampaignsCount,
 } from '../../reducers';
-import './Sidenav.less';
-import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import './Sidenav.less';
 
 @injectIntl
 @connect(state => ({
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
-  userName: getAuthenticatedUserName(state),
+  isGuest: isGuestUser(state),
+  hasReceivables: getHasReceivables(state),
+  countTookPartCampaigns: getCountTookPartCampaigns(state),
+  createdCampaignsCount: getCreatedCampaignsCount(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    userName: PropTypes.string,
+    isGuest: PropTypes.string.isRequired,
+    hasReceivables: PropTypes.bool,
+    countTookPartCampaigns: PropTypes.number,
+    createdCampaignsCount: PropTypes.number,
   };
 
   static defaultProps = {
     autoCompleteSearchResults: {},
-    userName: '',
+    hasReceivables: false,
+    countTookPartCampaigns: 0,
+    createdCampaignsCount: 0,
   };
 
   constructor(props) {
@@ -43,38 +53,7 @@ export default class SidenavRewards extends React.Component {
         rewards: true,
         campaigns: true,
       },
-      rewardsCount: {
-        hasReceivables: false,
-        historyCount: 0,
-        createdCampaignsCount: 0,
-      },
     };
-  }
-
-  componentDidMount() {
-    getRewardsGeneralCounts(this.props.userName).then(data =>
-      this.setState({
-        rewardsCount: {
-          hasReceivables: data.has_receivable,
-          historyCount: data.count_history_campaigns,
-          createdCampaignsCount: data.count_campaigns,
-        },
-      }),
-    );
-  }
-
-  componentDidUpdate(nextProps) {
-    if (this.props.userName !== nextProps.userName) {
-      getRewardsGeneralCounts(this.props.userName).then(data =>
-        this.setState({
-          rewardsCount: {
-            hasReceivables: data.has_receivable,
-            historyCount: data.count_history_campaigns,
-            createdCampaignsCount: data.count_campaigns,
-          },
-        }),
-      );
-    }
   }
 
   toggleMenuCondition = menuItem => {
@@ -88,9 +67,15 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated } = this.props;
-    const { menuCondition, rewardsCount } = this.state;
-    const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
+    const {
+      intl,
+      authenticated,
+      isGuest,
+      hasReceivables,
+      countTookPartCampaigns,
+      createdCampaignsCount,
+    } = this.props;
+    const { menuCondition } = this.state;
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -172,7 +157,7 @@ export default class SidenavRewards extends React.Component {
                       </NavLink>
                     </li>
                   ) : null}
-                  {!!historyCount && (
+                  {!!countTookPartCampaigns && (
                     <li>
                       <NavLink
                         to={`/rewards/history`}
@@ -208,7 +193,21 @@ export default class SidenavRewards extends React.Component {
                   )}
                 </div>
               </div>
-              {menuCondition.campaigns && (
+              {isGuest && menuCondition.campaigns && (
+                <li>
+                  <NavLink
+                    to={`/rewards/reports`}
+                    className="sidenav-discover-objects__item"
+                    activeClassName="Sidenav__item--active"
+                  >
+                    {intl.formatMessage({
+                      id: 'sidenav_rewards_reports',
+                      defaultMessage: `Reports`,
+                    })}
+                  </NavLink>
+                </li>
+              )}
+              {!isGuest && menuCondition.campaigns && (
                 <React.Fragment>
                   <li>
                     <NavLink

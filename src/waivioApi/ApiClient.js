@@ -41,7 +41,7 @@ export function handleValidateCampaignErrors(response) {
 
 export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: { ...headers, app: config.appName },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -76,7 +76,10 @@ export const getObjects = ({
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requiredFields = [] }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      app: config.appName,
+    },
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
@@ -458,7 +461,7 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
-      headers: actualHeader,
+      headers: { ...actualHeader, app: config.appName },
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
     })
@@ -489,7 +492,10 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
     fetch(
       `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+        },
         method: 'GET',
       },
     )
@@ -605,6 +611,7 @@ export const getPropositions = ({
   match,
   simplified,
   firstMapLoad,
+  isMap,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -630,6 +637,7 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
+    if (!isMap && match.params.filterKey === 'reserved') reqData.update = true;
 
     const url = getUrl(match);
 
@@ -789,11 +797,17 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = guideName =>
+export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.statistics}/?guideName=${guideName}`, {
+    fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers,
-      method: 'GET',
+      method: 'POST',
+      body: JSON.stringify({
+        userName: userName,
+        sort,
+        limit,
+        skip,
+      }),
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -1225,6 +1239,12 @@ export const getWalletCryptoPriceHistory = symbols =>
     },
   ).then(res => res.json());
 
+export const getCurrentHivePrice = () =>
+  fetch(`${config.currenciesApiPrefix}${config.reservationCurrency}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+
 export const checkFollowing = (user, users = []) => {
   const queryString = users.length
     ? users.reduce((acc, usr, index) => {
@@ -1257,20 +1277,24 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
 };
 
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
-  const transactionInfo = store.get('withdrawData');
-  const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
-
-  const transactionData = {
-    outputCoinType: transactionInfo.currentCurrency,
-    inputCoinType: 'hive',
-    amount,
-    address: transactionInfo.walletAddress,
-  };
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
-  const body =
-    type === 'confirmTransaction'
-      ? { userName, type, email, isGuest, transactionData }
-      : { userName, type, email, isGuest };
+  let body = { userName, type, email, isGuest };
+
+  if (type === 'confirmTransaction') {
+    const transactionInfo = store.get('withdrawData');
+    const amount = isNaN(transactionInfo.hiveAmount) ? 0 : transactionInfo.hiveAmount;
+    const transactionData = {
+      outputCoinType: transactionInfo.currentCurrency,
+      inputCoinType: 'hive',
+      amount,
+      address: transactionInfo.walletAddress,
+    };
+
+    body = {
+      ...body,
+      transactionData,
+    };
+  }
 
   return fetch(`${config.campaignApiPrefix}${config.mailer}${config.confirmEmail}`, {
     headers: {

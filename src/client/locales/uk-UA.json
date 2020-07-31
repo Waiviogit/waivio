@@ -761,6 +761,8 @@
   "payables": "Заборгованість",
   "filter_payable": "Бiльше {value} HIVE",
   "filter_days": "Бiльше {days} днiв",
+  "filter_moreDays": "Бiльше {days} днiв",
+  "filter_otherDays": "Бiльше {days} днiв",
   "filter_payment": "Бiльше {payment} HIVE",
   "submit": "Надіслати",
   "check_review_requirements_title": "Даний огляд не відповідає деяким вимогам.",
@@ -839,5 +841,8 @@
   "paid_hive": "Сплачено (HIVE)",
   "review": "Огляд",
   "review_rejected": "Огляд відхилено",
-  "your_list_is_empty": "Ваш список пустий"
+  "increase_reward" : "Збільшуйте нагороду",
+  "your_list_is_empty": "Ваш список пустий",
+  "enter_amount_in_hive": "Введіть суму в HIVE",
+  "reward_has_been_increased": "Винагороду збільшено"
 }

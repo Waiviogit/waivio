@@ -218,6 +218,7 @@ export const assignProposition = ({
   proposition,
   proposedWobj,
   userName,
+  currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const proposedWobjName = proposedWobj.name;
@@ -244,6 +245,7 @@ export const assignProposition = ({
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
+          currencyId,
         },
       }),
     },
@@ -282,6 +284,47 @@ export const rejectReview = ({
         waivioRewards: {
           type: 'reject_reservation_by_guide',
           approved_object: objPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
+export const increaseReward = ({
+  companyAuthor,
+  companyPermlink,
+  username,
+  reservationPermlink,
+  appName,
+  amount,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = store.getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Increase reward',
+      body: `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'waivio_raise_review_reward',
+          riseAmount: amount,
+          activationPermlink: companyPermlink,
         },
       }),
     },
