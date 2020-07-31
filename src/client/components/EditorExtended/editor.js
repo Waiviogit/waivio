@@ -142,10 +142,10 @@ export default class MediumDraftEditor extends React.Component {
     this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
 
-  componentDidUpdate() {
-    const { titleValue } = this.props;
-    console.log('titleValue: ', titleValue);
-  }
+  // componentDidUpdate() {
+  //   const { titleValue } = this.props;
+  //   console.log('titleValue: ', titleValue);
+  // }
 
   // Copy/paste method
   handlePastedFiles = async event => {

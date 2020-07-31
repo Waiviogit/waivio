@@ -137,7 +137,7 @@ class Editor extends React.Component {
 
   handleContentChange = editorState => {
     this.onChange(editorState);
-    this.props.onChange(convertToRaw(editorState.getCurrentContent()));
+    this.props.onChange(convertToRaw(editorState.getCurrentContent()), this.state.titleValue);
   };
 
   getValueFromTitle = event => this.setState({ titleValue: event.target.value });

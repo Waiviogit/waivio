@@ -152,8 +152,8 @@ class EditPost extends Component {
     }
   }
 
-  handleChangeContent(rawContent) {
-    const nextState = { content: toMarkdown(rawContent) };
+  handleChangeContent(rawContent, title) {
+    const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = getLinkedObjects(rawContent);
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
@@ -199,12 +199,12 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const { postTitle, postBody } = splitPostContent(prevState.content);
+      const { postBody } = splitPostContent(prevState.content);
       const objName = object.name || object.default_name;
       const separator = postBody.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
-          title: postTitle,
+          title: this.state.titleValue,
           body: `${postBody}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
           )})&nbsp;\n`,
@@ -230,14 +230,24 @@ class EditPost extends Component {
       isUpdating,
       permlink,
       originalBody,
+      titleValue,
     } = this.state;
-    const { postTitle, postBody } = splitPostContent(content);
+    const { postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
 
+    // const postData = {
+    //   body: postBody,
+    //   title: postTitle,
+    //   lastUpdated: Date.now(),
+    //   isUpdating,
+    //   draftId,
+    //   ...settings,
+    // };
+
     const postData = {
       body: postBody,
-      title: postTitle,
+      title: titleValue,
       lastUpdated: Date.now(),
       isUpdating,
       draftId,
@@ -254,7 +264,7 @@ class EditPost extends Component {
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
-    postData.permlink = permlink || kebabCase(postTitle);
+    postData.permlink = permlink || kebabCase(titleValue);
 
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
@@ -313,6 +323,7 @@ class EditPost extends Component {
       settings,
       campaign,
       isUpdating,
+      titleValue,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
@@ -354,6 +365,7 @@ class EditPost extends Component {
               onSubmit={this.handleSubmit}
               onTopicsChange={this.handleTopicsChange}
               isGuest={isGuest}
+              titleValue={titleValue}
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>

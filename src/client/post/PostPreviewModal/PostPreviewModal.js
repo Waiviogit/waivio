@@ -48,6 +48,7 @@ class PostPreviewModal extends Component {
     onUpdate: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
+    titleValue: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
@@ -57,6 +58,7 @@ class PostPreviewModal extends Component {
     reviewData: null,
     isUpdating: false,
     isGuest: false,
+    titleValue: '',
   };
 
   constructor(props) {
@@ -86,11 +88,11 @@ class PostPreviewModal extends Component {
   };
 
   throttledUpdate = () => {
-    const { body, title, linkedObjects } = this.state;
-    const { topics, settings } = this.props;
+    const { body, linkedObjects } = this.state;
+    const { topics, settings, titleValue } = this.props;
     const postData = {
       body,
-      title,
+      titleValue,
       topics,
       linkedObjects,
       ...settings,
@@ -99,10 +101,10 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { postTitle, postBody } = splitPostContent(this.props.content);
+    const { postBody } = splitPostContent(this.props.content);
     this.setState({
       isModalOpen: true,
-      title: postTitle,
+      title: this.props.titleValue,
       body: postBody,
     });
   };
@@ -160,7 +162,7 @@ class PostPreviewModal extends Component {
       isGuest,
     } = this.props;
 
-    const { postBody } = splitPostContent(content);
+    const { titleValue } = this.props;
 
     return (
       <React.Fragment>
@@ -252,11 +254,7 @@ class PostPreviewModal extends Component {
         <div className="edit-post-controls">
           <Button
             htmlType="button"
-            disabled={
-              !content ||
-              !isContentValid(content) ||
-              !postBody.replace(new RegExp('\\*', 'g'), '').trim()
-            }
+            disabled={!content || !titleValue}
             onClick={this.showModal}
             size="large"
             className="edit-post-controls__publish-ready-btn"
