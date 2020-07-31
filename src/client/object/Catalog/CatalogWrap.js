@@ -150,9 +150,7 @@ class CatalogWrap extends React.Component {
 
   getRequiredObject = (obj, match) => {
     let requiredObject;
-    if (!isEmpty(obj.parent)) {
-      requiredObject = obj.parent.author_permlink;
-    } else if (!isEmpty(obj.listItems)) {
+    if (!isEmpty(obj.listItems)) {
       requiredObject = get(obj, ['listItems', '0', 'parent', 'author_permlink']);
     } else {
       requiredObject = match.params.campaignParent || match.params.name;
