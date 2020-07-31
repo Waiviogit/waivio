@@ -83,6 +83,7 @@ export default class MediumDraftEditor extends React.Component {
     toolbarConfig: PropTypes.shape(),
     processURL: PropTypes.func,
     intl: PropTypes.shape(),
+    titleValue: PropTypes.string,
   };
 
   static defaultProps = {
@@ -114,6 +115,7 @@ export default class MediumDraftEditor extends React.Component {
     handleReturn: () => {},
     handlePastedText: () => {},
     intl: {},
+    titleValue: '',
   };
 
   constructor(props) {
@@ -138,6 +140,11 @@ export default class MediumDraftEditor extends React.Component {
 
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
     this.handlePastedFiles = this.handlePastedFiles.bind(this);
+  }
+
+  componentDidUpdate() {
+    const { titleValue } = this.props;
+    console.log('titleValue: ', titleValue);
   }
 
   // Copy/paste method

@@ -75,6 +75,7 @@ class Editor extends React.Component {
       editorEnabled: false,
       // editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
       editorState: EditorState.createEmpty(defaultDecorators),
+      titleValue: '',
     };
 
     this.onChange = editorState => {
@@ -139,12 +140,18 @@ class Editor extends React.Component {
     this.props.onChange(convertToRaw(editorState.getCurrentContent()));
   };
 
+  getValueFromTitle = event => this.setState({ titleValue: event.target.value });
+
   render() {
     const { editorState, isMounted, editorEnabled } = this.state;
     return (
       <React.Fragment>
         <div className="waiv-editor">
-          <input className="md-RichEditor-title" placeholder="Title" />
+          <input
+            className="md-RichEditor-title"
+            placeholder="Title"
+            onChange={this.getValueFromTitle}
+          />
           {isMounted ? (
             <MediumDraftEditor
               ref={this.refsEditor}
@@ -156,6 +163,7 @@ class Editor extends React.Component {
               sideButtons={SIDE_BUTTONS}
               withTitle={this.props.withTitle}
               intl={this.props.intl}
+              titleValue={this.state.titleValue}
             />
           ) : null}
         </div>
