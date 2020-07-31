@@ -148,6 +148,7 @@ class Editor extends React.Component {
       <React.Fragment>
         <div className="waiv-editor">
           <input
+            maxLength="255"
             className="md-RichEditor-title"
             placeholder="Title"
             onChange={this.getValueFromTitle}
