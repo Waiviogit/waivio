@@ -4,6 +4,10 @@ import { GET_USER_ACCOUNT_HISTORY } from '../wallet/walletActions';
 
 const initialState = {
   users: {},
+  tabType: '',
+  hasReceivables: '',
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
   topExperts: {
     list: [],
     isFetching: false,

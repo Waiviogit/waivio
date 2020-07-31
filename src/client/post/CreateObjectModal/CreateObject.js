@@ -255,8 +255,7 @@ class CreateObject extends React.Component {
                     ),
                   },
                   {
-                    pattern:
-                      defaultObjectType === 'hashtag' ? /^[a-z0-9_.-]*$/ : /^[a-zA-Z0-9_.-]*$/,
+                    pattern: defaultObjectType === 'hashtag' ? /^[a-z0-9_.-]*$/ : null,
                     message: intl.formatMessage({
                       id: 'value_error_upper_case',
                       defaultMessage:

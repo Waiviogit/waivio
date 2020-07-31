@@ -138,6 +138,7 @@ export default class Transfer extends React.Component {
     isSelected: false,
     isClosedFind: false,
     hiveBeneficiaryAccount: this.props.hiveBeneficiaryAccount,
+    inputValue: null,
   };
 
   componentDidMount() {
@@ -209,6 +210,13 @@ export default class Transfer extends React.Component {
     })}`;
   }
 
+  handleSwitchCurrency = () => {
+    const { cryptosPriceHistory } = this.props;
+    this.setState({
+      currentEstimate: this.estimatedValue(cryptosPriceHistory, this.state.inputValue),
+    });
+  };
+
   handleBalanceClick = event => {
     const { cryptosPriceHistory } = this.props;
     const { oldAmount } = this.state;
@@ -226,7 +234,7 @@ export default class Transfer extends React.Component {
   handleCurrencyChange = event => {
     const { form } = this.props;
     this.setState({ currency: event.target.value }, () =>
-      form.validateFields(['amount'], { force: true }),
+      form.validateFields(['amount'], { force: true }, this.handleSwitchCurrency()),
     );
   };
 
@@ -439,17 +447,23 @@ export default class Transfer extends React.Component {
     });
   };
 
+  estimatedValue = (cryptosPriceHistory, amount) =>
+    get(
+      cryptosPriceHistory,
+      this.state.currency === 'HIVE'
+        ? `${HIVE.coinGeckoId}.usdPriceHistory.usd`
+        : `${HBD.coinGeckoId}.usdPriceHistory.usd`,
+      null,
+    ) * amount;
+
   handleAmountChange = event => {
     const { value } = event.target;
     const { oldAmount } = this.state;
     const { cryptosPriceHistory } = this.props;
-
-    const estimatedValue =
-      get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * value;
-
     this.setState({
+      inputValue: value,
       oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
-      currentEstimate: estimatedValue,
+      currentEstimate: this.estimatedValue(cryptosPriceHistory, value),
     });
 
     this.props.form.setFieldsValue({
@@ -457,9 +471,6 @@ export default class Transfer extends React.Component {
     });
     this.props.form.validateFields(['amount']);
   };
-
-  estimatedValue = (cryptosPriceHistory, amount) =>
-    get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, null) * amount;
 
   render() {
     const {
