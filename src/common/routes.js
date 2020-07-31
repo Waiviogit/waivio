@@ -283,6 +283,11 @@ const routes = [
             component: HistoryCampaign,
           },
           {
+            path: '/rewards/guideHistory',
+            exact: true,
+            component: HistoryCampaign,
+          },
+          {
             path: '/rewards/messages',
             exact: true,
             component: HistoryCampaign,
