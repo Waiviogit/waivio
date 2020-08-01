@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce } from 'lodash';
+import { isEmpty, map, get, reduce, round } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { REWARD } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
-import { getRate, getRewardFund } from '../reducers';
 
 export const displayLimit = 10;
 
@@ -214,23 +213,24 @@ const getLinksToAllFollowingObjects = followingObjects =>
     '',
   ).slice(1);
 
-export const getDetailsBody = (
+export const getDetailsBody = ({
   proposition,
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
   secondaryObjectName,
-) => {
+  rate,
+  recentClaims,
+  rewardBalance,
+}) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
-  const rate = useSelector(getRate);
-  const rewardFund = useSelector(getRewardFund);
-  const minExpertise = (
-    (proposition.userRequirements.minExpertise / rewardFund.recent_claims) *
-    rewardFund.reward_balance.replace(' HIVE', '') *
-    rate *
-    1000000
-  ).toFixed(2);
+  const minExpertise = proposition.userRequirements
+    ? round(
+        (proposition.userRequirements.minExpertise / recentClaims) * rewardBalance * rate * 1000000,
+        2,
+      )
+    : '';
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
