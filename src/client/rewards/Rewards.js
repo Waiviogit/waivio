@@ -43,7 +43,7 @@ import {
   getCoordinates,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
-import * as ApiClient from '../../waivioApi/ApiClient';
+import { getPropositions, getRewardsGeneralCounts } from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -110,6 +110,7 @@ class Rewards extends React.Component {
     loadingAssignDiscard: false,
     hasMore: false,
     propositions: [],
+    propositionsReserved: [],
     sponsors: [],
     sortHistory: 'reservation',
     sortMessages: 'inquiryDate',
@@ -149,6 +150,12 @@ class Rewards extends React.Component {
     const { match } = nextProps;
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
+    }
+    if (match.params.filterKey !== 'reserved') {
+      this.setState({ propositionsReserved: [] });
+    }
+    if (match.params.filterKey === 'reserved') {
+      this.setState({ propositions: [] });
     }
   }
 
@@ -279,13 +286,41 @@ class Rewards extends React.Component {
     }
   };
 
+  getPropositionsByStatus = ({ username, sort }) => {
+    this.setState({ loadingCampaigns: true });
+    getRewardsGeneralCounts({ userName: username, sort }).then(data => {
+      const sponsors = sortBy(data.sponsors);
+      this.setState({
+        sponsors,
+        hasMore: data.hasMore,
+        loadingCampaigns: false,
+      });
+      if (data.tabType === 'reserved') {
+        this.setState({
+          propositionsReserved: data.campaigns,
+        });
+        this.props.history.push('/rewards/reserved/');
+      } else if (data.tabType === 'eligible') {
+        this.props.history.push('/rewards/active/');
+        this.setState({
+          propositions: data.campaigns,
+        });
+      } else {
+        this.props.history.push('/rewards/all/');
+        this.setState({
+          propositions: data.campaigns,
+        });
+      }
+    });
+  };
+
   getPropositions = (
     { username, match, area, sort, radius, activeFilters, limit },
     isMap,
     firstMapLoad,
   ) => {
     this.setState({ loadingCampaigns: !isMap });
-    ApiClient.getPropositions(
+    getPropositions(
       preparePropositionReqData({
         username,
         match,
@@ -297,6 +332,7 @@ class Rewards extends React.Component {
         limit,
         simplified: !!isMap,
         firstMapLoad: !!isMap && firstMapLoad,
+        isMap,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
@@ -309,13 +345,21 @@ class Rewards extends React.Component {
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
+      } else if (match.params.filterKey === 'reserved') {
+        this.setState({
+          propositionsReserved: data.campaigns,
+          loadingCampaigns: false,
+        });
       } else {
+        this.setState({
+          propositions: data.campaigns,
+          loadingCampaigns: false,
+        });
         const sponsors = sortBy(data.sponsors);
         this.setState({
           sponsors,
           propositions: data.campaigns,
           hasMore: data.hasMore,
-          loadingCampaigns: false,
         });
       }
       if (isMap && firstMapLoad) {
@@ -471,10 +515,21 @@ class Rewards extends React.Component {
     getHistory,
     blacklistUsers,
   ) => {
-    const { propositions, loadingAssignDiscard, isAssign, fetched } = this.state;
-    const propositionsUniq = match.params.campaignParent
-      ? propositions
-      : uniqBy(propositions, 'required_object._id');
+    const {
+      propositions,
+      loadingAssignDiscard,
+      isAssign,
+      fetched,
+      propositionsReserved,
+    } = this.state;
+    let propositionsUniq;
+    if (!isEmpty(propositionsReserved)) {
+      propositionsUniq = propositionsReserved;
+    } else if (match.params.campaignParent) {
+      propositionsUniq = uniqBy(propositions, '_id');
+    } else {
+      propositionsUniq = uniqBy(propositions, 'required_object._id');
+    }
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
 
     const getMessageHistory = async () => {
@@ -493,7 +548,7 @@ class Rewards extends React.Component {
     };
     const { intl, user } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved)) {
         return map(
           actualPropositions,
           proposition =>
@@ -580,7 +635,7 @@ class Rewards extends React.Component {
           });
           reqData.skip = propositions.length;
           if (isSearchAreaFilter) reqData.radius = radius;
-          ApiClient.getPropositions(reqData).then(newPropositions =>
+          getPropositions(reqData).then(newPropositions =>
             this.setState({
               loading: false,
               hasMore: newPropositions.campaigns && newPropositions.hasMore,
@@ -665,6 +720,7 @@ class Rewards extends React.Component {
       sortHistory,
       sortMessages,
       loadingAssignDiscard,
+      propositionsReserved,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -712,6 +768,7 @@ class Rewards extends React.Component {
       area,
       radius,
       getPropositions: this.getPropositions,
+      getPropositionsByStatus: this.getPropositionsByStatus,
       setSortValue: this.setSortValue,
       sortEligible,
       sortAll,
@@ -723,6 +780,7 @@ class Rewards extends React.Component {
       sortHistory,
       sortMessages,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
+      propositionsReserved,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
