@@ -52,7 +52,6 @@ class Editor extends React.Component {
   static propTypes = {
     // passed props:
     enabled: PropTypes.bool.isRequired,
-    withTitle: PropTypes.bool,
     initialContent: PropTypes.shape({
       title: PropTypes.string,
       body: PropTypes.string,
@@ -63,7 +62,6 @@ class Editor extends React.Component {
   };
   static defaultProps = {
     intl: {},
-    withTitle: true,
     onChange: () => {},
   };
 
@@ -73,7 +71,6 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
-      // editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
       editorState: EditorState.createEmpty(defaultDecorators),
       titleValue: '',
     };
@@ -86,7 +83,7 @@ class Editor extends React.Component {
 
   componentDidMount() {
     this.setState({ isMounted: true }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent, this.props.withTitle)).then(() =>
+    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
       this.setFocusAfterMount(),
     );
   }
@@ -94,7 +91,7 @@ class Editor extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       this.setState({ editorEnabled: false });
-      const rawContent = fromMarkdown(nextProps.initialContent, nextProps.withTitle);
+      const rawContent = fromMarkdown(nextProps.initialContent);
       this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
@@ -165,7 +162,6 @@ class Editor extends React.Component {
               beforeInput={this.handleBeforeInput}
               onChange={this.handleContentChange}
               sideButtons={SIDE_BUTTONS}
-              withTitle={this.props.withTitle}
               intl={this.props.intl}
               titleValue={this.state.titleValue}
             />

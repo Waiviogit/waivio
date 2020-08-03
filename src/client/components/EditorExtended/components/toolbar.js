@@ -13,7 +13,6 @@ import './toolbar.less';
 export default class Toolbar extends React.Component {
   static propTypes = {
     editorEnabled: PropTypes.bool,
-    withTitleLine: PropTypes.bool,
     editorState: PropTypes.shape(),
     toggleBlockType: PropTypes.func,
     toggleInlineStyle: PropTypes.func,
@@ -26,7 +25,6 @@ export default class Toolbar extends React.Component {
 
   static defaultProps = {
     editorEnabled: false,
-    withTitleLine: true,
     editorState: {},
     toggleBlockType: () => {},
     toggleInlineStyle: () => {},
@@ -42,7 +40,6 @@ export default class Toolbar extends React.Component {
     this.state = {
       showURLInput: false,
       urlInputValue: '',
-      isFirstLine: props.withTitleLine && this.isFirstBlockSelected(props.editorState),
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -64,9 +61,6 @@ export default class Toolbar extends React.Component {
           urlInputValue: '',
         });
       }
-    }
-    if (!newProps.withTitleLine) {
-      return;
     }
     const isFirstLine = this.isFirstBlockSelected(editorState);
     if (isFirstLine !== this.state.isFirstLine) {
@@ -234,14 +228,10 @@ export default class Toolbar extends React.Component {
   };
 
   render() {
-    const { editorState, editorEnabled, inlineButtons, withTitleLine } = this.props;
-    const { showURLInput, urlInputValue, isFirstLine } = this.state;
+    const { editorState, editorEnabled, inlineButtons } = this.props;
+    const { showURLInput, urlInputValue } = this.state;
     let isOpen = true;
-    if (
-      !editorEnabled ||
-      editorState.getSelection().isCollapsed() ||
-      (withTitleLine && isFirstLine)
-    ) {
+    if (!editorEnabled || editorState.getSelection().isCollapsed()) {
       isOpen = false;
     }
     if (showURLInput) {

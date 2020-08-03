@@ -218,6 +218,7 @@ class EditPost extends Component {
   }
 
   handleObjectSelect(object) {
+    console.log(object);
     this.setState(prevState => {
       const { postBody } = splitPostContent(prevState.content);
       const objName = object.name || object.default_name;
@@ -255,15 +256,6 @@ class EditPost extends Component {
     const { postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
-
-    // const postData = {
-    //   body: postBody,
-    //   title: postTitle,
-    //   lastUpdated: Date.now(),
-    //   isUpdating,
-    //   draftId,
-    //   ...settings,
-    // };
 
     const postData = {
       body: postBody,
@@ -327,10 +319,6 @@ class EditPost extends Component {
     const redirect = this.props.draftId !== this.state.draftId;
 
     this.props.saveDraft(draft, redirect, this.props.intl);
-
-    // if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
-    //   this.setState({ draftContent: { title: draft.title, body: draft.body } });
-    // }
   }, 1500);
 
   render() {
