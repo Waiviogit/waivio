@@ -137,6 +137,7 @@ class Rewards extends React.Component {
       rewards: [],
       messagesSponsors: [],
     },
+    url: '',
   };
 
   componentDidMount() {
@@ -156,6 +157,13 @@ class Rewards extends React.Component {
     }
     if (match.params.filterKey === 'reserved') {
       this.setState({ propositions: [] });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.url !== prevProps.match.url) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ url: this.props.match.url });
     }
   }
 
@@ -342,6 +350,7 @@ class Rewards extends React.Component {
         radius,
         loading: false,
         fetched: false,
+        hasMore: data.hasMore,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -359,7 +368,6 @@ class Rewards extends React.Component {
         this.setState({
           sponsors,
           propositions: data.campaigns,
-          hasMore: data.hasMore,
         });
       }
       if (isMap && firstMapLoad) {
@@ -722,6 +730,7 @@ class Rewards extends React.Component {
       sortMessages,
       loadingAssignDiscard,
       propositionsReserved,
+      url,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -782,6 +791,7 @@ class Rewards extends React.Component {
       sortMessages,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
       propositionsReserved,
+      url,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
