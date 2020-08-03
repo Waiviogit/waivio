@@ -477,7 +477,10 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
     fetch(
       `${config.apiPrefix}${config.objectType}/${objectType}${config.typeExpertise}?limit=${limit}&skip=${skip}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+        },
         method: 'GET',
       },
     )
