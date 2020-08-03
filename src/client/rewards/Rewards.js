@@ -652,13 +652,14 @@ class Rewards extends React.Component {
   };
 
   getCampaignsObjectsForMap = () => {
-    const { propositions } = this.state;
+    const { propositions, propositionsReserved } = this.state;
+    const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
-      map(propositions, proposition => map(proposition.objects, object => object.object)),
+      map(newPropositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
     const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
-      ? get(propositions, ['0', 'required_object'])
+      ? get(newPropositions, ['0', 'required_object'])
       : {};
     const secondaryObjectsWithUniqueCoordinates = filter(
       secondaryObjectsForMap,
@@ -784,9 +785,10 @@ class Rewards extends React.Component {
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const campaignsObjectsForMap = campaignParent ? this.getCampaignsObjectsForMap() : [];
+    const isReserved = match.params.filterKey === 'reserved';
+    const campaignsObjectsForMap =
+      campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
-
     return (
       <div className="Rewards">
         <div className="shifted">
@@ -848,7 +850,9 @@ class Rewards extends React.Component {
                       <MapWrap
                         setMapArea={this.setMapArea}
                         userLocation={userLocation}
-                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                        wobjects={
+                          campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects
+                        }
                         onMarkerClick={this.goToCampaign}
                         getAreaSearchData={this.getAreaSearchData}
                         match={match}
