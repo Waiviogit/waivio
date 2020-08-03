@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce } from 'lodash';
+import { isEmpty, map, get, reduce, round } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { REWARD } from '../../common/constants/rewards';
@@ -213,20 +213,58 @@ const getLinksToAllFollowingObjects = followingObjects =>
     '',
   ).slice(1);
 
-export const getDetailsBody = (
+export const getMinExpertise = ({
+  campaignMinExpertise,
+  rewardFundRecentClaims,
+  rewardFundRewardBalance,
+  rate,
+}) => {
+  if (!isEmpty(rewardFundRecentClaims) && !isEmpty(rewardFundRewardBalance)) {
+    return round(
+      (campaignMinExpertise / rewardFundRecentClaims) *
+        rewardFundRewardBalance.replace(' HIVE', '') *
+        rate *
+        1000000,
+      2,
+    );
+  }
+  return '';
+};
+
+export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
+  round(
+    (minExpertise * rewardFund.recent_claims) /
+      rewardFund.reward_balance.replace(' HIVE', '') /
+      rate /
+      1000000,
+    2,
+  );
+
+export const getDetailsBody = ({
   proposition,
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
   secondaryObjectName,
-) => {
+  rate,
+  recentClaims,
+  rewardBalance,
+}) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
+  const propositionMinExpertise = proposition.userRequirements.minExpertise;
+  const minExpertise = getMinExpertise({
+    campaignMinExpertise: propositionMinExpertise,
+    rewardFundRecentClaims: recentClaims,
+    rewardFundRewardBalance: rewardBalance,
+    rate,
+  });
+
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
 <ul>
-    <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
+    <li>Minimum Waivio expertise: ${minExpertise}</li>
     <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
 </ul>`;

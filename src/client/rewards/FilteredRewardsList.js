@@ -220,13 +220,15 @@ const FilteredRewardsList = props => {
           </span>
         </div>
       )}
-      {!isEmpty(sponsors) && (
-        <div className="FilteredRewardsList__filters-toggle-map tc">
-          <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
-            {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-          </Button>
-        </div>
-      )}
+      {!isEmpty(sponsors) &&
+        match.params.filterKey !== 'history' &&
+        match.params.filterKey !== 'messages' && (
+          <div className="FilteredRewardsList__filters-toggle-map tc">
+            <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
+              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+            </Button>
+          </div>
+        )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
