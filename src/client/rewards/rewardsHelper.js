@@ -213,6 +213,33 @@ const getLinksToAllFollowingObjects = followingObjects =>
     '',
   ).slice(1);
 
+export const getMinExpertise = ({
+  campaignMinExpertise,
+  rewardFundRecentClaims,
+  rewardFundRewardBalance,
+  rate,
+}) => {
+  if (!isEmpty(rewardFundRecentClaims) && !isEmpty(rewardFundRewardBalance)) {
+    return round(
+      (campaignMinExpertise / rewardFundRecentClaims) *
+        rewardFundRewardBalance.replace(' HIVE', '') *
+        rate *
+        1000000,
+      2,
+    );
+  }
+  return '';
+};
+
+export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
+  round(
+    (minExpertise * rewardFund.recent_claims) /
+      rewardFund.reward_balance.replace(' HIVE', '') /
+      rate /
+      1000000,
+    2,
+  );
+
 export const getDetailsBody = ({
   proposition,
   proposedWobjName,
@@ -225,12 +252,14 @@ export const getDetailsBody = ({
 }) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
-  const minExpertise = proposition.userRequirements
-    ? round(
-        (proposition.userRequirements.minExpertise / recentClaims) * rewardBalance * rate * 1000000,
-        2,
-      )
-    : '';
+  const propositionMinExpertise = proposition.userRequirements.minExpertise;
+  const minExpertise = getMinExpertise({
+    campaignMinExpertise: propositionMinExpertise,
+    rewardFundRecentClaims: recentClaims,
+    rewardFundRewardBalance: rewardBalance,
+    rate,
+  });
+
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>

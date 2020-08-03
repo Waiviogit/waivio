@@ -1,4 +1,4 @@
-import { isEmpty, map, includes, round } from 'lodash';
+import { isEmpty, map, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { AppSharedContext } from '../../Wrapper';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../../waivioApi/config';
 import { getRate, getRewardFund } from '../../reducers';
+import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
 import './CreateReward.less';
 
 @withRouter
@@ -134,15 +135,17 @@ class CreateRewardForm extends React.Component {
         includes(secondaryObjectsPermlinks, wobj.author_permlink),
       );
 
-      const minExpertise = !isEmpty(rewardFund)
-        ? round(
-            (campaign.userRequirements.minExpertise / rewardFund.recent_claims) *
-              rewardFund.reward_balance.replace(' HIVE', '') *
-              rate *
-              1000000,
-            2,
-          )
-        : 0;
+      const rewardFundRecentClaims = rewardFund.recent_claims;
+      const rewardFundRewardBalance = rewardFund.reward_balance;
+      const campaignMinExpertise = campaign.userRequirements.minExpertise;
+
+      const minExpertise = getMinExpertise({
+        campaignMinExpertise,
+        rewardFundRecentClaims,
+        rewardFundRewardBalance,
+        rate,
+      });
+
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
@@ -212,13 +215,7 @@ class CreateRewardForm extends React.Component {
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
-    const minExpertisePrepared = round(
-      (minExpertise * rewardFund.recent_claims) /
-        rewardFund.reward_balance.replace(' HIVE', '') /
-        rate /
-        1000000,
-      2,
-    );
+    const minExpertisePrepared = getMinExpertisePrepared({ minExpertise, rewardFund, rate });
 
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
