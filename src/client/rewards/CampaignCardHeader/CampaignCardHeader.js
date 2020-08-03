@@ -11,7 +11,11 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
   const currentUSDPrice = getCurrentUSDPrice();
   const price = get(campaignData, ['objects', '0', 'reward']);
   const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
-  const isMessages = match && match.params.filterKey === 'messages';
+  const isMessages =
+    match &&
+    (match.params.filterKey === 'messages' ||
+      match.params.filterKey === 'history' ||
+      match.params.filterKey === 'guideHistory');
   const rewardPriceHive = `${
     price ? price.toFixed(3) : (campaignData.reward / currentUSDPrice).toFixed(3)
   } HIVE`;

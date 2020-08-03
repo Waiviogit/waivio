@@ -480,7 +480,15 @@ export const getNoBlacklistMessage = userNames => {
   };
 };
 
-export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages) => {
+export const getSort = (
+  match,
+  sortAll,
+  sortEligible,
+  sortReserved,
+  sortHistory,
+  sortGuideHistory,
+  sortMessages,
+) => {
   const filterKey = get(match, ['params', 'filterKey']);
   switch (filterKey) {
     case 'active':
@@ -491,6 +499,8 @@ export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory,
       return sortHistory;
     case 'messages':
       return sortMessages;
+    case 'guideHistory':
+      return sortGuideHistory;
     default:
       return sortAll;
   }

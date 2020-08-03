@@ -29,6 +29,7 @@ const FilteredRewardsList = props => {
     sortAll,
     sortReserved,
     sortHistory,
+    sortGuideHistory,
     sortMessages,
     handleSortChange,
     loadingCampaigns,
@@ -44,24 +45,36 @@ const FilteredRewardsList = props => {
     getHistory,
     activeHistoryFilters,
     setActiveMessagesFilters,
+    activeGuideHistoryFilters,
     blacklistUsers,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const sort = getSort(match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages);
+  const sort = getSort(
+    match,
+    sortAll,
+    sortEligible,
+    sortReserved,
+    sortHistory,
+    sortGuideHistory,
+    sortMessages,
+  );
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
     !match.params.campaignParent &&
     match.params.filterKey !== 'history' &&
-    match.params.filterKey !== 'messages';
+    match.params.filterKey !== 'messages' &&
+    match.params.filterKey !== 'guideHistory';
 
   const getFiltersForTags = useMemo(() => {
     if (location === '/rewards/history') {
       return activeHistoryFilters;
     } else if (location === '/rewards/messages') {
       return activeMessagesFilters;
+    } else if (location === '/rewards/guideHistory') {
+      return activeGuideHistoryFilters;
     }
     return activeFilters;
   }, [location, activeHistoryFilters, activeMessagesFilters, activeFilters]);
@@ -94,7 +107,7 @@ const FilteredRewardsList = props => {
         },
       ];
     }
-    if (location === '/rewards/history') {
+    if (location === '/rewards/history' || location === '/rewards/guideHistory') {
       return [
         {
           key: 'reservation',
@@ -289,9 +302,11 @@ FilteredRewardsList.defaultProps = {
   activeMessagesFilters: {},
   userName: '',
   sortHistory: 'reservation',
+  sortGuideHistory: 'reservation',
   sortMessages: 'inquiryDate',
   blacklistUsers: [],
   activeHistoryFilters: {},
+  activeGuideHistoryFilters: {},
   setActiveMessagesFilters: () => {},
 };
 
@@ -320,10 +335,12 @@ FilteredRewardsList.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.shape()),
   location: PropTypes.string.isRequired,
   sortHistory: PropTypes.string,
+  sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,
   getHistory: PropTypes.func.isRequired,
   blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   activeHistoryFilters: PropTypes.shape(),
+  activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
 };
 
