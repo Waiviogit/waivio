@@ -218,7 +218,6 @@ class EditPost extends Component {
   }
 
   handleObjectSelect(object) {
-    console.log(object);
     this.setState(prevState => {
       const { postBody } = splitPostContent(prevState.content);
       const objName = object.name || object.default_name;

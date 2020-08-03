@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual } from 'lodash';
+import { Input } from 'antd';
 import {
   Editor as MediumDraftEditor,
   createEditorState,
@@ -139,13 +140,20 @@ class Editor extends React.Component {
 
   getValueFromTitle = event => this.setState({ titleValue: event.target.value });
 
+  titleFieldResize = () => {
+    if (this.scrollTop > 0) {
+      this.style.height = `${this.scrollHeight}px`;
+    }
+  };
+
   render() {
     const { editorState, isMounted, editorEnabled } = this.state;
     return (
       <React.Fragment>
         <div className="waiv-editor">
-          <textarea
-            maxLength="255"
+          <Input.TextArea
+            style={{ outline: 'none !important' }}
+            autoSize
             className="md-RichEditor-title"
             placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
             onChange={this.getValueFromTitle}

@@ -29,15 +29,20 @@
   color: @white-smoke;
   width: 100%;
   padding: 0 0 0 6px;
-  outline: none;
   font-size: 32px;
   font-weight: bold;
   margin-left: 12px;
   caret-color: @black;
+  resize: none;
 
   @media @small, @medium {
     margin-left: 0;
   }
+}
+
+textarea.ant-input:focus {
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .md-RichEditor-title::placeholder {
@@ -129,3 +134,5 @@
     display: block;
   }
 }
+
+@import 'index-nightmode';
