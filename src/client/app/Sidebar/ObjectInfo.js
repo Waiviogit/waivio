@@ -290,7 +290,6 @@ class ObjectInfo extends React.Component {
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
       menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
-
       menuItems = menuItems.map(item => {
         const matchField = get(wobject, 'fields', []).find(
           field => field.body === item.author_permlink,
@@ -449,10 +448,11 @@ class ObjectInfo extends React.Component {
         )}
         <div className="object-sidebar__menu-items">
           <React.Fragment>
-            {listItem(
-              TYPES_OF_MENU_ITEM.LIST,
-              menuLists && menuLists.map(item => getMenuSectionLink(item)),
-            )}
+            {isEditMode &&
+              listItem(
+                TYPES_OF_MENU_ITEM.LIST,
+                menuLists && menuLists.map(item => getMenuSectionLink(item)),
+              )}
             {listItem(
               TYPES_OF_MENU_ITEM.PAGE,
               menuPages && menuPages.map(item => getMenuSectionLink(item)),
