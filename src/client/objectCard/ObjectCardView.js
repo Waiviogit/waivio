@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import { getApprovedField } from '../helpers/wObjectHelper';
@@ -70,10 +69,8 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = !isEmpty(wObject.parent)
-    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
-    : null;
-
+  const parentName =
+    !isEmpty(wObject.parent) && getApprovedField(wObject.parent, objectTypes.name, '');
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
