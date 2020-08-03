@@ -21,6 +21,7 @@
   padding: 0 0 14px 0;
   position: relative;
   line-height: 1.4em;
+  height: 150px;
 }
 
 .md-RichEditor-title {
@@ -33,16 +34,17 @@
   padding: 6px 20px;
   caret-color: @black;
   resize: none;
+  margin-bottom: 10px;
 
   @media @small, @medium {
     padding: 0 6px !important;
   }
 }
 
-textarea.ant-input:focus {
-  box-shadow: none !important;
-  outline: none !important;
-}
+//textarea.ant-input:focus {
+//  box-shadow: none !important;
+//  outline: none !important;
+//}
 
 .md-RichEditor-title::placeholder {
   font-size: 32px;

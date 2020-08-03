@@ -167,6 +167,9 @@ class EditPost extends Component {
   }
 
   handleChangeContent(rawContent, title) {
+    // console.log('rawContent: ', rawContent)
+    // console.log('title: ', title)
+
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqWith(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -178,7 +181,13 @@ class EditPost extends Component {
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+    // console.log('state: ', this.state)
+    // console.log('nextState: ', nextState)
+    if (
+      this.state.content !== nextState.content ||
+      isLinkedObjectsChanged ||
+      this.state.titleValue !== nextState.titleValue
+    ) {
       this.setState(nextState, this.handleUpdateState);
     }
   }
@@ -224,7 +233,6 @@ class EditPost extends Component {
       const separator = postBody.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
-          title: this.state.titleValue,
           body: `${postBody}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
           )})&nbsp;\n`,
@@ -300,7 +308,7 @@ class EditPost extends Component {
     if (originalBody) {
       postData.originalBody = originalBody;
     }
-
+    console.log('postData: ', postData);
     return postData;
   }
 

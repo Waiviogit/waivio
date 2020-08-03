@@ -165,13 +165,6 @@ export function getInitialState(props) {
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
-      title:
-        props.initObjects && props.initObjects.length
-          ? `Review: ${props.initObjects
-              .filter(obj => obj.match(/^\[(.+)\]\((\S+)\)/))
-              .map(obj => obj.match(/^\[(.+)\]\((\S+)\)/)[1])
-              .join(', ')}`
-          : '',
       body: props.initObjects
         ? props.initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
@@ -223,8 +216,10 @@ export function getInitialState(props) {
       isUpdating: Boolean(draftPost.isUpdating),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
+      titleValue: '',
     };
   }
+
   return state;
 }
 

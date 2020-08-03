@@ -83,7 +83,7 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ isMounted: true }); // eslint-disable-line
+    this.setState({ isMounted: true, titleValue: this.props.initialContent.title }); // eslint-disable-line
     this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
       this.setFocusAfterMount(),
     );
@@ -91,9 +91,10 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
-      this.setState({ editorEnabled: false });
+      this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
       const rawContent = fromMarkdown(nextProps.initialContent);
-      this.handleContentChange(createEditorState(rawContent));
+      this.setState({ titleValue: this.props.initialContent.title });
+      this.handleContentChange(createEditorState(rawContent), this.state.titleValue);
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
   }
@@ -141,17 +142,18 @@ class Editor extends React.Component {
   getValueFromTitle = event => this.setState({ titleValue: event.target.value });
 
   render() {
-    const { editorState, isMounted, editorEnabled } = this.state;
+    const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     return (
       <React.Fragment>
+        <Input.TextArea
+          maxLength={255}
+          autoSize
+          className="md-RichEditor-title"
+          value={titleValue}
+          placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
+          onChange={this.getValueFromTitle}
+        />
         <div className="waiv-editor">
-          <Input.TextArea
-            style={{ outline: 'none !important' }}
-            autoSize
-            className="md-RichEditor-title"
-            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-            onChange={this.getValueFromTitle}
-          />
           {isMounted ? (
             <MediumDraftEditor
               ref={this.refsEditor}
