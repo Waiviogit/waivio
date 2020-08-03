@@ -160,9 +160,8 @@ class PostPreviewModal extends Component {
       settings,
       topics,
       isGuest,
+      titleValue,
     } = this.props;
-
-    const { titleValue } = this.props;
 
     return (
       <React.Fragment>

@@ -140,12 +140,6 @@ class Editor extends React.Component {
 
   getValueFromTitle = event => this.setState({ titleValue: event.target.value });
 
-  titleFieldResize = () => {
-    if (this.scrollTop > 0) {
-      this.style.height = `${this.scrollHeight}px`;
-    }
-  };
-
   render() {
     const { editorState, isMounted, editorEnabled } = this.state;
     return (
