@@ -224,13 +224,13 @@ export const assignProposition = ({
   const proposedWobjName = proposedWobj.name;
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
   const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
-  const detailsBody = getDetailsBody(
+  const detailsBody = getDetailsBody({
     proposition,
     proposedWobjName,
     proposedWobjAuthorPermlink,
     primaryObjectName,
     secondaryObjectName,
-  );
+  });
   const commentOp = [
     'comment',
     {
@@ -390,19 +390,27 @@ export const activateCampaign = (company, campaignPermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const state = getState();
+  const username = store.getAuthenticatedUserName(state);
+  const rate = store.getRate(state);
+  const rewardFund = store.getRewardFund(state);
+  const recentClaims = rewardFund.recent_claims;
+  const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
   const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
   const proposedAuthorPermlink = company.objects[0].author_permlink;
   const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
   const alias = get(company, ['guide', 'alias']);
-  const detailsBody = getDetailsBody(
-    company,
+  const detailsBody = getDetailsBody({
+    proposition: company,
     proposedWobjName,
     proposedAuthorPermlink,
     primaryObjectName,
-  );
+    rate,
+    recentClaims,
+    rewardBalance,
+  });
   const commentOp = [
     'comment',
     {
