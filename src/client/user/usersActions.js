@@ -134,3 +134,11 @@ export const changeCounterFollow = (username, type, follow = false) => (dispatch
     },
   });
 };
+
+export const UPDATE_USER_METADATA = '@auth/UPDATE_USER_METADATA';
+
+export const updateUserMetadata = metadata => dispatch =>
+  dispatch({
+    type: UPDATE_USER_METADATA,
+    payload: metadata,
+  });
