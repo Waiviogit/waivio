@@ -1305,5 +1305,6 @@
   "notify_list_message": "You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so on.",
   "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribes.",
   "my_actions": "My actions",
+  "minimum_expertise_cannot_have_more_then_two_decimals": "The Waivio reputation cannot have more then two digits after the decimal point"
   "decrease_reward": "Decrease reward"
 }
