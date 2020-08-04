@@ -178,11 +178,10 @@ class EditPost extends Component {
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    if (
-      this.state.content !== nextState.content ||
-      isLinkedObjectsChanged ||
-      this.state.titleValue !== nextState.titleValue
-    ) {
+    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+      console.log('title: ', title);
+      console.log('nextState: ', nextState);
+      console.log('rawContent: ', rawContent);
       this.setState(nextState, this.handleUpdateState);
     }
   }
@@ -255,10 +254,8 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
-    // const { postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
-
     const postData = {
       body: content,
       title: titleValue,
@@ -306,16 +303,18 @@ class EditPost extends Component {
     return postData;
   }
 
-  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
+  handleUpdateState = () => {
+    console.log('handleUpdateState');
+    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
+  };
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
     const draft = this.buildPost();
-    const postBody = draft.originalBody;
-    // Remove zero width space
-    const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
-    if (isBodyEmpty) return;
+    const postBody = draft.originalBody || draft.body;
+    console.log('postBody: ', postBody);
+    if (!postBody) return;
 
     const redirect = this.props.draftId !== this.state.draftId;
 

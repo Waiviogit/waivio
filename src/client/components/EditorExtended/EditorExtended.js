@@ -90,6 +90,10 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // console.log('this.props.initialContent: ', nextProps.initialContent)
+    // if (nextProps.initialContent.title) {
+    //   this.setState({titleValue: nextProps.initialContent.title})
+    // }
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       this.setState({ editorEnabled: false });
       const rawContent = fromMarkdown(nextProps.initialContent);
