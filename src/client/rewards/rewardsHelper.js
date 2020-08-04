@@ -556,6 +556,11 @@ export const popoverDataHistory = {
       id: 'campaign_buttons_release',
       defaultMessage: 'Release reservation',
     },
+    {
+      key: 'decrease',
+      id: 'decrease_reward',
+      defaultMessage: 'Decrease reward',
+    },
   ],
   completed: [
     {
@@ -572,6 +577,11 @@ export const popoverDataHistory = {
       key: 'show',
       id: 'show_report',
       defaultMessage: 'Show report',
+    },
+    {
+      key: 'decrease',
+      id: 'decrease_reward',
+      defaultMessage: 'Decrease reward',
     },
   ],
   rejected: [
