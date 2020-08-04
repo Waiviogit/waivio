@@ -301,6 +301,7 @@ class Rewards extends React.Component {
       this.setState({
         sponsors,
         hasMore: data.hasMore,
+        campaignsTypes: data.campaigns_types,
         loadingCampaigns: false,
       });
       if (data.tabType === 'reserved') {
