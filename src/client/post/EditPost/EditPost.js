@@ -179,9 +179,6 @@ class EditPost extends Component {
       nextState.objPercentage = objPercentage;
     }
     if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
-      console.log('title: ', title);
-      console.log('nextState: ', nextState);
-      console.log('rawContent: ', rawContent);
       this.setState(nextState, this.handleUpdateState);
     }
   }
@@ -304,7 +301,6 @@ class EditPost extends Component {
   }
 
   handleUpdateState = () => {
-    console.log('handleUpdateState');
     throttle(this.saveDraft, 200, { leading: false, trailing: true })();
   };
 
@@ -312,8 +308,8 @@ class EditPost extends Component {
     if (this.props.saving) return;
 
     const draft = this.buildPost();
+    console.log('draft: ', draft);
     const postBody = draft.originalBody || draft.body;
-    console.log('postBody: ', postBody);
     if (!postBody) return;
 
     const redirect = this.props.draftId !== this.state.draftId;
@@ -333,6 +329,7 @@ class EditPost extends Component {
       isUpdating,
       titleValue,
     } = this.state;
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
       <div className="shifted">
@@ -344,6 +341,7 @@ class EditPost extends Component {
               locale={locale}
               onChange={this.handleChangeContent}
               intl={intl}
+              currDraft={currDraft}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

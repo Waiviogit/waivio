@@ -80,7 +80,6 @@ const editor = (state = defaultState, action) => {
         saving: true,
       };
     case editorActions.SAVE_DRAFT_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         draftPosts: [

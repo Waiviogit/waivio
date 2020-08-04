@@ -60,9 +60,11 @@ class Editor extends React.Component {
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
+    currDraft: PropTypes.shape(),
   };
   static defaultProps = {
     intl: {},
+    currDraft: {},
     onChange: () => {},
   };
 
@@ -90,10 +92,14 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('this.props.initialContent: ', nextProps.initialContent)
-    // if (nextProps.initialContent.title) {
-    //   this.setState({titleValue: nextProps.initialContent.title})
-    // }
+    console.log('props: ', this.props.initialContent.title);
+    console.log('nextProps: ', nextProps.initialContent.title);
+    console.log('currDraft: ', this.props.currDraft);
+
+    if (this.props.currDraft.title === nextProps.initialContent.title) {
+      this.setState({ titleValue: this.props.currDraft.title });
+    }
+
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       this.setState({ editorEnabled: false });
       const rawContent = fromMarkdown(nextProps.initialContent);

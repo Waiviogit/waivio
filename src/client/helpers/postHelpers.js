@@ -188,7 +188,7 @@ export function getInitialState(props) {
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
-        body: get(draftPost, 'originalBody', ''),
+        body: get(draftPost, 'originalBody', '') || get(draftPost, 'body', ''),
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
@@ -204,7 +204,6 @@ export function getInitialState(props) {
       isUpdating: Boolean(draftPost.isUpdating),
       permlink: draftPost.permlink || null,
       originalBody: draftPost.originalBody || null,
-      titleValue: '',
     };
   }
 

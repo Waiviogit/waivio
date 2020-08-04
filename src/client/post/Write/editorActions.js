@@ -45,9 +45,8 @@ export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 
-export const saveDraft = (draft, redirect, intl) => dispatch => {
-  console.log('draft: ', draft);
-  return dispatch({
+export const saveDraft = (draft, redirect, intl) => dispatch =>
+  dispatch({
     type: SAVE_DRAFT,
     payload: {
       promise: addDraftMetadata(draft).catch(err => {
@@ -69,7 +68,6 @@ export const saveDraft = (draft, redirect, intl) => dispatch => {
   }).then(() => {
     if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
-};
 
 export const deleteDraft = draftIds => (dispatch, getState) => {
   const state = getState();
