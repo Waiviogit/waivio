@@ -9,7 +9,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
-import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
+import { isContentValid } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
@@ -66,7 +66,6 @@ class PostPreviewModal extends Component {
 
     this.state = {
       isModalOpen: false,
-      title: '',
       body: '',
       isConfirmed: false,
       isCheckReviewModalOpen: false,
@@ -101,11 +100,9 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { postBody } = splitPostContent(this.props.content);
     this.setState({
       isModalOpen: true,
-      title: this.props.titleValue,
-      body: postBody,
+      body: this.props.content,
     });
   };
 
@@ -148,7 +145,7 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { body, isConfirmed, isModalOpen, title } = this.state;
+    const { body, isConfirmed, isModalOpen } = this.state;
     const {
       content,
       intl,
@@ -181,7 +178,7 @@ class PostPreviewModal extends Component {
             onCancel={this.hideModal}
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
-            <h1 className="StoryFull__title preview">{title}</h1>
+            <h1 className="StoryFull__title preview">{titleValue}</h1>
             <BodyContainer full body={body} />
             <TagsSelector
               className="post-preview-topics"

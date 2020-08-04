@@ -133,18 +133,6 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
  * @param bodyKey - string (optional)
  * @returns Object with post's title and body - {postBody: string, postTitle: string}
  */
-// export function splitPostContent(
-//   markdownContent,
-//   { titleKey, bodyKey } = { titleKey: 'postTitle', bodyKey: 'postBody' },
-// ) {
-//   const regExp = new RegExp('^(.*)\n'); // eslint-disable-line
-//   const postTitle = regExp.exec(markdownContent);
-//   const postBody = postTitle && markdownContent.replace(regExp, '');
-//   return {
-//     [titleKey]: postTitle ? postTitle[0].trim() : '',
-//     [bodyKey]: postBody || '',
-//   };
-// }
 
 export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'postBody' }) {
   const regExp = new RegExp('^(.*)\n'); // eslint-disable-line

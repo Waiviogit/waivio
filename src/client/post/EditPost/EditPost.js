@@ -255,12 +255,12 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
-    const { postBody } = splitPostContent(content);
+    // const { postBody } = splitPostContent(content);
     // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
 
     const postData = {
-      body: postBody,
+      body: content,
       title: titleValue,
       lastUpdated: Date.now(),
       isUpdating,
@@ -293,7 +293,7 @@ class EditPost extends Component {
     };
 
     postData.jsonMetadata = createPostMetadata(
-      postBody,
+      content,
       topics,
       oldMetadata,
       waivioData,
