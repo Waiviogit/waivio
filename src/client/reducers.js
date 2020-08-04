@@ -68,7 +68,8 @@ export const getAuthenticatedUserPrivateEmail = state =>
   fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
+export const getPostContent = (state, permlink, author) =>
+  fromPosts.getPostContent(state.posts, permlink, author);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
