@@ -144,7 +144,7 @@ class Editor extends React.Component {
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     return (
-      <React.Fragment>
+      <div className="waiv-editor">
         <Input.TextArea
           maxLength={255}
           autoSize
@@ -153,25 +153,23 @@ class Editor extends React.Component {
           placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
           onChange={this.getValueFromTitle}
         />
-        <div className="waiv-editor">
-          {isMounted ? (
-            <MediumDraftEditor
-              ref={this.refsEditor}
-              placeholder={this.props.intl.formatMessage({
-                id: 'story_placeholder',
-                defaultMessage: 'Write your story...',
-              })}
-              editorEnabled={editorEnabled && this.props.enabled}
-              editorState={editorState}
-              beforeInput={this.handleBeforeInput}
-              onChange={this.handleContentChange}
-              sideButtons={SIDE_BUTTONS}
-              intl={this.props.intl}
-              titleValue={this.state.titleValue}
-            />
-          ) : null}
-        </div>
-      </React.Fragment>
+        {isMounted ? (
+          <MediumDraftEditor
+            ref={this.refsEditor}
+            placeholder={this.props.intl.formatMessage({
+              id: 'story_placeholder',
+              defaultMessage: 'Write your story...',
+            })}
+            editorEnabled={editorEnabled && this.props.enabled}
+            editorState={editorState}
+            beforeInput={this.handleBeforeInput}
+            onChange={this.handleContentChange}
+            sideButtons={SIDE_BUTTONS}
+            intl={this.props.intl}
+            titleValue={this.state.titleValue}
+          />
+        ) : null}
+      </div>
     );
   }
 }
