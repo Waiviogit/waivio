@@ -200,7 +200,7 @@ export function getInitialState(props) {
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
-        body: get(draftPost, 'body', ''),
+        body: get(draftPost, 'originalBody', ''),
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
@@ -224,6 +224,6 @@ export function getInitialState(props) {
 }
 
 export function isContentValid(markdownContent) {
-  const { postTitle, postBody } = splitPostContent(markdownContent);
-  return Boolean(postTitle && postBody.trim());
+  const { postBody } = splitPostContent(markdownContent);
+  return Boolean(postBody.trim());
 }

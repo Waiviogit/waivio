@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, keyBy, isEqual } from 'lodash';
+import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
 import { Input } from 'antd';
 import {
   Editor as MediumDraftEditor,
@@ -91,10 +91,9 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
-      this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
+      this.setState({ editorEnabled: false });
       const rawContent = fromMarkdown(nextProps.initialContent);
-      this.setState({ titleValue: this.props.initialContent.title });
-      this.handleContentChange(createEditorState(rawContent), this.state.titleValue);
+      this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
   }
@@ -108,6 +107,7 @@ class Editor extends React.Component {
     const objectIds = Object.values(rawContent.entityMap)
       .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
       .map(entity => get(entity, 'data.object.id', ''));
+
     if (objectIds.length) {
       const response = await getObjectsByIds({
         authorPermlinks: objectIds,
@@ -130,8 +130,11 @@ class Editor extends React.Component {
         blocks: [...rawContent.blocks],
         entityMap,
       };
+
       this.handleContentChange(createEditorState(rawContentUpdated));
     }
+    // eslint-disable-next-line no-unused-expressions
+    !isEmpty(rawContent.blocks) && this.handleContentChange(createEditorState(rawContent));
   };
 
   handleContentChange = editorState => {

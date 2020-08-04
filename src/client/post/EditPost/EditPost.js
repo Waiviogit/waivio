@@ -167,9 +167,6 @@ class EditPost extends Component {
   }
 
   handleChangeContent(rawContent, title) {
-    // console.log('rawContent: ', rawContent)
-    // console.log('title: ', title)
-
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqWith(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -181,8 +178,6 @@ class EditPost extends Component {
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    // console.log('state: ', this.state)
-    // console.log('nextState: ', nextState)
     if (
       this.state.content !== nextState.content ||
       isLinkedObjectsChanged ||
@@ -308,7 +303,6 @@ class EditPost extends Component {
     if (originalBody) {
       postData.originalBody = originalBody;
     }
-    console.log('postData: ', postData);
     return postData;
   }
 
@@ -318,7 +312,7 @@ class EditPost extends Component {
     if (this.props.saving) return;
 
     const draft = this.buildPost();
-    const postBody = draft.body;
+    const postBody = draft.originalBody;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
     if (isBodyEmpty) return;
