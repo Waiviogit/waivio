@@ -48,7 +48,8 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-  const isMessages = match.params.filterKey === 'messages';
+  const isMessages =
+    match.params.filterKey === 'messages' || match.params.filterKey === 'guideHistory';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;

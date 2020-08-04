@@ -362,7 +362,10 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
+    const userName =
+      match.params.filterKey === 'messages' || match.params.filterKey === 'guideHistory'
+        ? propositionUserName
+        : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();
