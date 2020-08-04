@@ -19,6 +19,7 @@ const FilteredRewardsList = props => {
     hasMore,
     loading,
     filterKey,
+    tabType,
     userName,
     match,
     propositions,
@@ -64,9 +65,9 @@ const FilteredRewardsList = props => {
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
     !match.params.campaignParent &&
-    match.params.filterKey !== 'history' &&
-    match.params.filterKey !== 'messages' &&
-    match.params.filterKey !== 'guideHistory';
+    location !== '/rewards/history' &&
+    location !== '/rewards/messages' &&
+    location !== '/rewards/guideHistory';
 
   const getFiltersForTags = useMemo(() => {
     if (location === '/rewards/history') {
@@ -143,8 +144,8 @@ const FilteredRewardsList = props => {
   return !loadingCampaigns ? (
     <React.Fragment>
       <RewardBreadcrumb
-        tabText={getTextByFilterKey(intl, filterKey)}
-        filterKey={filterKey}
+        tabText={getTextByFilterKey(intl, filterKey || tabType)}
+        filterKey={filterKey || tabType}
         reqObject={
           !IsRequiredObjectWrap && propositions.length && propositions[0]
             ? propositions[0].required_object
@@ -157,10 +158,7 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap &&
-      filterKey !== 'history' &&
-      propositions.length &&
-      propositions[0] ? (
+      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}
@@ -181,8 +179,9 @@ const FilteredRewardsList = props => {
         </SortSelector>
       )}
       {(!isEmpty(sponsors) ||
-        match.params.filterKey === 'history' ||
-        match.params.filterKey === 'messages') && (
+        location === '/rewards/history' ||
+        location === '/rewards/messages' ||
+        location === '/rewards/guideHistory') && (
         <div className="FilteredRewardsList__filters-tags-block">
           <span className="FilteredRewardsList__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
@@ -221,8 +220,9 @@ const FilteredRewardsList = props => {
         </div>
       )}
       {!isEmpty(sponsors) &&
-        match.params.filterKey !== 'history' &&
-        match.params.filterKey !== 'messages' && (
+        location !== '/rewards/history' &&
+        location !== '/rewards/messages' &&
+        location !== '/rewards/guideHistory' && (
           <div className="FilteredRewardsList__filters-toggle-map tc">
             <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
               {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
@@ -310,12 +310,14 @@ FilteredRewardsList.defaultProps = {
   activeHistoryFilters: {},
   activeGuideHistoryFilters: {},
   setActiveMessagesFilters: () => {},
+  tabType: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
+  tabType: PropTypes.string,
   userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),

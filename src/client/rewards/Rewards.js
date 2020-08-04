@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { message } from 'antd';
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -200,7 +200,7 @@ class Rewards extends React.Component {
 
   setSortValue = sort => {
     const { match } = this.props;
-    const filterKey = get(match, ['params', 'filterKey']);
+    const filterKey = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
     switch (filterKey) {
       case 'active':
         return this.setState({ sortEligible: sort });
@@ -239,9 +239,9 @@ class Rewards extends React.Component {
 
   setActiveMessagesFilters = (filterValue, key) => {
     const { match } = this.props;
-    const filterKey = match.params.filterKey;
+    const paramsKey = match.params[0];
     let activeFilters;
-    switch (filterKey) {
+    switch (paramsKey) {
       case 'history':
         activeFilters = this.state.activeHistoryFilters;
         break;
@@ -259,7 +259,7 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key].push(filterValue);
         }
-        this.setFilters(filterKey, activeFilters);
+        this.setFilters(paramsKey, activeFilters);
         break;
       case 'caseStatus':
         if (activeFilters[key] === filterValue) {
@@ -267,12 +267,12 @@ class Rewards extends React.Component {
         } else {
           activeFilters[key] = filterValue;
         }
-        this.setFilters(filterKey, activeFilters);
+        this.setFilters(paramsKey, activeFilters);
         break;
       default:
         break;
     }
-    this.setFilters(filterKey, activeFilters);
+    this.setFilters(paramsKey, activeFilters);
     this.setState({ loadingCampaigns: true });
   };
 
@@ -557,12 +557,41 @@ class Rewards extends React.Component {
 
     const getMessageHistory = async () => {
       try {
-        const activeFilters =
-          filterKey === 'history'
-            ? this.state.activeHistoryFilters
-            : this.state.activeMessagesFilters;
-        const sortChanged =
-          filterKey === 'history' ? this.state.sortHistory : this.state.sortMessages;
+        const activeFilters = useMemo(() => {
+          switch (match.params[0]) {
+            case 'history':
+              return this.state.activeHistoryFilters;
+            case 'messages':
+              return this.state.activeMessagesFilters;
+            case 'guideHistory':
+              return this.state.activeGuideHistoryFilters;
+            default:
+              return '';
+          }
+        }, [
+          match.params[0],
+          this.state.activeHistoryFilters,
+          this.state.activeMessagesFilters,
+          this.state.activeGuideHistoryFilters,
+        ]);
+
+        const sortChanged = useMemo(() => {
+          switch (match.params[0]) {
+            case 'history':
+              return this.state.sortHistory;
+            case 'messages':
+              return this.state.sortMessages;
+            case 'guideHistory':
+              return this.state.sortGuideHistory;
+            default:
+              return '';
+          }
+        }, [
+          match.params[0],
+          this.state.sortHistory,
+          this.state.sortMessages,
+          this.state.sortGuideHistory,
+        ]);
 
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
@@ -750,8 +779,7 @@ class Rewards extends React.Component {
       url,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
-    const IsRequiredObjectWrap =
-      !match.params.campaignParent && match.params.filterKey !== 'history';
+    const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate =
@@ -872,44 +900,52 @@ class Rewards extends React.Component {
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
-                  {!isEmpty(userLocation) &&
-                    !isCreate &&
-                    match.params.filterKey !== 'history' &&
-                    match.params.filterKey !== 'messages' &&
-                    match.params.filterKey !== 'guideHistory' && (
-                      <MapWrap
-                        setMapArea={this.setMapArea}
-                        userLocation={userLocation}
-                        wobjects={
-                          campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects
-                        }
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                        match={match}
-                        primaryObjectCoordinates={primaryObjectCoordinates}
-                        zoomMap={zoomMap}
-                      />
-                    )}
-                  {(!isEmpty(sponsors) ||
-                    match.params.filterKey === 'history' ||
-                    match.params.filterKey === 'messages' ||
-                    match.params.filterKey === 'guideHistory') &&
-                    !isCreate && (
-                      <RewardsFiltersPanel
-                        campaignsTypes={campaignsTypes}
-                        sponsors={sponsors}
-                        activeFilters={activeFilters}
-                        activePayableFilters={activePayableFilters}
-                        setFilterValue={this.setFilterValue}
-                        setPayablesFilterValue={this.setPayablesFilterValue}
-                        location={location}
-                        activeMessagesFilters={activeMessagesFilters}
-                        activeHistoryFilters={activeHistoryFilters}
-                        activeGuideHistoryFilters={activeGuideHistoryFilters}
-                        messagesSponsors={messagesSponsors}
-                        setActiveMessagesFilters={this.setActiveMessagesFilters}
-                      />
-                    )}
+                  {!isEmpty(userLocation) && !isCreate && (
+                    <MapWrap
+                      setMapArea={this.setMapArea}
+                      userLocation={userLocation}
+                      wobjects={campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects}
+                      onMarkerClick={this.goToCampaign}
+                      getAreaSearchData={this.getAreaSearchData}
+                      match={match}
+                      primaryObjectCoordinates={primaryObjectCoordinates}
+                      zoomMap={zoomMap}
+                    />
+                  )}
+                  {!isEmpty(sponsors) && !isCreate && (
+                    <RewardsFiltersPanel
+                      campaignsTypes={campaignsTypes}
+                      sponsors={sponsors}
+                      activeFilters={activeFilters}
+                      activePayableFilters={activePayableFilters}
+                      setFilterValue={this.setFilterValue}
+                      setPayablesFilterValue={this.setPayablesFilterValue}
+                      location={location}
+                      activeMessagesFilters={activeMessagesFilters}
+                      activeHistoryFilters={activeHistoryFilters}
+                      activeGuideHistoryFilters={activeGuideHistoryFilters}
+                      messagesSponsors={messagesSponsors}
+                      setActiveMessagesFilters={this.setActiveMessagesFilters}
+                    />
+                  )}
+                </div>
+              </Affix>
+            )}
+            {(includes(match.url, 'history') ||
+              includes(match.url, 'guideHistory') ||
+              includes(match.url, 'messages')) && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
+                <div className="right">
+                  <RewardsFiltersPanel
+                    campaignsTypes={campaignsTypes}
+                    setFilterValue={this.setFilterValue}
+                    location={location}
+                    activeMessagesFilters={activeMessagesFilters}
+                    activeHistoryFilters={activeHistoryFilters}
+                    activeGuideHistoryFilters={activeGuideHistoryFilters}
+                    messagesSponsors={messagesSponsors}
+                    setActiveMessagesFilters={this.setActiveMessagesFilters}
+                  />
                 </div>
               </Affix>
             )}

@@ -527,8 +527,8 @@ export const getSort = (
   sortGuideHistory,
   sortMessages,
 ) => {
-  const filterKey = get(match, ['params', 'filterKey']);
-  switch (filterKey) {
+  const key = get(match, ['params', '0']);
+  switch (key) {
     case 'active':
       return sortEligible;
     case 'reserved':

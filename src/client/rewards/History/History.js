@@ -135,6 +135,7 @@ const History = ({
     JSON.stringify(activeMessagesFilters),
     JSON.stringify(activeHistoryFilters),
     JSON.stringify(activeGuideHistoryFilters),
+    location.pathname,
   ]);
 
   const handleLoadMore = () => {
@@ -159,7 +160,7 @@ const History = ({
           handleSortChange,
           sort,
           sponsors: messagesSponsors,
-          filterKey: 'history',
+          tabType: 'history',
           location: location.pathname,
           sortHistory,
           sortMessages,

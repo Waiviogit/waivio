@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, includes } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -164,9 +164,9 @@ const Proposition = ({
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
         {assigned ||
-        get(match, ['params', 'filterKey']) === 'history' ||
-        get(match, ['params', 'filterKey']) === 'messages' ||
-        get(match, ['params', 'filterKey']) === 'guideHistory' ? (
+        includes(match.url, 'history') ||
+        includes(match.url, 'guideHistory') ||
+        includes(match.url, 'messages') ? (
           <CampaignFooter
             post={post}
             loading={loading}

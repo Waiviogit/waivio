@@ -230,6 +230,7 @@ const routes = [
       {
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
+          '/rewards/(history|guideHistory|messages)',
           '/rewards/payables',
           '/rewards/reports',
           '/rewards/blacklist/:listType?',
