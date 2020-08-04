@@ -163,9 +163,9 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getFieldWithMaxWeight(objectDetails.required_object, 'name');
+  const requiredObjectName = getFieldWithMaxWeight(objectDetails.requiredObject, 'name');
   return objectDetails.frequency_assign
-    ? `<ul><li>Have not received a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/@${objectDetails.requiredObject}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 };
 
