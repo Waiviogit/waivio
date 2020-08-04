@@ -31,7 +31,7 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
           </div>
           {alt && <span className={weightBlock}>{alt}</span>}
           <span className={followersCountBlock}>
-            {user.followers_count && `· ${user.followers_count} `}
+            {Boolean(user.followers_count) && `· ${user.followers_count} `}
           </span>
         </div>
         {showFollow && (
