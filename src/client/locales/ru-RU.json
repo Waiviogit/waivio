@@ -1304,5 +1304,8 @@
   "min_amount": "минимумальная сумма: {input} USD",
   "notify_list_message": "Теперь вы можете получать мгновенные мобильные уведомления через приложение Telegram, когда кто-то отвечает или повторно публикует ваши сообщения в Hive, упоминает о вас, подписывается на вас, переводит вам средства и так далее.",
   "notify_list_message_telegram": "Откройте Telegram chart с {link} и введите имена пользователей Hive для подписки.",
-  "my_actions": "Мои действия"
+  "my_actions": "Мои действия",
+  "notification_bell_post": "{username} опубликовал новый пост: {title}",
+  "notification_bell_reblog": "{account} поделился постом {author}: {title}",
+  "notification_bell_follow": "{follower} подписался {following}"
 }

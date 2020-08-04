@@ -1303,5 +1303,8 @@
   "settings_notify": "settings",
   "notify_list_message": "You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so on.",
   "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribes.",
-  "my_actions": "My actions"
+  "my_actions": "My actions",
+  "notification_bell_post": "{username} published a new post: {title}",
+  "notification_bell_reblog": "{account} re-blogged {author}'s post: {title}",
+  "notification_bell_follow": "{follower} followed {following}"
 }

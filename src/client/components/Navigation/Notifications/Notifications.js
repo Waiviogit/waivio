@@ -29,6 +29,9 @@ import NotificationClaimReward from './NotificationClaimReward';
 
 import './Notification.less';
 import './Notifications.less';
+import NotificationPostBell from './NotificationPostBell';
+import NotificationReblogBell from './NotificationReblogBell';
+import NotificationFollowBell from './NotificationFollowBell';
 
 const displayLimit = 6;
 
@@ -341,6 +344,33 @@ class Notifications extends React.Component {
               case notificationConstants.CLAIM_REWARD:
                 return (
                   <NotificationClaimReward
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_POST:
+                return (
+                  <NotificationPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_REBLOG:
+                return (
+                  <NotificationReblogBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_FOLLOW:
+                return (
+                  <NotificationFollowBell
                     key={key}
                     notification={notification}
                     read={read}

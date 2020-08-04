@@ -1,5 +1,7 @@
 import moment from 'moment';
 import { get } from 'lodash';
+import { message } from 'antd';
+
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -457,3 +459,40 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 // endregion
+export const BELL_USER_NOTIFICATION = createAsyncActionType('@auth/BELL_USER_NOTIFICATION');
+
+export const bellNotifications = (follower, following) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const subscribe = !get(state, ['users', 'users', following, 'bell']);
+  dispatch({
+    type: BELL_USER_NOTIFICATION.START,
+    payload: { following },
+  });
+  steemConnectAPI
+    .bellNotifications(follower, following, subscribe)
+    .then(res => {
+      if (res.message) {
+        message.error(res.message);
+        return dispatch({
+          type: BELL_USER_NOTIFICATION.ERROR,
+          payload: { following },
+        });
+      }
+
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.SUCCESS,
+        payload: { following, subscribe },
+      });
+    })
+    .catch(err => {
+      message.error(err.message);
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.ERROR,
+        payload: { following },
+      });
+    });
+};

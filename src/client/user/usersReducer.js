@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import * as actions from './usersActions';
 import { GET_USER_ACCOUNT_HISTORY } from '../wallet/walletActions';
+import { BELL_USER_NOTIFICATION } from './userActions';
 
 const initialState = {
   users: {},
@@ -331,6 +332,43 @@ export default function usersReducer(state = initialState, action) {
           [username]: {
             ...state.users[username],
             balance: get(state, ['users', username, 'balance'], balance),
+          },
+        },
+      };
+    }
+
+    case BELL_USER_NOTIFICATION.SUCCESS: {
+      return {
+        ...state,
+        users: {
+          [action.payload.following]: {
+            ...state.users[action.payload.following],
+            bell: action.payload.subscribe,
+            bellLoading: false,
+          },
+        },
+      };
+    }
+
+    case BELL_USER_NOTIFICATION.START: {
+      return {
+        ...state,
+        users: {
+          [action.payload.following]: {
+            ...state.users[action.payload.following],
+            bellLoading: true,
+          },
+        },
+      };
+    }
+
+    case BELL_USER_NOTIFICATION.ERROR: {
+      return {
+        ...state,
+        users: {
+          [action.payload.following]: {
+            ...state.users[action.payload.following],
+            bellLoading: true,
           },
         },
       };
