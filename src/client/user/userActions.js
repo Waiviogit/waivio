@@ -301,7 +301,7 @@ export const rejectReview = ({
   });
 };
 
-export const increaseReward = ({
+export const changeReward = ({
   companyAuthor,
   companyPermlink,
   username,
@@ -310,22 +310,38 @@ export const increaseReward = ({
   amount,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = store.getAuthenticatedUserName(getState());
+  const body =
+    username !== userName
+      ? `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`
+      : `User ${userName} (@${userName}) has decreased the reward by ${amount} HIVE`;
+  const title = username !== userName ? 'Increase reward' : 'Decrease reward';
+  const waivioRewards =
+    username !== userName
+      ? {
+          type: 'waivio_raise_review_reward',
+          riseAmount: amount,
+          activationPermlink: companyPermlink,
+        }
+      : {
+          type: 'waivio_reduce_review_reward',
+          reduceAmount: amount,
+          activationPermlink: companyPermlink,
+        };
+
+  const author = username !== userName ? companyAuthor : userName;
+
   const commentOp = [
     'comment',
     {
       parent_author: username,
       parent_permlink: reservationPermlink,
-      author: companyAuthor,
+      author,
       permlink: createCommentPermlink(username, reservationPermlink),
-      title: 'Increase reward',
-      body: `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`,
+      title,
+      body,
       json_metadata: JSON.stringify({
         app: appName,
-        waivioRewards: {
-          type: 'waivio_raise_review_reward',
-          riseAmount: amount,
-          activationPermlink: companyPermlink,
-        },
+        waivioRewards,
       }),
     },
   ];

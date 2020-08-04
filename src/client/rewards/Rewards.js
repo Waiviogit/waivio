@@ -137,6 +137,7 @@ class Rewards extends React.Component {
       rewards: [],
       messagesSponsors: [],
     },
+    url: '',
   };
 
   componentDidMount() {
@@ -156,6 +157,13 @@ class Rewards extends React.Component {
     }
     if (match.params.filterKey === 'reserved') {
       this.setState({ propositions: [] });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.url !== prevProps.match.url) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ url: this.props.match.url });
     }
   }
 
@@ -342,6 +350,7 @@ class Rewards extends React.Component {
         radius,
         loading: false,
         fetched: false,
+        hasMore: data.hasMore,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -359,7 +368,6 @@ class Rewards extends React.Component {
         this.setState({
           sponsors,
           propositions: data.campaigns,
-          hasMore: data.hasMore,
         });
       }
       if (isMap && firstMapLoad) {
@@ -652,13 +660,14 @@ class Rewards extends React.Component {
   };
 
   getCampaignsObjectsForMap = () => {
-    const { propositions } = this.state;
+    const { propositions, propositionsReserved } = this.state;
+    const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
-      map(propositions, proposition => map(proposition.objects, object => object.object)),
+      map(newPropositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
     const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
-      ? get(propositions, ['0', 'required_object'])
+      ? get(newPropositions, ['0', 'required_object'])
       : {};
     const secondaryObjectsWithUniqueCoordinates = filter(
       secondaryObjectsForMap,
@@ -721,6 +730,7 @@ class Rewards extends React.Component {
       sortMessages,
       loadingAssignDiscard,
       propositionsReserved,
+      url,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
     const IsRequiredObjectWrap =
@@ -781,12 +791,14 @@ class Rewards extends React.Component {
       sortMessages,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
       propositionsReserved,
+      url,
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const campaignsObjectsForMap = campaignParent ? this.getCampaignsObjectsForMap() : [];
+    const isReserved = match.params.filterKey === 'reserved';
+    const campaignsObjectsForMap =
+      campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
-
     return (
       <div className="Rewards">
         <div className="shifted">
@@ -848,7 +860,9 @@ class Rewards extends React.Component {
                       <MapWrap
                         setMapArea={this.setMapArea}
                         userLocation={userLocation}
-                        wobjects={campaignParent ? campaignsObjectsForMap : mapWobjects}
+                        wobjects={
+                          campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects
+                        }
                         onMarkerClick={this.goToCampaign}
                         getAreaSearchData={this.getAreaSearchData}
                         match={match}
