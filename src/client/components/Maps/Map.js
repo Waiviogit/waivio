@@ -125,13 +125,14 @@ class MapOS extends React.Component {
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({
-      radius: newRadius,
-      coordinates: center,
-      isMap: true,
-      isSecondaryObjectsCards,
-      firstMapLoad,
-    });
+    if (firstMapLoad)
+      setMapArea({
+        radius: newRadius,
+        coordinates: center,
+        isMap: true,
+        isSecondaryObjectsCards,
+        firstMapLoad,
+      });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
