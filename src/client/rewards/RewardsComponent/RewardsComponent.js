@@ -65,7 +65,7 @@ const RewardsComponent = memo(
       } else if (username) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       }
-    }, []);
+    }, [JSON.stringify(activeFilters)]);
 
     useEffect(() => {
       if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
