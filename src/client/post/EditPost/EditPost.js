@@ -332,7 +332,6 @@ class EditPost extends Component {
       isUpdating,
       titleValue,
     } = this.state;
-    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
       <div className="shifted">
@@ -344,7 +343,6 @@ class EditPost extends Component {
               locale={locale}
               onChange={this.handleChangeContent}
               intl={intl}
-              currDraft={currDraft}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

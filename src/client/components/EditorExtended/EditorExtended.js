@@ -60,11 +60,9 @@ class Editor extends React.Component {
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
-    currDraft: PropTypes.shape(),
   };
   static defaultProps = {
     intl: {},
-    currDraft: {},
     onChange: () => {},
   };
 
@@ -92,12 +90,8 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currDraft.title === nextProps.initialContent.title) {
-      this.setState({ titleValue: this.props.currDraft.title });
-    }
-
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
-      this.setState({ editorEnabled: false });
+      this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
       const rawContent = fromMarkdown(nextProps.initialContent);
       this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
@@ -148,8 +142,6 @@ class Editor extends React.Component {
     this.props.onChange(convertToRaw(editorState.getCurrentContent()), this.state.titleValue);
   };
 
-  getValueFromTitle = event => this.setState({ titleValue: event.target.value });
-
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     return (
@@ -160,7 +152,7 @@ class Editor extends React.Component {
           className="md-RichEditor-title"
           value={titleValue}
           placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-          onChange={this.getValueFromTitle}
+          onChange={event => this.setState({ titleValue: event.target.value })}
         />
         <div className="waiv-editor">
           {isMounted ? (
