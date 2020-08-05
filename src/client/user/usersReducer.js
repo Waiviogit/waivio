@@ -368,7 +368,7 @@ export default function usersReducer(state = initialState, action) {
         users: {
           [action.payload.following]: {
             ...state.users[action.payload.following],
-            bellLoading: true,
+            bellLoading: false,
           },
         },
       };
