@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 import {
   Editor as MediumDraftEditor,
   createEditorState,
@@ -65,6 +65,8 @@ class Editor extends React.Component {
     intl: {},
     onChange: () => {},
   };
+
+  static MAX_LENGTH = 255;
 
   constructor(props) {
     super(props);
@@ -144,10 +146,19 @@ class Editor extends React.Component {
 
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
+    if (titleValue && titleValue.length > Editor.MAX_LENGTH - 1) {
+      message.error(
+        this.props.intl.formatMessage({
+          id: 'title_error_too_long',
+          defaultMessage: "Title can't be longer than 255 characters.",
+        }),
+      );
+    }
+
     return (
       <React.Fragment>
         <Input.TextArea
-          maxLength={255}
+          maxLength={Editor.MAX_LENGTH}
           autoSize
           className="md-RichEditor-title"
           value={titleValue}
