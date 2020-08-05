@@ -893,7 +893,7 @@ class Rewards extends React.Component {
                       zoomMap={zoomMap}
                     />
                   )}
-                  {!isEmpty(sponsors) && !isCreate && (
+                  {!isEmpty(sponsors) && !isEmpty(propositions) && !isCreate && (
                     <RewardsFiltersPanel
                       campaignsTypes={campaignsTypes}
                       sponsors={sponsors}
