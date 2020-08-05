@@ -1,11 +1,15 @@
 export const ACCOUNT_CREATE = 'account_create';
 export const ACCOUNT_CREATE_WITH_DELEGATION = 'account_create_with_delegation';
 export const VOTE = 'vote';
-export const ACCOUNT_UPDATE = 'account_update';
+export const ACCOUNT_UPDATE = 'account_update2';
+export const GUEST_ACCOUNT_UPDATE = 'account_update';
 export const COMMENT = 'comment';
 export const DELETE_COMMENT = 'delete_comment';
 export const CUSTOM_JSON = 'custom_json';
 export const FOLLOW = 'follow';
+export const FOLLOW_WOBJECT = 'follow_wobject';
+export const UNFOLLOW_WOBJECT = 'unfollow_wobject';
+export const WOBJ_RATING = 'wobj_rating';
 export const REBLOG = 'reblog';
 export const CURATION_REWARD = 'curation_reward';
 export const AUTHOR_REWARD = 'author_reward';
@@ -14,6 +18,7 @@ export const FILL_VESTING_WITHDRAW = 'fill_vesting_withdraw';
 
 // Supported Custom JSON Type IDs
 export const ID_FOLLOW = 'follow';
+export const ID_FOLLOW_WOBJECT = 'follow_wobject';
 
 // Wallet Action Types
 export const TRANSFER = 'transfer';
@@ -23,6 +28,10 @@ export const TRANSFER_FROM_SAVINGS = 'transfer_from_savings';
 export const TRANSFER_TO_SAVINGS = 'transfer_to_savings';
 export const DELEGATE_VESTING_SHARES = 'delegate_vesting_shares';
 export const CLAIM_REWARD_BALANCE = 'claim_reward_balance';
+export const LIMIT_ORDER = 'limitOrder';
+export const FILL_ORDER = 'fillOrder';
+export const CANCEL_ORDER = 'cancelOrder';
+export const PROPOSAL_PAY = 'proposal_pay';
 
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';
@@ -60,3 +69,4 @@ export const PARSED_PROPERTIES = [
 ];
 
 export const PARSED_CUSTOM_JSON_IDS = [ID_FOLLOW];
+export const PARSED_CUSTOM_JSON_FOLLOW_WOBJECT = [ID_FOLLOW_WOBJECT];

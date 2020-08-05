@@ -1,4 +1,5 @@
 @import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
 
 .UserCard {
   display: flex;
@@ -6,7 +7,19 @@
   align-items: center;
   padding-bottom: 14px;
   padding-top: 14px;
-  border-top: @base-border;
+  border-bottom: @base-border;
+
+  & > &__sidebar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .username {
+      margin-left: 8px;
+    }
+  }
 
   .Follow {
     margin-left: 8px;
@@ -14,17 +27,10 @@
 
   &:first-child {
     padding-top: 0;
-    border-top: none;
-  }
-
-  &:last-child {
-    border-bottom: none;
   }
 
   & > &__left {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
 
     & > a:nth-child(2) {
@@ -32,32 +38,58 @@
     }
 
     .username {
-      margin-left: 8px;
+      margin-left: 0;
     }
 
     .ant-tag {
       margin-right: 0;
     }
+
+    @media @usmall {
+      display: flex;
+    }
+
+    @media @xsmall {
+      .username {
+        margin-left: 8px;
+      }
+    }
   }
 
   &__wrap {
-    display: flex;
+    display: block;
     align-items: center;
+
+    @media @xsmall {
+      display: flex;
+    }
+  }
+
+  &__status {
+    color: @orange-hot;
   }
 }
 
 div[data-dir='rtl'] .UserCard {
   & > &__left {
     & > a:nth-child(2) {
-      margin-left: 0px;
+      margin-left: 0;
       margin-right: 8px;
     }
   }
 
   &__alt {
-    margin-left: 0px;
+    margin-left: 0;
     margin-right: 8px;
   }
+}
+
+.BlockWeight {
+  padding: 8px;
+}
+
+.rebloggedFollowersNone {
+  display: none;
 }
 
 @import 'UserCard-nightmode';

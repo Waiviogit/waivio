@@ -4,43 +4,39 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import { getClientWObj } from '../../adapters';
-import { getCurrentUSDPrice } from '../rewardsHelper';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({ proposition, filterKey, history, intl }) => {
+const Campaign = ({
+  proposition,
+  filterKey,
+  history,
+  intl,
+  rewardPriceCatalogWrap,
+  rewardMaxCatalogWrap,
+}) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = proposition.campaigns
     ? getClientWObj(proposition, usedLocale)
     : getClientWObj(proposition.required_object, usedLocale);
-  const currentUSDPrice = getCurrentUSDPrice();
   const minReward = proposition.campaigns
     ? proposition.campaigns.min_reward
     : proposition.min_reward;
   const maxReward = proposition.campaigns
     ? proposition.campaigns.max_reward
     : proposition.max_reward;
-  const rewardPrise = currentUSDPrice
-    ? `${(currentUSDPrice * minReward).toFixed(2)} USD`
-    : `${maxReward} HIVE`;
-  const rewardMax =
-    // eslint-disable-next-line no-nested-ternary
-    maxReward !== minReward
-      ? currentUSDPrice
-        ? `${(currentUSDPrice * maxReward).toFixed(2)} USD`
-        : `${maxReward} HIVE`
-      : '';
+  const rewardPrice = minReward ? `${minReward.toFixed(2)} USD` : '';
+  const rewardMax = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
   const goToProducts = () => {
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   };
-
   return (
     <div className="Campaign">
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
-          {!rewardMax ? (
+          {!rewardMax && !rewardMaxCatalogWrap ? (
             <React.Fragment>
               <span>
                 {intl.formatMessage({
@@ -49,7 +45,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{rewardPrise}</span>
+                <span className="fw6 ml1">{rewardPrice || rewardPriceCatalogWrap}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -62,8 +58,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax}`}</span>
-                {' USD '}
+                <span className="fw6 ml1">{`${rewardMax || rewardMaxCatalogWrap}`}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
@@ -79,10 +74,14 @@ Campaign.propTypes = {
   intl: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
   history: PropTypes.shape().isRequired,
+  rewardPriceCatalogWrap: PropTypes.string,
+  rewardMaxCatalogWrap: PropTypes.string,
 };
 
 Campaign.defaultProps = {
   proposition: {},
+  rewardPriceCatalogWrap: '',
+  rewardMaxCatalogWrap: '',
 };
 
 export default injectIntl(withRouter(Campaign));

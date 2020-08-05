@@ -30,7 +30,7 @@ const ObjectsContainer = ({ history }) => {
       <Tabs defaultActiveKey="1">
         <TabPane
           tab={
-            <span className="UserExpertise__item">
+            <span className="hashtags-tab">
               <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
             </span>
           }
@@ -42,7 +42,7 @@ const ObjectsContainer = ({ history }) => {
         </TabPane>
         <TabPane
           tab={
-            <span className="UserExpertise__item">
+            <span className="objects-tab">
               <FormattedMessage id="objects" defaultMessage="Objects" />
             </span>
           }

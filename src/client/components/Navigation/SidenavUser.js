@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { isGuestUser } from '../../reducers';
+
 import './Sidenav.less';
 
 const SidenavUser = () => {
@@ -15,6 +18,8 @@ const SidenavUser = () => {
       [menuItem]: !menuCondition[menuItem],
     });
   };
+
+  const isGuest = useSelector(isGuestUser);
 
   return (
     <ul className="Sidenav">
@@ -70,6 +75,26 @@ const SidenavUser = () => {
               activeClassName="Sidenav__item--active"
             >
               <FormattedMessage id="settings" defaultMessage="Settings" />
+            </NavLink>
+          </li>
+          {isGuest && (
+            <li>
+              <NavLink
+                to="/guests-settings"
+                className="sidenav-discover-objects__item"
+                activeClassName="Sidenav__item--active"
+              >
+                <FormattedMessage id="guest_settings" defaultMessage="Guests Settings" />
+              </NavLink>
+            </li>
+          )}
+          <li>
+            <NavLink
+              to="/notification-settings"
+              className="sidenav-discover-objects__item"
+              activeClassName="Sidenav__item--active"
+            >
+              <FormattedMessage id="notifications" defaultMessage="Notifications" />
             </NavLink>
           </li>
           <li>

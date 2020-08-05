@@ -12,9 +12,23 @@ import NotificationVote from './NotificationVote';
 import NotificationReblog from './NotificationReblog';
 import NotificationTransfer from './NotificationTransfer';
 import NotificationVoteWitness from './NotificationVoteWitness';
+import NotificationChangeStatus from './NotificationChangeStatus';
+import NotificationPowerDown from './NotificationPowerDown';
+import NotificationFillOrder from './NotificationFillOrder';
+import Loading from '../../Icon/Loading';
+import NotificationRejectUpdate from './NotificationRejectUpdate';
+import NotificationActicationCampaign from './NotificationActivationCampaign';
+import NotificationSuspandedStatus from './NotificationSuspandedStatus';
+import NotificationWithdrawRoute from './NotificationWithdrawRoute';
+import NotificationChangePassword from './NotificationChangePassword';
+import NotificationTransferFrom from './NotificationTransferFrom';
+import NotificationTransferVesting from './NotificationTransferVesting';
+import NotificationChangeRecoveryAccount from './NotificationChangeRecoveryAccount';
+import NotificationTransferFromSavings from './NotificationTransferFromSavings';
+import NotificationClaimReward from './NotificationClaimReward';
+
 import './Notification.less';
 import './Notifications.less';
-import Loading from '../../Icon/Loading';
 
 const displayLimit = 6;
 
@@ -202,6 +216,7 @@ class Notifications extends React.Component {
                   <NotificationTransfer
                     key={key}
                     notification={notification}
+                    currentAuthUsername={currentAuthUsername}
                     read={read}
                     onClick={this.handleNotificationsClick}
                   />
@@ -209,6 +224,123 @@ class Notifications extends React.Component {
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.STATUS_CHANGE:
+                return (
+                  <NotificationChangeStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.POWER_DOWN:
+                return (
+                  <NotificationPowerDown
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.FILL_ORDER:
+                return (
+                  <NotificationFillOrder
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.REJECT_UPDATE:
+                return (
+                  <NotificationRejectUpdate
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.ACTIVATION_CAMPAIGN:
+                return (
+                  <NotificationActicationCampaign
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.SUSPENDED_STATUS:
+                return (
+                  <NotificationSuspandedStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WITHDRAW_ROUTE:
+                return (
+                  <NotificationWithdrawRoute
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_PASSWORD:
+                return (
+                  <NotificationChangePassword
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM:
+                return (
+                  <NotificationTransferFrom
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_TO_VESTING:
+                return (
+                  <NotificationTransferVesting
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+                return (
+                  <NotificationChangeRecoveryAccount
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM_SAVINGS:
+                return (
+                  <NotificationTransferFromSavings
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CLAIM_REWARD:
+                return (
+                  <NotificationClaimReward
                     key={key}
                     notification={notification}
                     read={read}

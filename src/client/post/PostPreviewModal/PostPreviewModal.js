@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 import { throttle } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -12,10 +13,12 @@ import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
+import { clearBeneficiariesUsers } from '../../search/searchActions';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
+@connect(null, { clearBeneficiariesUsers })
 class PostPreviewModal extends Component {
   static findScrollElement() {
     return document.querySelector('.post-preview-modal');
@@ -43,6 +46,8 @@ class PostPreviewModal extends Component {
     onPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    isGuest: PropTypes.bool,
+    clearBeneficiariesUsers: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -51,6 +56,7 @@ class PostPreviewModal extends Component {
     objPercentage: {},
     reviewData: null,
     isUpdating: false,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -61,7 +67,6 @@ class PostPreviewModal extends Component {
       title: '',
       body: '',
       isConfirmed: false,
-      // Check review modal
       isCheckReviewModalOpen: false,
       isReviewValid: false,
     };
@@ -71,7 +76,8 @@ class PostPreviewModal extends Component {
     return (
       nextState.isModalOpen ||
       this.state.isModalOpen ||
-      isContentValid(this.props.content) !== isContentValid(nextProps.content)
+      isContentValid(this.props.content) !== isContentValid(nextProps.content) ||
+      nextProps.content
     );
   }
 
@@ -104,6 +110,7 @@ class PostPreviewModal extends Component {
   hideModal = () => {
     if (!this.props.isPublishing) {
       this.setState({ isModalOpen: false });
+      this.props.clearBeneficiariesUsers();
     }
   };
 
@@ -150,7 +157,11 @@ class PostPreviewModal extends Component {
       reviewData,
       settings,
       topics,
+      isGuest,
     } = this.props;
+
+    const { postBody } = splitPostContent(content);
+
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -190,7 +201,10 @@ class PostPreviewModal extends Component {
               className="post-preview-legal-notice"
               isChecked={isConfirmed}
               disabled={isPublishing}
-              checkboxLabel="Legal notice"
+              checkboxLabel={intl.formatMessage({
+                id: 'legal_notice',
+                defaultMessage: 'Legal notice',
+              })}
               policyText={intl.formatMessage({
                 id: 'legal_notice_create_post',
                 defaultMessage:
@@ -205,6 +219,7 @@ class PostPreviewModal extends Component {
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}
+                isGuest={isGuest}
               />
             )}
             <div className="edit-post-controls">
@@ -237,7 +252,11 @@ class PostPreviewModal extends Component {
         <div className="edit-post-controls">
           <Button
             htmlType="button"
-            disabled={!content || !isContentValid(content)}
+            disabled={
+              !content ||
+              !isContentValid(content) ||
+              !postBody.replace(new RegExp('\\*', 'g'), '').trim()
+            }
             onClick={this.showModal}
             size="large"
             className="edit-post-controls__publish-ready-btn"

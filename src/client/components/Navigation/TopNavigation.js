@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, getTabType } from '../../reducers';
+import { getRewardsGeneralCounts } from '../../rewards/rewardsActions';
 import './TopNavigation.less';
 
 const LINKS = {
@@ -21,6 +22,8 @@ const LINKS = {
   TOOLS_EDIT_PROFILE: '/edit-profile',
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
+  TOOLS_SETTINGS_GUESTS: '/guests-settings',
+  TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio',
   NOTIFICATIONS: '/notifications-list',
   USERS: '/discover',
@@ -35,10 +38,20 @@ const TOOLS_URLS = [
   LINKS.TOOLS_EDIT_PROFILE,
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
+  LINKS.TOOLS_SETTINGS_GUESTS,
+  LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
 ];
 
-const TopNavigation = ({ authenticated, location: { pathname } }) => {
+const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
+  const dispatch = useDispatch();
+  const tabType = useSelector(getTabType);
+  const newTabType = useMemo(() => (tabType === 'eligible' ? 'active' : tabType), [tabType]);
+  useEffect(() => {
+    if (authenticatedUser) {
+      dispatch(getRewardsGeneralCounts({ userName: authenticatedUser.name }));
+    }
+  }, []);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
@@ -64,7 +77,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
             </li>
             <li className="TopNavigation__item">
               <Link
-                to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
+                to={`${LINKS.REWARDS}/${newTabType}`}
                 className={classNames('TopNavigation__link', {
                   'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
                 })}
@@ -86,7 +99,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
             {!isEmpty(authenticatedUser) && (
               <li className="TopNavigation__item">
                 <Link
-                  to={`${LINKS.TOOLS_DRAFTS}`}
+                  to={`${LINKS.TOOLS_SETTINGS_NOTIFICATIONS}`}
                   className={classNames('TopNavigation__link', {
                     'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
                       pathname.includes(feedUrl),
@@ -115,7 +128,6 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
 };
 
 TopNavigation.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
 };
 

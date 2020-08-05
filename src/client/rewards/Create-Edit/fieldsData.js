@@ -43,7 +43,7 @@ export default (messageFactory, validators, userName) => ({
   },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, HIVE)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, USD)'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators, userName) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, HIVE)'),
+    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, USD)'),
     rules: [
       {
         required: true,
@@ -287,8 +287,8 @@ export default (messageFactory, validators, userName) => ({
     valuePropName: 'checked',
     textBeforeLink: messageFactory('agree_to_the', 'I agree to the '),
     link: {
-      to: 'https://waivio.com/object/xrj-terms-and-conditions',
-      text: messageFactory('terms_and_conditions', 'Terms and Conditions '),
+      to: '/object/xrj-terms-and-conditions/page',
+      text: messageFactory('terms_and_conditions', 'Terms and Conditions'),
     },
     textAfterLink: messageFactory(
       'service_acknowledge_campaign_not_violate_laws',
@@ -324,5 +324,8 @@ export default (messageFactory, validators, userName) => ({
       'edit_button_span_text',
       'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
     ),
+  },
+  createDuplicate: {
+    text: messageFactory('create_duplicate', 'create a duplicate'),
   },
 });

@@ -96,20 +96,19 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    // eslint-disable-next-line camelcase
-    const { root_author, permlink, title, url } = currentShownPost;
-    // eslint-disable-next-line camelcase
-    const author = currentShownPost.guestInfo ? currentShownPost.guestInfo.userId : root_author;
+    const { permlink, title, url } = currentShownPost;
+    const author = currentShownPost.guestInfo
+      ? currentShownPost.guestInfo.userId
+      : currentShownPost.author;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(
       dropCategory(url),
       currentShownPost.guestInfo,
     )}`;
-    // eslint-disable-next-line camelcase
     const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
-    const signature = get(authorDetails, 'json_metadata.profile.signature', null);
+    const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
 
     return (
       <Modal

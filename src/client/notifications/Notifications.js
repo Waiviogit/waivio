@@ -20,7 +20,21 @@ import NotificationVote from '../components/Navigation/Notifications/Notificatio
 import NotificationReblog from '../components/Navigation/Notifications/NotificationReblog';
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
+import NotificationChangeStatus from '../components/Navigation/Notifications/NotificationChangeStatus';
+import NotificationPowerDown from '../components/Navigation/Notifications/NotificationPowerDown';
+import NotificationFillOrder from '../components/Navigation/Notifications/NotificationFillOrder';
 import Loading from '../components/Icon/Loading';
+import NotificationRejectUpdate from '../components/Navigation/Notifications/NotificationRejectUpdate';
+import NotificationActicationCampaign from '../components/Navigation/Notifications/NotificationActivationCampaign';
+import NotificationSuspandedStatus from '../components/Navigation/Notifications/NotificationSuspandedStatus';
+import NotificationWithdrawRoute from '../components/Navigation/Notifications/NotificationWithdrawRoute';
+import NotificationChangePassword from '../components/Navigation/Notifications/NotificationChangePassword';
+import NotificationTransferFrom from '../components/Navigation/Notifications/NotificationTransferFrom';
+import NotificationTransferVesting from '../components/Navigation/Notifications/NotificationTransferVesting';
+import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
+import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
+import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
+
 import './Notifications.less';
 
 class Notifications extends React.Component {
@@ -59,9 +73,39 @@ class Notifications extends React.Component {
       <div className="NotificationsPage">
         <div className="NotificationsPage__title">
           <h1>
-            <FormattedMessage id="notifications" defaultMessage="Notifications" />
+            <FormattedMessage id="notifications" defaultMessage="Notifications" />(
+            <a href={'/notification-settings'}>
+              <FormattedMessage id="settings_notify" defaultMessage="settings" />
+            </a>
+            )
           </h1>
         </div>
+        <p className="NotificationsPage__paragraph">
+          <FormattedMessage
+            id="notify_list_message"
+            defaultMessage="You can now receive instant mobile notifications via the Telegram app when someone replies
+          to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so
+          on."
+          />
+        </p>
+        <p className="NotificationsPage__paragraph">
+          <FormattedMessage
+            id="notify_list_message_telegram"
+            defaultMessage="Open the Telegram chart with {link} and enter the Hive usernames
+          to subscribes."
+            values={{
+              link: (
+                <a
+                  href={'https://web.telegram.org/#/im?p=@WaivioNotificationsBot'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <b>@WaivioNotificationsBot</b>
+                </a>
+              ),
+            }}
+          />
+        </p>
         <div className="NotificationsPage__content">
           {loadingNotifications && (
             <div className="NotificationsPage__loading">
@@ -108,6 +152,118 @@ class Notifications extends React.Component {
               case notificationConstants.WITNESS_VOTE:
                 return (
                   <NotificationVoteWitness key={key} notification={notification} read={read} />
+                );
+              case notificationConstants.STATUS_CHANGE:
+                return (
+                  <NotificationChangeStatus key={key} notification={notification} read={read} />
+                );
+              case notificationConstants.POWER_DOWN:
+                return (
+                  <NotificationPowerDown
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.FILL_ORDER:
+                return (
+                  <NotificationFillOrder
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.REJECT_UPDATE:
+                return (
+                  <NotificationRejectUpdate
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.ACTIVATION_CAMPAIGN:
+                return (
+                  <NotificationActicationCampaign
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.SUSPENDED_STATUS:
+                return (
+                  <NotificationSuspandedStatus
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WITHDRAW_ROUTE:
+                return (
+                  <NotificationWithdrawRoute
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_PASSWORD:
+                return (
+                  <NotificationChangePassword
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM:
+                return (
+                  <NotificationTransferFrom
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_TO_VESTING:
+                return (
+                  <NotificationTransferVesting
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CHANGE_RECOVERY_ACCOUNT:
+                return (
+                  <NotificationChangeRecoveryAccount
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.TRANSFER_FROM_SAVINGS:
+                return (
+                  <NotificationTransferFromSavings
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CLAIM_REWARD:
+                return (
+                  <NotificationClaimReward
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
                 );
               default:
                 return null;

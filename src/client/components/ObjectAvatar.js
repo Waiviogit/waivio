@@ -1,14 +1,17 @@
-import _ from 'lodash';
+import { filter, maxBy, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ObjectAvatar.less';
-
-const defaultUrl =
-  'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
+import DEFAULTS from '../object/const/defaultValues';
+import {
+  addActiveVotesInField,
+  calculateApprovePercent,
+  getApprovedField,
+} from '../helpers/wObjectHelper';
 
 export const getObjectUrl = item => {
-  const avatarFields = _.filter(item.fields, o => o.name === 'avatar');
-  const avatarField = _.maxBy(avatarFields, 'weight');
+  const avatarFields = filter(item.fields, o => o.name === 'avatar');
+  const avatarField = maxBy(avatarFields, 'weight');
   return avatarField ? avatarField.body : null;
 };
 
@@ -18,9 +21,15 @@ const ObjectAvatar = ({ item, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
+  const parent = item.parent && addActiveVotesInField(item, item.parent);
+  const parentAvatar =
+    parent &&
+    calculateApprovePercent(parent.active_votes, parent.weight, parent) >= 70 &&
+    getApprovedField(parent, 'avatar');
+  let url = getApprovedField(item, 'avatar') || parentAvatar;
 
-  let url = getObjectUrl(item);
-  if (_.includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
+  if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
+
   if (url) {
     style = {
       ...style,
@@ -29,7 +38,7 @@ const ObjectAvatar = ({ item, size }) => {
   } else {
     style = {
       ...style,
-      backgroundImage: `url(${defaultUrl})`,
+      backgroundImage: `url(${DEFAULTS.AVATAR})`,
     };
   }
 
@@ -37,7 +46,7 @@ const ObjectAvatar = ({ item, size }) => {
 };
 
 ObjectAvatar.propTypes = {
-  item: PropTypes.shape({ tag: PropTypes.string }),
+  item: PropTypes.shape({ parent: PropTypes.oneOfType([PropTypes.shape(), PropTypes.string]) }),
   size: PropTypes.number,
 };
 

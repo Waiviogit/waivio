@@ -1,7 +1,9 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
+import { get, isEmpty } from 'lodash';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { GET_USER_METADATA } from '../user/usersActions';
+import { mobileUserAgents } from '../helpers/regexHelpers';
 
 const initialState = {
   isFetching: false,
@@ -18,6 +20,7 @@ const initialState = {
   showPostModal: false,
   currentShownPost: {},
   screenSize: 'large',
+  isMobile: false,
 };
 
 export default (state = initialState, action) => {
@@ -100,7 +103,6 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
-      const { symbol, usdPriceHistory, btcPriceHistory } = action.payload;
       // const usdPriceHistoryByClose = map(usdPriceHistory.Data, data => data.close);
       // const btcPriceHistoryByClose = map(btcPriceHistory.Data, data => data.close);
       // const priceDetails = getCryptoPriceIncreaseDetails(
@@ -114,11 +116,7 @@ export default (state = initialState, action) => {
         ...state,
         cryptosPriceHistory: {
           ...state.cryptosPriceHistory,
-          [symbol]: {
-            usdPriceHistory,
-            btcPriceHistory,
-            // priceDetails,
-          },
+          ...action.payload,
         },
       };
     }
@@ -133,6 +131,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         showPostModal: false,
+      };
+    case appTypes.SET_IS_MOBILE:
+      return {
+        ...state,
+        isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     default:
       return state;
@@ -152,3 +155,14 @@ export const getTranslations = state => state.translations;
 export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
 export const getShowPostModal = state => state.showPostModal;
 export const getCurrentShownPost = state => state.currentShownPost;
+export const getIsMobile = state => state.isMobile;
+export const getWeightValue = (state, weight) => {
+  const rate = get(state, 'rate');
+  const rewardFund = get(state, 'rewardFund');
+  const recentClaims = get(rewardFund, 'recent_claims');
+  const rewardBalance = get(rewardFund, 'reward_balance');
+  let value;
+  if (!isEmpty(rewardFund))
+    value = (weight / recentClaims) * rewardBalance.replace(' HIVE', '') * rate * 1000000;
+  return value;
+};

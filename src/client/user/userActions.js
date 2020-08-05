@@ -1,9 +1,13 @@
+import moment from 'moment';
+import { get } from 'lodash';
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
-import { rewardPostContainerData } from '../rewards/rewardsHelper';
-import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
+import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import { getAuthenticatedUserName } from '../reducers';
+import { createCommentPermlink } from '../vendor/steemitHelpers';
 
 require('isomorphic-fetch');
 
@@ -58,6 +62,7 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
 export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
+  const user = getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -69,7 +74,9 @@ export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit).then(data => data.users),
+      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit, user).then(
+        data => data.users,
+      ),
     },
   });
 };
@@ -83,6 +90,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
+  const authUserName = getAuthenticatedUserName(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -92,7 +100,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName),
     },
   });
 };
@@ -196,14 +204,33 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
+export const SET_PENDING_UPDATE = createAsyncActionType('@user/SET_PANDING_UPDATE');
+
 export const assignProposition = ({
   companyAuthor,
   companyPermlink,
   resPermlink,
   objPermlink,
   appName,
+  primaryObjectName,
+  secondaryObjectName,
+  amount,
+  proposition,
+  proposedWobj,
+  userName,
+  currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
+  const proposedWobjName = proposedWobj.name;
+  const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
+  const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
+  const detailsBody = getDetailsBody({
+    proposition,
+    proposedWobjName,
+    proposedWobjAuthorPermlink,
+    primaryObjectName,
+    secondaryObjectName,
+  });
   const commentOp = [
     'comment',
     {
@@ -211,32 +238,138 @@ export const assignProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: resPermlink,
-      title: 'reserve object for rewards',
-      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      title: 'Rewards reservations',
+      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
+        app: appName,
         waivioRewards: {
           type: 'waivio_assign_campaign',
           approved_object: objPermlink,
-          app: appName,
+          currencyId,
         },
       }),
     },
   ];
-
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
 
+export const rejectReview = ({
+  companyAuthor,
+  username,
+  reservationPermlink,
+  objPermlink,
+  appName,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Reject review',
+      body: `Sponsor ${username} (@${username}) has rejected the review `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'reject_reservation_by_guide',
+          approved_object: objPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
+export const changeReward = ({
+  companyAuthor,
+  companyPermlink,
+  username,
+  reservationPermlink,
+  appName,
+  amount,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = store.getAuthenticatedUserName(getState());
+  const body =
+    username !== userName
+      ? `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`
+      : `User ${userName} (@${userName}) has decreased the reward by ${amount} HIVE`;
+  const title = username !== userName ? 'Increase reward' : 'Decrease reward';
+  const waivioRewards =
+    username !== userName
+      ? {
+          type: 'waivio_raise_review_reward',
+          riseAmount: amount,
+          activationPermlink: companyPermlink,
+        }
+      : {
+          type: 'waivio_reduce_review_reward',
+          reduceAmount: amount,
+          activationPermlink: companyPermlink,
+        };
+
+  const author = username !== userName ? companyAuthor : userName;
+
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title,
+      body,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards,
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
+export const pendingUpdateSuccess = () => dispatch =>
+  dispatch({
+    type: SET_PENDING_UPDATE.SUCCESS,
+  });
+
 export const declineProposition = ({
   companyAuthor,
   companyPermlink,
-  objPermlink,
   unreservationPermlink,
   reservationPermlink,
+  requiredObjectName,
+  type,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
@@ -246,11 +379,11 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      title: 'reject object for rewards',
-      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      title: 'Cancelled reservation',
+      body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
-          type: 'waivio_reject_object_campaign',
+          type,
           reservation_permlink: reservationPermlink,
         },
       }),
@@ -260,6 +393,11 @@ export const declineProposition = ({
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
       .catch(error => reject(error));
   });
 };
@@ -268,7 +406,27 @@ export const activateCampaign = (company, campaignPermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const state = getState();
+  const username = store.getAuthenticatedUserName(state);
+  const rate = store.getRate(state);
+  const rewardFund = store.getRewardFund(state);
+  const recentClaims = rewardFund.recent_claims;
+  const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
+  const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
+  const proposedAuthorPermlink = company.objects[0].author_permlink;
+  const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
+  const processingFees = company.commissionAgreement * 100;
+  const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
+  const alias = get(company, ['guide', 'alias']);
+  const detailsBody = getDetailsBody({
+    proposition: company,
+    proposedWobjName,
+    proposedAuthorPermlink,
+    primaryObjectName,
+    rate,
+    recentClaims,
+    rewardBalance,
+  });
   const commentOp = [
     'comment',
     {
@@ -276,8 +434,8 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
-      title: 'activate object for rewards',
-      body: `Campaign ${company.name} was activated by ${username} `,
+      title: 'Activate rewards campaign',
+      body: `${alias} (@${username}) has activated rewards campaign for <a href="/object/${company.requiredObject.author_permlink}">${primaryObjectName}</a> (${company.requiredObject.object_type}) with the target reward of $ ${company.reward} USD.  ${detailsBody} Campaign expiry date: ${expiryDate}. Processing fees: ${processingFees}% of the total amount of rewards (Campaign server @waivio.campaigns offers 50% commissions to index services for reservations). `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
@@ -320,35 +478,6 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
-  });
-};
-
-export const GET_RECOMMENDS_HASHTAGS = createAsyncActionType('@user/GET_RECOMMENDS_HASHTAGS');
-export const GET_RECOMMENDS_EXPERTS = createAsyncActionType('@user/GET_RECOMMENDS_EXPERTS');
-
-export const getRecommendTopics = () => dispatch => {
-  const topicList = Object.values(newUserRecommendTopics).reduce(
-    (arr, acc) => [...acc, ...arr],
-    [],
-  );
-  dispatch({
-    type: GET_RECOMMENDS_HASHTAGS.ACTION,
-    payload: {
-      promise: ApiClient.getRecommendTopic(topicList.length, 'en-US', 0, topicList),
-    },
-  });
-};
-
-export const getRecommendExperts = () => dispatch => {
-  const userList = Object.values(newUserRecommendExperts).reduce(
-    (arr, acc) => [...acc, ...arr],
-    [],
-  );
-  dispatch({
-    type: GET_RECOMMENDS_EXPERTS.ACTION,
-    payload: {
-      promise: ApiClient.getUsers({ listUsers: userList, limit: userList.length }),
-    },
   });
 };
 // endregion

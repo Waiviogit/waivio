@@ -1,5 +1,6 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/mixins.less';
 
 @wrapPadding: 15px;
 
@@ -7,10 +8,24 @@
   width: 100%;
 
   .RewardBreadcrumb {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+
     .ant-breadcrumb {
       font-size: 1.7em;
       font-weight: 500;
+
+      span a:hover {
+        color: @orange-hot;
+      }
     }
+  }
+
+  .SortSelector {
+    margin-top: -10px;
   }
 
   .RewardsHeader {
@@ -124,28 +139,51 @@
   }
 }
 
-.RewardBreadcrumb {
-  display: none;
-  @media @small {
-    display: block;
-  }
-}
-
 .FilteredRewardsList {
   padding: 0 @wrapPadding;
+
   @media @small {
     padding: 0;
   }
+
   &__header {
-    padding: 0px 30px 8px;
+    padding: 0 30px 8px;
+
     @media @small {
       display: none;
     }
+
     &-text {
       text-transform: capitalize;
       font-size: large;
       font-weight: bold;
       color: @black;
+    }
+  }
+
+  &__filters {
+    &-tags-block {
+      .filters-tags-block();
+
+      margin-top: -10px;
+    }
+
+    &-topic {
+      .filters-topic();
+    }
+
+    &-selector {
+      .filters-selector();
+    }
+
+    &-toggle-map {
+      .filters-toggle-map();
+
+      padding-bottom: 15px;
+    }
+
+    &-modal {
+      .filters-ant-modal();
     }
   }
 }

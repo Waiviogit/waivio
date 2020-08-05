@@ -4,18 +4,27 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { getCryptosPriceHistory } from '../../reducers';
+import { getCryptoPriceHistory, setIsMobile } from '../../app/appActions';
 import CryptoChart from './CryptoChart';
 import './CryptoTrendingCharts.less';
 import './SidebarContentBlock.less';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
 
-@connect(state => ({
-  cryptosPriceHistory: getCryptosPriceHistory(state),
-}))
+@connect(
+  state => ({
+    cryptosPriceHistory: getCryptosPriceHistory(state),
+  }),
+  {
+    getCryptoPriceHistory,
+    setIsMobile,
+  },
+)
 class CryptoTrendingCharts extends React.Component {
   static propTypes = {
     cryptos: PropTypes.arrayOf(PropTypes.string),
     cryptosPriceHistory: PropTypes.shape().isRequired,
+    getCryptoPriceHistory: PropTypes.func.isRequired,
+    setIsMobile: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -32,12 +41,22 @@ class CryptoTrendingCharts extends React.Component {
     this.handleOnClickRefresh = this.handleOnClickRefresh.bind(this);
   }
 
+  componentDidMount() {
+    if (this.cryptoSymbols) this.props.getCryptoPriceHistory(this.cryptoSymbols);
+    this.props.setIsMobile();
+  }
+
+  cryptoSymbols =
+    this.props.cryptos.length &&
+    this.props.cryptos.map(crypto => getCryptoDetails(crypto).coinGeckoId);
+
   handleOnClickRefresh() {
     this.setState(
       {
         refreshCharts: true,
       },
       () => {
+        this.props.getCryptoPriceHistory(this.cryptoSymbols, true);
         this.setState({
           refreshCharts: false,
         });
@@ -68,14 +87,13 @@ class CryptoTrendingCharts extends React.Component {
 
   renderCryptoCharts() {
     const { cryptos, cryptosPriceHistory } = this.props;
-    const { refreshCharts } = this.state;
 
     if (_.isEmpty(cryptos)) {
       return null;
     }
 
     return _.map(cryptos, crypto => [
-      <CryptoChart key={crypto} crypto={crypto} refreshCharts={refreshCharts} />,
+      <CryptoChart key={crypto} crypto={crypto} />,
       !_.isEmpty(_.get(cryptosPriceHistory, `${crypto}.usdPriceHistory`, [])) && (
         <div key={`${crypto}-divider`} className="SidebarContentBlock__divider" />
       ),

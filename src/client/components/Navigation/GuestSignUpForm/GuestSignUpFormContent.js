@@ -37,6 +37,7 @@ const GuestSignUpFormContent = ({
           label={<FormattedMessage id="nickname" defaultMessage="Nickname" />}
         >
           {getFieldDecorator('username', {
+            getValueFromEvent: e => e.target.value.toLowerCase(),
             rules: [
               {
                 required: true,
@@ -48,7 +49,7 @@ const GuestSignUpFormContent = ({
                 ),
               },
               {
-                pattern: /^[A-Za-z0-9.-]+$/,
+                pattern: /^[a-z0-9.-]+$/,
                 message: (
                   <FormattedMessage
                     id="only_letters"

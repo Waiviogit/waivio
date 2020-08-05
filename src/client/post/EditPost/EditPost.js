@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, get, has, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty, includes } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -15,6 +15,8 @@ import {
   getIsImageUploading,
   getUpvoteSetting,
   getSuitableLanguage,
+  isGuestUser,
+  getBeneficiariesUsers,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import {
@@ -32,6 +34,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
@@ -59,6 +62,8 @@ const getLinkedObjects = contentStateRaw => {
     draftId: new URLSearchParams(props.location.search).get('draft'),
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
+    isGuest: isGuestUser(state),
+    beneficiaries: getBeneficiariesUsers(state),
   }),
   {
     createPost,
@@ -79,6 +84,9 @@ class EditPost extends Component {
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
+    isGuest: PropTypes.bool,
+    beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
+    history: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -89,6 +97,8 @@ class EditPost extends Component {
     imageLoading: false,
     createPost: () => {},
     saveDraft: () => {},
+    isGuest: false,
+    beneficiaries: [],
   };
 
   constructor(props) {
@@ -115,6 +125,7 @@ class EditPost extends Component {
         pathname: nextProps.location.pathname,
         search: `draft=${nextState.draftId}`,
       });
+
       return nextState;
     }
     return null;
@@ -124,6 +135,18 @@ class EditPost extends Component {
     const { campaign } = this.state;
     if (campaign && campaign.id) {
       getCampaignById(campaign.id)
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    if (
+      this.props.draftId !== prevProps.draftId &&
+      has(currDraft, ['jsonMetadata', 'campaignId'])
+    ) {
+      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
@@ -158,8 +181,11 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
+    const { history } = this.props;
     const postData = this.buildPost();
-    this.props.createPost(postData);
+    const isReview =
+      !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
+    this.props.createPost(postData, this.props.beneficiaries, isReview);
   }
 
   handleToggleLinkedObject(objId, isLinked) {
@@ -206,6 +232,8 @@ class EditPost extends Component {
       originalBody,
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
+    // eslint-disable-next-line no-underscore-dangle
+    const campaignId = get(campaign, '_id', null);
 
     const postData = {
       body: postBody,
@@ -240,7 +268,13 @@ class EditPost extends Component {
         })),
     };
 
-    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+    postData.jsonMetadata = createPostMetadata(
+      postBody,
+      topics,
+      oldMetadata,
+      waivioData,
+      campaignId,
+    );
 
     if (originalBody) {
       postData.originalBody = originalBody;
@@ -280,7 +314,7 @@ class EditPost extends Component {
       campaign,
       isUpdating,
     } = this.state;
-    const { saving, publishing, imageLoading, intl, locale, draftPosts } = this.props;
+    const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -290,6 +324,7 @@ class EditPost extends Component {
               initialContent={draftContent}
               locale={locale}
               onChange={this.handleChangeContent}
+              intl={intl}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
@@ -318,6 +353,7 @@ class EditPost extends Component {
               onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}
               onTopicsChange={this.handleTopicsChange}
+              isGuest={isGuest}
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>

@@ -6,48 +6,23 @@ import { FormattedMessage } from 'react-intl';
 
 import LikeSection from './LikeSection';
 import FollowObjectForm from './FollowObjectForm';
-import { getVoteValue } from '../helpers/user';
-import {
-  getObject,
-  getFollowingObjectsList,
-  getVotingPower,
-  getRewardFund,
-  getRate,
-  getVotePercent,
-  getAuthenticatedUser,
-} from '../reducers';
+import { getObject, getFollowingObjectsList, getVotingPower } from '../reducers';
 
-const AppendFormFooter = ({ loading, form, handleSubmit }) => {
+const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, votePercent, voteWorth }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
-  const [votePercent, setVotePercent] = useState(useSelector(getVotePercent));
-  const [voteWorth, setVoteWorth] = useState(0);
-
-  const user = useSelector(getAuthenticatedUser);
   const followingList = useSelector(getFollowingObjectsList);
   const wObject = useSelector(getObject);
   const sliderMode = useSelector(getVotingPower);
-  const rewardFund = useSelector(getRewardFund);
-  const rate = useSelector(getRate);
-
   const { getFieldValue } = form;
 
-  const calculateVoteWorth = votePercentValue => {
-    const voteWorthValue = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      votePercentValue * 100,
-    );
-    setVotePercent(votePercentValue);
-    setVoteWorth(voteWorthValue);
+  const calculateVoteWorth = percent => {
+    calcVote(percent);
   };
 
   useEffect(() => {
     if (sliderMode && !isSliderVisible) {
       setSliderVisibility(!isSliderVisible);
     }
-    calculateVoteWorth(votePercent);
   }, []);
 
   const handleLikeClick = () => {
@@ -65,7 +40,6 @@ const AppendFormFooter = ({ loading, form, handleSubmit }) => {
         onLikeClick={handleLikeClick}
         disabled={loading}
       />
-
       {followingList.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />
       )}
@@ -88,6 +62,9 @@ AppendFormFooter.propTypes = {
   loading: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  calcVote: PropTypes.func.isRequired,
+  votePercent: PropTypes.number.isRequired,
+  voteWorth: PropTypes.number.isRequired,
 };
 
 export default AppendFormFooter;

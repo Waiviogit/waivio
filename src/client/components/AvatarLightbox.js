@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import Avatar from './Avatar';
+import { guestUserRegex } from '../helpers/regexHelpers';
 
 export default class AvatarLightbox extends React.Component {
   static propTypes = {
@@ -26,18 +27,28 @@ export default class AvatarLightbox extends React.Component {
 
   render() {
     const { username, size, isActive } = this.props;
+    const lightboxSrc =
+      username && guestUserRegex.test(username)
+        ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`
+        : `https://images.hive.blog/u/${username}/avatar/large`;
 
     return (
-      <div>
-        <a role="presentation" onClick={this.handleAvatarClick}>
-          <Avatar username={username} size={size} />
-          {isActive && <div className="UserHeader__container--active" />}
-        </a>
-        {this.state.open && (
-          <Lightbox
-            mainSrc={`https://steemitimages.com/u/${username}/avatar/large`}
-            onCloseRequest={this.handleCloseRequest}
+      <div
+        className="UserHeader__container--wrap"
+        role="presentation"
+        onClick={this.handleAvatarClick}
+      >
+        <Avatar username={username} size={size} />
+        {isActive && (
+          <img
+            src="/images/icons/online.png"
+            alt="hive"
+            className="UserHeader__container--active"
+            title="Active now"
           />
+        )}
+        {this.state.open && (
+          <Lightbox mainSrc={lightboxSrc} onCloseRequest={this.handleCloseRequest} />
         )}
       </div>
     );

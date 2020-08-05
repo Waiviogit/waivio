@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { forEach, isEmpty, map } from 'lodash';
-import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -12,24 +11,24 @@ import {
   injectIntl,
 } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Collapse, Icon } from 'antd';
+import { Collapse } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { extractImageTags } from '../../helpers/parser';
 import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
-import Popover from '../Popover';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
+import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
+
 import './StoryFull.less';
 
 @injectIntl
@@ -41,7 +40,7 @@ class StoryFull extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     signature: PropTypes.string,
     pendingLike: PropTypes.bool,
@@ -60,6 +59,7 @@ class StoryFull extends React.Component {
     onEditClick: PropTypes.func,
     /* from context */
     usedLocale: PropTypes.string.isRequired,
+    isOriginalPost: PropTypes.string,
   };
 
   static defaultProps = {
@@ -79,6 +79,8 @@ class StoryFull extends React.Component {
     onShareClick: () => {},
     onEditClick: () => {},
     postState: {},
+    isOriginalPost: '',
+    defaultVotePercent: 0,
   };
 
   constructor(props) {
@@ -106,7 +108,8 @@ class StoryFull extends React.Component {
     const { post } = this.props;
     const hideWhiteBG =
       document &&
-      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
+      document.location.pathname !==
+        replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -174,55 +177,32 @@ class StoryFull extends React.Component {
       onShareClick,
       onEditClick,
       usedLocale,
+      isOriginalPost,
     } = this.props;
-
     const taggedObjects = [];
     const linkedObjects = [];
-
+    const authorName =
+      post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
     forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
-    const { isReported } = postState;
-
     const { open, index } = this.state.lightbox;
-
-    let signedBody = post.body;
-    if (signature) {
-      signedBody = `${post.body}<hr>${signature}`;
-    }
-
-    const parsedBody = getHtml(signedBody, {}, 'text');
-
+    const parsedBody = getHtml(post.body, {}, 'text');
     this.images = extractImageTags(parsedBody);
+    const body = this.images.reduce(
+      (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
+      post.body,
+    );
 
-    let followText = '';
-
-    if (postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
-      );
-    } else if (postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
-      );
-    } else if (!postState.userFollowed && !pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
-      );
-    } else if (!postState.userFollowed && pendingFollow) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
-      );
+    let signedBody = body;
+    if (signature) {
+      signedBody = `${body}<hr>${signature}`;
     }
 
     let replyUI = null;
 
-    if (post.depth !== 0) {
+    if (post.depth !== 0 && !isOriginalPost) {
       replyUI = (
         <div className="StoryFull__reply">
           <h3 className="StoryFull__reply__title">
@@ -233,7 +213,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.userInfo)}>
+            <Link to={dropCategory(post.url)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"
@@ -253,56 +233,6 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-
-    let popoverMenu = [];
-
-    if (ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="edit">
-          {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-          <FormattedMessage id="edit_post" defaultMessage="Edit post" />
-        </PopoverMenuItem>,
-      ];
-    }
-
-    if (!ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="follow" disabled={pendingFollow}>
-          {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
-          {followText}
-        </PopoverMenuItem>,
-      ];
-    }
-
-    popoverMenu = [
-      ...popoverMenu,
-      <PopoverMenuItem key="save">
-        {pendingBookmark ? <Icon type="loading" /> : <i className="iconfont icon-collection" />}
-        <FormattedMessage
-          id={postState.isSaved ? 'unsave_post' : 'save_post'}
-          defaultMessage={postState.isSaved ? 'Unsave post' : 'Save post'}
-        />
-      </PopoverMenuItem>,
-      <PopoverMenuItem key="report">
-        {pendingFlag ? (
-          <Icon type="loading" />
-        ) : (
-          <i
-            className={classNames('iconfont', {
-              'icon-flag': !postState.isReported,
-              'icon-flag_fill': postState.isReported,
-            })}
-          />
-        )}
-        {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-        ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-        )}
-      </PopoverMenuItem>,
-    ];
 
     let content = null;
     if (isPostDeleted(post)) {
@@ -325,30 +255,32 @@ class StoryFull extends React.Component {
       <div className="StoryFull">
         {replyUI}
         <h1 className="StoryFull__title">{post.title}</h1>
-        <h3 className="StoryFull__comments_title">
-          <a href="#comments">
-            {commentCount === 1 ? (
-              <FormattedMessage
-                id="comment_count"
-                values={{ count: <FormattedNumber value={commentCount} /> }}
-                defaultMessage="{count} comment"
-              />
-            ) : (
-              <FormattedMessage
-                id="comments_count"
-                values={{ count: <FormattedNumber value={commentCount} /> }}
-                defaultMessage="{count} comments"
-              />
-            )}
-          </a>
-        </h3>
+        {!isOriginalPost && (
+          <h3 className="StoryFull__comments_title">
+            <a href="#comments">
+              {commentCount === 1 ? (
+                <FormattedMessage
+                  id="comment_count"
+                  values={{ count: <FormattedNumber value={commentCount} /> }}
+                  defaultMessage="{count} comment"
+                />
+              ) : (
+                <FormattedMessage
+                  id="comments_count"
+                  values={{ count: <FormattedNumber value={commentCount} /> }}
+                  defaultMessage="{count} comments"
+                />
+              )}
+            </a>
+          </h3>
+        )}
         <div className="StoryFull__header">
-          <Link to={`/@${post.author}`}>
-            <Avatar username={post.author} size={60} />
+          <Link to={`/@${authorName}`}>
+            <Avatar username={authorName} size={60} />
           </Link>
           <div className="StoryFull__header__text">
-            <Link to={`/@${post.author}`}>
-              <span className="username">{post.author}</span>
+            <Link to={`/@${authorName}`}>
+              <span className="username">{authorName}</span>
               <WeightTag weight={post.author_wobjects_weight} />
             </Link>
             <BTooltip
@@ -391,25 +323,30 @@ class StoryFull extends React.Component {
               </span>
             )}
           </div>
-          <Popover
-            placement="bottomRight"
-            trigger="click"
-            content={
-              <PopoverMenu onSelect={this.handleClick} bold={false}>
-                {popoverMenu}
-              </PopoverMenu>
-            }
+          <PostPopoverMenu
+            pendingFlag={pendingFlag}
+            pendingFollow={pendingFollow}
+            pendingBookmark={pendingBookmark}
+            saving={saving}
+            postState={postState}
+            intl={intl}
+            post={post}
+            handlePostPopoverMenuClick={this.handleClick}
+            ownPost={ownPost}
           >
-            <i className="iconfont icon-more StoryFull__header__more" />
-          </Popover>
+            <i className="StoryFull__header__more iconfont icon-more" />
+          </PostPopoverMenu>
         </div>
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
             imageTitle={this.images[index].alt}
             mainSrc={this.images[index].src}
-            nextSrc={this.images[(index + 1) % this.images.length].src}
-            prevSrc={this.images[(index + (this.images.length - 1)) % this.images.length].src}
+            nextSrc={this.images.length > 1 && this.images[(index + 1) % this.images.length].src}
+            prevSrc={
+              this.images.length > 1 &&
+              this.images[(index + (this.images.length - 1)) % this.images.length].src
+            }
             onCloseRequest={() => {
               this.setState({
                 lightbox: {
@@ -441,7 +378,7 @@ class StoryFull extends React.Component {
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
               header={`${intl.formatMessage({
-                id: 'linked_objects',
+                id: 'editor_linked_objects',
                 defaultMessage: 'Linked objects',
               })} ${linkedObjects.length}`}
               key="1"
@@ -462,6 +399,7 @@ class StoryFull extends React.Component {
             >
               {map(taggedObjects, obj => {
                 const wobj = getClientWObj(obj, usedLocale);
+
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>

@@ -12,19 +12,21 @@ export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
+export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
-export const getObject = (authorPermlink, requiredField) => (dispatch, getState) => {
+export const getObject = (authorPermlink, user, requiredField) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, requiredField)
+    payload: ApiClient.getObject(authorPermlink, user, requiredField)
       .then(wobj => getClientWObj(wobj, usedLocale))
-      .catch(err => console.log(err)),
+      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
 };
+
 export const clearObjectFromStore = () => dispatch =>
   dispatch({
-    type: GET_OBJECT_SUCCESS,
+    type: CLEAR_OBJECT,
     payload: {},
   });
 
@@ -45,21 +47,59 @@ export const getFeedContentByObject = object => dispatch =>
     payload: ApiClient.getFeedContentByObject(object),
   }).catch(() => {});
 
-export const getObjectInfo = (authorPermlink, username) => dispatch => {
-  dispatch(clearObjectFromStore());
-  dispatch(getObject(authorPermlink, username));
+export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
+  dispatch(getObject(authorPermlink, username, requiredField));
   dispatch(getAlbums(authorPermlink));
 };
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
+// eslint-disable-next-line consistent-return
 export const createWaivioObject = postData => (dispatch, getState) => {
   const { auth, settings } = getState();
+
   if (!auth.isAuthenticated) {
     return null;
   }
 
   const { votePower, follow, ...wobj } = postData;
+
+  if (wobj.type === 'hashtag') {
+    return dispatch({
+      type: CREATE_WOBJECT,
+      payload: {
+        promise: new Promise((resolve, reject) =>
+          ApiClient.getObject(wobj.name, auth.user.name)
+            .then(() => reject('object_exist'))
+            .catch(() => {
+              const requestBody = {
+                author: auth.user.name,
+                title: `${wobj.name} - waivio object`,
+                body: `Waivio object "${wobj.name}" has been created`,
+                permlink: wobj.name,
+                objectName: wobj.name,
+                locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
+                type: wobj.type,
+                isExtendingOpen: Boolean(wobj.isExtendingOpen),
+                isPostingOpen: Boolean(wobj.isPostingOpen),
+                parentAuthor: wobj.parentAuthor,
+                parentPermlink: wobj.parentPermlink,
+              };
+              return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+                if (follow) {
+                  dispatch(followObject(response.permlink));
+                }
+
+                dispatch(voteObject(response.author, response.permlink, votePower));
+
+                return resolve(response);
+              });
+            }),
+        ),
+      },
+    });
+  }
+
   return dispatch({
     type: CREATE_WOBJECT,
     payload: {
@@ -69,7 +109,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             author: auth.user.name,
             title: `${wobj.name} - waivio object`,
             body: `Waivio object "${wobj.name}" has been created`,
-            permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+            permlink: `${generateRandomString(3).toLowerCase()}-${permlink.toLowerCase()}`,
             objectName: wobj.name,
             locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
             type: wobj.type,
@@ -82,7 +122,9 @@ export const createWaivioObject = postData => (dispatch, getState) => {
             if (follow) {
               dispatch(followObject(response.permlink));
             }
+
             dispatch(voteObject(response.author, response.permlink, votePower));
+
             return response;
           });
         },

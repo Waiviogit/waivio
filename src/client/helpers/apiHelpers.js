@@ -7,7 +7,7 @@ export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
     if (result.length) {
       const userAccount = result[0];
-      userAccount.json_metadata = jsonParse(result[0].json_metadata);
+      userAccount.posting_json_metadata = jsonParse(result[0].posting_json_metadata);
       return userAccount;
     }
     throw new Error('User Not Found');
@@ -81,8 +81,10 @@ export const defaultAccountLimit = 500;
 
 const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
   SteemAPI.sendAsync('get_account_history', [account, from, limit]);
-const getGuestAccountHistory = (account, from = 0, limit = 20) =>
+
+const getGuestAccountHistory = (account, from = 0, limit = 10) =>
   getGuestPaymentsHistory(account, { skip: from, limit });
+
 export const getAccountHistory = (account, { from, limit, isGuest = false }) => {
   if (isGuest) {
     return getGuestAccountHistory(account, from, limit);
@@ -101,7 +103,8 @@ export const isWalletTransaction = actionType =>
   actionType === accountHistoryConstants.TRANSFER_FROM_SAVINGS ||
   actionType === accountHistoryConstants.TRANSFER_TO_SAVINGS ||
   actionType === accountHistoryConstants.DELEGATE_VESTING_SHARES ||
-  actionType === accountHistoryConstants.CLAIM_REWARD_BALANCE;
+  actionType === accountHistoryConstants.CLAIM_REWARD_BALANCE ||
+  actionType === accountHistoryConstants.FILL_ORDER;
 
 export const getAccountReputation = (name, limit = 20) =>
   SteemAPI.sendAsync('call', ['reputation_api', 'get_account_reputations', [name, limit]]);

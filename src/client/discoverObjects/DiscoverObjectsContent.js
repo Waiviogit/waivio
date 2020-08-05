@@ -14,12 +14,14 @@ import {
   getAvailableFilters,
   getHasMap,
   getAuthenticatedUserName,
+  getIsMapModalOpen,
 } from '../reducers';
 import {
   getObjectTypeByStateFilters,
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
+  getObjectTypeMap,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -31,9 +33,10 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
-import { assignProposition, declineProposition } from '../user/userActions';
+import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
+import { RADIUS, ZOOM } from '../../common/constants/map';
 
 const modalName = {
   FILTERS: 'filters',
@@ -56,6 +59,7 @@ const SORT_OPTIONS = {
     hasMoreObjects: getHasMoreRelatedObjects(state),
     searchString: new URLSearchParams(props.history.location.search).get('search'),
     userName: getAuthenticatedUserName(state),
+    isFullscreenMode: getIsMapModalOpen(state),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -65,6 +69,8 @@ const SORT_OPTIONS = {
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
     assignProposition,
     declineProposition,
+    getObjectTypeMap,
+    getCoordinates,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -88,14 +94,17 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     searchString: '',
     typeName: '',
+    userLocation: {},
+    userName: '',
   };
 
   constructor(props) {
@@ -106,6 +115,11 @@ class DiscoverObjectsContent extends Component {
       isModalOpen: false,
       modalTitle: '',
       loadingAssign: false,
+      infoboxData: false,
+      zoom: ZOOM,
+      center: [],
+      isInitial: true,
+      radius: RADIUS,
     };
   }
 
@@ -259,6 +273,7 @@ class DiscoverObjectsContent extends Component {
       filteredObjects,
       hasMoreObjects,
       userName,
+      match,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -281,10 +296,10 @@ class DiscoverObjectsContent extends Component {
       <React.Fragment>
         <div className="discover-objects-header__selection-block">
           <MobileNavigation />
+          <div className="discover-objects-header__tags-block common">
+            {this.getCommonFiltersLayout()}
+          </div>
           {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
-        </div>
-        <div className="discover-objects-header__tags-block common">
-          {this.getCommonFiltersLayout()}
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
@@ -363,6 +378,7 @@ class DiscoverObjectsContent extends Component {
                     loading={loadingAssign}
                     key={`${wObj.author_permlink}`}
                     assigned={proposition.assigned}
+                    match={match}
                   />
                 ));
               }

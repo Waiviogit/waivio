@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Modal } from 'antd';
-import find from 'lodash/find';
+import { message, Modal } from 'antd';
+import { findKey, find, get, isEmpty, map, includes } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
+import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
-import { delay } from '../rewardsHelpers';
+import { getContent } from '../../../waivioApi/ApiClient';
+
 import './CampaignFooter.less';
 
 @injectIntl
@@ -52,6 +54,9 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
+    getMessageHistory: PropTypes.func,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -70,6 +75,8 @@ class CampaignFooter extends React.Component {
     discardPr: () => {},
     toggleModalDetails: () => {},
     isComment: false,
+    getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -77,13 +84,14 @@ class CampaignFooter extends React.Component {
 
     this.state = {
       sliderVisible: false,
-      commentsVisible: !props.post.children,
+      commentsVisible: false,
       sliderValue: 100,
       voteWorth: 0,
       modalVisible: false,
       reservedUser: {},
       daysLeft: 0,
       loading: false,
+      currentPost: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -106,11 +114,17 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition } = this.props;
+    const { proposition, match } = this.props;
+    const author = get(proposition, ['users', '0', 'name']);
+    const permlink = get(proposition, ['users', '0', 'permlink']);
+    if (!isEmpty(author) && !isEmpty(permlink)) {
+      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+    }
+    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
-        proposition.objects[0].reservationCreated,
+        isRewards ? proposition.objects[0].reservationCreated : proposition.users[0].createdAt,
         proposition.count_reservation_days,
       ),
     });
@@ -138,12 +152,14 @@ class CampaignFooter extends React.Component {
     }
   };
 
-  handleFollowClick(post) {
+  handleFollowClick() {
     const { userFollowed } = this.props.postState;
+    const { proposition } = this.props;
+
     if (userFollowed) {
-      this.props.unfollowUser(post.parent_author);
+      this.props.unfollowUser(proposition.guideName);
     } else {
-      this.props.followUser(post.parent_author);
+      this.props.followUser(proposition.guideName);
     }
   }
 
@@ -172,18 +188,20 @@ class CampaignFooter extends React.Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  };
+  toggleModal = () => this.setState({ modalVisible: !this.state.modalVisible });
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    discardPr(proposedWobj)
-      .then(() => {
-        this.toggleModal();
-      })
-      .then(() => delay(1500))
-      .then(() => this.props.history.push(`/rewards/active`));
+    discardPr(proposedWobj).then(() => {
+      this.toggleModal();
+      message.success(
+        this.props.intl.formatMessage({
+          id: 'discarded_successfully',
+          defaultMessage: 'Reservation released. It will be available for reservation soon.',
+        }),
+        this.props.history.push('/rewards/active'),
+      );
+    });
   };
 
   handlePostPopoverMenuClick(key) {
@@ -211,14 +229,16 @@ class CampaignFooter extends React.Component {
   };
 
   toggleCommentsVisibility = isVisible => {
-    if (this.props.post.children > 0) {
+    const { proposition } = this.props;
+    const hasComments = !isEmpty(proposition.conversation);
+    if (hasComments) {
       this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -233,14 +253,35 @@ class CampaignFooter extends React.Component {
       toggleModalDetails,
       requiredObjectName,
       loading,
+      proposition,
+      match,
+      user,
+      getMessageHistory,
+      blacklistUsers,
     } = this.props;
+    const isRewards =
+      match.params.filterKey === 'reserved' ||
+      match.params.filterKey === 'all' ||
+      includes(match.path, 'object');
+    const propositionStatus = isRewards
+      ? get(proposition, ['status'])
+      : get(proposition, ['users', '0', 'status']);
+    const postCurrent = proposition.conversation;
+    const hasComments = !isEmpty(proposition.conversation);
+    const commentsAll = get(postCurrent, ['all']);
+    const rootKey = findKey(commentsAll, ['depth', 2]);
+    const rootComment = get(commentsAll, [rootKey]);
+    const repliesKeys = get(commentsAll, [rootKey, 'replies']);
+    const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
+    const numberOfComments = commentsArr.length;
+
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          {this.state.sliderVisible && (
+          {sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
-          {!this.state.sliderVisible && (
+          {!sliderVisible && (
             <CampaignButtons
               daysLeft={daysLeft}
               toggleModalDetails={toggleModalDetails}
@@ -257,19 +298,53 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
+              propositionGuideName={proposition.guide.name}
+              propositionStatus={propositionStatus}
+              proposition={proposition}
+              match={match}
+              user={user}
+              toggleModal={this.toggleModal}
+              numberOfComments={numberOfComments}
+              getMessageHistory={getMessageHistory}
+              blacklistUsers={blacklistUsers}
             />
           )}
         </div>
-        {this.state.sliderVisible && (
+        {sliderVisible && (
           <Slider
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
           />
         )}
-        {!singlePostVew && isComment && (
-          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
+        {hasComments &&
+          map(commentsArr, currentComment => (
+            <div>
+              <CommentsMessages
+                show={commentsVisible}
+                user={user}
+                post={postCurrent}
+                getMessageHistory={getMessageHistory}
+                currentComment={currentComment}
+              />
+            </div>
+          ))}
+        {hasComments && commentsVisible && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={rootComment}
+            getMessageHistory={getMessageHistory}
+          />
         )}
+        {!singlePostVew && isComment && !hasComments && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={this.state.currentPost}
+          />
+        )}
+
         <Modal
           closable
           maskClosable={false}

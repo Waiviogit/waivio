@@ -22,7 +22,10 @@ const CampaignRewardsTableRow = ({
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
-  const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
+  const isChecked =
+    currentItem.status === 'active' ||
+    currentItem.status === 'payed' ||
+    currentItem.status === 'reachedLimit';
   const isInactive =
     currentItem.status === 'inactive' ||
     currentItem.status === 'expired' ||
@@ -163,19 +166,11 @@ const CampaignRewardsTableRow = ({
             disabled={activationStatus ? activationStatus === 'inactivated' : isInactive}
           />
         </td>
-        <td>{currentItem.name}</td>
         <td>
-          {!isChecked ? (
-            // eslint-disable-next-line no-underscore-dangle
-            <Link to={`/rewards/edit/${currentItem._id}`} title="Edit">
-              Edit
-            </Link>
-          ) : (
-            // eslint-disable-next-line no-underscore-dangle
-            <Link to={`/rewards/edit/${currentItem._id}`} title="Edit">
-              View
-            </Link>
-          )}
+          {/* eslint-disable-next-line no-underscore-dangle */}
+          <Link to={`/rewards/details/${currentItem._id}`} title="View">
+            {currentItem.name}
+          </Link>
         </td>
 
         <td>

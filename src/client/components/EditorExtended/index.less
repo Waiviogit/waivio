@@ -5,7 +5,7 @@
   //background: @white;
   box-sizing: border-box;
   //font-family: 'Georgia', serif;
-  padding: 18px;
+  padding: 0 0 14px 0;
   position: relative;
   line-height: 1.4em;
 }
@@ -13,7 +13,7 @@
 .md-RichEditor-editor {
   cursor: text;
   position: relative;
-  margin: 0 auto;
+  margin-left: 7px;
 
   &.md-RichEditor-readonly {
     cursor: wait;
@@ -54,12 +54,12 @@
     }
   }
 
-  .StoryFull__title + div.md-block:only-of-type {
+  .StoryFull__title + div.md-block:nth-child(2) {
     span[data-offset-key] {
       br {
         content: ' ';
         &::before {
-          content: 'Write you story...';
+          content: 'Write your story...';
           color: @blue-botticelli;
         }
       }

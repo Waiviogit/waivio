@@ -12,10 +12,11 @@
 
   &__add-img-icon {
     position: absolute;
-    right: 5px;
-    bottom: 9px;
     color: @blue-botticelli;
     cursor: pointer;
+    left: 45px;
+    z-index: 1;
+
     &:hover {
       color: @grey-empress;
     }
@@ -31,13 +32,23 @@
 
   .ant-input {
     resize: none;
+    padding-left: 30px;
+    padding-right: 30px;
   }
-}
 
-.QuickComment_inputfile {
-  height: 0;
-  width: 0;
-  overflow: hidden;
+  &__send-comment {
+    position: absolute;
+    z-index: 1;
+    right: 5px;
+    display: inline-block;
+    cursor: pointer;
+
+    &--loader {
+      right: 10px;
+      top: 20px;
+      cursor: no-drop;
+    }
+  }
 }
 
 .QuickComment__img-preview {
@@ -68,3 +79,5 @@
     }
   }
 }
+
+@import './QuickCommentEditor-nightmode';

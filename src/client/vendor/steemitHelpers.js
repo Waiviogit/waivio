@@ -3,11 +3,13 @@ import getSlug from 'speakingurl';
 import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
-import * as dsteem from 'dsteem';
+import { get } from 'lodash';
+import * as dsteem from '@hivechain/dsteem';
 
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
-import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getContent } from '../../waivioApi/ApiClient';
 
 const dmp = new diff_match_patch();
 /**
@@ -46,29 +48,21 @@ export function parsePayoutAmount(amount) {
  */
 export const calculatePayout = post => {
   const payoutDetails = {};
-  const { active_votes, parent_author, cashout_time } = post;
+  const { cashout_time } = post;
 
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
   const pending_payout = parsePayoutAmount(post.pending_payout_value);
   const promoted = parsePayoutAmount(post.promoted);
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
-  const is_comment = parent_author !== '';
-
   let payout = pending_payout + total_author_payout + total_curator_payout;
   if (payout < 0.0) payout = 0.0;
   if (payout > max_payout) payout = max_payout;
+
   payoutDetails.payoutLimitHit = payout >= max_payout;
   payoutDetails.totalPayout = payout;
 
-  // There is an "active cashout" if: (a) there is a pending payout, OR (b)
-  // there is a valid cashout_time AND it's NOT a comment with 0 votes.
-  const cashout_active =
-    pending_payout > 0 ||
-    (cashout_time.indexOf('1969') !== 0 && !(is_comment && active_votes.length === 0));
-
-  if (cashout_active) {
-    // Append ".000Z" to make it ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).
+  if (!isPostCashout(post)) {
     payoutDetails.cashoutInTime = cashout_time + '.000Z';
     payoutDetails.potentialPayout = pending_payout;
   }
@@ -83,13 +77,47 @@ export const calculatePayout = post => {
     payoutDetails.maxAcceptedPayout = max_payout;
   }
 
-  if (total_author_payout > 0) {
+  if (payout > 0) {
     payoutDetails.pastPayouts = total_author_payout + total_curator_payout;
     payoutDetails.authorPayouts = total_author_payout;
     payoutDetails.curatorPayouts = total_curator_payout;
   }
 
   return payoutDetails;
+};
+
+export const isPostCashout = post => Date.parse(post.cashout_time) < Date.now();
+
+export const calculateVotePowerForSlider = async (name, voteWeight, author, permlink) => {
+  const account = (await steemAPI.sendAsync('get_accounts', [[name]]))[0];
+  const sbdMedian = await steemAPI.sendAsync('get_current_median_history_price', []);
+  const rewardFund = await steemAPI.sendAsync('get_reward_fund', ['post']);
+  const post = await steemAPI.sendAsync('get_content', [author, permlink]);
+  const price = parseFloat(sbdMedian.base) / parseFloat(sbdMedian.quote);
+  const vests =
+    parseFloat(account.vesting_shares) +
+    parseFloat(account.received_vesting_shares) -
+    parseFloat(account.delegated_vesting_shares);
+
+  const previousVoteTime =
+    (new Date().getTime() - new Date(`${account.last_vote_time}Z`).getTime()) / 1000;
+  const accountVotingPower = Math.min(
+    10000,
+    account.voting_power + (10000 * previousVoteTime) / 432000,
+  );
+
+  const power = Math.round(((accountVotingPower / 100) * voteWeight) / 50);
+  const rShares = vests * power * 100 - 50000000;
+  const tRShares = parseFloat(post.vote_rshares) + rShares;
+
+  const s = parseFloat(rewardFund.content_constant);
+  const tClaims = (tRShares * (tRShares + 2 * s)) / (tRShares + 4 * s);
+
+  const rewards = parseFloat(rewardFund.reward_balance) / parseFloat(rewardFund.recent_claims);
+  const postValue = tClaims * rewards * price;
+  const voteValue = postValue * (rShares / tRShares);
+
+  return voteValue >= 0 ? voteValue : 0;
 };
 
 function checkPermLinkLength(permlink) {
@@ -118,7 +146,7 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
     if (s === '') {
       s = base58.encode(secureRandom.randomBuffer(4));
     }
-    if (author.startsWith(GUEST_PREFIX)) {
+    if (author.startsWith(GUEST_PREFIX) || author.startsWith(BXY_GUEST_PREFIX)) {
       const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
       permlink = prefix + s;
       return Promise.resolve(checkPermLinkLength(permlink));
@@ -155,8 +183,8 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
 function createPatch(text1, text2) {
   if (!text1 && text1 === '') return undefined;
   const patches = dmp.patch_make(text1, text2);
-  const patch = dmp.patch_toText(patches);
-  return patch;
+
+  return dmp.patch_toText(patches);
 }
 
 /**
@@ -190,8 +218,8 @@ export const calculateVoteValue = (
 };
 
 export const calculateDownVote = user => {
-  const currentMana = user.voting_manabar.current_mana;
-  const downvoteMana = user.downvote_manabar.current_mana;
+  const currentMana = get(user, ['voting_manabar', 'current_mana']);
+  const downvoteMana = get(user, ['downvote_manabar', 'current_mana']);
 
   if (currentMana && downvoteMana) {
     const downvoteUpdate = user.downvote_manabar.last_update_time;
@@ -274,6 +302,6 @@ export const roundNumberToThousands = number => {
   return number;
 };
 
-export const dSteem = new dsteem.Client('https://api.steemit.com');
+export const dSteem = new dsteem.Client('https://anyx.io');
 
 export const calcReputation = rep => steem.formatter.reputation(rep);

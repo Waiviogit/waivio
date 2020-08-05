@@ -5,32 +5,43 @@ import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
+import { followUser, getTopExperts as getTopExpertsApi, unfollowUser } from '../user/usersActions';
 import {
   getTopExperts,
   getTopExpertsLoading,
   getTopExpertsHasMore,
   getObjectTypesList,
-  getSearchUsersResults,
+  getSearchUsersResultsForDiscoverPage,
 } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
-import { searchUsersAutoCompete } from '../search/searchActions';
+import {
+  followSearchUser,
+  resetSearchUsersForDiscoverPage,
+  searchUsersForDiscoverPage,
+  unfollowSearchUser,
+} from '../search/searchActions';
+import withAuthActions from '../auth/withAuthActions';
 
 const displayLimit = 20;
-
+@withAuthActions
 @connect(
   state => ({
     topExperts: getTopExperts(state),
     topExpertsLoading: getTopExpertsLoading(state),
     hasMoreExperts: getTopExpertsHasMore(state),
     typesList: getObjectTypesList(state),
-    searchUsersList: getSearchUsersResults(state),
+    searchUsersList: getSearchUsersResultsForDiscoverPage(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
     getObjectTypes,
-    searchUsersAutoCompete,
+    searchUsersForDiscoverPage,
+    resetSearchUsersForDiscoverPage,
+    followTopUser: followUser,
+    unfollowTopUser: unfollowUser,
+    unfollowSearchUser,
+    followSearchUser,
   },
 )
 class DiscoverContent extends React.Component {
@@ -39,7 +50,7 @@ class DiscoverContent extends React.Component {
       PropTypes.shape({
         name: PropTypes.string,
         weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        json_metadata: PropTypes.string,
+        posting_json_metadata: PropTypes.string,
       }),
     ).isRequired,
     getTopExperts: PropTypes.func.isRequired,
@@ -47,28 +58,68 @@ class DiscoverContent extends React.Component {
     hasMoreExperts: PropTypes.bool.isRequired,
     typesList: PropTypes.shape().isRequired,
     getObjectTypes: PropTypes.func.isRequired,
-    searchUsersAutoCompete: PropTypes.func.isRequired,
+    searchUsersForDiscoverPage: PropTypes.func.isRequired,
     searchString: PropTypes.string,
-    searchUsersList: PropTypes.arrayOf(PropTypes.shape()),
+    searchUsersList: PropTypes.shape({
+      result: PropTypes.arrayOf(PropTypes.shape()),
+      loading: PropTypes.bool,
+    }),
+    resetSearchUsersForDiscoverPage: PropTypes.func.isRequired,
+    unfollowTopUser: PropTypes.func,
+    followTopUser: PropTypes.func,
+    onActionInitiated: PropTypes.func.isRequired,
+    followSearchUser: PropTypes.func.isRequired,
+    unfollowSearchUser: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     searchString: '',
-    searchUsersList: [],
+    searchUsersList: {
+      result: [],
+      loading: true,
+    },
+    unfollowTopUser: () => {},
+    followTopUser: () => {},
   };
 
   componentDidMount() {
     const { typesList, searchString } = this.props;
     if (searchString) {
-      this.props.searchUsersAutoCompete(searchString, 100);
+      this.props.searchUsersForDiscoverPage(searchString, 100);
     }
 
     if (isEmpty(typesList)) this.props.getObjectTypes();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.searchString && prevProps.searchString !== this.props.searchString) {
+      this.props.searchUsersForDiscoverPage(this.props.searchString, 100);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.resetSearchUsersForDiscoverPage();
+  }
+
   handleLoadMore = () => {
     if (!this.props.topExpertsLoading) {
       this.props.getTopExperts(displayLimit, this.props.topExperts.length);
+    }
+  };
+
+  unfollowTopUser = (name, top) => {
+    if (this.props.searchString) {
+      this.props.onActionInitiated(() => this.props.unfollowSearchUser(name));
+    } else {
+      this.props.onActionInitiated(() => this.props.unfollowTopUser(name, top));
+    }
+  };
+
+  followTopUser = (name, top) => {
+    if (this.props.searchString) {
+      this.props.onActionInitiated(() => this.props.followSearchUser(name));
+    } else {
+      this.props.onActionInitiated(() => this.props.followTopUser(name, top));
     }
   };
 
@@ -88,22 +139,31 @@ class DiscoverContent extends React.Component {
         />
       </div>
     );
-    const mapSearchUsersList = searchUsersList.map(user => ({
-      name: user.account,
-      wobjects_weight: user.wobjects_weight,
-      followers_count: user.followers_count,
-    }));
-
-    const searchUsers = mapSearchUsersList.length
-      ? mapSearchUsersList.map(expert => (
-          <DiscoverUser user={expert} key={expert.name} isReblogged />
-        ))
-      : noUserError;
+    const mapSearchUsersList =
+      searchUsersList &&
+      searchUsersList.result &&
+      searchUsersList.result.map(user => ({
+        name: user.account,
+        ...user,
+      }));
+    const searchUsers =
+      mapSearchUsersList && mapSearchUsersList.length
+        ? mapSearchUsersList.map(expert => (
+            <DiscoverUser
+              user={expert}
+              key={expert.name}
+              unfollow={this.unfollowTopUser}
+              follow={this.followTopUser}
+              isReblogged
+            />
+          ))
+        : noUserError;
+    const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
 
     return (
       <div>
         {searchString ? (
-          searchUsers
+          renderItem
         ) : (
           <ReduxInfiniteScroll
             hasMore={hasMoreExperts}
@@ -113,7 +173,13 @@ class DiscoverContent extends React.Component {
             loader={<Loading />}
           >
             {topExperts.map(expert => (
-              <DiscoverUser user={expert} key={expert.name} isReblogged />
+              <DiscoverUser
+                user={expert}
+                key={expert.name}
+                unfollow={this.unfollowTopUser}
+                follow={this.followTopUser}
+                isReblogged
+              />
             ))}
           </ReduxInfiniteScroll>
         )}

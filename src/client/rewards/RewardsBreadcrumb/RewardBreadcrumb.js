@@ -5,24 +5,32 @@ import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import classNames from 'classnames';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { getBreadCrumbText } from '../rewardsHelper';
 import '../Rewards.less';
 
 const rewardText = {
-  all: { id: 'all', defaultMessage: 'all' },
-  active: { id: 'eligible', defaultMessage: 'eligible' },
-  reserved: { id: 'reserved', defaultMessage: 'reserved' },
-  history: { id: 'history', defaultMessage: 'history' },
-  created: { id: 'created', defaultMessage: 'created' },
+  all: { id: 'all', defaultMessage: 'All' },
+  active: { id: 'eligible', defaultMessage: 'Eligible' },
+  reserved: { id: 'reserved', defaultMessage: 'Reserved' },
+  history: { id: 'history', defaultMessage: 'History' },
+  created: { id: 'created', defaultMessage: 'Created' },
+  messages: { id: 'messages', defaultMessage: 'Messages' },
 };
-const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
+
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, location }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
   const breadCrumbText = `${
-    isCorrectFilter ? intl.formatMessage(rewardText[filterKey]) : ''
-  } ${intl.formatMessage({
-    id: 'rewards',
-    defaultMessage: 'rewards',
-  })}`;
+    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText) : ''
+  } ${
+    filterKey !== 'history'
+      ? intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'rewards',
+        })
+      : ''
+  }`;
+
   return (
     <div className={classNames('RewardBreadcrumb', { 'ml3 mb3': !isEmpty(reqObject) })}>
       <Breadcrumb separator={'>'}>
@@ -43,6 +51,7 @@ RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string.isRequired,
+  location: PropTypes.string.isRequired,
 };
 
 RewardBreadcrumb.defaultProps = {

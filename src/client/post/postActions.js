@@ -1,5 +1,3 @@
-import { message } from 'antd';
-
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -13,10 +11,8 @@ export const FAKE_LIKE_POST = '@post/FAKE_LIKE_POST';
 export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
-
-export const VOTE_UPDATE_START = '@post/VOTE_UPDATE_START';
-export const VOTE_UPDATE_SUCCESS = '@post/VOTE_UPDATE_SUCCESS';
-export const VOTE_UPDATE_REJECT = '@post/VOTE_UPDATE_REJECT';
+export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
+export const LIKE_POST_HISTORY = '@post/LIKE_POST_HISTORY';
 
 export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
@@ -31,6 +27,7 @@ export const getContent = (author, permlink, afterLike) => dispatch => {
     payload: {
       promise: doApiRequest().then(res => {
         if (res.id === 0) throw new Error('There is no such post');
+        if (res.message) throw new Error(res.message);
         return res;
       }),
     },
@@ -75,12 +72,11 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
             });
           }
 
-          // // Delay to make sure you get the latest data (unknown issue with API)
           if (!isGuest) {
             setTimeout(
               () =>
                 dispatch(getContent(post.author_original || votedPostAuthor, post.permlink, true)),
-              1000,
+              2000,
             );
           }
           return res;
@@ -99,52 +95,35 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   });
 };
 
-export const votePostUpdate = (postId, author, permlink, weight = 10000, type) => (
+export const voteHistoryPost = (currentPost, author, permlink, weight) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
-  const { auth, posts } = getState();
-  const post = posts.list[postId];
+  const { auth } = getState();
+  const post = currentPost;
   const voter = auth.user.name;
+  const TYPE = LIKE_POST_HISTORY;
 
   if (!auth.isAuthenticated) {
     return null;
   }
 
-  dispatch({
-    type: VOTE_UPDATE_START,
+  return dispatch({
+    type: TYPE,
     payload: {
-      postId,
+      promise: steemConnectAPI
+        .vote(voter, post.author || author, post.permlink, weight)
+        .then(res => res),
     },
   });
-
-  return steemConnectAPI
-    .vote(voter, post.author_original || author, post.permlink, weight)
-    .then(() =>
-      dispatch({
-        type: VOTE_UPDATE_SUCCESS,
-        payload: {
-          postId,
-          voter,
-          weight,
-          postPermlink: postId,
-          rshares_weight: 1,
-          percent: weight,
-          type,
-        },
-      }),
-    )
-    .catch(e => {
-      message.error(e.error_description);
-      dispatch({
-        type: VOTE_UPDATE_REJECT,
-        payload: {
-          postId,
-        },
-      });
-    });
 };
+
+export const reblogPost = (postId, userName) => dispatch =>
+  dispatch({
+    type: FAKE_REBLOG_POST,
+    payload: { postId, userName },
+  });
 
 export const voteCommentFromRewards = (postId, author, permlink, weight = 10000) => (
   dispatch,

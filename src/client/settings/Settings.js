@@ -16,6 +16,8 @@ import {
   getRewriteLinks,
   getUpvoteSetting,
   getExitPageSetting,
+  isGuestUser,
+  getAuthenticatedUser,
 } from '../reducers';
 import { saveSettings } from './settingsActions';
 import { reload } from '../auth/authActions';
@@ -28,14 +30,15 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import './Settings.less';
-import packageJson from '../../../package.json';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+
+import './Settings.less';
 
 @requiresLogin
 @injectIntl
 @connect(
   state => ({
+    user: getAuthenticatedUser(state),
     reloading: getIsReloading(state),
     locale: getLocale(state),
     readLanguages: getReadLanguages(state),
@@ -47,6 +50,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
     loading: getIsSettingsLoading(state),
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
+    isGuest: isGuestUser(state),
   }),
   { reload, saveSettings, notify },
 )
@@ -67,6 +71,9 @@ export default class Settings extends React.Component {
     notify: PropTypes.func,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
+    isGuest: PropTypes.bool,
+    user: PropTypes.string,
+    history: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -81,9 +88,13 @@ export default class Settings extends React.Component {
     rewriteLinks: false,
     upvoteSetting: true,
     exitPageSetting: true,
+    isGuest: false,
     reload: () => {},
     saveSettings: () => {},
     notify: () => {},
+    user: '',
+    history: {},
+    resetSearchAutoCompete: () => {},
   };
 
   constructor(props) {
@@ -100,6 +111,8 @@ export default class Settings extends React.Component {
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
       upvoteSetting: props.exitPageSetting,
+      searchBarActive: '',
+      dropdownOpen: false,
     };
   }
 
@@ -177,6 +190,11 @@ export default class Settings extends React.Component {
           this.props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' }),
           'success',
         ),
+      )
+      .then(() =>
+        window.setTimeout(() => {
+          this.props.history.push(`/@${this.props.user.name}`);
+        }, 1000),
       );
   };
 
@@ -200,13 +218,13 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
       loading,
+      isGuest,
     } = this.props;
     const {
       votingPower,
       locale,
       showNSFWPosts,
       nightmode,
-      rewriteLinks,
       upvoteSetting,
       exitPageSetting,
     } = this.state;
@@ -297,12 +315,12 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="language" defaultMessage="Language" />
+                    <FormattedMessage id="language" defaultMessage="Interface language" />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="language_info"
-                      defaultMessage="What language do you want to use on Waivio?"
+                      defaultMessage="Select the preferred language of the website and objects"
                     />
                   </p>
                   <Select
@@ -316,12 +334,15 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="post_languages" defaultMessage="Posts languages" />
+                    <FormattedMessage
+                      id="post_languages"
+                      defaultMessage="Content language preferences"
+                    />
                   </h3>
                   <p>
                     <FormattedMessage
                       id="post_languages_info"
-                      defaultMessage="In which languages do you want to read posts?"
+                      defaultMessage="Content from the blockchain (posts, comments) will be filtered according to these preferences"
                     />
                   </p>
                   <Select
@@ -384,26 +405,6 @@ export default class Settings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
-                    <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="rewrite_links_details"
-                      defaultMessage="You can enable this option to replace Steemit.com links with Waivio links."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox
-                      name="rewrite_links"
-                      checked={rewriteLinks}
-                      onChange={this.handleRewriteLinksChange}
-                    >
-                      <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
                     <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                   </h3>
                   <p>
@@ -415,8 +416,9 @@ export default class Settings extends React.Component {
                   <div className="Settings__section__checkbox">
                     <Checkbox
                       name="upvote_setting"
-                      checked={upvoteSetting}
+                      checked={!isGuest ? upvoteSetting : false}
                       onChange={this.handleUpvoteSettingChange}
+                      disabled={isGuest}
                     >
                       <FormattedMessage id="upvote_setting" defaultMessage="Like my posts" />
                     </Checkbox>
@@ -442,18 +444,23 @@ export default class Settings extends React.Component {
                     </Checkbox>
                   </div>
                 </div>
-                <Action primary big loading={loading} onClick={this.handleSave}>
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Action>
-                <div className="Settings__version">
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage
+                      id="linked_hive_account"
+                      defaultMessage="Linked Hive account"
+                    />
+                  </h3>
                   <p>
                     <FormattedMessage
-                      id="version"
-                      defaultMessage="Version: {version}"
-                      values={{ version: packageJson.version }}
+                      id="linked_hive_account_details"
+                      defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
                     />
                   </p>
                 </div>
+                <Action primary big loading={loading} onClick={this.handleSave}>
+                  <FormattedMessage id="save" defaultMessage="Save" />
+                </Action>
               </div>
             )}
           </div>

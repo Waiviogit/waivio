@@ -5,7 +5,13 @@ import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
-const ReceivablesContainer = ({ userName, currentSteemPrice, filterData, location }) => {
+const ReceivablesContainer = ({
+  userName,
+  currentSteemPrice,
+  filterData,
+  location,
+  setPayablesFilterValue,
+}) => {
   const payableFilters = {};
   _.map(filterData, f => {
     payableFilters[f.filterName] = f.value;
@@ -13,19 +19,20 @@ const ReceivablesContainer = ({ userName, currentSteemPrice, filterData, locatio
   const [sponsors, setSponsors] = useState({});
   useEffect(() => {
     getLenders({
-      sponsor: '',
       user: userName,
       filters: payableFilters,
     })
       .then(data => setSponsors(data))
       .catch(e => console.log(e));
-  }, [filterData]);
+  }, [filterData, userName]);
   return (
     <Debts
       userName={userName}
       currentSteemPrice={currentSteemPrice}
       debtObjsData={sponsors}
       componentLocation={location.pathname}
+      activeFilters={filterData}
+      setPayablesFilterValue={setPayablesFilterValue}
     />
   );
 };
@@ -35,10 +42,11 @@ ReceivablesContainer.propTypes = {
   currentSteemPrice: PropTypes.number.isRequired,
   userName: PropTypes.string.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  setPayablesFilterValue: PropTypes.func,
 };
 
 ReceivablesContainer.defaultProps = {
-  filterData: [],
+  setPayablesFilterValue: () => {},
 };
 
 export default injectIntl(ReceivablesContainer);

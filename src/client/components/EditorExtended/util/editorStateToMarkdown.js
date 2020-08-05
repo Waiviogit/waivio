@@ -47,12 +47,13 @@ const applyAtomicStyle = (block, entityMap, content) => {
   if (block.type.indexOf('atomic') === -1) return content;
   // strip the test that was added in the media block
   const strippedContent = content.substring(0, content.length - block.text.length);
+  let type;
+  let data;
+  let text;
 
-  let type = '';
-  let data = {};
-  let text = '';
   if (block.type === Block.ATOMIC) {
     const key = block.entityRanges[0] && block.entityRanges[0].key;
+
     type = entityMap[key].type;
     data = entityMap[key].data;
   } else {
@@ -65,9 +66,7 @@ const applyAtomicStyle = (block, entityMap, content) => {
     case ATOMIC_TYPES.SEPARATOR:
       return `${strippedContent}***`;
     case ATOMIC_TYPES.IMAGE:
-      return `${strippedContent}<center>![${text || ''}](${data.src})</center>\n${
-        text ? `<center>${text}</center>` : ''
-      }`;
+      return `${strippedContent}<center>![${text || 'image'}](${data.src})</center>`;
     case ATOMIC_TYPES.VIDEO:
       return `${strippedContent}${data.url || data.src}`;
     default:

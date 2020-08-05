@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { attempt, isError, isEmpty, get, throttle } from 'lodash';
+import { isEmpty, get, throttle } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
-import { encodeOp } from 'steem-uri';
-import { updateProfile } from '../auth/authActions';
+import SteemConnectAPI from '../steemConnectAPI';
+import { updateProfile, reload } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
+import { getMetadata } from '../helpers/postingMetadata';
+import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -27,8 +29,8 @@ import './Settings.less';
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
-  let metadata = attempt(JSON.parse, props.user.json_metadata);
-  if (isError(metadata)) metadata = {};
+  const metadata = getMetadata(props.user);
+
   const profile = metadata.profile || {};
 
   return Object.keys(profile).reduce(
@@ -52,6 +54,7 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    reload,
   },
 )
 @Form.create({
@@ -67,23 +70,26 @@ export default class ProfileSettings extends React.Component {
     onImageInvalid: PropTypes.func,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
-    user: PropTypes.string,
+    user: PropTypes.shape(),
+    history: PropTypes.shape(),
+    reload: PropTypes.func,
   };
 
   static defaultProps = {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     userName: '',
-    user: '',
+    user: {},
+    history: {},
     isGuest: false,
     updateProfile: () => {},
+    reload: () => {},
   };
 
   constructor(props) {
     super(props);
 
-    let metadata = attempt(JSON.parse, props.user.json_metadata);
-    if (isError(metadata)) metadata = {};
+    const metadata = getMetadata(props.user);
 
     this.state = {
       bodyHTML: '',
@@ -99,6 +105,7 @@ export default class ProfileSettings extends React.Component {
       isCover: false,
       isAvatar: false,
       lastAccountUpdate: moment(props.user.updatedAt).unix(),
+      isLoading: false,
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -112,7 +119,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
+    const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
     const { avatarImage, coverImage, profileData } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -135,34 +142,52 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
+
         if (isGuest) {
-          updateProfile(userName, cleanValues).then(data => {
-            if ((isChangedAvatar || isChangedCover) && data.value.isProfileUpdated) {
-              message.success(
-                intl.formatMessage({
-                  id: 'changes_take_effect_later',
-                  defaultMessage: 'Changes will take effect later',
-                }),
-              );
-            }
-          });
+          updateProfile(userName, cleanValues)
+            .then(data => {
+              if (isChangedAvatar || isChangedCover || data.value.isProfileUpdated) {
+                message.success(
+                  intl.formatMessage({
+                    id: 'profile_updated',
+                    defaultMessage: 'Profile updated',
+                  }),
+                );
+
+                this.props.history.push(`/@${user.name}`);
+              }
+            })
+            .catch(e => message.error(e.message));
         } else {
-          const profileDateEncoded = encodeOp(
-            [
-              'account_update',
-              {
-                account: userName,
-                memo_key: user.memo_key,
-                json_metadata: JSON.stringify({ profile: { ...profileData, ...cleanValues } }),
-              },
-            ],
-            { callback: window.location.href },
-          );
-          const win = window.open(
-            profileDateEncoded.replace('steem://', 'https://beta.steemconnect.com/'),
-            '_blank',
-          );
-          win.focus();
+          const profileDateEncoded = [
+            ACCOUNT_UPDATE,
+            {
+              account: userName,
+              extensions: [],
+              json_metadata: '',
+              posting_json_metadata: JSON.stringify({
+                profile: { ...profileData, ...cleanValues, version: 2 },
+              }),
+            },
+          ];
+          SteemConnectAPI.broadcast([profileDateEncoded])
+            .then(() => {
+              reload();
+
+              setTimeout(() => {
+                message.success(
+                  intl.formatMessage({
+                    id: 'profile_updated',
+                    defaultMessage: 'Profile updated',
+                  }),
+                );
+                this.props.history.push(`/@${user.name}`);
+              }, 2000);
+            })
+            .catch(e => {
+              this.setState({ isLoading: false });
+              message.error(e.message);
+            });
         }
       }
     });
@@ -170,9 +195,10 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // eslint-disable-next-line no-shadow
     const { isGuest, userName, intl } = this.props;
     const { avatarImage } = this.state;
+
+    this.setState({ isLoading: true });
 
     if (isGuest && !isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, avatarImage[0].src, intl)
@@ -195,6 +221,7 @@ export default class ProfileSettings extends React.Component {
 
   onOkAvatarModal = () => {
     const { avatarImage } = this.state;
+
     this.setState({
       isModal: !this.state.isModal,
       isAvatar: !this.state.isAvatar,
@@ -207,6 +234,7 @@ export default class ProfileSettings extends React.Component {
 
   onOkCoverModal = () => {
     const { coverImage } = this.state;
+
     this.setState({
       isModal: !this.state.isModal,
       isCover: !this.state.isCover,
@@ -244,9 +272,9 @@ export default class ProfileSettings extends React.Component {
       isAvatar,
       lastAccountUpdate,
       profilePicture,
+      coverPicture,
     } = this.state;
     const { getFieldDecorator } = form;
-
     const socialInputs = socialProfiles.map(profile => (
       <FormItem key={profile.id}>
         {getFieldDecorator(profile.id, {
@@ -336,6 +364,7 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="profile_location" defaultMessage="Location" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
@@ -353,7 +382,27 @@ export default class ProfileSettings extends React.Component {
                 </div>
                 <div className="Settings__section">
                   <h3>
+                    <FormattedMessage id="profile_email" defaultMessage="Email" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
+                  </h3>
+                  <div className="Settings__section__inputs">
+                    <FormItem>
+                      {getFieldDecorator('email')(
+                        <Input
+                          size="large"
+                          placeholder={intl.formatMessage({
+                            id: 'profile_email_placeholder',
+                            defaultMessage: 'Your email',
+                          })}
+                        />,
+                      )}
+                    </FormItem>
+                  </div>
+                </div>
+                <div className="Settings__section">
+                  <h3>
                     <FormattedMessage id="profile_website" defaultMessage="Website" />
+                    <FormattedMessage id="public_field" defaultMessage=" (public)" />
                   </h3>
                   <div className="Settings__section__inputs">
                     <FormItem>
@@ -401,12 +450,7 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('cover_image')(
                         <div className="Settings__profile-image">
-                          <Avatar
-                            size="large"
-                            shape="square"
-                            icon="picture"
-                            src={`${this.state.coverPicture}`}
-                          />
+                          <Avatar size="large" shape="square" icon="picture" src={coverPicture} />
                           <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({
                               id: 'profile_change_cover',
@@ -455,6 +499,7 @@ export default class ProfileSettings extends React.Component {
                   big
                   type="submit"
                   disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                  loading={this.state.isLoading}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>

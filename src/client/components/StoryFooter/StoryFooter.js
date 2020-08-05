@@ -7,21 +7,20 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getVoteValue } from '../../helpers/user';
-import { getRate, isGuestUser } from '../../reducers';
+import { getAuthenticatedUserName, isGuestUser } from '../../reducers';
+import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+
 import './StoryFooter.less';
 
 @connect(state => ({
-  rate: getRate(state),
   isGuest: isGuestUser(state),
+  userName: getAuthenticatedUserName(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    rewardFund: PropTypes.shape().isRequired,
-    rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
@@ -37,6 +36,7 @@ class StoryFooter extends React.Component {
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     isGuest: PropTypes.bool,
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -54,6 +54,7 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
     isGuest: false,
+    userName: '',
   };
 
   constructor(props) {
@@ -84,25 +85,19 @@ class StoryFooter extends React.Component {
     }
   }
 
-  handleLikeClick = (weight, type) => {
+  handleLikeClick = () => {
     if (this.props.sliderMode && !this.props.postState.isLiked) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     } else {
-      this.props.onLikeClick(this.props.post, this.props.postState, weight, type);
+      this.props.onLikeClick(this.props.post, this.props.postState);
     }
   };
 
   handleLikeConfirm = () => {
-    const type = this.props.post.append_field_name ? 'approve' : '';
     this.setState({ sliderVisible: false }, () => {
-      this.props.onLikeClick(
-        this.props.post,
-        this.props.postState,
-        this.state.sliderValue * 100,
-        type,
-      );
+      this.props.onLikeClick(this.props.post, this.props.postState, this.state.sliderValue * 100);
     });
   };
 
@@ -112,11 +107,11 @@ class StoryFooter extends React.Component {
 
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
-  handleSliderChange = value => {
-    const { user, rewardFund, rate, isGuest } = this.props;
+  handleSliderChange = async value => {
+    const { user, isGuest, post } = this.props;
     const voteWorth = isGuest
       ? 0
-      : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
+      : await calculateVotePowerForSlider(user.name, value, post.author, post.permlink);
     this.setState({ sliderValue: value, voteWorth });
   };
 
@@ -167,6 +162,7 @@ class StoryFooter extends React.Component {
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
+              username={this.props.userName}
             />
           )}
         </div>
@@ -175,6 +171,7 @@ class StoryFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
+            isPostCashout={isPostCashout(post)}
           />
         )}
         {!singlePostVew && (

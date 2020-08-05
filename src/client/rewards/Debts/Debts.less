@@ -1,4 +1,5 @@
 @import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/mixins.less';
 
 .Debts {
   display: flex;
@@ -30,6 +31,30 @@
       font-size: medium;
       font-weight: 500;
       text-decoration: underline;
+    }
+  }
+
+  &__sort {
+    padding-bottom: 10px;
+  }
+
+  &__filters {
+    &-tags-block {
+      .filters-tags-block();
+
+      margin-bottom: 10px;
+    }
+
+    &-topic {
+      .filters-topic();
+    }
+
+    &-selector {
+      .filters-selector();
+    }
+
+    &-modal {
+      .filters-ant-modal();
     }
   }
 }

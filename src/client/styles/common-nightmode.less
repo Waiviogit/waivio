@@ -1,4 +1,5 @@
 @import (reference) './custom.less';
+@import (reference) './modules/variables.less';
 
 body.nightmode {
   background: #191e23;
@@ -29,21 +30,34 @@ body.nightmode {
 
   .ant-select {
     color: @white-smoke;
-
     .ant-select-arrow {
       color: @white-smoke;
     }
-
     .ant-select-selection {
       border: @border-width-base @border-style-base @normal-grey;
       background-color: @grey-nero;
+
+      &__clear {
+        background: @grey-nero;
+        color: @blue-baliHai;
+      }
     }
   }
 
-  .ant-input {
+  .ant-input,
+  .ant-time-picker-input {
     background-color: @grey-nero;
     color: @white-smoke;
     border: @border-width-base @border-style-base @normal-grey !important;
+  }
+
+  .ant-time-picker-clock-icon {
+    color: @white-smoke;
+  }
+
+  .has-error .ant-input,
+  .has-error .ant-input:hover {
+    background-color: @grey-nero;
   }
 
   .ant-checkbox-wrapper {
@@ -95,10 +109,6 @@ body.nightmode {
     color: @blue-heather;
   }
 
-  .ant-form-explain {
-    margin-bottom: 3px;
-  }
-
   .has-error .ant-form-explain,
   .has-error .ant-form-split {
     color: @red;
@@ -130,6 +140,10 @@ body.nightmode {
   .ant-form-item-label label,
   .ant-modal-title {
     color: @white-smoke;
+  }
+
+  .ant-modal-mask {
+    background-color: rgba(25, 30, 35, 0.97) !important;
   }
 
   .ant-tabs {
@@ -169,7 +183,6 @@ body.nightmode {
     .ant-collapse-header {
       color: @white-smoke;
     }
-
     .ant-collapse-content {
       background-color: @grey-nero;
       border-top: @border-width-base @border-style-base @normal-grey;

@@ -14,16 +14,26 @@ const imageOffset = {
 class CustomMarker extends React.Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    onContextMenu: PropTypes.func.isRequired,
-    onMouseOver: PropTypes.func.isRequired,
-    onMouseOut: PropTypes.func.isRequired,
-    left: PropTypes.number.isRequired,
-    top: PropTypes.number.isRequired,
-    anchor: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    onDoubleClick: PropTypes.func.isRequired,
+    onContextMenu: PropTypes.func,
+    onMouseOver: PropTypes.func,
+    onMouseOut: PropTypes.func,
+    left: PropTypes.number,
+    top: PropTypes.number,
+    anchor: PropTypes.arrayOf(PropTypes.number).isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
-    hover: PropTypes.bool.isRequired,
+    hover: PropTypes.bool,
     isMarked: PropTypes.bool.isRequired,
+  };
+
+  static defaultProps = {
+    onContextMenu: () => {},
+    left: 0,
+    top: 0,
+    hover: false,
+    onMouseOver: () => {},
+    onMouseOut: () => {},
   };
 
   constructor(props) {
@@ -48,7 +58,17 @@ class CustomMarker extends React.Component {
     return this.isHover() ? pinHover : pin;
   };
 
-  handleClick = event => this.props.onClick && this.props.onClick(this.eventParameters(event));
+  handleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    return this.props.onClick && this.props.onClick(this.eventParameters(event));
+  };
+
+  handleDoubleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    return this.props.onDoubleClick && this.props.onDoubleClick(this.eventParameters(event));
+  };
 
   handleContextMenu = event =>
     this.props.onContextMenu && this.props.onContextMenu(this.eventParameters(event));
@@ -79,6 +99,7 @@ class CustomMarker extends React.Component {
         style={style}
         className="pigeon-click-block"
         onClick={this.handleClick}
+        onDoubleClick={this.handleDoubleClick}
         onContextMenu={this.handleContextMenu}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}

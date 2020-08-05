@@ -1,0 +1,39 @@
+@import (reference) '../../styles/custom.less';
+
+.Report {
+  .ant-modal {
+    top: 24px;
+  }
+
+  .ant-modal-body {
+    padding-top: 0.75rem;
+    border: 1px solid @orange-hot;
+  }
+
+  &__modal-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+  }
+
+  &__modal-footer-btn {
+    margin-top: 40px;
+    margin-left: 43%;
+
+    button {
+      width: 100px;
+    }
+  }
+}
+
+@media (max-width: 414px) {
+  .Report {
+    &__modal-footer {
+      font-size: 12px;
+
+      &-btn {
+        margin-left: 33%;
+      }
+    }
+  }
+}

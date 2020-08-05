@@ -1,4 +1,4 @@
-import { get, keyBy, orderBy, slice, omit } from 'lodash';
+import { get, keyBy, orderBy, slice } from 'lodash';
 import * as authActions from '../auth/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
@@ -6,8 +6,6 @@ import * as appTypes from '../app/appActions';
 
 const initialState = {
   recommendedObjects: [],
-  recommendedTopics: [],
-  recommendedExperts: [],
   location: {},
   following: {
     list: {},
@@ -34,6 +32,7 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
+  pendingUpdate: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -120,53 +119,10 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: false,
       };
 
-    case userActions.FOLLOW_USER_START:
-    case userActions.UNFOLLOW_USER.START:
-      return {
-        ...state,
-        following: {
-          ...state.following,
-          pendingFollows: [...state.following.pendingFollows, action.meta.username],
-        },
-      };
     case userActions.GET_USER_LOCATION.SUCCESS:
       return {
         ...state,
         location: action.payload,
-      };
-    case userActions.FOLLOW_USER_SUCCESS:
-      return {
-        ...state,
-        following: {
-          ...state.following,
-          list: { ...state.following.list, [action.meta.username]: true },
-          pendingFollows: state.following.pendingFollows.filter(
-            user => user !== action.meta.username,
-          ),
-        },
-      };
-    case userActions.UNFOLLOW_USER.SUCCESS:
-      return {
-        ...state,
-        following: {
-          ...state.following,
-          list: omit(state.following.list, action.meta.username),
-          pendingFollows: state.following.pendingFollows.filter(
-            user => user !== action.meta.username,
-          ),
-        },
-      };
-
-    case userActions.FOLLOW_USER_ERROR:
-    case userActions.UNFOLLOW_USER.ERROR:
-      return {
-        ...state,
-        following: {
-          ...state.following,
-          pendingFollows: state.following.pendingFollows.filter(
-            user => user !== action.meta.username,
-          ),
-        },
       };
 
     case userActions.GET_FOLLOWING_UPDATES.START:
@@ -315,26 +271,69 @@ export default function userReducer(state = initialState, action) {
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
 
-    case userActions.GET_RECOMMENDS_HASHTAGS.SUCCESS:
-      return {
-        ...state,
-        recommendedTopics: action.payload.wobjects,
-      };
-
-    case userActions.GET_RECOMMENDS_HASHTAGS.ERROR:
-      return state;
-
-    case userActions.GET_RECOMMENDS_EXPERTS.SUCCESS:
-      return {
-        ...state,
-        recommendedExperts: action.payload.users,
-      };
-
-    case userActions.GET_RECOMMENDS_EXPERTS.ERROR:
-      return state;
-
     case authActions.LOGOUT:
       return initialState;
+
+    case userActions.SET_PENDING_UPDATE.START:
+      return {
+        ...state,
+        pendingUpdate: true,
+      };
+    case userActions.SET_PENDING_UPDATE.SUCCESS:
+      return {
+        ...state,
+        pendingUpdate: false,
+      };
+
+    case userActions.FOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER.START:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          pendingFollows: [...state.following.pendingFollows, action.meta.username],
+        },
+      };
+    case userActions.FOLLOW_USER_SUCCESS:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          list: { ...state.following.list, [action.meta.username]: true },
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
+    case userActions.UNFOLLOW_USER.SUCCESS: {
+      const followList = state.following.list;
+
+      delete followList[action.meta.username];
+
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          list: {
+            ...followList,
+          },
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
+    }
+    case userActions.FOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER.ERROR:
+      return {
+        ...state,
+        following: {
+          ...state.following,
+          pendingFollows: state.following.pendingFollows.filter(
+            user => user !== action.meta.username,
+          ),
+        },
+      };
 
     default: {
       return state;
@@ -359,3 +358,4 @@ export const getFollowingUsersUpdates = state => state.followingUpdates.usersUpd
 export const getFollowingObjectsUpdatesByType = (state, objType) =>
   get(state, ['followingUpdates', 'objectsUpdates', objType, 'related_wobjects'], []);
 export const getFollowingUpdatesFetched = state => state.followingUpdates.fetched;
+export const getPendingUpdate = state => state.pendingUpdate;

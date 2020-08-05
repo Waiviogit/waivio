@@ -1,4 +1,4 @@
-import { isEmpty, includes } from 'lodash';
+import { isEmpty, includes, get, first } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
 export const ACTIONS_DISPLAY_LIMIT = 100;
@@ -18,11 +18,16 @@ export const getCustomJSONFilterType = actionDetails => {
   const customActionType = actionJSON[0];
   const customActionDetails = actionJSON[1];
   if (customActionType === accountHistoryConstants.FOLLOW) {
-    return isEmpty(customActionDetails.what)
-      ? `-${accountHistoryConstants.UNFOLLOWED}`
-      : `+${accountHistoryConstants.FOLLOWED}`;
+    if (customActionDetails.type_operation === 'follow_wobject') {
+      return `+${accountHistoryConstants.FOLLOWED}`;
+    } else if (customActionDetails.type_operation === 'unfollow_wobject') {
+      return `-${accountHistoryConstants.UNFOLLOWED}`;
+    }
+    return '';
   } else if (customActionType === accountHistoryConstants.REBLOG) {
     return accountHistoryConstants.REBLOGGED;
+  } else if (customActionType === accountHistoryConstants.FOLLOW_WOBJECT) {
+    return accountHistoryConstants.FOLLOWED;
   }
   return '';
 };
@@ -82,4 +87,33 @@ export const actionsFilter = (action, accountHistoryFilter, currentUsername) => 
   );
 
   return stringMatchesFilters(messageForActionType, accountHistoryFilter);
+};
+
+export const getTimeFromLastAction = (username, accountHistory) => {
+  const actionsHistory = get(accountHistory, username, []);
+  const actions = [];
+  actionsHistory.map(action => {
+    const type = action.op[0];
+    switch (type) {
+      case accountHistoryConstants.ACCOUNT_CREATE:
+      case accountHistoryConstants.ACCOUNT_CREATE_WITH_DELEGATION:
+      case accountHistoryConstants.VOTE:
+      case accountHistoryConstants.ACCOUNT_UPDATE:
+      case accountHistoryConstants.COMMENT:
+      case accountHistoryConstants.DELETE_COMMENT:
+      case accountHistoryConstants.CUSTOM_JSON:
+      case accountHistoryConstants.FOLLOW:
+      case accountHistoryConstants.FOLLOW_WOBJECT:
+      case accountHistoryConstants.REBLOG:
+      case accountHistoryConstants.CURATION_REWARD:
+      case accountHistoryConstants.AUTHOR_REWARD:
+      case accountHistoryConstants.ACCOUNT_WITNESS_VOTE:
+      case accountHistoryConstants.FILL_VESTING_WITHDRAW:
+        return actions.push(action);
+      default:
+        return '';
+    }
+  });
+  const lastActionElement = first(actions);
+  return get(lastActionElement, 'timestamp', null);
 };

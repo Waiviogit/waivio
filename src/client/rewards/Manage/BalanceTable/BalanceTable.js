@@ -1,14 +1,14 @@
 import React from 'react';
-import { FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import './BalanceTable.less';
 
 const BalanceTable = props => {
-  const { intl, budgetTotal, user } = props;
-  const balance = parseFloat(user.balance);
+  const { intl, budgetTotal, isGuest, guestBalance } = props;
+  const balance = budgetTotal.account_amount ? budgetTotal.account_amount.toFixed(3) : '0.000';
   const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
   const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
-  const remaining = (balance - payable - reserved).toFixed(3);
+  const remaining = budgetTotal.remaining ? budgetTotal.remaining.toFixed(3) : '0.000';
   return (
     <table className="BalanceTable">
       <thead>
@@ -19,30 +19,32 @@ const BalanceTable = props => {
           <th>{intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>
-            <FormattedNumber value={balance} />
-          </td>
-          <td>{payable}</td>
-          <td>{reserved}</td>
-          <td>{remaining}</td>
-        </tr>
-      </tbody>
+      {!isEmpty(budgetTotal) && (
+        <tbody>
+          <tr>
+            <td>{isGuest ? guestBalance : balance}</td>
+            <td>{payable}</td>
+            <td>{reserved}</td>
+            <td>{remaining}</td>
+          </tr>
+        </tbody>
+      )}
     </table>
   );
 };
 
 BalanceTable.propTypes = {
   budgetTotal: PropTypes.shape(),
-  user: PropTypes.shape(),
   intl: PropTypes.shape(),
+  isGuest: PropTypes.bool,
+  guestBalance: PropTypes.string,
 };
 
 BalanceTable.defaultProps = {
   budgetTotal: {},
-  user: {},
   intl: {},
+  isGuest: false,
+  guestBalance: null,
 };
 
 export default BalanceTable;

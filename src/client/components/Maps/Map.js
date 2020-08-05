@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { isEmpty, get, map, isEqual, debounce } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -9,11 +9,17 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { RADIUS, ZOOM } from '../../../common/constants/map';
+import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
-import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
-import { setMapFullscreenMode } from './mapActions';
+import {
+  getFilteredObjectsMap,
+  getIsMapModalOpen,
+  getSuitableLanguage,
+  getUpdatedMap,
+  getUpdatedMapDiscover,
+} from '../../reducers';
+import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
 import './Map.less';
@@ -27,9 +33,12 @@ const defaultCoords = {
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
+    mapWobjects: getFilteredObjectsMap(state),
+    updated: getUpdatedMap(state) || getUpdatedMapDiscover(state),
   }),
   {
     setMapFullscreenMode,
+    resetUpdatedFlag,
   },
 )
 class MapOS extends React.Component {
@@ -38,10 +47,10 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: ZOOM,
+      zoom: 0,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
-      radius: RADIUS,
+      radius: DEFAULT_RADIUS,
     };
 
     this.mapRef = createRef();
@@ -55,23 +64,88 @@ class MapOS extends React.Component {
 
   componentDidMount() {
     const { radius, center } = this.state;
-    const { setMapArea } = this.props;
-    setMapArea({ radius, coordinates: center });
+    const { setMapArea, match } = this.props;
+    if (match.params.filterKey !== 'reserved')
+      setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
+    document.addEventListener('click', this.handleClick);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { primaryObjectCoordinates, zoomMap, match } = this.props;
+    const { zoom } = this.state;
+    if (
+      !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
+      !isEmpty(nextProps.primaryObjectCoordinates)
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        center: [nextProps.primaryObjectCoordinates[1], nextProps.primaryObjectCoordinates[0]],
+      });
+    }
+    if (
+      (zoomMap === 0 && nextProps.zoomMap) ||
+      (zoom === 0 && nextProps.zoomMap) ||
+      match.params.filterKey !== nextProps.match.params.filterKey ||
+      match.params.campaignParent !== nextProps.match.params.campaignParent
+    ) {
+      this.setState({ zoom: nextProps.zoomMap });
+    }
+    if (match.params.filterKey === 'reserved') this.setState({ zoom: DEFAULT_ZOOM });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { zoom, center, radius } = this.state;
-    if (prevState.zoom !== zoom || !_.isEqual(prevState.center, center)) {
-      const { setMapArea } = this.props;
-      setMapArea({ radius, coordinates: center });
+    const { center, zoom } = this.state;
+    const { match } = this.props;
+    const propsMatch = get(match, ['params', 'filterKey']);
+    const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
+
+    if (
+      (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match)) ||
+      prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
+    ) {
+      const firstMapLoad = true;
+      this.updateMap(firstMapLoad);
+    }
+    if (
+      (prevState.zoom !== zoom && prevState.zoom !== 0) ||
+      (!isEqual(prevState.center, center) && isEqual(prevProps.match, this.props.match))
+    ) {
+      this.updateMap();
     }
   }
 
-  onBoundsChanged = ({ center, zoom }) => {
+  componentWillUnmount() {
+    this.props.resetUpdatedFlag();
+  }
+
+  updateMap = firstMapLoad => {
+    const { match } = this.props;
+    const isSecondaryObjectsCards =
+      !isEmpty(match.params.campaignParent) || match.params.filterKey === 'reserved';
+    const { center, zoom } = this.state;
+    const { setMapArea } = this.props;
+    const newRadius = this.calculateRadius(zoom);
+    if (firstMapLoad)
+      setMapArea({
+        radius: newRadius,
+        coordinates: center,
+        isMap: true,
+        isSecondaryObjectsCards,
+        firstMapLoad,
+      });
+  };
+
+  onBoundsChanged = debounce(({ center, zoom }) => {
     this.setState({ radius: this.calculateRadius(zoom) });
     const { setArea } = this.props;
     setArea({ center, zoom });
     this.setState({ center, zoom });
+  }, 1000);
+
+  handleClick = () => {
+    if (!isEmpty(this.state.infoboxData)) {
+      this.setState({ infoboxData: null });
+    }
   };
 
   calculateRadius = zoom => {
@@ -82,26 +156,27 @@ class MapOS extends React.Component {
   };
 
   getMarkers = () => {
-    const { wobjects, onMarkerClick } = this.props;
+    const { wobjects, match } = this.props;
     return (
-      !_.isEmpty(wobjects) &&
-      _.map(wobjects, wobject => {
+      !isEmpty(wobjects) &&
+      map(wobjects, wobject => {
         const lat =
           getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude) ||
-          _.get(wobject, 'map.coordinates[1]');
+          get(wobject, 'map.coordinates[1]');
         const lng =
           getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
-          _.get(wobject, 'map.coordinates[0]');
-        const isMarked = Boolean(wobject && wobject.campaigns);
+          get(wobject, 'map.coordinates[0]');
+        const isMarked =
+          Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
+          match.path.includes('rewards');
         return lat && lng ? (
           <CustomMarker
             key={`obj${wobject.author_permlink}`}
             isMarked={isMarked}
             anchor={[+lat, +lng]}
             payload={wobject}
-            onMouseOver={this.handleMarkerClick}
-            onClick={onMarkerClick}
-            onMouseOut={this.closeInfobox}
+            onClick={this.handleMarkerClick}
+            onDoubleClick={this.closeInfobox}
           />
         ) : null;
       })
@@ -109,12 +184,22 @@ class MapOS extends React.Component {
   };
 
   getOverlayLayout = () => {
-    const wobj = getClientWObj(this.state.infoboxData.wobject, this.props.usedLocale);
+    const { onMarkerClick, usedLocale } = this.props;
+    const { infoboxData } = this.state;
+    const wobj = getClientWObj(infoboxData.wobject, usedLocale);
+    const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
-        <div role="presentation" className="MapOS__overlay-wrap">
+        <div
+          role="presentation"
+          className="MapOS__overlay-wrap"
+          onMouseLeave={this.closeInfobox}
+          onClick={() => onMarkerClick(wobjPermlink)}
+        >
           <img src={wobj.avatar} width={35} height={35} alt="" />
-          <div className="MapOS__overlay-wrap-name">{wobj.name}</div>
+          <div role="presentation" className="MapOS__overlay-wrap-name">
+            {wobj.name}
+          </div>
         </div>
       </Overlay>
     );
@@ -164,7 +249,19 @@ class MapOS extends React.Component {
     this.setState({ zoom, radius });
   };
 
-  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+  toggleModal = async () => {
+    const { zoom } = this.state;
+    await this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+    await this.setState({ radius: this.calculateRadius(zoom) });
+  };
+
+  getMapArea = () => {
+    this.toggleModal().then(() => {
+      const { setMapArea } = this.props;
+      const { radius, center } = this.state;
+      setMapArea({ radius, coordinates: center, isMap: true });
+    });
+  };
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -177,11 +274,25 @@ class MapOS extends React.Component {
     </div>
   );
 
+  getAreaSearchData = () => {
+    const { center, radius } = this.state;
+    const { getAreaSearchData } = this.props;
+    if (isEmpty(center)) {
+      getAreaSearchData({
+        radius: 500000000,
+        coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      });
+    } else {
+      getAreaSearchData({ radius, coordinates: center });
+    }
+    this.getMapArea();
+  };
+
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
     const { infoboxData, zoom, center } = this.state;
     const markersLayout = this.getMarkers(wobjects);
-    return center ? (
+    return center && zoom > 0 ? (
       <div className="MapOS">
         <Map
           provider={mapProvider}
@@ -189,16 +300,16 @@ class MapOS extends React.Component {
           center={center}
           zoom={zoom}
           height={heigth}
-          animate
         >
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
         </Map>
+
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
         {isFullscreenMode && (
@@ -207,12 +318,22 @@ class MapOS extends React.Component {
             title={null}
             footer={null}
             visible={isFullscreenMode}
-            onCancel={this.toggleModal}
+            onCancel={this.getMapArea}
             width={'100%'}
             wrapClassName={classNames('MapModal')}
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
+              <div
+                role="presentation"
+                className={'MapOS__fullscreenContent-btn'}
+                onClick={this.getAreaSearchData}
+              >
+                {this.props.intl.formatMessage({
+                  id: 'search_area',
+                  defaultMessage: 'Search area',
+                })}
+              </div>
               <Map
                 ref={this.mapRef}
                 onBoundsChanged={this.onBoundsChanged}
@@ -228,7 +349,7 @@ class MapOS extends React.Component {
               <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+              <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
               {customControl && typeof onCustomControlClick === 'function' ? (
@@ -245,7 +366,7 @@ class MapOS extends React.Component {
         )}
       </div>
     ) : (
-      <Loading />
+      <Loading style={{ width: '270px', height: '268px', paddingTop: '110px' }} />
     );
   }
 }
@@ -263,6 +384,12 @@ MapOS.propTypes = {
   setMapFullscreenMode: PropTypes.func,
   setMapArea: PropTypes.func.isRequired,
   onMarkerClick: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
+  getAreaSearchData: PropTypes.func,
+  match: PropTypes.shape().isRequired,
+  resetUpdatedFlag: PropTypes.func,
+  primaryObjectCoordinates: PropTypes.arrayOf(PropTypes.number),
+  zoomMap: PropTypes.number,
 };
 
 MapOS.defaultProps = {
@@ -277,6 +404,9 @@ MapOS.defaultProps = {
   setArea: () => {},
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},
+  primaryObjectCoordinates: [],
+  resetUpdatedFlag: () => {},
+  zoomMap: 0,
 };
 
 export default MapOS;

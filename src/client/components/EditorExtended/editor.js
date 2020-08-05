@@ -10,8 +10,10 @@ import {
   Modifier,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { OrderedMap } from 'immutable';
+import { message } from 'antd';
 
 import AddButton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
@@ -25,8 +27,9 @@ import { Block, Entity as E, HANDLED, NOT_HANDLED, KEY_COMMANDS } from './util/c
 import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
-
 import ImageSideButton from './components/sides/ImageSideButton';
+import { encodeImageFileAsURL } from './model/content';
+
 import './index.less';
 
 /*
@@ -34,7 +37,7 @@ A wrapper over `draft-js`'s default **Editor** component which provides
 some built-in customisations like custom blocks (todo, caption, etc) and
 some key handling for ease of use so that users' mouse usage is minimum.
 */
-class MediumDraftEditor extends React.Component {
+export default class MediumDraftEditor extends React.Component {
   static propTypes = {
     beforeInput: PropTypes.func,
     keyBindingFn: PropTypes.func,
@@ -67,7 +70,7 @@ class MediumDraftEditor extends React.Component {
     sideButtons: PropTypes.arrayOf(
       PropTypes.shape({
         title: PropTypes.string.isRequired,
-        component: PropTypes.func,
+        component: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
       }),
     ),
     editorState: PropTypes.shape().isRequired,
@@ -79,6 +82,7 @@ class MediumDraftEditor extends React.Component {
     showLinkEditToolbar: PropTypes.bool,
     toolbarConfig: PropTypes.shape(),
     processURL: PropTypes.func,
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -109,12 +113,14 @@ class MediumDraftEditor extends React.Component {
     handleKeyCommand: null,
     handleReturn: () => {},
     handlePastedText: () => {},
+    intl: {},
   };
 
   constructor(props) {
     super(props);
 
     this.focus = () => this._editorNode.focus(); // eslint-disable-line
+
     this.onChange = (editorState, cb) => {
       this.props.onChange(editorState, cb);
     };
@@ -129,7 +135,109 @@ class MediumDraftEditor extends React.Component {
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this); // eslint-disable-line
     this.setLink = this.setLink.bind(this);
     this.blockRendererFn = this.props.rendererFn(this.onChange, this.getEditorState);
+
+    this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
+    this.handlePastedFiles = this.handlePastedFiles.bind(this);
   }
+
+  // Copy/paste method
+  handlePastedFiles = async event => {
+    message.info(
+      this.props.intl.formatMessage({
+        id: 'notify_uploading_image',
+        defaultMessage: 'Uploading image',
+      }),
+    );
+
+    const selection = this.props.editorState.getSelection();
+    const key = selection.getAnchorKey();
+
+    const uploadedImages = [];
+
+    if (event.length === 0) {
+      console.error('no image found');
+      return;
+    }
+
+    // Only support one image
+    if (event.length > 1) {
+      console.error('only support one image');
+      return;
+    }
+
+    // Get image
+    const image = event[0];
+
+    const insertImage = (file, fileName = 'image') => {
+      const newImage = {
+        src: file,
+        name: fileName,
+        id: uuidv4(),
+      };
+      uploadedImages.push(newImage);
+    };
+
+    // Prepare URL on images
+    await encodeImageFileAsURL(image, insertImage);
+
+    const currentImage = uploadedImages[0];
+    // Add empty block after image
+    this.onChange(addNewBlockAt(this.props.editorState, key, Block.UNSTYLED, {}));
+    this.onChange(
+      addNewBlockAt(this.props.editorState, key, Block.IMAGE, {
+        src: `${
+          currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
+        }`,
+        alt: currentImage.name,
+      }),
+    );
+  };
+
+  // Drug and drop method
+  handleDroppedFiles = async (selection, files) => {
+    message.info(
+      this.props.intl.formatMessage({
+        id: 'notify_uploading_image',
+        defaultMessage: 'Uploading image',
+      }),
+    );
+
+    const uploadedImages = [];
+    const filteredFiles = files.filter(file => file.type.indexOf('image/') === 0);
+
+    const insertImage = (file, fileName = 'image') => {
+      const newImage = {
+        src: file,
+        name: fileName,
+        id: uuidv4(),
+      };
+      uploadedImages.push(newImage);
+    };
+
+    if (!filteredFiles.length) {
+      return 'not_handled';
+    }
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of files) {
+      // eslint-disable-next-line no-await-in-loop
+      await encodeImageFileAsURL(file, insertImage);
+    }
+
+    // eslint-disable-next-line array-callback-return
+    uploadedImages.forEach(item => {
+      this.onChange(
+        addNewBlockAt(this.props.editorState, selection.getAnchorKey(), Block.UNSTYLED, {}),
+      );
+      this.onChange(
+        addNewBlockAt(this.props.editorState, selection.getAnchorKey(), Block.IMAGE, {
+          src: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
+          alt: item.name,
+        }),
+      );
+    });
+    return HANDLED;
+  };
 
   /**
    * Implemented to provide nesting of upto 2 levels in ULs or OLs.
@@ -266,7 +374,6 @@ class MediumDraftEditor extends React.Component {
     togglled.
   */
   handleKeyCommand(command) {
-    // console.log(command);
     const { editorState } = this.props;
     if (this.props.handleKeyCommand) {
       const behaviour = this.props.handleKeyCommand(command);
@@ -558,15 +665,16 @@ class MediumDraftEditor extends React.Component {
             keyBindingFn={this.props.keyBindingFn}
             placeholder={this.props.placeholder}
             spellCheck={editorEnabled && this.props.spellCheck}
+            handleDroppedFiles={this.handleDroppedFiles}
+            handlePastedFiles={this.handlePastedFiles}
           />
-          {this.props.sideButtons.length > 0 && showAddButton && (
+          {showAddButton && (
             <AddButton
               editorState={editorState}
               getEditorState={this.getEditorState}
               setEditorState={this.onChange}
               focus={this.focus}
               sideButtons={this.props.sideButtons}
-              withTitleLine={this.props.withTitle}
             />
           )}
           {!disableToolbar && (
@@ -599,5 +707,3 @@ class MediumDraftEditor extends React.Component {
     );
   }
 }
-
-export default MediumDraftEditor;

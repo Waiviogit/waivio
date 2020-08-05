@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
 import { isEmpty, map } from 'lodash';
+import { withRouter } from 'react-router';
+
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -20,6 +22,7 @@ import { getServerWObj } from '../../adapters';
 import './CreateObject.less';
 
 @injectIntl
+@withRouter
 @Form.create()
 @connect(
   state => ({
@@ -56,6 +59,7 @@ class CreateObject extends React.Component {
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
+    history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   };
 
   static defaultProps = {
@@ -117,6 +121,7 @@ class CreateObject extends React.Component {
           parentAuthor: selectedType.author,
           parentPermlink: selectedType.permlink,
         };
+
         this.props
           .createWaivioObject(objData)
           .then(({ value: { parentPermlink, parentAuthor } }) => {
@@ -139,7 +144,7 @@ class CreateObject extends React.Component {
                     locale: values.locale,
                   },
                 ),
-                { votePower: null, follow: false },
+                { votePower: null, follow: false, isLike: false },
               );
             }
             this.props.notify(
@@ -149,7 +154,7 @@ class CreateObject extends React.Component {
               }),
               'success',
             );
-            this.setState({ loading: false, isModalOpen: false });
+            this.props.history.push(`/object/${parentPermlink}`);
             this.props.onCreateObject(
               {
                 id: parentPermlink,
@@ -174,10 +179,9 @@ class CreateObject extends React.Component {
             );
           })
           .catch(error => {
-            console.log('\tObject creation:: ', error);
             this.props.notify(
               this.props.intl.formatMessage({
-                id: 'create_object_error',
+                id: error,
                 defaultMessage: 'Something went wrong. Object is not created',
               }),
               'error',
@@ -202,7 +206,6 @@ class CreateObject extends React.Component {
       isSingleType,
     } = this.props;
     const { loading } = this.state;
-
     const Option = Select.Option;
 
     LANGUAGES.forEach(lang => {
@@ -254,6 +257,14 @@ class CreateObject extends React.Component {
                       },
                       { value: 100 },
                     ),
+                  },
+                  {
+                    pattern: defaultObjectType === 'hashtag' ? /^[a-z0-9_.-]*$/ : null,
+                    message: intl.formatMessage({
+                      id: 'value_error_upper_case',
+                      defaultMessage:
+                        'Lowercase letters, numbers, period, underscore and hyphen are allowed',
+                    }),
                   },
                   {
                     required: true,

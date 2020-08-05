@@ -1,18 +1,22 @@
-import React from 'react';
-import { Tag } from 'antd';
+import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Modal, Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { getTextByFilterKey } from './rewardsHelper';
+import { isEmpty, map, get } from 'lodash';
+import { getTextByFilterKey, getSort } from './rewardsHelper';
+import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
+import FilterModal from './FilterModal';
+import { REWARDS_TYPES_MESSAGES, CAMPAIGNS_TYPES_MESSAGES } from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
     hasMore,
-    IsRequiredObjectWrap,
     loading,
     filterKey,
     userName,
@@ -21,12 +25,107 @@ const FilteredRewardsList = props => {
     intl,
     isSearchAreaFilter,
     resetMapFilter,
-    sort,
+    sortEligible,
+    sortAll,
+    sortReserved,
+    sortHistory,
+    sortMessages,
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
+    sponsors,
+    activeFilters,
+    setFilterValue,
+    campaignsTypes,
+    messages,
+    location,
+    activeMessagesFilters,
+    getHistory,
+    activeHistoryFilters,
+    setActiveMessagesFilters,
+    blacklistUsers,
   } = props;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const sort = getSort(match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages);
+
+  const showMap = () => dispatch(setMapFullscreenMode(true));
+  const IsRequiredObjectWrap =
+    !match.params.campaignParent &&
+    match.params.filterKey !== 'history' &&
+    match.params.filterKey !== 'messages';
+
+  const getFiltersForTags = useMemo(() => {
+    if (location === '/rewards/history') {
+      return activeHistoryFilters;
+    } else if (location === '/rewards/messages') {
+      return activeMessagesFilters;
+    }
+    return activeFilters;
+  }, [location, activeHistoryFilters, activeMessagesFilters, activeFilters]);
+
+  const setFilters = useMemo(
+    () =>
+      location === '/rewards/history' || location === '/rewards/messages'
+        ? setActiveMessagesFilters
+        : setFilterValue,
+    [location, setActiveMessagesFilters, setFilterValue],
+  );
+
+  const sortRewards = useMemo(() => {
+    if (location === '/rewards/messages') {
+      return [
+        {
+          key: 'inquiryDate',
+          id: 'inquiry_date',
+          defaultMessage: 'Inquiry date',
+        },
+        {
+          key: 'latest',
+          id: 'latest',
+          defaultMessage: 'Latest',
+        },
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+      ];
+    }
+    if (location === '/rewards/history') {
+      return [
+        {
+          key: 'reservation',
+          id: 'paymentTable_reservation',
+          defaultMessage: 'Reservation',
+        },
+        {
+          key: 'lastAction',
+          id: 'action_date',
+          defaultMessage: 'Action (date)',
+        },
+      ];
+    }
+    return [
+      {
+        key: 'reward',
+        id: 'amount_sort',
+        defaultMessage: 'amount',
+      },
+      {
+        key: 'date',
+        id: 'expiry_sort',
+        defaultMessage: 'expiry',
+      },
+      {
+        key: 'proximity',
+        id: 'proximity_sort',
+        defaultMessage: 'proximity',
+      },
+    ];
+  }, [location, intl]);
 
   return !loadingCampaigns ? (
     <React.Fragment>
@@ -38,40 +137,85 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        location={location}
       />
       {isSearchAreaFilter && (
         <Tag className="ttc" key="search-area-filter" closable onClose={resetMapFilter}>
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
+      {!IsRequiredObjectWrap &&
+      filterKey !== 'history' &&
+      propositions.length &&
+      propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}
             className="FilteredRewardsList__header-text"
           >
-            {propositions[0].required_object.default_name}
+            {get(propositions, ['0', 'required_object', 'default_name'])}
           </Link>
         </div>
       ) : (
         <SortSelector sort={sort} onChange={handleSortChange}>
-          <SortSelector.Item key="reward">
-            <FormattedMessage id="amount_sort" defaultMessage="amount">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="date">
-            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="proximity">
-            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
+          {map(sortRewards, item => (
+            <SortSelector.Item key={item.key}>
+              <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
+                {msg => msg}
+              </FormattedMessage>
+            </SortSelector.Item>
+          ))}
         </SortSelector>
       )}
+      {(!isEmpty(sponsors) ||
+        match.params.filterKey === 'history' ||
+        match.params.filterKey === 'messages') && (
+        <div className="FilteredRewardsList__filters-tags-block">
+          <span className="FilteredRewardsList__filters-topic ttc">
+            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+          </span>
+          {map(getFiltersForTags, (filterValues, filterName) => {
+            if (filterName !== 'caseStatus') {
+              return map(filterValues, filterValue => (
+                <Tag
+                  key={`${filterName}:${filterValue}`}
+                  closable
+                  onClose={() => setFilters(filterValue, filterName)}
+                >
+                  {filterValue}
+                </Tag>
+              ));
+            } else if (!isEmpty(filterValues)) {
+              return (
+                <Tag
+                  key={`${filterName}:${filterValues}`}
+                  closable
+                  onClose={() => setFilters(filterValues, filterName)}
+                >
+                  {filterValues}
+                </Tag>
+              );
+            }
+            return null;
+          })}
+          <span
+            className="FilteredRewardsList__filters-selector underline ttl"
+            role="presentation"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+          </span>
+        </div>
+      )}
+      {!isEmpty(sponsors) &&
+        match.params.filterKey !== 'history' &&
+        match.params.filterKey !== 'messages' && (
+          <div className="FilteredRewardsList__filters-toggle-map tc">
+            <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
+              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+            </Button>
+          </div>
+        )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -80,9 +224,48 @@ const FilteredRewardsList = props => {
           loadingMore={loading}
           loader={<Loading />}
         >
-          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
+          {campaignsLayoutWrapLayout(
+            IsRequiredObjectWrap,
+            filterKey,
+            userName,
+            match,
+            messages,
+            getHistory,
+            blacklistUsers,
+          )}
         </ReduxInfiniteScroll>
       </div>
+
+      <Modal
+        className="FilteredRewardsList__filters-modal"
+        footer={null}
+        title={intl.formatMessage({
+          id: 'filter_rewards',
+          defaultMessage: 'Filter rewards',
+        })}
+        closable
+        visible={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <FilterModal
+          intl={intl}
+          activeFilters={activeFilters}
+          activeMessagesFilters={activeMessagesFilters}
+          filters={{ types: campaignsTypes, guideNames: sponsors }}
+          filtersHistory={{
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+            messagesSponsors: sponsors,
+          }}
+          filtersMessages={{
+            caseStatus: CAMPAIGNS_TYPES_MESSAGES,
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+          }}
+          setFilterValue={setFilterValue}
+          match={match}
+          activeHistoryFilters={activeHistoryFilters}
+          setActiveMessagesFilters={setActiveMessagesFilters}
+        />
+      </Modal>
     </React.Fragment>
   ) : (
     <Loading />
@@ -93,27 +276,57 @@ FilteredRewardsList.defaultProps = {
   hasMore: false,
   propositions: [],
   isSearchAreaFilter: false,
-  sort: 'reward',
+  sortReserved: 'proximity',
+  sortAll: 'proximity',
+  sortEligible: 'proximity',
   loadingCampaigns: false,
   loading: false,
+  sponsors: [],
+  campaignsTypes: [],
+  messages: [],
+  setFilterValue: () => {},
+  handleLoadMore: () => {},
+  resetMapFilter: () => {},
+  activeFilters: {},
+  activeMessagesFilters: {},
+  userName: '',
+  sortHistory: 'reservation',
+  sortMessages: 'inquiryDate',
+  blacklistUsers: [],
+  activeHistoryFilters: {},
+  setActiveMessagesFilters: () => {},
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
-  IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
-  resetMapFilter: PropTypes.func.isRequired,
-  sort: PropTypes.string,
+  resetMapFilter: PropTypes.func,
+  sortAll: PropTypes.string,
+  sortReserved: PropTypes.string,
+  sortEligible: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
-  handleLoadMore: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func,
+  sponsors: PropTypes.arrayOf(PropTypes.string),
+  activeFilters: PropTypes.shape(),
+  activeMessagesFilters: PropTypes.shape(),
+  setFilterValue: PropTypes.func,
+  campaignsTypes: PropTypes.arrayOf(PropTypes.string),
+  messages: PropTypes.arrayOf(PropTypes.shape()),
+  location: PropTypes.string.isRequired,
+  sortHistory: PropTypes.string,
+  sortMessages: PropTypes.string,
+  getHistory: PropTypes.func.isRequired,
+  blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+  activeHistoryFilters: PropTypes.shape(),
+  setActiveMessagesFilters: PropTypes.func,
 };
 
 export default FilteredRewardsList;

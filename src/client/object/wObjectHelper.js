@@ -10,6 +10,10 @@ import {
   mapValues,
   orderBy,
   uniqBy,
+  reduce,
+  findIndex,
+  isEqual,
+  map,
 } from 'lodash';
 import { getClientWObj } from '../adapters';
 import {
@@ -17,13 +21,24 @@ import {
   objectFieldsWithInnerData,
   TYPES_OF_MENU_ITEM,
   objectFields,
-} from '../../../src/common/constants/listOfFields';
+} from '../../common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
+import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
-  const { type, menuItems, sortCustom } = wobj;
+  const { type, sortCustom } = wobj;
+  const wobject = get(wobj, 'fields', null);
+  const menuItems =
+    wobject &&
+    wobject.filter(
+      field =>
+        field.type === 'menuList' &&
+        calculateApprovePercent(field.active_votes, field.weight, wobj) >= 70 &&
+        !field.status,
+    );
+
   switch (type && type.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
       url = `${pathname}/${OBJECT_TYPE.PAGE}`;
@@ -35,9 +50,13 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
       break;
     default:
       if (menuItems && menuItems.length) {
-        url = `${pathname}/menu#${(sortCustom &&
-          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-          menuItems[0].author_permlink}`;
+        const winnerItem = menuItems && menuItems.sort((a, b) => b.weight - a.weight)[0];
+        url =
+          sortCustom && winnerItem
+            ? `${pathname}/menu#${(sortCustom &&
+                sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+                winnerItem.body}`
+            : pathname;
       } else if (screenSize !== 'large') {
         url = `${pathname}/about`;
       }
@@ -49,13 +68,20 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
     return defaultValue;
+  let fieldValues;
+  if (wObject.fields) {
+    fieldValues = wObject.fields.filter(
+      field =>
+        field.name === currentField &&
+        calculateApprovePercent(field.active_votes, field.weight, wObject) >= 70,
+    );
+  }
 
-  const fieldValues = filter(wObject.fields, ['name', currentField]);
-  if (!fieldValues.length) return defaultValue;
+  if (!fieldValues) return defaultValue;
 
   const orderedValues = orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (!isEmpty(orderedValues[0].body)) {
+  if (orderedValues[0] && !isEmpty(orderedValues[0].body)) {
     const upvotedByModerator = orderedValues.find(field => field.upvotedByModerator);
     return upvotedByModerator ? upvotedByModerator.body : orderedValues[0].body;
   }
@@ -80,6 +106,8 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
     objectFields.link,
     objectFields.status,
     objectFields.newsFilter,
+    objectFields.name,
+    objectFields.description,
   ];
 
   const fieldsByLocale = {
@@ -87,7 +115,6 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
     [LOCALES.DEFAULT]: [],
     [LOCALES.OTHER]: [],
   };
-
   wObj.fields
     .filter(f => !Object.keys(wObj).includes(f.name)) // skip fields which already exist as wObj properties
     .forEach(field => {
@@ -113,7 +140,11 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
   );
   localesToFilter.forEach(locale => {
     fieldsByLocale[locale]
-      .filter(field => !Object.keys(maxWeightedFields).includes(field.name))
+      .filter(
+        field =>
+          !Object.keys(maxWeightedFields).includes(field.name) &&
+          calculateApprovePercent(field.active_votes, field.weight, wObj) >= 70,
+      )
       .reduce((acc, curr) => {
         if (acc[curr.name]) {
           if (curr.weight > acc[curr.name].weight) {
@@ -246,16 +277,20 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
   );
 };
 
-export const mapObjectAppends = (comments, wObj, albums) => {
+export const mapObjectAppends = (comments = {}, wObj = {}, albums = []) => {
   const galleryImages = [];
-  albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
+
+  if (albums) albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
 
   const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
-  return [...wObj.fields, ...galleryImages, ...albums].map(field => {
+  const fields = wObj && wObj.fields ? wObj.fields : [];
+
+  return [...fields, ...galleryImages, ...albums].map(field => {
     const matchComment = filteredComments.find(
       comment => comment.permlink === field.permlink && comment.author === field.author,
     );
     const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
+
     return {
       ...matchComment,
       active_votes: field.active_votes,
@@ -385,3 +420,59 @@ export function combineObjectMenu(menuItems, { button, news } = { button: null, 
   }
   return result;
 }
+
+export const mainerName = (votes, moderators, admins) => {
+  if (!votes || !moderators || !admins) return null;
+
+  const statusName = perc => (perc > 0 ? 'approved' : 'rejected');
+  const mainObjCreator = (mainer, name, status) => ({
+    mainer,
+    name,
+    status,
+  });
+  const moderator = votes
+    .filter(vote => moderators.includes(vote.voter))
+    .sort((after, before) => before.createdAt - after.createdAt)[0];
+
+  if (moderator) {
+    return mainObjCreator('moderator', moderator.voter, statusName(moderator.percent));
+  }
+
+  const admin = votes
+    .filter(vote => admins.includes(vote.voter))
+    .sort((after, before) => before.createdAt - after.createdAt)[0];
+
+  if (admin) {
+    return mainObjCreator('admin', admin.voter, statusName(admin.percent));
+  }
+
+  return null;
+};
+
+export const getWobjectsWithMaxWeight = wobjects =>
+  reduce(
+    wobjects,
+    (acc, object) => {
+      const idx = findIndex(acc, o => isEqual(o.map, object.map));
+      if (idx === -1) {
+        return [...acc, object];
+      }
+      acc[idx] = acc[idx].weight < object.weight ? object : acc[idx];
+
+      return acc;
+    },
+    [],
+  );
+
+export const getWobjectsForMap = objects => {
+  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map));
+  const wobjectWithPropositions = filter(
+    wobjectsWithMap,
+    wobject => wobject.campaigns || wobject.propositions,
+  );
+  const wobjectsWithMaxWeight = getWobjectsWithMaxWeight(wobjectsWithMap);
+  return map(
+    wobjectsWithMaxWeight,
+    obj => find(wobjectWithPropositions, o => isEqual(o.map, obj.map)) || obj,
+  );
+};

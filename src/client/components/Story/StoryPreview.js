@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { get, has } from 'lodash';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
@@ -18,24 +19,25 @@ import {
 import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { getBodyLink } from '../EditorExtended/util/videoHelper';
+import { videoPreviewRegex } from '../../helpers/regexHelpers';
 
 const StoryPreview = ({ post }) => {
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
-  if (jsonMetadata) {
-    if (jsonMetadata.image && jsonMetadata.image[0]) {
-      imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
-    } else if (
-      jsonMetadata.wobj &&
-      jsonMetadata.wobj.field &&
-      [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
-        jsonMetadata.wobj.field.name,
-      )
-    ) {
-      imagePath = jsonMetadata.wobj.field.body;
-    }
+  if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
+    imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+  } else if (
+    jsonMetadata &&
+    jsonMetadata.wobj &&
+    jsonMetadata.wobj.field &&
+    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
+      jsonMetadata.wobj.field.name,
+    )
+  ) {
+    imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
     const contentImages = getContentImages(post.body);
     if (contentImages.length) {
@@ -45,13 +47,12 @@ const StoryPreview = ({ post }) => {
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
-  let hasVideo = false;
+
   if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
     const author = get(video, 'info.author', '');
     const permlink = get(video, 'info.permlink', '');
     const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
     const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
-    hasVideo = true;
     embeds[0] = {
       type: 'video',
       provider_name: 'DTube',
@@ -60,14 +61,45 @@ const StoryPreview = ({ post }) => {
     };
   }
 
+  const videoPreviewResult = post.body.match(videoPreviewRegex);
+
+  if (!embeds[0] && videoPreviewResult) {
+    const videoLink = getBodyLink(videoPreviewResult);
+
+    if (videoLink) {
+      const options = {
+        width: '100%',
+        height: 340,
+        autoplay: false,
+        thumbnail: '',
+      };
+      let thumbnailID;
+
+      if (video && video.files) {
+        if (video.files.ipfs && video.files.ipfs.img) {
+          thumbnailID = video.files.ipfs.img[360];
+          options.thumbnail = thumbnailID && `https://ipfs.io/ipfs/${thumbnailID}`;
+        } else {
+          thumbnailID = video.files.youtube;
+          options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
+        }
+      }
+
+      embeds[0] = steemEmbed.get(videoLink, options);
+      embeds[0].thumbnail = getProxyImageURL(embeds[0].thumbnail, 'preview');
+    }
+  }
+
+  const hasVideo = embeds && embeds[0] && true;
   const preview = {
-    text: () => <BodyShort key="text" className="Story__content__body" body={post.body} />,
+    text: () => (
+      <BodyShort key="text" className="Story__content__body" body={post.fullBody || post.body} />
+    ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
-
     image: () => (
       <div key={imagePath} className="Story__content__img-container">
-        <img alt="" src={imagePath} />
+        <LazyLoadImage src={imagePath} threshold={250} />
       </div>
     ),
   };

@@ -8,13 +8,13 @@ import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import SteemConnect from '../steemConnectAPI';
-import { login, busyLogin } from '../auth/authActions';
+import { login, busyLogin, getAuthGuestBalance } from '../auth/authActions';
 import { getUserAccount, isUserRegistered } from '../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../user/userActions';
 import { notify } from '../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
-import { getRate, getRewardFund } from './../app/appActions';
-import { getRebloggedList } from './../app/Reblog/reblogActions';
+import { getRate, getRewardFund } from '../app/appActions';
+import { getRebloggedList } from '../app/Reblog/reblogActions';
 import './Navigation/ModalSignUp/ModalSignUp.less';
 
 const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
@@ -30,21 +30,24 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
     setFieldsValue,
   } = form;
 
+  const onLoginCallback = () => {
+    batch(() => {
+      dispatch(getFollowing());
+      dispatch(getFollowingObjects());
+      dispatch(getNotifications());
+      dispatch(busyLogin());
+      dispatch(getRewardFund());
+      dispatch(getRebloggedList());
+      dispatch(getRate());
+      dispatch(getAuthGuestBalance());
+    });
+  };
+
   const responseGoogle = async response => {
     if (response) {
       const res = await isUserRegistered(response.googleId, 'google');
       if (res) {
-        dispatch(login(response.accessToken, 'google')).then(() => {
-          batch(() => {
-            dispatch(getFollowing());
-            dispatch(getFollowingObjects());
-            dispatch(getNotifications());
-            dispatch(busyLogin());
-            dispatch(getRewardFund());
-            dispatch(getRebloggedList());
-            dispatch(getRate());
-          });
-        });
+        dispatch(login(response.accessToken, 'google')).then(onLoginCallback);
       } else {
         setFieldsValue({
           username: getSlug(
@@ -60,14 +63,7 @@ const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
     if (response) {
       const res = await isUserRegistered(response.id, 'facebook');
       if (res) {
-        dispatch(login(response.accessToken, 'facebook')).then(() => {
-          batch(() => {
-            dispatch(getFollowing());
-            dispatch(getFollowingObjects());
-            dispatch(getNotifications());
-            dispatch(busyLogin());
-          });
-        });
+        dispatch(login(response.accessToken, 'facebook')).then(onLoginCallback);
       } else {
         setFieldsValue({
           username: getSlug(response.name).slice(0, 16),

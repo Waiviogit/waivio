@@ -1,6 +1,10 @@
 import { get } from 'lodash';
 import * as types from './authActions';
-import { GET_USER_METADATA } from '../user/usersActions';
+import {
+  GET_USER_METADATA,
+  GET_USER_PRIVATE_EMAIL,
+  UPDATE_USER_METADATA,
+} from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -9,6 +13,7 @@ const initialState = {
   loaded: false,
   user: {},
   userMetaData: {},
+  privateEmail: '',
   isGuestUser: false,
 };
 
@@ -26,6 +31,7 @@ export default (state = initialState, action) => {
 
     case types.LOGIN_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
+
       return {
         ...state,
         isFetching: false,
@@ -33,6 +39,7 @@ export default (state = initialState, action) => {
         loaded: true,
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
+        privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
       };
 
@@ -54,7 +61,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isReloading: false,
-        user: action.payload.account || state.user,
+        user: {
+          ...state.user,
+          ...action.payload.account,
+        },
       };
 
     case types.RELOAD_ERROR:
@@ -63,19 +73,28 @@ export default (state = initialState, action) => {
         isReloading: false,
       };
 
-    case types.LOGOUT:
+    case types.UPDATE_GUEST_BALANCE.SUCCESS:
       return {
         ...state,
-        isAuthenticated: false,
-        loaded: false,
-        isGuestUser: false,
-        user: {},
+        user: {
+          ...state.user,
+          balance: get(action.payload, ['payable'], null),
+        },
       };
+
+    case types.LOGOUT:
+      return initialState;
 
     case GET_USER_METADATA.SUCCESS:
       return {
         ...state,
         userMetaData: action.payload,
+      };
+
+    case GET_USER_PRIVATE_EMAIL.SUCCESS:
+      return {
+        ...state,
+        privateEmail: action.payload,
       };
 
     case types.UPDATE_PROFILE_START:
@@ -91,12 +110,22 @@ export default (state = initialState, action) => {
           isFetching: false,
           user: {
             ...state.user,
-            json_metadata: action.meta,
+            posting_json_metadata: action.meta,
           },
         };
       }
 
       return state;
+    }
+
+    case UPDATE_USER_METADATA: {
+      return {
+        ...state,
+        userMetaData: {
+          ...state.userMetaData,
+          ...action.payload,
+        },
+      };
     }
 
     case types.UPDATE_PROFILE_ERROR:
@@ -114,10 +143,13 @@ export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
+export const getAuthenticatedUserNotificationsSettings = state =>
+  get(state, ['userMetaData', 'settings', 'userNotifications'], {});
+export const getAuthenticatedUserPrivateEmail = state => state.privateEmail;
 export const getAuthenticatedUserAvatar = state => {
-  let jsonMetadata = get(state, 'user.json_metadata');
+  let jsonMetadata = get(state, 'user.posting_json_metadata');
   if (jsonMetadata) {
-    jsonMetadata = JSON.parse(state.user.json_metadata);
+    jsonMetadata = JSON.parse(state.user.posting_json_metadata);
     return get(jsonMetadata, 'profile.profile_image');
   }
   return undefined;

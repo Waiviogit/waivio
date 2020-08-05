@@ -1,4 +1,5 @@
 @import (reference) './custom.less';
+@import (reference) './modules/variables.less';
 
 body {
   overflow-x: hidden;
@@ -18,9 +19,17 @@ a:focus {
   background: @white;
 }
 
+.ant-modal-wrap {
+  overflow: scroll;
+}
+
+.ant-modal-body {
+  min-width: 250px;
+}
+
 .content {
   margin-top: 56px;
-  width: 100%;
+  width: 100vw;
 }
 
 .shifted {
@@ -44,10 +53,24 @@ a:focus {
 
 .ant-layout-header {
   z-index: @ant-layout-header-z-index !important;
+  width: 100vw !important;
 }
 
 textarea.ant-input {
   transition: none;
+}
+
+.ant-calendar-selected-day .ant-calendar-date {
+  background: rgba(0, 0, 0, 0);
+}
+
+.ant-input:hover,
+.ant-input-number:hover {
+  border-color: @orange !important;
+}
+
+.nightmode .ant-calendar-selected-day .ant-calendar-date {
+  color: @white-smoke;
 }
 
 .ant-popover {
@@ -98,6 +121,10 @@ body.post-modal .primary-modal {
   }
 }
 
+.newStatus {
+  text-transform: uppercase;
+}
+
 .ant-popover-title {
   color: #9d9d9d;
   line-height: 36px;
@@ -111,9 +138,9 @@ body.post-modal .primary-modal {
 }
 
 .ant-rate {
-  color: @orange-hot;
+  color: @primary-color !important;
   &:hover {
-    color: @orange;
+    color: @orange !important;
   }
 }
 
@@ -136,7 +163,7 @@ video {
 .username {
   color: @black;
   &:hover {
-    color: @black;
+    color: @orange-hot;
   }
   font-weight: 500;
 }
@@ -151,10 +178,6 @@ iframe {
 
 div[data-dir='rtl'] {
   direction: rtl;
-}
-
-.wv-break-word {
-  word-wrap: break-word;
 }
 
 .ant-modal-mask {
@@ -174,6 +197,10 @@ div[data-dir='rtl'] {
 .ant-checkbox-disabled + span {
   color: #7d7d7d;
   cursor: not-allowed;
+}
+
+.ant-select-auto-complete.ant-select .ant-select-selection--single {
+  height: 32px !important;
 }
 
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
@@ -256,5 +283,37 @@ ul {
   white-space: nowrap;
   max-width: 95%;
 }
+
+.ant-select-auto-complete.ant-select .ant-select-search--inline {
+  margin-top: -2px;
+}
+
+// region ant-slider
+.ant-slider-track {
+  background-color: @orange !important;
+}
+.ant-slider-handle {
+  border-color: @orange !important;
+  &:focus {
+    border-color: @neon-carrot !important;
+    box-shadow: 0 0 0 5px rgba(248, 112, 7, 0.2) !important;
+  }
+}
+.ant-slider-dot-active {
+  border-color: @primary-color !important;
+}
+// endregion
+
+// region ant-tabs
+.ant-tabs-nav {
+  .ant-tabs-tab-active,
+  .ant-tabs-tab:hover {
+    color: @primary-color !important;
+  }
+}
+.ant-tabs-ink-bar {
+  background-color: @primary-color !important;
+}
+// endregion
 
 @import 'common-nightmode';

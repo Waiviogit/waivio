@@ -3,7 +3,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import { Icon, Modal } from 'antd';
 import { addNewBlock } from '../../model';
-import { Block } from '../../util/constants';
+import { Block } from '../..';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
 import withEditor from '../../../Editor/withEditor';
 
@@ -19,6 +19,7 @@ export default class ImageSideButton extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       isModal: false,
       isLoadingImage: false,
@@ -51,9 +52,7 @@ export default class ImageSideButton extends React.Component {
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
-  getImages = image => {
-    this.setState({ currentImage: image });
-  };
+  getImages = image => this.setState({ currentImage: image });
 
   // For testing - don't load images to ipfs
   // onChange(e) {

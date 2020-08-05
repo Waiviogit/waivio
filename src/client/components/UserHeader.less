@@ -26,7 +26,6 @@
     .UserHeader__rank,
     .UserHeader__rank & > i,
     .UserHeader__handle,
-    .UserHeader__more,
     .UserHeader__user__username,
     .UserHeader__follows-you {
       color: #ffffff !important;
@@ -120,7 +119,7 @@
   align-items: center;
   flex-direction: column;
 
-  a {
+  &--wrap {
     position: relative;
   }
 
@@ -233,10 +232,6 @@
       flex-direction: initial;
       justify-content: initial;
     }
-  }
-
-  .UserHeader__more {
-    position: static;
   }
 
   .UserHeader__user__button {

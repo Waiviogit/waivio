@@ -3,27 +3,21 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash/lodash';
 
 import {
   getPosts,
-  getFeed,
   getObject,
   getReadLanguages,
   getIsAuthenticated,
   getObjectAlbums,
+  getRewardFund,
+  getRate,
 } from '../reducers';
-import Feed from '../feed/Feed';
-import {
-  getFeedFromState,
-  getFeedLoadingFromState,
-  getFilteredContent,
-} from '../helpers/stateHelpers';
-import { getObjectComments } from '../feed/feedActions';
 import {
   objectFields,
   getAllowedFieldsByObjType,
-  TYPES_OF_MENU_ITEM,
+  sortingMenuName,
 } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -36,33 +30,41 @@ import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
 import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
+import { getObjectAppends } from './wobjActions';
+import AppendCard from './AppendCard';
+import Loading from '../components/Icon/Loading';
+import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 import './WobjHistory.less';
 
 @connect(
   state => ({
-    feed: getFeed(state),
     comments: getPosts(state),
     object: getObject(state),
     readLanguages: getReadLanguages(state),
     isAuthenticated: getIsAuthenticated(state),
     albums: getObjectAlbums(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   {
-    getObjectComments,
+    getObjectAppends,
   },
 )
 class WobjHistory extends React.Component {
   static propTypes = {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
-    comments: PropTypes.shape(),
+    getObjectAppends: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
-    getObjectComments: PropTypes.func,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
+    rewardFund: PropTypes.shape({
+      recent_claims: PropTypes.string,
+      reward_balance: PropTypes.string,
+    }).isRequired,
+    rate: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -96,9 +98,16 @@ class WobjHistory extends React.Component {
 
   componentDidMount() {
     const { object } = this.props;
-
     if (object && object.author && object.author_permlink) {
-      this.props.getObjectComments(object.author, object.author_permlink);
+      this.props.getObjectAppends(object.author, object.author_permlink);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { object } = this.props;
+
+    if (isEmpty(prevProps.object) && !isEmpty(object)) {
+      this.props.getObjectAppends(object.author, object.author_permlink);
     }
   }
 
@@ -137,24 +146,43 @@ class WobjHistory extends React.Component {
   render() {
     const {
       field,
-      locale,
       showModal,
       showModalGalleryItem,
       showModalGalleryAlbum,
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
-    const commentIds = getFeedFromState('comments', object.author, feed);
+    const { object, readLanguages, isAuthenticated, rewardFund, rate } = this.props;
+    const { params } = this.props.match;
+    const isFullParams =
+      rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
+    const voteValue = post =>
+      isFullParams
+        ? (post.weight / rewardFund.recent_claims) *
+          rewardFund.reward_balance.replace(' HIVE', '') *
+          rate *
+          1000000
+        : 0;
 
-    const content = getFilteredContent(
-      Object.values(comments).filter(comment => commentIds.includes(comment.id)),
-      ['appendObject'],
-      _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
-      locale,
-      sort,
-    );
-    const isFetching = getFeedLoadingFromState('comments', object.author, feed);
+    const sortedList = wobj => {
+      switch (sort) {
+        case 'vote':
+          return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
+
+        case 'approval':
+          return wobj.fields.sort(
+            (before, after) =>
+              calculateApprovePercent(after.active_votes, after.weight, wobj) -
+              calculateApprovePercent(before.active_votes, before.weight, wobj),
+          );
+        default:
+          return wobj.fields.sort(
+            (before, after) => Date.parse(after.created) - Date.parse(before.created),
+          );
+      }
+    };
+    let content = object && object.fields && sortedList(object);
+    const isFetching = content && content.length && content[0].append_field_name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
@@ -164,7 +192,33 @@ class WobjHistory extends React.Component {
       return true;
     });
 
+    if (params[1] && content && content.length && content[0].append_field_name) {
+      content = content.filter(
+        f =>
+          sortingMenuName[params[1]] === f.append_field_name || f.append_field_name === params[1],
+      );
+    }
+
     const objName = getFieldWithMaxWeight(object, objectFields.name);
+    const renderFields = () => {
+      if (content && content.length) {
+        if (content[0].append_field_name) {
+          return content.map(post => <AppendCard key={post.permlink} post={post} />);
+        }
+
+        return <Loading />;
+      }
+
+      return (
+        <div className="object-feed__row justify-center">
+          <FormattedMessage
+            id="empty_object_profile"
+            defaultMessage="Be the first to write a review"
+          />
+        </div>
+      );
+    };
+
     return (
       <React.Fragment>
         <div className="wobj-history__filters">
@@ -219,23 +273,28 @@ class WobjHistory extends React.Component {
             </React.Fragment>
           )}
         </div>
-        {!isFetching && (
+        {isFetching && (
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
-              <SortSelector.Item key="rank">
-                <FormattedMessage id="rank" defaultMessage="Rank">
+              <SortSelector.Item key="recency">
+                <FormattedMessage id="recency" defaultMessage="Recency">
                   {msg => msg.toUpperCase()}
                 </FormattedMessage>
               </SortSelector.Item>
-              <SortSelector.Item key="recency">
-                <FormattedMessage id="recency" defaultMessage="Recency">
+              <SortSelector.Item key="vote">
+                <FormattedMessage id="vote_count_tag" defaultMessage="Vote count">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </SortSelector.Item>
+              <SortSelector.Item key="approval">
+                <FormattedMessage id="approval" defaultMessage="Approval">
                   {msg => msg.toUpperCase()}
                 </FormattedMessage>
               </SortSelector.Item>
             </SortSelector>
           </div>
         )}
-        <Feed content={content} isFetching={isFetching} />
+        {renderFields()}
       </React.Fragment>
     );
   }

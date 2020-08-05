@@ -1,21 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedNumber } from 'react-intl';
-import { Icon, Button } from 'antd';
+import { Icon, Button, message, Modal, InputNumber } from 'antd';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { map, get, includes } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
-import '../../components/StoryFooter/Buttons.less';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
+import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
+import Avatar from '../../components/Avatar';
+import WeightTag from '../../components/WeightTag';
+import { rejectReview, changeReward } from '../../user/userActions';
+import * as apiConfig from '../../../waivioApi/config.json';
+import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
+import '../../components/StoryFooter/Buttons.less';
+import { getReport } from '../../../waivioApi/ApiClient';
+import Report from '../Report/Report';
 
 @injectIntl
 @withAuthActions
+@connect(null, {
+  rejectReview,
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  changeReward,
+})
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     daysLeft: PropTypes.number.isRequired,
-    post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingFollow: PropTypes.bool,
@@ -24,7 +41,21 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
     toggleModalDetails: PropTypes.func,
-    requiredObjectName: PropTypes.bool.isRequired,
+    requiredObjectName: PropTypes.string.isRequired,
+    propositionGuideName: PropTypes.string.isRequired,
+    propositionStatus: PropTypes.string.isRequired,
+    match: PropTypes.shape().isRequired,
+    proposition: PropTypes.shape().isRequired,
+    user: PropTypes.shape().isRequired,
+    toggleModal: PropTypes.func,
+    rejectReview: PropTypes.func.isRequired,
+    changeReward: PropTypes.func.isRequired,
+    changeBlackAndWhiteLists: PropTypes.func.isRequired,
+    numberOfComments: PropTypes.number,
+    getMessageHistory: PropTypes.func,
+    setDataForSingleReport: PropTypes.func.isRequired,
+    getBlacklist: PropTypes.func.isRequired,
+    blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -39,6 +70,10 @@ export default class CampaignButtons extends React.Component {
     onCommentClick: () => {},
     handlePostPopoverMenuClick: () => {},
     toggleModalDetails: () => {},
+    toggleModal: () => {},
+    numberOfComments: null,
+    getMessageHistory: () => {},
+    blacklistUsers: [],
   };
 
   constructor(props) {
@@ -49,12 +84,25 @@ export default class CampaignButtons extends React.Component {
       shareModalLoading: false,
       reactionsModalVisible: false,
       loadingEdit: false,
+      visible: false,
+      isModalReportOpen: false,
+      isOpenModalEnterAmount: false,
+      value: '',
+      isUserInBlacklist: false,
+      isLoading: false,
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+
+    this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
+  }
+
+  componentDidMount() {
+    const { blacklistUsers } = this.props;
+    this.getIsUserInBlackList(blacklistUsers);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,8 +152,165 @@ export default class CampaignButtons extends React.Component {
     });
   }
 
+  handleRejectClick = () => {
+    const { proposition } = this.props;
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    const companyAuthor = get(proposition, ['guide', 'name']);
+    const companyPermlink = get(proposition, 'activation_permlink');
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+    const objPermlink = get(proposition, ['users', '0', 'object_permlink']);
+    const userName = get(proposition, ['users', '0', 'name']);
+    return this.props
+      .rejectReview({
+        companyAuthor,
+        companyPermlink,
+        username: userName,
+        reservationPermlink,
+        objPermlink,
+        appName,
+      })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'review_rejected',
+            defaultMessage: 'Review rejected',
+          }),
+        );
+      })
+      .then(() => {
+        setTimeout(() => this.props.getMessageHistory(), 8000);
+      })
+      .catch(e => message.error(e.message));
+  };
+
+  getIsUserInBlackList = blacklistUsers => {
+    const { proposition } = this.props;
+    const isUserInBlacklist = includes(blacklistUsers, get(proposition, ['users', '0', 'name']));
+    return this.setState({ isUserInBlacklist });
+  };
+
+  openModalEnterAmount = () => this.setState({ isOpenModalEnterAmount: true });
+
+  handleChangeValue = value => {
+    this.setState({ value });
+  };
+
+  handleOkClick = () => {
+    const { value } = this.state;
+    if (value > 0) {
+      this.setState({ isLoading: true });
+      this.handleChangeReward().then(() =>
+        this.setState({ isLoading: false, value: '', isOpenModalEnterAmount: false }),
+      );
+    }
+  };
+
+  handleCancel = () => this.setState({ isOpenModalEnterAmount: false, value: '' });
+
+  handleChangeReward = async () => {
+    try {
+      const { proposition, match } = this.props;
+      const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+      const companyAuthor = get(proposition, ['guide', 'name']);
+      const companyPermlink = get(proposition, 'activation_permlink');
+      const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+      const userName = get(proposition, ['users', '0', 'name']);
+      const amount = this.state.value;
+      await this.props.changeReward({
+        companyAuthor,
+        companyPermlink,
+        username: userName,
+        reservationPermlink,
+        appName,
+        amount,
+      });
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.props
+            .getMessageHistory()
+            .then(() => resolve())
+            .catch(error => reject(error));
+        }, 10000);
+      });
+      if (match.params.filterKey === 'history') {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'reward_has_been_decreased',
+            defaultMessage: 'Reward has been decreased',
+          }),
+        );
+      } else {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'reward_has_been_increased',
+            defaultMessage: 'Reward has been increased',
+          }),
+        );
+      }
+    } catch (e) {
+      message.error(e.message);
+    }
+  };
+
+  handleChangeBlacklistClick = () => {
+    const { proposition } = this.props;
+    const { isUserInBlacklist } = this.state;
+    const id = isUserInBlacklist ? 'removeUsersFromBlackList' : 'addUsersToBlackList';
+    const idsUsers = [];
+    idsUsers.push(get(proposition, ['users', '0', 'name']));
+    return this.props
+      .changeBlackAndWhiteLists(id, idsUsers)
+      .then(() => {
+        setTimeout(() => {
+          this.props.getBlacklist(proposition.guideName).then(data => {
+            const blacklist = get(data, ['value', 'blackList', 'blackList']);
+            const blacklistNames = map(blacklist, user => user.name);
+            this.getIsUserInBlackList(blacklistNames);
+          });
+        }, 7000);
+      })
+      .then(() => {
+        this.setState({ isUserInBlacklist: id === 'addUsersToBlackList' });
+        message.success(
+          this.props.intl.formatMessage(
+            isUserInBlacklist
+              ? {
+                  id: 'user_was_deleted_from_blacklist',
+                  defaultMessage: 'User was deleted from the blacklist',
+                }
+              : {
+                  id: 'user_was_added_to_blacklist',
+                  defaultMessage: 'Users were added to blacklist',
+                },
+          ),
+        );
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   openModalDetails = () => {
     this.props.toggleModalDetails({ value: true });
+  };
+
+  getPopoverMenu = () => {
+    const { propositionStatus, match } = this.props;
+    const { isUserInBlacklist } = this.state;
+    if (match.params.filterKey === 'messages') {
+      return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
+    }
+    return popoverDataHistory[propositionStatus] || [];
+  };
+
+  hide = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleVisibleChange = visible => {
+    this.setState({ visible });
   };
 
   renderPostPopoverMenu() {
@@ -113,11 +318,19 @@ export default class CampaignButtons extends React.Component {
       pendingFollow,
       pendingFollowObject,
       postState,
-      post,
       handlePostPopoverMenuClick,
       requiredObjectName,
+      propositionGuideName,
+      match,
+      intl,
+      proposition,
+      user,
+      toggleModal,
     } = this.props;
-    const followText = this.getFollowText(postState.userFollowed, `@${post.parent_author}`);
+    const { isUserInBlacklist } = this.state;
+
+    const followText = this.getFollowText(postState.userFollowed, `@${propositionGuideName}`);
+
     const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectName);
 
     let popoverMenu = [];
@@ -156,13 +369,170 @@ export default class CampaignButtons extends React.Component {
         })}
       </PopoverMenuItem>,
     ];
+
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+    const propositionUserName = get(proposition, ['users', '0', 'name']);
+    const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
+    const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
+    const toggleModalReport = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const requestParams = {
+        guideName: proposition.guideName,
+        userName,
+        reservationPermlink,
+      };
+      getReport(requestParams)
+        .then(data => {
+          this.props.setDataForSingleReport(data);
+        })
+        .then(() => this.setState({ isModalReportOpen: !this.state.isModalReportOpen }))
+        .catch(() => console.log(e));
+    };
+
+    const closeModalReport = () => this.setState({ isModalReportOpen: false });
+
     return (
       <Popover
         placement="bottomRight"
         trigger="click"
+        visible={this.state.visible}
+        onVisibleChange={this.handleVisibleChange}
         content={
-          <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
-            {popoverMenu}
+          <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
+            {match.params.filterKey === 'reserved' || match.params.filterKey === 'all'
+              ? popoverMenu
+              : map(this.getPopoverMenu(), item => {
+                  switch (item.id) {
+                    case 'view_reservation':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <Link to={`/@${propositionUserName}/${reservationPermlink}`}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </Link>
+                        </PopoverMenuItem>
+                      );
+                    case 'campaign_buttons_release':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={toggleModal}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'show_report':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div
+                            className="PaymentTable__report"
+                            onClick={toggleModalReport}
+                            role="presentation"
+                          >
+                            <span>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </span>
+                          </div>
+                          <Report
+                            isModalReportOpen={this.state.isModalReportOpen}
+                            toggleModal={closeModalReport}
+                          />
+                        </PopoverMenuItem>
+                      );
+                    case 'reject_review':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.handleRejectClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'increase_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.openModalEnterAmount}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'decrease_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.openModalEnterAmount}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'add_to_blacklist':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'delete_from_blacklist':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={!isUserInBlacklist}>
+                          <div role="presentation" onClick={this.handleChangeBlacklistClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'open_review':
+                      return (
+                        <PopoverMenuItem key={item.key} disabled={!reviewPermlink}>
+                          {reviewPermlink ? (
+                            <Link to={`/@${userName}/${reviewPermlink}`}>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </Link>
+                          ) : (
+                            <span>
+                              {intl.formatMessage({
+                                id: item.id,
+                                defaultMessage: item.defaultMessage,
+                              })}
+                            </span>
+                          )}
+                        </PopoverMenuItem>
+                      );
+                    default:
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          {intl.formatMessage({
+                            id: item.id,
+                            defaultMessage: item.defaultMessage,
+                          })}
+                        </PopoverMenuItem>
+                      );
+                  }
+                })}
           </PopoverMenu>
         }
       >
@@ -172,19 +542,33 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, daysLeft } = this.props;
-
+    const {
+      intl,
+      numberOfComments,
+      daysLeft,
+      propositionStatus,
+      match,
+      user,
+      proposition,
+    } = this.props;
+    const { value, isOpenModalEnterAmount, isLoading } = this.state;
+    const isAssigned = get(proposition, ['objects', '0', 'assigned']);
+    const propositionUserName = get(proposition, ['users', '0', 'name']);
+    const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
+    const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
-          <div>
-            {`${intl.formatMessage({
-              id: 'campaign_buttons_reserved',
-              defaultMessage: 'Reserved',
-            })} - ${daysLeft} ${intl.formatMessage({
-              id: 'campaign_buttons_days_left',
-              defaultMessage: 'days left',
-            })}`}
+          <div className="Buttons__wrap-text">
+            {intl.formatMessage({
+              id: this.buttonsTitle.id,
+              defaultMessage: this.buttonsTitle.defaultMessage,
+            })}
+            {this.buttonsTitle.defaultMessage === 'Reserved' &&
+              ` - ${daysLeft} ${intl.formatMessage({
+                id: 'campaign_buttons_days_left',
+                defaultMessage: 'days left',
+              })} `}
           </div>
           <BTooltip
             title={intl.formatMessage({
@@ -197,18 +581,59 @@ export default class CampaignButtons extends React.Component {
             </a>
           </BTooltip>
           <div className="Buttons__number">
-            {post.children > 0 && <FormattedNumber value={post.children} />}
+            {numberOfComments > 0 && <FormattedNumber value={numberOfComments} />}
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        <React.Fragment>
-          <Button type="primary" onClick={this.openModalDetails}>
+        {isAssigned && (
+          <React.Fragment>
+            <Button type="primary" onClick={this.openModalDetails}>
+              {intl.formatMessage({
+                id: 'campaign_buttons_write_review',
+                defaultMessage: `Write review`,
+              })}
+            </Button>
+          </React.Fragment>
+        )}
+        {match.params.filterKey === 'messages' && (
+          <div className="Buttons__avatar">
+            <Avatar username={propositionUserName} size={30} />{' '}
+            <div role="presentation" className="userName">
+              <Link to={`/@${propositionUserName}`}>{propositionUserName}</Link>
+            </div>
+            <WeightTag weight={propositionUserWeight} />
+          </div>
+        )}
+        {propositionStatus === 'completed' && match.params.filterKey === 'history' && (
+          <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
-              id: 'campaign_buttons_write_review',
-              defaultMessage: `Write review`,
+              id: 'review',
+              defaultMessage: `Review`,
+            })}{' '}
+            {'>'}
+          </Link>
+        )}
+        <Modal
+          visible={isOpenModalEnterAmount}
+          onOk={this.handleOkClick}
+          onCancel={this.handleCancel}
+          style={{ width: '100px' }}
+          width={250}
+          okButtonProps={{ loading: isLoading }}
+        >
+          <InputNumber
+            placeholder={intl.formatMessage({
+              id: 'enter_amount_in_hive',
+              defaultMessage: `Enter amount in HIVE`,
             })}
-          </Button>
-        </React.Fragment>
+            onChange={this.handleChangeValue}
+            value={value}
+            min={0}
+            step={0.01}
+            autoFocus
+            onPressEnter={this.handleOkClick}
+          />
+        </Modal>
       </div>
     );
   }

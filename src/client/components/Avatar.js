@@ -5,23 +5,23 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { getAuthenticatedUser } from '../reducers';
 import './Avatar.less';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
+  const url = 'https://images.hive.blog/u';
   const lastAccountUpdate = !isEmpty(authenticatedUser)
     ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
 
-  if (username && username.includes('waivio_')) {
+  if (username && (username.includes(GUEST_PREFIX) || username.includes(BXY_GUEST_PREFIX))) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
 
   if (!isEmpty(authenticatedUser) && authenticatedUser.name === username) {
-    return `https://steemitimages.com/u/${username}/avatar/large?${lastAccountUpdate}`;
+    return `${url}/${username}/avatar/large?${lastAccountUpdate}`;
   }
 
-  return size > 64
-    ? `https://steemitimages.com/u/${username}/avatar`
-    : `https://steemitimages.com/u/${username}/avatar/small`;
+  return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
 const Avatar = ({ username, size }) => {
@@ -30,7 +30,6 @@ const Avatar = ({ username, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const url = getAvatarURL(username, size, authenticatedUser);
 

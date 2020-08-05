@@ -19,8 +19,12 @@ const LeftSidebar = () => (
     <Route path="/rewards/create" component={SidenavRewards} />
     <Route path="/rewards/manage" component={SidenavRewards} />
     <Route path="/rewards/payables" component={SidenavRewards} />
+    <Route path="/rewards/reports" component={SidenavRewards} />
+    <Route path="/rewards/messages" component={SidenavRewards} />
     <Route path="/rewards/match-bot" component={SidenavRewards} />
-    <Route path="/rewards/edit/:campaignName" component={SidenavRewards} />
+    <Route path="/rewards/blacklist" component={SidenavRewards} />
+    <Route path="/rewards/details/:campaignName" component={SidenavRewards} />
+    <Route path="/rewards/createDuplicate/:campaignName" component={SidenavRewards} />
     <Route path="/discover-objects/:typeName?" component={SidenavDiscoverObjects} />
     <Route path="/discover" component={SidenavDiscoverObjects} />
     <Route path="/replies" component={SidebarMenu} />
@@ -29,6 +33,8 @@ const LeftSidebar = () => (
     <Route path="/edit-profile" component={SidenavUser} />
     <Route path="/settings" component={SidenavUser} />
     <Route path="/invite" component={SidenavUser} />
+    <Route path="/guests-settings" component={SidenavUser} />
+    <Route path="/notification-settings" component={SidenavUser} />
     <Route path="/" component={SidebarMenu} />
   </Switch>
 );

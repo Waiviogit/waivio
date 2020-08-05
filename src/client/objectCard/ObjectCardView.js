@@ -4,12 +4,14 @@ import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import { getApprovedField } from '../helpers/wObjectHelper';
+
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
@@ -46,11 +48,13 @@ const ObjectCardView = ({
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
 
-  const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
-    let url = avatar;
-    if (!isEmpty(passedParent) && avatar === DEFAULTS.AVATAR) {
-      url = passedParent.avatar;
-    }
+  const avatarLayout = () => {
+    const parent = wObject.parent || passedParent;
+    const parentAvatar = getApprovedField(parent, 'avatar');
+    let url = getApprovedField(wObject, 'avatar') || parentAvatar;
+
+    if (!url) url = DEFAULTS.AVATAR;
+
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
@@ -65,15 +69,14 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = isEmpty(passedParent)
-    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
-    : passedParent.name || passedParent.default_name;
-
+  const parentName =
+    !isEmpty(wObject.parent) && getApprovedField(wObject.parent, objectTypes.name, '');
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
+
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -85,11 +88,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${
-                    isEmpty(passedParent)
-                      ? wObject.parent.author_permlink
-                      : passedParent.author_permlink
-                  }`}
+                  to={`/object/${!isEmpty(wObject.parent) ? wObject.parent.author_permlink : null}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -131,7 +130,13 @@ const ObjectCardView = ({
               </span>
               {wObject.address && (
                 <div className="ObjectCardView__tag-text">
-                  {wObject.address.street && <span>{`${wObject.address.street}, `}</span>}
+                  {(wObject.address.street || wObject.address.address) && (
+                    <span>
+                      {`${
+                        wObject.address.street ? wObject.address.street : wObject.address.address
+                      }, `}
+                    </span>
+                  )}
                   {wObject.address.city && <span>{wObject.address.city}</span>}
                 </div>
               )}
