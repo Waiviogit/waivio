@@ -26,12 +26,12 @@ import NotificationTransferVesting from './NotificationTransferVesting';
 import NotificationChangeRecoveryAccount from './NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from './NotificationTransferFromSavings';
 import NotificationClaimReward from './NotificationClaimReward';
-
-import './Notification.less';
-import './Notifications.less';
 import NotificationPostBell from './NotificationPostBell';
 import NotificationReblogBell from './NotificationReblogBell';
 import NotificationFollowBell from './NotificationFollowBell';
+
+import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 
