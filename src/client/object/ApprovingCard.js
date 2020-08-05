@@ -101,7 +101,7 @@ ApprovingCard.propTypes = {
       role: PropTypes.string,
       name: PropTypes.string,
       status: PropTypes.string,
-    })
+    }),
   }).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

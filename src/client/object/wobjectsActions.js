@@ -19,8 +19,9 @@ export const getObject = (authorPermlink, user, requiredField) => (dispatch, get
 
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, user, requiredField, usedLocale)
-      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
+    payload: ApiClient.getObject(authorPermlink, user, requiredField, usedLocale).catch(() =>
+      dispatch({ type: GET_OBJECT_ERROR }),
+    ),
   });
 };
 

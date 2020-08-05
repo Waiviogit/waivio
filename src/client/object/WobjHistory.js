@@ -42,7 +42,9 @@ import './WobjHistory.less';
     albums: getObjectAlbums(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
-  }), null)
+  }),
+  null,
+)
 class WobjHistory extends React.Component {
   static propTypes = {
     history: PropTypes.shape().isRequired,
@@ -146,11 +148,8 @@ class WobjHistory extends React.Component {
           return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
 
         case 'approval':
-          return wobj.fields.sort(
-            (before, after) =>
-              after.approvePercent - before.approvePercent,
-          );
-          
+          return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
+
         default:
           return wobj.fields.sort(
             (before, after) => Date.parse(after.created) - Date.parse(before.created),
@@ -169,17 +168,14 @@ class WobjHistory extends React.Component {
     });
 
     if (params[1] && content && content.length) {
-      content = content.filter(
-        f =>
-          sortingMenuName[params[1]] === f.name || f.name === params[1],
-      );
+      content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
     }
 
     const objName = getFieldWithMaxWeight(object, objectFields.name);
     const renderFields = () => {
       if (content && content.length) {
-          return content.map(post => <AppendCard key={post.permlink} post={post} />);
-        }
+        return content.map(post => <AppendCard key={post.permlink} post={post} />);
+      }
 
       return (
         <div className="object-feed__row justify-center">

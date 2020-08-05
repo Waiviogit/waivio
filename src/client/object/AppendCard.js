@@ -108,7 +108,13 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    props.voteAppends(postId, props.post.author, props.post.permlink, sliderValue * 100, 'approved');
+    props.voteAppends(
+      postId,
+      props.post.author,
+      props.post.permlink,
+      sliderValue * 100,
+      'approved',
+    );
   }
 
   return (
