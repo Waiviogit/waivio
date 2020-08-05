@@ -133,11 +133,12 @@ class EditPost extends Component {
 
   componentDidMount() {
     const { campaign } = this.state;
-    if (campaign && campaign.id) {
-      getCampaignById(campaign.id)
-        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
-        .catch(error => console.log('Failed to get campaign data:', error));
-    }
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const campaignId =
+      campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
+    getCampaignById(campaignId)
+      .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+      .catch(error => console.log('Failed to get campaign data:', error));
   }
 
   componentDidUpdate(prevProps) {
