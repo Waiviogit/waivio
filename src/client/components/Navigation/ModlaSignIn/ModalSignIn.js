@@ -109,6 +109,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
               })}
             </span>
           </p>
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div onClick={() => setIsLoading(true)}>
             <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
           </div>
