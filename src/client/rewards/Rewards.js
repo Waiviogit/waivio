@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { message } from 'antd';
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -44,7 +44,7 @@ import {
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions, getRewardsGeneralCounts } from '../../waivioApi/ApiClient';
-import { preparePropositionReqData } from './rewardsHelper';
+import { preparePropositionReqData, getActiveFilters, getSortChanged } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -557,43 +557,23 @@ class Rewards extends React.Component {
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
 
     const getMessageHistory = async () => {
+      const path = match.params[0];
+      const {
+        activeHistoryFilters,
+        activeMessagesFilters,
+        activeGuideHistoryFilters,
+        sortHistory,
+        sortMessages,
+        sortGuideHistory,
+      } = this.state;
       try {
-        const activeFilters = useMemo(() => {
-          switch (match.params[0]) {
-            case 'history':
-              return this.state.activeHistoryFilters;
-            case 'messages':
-              return this.state.activeMessagesFilters;
-            case 'guideHistory':
-              return this.state.activeGuideHistoryFilters;
-            default:
-              return '';
-          }
-        }, [
-          match.params[0],
-          this.state.activeHistoryFilters,
-          this.state.activeMessagesFilters,
-          this.state.activeGuideHistoryFilters,
-        ]);
-
-        const sortChanged = useMemo(() => {
-          switch (match.params[0]) {
-            case 'history':
-              return this.state.sortHistory;
-            case 'messages':
-              return this.state.sortMessages;
-            case 'guideHistory':
-              return this.state.sortGuideHistory;
-            default:
-              return '';
-          }
-        }, [
-          match.params[0],
-          this.state.sortHistory,
-          this.state.sortMessages,
-          this.state.sortGuideHistory,
-        ]);
-
+        const activeFilters = getActiveFilters({
+          path,
+          activeHistoryFilters,
+          activeMessagesFilters,
+          activeGuideHistoryFilters,
+        });
+        const sortChanged = getSortChanged({ path, sortHistory, sortMessages, sortGuideHistory });
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
         console.log(error);

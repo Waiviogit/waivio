@@ -750,10 +750,6 @@ export const buttonsTitle = {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
   },
-  reserved: {
-    id: 'campaign_buttons_reserved',
-    defaultMessage: 'Reserved',
-  },
   default: {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
@@ -768,4 +764,35 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
     });
   }
   return intl.formatMessage(rewardText[filterKey]);
+};
+
+export const getActiveFilters = ({
+  path,
+  activeHistoryFilters,
+  activeMessagesFilters,
+  activeGuideHistoryFilters,
+}) => {
+  switch (path) {
+    case 'history':
+      return activeHistoryFilters;
+    case 'messages':
+      return activeMessagesFilters;
+    case 'guideHistory':
+      return activeGuideHistoryFilters;
+    default:
+      return '';
+  }
+};
+
+export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
+  switch (path) {
+    case 'history':
+      return sortHistory;
+    case 'messages':
+      return sortMessages;
+    case 'guideHistory':
+      return sortGuideHistory;
+    default:
+      return '';
+  }
 };

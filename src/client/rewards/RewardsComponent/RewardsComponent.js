@@ -65,6 +65,12 @@ const RewardsComponent = memo(
       } else if (username) {
         getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       }
+      if (pendingUpdate) {
+        dispatch(pendingUpdateSuccess());
+        delay(6000).then(() => {
+          getPropositions({ username, match, area, sort, activeFilters });
+        });
+      }
     }, [JSON.stringify(activeFilters)]);
 
     useEffect(() => {

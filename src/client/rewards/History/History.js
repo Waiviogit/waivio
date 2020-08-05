@@ -39,8 +39,15 @@ const History = ({
   const [hasMore, setHasMore] = useState(false);
   const [blacklistUsers, setBlacklistUsers] = useState([]);
   const userName = useSelector(getAuthenticatedUserName);
-  const sort = isHistory || isGuideHistory ? sortHistory : sortMessages;
   const useLoader = true;
+  const sortForFilters = useMemo(() => {
+    if (isHistory) {
+      return sortHistory;
+    } else if (isGuideHistory) {
+      return sortGuideHistory;
+    }
+    return sortMessages;
+  }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
 
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
@@ -122,7 +129,6 @@ const History = ({
   );
 
   useEffect(() => {
-    const sortForFilters = isHistory || isGuideHistory ? sortHistory : sortMessages;
     getHistory(userName, sortForFilters, filters, useLoader);
     if (!isHistory) {
       dispatch(getBlacklist(userName)).then(data => {
@@ -141,7 +147,6 @@ const History = ({
   const handleLoadMore = () => {
     if (hasMore) {
       setLoading(true);
-      const sortForFilters = isHistory ? sortHistory : sortMessages;
       getHistory(userName, sortForFilters, filters, false, true);
     }
   };
@@ -158,7 +163,6 @@ const History = ({
           hasMore,
           messages,
           handleSortChange,
-          sort,
           sponsors: messagesSponsors,
           tabType: 'history',
           location: location.pathname,
