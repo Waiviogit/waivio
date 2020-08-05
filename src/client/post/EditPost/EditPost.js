@@ -182,7 +182,9 @@ class EditPost extends Component {
     }
   }
 
-  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
+  handleTopicsChange = topics => {
+    this.setState({ topics }, this.handleUpdateState);
+  };
 
   handleSettingsChange = updatedValue =>
     this.setState(
@@ -219,6 +221,7 @@ class EditPost extends Component {
   handleObjectSelect(object) {
     this.setState(() => {
       const objName = object.name || object.default_name;
+      const objectType = object.type || object.object_type;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
@@ -227,6 +230,7 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
+        topics: [objectType],
       };
     });
   }
