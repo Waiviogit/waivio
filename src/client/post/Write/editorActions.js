@@ -87,7 +87,6 @@ export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
   intl,
 ) => dispatch => {
-  console.log('title: ', title);
   const jsonMetadata = jsonParse(json_metadata);
   const draft = {
     author,

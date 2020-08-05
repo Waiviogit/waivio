@@ -178,7 +178,11 @@ class EditPost extends Component {
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+    if (
+      this.state.content !== nextState.content ||
+      isLinkedObjectsChanged ||
+      this.state.titleValue !== nextState.titleValue
+    ) {
       this.setState(nextState, this.handleUpdateState);
     }
   }
@@ -308,7 +312,6 @@ class EditPost extends Component {
     if (this.props.saving) return;
 
     const draft = this.buildPost();
-    console.log('draft: ', draft);
     const postBody = draft.originalBody || draft.body;
     if (!postBody) return;
 

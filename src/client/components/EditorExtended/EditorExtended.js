@@ -92,10 +92,6 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('props: ', this.props.initialContent.title);
-    console.log('nextProps: ', nextProps.initialContent.title);
-    console.log('currDraft: ', this.props.currDraft);
-
     if (this.props.currDraft.title === nextProps.initialContent.title) {
       this.setState({ titleValue: this.props.currDraft.title });
     }
