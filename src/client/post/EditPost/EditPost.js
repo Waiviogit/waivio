@@ -33,12 +33,7 @@ import {
   getBeneficiariesUsers,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import {
-  createPostMetadata,
-  splitPostContent,
-  getInitialState,
-  getObjectUrl,
-} from '../../helpers/postHelpers';
+import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
@@ -222,13 +217,13 @@ class EditPost extends Component {
   }
 
   handleObjectSelect(object) {
-    this.setState(prevState => {
-      const { postBody } = splitPostContent(prevState.content);
+    this.setState(() => {
       const objName = object.name || object.default_name;
-      const separator = postBody.slice(-1) === '\n' ? '' : '\n';
+      const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
-          body: `${postBody}${separator}[${objName}](${getObjectUrl(
+          title: this.state.titleValue,
+          body: `${this.state.content}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
