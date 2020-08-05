@@ -1,23 +1,26 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../components/Story/StoryFull';
 
-.waiv-editor {
-  border: 1px solid @white-gainsboro;
-  background-color: @white;
-  width: 92%;
-  margin-left: 23px;
-  border-radius: 4px;
+.waiv-editor-wrap {
+  width: 100%;
+  margin-left: 0;
 
-  @media @small, @medium {
-    margin-left: 0;
-    width: 100%;
+  .waiv-editor {
+    border: 1px solid @white-gainsboro;
+    background-color: @white;
+    width: 92%;
+    margin-left: 23px;
+    border-radius: 4px;
+
+    @media @small, @medium {
+      margin-left: 0;
+      width: 100%;
+    }
   }
 }
 
 .md-RichEditor-root {
-  //background: @white;
   box-sizing: border-box;
-  //font-family: 'Georgia', serif;
   padding: 0 0 14px 0;
   position: relative;
   line-height: 1.4em;
@@ -28,23 +31,21 @@
   border: 1px solid @white-gainsboro;
   background-color: @white;
   color: @black;
-  width: 100%;
   font-size: 32px;
   font-weight: bold;
   padding: 6px 20px;
   caret-color: @black;
   resize: none;
   margin-bottom: 10px;
+  width: 92%;
+  margin-left: 23px;
 
   @media @small, @medium {
+    margin-left: 0;
+    width: 100%;
     padding: 0 6px !important;
   }
 }
-
-//textarea.ant-input:focus {
-//  box-shadow: none !important;
-//  outline: none !important;
-//}
 
 .md-RichEditor-title::placeholder {
   font-size: 32px;

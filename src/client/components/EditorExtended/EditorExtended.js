@@ -156,7 +156,7 @@ class Editor extends React.Component {
     }
 
     return (
-      <React.Fragment>
+      <div className="waiv-editor-wrap">
         <Input.TextArea
           maxLength={Editor.MAX_LENGTH}
           autoSize
@@ -183,7 +183,7 @@ class Editor extends React.Component {
             />
           ) : null}
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

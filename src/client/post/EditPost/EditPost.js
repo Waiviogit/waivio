@@ -370,7 +370,7 @@ class EditPost extends Component {
               titleValue={titleValue}
             />
 
-            <div>
+            <div className="search-object-panel">
               {intl.formatMessage({
                 id: 'editor_search_elements',
                 defaultMessage: 'Attach hashtags, objects, pages, etc.',
