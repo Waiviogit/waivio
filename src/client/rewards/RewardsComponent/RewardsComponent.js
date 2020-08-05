@@ -34,6 +34,7 @@ const RewardsComponent = memo(
     sortReserved,
     campaignsTypes,
     setFilterValue,
+    url,
   }) => {
     const dispatch = useDispatch();
 
@@ -59,8 +60,12 @@ const RewardsComponent = memo(
 
     useEffect(() => {
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      if (username) getPropositionsByStatus({ username, sort });
-    }, []);
+      if (username && !url) {
+        getPropositionsByStatus({ username, sort });
+      } else if (username) {
+        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      }
+    }, [JSON.stringify(activeFilters)]);
 
     useEffect(() => {
       if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
@@ -141,6 +146,7 @@ RewardsComponent.propTypes = {
   sortReserved: PropTypes.string,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
   setFilterValue: PropTypes.func,
+  url: PropTypes.string,
 };
 
 RewardsComponent.defaultProps = {
@@ -160,6 +166,7 @@ RewardsComponent.defaultProps = {
   sortEligible: 'proximity',
   sortAll: 'proximity',
   sortReserved: 'proximity',
+  url: '',
 };
 
 export default RewardsComponent;
