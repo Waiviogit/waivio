@@ -219,7 +219,7 @@ class EditPost extends Component {
   }
 
   handleObjectSelect(object) {
-    this.setState(() => {
+    this.setState(prevState => {
       const objName = object.name || object.default_name;
       const objectType = object.type || object.object_type;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
@@ -230,7 +230,7 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
-        topics: [objectType],
+        topics: [...prevState.topics, objectType],
       };
     });
   }
@@ -319,6 +319,9 @@ class EditPost extends Component {
     this.props.saveDraft(draft, redirect, this.props.intl);
   }, 1500);
 
+  handleHashtag = objectType =>
+    this.setState(prevState => ({ topics: [...prevState.topics, objectType] }));
+
   render() {
     const {
       draftContent,
@@ -332,6 +335,7 @@ class EditPost extends Component {
       titleValue,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
+    console.log(this.state.topics);
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -342,6 +346,7 @@ class EditPost extends Component {
               locale={locale}
               onChange={this.handleChangeContent}
               intl={intl}
+              handleHashtag={this.handleHashtag}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

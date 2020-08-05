@@ -146,6 +146,7 @@ export default class AddButton extends React.Component {
                       setEditorState={this.props.setEditorState}
                       close={this.openToolbar}
                       renderControl={this.renderControlElem}
+                      handleHashtag={this.props.handleHashtag}
                     />
                   </CSSTransition>
                 );
@@ -163,6 +164,7 @@ AddButton.propTypes = {
   withTitleLine: PropTypes.bool,
   focus: PropTypes.func,
   sideButtons: PropTypes.arrayOf(PropTypes.object),
+  handleHashtag: PropTypes.func.isRequired,
 };
 
 AddButton.defaultProps = {

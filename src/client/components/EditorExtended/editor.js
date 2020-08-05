@@ -82,6 +82,7 @@ export default class MediumDraftEditor extends React.Component {
     toolbarConfig: PropTypes.shape(),
     processURL: PropTypes.func,
     intl: PropTypes.shape(),
+    handleHashtag: PropTypes.func,
   };
 
   static defaultProps = {
@@ -112,6 +113,7 @@ export default class MediumDraftEditor extends React.Component {
     handleReturn: () => {},
     handlePastedText: () => {},
     intl: {},
+    handleHashtag: () => {},
   };
 
   constructor(props) {
@@ -673,6 +675,7 @@ export default class MediumDraftEditor extends React.Component {
               setEditorState={this.onChange}
               focus={this.focus}
               sideButtons={this.props.sideButtons}
+              handleHashtag={this.props.handleHashtag}
             />
           )}
           {!disableToolbar && (

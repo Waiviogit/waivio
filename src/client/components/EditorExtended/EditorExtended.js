@@ -60,10 +60,12 @@ class Editor extends React.Component {
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
+    handleHashtag: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
+    handleHashtag: () => {},
   };
 
   static MAX_LENGTH = 255;
@@ -179,7 +181,7 @@ class Editor extends React.Component {
               onChange={this.handleContentChange}
               sideButtons={SIDE_BUTTONS}
               intl={this.props.intl}
-              titleValue={this.state.titleValue}
+              handleHashtag={this.props.handleHashtag}
             />
           ) : null}
         </div>
