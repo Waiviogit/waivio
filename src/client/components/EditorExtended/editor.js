@@ -82,7 +82,6 @@ export default class MediumDraftEditor extends React.Component {
     toolbarConfig: PropTypes.shape(),
     processURL: PropTypes.func,
     intl: PropTypes.shape(),
-    titleValue: PropTypes.string,
   };
 
   static defaultProps = {
@@ -113,7 +112,6 @@ export default class MediumDraftEditor extends React.Component {
     handleReturn: () => {},
     handlePastedText: () => {},
     intl: {},
-    titleValue: '',
   };
 
   constructor(props) {
