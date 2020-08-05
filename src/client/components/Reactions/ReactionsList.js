@@ -130,15 +130,13 @@ export default class UserList extends React.Component {
   };
 
   render() {
-    const { votes, ratio, isAuth, adminsList, moderatorsList } = this.props;
+    const { votes, ratio, isAuth } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
     const voteValue = vote => (vote.rshares_weight || vote.rshares) * ratio || 0;
     const votesList = votes.map(vote => ({
       ...vote,
       name: vote.voter,
-      admin: adminsList.includes(vote.voter),
-      moderator: moderatorsList.includes(vote.voter),
       pending: false,
       youFollows: false,
     }));
@@ -163,8 +161,6 @@ export default class UserList extends React.Component {
               <UserCard
                 key={vote.voter}
                 user={vote}
-                admin={vote.admin}
-                moderator={vote.moderator}
                 follow={this.followUser}
                 unfollow={this.unfollowUser}
                 showFollow={false}

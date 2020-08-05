@@ -41,8 +41,6 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(props.post.child);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-  const author =
-    props.post.guestInfo && !props.post.depth ? props.post.root_author : props.post.author;
   const postId = `${props.post.author}/${props.post.permlink}`;
 
   const calculateSliderValue = () => {
@@ -67,11 +65,11 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(postId, author, props.post.permlink, 0, type);
+      props.voteAppends(postId, props.post.author, props.post.permlink, 0, type);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(postId, author, props.post.permlink, weight, type);
+      props.voteAppends(postId, props.post.author, props.post.permlink, weight, type);
     }
   }
 
@@ -110,7 +108,7 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    props.voteAppends(postId, author, props.post.permlink, sliderValue * 100, 'approve');
+    props.voteAppends(postId, props.post.author, props.post.permlink, sliderValue * 100, 'approved');
   }
 
   return (
@@ -148,19 +146,19 @@ const AppendCard = props => {
       </div>
       <div className="Story__content">
         <a
-          href={`/@${props.post.author_original}/${props.post.permlink}`}
+          href={`/@${props.post.author}/${props.post.permlink}`}
           rel="noopener noreferrer"
           className="Story__content__title"
         >
           <h2>
             <FormattedMessage
-              id={`object_field_${props.post.append_field_name}`}
-              defaultMessage={props.post.append_field_name}
+              id={`object_field_${props.post.name}`}
+              defaultMessage={props.post.name}
             />
           </h2>
         </a>
         <a
-          href={`/@${props.post.author_original}/${props.post.permlink}`}
+          href={`/@${props.post.author}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__preview"

@@ -16,10 +16,10 @@ export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
 export const getObject = (authorPermlink, user, requiredField) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
+
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, user, requiredField)
-      .then(wobj => getClientWObj(wobj, usedLocale))
+    payload: ApiClient.getObject(authorPermlink, user, requiredField, usedLocale)
       .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
 };

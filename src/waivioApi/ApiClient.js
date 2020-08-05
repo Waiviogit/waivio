@@ -88,7 +88,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, user, requiredField = []) => {
+export const getObject = (authorPermlink, user, requiredField = [], usedLocale = 'en-US') => {
   let queryString = '';
 
   if (requiredField.length) {
@@ -109,6 +109,7 @@ export const getObject = (authorPermlink, user, requiredField = []) => {
     headers: {
       app: config.appName,
       follower: user,
+      // locale: 'en-US'
     },
   })
     .then(handleErrors)
