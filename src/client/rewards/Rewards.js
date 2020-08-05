@@ -200,8 +200,8 @@ class Rewards extends React.Component {
 
   setSortValue = sort => {
     const { match } = this.props;
-    const filterKey = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
-    switch (filterKey) {
+    const key = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
+    switch (key) {
       case 'active':
         return this.setState({ sortEligible: sort });
       case 'reserved':

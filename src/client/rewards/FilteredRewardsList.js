@@ -62,19 +62,23 @@ const FilteredRewardsList = props => {
     sortMessages,
   );
 
+  const historyLocation = '/rewards/history';
+  const messagesLocation = '/rewards/messages';
+  const guideHistoryLocation = '/rewards/guideHistory';
+
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
     !match.params.campaignParent &&
-    location !== '/rewards/history' &&
-    location !== '/rewards/messages' &&
-    location !== '/rewards/guideHistory';
+    location !== historyLocation &&
+    location !== messagesLocation &&
+    location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
-    if (location === '/rewards/history') {
+    if (location === historyLocation) {
       return activeHistoryFilters;
-    } else if (location === '/rewards/messages') {
+    } else if (location === messagesLocation) {
       return activeMessagesFilters;
-    } else if (location === '/rewards/guideHistory') {
+    } else if (location === guideHistoryLocation) {
       return activeGuideHistoryFilters;
     }
     return activeFilters;
@@ -82,14 +86,16 @@ const FilteredRewardsList = props => {
 
   const setFilters = useMemo(
     () =>
-      location === '/rewards/history' || location === '/rewards/messages'
+      location === historyLocation ||
+      location === messagesLocation ||
+      location === guideHistoryLocation
         ? setActiveMessagesFilters
         : setFilterValue,
     [location, setActiveMessagesFilters, setFilterValue],
   );
 
   const sortRewards = useMemo(() => {
-    if (location === '/rewards/messages') {
+    if (location === messagesLocation) {
       return [
         {
           key: 'inquiryDate',
@@ -108,7 +114,7 @@ const FilteredRewardsList = props => {
         },
       ];
     }
-    if (location === '/rewards/history' || location === '/rewards/guideHistory') {
+    if (location === historyLocation || location === guideHistoryLocation) {
       return [
         {
           key: 'reservation',
@@ -179,9 +185,9 @@ const FilteredRewardsList = props => {
         </SortSelector>
       )}
       {(!isEmpty(sponsors) ||
-        location === '/rewards/history' ||
-        location === '/rewards/messages' ||
-        location === '/rewards/guideHistory') && (
+        location === historyLocation ||
+        location === messagesLocation ||
+        location === guideHistoryLocation) && (
         <div className="FilteredRewardsList__filters-tags-block">
           <span className="FilteredRewardsList__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
@@ -220,9 +226,9 @@ const FilteredRewardsList = props => {
         </div>
       )}
       {!isEmpty(sponsors) &&
-        location !== '/rewards/history' &&
-        location !== '/rewards/messages' &&
-        location !== '/rewards/guideHistory' && (
+        location !== historyLocation &&
+        location !== messagesLocation &&
+        location !== guideHistoryLocation && (
           <div className="FilteredRewardsList__filters-toggle-map tc">
             <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
               {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}

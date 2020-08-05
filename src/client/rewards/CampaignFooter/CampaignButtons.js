@@ -96,6 +96,8 @@ export default class CampaignButtons extends React.Component {
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+
+    this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
   }
 
   componentDidMount() {
@@ -301,11 +303,6 @@ export default class CampaignButtons extends React.Component {
     return popoverDataHistory[propositionStatus] || [];
   };
 
-  getButtonsTitle = () => {
-    const { propositionStatus } = this.props;
-    return buttonsTitle[propositionStatus];
-  };
-
   hide = () => {
     this.setState({
       visible: false,
@@ -377,7 +374,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName =
-      match.params.filterKey === 'messages' || match.params.filterKey === 'guideHistory'
+      match.params[0] === 'messages' || match.params[0] === 'guideHistory'
         ? propositionUserName
         : user.name;
     const toggleModalReport = e => {
@@ -562,16 +559,15 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const btnTitle = this.getButtonsTitle();
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
           <div className="Buttons__wrap-text">
             {intl.formatMessage({
-              id: btnTitle.id,
-              defaultMessage: btnTitle.defaultMessage,
+              id: this.buttonsTitle.id,
+              defaultMessage: this.buttonsTitle.defaultMessage,
             })}
-            {btnTitle.defaultMessage === 'Reserved' &&
+            {this.buttonsTitle.defaultMessage === 'Reserved' &&
               ` - ${daysLeft} ${intl.formatMessage({
                 id: 'campaign_buttons_days_left',
                 defaultMessage: 'days left',
