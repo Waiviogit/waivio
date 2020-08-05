@@ -230,7 +230,7 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
-        topics: [...prevState.topics, objectType],
+        topics: uniqWith([...prevState.topics, objectType], isEqual),
       };
     });
   }
@@ -320,7 +320,7 @@ class EditPost extends Component {
   }, 1500);
 
   handleHashtag = objectType =>
-    this.setState(prevState => ({ topics: [...prevState.topics, objectType] }));
+    this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objectType], isEqual) }));
 
   render() {
     const {
@@ -335,7 +335,6 @@ class EditPost extends Component {
       titleValue,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
-    console.log(this.state.topics);
     return (
       <div className="shifted">
         <div className="post-layout container">
