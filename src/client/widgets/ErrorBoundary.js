@@ -28,7 +28,7 @@ const ErrorBoundary = ComposedComponent => {
     render() {
       const { hasError } = this.state;
 
-      return hasError ? (
+      return !hasError ? (
         <ComposedComponent {...this.props} />
       ) : (
         <div className="errorBoundary">
@@ -42,8 +42,13 @@ const ErrorBoundary = ComposedComponent => {
             Brace yourself till we get the error fixed.
           </span>
           <span className="errorBoundary__secondaryText">
-            {' '}
-            You may also refresh the page or try again later
+            You may also refresh the page or try again later.
+          </span>
+          <span className="errorBoundary__secondaryText">
+            You can head back to{' '}
+            <a href="/" className="errorBoundary__link">
+              the home page.
+            </a>
           </span>
         </div>
       );
