@@ -11,6 +11,10 @@ function broadcast(operations, isReview, actionAuthor) {
     } else {
       operation = `waivio_guest_${operations[0][1].id}`;
     }
+
+    if (operations[0][1].json.includes('bell_notifications')) {
+      operation = `waivio_guest_bell`;
+    }
   } else if (operations[0][0] === 'comment') {
     const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
     if (actionAuthor) operations[0][1].post_root_author = actionAuthor;
@@ -100,6 +104,25 @@ function sc2Extended() {
             },
           ]),
         };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      bellNotifications(follower, following, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'bell_notifications',
+          json: JSON.stringify([
+            'bell_notifications',
+            {
+              follower,
+              following,
+              subscribe,
+            },
+          ]),
+        };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
