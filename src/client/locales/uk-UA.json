@@ -844,5 +844,6 @@
   "increase_reward" : "Збільшуйте нагороду",
   "your_list_is_empty": "Ваш список пустий",
   "enter_amount_in_hive": "Введіть суму в HIVE",
-  "reward_has_been_increased": "Винагороду збільшено"
+  "reward_has_been_increased": "Винагороду збільшено",
+  "history_and_sponsor_communications": "Історія та спонсорські комунікації"
 }

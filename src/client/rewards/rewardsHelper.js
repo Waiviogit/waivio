@@ -706,7 +706,12 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
   if (location === '/rewards/messages') {
     return intl.formatMessage({
       id: 'messages',
-      defaultMessage: `Messages`,
+      defaultMessage: 'Messages',
+    });
+  } else if (location === '/rewards/history') {
+    return intl.formatMessage({
+      id: 'history_and_sponsor_communications',
+      defaultMessage: 'History and sponsor communications',
     });
   }
   return intl.formatMessage(rewardText[filterKey]);
