@@ -273,7 +273,7 @@ export function createPost(postData, beneficiaries, isReview) {
               dispatch(push('/'));
             }
           } else {
-            setTimeout(() => dispatch(push(`/@${author}/${permlink}`)), 3000);
+            setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
 
           if (window.analytics) {
