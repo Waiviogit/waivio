@@ -74,7 +74,7 @@ const RewardsComponent = memo(
     }, [JSON.stringify(activeFilters), username]);
 
     useEffect(() => {
-      if (!userLocation.lat || !userLocation.lon) return;
+      if (!userLocation.lat || !userLocation.lon || !url) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       prevFilterKeyParams.current = filterKeyParams;
@@ -85,7 +85,6 @@ const RewardsComponent = memo(
         });
       }
     }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
-
     return (
       <div className="Rewards">
         <FilteredRewardsList
