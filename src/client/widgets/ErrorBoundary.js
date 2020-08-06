@@ -32,7 +32,14 @@ const ErrorBoundary = ComposedComponent => {
         <ComposedComponent {...this.props} />
       ) : (
         <div className="errorBoundary">
-          <span>Sorry, something went wrong. Please, try later</span>
+          <span className="errorBoundary__mainText">Something went wrong</span>
+          <span className="errorBoundary__secondaryText">
+            Brace yourself till we get the error fixed.
+          </span>
+          <span className="errorBoundary__secondaryText">
+            {' '}
+            You may also refresh the page or try again later
+          </span>
         </div>
         // <div className="error-boundary" style={{ color: 'red' }}>
         //   {`${getDisplayName(WrapperComponent)}: ${error.toString()}`}
