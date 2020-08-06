@@ -845,5 +845,9 @@
   "your_list_is_empty": "Ваш список пустий",
   "enter_amount_in_hive": "Введіть суму в HIVE",
   "reward_has_been_increased": "Винагороду збільшено",
+  "reward_has_been_decreased": "Винагороду зменьшено",
+  "decrease_reward": "Зменшити винагороду",
+  "send_to": "Відправити",
+  "received_from_self": "отриманий від себе",
   "history_and_sponsor_communications": "Історія та спонсорські комунікації"
 }

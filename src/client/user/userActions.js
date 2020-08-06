@@ -1,5 +1,7 @@
 import moment from 'moment';
 import { get } from 'lodash';
+import { message } from 'antd';
+
 import * as store from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -224,13 +226,13 @@ export const assignProposition = ({
   const proposedWobjName = proposedWobj.name;
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
   const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
-  const detailsBody = getDetailsBody(
+  const detailsBody = getDetailsBody({
     proposition,
     proposedWobjName,
     proposedWobjAuthorPermlink,
     primaryObjectName,
     secondaryObjectName,
-  );
+  });
   const commentOp = [
     'comment',
     {
@@ -301,7 +303,7 @@ export const rejectReview = ({
   });
 };
 
-export const increaseReward = ({
+export const changeReward = ({
   companyAuthor,
   companyPermlink,
   username,
@@ -310,22 +312,38 @@ export const increaseReward = ({
   amount,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = store.getAuthenticatedUserName(getState());
+  const body =
+    username !== userName
+      ? `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`
+      : `User ${userName} (@${userName}) has decreased the reward by ${amount} HIVE`;
+  const title = username !== userName ? 'Increase reward' : 'Decrease reward';
+  const waivioRewards =
+    username !== userName
+      ? {
+          type: 'waivio_raise_review_reward',
+          riseAmount: amount,
+          activationPermlink: companyPermlink,
+        }
+      : {
+          type: 'waivio_reduce_review_reward',
+          reduceAmount: amount,
+          activationPermlink: companyPermlink,
+        };
+
+  const author = username !== userName ? companyAuthor : userName;
+
   const commentOp = [
     'comment',
     {
       parent_author: username,
       parent_permlink: reservationPermlink,
-      author: companyAuthor,
+      author,
       permlink: createCommentPermlink(username, reservationPermlink),
-      title: 'Increase reward',
-      body: `Sponsor ${userName} (@${userName}) has increased the reward by ${amount} HIVE`,
+      title,
+      body,
       json_metadata: JSON.stringify({
         app: appName,
-        waivioRewards: {
-          type: 'waivio_raise_review_reward',
-          riseAmount: amount,
-          activationPermlink: companyPermlink,
-        },
+        waivioRewards,
       }),
     },
   ];
@@ -390,19 +408,27 @@ export const activateCampaign = (company, campaignPermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = store.getAuthenticatedUserName(getState());
+  const state = getState();
+  const username = store.getAuthenticatedUserName(state);
+  const rate = store.getRate(state);
+  const rewardFund = store.getRewardFund(state);
+  const recentClaims = rewardFund.recent_claims;
+  const rewardBalance = rewardFund.reward_balance.replace(' HIVE', '');
   const proposedWobjName = getFieldWithMaxWeight(company.objects[0], 'name');
   const proposedAuthorPermlink = company.objects[0].author_permlink;
   const primaryObjectName = getFieldWithMaxWeight(company.requiredObject, 'name');
   const processingFees = company.commissionAgreement * 100;
   const expiryDate = moment(company.expired_at).format('YYYY-MM-DD');
   const alias = get(company, ['guide', 'alias']);
-  const detailsBody = getDetailsBody(
-    company,
+  const detailsBody = getDetailsBody({
+    proposition: company,
     proposedWobjName,
     proposedAuthorPermlink,
     primaryObjectName,
-  );
+    rate,
+    recentClaims,
+    rewardBalance,
+  });
   const commentOp = [
     'comment',
     {
@@ -457,3 +483,40 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 // endregion
+export const BELL_USER_NOTIFICATION = createAsyncActionType('@auth/BELL_USER_NOTIFICATION');
+
+export const bellNotifications = (follower, following) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const subscribe = !get(state, ['users', 'users', following, 'bell']);
+  dispatch({
+    type: BELL_USER_NOTIFICATION.START,
+    payload: { following },
+  });
+  steemConnectAPI
+    .bellNotifications(follower, following, subscribe)
+    .then(res => {
+      if (res.message) {
+        message.error(res.message);
+        return dispatch({
+          type: BELL_USER_NOTIFICATION.ERROR,
+          payload: { following },
+        });
+      }
+
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.SUCCESS,
+        payload: { following, subscribe },
+      });
+    })
+    .catch(err => {
+      message.error(err.message);
+      return dispatch({
+        type: BELL_USER_NOTIFICATION.ERROR,
+        payload: { following },
+      });
+    });
+};

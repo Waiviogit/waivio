@@ -1279,6 +1279,7 @@
   "register_email": "Зарегистрируйте емайл",
   "enter_amount_in_hive": "Введите сумму в HIVE",
   "reward_has_been_increased": "Награда была увеличена",
+  "reward_has_been_decreased": "Награда была уменьшена",
   "proposal_payment_from": "Предложение оплаты от {steem_dao}",
   "proposal_payment_to": "Предложение оплаты для {receiver}",
   "your_list_is_empty": "Ваш список пустой",
@@ -1305,5 +1306,11 @@
   "notify_list_message": "Теперь вы можете получать мгновенные мобильные уведомления через приложение Telegram, когда кто-то отвечает или повторно публикует ваши сообщения в Hive, упоминает о вас, подписывается на вас, переводит вам средства и так далее.",
   "notify_list_message_telegram": "Откройте Telegram chart с {link} и введите имена пользователей Hive для подписки.",
   "my_actions": "Мои действия",
+  "decrease_reward": "Уменьшить вознаграждение",
+  "notification_bell_post": "{username} опубликовал новый пост: {title}",
+  "notification_bell_reblog": "{account} поделился постом {author}: {title}",
+  "notification_bell_follow": "{follower} подписался {following}",
+  "send_to": "Отправить",
+  "received_from_self": "получил от себя",
   "history_and_sponsor_communications": "История и спонсорские коммуникации"
 }

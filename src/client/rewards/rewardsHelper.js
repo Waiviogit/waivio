@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce } from 'lodash';
+import { isEmpty, map, get, reduce, round } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { REWARD } from '../../common/constants/rewards';
@@ -163,9 +163,9 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getFieldWithMaxWeight(objectDetails.required_object, 'name');
+  const requiredObjectName = getFieldWithMaxWeight(objectDetails.requiredObject, 'name');
   return objectDetails.frequency_assign
-    ? `<ul><li>Have not received a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/@${objectDetails.requiredObject}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
+    ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 };
 
@@ -213,20 +213,58 @@ const getLinksToAllFollowingObjects = followingObjects =>
     '',
   ).slice(1);
 
-export const getDetailsBody = (
+export const getMinExpertise = ({
+  campaignMinExpertise,
+  rewardFundRecentClaims,
+  rewardFundRewardBalance,
+  rate,
+}) => {
+  if (!isEmpty(rewardFundRecentClaims) && !isEmpty(rewardFundRewardBalance)) {
+    return round(
+      (campaignMinExpertise / rewardFundRecentClaims) *
+        rewardFundRewardBalance.replace(' HIVE', '') *
+        rate *
+        1000000,
+      2,
+    );
+  }
+  return '';
+};
+
+export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
+  round(
+    (minExpertise * rewardFund.recent_claims) /
+      rewardFund.reward_balance.replace(' HIVE', '') /
+      rate /
+      1000000,
+    2,
+  );
+
+export const getDetailsBody = ({
   proposition,
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
   secondaryObjectName,
-) => {
+  rate,
+  recentClaims,
+  rewardBalance,
+}) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
+  const propositionMinExpertise = proposition.userRequirements.minExpertise;
+  const minExpertise = getMinExpertise({
+    campaignMinExpertise: propositionMinExpertise,
+    rewardFundRecentClaims: recentClaims,
+    rewardFundRewardBalance: rewardBalance,
+    rate,
+  });
+
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
 <ul>
-    <li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise}</li>
+    <li>Minimum Waivio expertise: ${minExpertise}</li>
     <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
 </ul>`;
@@ -480,9 +518,17 @@ export const getNoBlacklistMessage = userNames => {
   };
 };
 
-export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages) => {
-  const filterKey = get(match, ['params', 'filterKey']);
-  switch (filterKey) {
+export const getSort = (
+  match,
+  sortAll,
+  sortEligible,
+  sortReserved,
+  sortHistory,
+  sortGuideHistory,
+  sortMessages,
+) => {
+  const key = get(match, ['params', 'filterKey']) || get(match, ['params', '0']);
+  switch (key) {
     case 'active':
       return sortEligible;
     case 'reserved':
@@ -491,6 +537,8 @@ export const getSort = (match, sortAll, sortEligible, sortReserved, sortHistory,
       return sortHistory;
     case 'messages':
       return sortMessages;
+    case 'guideHistory':
+      return sortGuideHistory;
     default:
       return sortAll;
   }
@@ -508,6 +556,11 @@ export const popoverDataHistory = {
       id: 'campaign_buttons_release',
       defaultMessage: 'Release reservation',
     },
+    {
+      key: 'decrease',
+      id: 'decrease_reward',
+      defaultMessage: 'Decrease reward',
+    },
   ],
   completed: [
     {
@@ -524,6 +577,11 @@ export const popoverDataHistory = {
       key: 'show',
       id: 'show_report',
       defaultMessage: 'Show report',
+    },
+    {
+      key: 'decrease',
+      id: 'decrease_reward',
+      defaultMessage: 'Decrease reward',
     },
   ],
   rejected: [
@@ -692,10 +750,6 @@ export const buttonsTitle = {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
   },
-  reserved: {
-    id: 'campaign_buttons_reserved',
-    defaultMessage: 'Reserved',
-  },
   default: {
     id: 'campaign_buttons_reserved',
     defaultMessage: 'Reserved',
@@ -715,4 +769,35 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
     });
   }
   return intl.formatMessage(rewardText[filterKey]);
+};
+
+export const getActiveFilters = ({
+  path,
+  activeHistoryFilters,
+  activeMessagesFilters,
+  activeGuideHistoryFilters,
+}) => {
+  switch (path) {
+    case 'history':
+      return activeHistoryFilters;
+    case 'messages':
+      return activeMessagesFilters;
+    case 'guideHistory':
+      return activeGuideHistoryFilters;
+    default:
+      return '';
+  }
+};
+
+export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
+  switch (path) {
+    case 'history':
+      return sortHistory;
+    case 'messages':
+      return sortMessages;
+    case 'guideHistory':
+      return sortGuideHistory;
+    default:
+      return '';
+  }
 };
