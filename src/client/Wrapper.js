@@ -39,7 +39,7 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
-import ErrorBoundary from './ErrorBoundary';
+import ErrorBoundary from './widgets/ErrorBoundary';
 import Withdraw from './wallet/WithDraw';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });

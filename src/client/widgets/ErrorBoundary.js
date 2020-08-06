@@ -26,14 +26,17 @@ const ErrorBoundary = ComposedComponent => {
     }
 
     render() {
-      const { hasError, error } = this.state;
+      const { hasError } = this.state;
 
-      return !hasError ? (
+      return hasError ? (
         <ComposedComponent {...this.props} />
       ) : (
-        <div className="error-boundary" style={{ color: 'red' }}>
-          {`${getDisplayName(WrapperComponent)}: ${error.toString()}`}
+        <div className="errorBoundary">
+          <span>Sorry, something went wrong. Please, try later</span>
         </div>
+        // <div className="error-boundary" style={{ color: 'red' }}>
+        //   {`${getDisplayName(WrapperComponent)}: ${error.toString()}`}
+        // </div>
       );
     }
   }
