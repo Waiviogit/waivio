@@ -18,6 +18,9 @@ export const TRANSFER_TO_VESTING = 'transfer_to_vesting';
 export const CHANGE_RECOVERY_ACCOUNT = 'change_recovery_account';
 export const TRANSFER_FROM_SAVINGS = 'transfer_from_savings';
 export const CLAIM_REWARD = 'claimReward';
+export const BELL_POST = 'bellPost';
+export const BELL_REBLOG = 'bellReblog';
+export const BELL_FOLLOW = 'bellFollow';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
