@@ -1311,5 +1311,6 @@
   "notification_bell_reblog": "{account} re-blogged {author}'s post: {title}",
   "notification_bell_follow": "{follower} followed {following}",
   "send_to": "Send to",
-  "received_from_self": "received from self"
+  "received_from_self": "received from self",
+  "failed_to_get_campaign_data": "Failed to get campaign data: {error}"
 }
