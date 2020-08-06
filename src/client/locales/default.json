@@ -1306,5 +1306,10 @@
   "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribes.",
   "my_actions": "My actions",
   "minimum_expertise_cannot_have_more_then_two_decimals": "The Waivio reputation cannot have more then two digits after the decimal point",
-  "decrease_reward": "Decrease reward"
+  "decrease_reward": "Decrease reward",
+  "error_boundary_page": "Something went wrong",
+  "error_boundary_page_brace": "Brace yourself till we get the error fixed.",
+  "error_boundary_page_try_reload": "You may also refresh the page or try again later.",
+  "error_boundary_page_go_to": "You can head back to",
+  "error_boundary_page_home": "the home page"
 }

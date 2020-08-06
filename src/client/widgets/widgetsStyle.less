@@ -1,3 +1,4 @@
+@import (reference) '../styles/modules/variables.less';
 @import (reference) '../styles/custom.less';
 
 .modal-row {
@@ -9,6 +10,7 @@
 }
 
 .errorBoundary {
+  background: @white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -33,5 +35,6 @@
 
   &__link {
     font-weight: 500;
+    margin-left: 4px;
   }
 }
