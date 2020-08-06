@@ -32,6 +32,11 @@ const ErrorBoundary = ComposedComponent => {
         <ComposedComponent {...this.props} />
       ) : (
         <div className="errorBoundary">
+          <img
+            src="/images/icons/errorBoundary.svg"
+            alt="errorBoundary"
+            className="errorBoundary__image"
+          />
           <span className="errorBoundary__mainText">Something went wrong</span>
           <span className="errorBoundary__secondaryText">
             Brace yourself till we get the error fixed.
