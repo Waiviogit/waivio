@@ -62,6 +62,8 @@ const RewardsComponent = memo(
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       if (username && !url) {
         getPropositionsByStatus({ username, sort });
+      } else if (url && !username && match.params.filterKey !== 'all') {
+        history.push(`/rewards/all`);
       }
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
@@ -83,13 +85,6 @@ const RewardsComponent = memo(
         });
       }
     }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
-
-    useEffect(() => {
-      if (campaignParent) return;
-      if (!username && match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
-    }, [username]);
 
     return (
       <div className="Rewards">
