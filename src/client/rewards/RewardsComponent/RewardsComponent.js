@@ -69,7 +69,7 @@ const RewardsComponent = memo(
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [JSON.stringify(activeFilters)]);
+    }, [JSON.stringify(activeFilters), username]);
 
     useEffect(() => {
       if (!userLocation.lat || !userLocation.lon) return;
