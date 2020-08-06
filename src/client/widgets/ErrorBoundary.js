@@ -46,9 +46,6 @@ const ErrorBoundary = ComposedComponent => {
             You may also refresh the page or try again later
           </span>
         </div>
-        // <div className="error-boundary" style={{ color: 'red' }}>
-        //   {`${getDisplayName(WrapperComponent)}: ${error.toString()}`}
-        // </div>
       );
     }
   }
