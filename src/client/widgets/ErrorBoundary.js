@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { FormattedMessage } from 'react-intl';
-// import classNames from 'classnames';
 
 export function getDisplayName(ComposedComponent) {
   if (ComposedComponent.displayName) {
     return ComposedComponent.displayName;
   }
 
-  return ComposedComponent.name ? ComposedComponent.name : 'NameLessComponent';
+  return ComposedComponent.name || 'NameLessComponent';
 }
 
 const ErrorBoundary = ComposedComponent => {
@@ -23,14 +22,12 @@ const ErrorBoundary = ComposedComponent => {
         hasError: true,
         error,
       });
-
-      console.warn(error);
     }
 
     render() {
       const { hasError } = this.state;
 
-      return hasError ? (
+      return !hasError ? (
         <ComposedComponent {...this.props} />
       ) : (
         <div className="errorBoundary">

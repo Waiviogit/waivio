@@ -75,22 +75,40 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
       case TYPE.demoDebt:
         return (
           <React.Fragment>
-            <span className="PaymentTable__action-item fw6">
-              {intl.formatMessage({
-                id: 'paymentTable_transfer',
-                defaultMessage: `Transfer`,
-              })}{' '}
-            </span>
-            {intl.formatMessage({
-              id: 'paymentTable_from',
-              defaultMessage: 'from',
-            })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
-            {intl.formatMessage({
-              id: 'paymentTable_review_to',
-              defaultMessage: 'to',
-            })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
+            {sponsor.sponsor === sponsor.userName ? (
+              <div>
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'send_to',
+                    defaultMessage: `Send to`,
+                  })}{' '}
+                </span>
+                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                {intl.formatMessage({
+                  id: 'received_from_self',
+                  defaultMessage: 'received from self',
+                })}
+              </div>
+            ) : (
+              <div>
+                <span className="PaymentTable__action-item fw6">
+                  {intl.formatMessage({
+                    id: 'paymentTable_transfer',
+                    defaultMessage: `Transfer`,
+                  })}{' '}
+                </span>
+                {intl.formatMessage({
+                  id: 'paymentTable_from',
+                  defaultMessage: 'from',
+                })}{' '}
+                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                {intl.formatMessage({
+                  id: 'paymentTable_review_to',
+                  defaultMessage: 'to',
+                })}{' '}
+                <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>
+              </div>
+            )}
           </React.Fragment>
         );
       default:
