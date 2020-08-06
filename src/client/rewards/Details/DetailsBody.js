@@ -14,7 +14,6 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
-  const checked = Boolean(isEmpty(objectDetails.existAssigns));
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -34,7 +33,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={checked} disabled />
+            <Checkbox checked={objectDetails.requirement_filters.frequency} disabled />
             <div>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
