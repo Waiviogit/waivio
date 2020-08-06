@@ -232,7 +232,7 @@ export default class CampaignButtons extends React.Component {
             .catch(error => reject(error));
         }, 10000);
       });
-      if (match.params.filterKey === 'history') {
+      if (match.params[0] === 'history') {
         message.success(
           this.props.intl.formatMessage({
             id: 'reward_has_been_decreased',
@@ -297,7 +297,7 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (match.params.filterKey === 'messages') {
+    if (match.params[0] === 'messages') {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -373,7 +373,10 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
+    const userName =
+      match.params[0] === 'messages' || match.params[0] === 'guideHistory'
+        ? propositionUserName
+        : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();
@@ -595,7 +598,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {match.params.filterKey === 'messages' && (
+        {match.params[0] === 'messages' && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
@@ -604,7 +607,7 @@ export default class CampaignButtons extends React.Component {
             <WeightTag weight={propositionUserWeight} />
           </div>
         )}
-        {propositionStatus === 'completed' && match.params.filterKey === 'history' && (
+        {propositionStatus === 'completed' && match.params[0] === 'history' && (
           <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
               id: 'review',
