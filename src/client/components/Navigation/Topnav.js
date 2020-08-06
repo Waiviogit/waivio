@@ -617,7 +617,7 @@ class Topnav extends React.Component {
       >
         {map(wobjects, option => {
           const wobjName = getApprovedField(option, objectFields.name) || option.default_name;
-          const parent = option.parent;
+          const parent = getApprovedField(option, objectFields.parent);
 
           return wobjName ? (
             <AutoComplete.Option

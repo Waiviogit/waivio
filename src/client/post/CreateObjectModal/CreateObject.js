@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
 import { isEmpty, map } from 'lodash';
+import { withRouter } from 'react-router';
+
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -20,6 +22,7 @@ import { getServerWObj } from '../../adapters';
 import './CreateObject.less';
 
 @injectIntl
+@withRouter
 @Form.create()
 @connect(
   state => ({
@@ -56,6 +59,7 @@ class CreateObject extends React.Component {
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
+    history: PropTypes.shape({ push: PropTypes.func }).isRequired,
   };
 
   static defaultProps = {
@@ -117,6 +121,7 @@ class CreateObject extends React.Component {
           parentAuthor: selectedType.author,
           parentPermlink: selectedType.permlink,
         };
+
         this.props
           .createWaivioObject(objData)
           .then(({ value: { parentPermlink, parentAuthor } }) => {
@@ -149,7 +154,7 @@ class CreateObject extends React.Component {
               }),
               'success',
             );
-            this.setState({ loading: false, isModalOpen: false });
+            this.props.history.push(`/object/${parentPermlink}`);
             this.props.onCreateObject(
               {
                 id: parentPermlink,
@@ -174,7 +179,6 @@ class CreateObject extends React.Component {
             );
           })
           .catch(error => {
-            console.log('\tObject creation:: ', error);
             this.props.notify(
               this.props.intl.formatMessage({
                 id: error,

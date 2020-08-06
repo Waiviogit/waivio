@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 import urlParse from 'url-parse';
+
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank, getVoteValue } from '../helpers/user';
 import AvatarLightbox from './AvatarLightbox';
@@ -13,6 +14,7 @@ import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
 import { unfollowUser, followUser } from '../user/usersActions';
+import BellButton from '../widgets/BellButton';
 
 import './UserHeader.less';
 
@@ -98,13 +100,16 @@ const UserHeader = ({
                     </Action>
                   </Link>
                 ) : (
-                  <FollowButton
-                    unfollowUser={unfollow}
-                    followUser={follow}
-                    following={user.youFollows}
-                    user={user}
-                    followingType="user"
-                  />
+                  <div className="UserHeader__buttons-container">
+                    <FollowButton
+                      unfollowUser={unfollow}
+                      followUser={follow}
+                      following={user.youFollows}
+                      user={user}
+                      followingType="user"
+                    />
+                    {user.youFollows && <BellButton user={user} />}
+                  </div>
                 )}
               </div>
             </div>

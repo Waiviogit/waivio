@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { DEFAULT_RADIUS } from '../../../common/constants/map';
+import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import {
@@ -64,8 +64,9 @@ class MapOS extends React.Component {
 
   componentDidMount() {
     const { radius, center } = this.state;
-    const { setMapArea } = this.props;
-    setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
+    const { setMapArea, match } = this.props;
+    if (match.params.filterKey !== 'reserved')
+      setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
     document.addEventListener('click', this.handleClick);
   }
 
@@ -89,6 +90,7 @@ class MapOS extends React.Component {
     ) {
       this.setState({ zoom: nextProps.zoomMap });
     }
+    if (match.params.filterKey === 'reserved') this.setState({ zoom: DEFAULT_ZOOM });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -118,17 +120,19 @@ class MapOS extends React.Component {
 
   updateMap = firstMapLoad => {
     const { match } = this.props;
-    const isSecondaryObjectsCards = !isEmpty(match.params.campaignParent);
+    const isSecondaryObjectsCards =
+      !isEmpty(match.params.campaignParent) || match.params.filterKey === 'reserved';
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({
-      radius: newRadius,
-      coordinates: center,
-      isMap: true,
-      isSecondaryObjectsCards,
-      firstMapLoad,
-    });
+    if (firstMapLoad)
+      setMapArea({
+        radius: newRadius,
+        coordinates: center,
+        isMap: true,
+        isSecondaryObjectsCards,
+        firstMapLoad,
+      });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {

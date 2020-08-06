@@ -13,7 +13,7 @@ import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, increaseReward } from '../../user/userActions';
+import { rejectReview, changeReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import '../../components/StoryFooter/Buttons.less';
@@ -27,7 +27,7 @@ import Report from '../Report/Report';
   changeBlackAndWhiteLists,
   setDataForSingleReport,
   getBlacklist,
-  increaseReward,
+  changeReward,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -49,7 +49,7 @@ export default class CampaignButtons extends React.Component {
     user: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func,
     rejectReview: PropTypes.func.isRequired,
-    increaseReward: PropTypes.func.isRequired,
+    changeReward: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
@@ -199,22 +199,24 @@ export default class CampaignButtons extends React.Component {
     const { value } = this.state;
     if (value > 0) {
       this.setState({ isLoading: true });
-      this.handleIncreaseReward().then(() => this.setState({ isLoading: false, value: '' }));
+      this.handleChangeReward().then(() =>
+        this.setState({ isLoading: false, value: '', isOpenModalEnterAmount: false }),
+      );
     }
   };
 
   handleCancel = () => this.setState({ isOpenModalEnterAmount: false, value: '' });
 
-  handleIncreaseReward = async () => {
+  handleChangeReward = async () => {
     try {
-      const { proposition } = this.props;
+      const { proposition, match } = this.props;
       const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
       const companyAuthor = get(proposition, ['guide', 'name']);
       const companyPermlink = get(proposition, 'activation_permlink');
       const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
       const userName = get(proposition, ['users', '0', 'name']);
       const amount = this.state.value;
-      await this.props.increaseReward({
+      await this.props.changeReward({
         companyAuthor,
         companyPermlink,
         username: userName,
@@ -230,12 +232,21 @@ export default class CampaignButtons extends React.Component {
             .catch(error => reject(error));
         }, 10000);
       });
-      message.success(
-        this.props.intl.formatMessage({
-          id: 'reward_has_been_increased',
-          defaultMessage: 'Reward has been increased',
-        }),
-      );
+      if (match.params[0] === 'history') {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'reward_has_been_decreased',
+            defaultMessage: 'Reward has been decreased',
+          }),
+        );
+      } else {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'reward_has_been_increased',
+            defaultMessage: 'Reward has been increased',
+          }),
+        );
+      }
     } catch (e) {
       message.error(e.message);
     }
@@ -286,7 +297,7 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (match.params.filterKey === 'messages') {
+    if (match.params[0] === 'messages') {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -362,7 +373,10 @@ export default class CampaignButtons extends React.Component {
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
-    const userName = match.params.filterKey === 'messages' ? propositionUserName : user.name;
+    const userName =
+      match.params[0] === 'messages' || match.params[0] === 'guideHistory'
+        ? propositionUserName
+        : user.name;
     const toggleModalReport = e => {
       e.preventDefault();
       e.stopPropagation();
@@ -448,6 +462,17 @@ export default class CampaignButtons extends React.Component {
                         </PopoverMenuItem>
                       );
                     case 'increase_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.openModalEnterAmount}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'decrease_reward':
                       return (
                         <PopoverMenuItem key={item.key}>
                           <div role="presentation" onClick={this.openModalEnterAmount}>
@@ -573,7 +598,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {match.params.filterKey === 'messages' && (
+        {match.params[0] === 'messages' && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
@@ -582,7 +607,7 @@ export default class CampaignButtons extends React.Component {
             <WeightTag weight={propositionUserWeight} />
           </div>
         )}
-        {propositionStatus === 'completed' && match.params.filterKey === 'history' && (
+        {propositionStatus === 'completed' && match.params[0] === 'history' && (
           <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
               id: 'review',

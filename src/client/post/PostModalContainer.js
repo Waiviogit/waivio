@@ -47,7 +47,7 @@ export default connect(
       showPostModal: getShowPostModal(state),
       author: getUser(state, author),
       currentShownPost,
-      shownPostContents: getPostContent(state, permlink),
+      shownPostContents: getPostContent(state, permlink, author),
     };
   },
   {

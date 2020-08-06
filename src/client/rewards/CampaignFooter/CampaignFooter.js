@@ -124,7 +124,9 @@ class CampaignFooter extends React.Component {
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
-        isRewards ? proposition.objects[0].reservationCreated : proposition.users[0].createdAt,
+        isRewards
+          ? get(proposition, ['objects', '0', 'reservationCreated'])
+          : get(proposition, ['users', '0', 'createdAt']),
         proposition.count_reservation_days,
       ),
     });
