@@ -1312,5 +1312,6 @@
   "notification_bell_follow": "{follower} подписался {following}",
   "send_to": "Отправить",
   "received_from_self": "получил от себя",
+  "failed_to_get_campaign_data": "Не удалось получить данные о кампании: {error}",
   "history_and_sponsor_communications": "История и спонсорские коммуникации"
 }
