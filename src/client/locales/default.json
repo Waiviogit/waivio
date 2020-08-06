@@ -1306,5 +1306,11 @@
   "notify_list_message_telegram": "Open the Telegram chart with {link} and enter the Hive usernames to subscribes.",
   "my_actions": "My actions",
   "minimum_expertise_cannot_have_more_then_two_decimals": "The Waivio reputation cannot have more then two digits after the decimal point",
-  "decrease_reward": "Decrease reward"
+  "decrease_reward": "Decrease reward",
+  "notification_bell_post": "{username} published a new post: {title}",
+  "notification_bell_reblog": "{account} re-blogged {author}'s post: {title}",
+  "notification_bell_follow": "{follower} followed {following}",
+  "send_to": "Send to",
+  "received_from_self": "received from self",
+  "failed_to_get_campaign_data": "Failed to get campaign data: {error}"
 }
