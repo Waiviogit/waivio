@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Badge } from 'antd';
+import { Badge, message } from 'antd';
 import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty, includes } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
@@ -138,7 +138,17 @@ class EditPost extends Component {
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     getCampaignById(campaignId)
       .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
-      .catch(error => console.log('Failed to get campaign data:', error));
+      .catch(error => {
+        message.error(
+          this.props.intl.formatMessage(
+            {
+              id: 'imageSetter_link_is_already_added',
+              defaultMessage: `Failed to get campaign data: {error}`,
+            },
+            { error },
+          ),
+        );
+      });
   }
 
   componentDidUpdate(prevProps) {
