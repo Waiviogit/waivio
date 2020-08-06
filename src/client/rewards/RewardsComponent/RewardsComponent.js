@@ -62,8 +62,6 @@ const RewardsComponent = memo(
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       if (username && !url) {
         getPropositionsByStatus({ username, sort });
-      } else if (username) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       }
       if (pendingUpdate) {
         dispatch(pendingUpdateSuccess());
@@ -74,10 +72,6 @@ const RewardsComponent = memo(
     }, [JSON.stringify(activeFilters)]);
 
     useEffect(() => {
-      if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
-        prevFilterKeyParams.current = filterKeyParams;
-        return;
-      }
       if (!userLocation.lat || !userLocation.lon) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
