@@ -64,6 +64,10 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
     }
   };
 
+  const handleToggleLoading = () => {
+    setIsLoading(true);
+  };
+
   const renderSignIn = () => (
     <React.Fragment>
       <h2 className="ModalSignIn__title">
@@ -109,8 +113,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
               })}
             </span>
           </p>
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div onClick={() => setIsLoading(true)}>
+          <div onClick={handleToggleLoading} role="presentation">
             <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
           </div>
           <p className="ModalSignIn__rules">
