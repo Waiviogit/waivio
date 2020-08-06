@@ -8,9 +8,9 @@
   display: flex;
   position: absolute;
   z-index: 1;
-  top: 0;
+  top: -1;
   transition: all 0.1s ease;
-  left: -45px;
+  left: 0;
 
   .act-buttons-group {
     display: flex;
@@ -22,16 +22,16 @@
   .object-search-input {
     background-color: @white;
     border-radius: 4px;
-    width: calc(100vw - @margin * 4);
+    width: calc(100vw - @margin * 4.2);
 
     @media @small {
-      width: calc(100vw - @margin * 5 - @right-width);
+      width: calc(100vw - @margin * 1.5 - @right-width);
     }
     @media @medium {
-      max-width: @input-max-width - @margin * 2;
+      max-width: 710px;
     }
     @media @large {
-      max-width: @input-max-width;
+      max-width: 740px;
     }
 
     input.ant-input {
@@ -163,6 +163,7 @@
 
 .md-add-button {
   margin-right: 2px;
+  margin-left: -46px;
   &.md-open-button {
     transform: rotate(45deg);
   }
