@@ -2,9 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { truncate } from 'lodash';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 import { FormattedMessage, FormattedRelative, FormattedDate, FormattedTime } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
+import { getAuthenticatedUserName } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
 
 const validateTitle = (details, username) => {
@@ -57,6 +60,7 @@ const ReceiveTransaction = ({
   type,
   username,
 }) => {
+  const userName = useSelector(getAuthenticatedUserName);
   const demoPost = type === 'demo_post';
   return (
     <div className="UserWalletTransactions__transaction">
@@ -82,7 +86,11 @@ const ReceiveTransaction = ({
               />
             )}
           </div>
-          <div className="UserWalletTransactions__received">
+          <div
+            className={classNames('UserWalletTransactions__received', {
+              'UserWalletTransactions__received-self': userName === from,
+            })}
+          >
             {'+ '}
             {amount}
           </div>
