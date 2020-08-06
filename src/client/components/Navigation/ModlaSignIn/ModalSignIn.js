@@ -64,7 +64,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
     }
   };
 
-  const handleToggleLoading = () => {
+  const handleClickLoading = () => {
     setIsLoading(true);
   };
 
@@ -113,7 +113,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
               })}
             </span>
           </p>
-          <div onClick={handleToggleLoading} role="presentation">
+          <div onClick={handleClickLoading} role="presentation">
             <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
           </div>
           <p className="ModalSignIn__rules">
