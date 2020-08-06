@@ -17,10 +17,9 @@ const ErrorBoundary = ComposedComponent => {
       error: '',
     };
 
-    componentDidCatch(error) {
+    componentDidCatch() {
       this.setState({
         hasError: true,
-        error,
       });
     }
 
