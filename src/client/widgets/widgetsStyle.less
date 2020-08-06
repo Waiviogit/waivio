@@ -20,13 +20,21 @@
   flex-direction: column;
 
   &__mainText {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
+
+    @media @small {
+      font-size: 30px;
+    }
   }
 
   &__secondaryText {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 400;
+
+    @media @small {
+      font-size: 22px;
+    }
   }
 
   &__image {
