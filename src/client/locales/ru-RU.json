@@ -1309,5 +1309,7 @@
   "decrease_reward": "Уменьшить вознаграждение",
   "notification_bell_post": "{username} опубликовал новый пост: {title}",
   "notification_bell_reblog": "{account} поделился постом {author}: {title}",
-  "notification_bell_follow": "{follower} подписался {following}"
+  "notification_bell_follow": "{follower} подписался {following}",
+  "send_to": "Отправить",
+  "received_from_self": "получил от себя"
 }
