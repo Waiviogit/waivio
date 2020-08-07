@@ -12,7 +12,8 @@ const propTypes = {
 
 const PostObjectCard = ({ isLinked, wObject, onToggle }) => {
   const handleChange = isLinkedValue => {
-    onToggle(wObject.id, isLinkedValue);
+    // eslint-disable-next-line no-underscore-dangle
+    onToggle(wObject.id, isLinkedValue, wObject._id);
   };
   return (
     <div className="PostObjectCard">

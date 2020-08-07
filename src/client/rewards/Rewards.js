@@ -43,7 +43,7 @@ import {
   getCoordinates,
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
-import { getPropositions, getRewardsGeneralCounts } from '../../waivioApi/ApiClient';
+import { getPropositions } from '../../waivioApi/ApiClient';
 import { preparePropositionReqData, getActiveFilters, getSortChanged } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -51,6 +51,7 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
+import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
 import { getClientWObj } from '../adapters';
@@ -78,6 +79,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     getObjectsMap,
     setUpdatedFlag,
     getPropositionsForMap,
+    getRewardsGeneralCounts,
   },
 )
 class Rewards extends React.Component {
@@ -96,6 +98,7 @@ class Rewards extends React.Component {
     setUpdatedFlag: PropTypes.func.isRequired,
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
+    getRewardsGeneralCounts: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -311,28 +314,30 @@ class Rewards extends React.Component {
 
   getPropositionsByStatus = ({ username, sort }) => {
     this.setState({ loadingCampaigns: true });
-    getRewardsGeneralCounts({ userName: username, sort }).then(data => {
-      const sponsors = sortBy(data.sponsors);
+    this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
+      // eslint-disable-next-line camelcase
+      const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
+      const newSponsors = sortBy(sponsors);
+      const rewardsTab = {
+        reserved: 'reserved',
+        eligible: 'active',
+        all: 'all',
+      };
       this.setState({
-        sponsors,
-        hasMore: data.hasMore,
-        campaignsTypes: data.campaigns_types,
+        sponsors: newSponsors,
+        hasMore,
+        campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (data.tabType === 'reserved') {
+      this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+
+      if (tabType === 'reserved') {
         this.setState({
-          propositionsReserved: data.campaigns,
-        });
-        this.props.history.push('/rewards/reserved/');
-      } else if (data.tabType === 'eligible') {
-        this.props.history.push('/rewards/active/');
-        this.setState({
-          propositions: data.campaigns,
+          propositionsReserved: campaigns,
         });
       } else {
-        this.props.history.push('/rewards/all/');
         this.setState({
-          propositions: data.campaigns,
+          propositions: campaigns,
         });
       }
     });
@@ -893,22 +898,24 @@ class Rewards extends React.Component {
                       zoomMap={zoomMap}
                     />
                   )}
-                  {!isEmpty(sponsors) && !isEmpty(propositions) && !isCreate && (
-                    <RewardsFiltersPanel
-                      campaignsTypes={campaignsTypes}
-                      sponsors={sponsors}
-                      activeFilters={activeFilters}
-                      activePayableFilters={activePayableFilters}
-                      setFilterValue={this.setFilterValue}
-                      setPayablesFilterValue={this.setPayablesFilterValue}
-                      location={location}
-                      activeMessagesFilters={activeMessagesFilters}
-                      activeHistoryFilters={activeHistoryFilters}
-                      activeGuideHistoryFilters={activeGuideHistoryFilters}
-                      messagesSponsors={messagesSponsors}
-                      setActiveMessagesFilters={this.setActiveMessagesFilters}
-                    />
-                  )}
+                  {!isEmpty(sponsors) &&
+                    (!isEmpty(propositions) || !isEmpty(propositionsReserved)) &&
+                    !isCreate && (
+                      <RewardsFiltersPanel
+                        campaignsTypes={campaignsTypes}
+                        sponsors={sponsors}
+                        activeFilters={activeFilters}
+                        activePayableFilters={activePayableFilters}
+                        setFilterValue={this.setFilterValue}
+                        setPayablesFilterValue={this.setPayablesFilterValue}
+                        location={location}
+                        activeMessagesFilters={activeMessagesFilters}
+                        activeHistoryFilters={activeHistoryFilters}
+                        activeGuideHistoryFilters={activeGuideHistoryFilters}
+                        messagesSponsors={messagesSponsors}
+                        setActiveMessagesFilters={this.setActiveMessagesFilters}
+                      />
+                    )}
                 </div>
               </Affix>
             )}

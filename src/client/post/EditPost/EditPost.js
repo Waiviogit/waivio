@@ -4,7 +4,21 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge, message } from 'antd';
-import { debounce, get, has, kebabCase, throttle, uniqBy, isEmpty, includes } from 'lodash';
+import {
+  debounce,
+  get,
+  has,
+  kebabCase,
+  throttle,
+  uniqBy,
+  isEmpty,
+  includes,
+  find,
+  indexOf,
+  uniqWith,
+  concat,
+  isEqual,
+} from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -19,12 +33,7 @@ import {
   getBeneficiariesUsers,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import {
-  createPostMetadata,
-  splitPostContent,
-  getInitialState,
-  getObjectUrl,
-} from '../../helpers/postHelpers';
+import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
@@ -136,19 +145,21 @@ class EditPost extends Component {
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
-    getCampaignById(campaignId)
-      .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
-      .catch(error => {
-        message.error(
-          this.props.intl.formatMessage(
-            {
-              id: 'imageSetter_link_is_already_added',
-              defaultMessage: `Failed to get campaign data: {error}`,
-            },
-            { error },
-          ),
-        );
-      });
+    const isReview = !isEmpty(campaignId);
+    if (isReview)
+      getCampaignById(campaignId)
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => {
+          message.error(
+            this.props.intl.formatMessage(
+              {
+                id: 'imageSetter_link_is_already_added',
+                defaultMessage: `Failed to get campaign data: {error}`,
+              },
+              { error },
+            ),
+          );
+        });
   }
 
   componentDidUpdate(prevProps) {
@@ -163,21 +174,31 @@ class EditPost extends Component {
     }
   }
 
-  handleChangeContent(rawContent) {
-    const nextState = { content: toMarkdown(rawContent) };
-    const linkedObjects = getLinkedObjects(rawContent);
+  handleChangeContent(rawContent, title) {
+    const nextState = { content: toMarkdown(rawContent), titleValue: title };
+    const linkedObjects = uniqBy(
+      concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
+      'id',
+    );
+
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+    if (
+      this.state.content !== nextState.content ||
+      isLinkedObjectsChanged ||
+      this.state.titleValue !== nextState.titleValue
+    ) {
       this.setState(nextState, this.handleUpdateState);
     }
   }
 
-  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
+  handleTopicsChange = topics => {
+    this.setState({ topics }, this.handleUpdateState);
+  };
 
   handleSettingsChange = updatedValue =>
     this.setState(
@@ -199,8 +220,11 @@ class EditPost extends Component {
     this.props.createPost(postData, this.props.beneficiaries, isReview);
   }
 
-  handleToggleLinkedObject(objId, isLinked) {
+  handleToggleLinkedObject(objId, isLinked, uniqId) {
     const { linkedObjects, objPercentage } = this.state;
+    const currentObj = find(linkedObjects, { _id: uniqId });
+    const switchableObj = indexOf(linkedObjects, currentObj);
+    linkedObjects.splice(switchableObj, 1);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
@@ -210,16 +234,17 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const { postTitle, postBody } = splitPostContent(prevState.content);
       const objName = object.name || object.default_name;
-      const separator = postBody.slice(-1) === '\n' ? '' : '\n';
+      const objectType = object.type || object.object_type;
+      const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
-          title: postTitle,
-          body: `${postBody}${separator}[${objName}](${getObjectUrl(
+          title: this.state.titleValue,
+          body: `${this.state.content}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
+        topics: uniqWith([...prevState.topics, objectType], isEqual),
       };
     });
   }
@@ -241,14 +266,12 @@ class EditPost extends Component {
       isUpdating,
       permlink,
       originalBody,
+      titleValue,
     } = this.state;
-    const { postTitle, postBody } = splitPostContent(content);
-    // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
-
     const postData = {
-      body: postBody,
-      title: postTitle,
+      body: content,
+      title: titleValue,
       lastUpdated: Date.now(),
       isUpdating,
       draftId,
@@ -265,7 +288,7 @@ class EditPost extends Component {
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
-    postData.permlink = permlink || kebabCase(postTitle);
+    postData.permlink = permlink || kebabCase(titleValue);
 
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
@@ -280,7 +303,7 @@ class EditPost extends Component {
     };
 
     postData.jsonMetadata = createPostMetadata(
-      postBody,
+      content,
       topics,
       oldMetadata,
       waivioData,
@@ -290,29 +313,27 @@ class EditPost extends Component {
     if (originalBody) {
       postData.originalBody = originalBody;
     }
-
     return postData;
   }
 
-  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
+  handleUpdateState = () => {
+    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
+  };
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
     const draft = this.buildPost();
-    const postBody = draft.body;
-    // Remove zero width space
-    const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
-    if (isBodyEmpty) return;
+    const postBody = draft.originalBody || draft.body;
+    if (!postBody) return;
 
     const redirect = this.props.draftId !== this.state.draftId;
 
     this.props.saveDraft(draft, redirect, this.props.intl);
-
-    // if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
-    //   this.setState({ draftContent: { title: draft.title, body: draft.body } });
-    // }
   }, 1500);
+
+  handleHashtag = objectType =>
+    this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objectType], isEqual) }));
 
   render() {
     const {
@@ -324,6 +345,7 @@ class EditPost extends Component {
       settings,
       campaign,
       isUpdating,
+      titleValue,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
@@ -336,6 +358,7 @@ class EditPost extends Component {
               locale={locale}
               onChange={this.handleChangeContent}
               intl={intl}
+              handleHashtag={this.handleHashtag}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
@@ -365,10 +388,22 @@ class EditPost extends Component {
               onSubmit={this.handleSubmit}
               onTopicsChange={this.handleTopicsChange}
               isGuest={isGuest}
+              titleValue={titleValue}
             />
 
-            <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
+            <div className="search-object-panel">
+              {intl.formatMessage({
+                id: 'editor_search_elements',
+                defaultMessage: 'Attach hashtags, objects, pages, etc.',
+              })}
+            </div>
+            <SearchObjectsAutocomplete
+              placeholder={intl.formatMessage({
+                id: 'editor_search_object_by_name',
+                defaultMessage: 'Search by name',
+              })}
+              handleSelect={this.handleObjectSelect}
+            />
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (
