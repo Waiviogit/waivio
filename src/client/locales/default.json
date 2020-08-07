@@ -1313,6 +1313,7 @@
   "send_to": "Send to",
   "received_from_self": "received from self",
   "failed_to_get_campaign_data": "Failed to get campaign data: {error}",
+  "history_and_sponsor_communications": "History and sponsor communications",
   "error_boundary_page": "Something went wrong",
   "error_boundary_page_brace": "Brace yourself till we get the error fixed.",
   "error_boundary_page_try_reload": "You may also refresh the page or try again later.",
