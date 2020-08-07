@@ -949,6 +949,7 @@
   "mobnav_invite": "Invite",
   "mobnav_drafts": "Drafts",
   "approved_by_admin": "Approved by admin",
+  "rejected_by_admin": "Rejected by admin",
   "min_70_is_required": "Min 70% is required",
   "manage_page_active": "Active",
   "manage_page_inactive": "Inactive",

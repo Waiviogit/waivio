@@ -5,7 +5,6 @@ import {
   GET_OBJECT_APPENDS,
   RATE_WOBJECT_SUCCESS,
   SEND_COMMENT_APPEND,
-  SET_NEW_PARENT,
   VOTE_APPEND_ERROR,
   VOTE_APPEND_START,
   VOTE_APPEND_SUCCESS,
@@ -381,16 +380,7 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
-    case SET_NEW_PARENT: {
-      return {
-        ...state,
-        wobject: {
-          ...state.wobject,
-          fields: [...state.wobject.fields],
-          parent: action.payload.parent,
-        },
-      };
-    }
+
     case FOLLOW_OBJECT.START: {
       if (state.wobject.author_permlink === action.meta.permlink) {
         return {
@@ -485,6 +475,5 @@ export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields || [];
 export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
-export const getRatingFields = state =>
-  getObjectFields(state).filter(field => field.name === objectFields.rating);
+export const getRatingFields = state => state.wobject.rating;
 export const getObjectTagCategory = state => state.wobject.tagCategories;

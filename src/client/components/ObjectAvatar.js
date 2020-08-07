@@ -1,13 +1,10 @@
-import { filter, maxBy, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import './ObjectAvatar.less';
+import { filter, maxBy, includes, get } from 'lodash';
+
 import DEFAULTS from '../object/const/defaultValues';
-import {
-  addActiveVotesInField,
-  calculateApprovePercent,
-  getApprovedField,
-} from '../helpers/wObjectHelper';
+
+import './ObjectAvatar.less';
 
 export const getObjectUrl = item => {
   const avatarFields = filter(item.fields, o => o.name === 'avatar');
@@ -21,12 +18,7 @@ const ObjectAvatar = ({ item, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-  const parent = item.parent && addActiveVotesInField(item, item.parent);
-  const parentAvatar =
-    parent &&
-    calculateApprovePercent(parent.active_votes, parent.weight, parent) >= 70 &&
-    getApprovedField(parent, 'avatar');
-  let url = getApprovedField(item, 'avatar') || parentAvatar;
+  let url = item.avatar || get(item, ['parent', 'avatar']);
 
   if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
@@ -46,7 +38,15 @@ const ObjectAvatar = ({ item, size }) => {
 };
 
 ObjectAvatar.propTypes = {
-  item: PropTypes.shape({ parent: PropTypes.oneOfType([PropTypes.shape(), PropTypes.string]) }),
+  item: PropTypes.shape({
+    parent: PropTypes.oneOfType([
+      PropTypes.shape({
+        avatar: PropTypes.string,
+      }),
+      PropTypes.string,
+    ]),
+    avatar: PropTypes.string,
+  }),
   size: PropTypes.number,
 };
 

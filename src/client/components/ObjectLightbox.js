@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
+import { get } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
-import { getApprovedField } from '../helpers/wObjectHelper';
-import { getObject } from '../../waivioApi/ApiClient';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -25,14 +24,7 @@ export default class ObjectLightbox extends Component {
 
   state = {
     open: false,
-    parent: {},
   };
-
-  componentDidMount() {
-    const parent = getApprovedField(this.props.wobject, 'parent');
-
-    getObject(parent).then(res => this.setState({ parent: res }));
-  }
 
   handleAvatarClick = () => this.setState({ open: true });
 
@@ -40,9 +32,8 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = getApprovedField(wobject, 'avatar');
-    const objectName = getApprovedField(wobject, objectFields.name) || wobject.default_name;
-    const currentImage = imageUrl || getApprovedField(wobject.parent, 'avatar') || DEFAULTS.AVATAR;
+    const objectName = wobject.name || wobject.default_name;
+    const currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']) || DEFAULTS.AVATAR;
 
     return (
       <React.Fragment>
@@ -66,7 +57,7 @@ export default class ObjectLightbox extends Component {
         ) : (
           <React.Fragment>
             <a role="presentation" onClick={this.handleAvatarClick}>
-              <ObjectAvatar item={wobject} parent={this.state.parent} size={size} />
+              <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (
               <Lightbox mainSrc={currentImage} onCloseRequest={this.handleCloseRequest} />

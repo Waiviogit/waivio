@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
+import { filter, includes, orderBy, isEmpty, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,6 @@ import './ObjectCardView.less';
 const ObjectCardView = ({
   intl,
   wObject,
-  passedParent,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -49,9 +48,7 @@ const ObjectCardView = ({
   const ratings = getObjectRatings();
 
   const avatarLayout = () => {
-    const parent = wObject.parent || passedParent;
-    const parentAvatar = getApprovedField(parent, 'avatar');
-    let url = getApprovedField(wObject, 'avatar') || parentAvatar;
+    let url = wObject.avatar || get(wObject, ['parent', 'avatar']);
 
     if (!url) url = DEFAULTS.AVATAR;
 
@@ -69,8 +66,7 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName =
-    !isEmpty(wObject.parent) && getApprovedField(wObject.parent, objectTypes.name, '');
+  const parentName = get(wObject, ['parent', 'name']) || get(wObject, ['parent', 'default_name']);
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -83,12 +79,12 @@ const ObjectCardView = ({
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
-              {avatarLayout(wObject.avatar)}
+              {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
-              {parentName && (
+              {wObject.parent && (
                 <Link
-                  to={`/object/${!isEmpty(wObject.parent) ? wObject.parent.author_permlink : null}`}
+                  to={`/object/${wObject.parent.author_permlink}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -140,7 +136,6 @@ const ObjectCardView = ({
                   {wObject.address.city && <span>{wObject.address.city}</span>}
                 </div>
               )}
-              {/* eslint-disable-next-line no-nested-ternary */}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {truncate(wObject.title, {
@@ -148,14 +143,16 @@ const ObjectCardView = ({
                     separator: ' ',
                   })}
                 </div>
-              ) : wObject.description ? (
-                <div className="ObjectCardView__title" title={wObject.description}>
-                  {truncate(wObject.description, {
-                    length: 140,
-                    separator: ' ',
-                  })}
-                </div>
-              ) : null}
+              ) : (
+                wObject.description && (
+                  <div className="ObjectCardView__title" title={wObject.description}>
+                    {truncate(wObject.description, {
+                      length: 140,
+                      separator: ' ',
+                    })}
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>

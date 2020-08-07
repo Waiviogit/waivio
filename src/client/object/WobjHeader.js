@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
+
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
@@ -12,14 +14,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { AppSharedContext } from '../Wrapper';
-import {
-  accessTypesArr,
-  addActiveVotesInField,
-  calculateApprovePercent,
-  getApprovedField,
-  haveAccess,
-} from '../helpers/wObjectHelper';
+import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -35,17 +30,15 @@ const WobjHeader = ({
   followWobj,
   unfollowWobj,
 }) => {
-  const { usedLocale } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parent = wobject.parent && addActiveVotesInField(wobject, wobject.parent);
   const parentName =
-    parent &&
-    calculateApprovePercent(parent.active_votes, parent.weight, wobject) >= 70 &&
-    (getApprovedField(wobject.parent, objectFields.name) || wobject.default_name);
+    get(wobject, ['parent', 'name'], '') || get(wobject, ['parent', 'default_name'], '');
+  const name = wobject.name || wobject.default_name;
+  const isHashtag = wobject.object_type === 'hashtag';
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -65,8 +58,8 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
-  const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
-  const isHashtag = wobject.object_type === 'hashtag';
+
+  const statusFields = wobject.status ? getStatusLayout(wobject.status) : descriptionShort;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -118,17 +111,14 @@ const WobjHeader = ({
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {/* eslint-disable-next-line no-nested-ternary */}
               {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
                   objName={wobject.name}
                 />
-              ) : wobject.status ? (
-                getStatusLayout(wobject.status)
               ) : (
-                descriptionShort
+                statusFields
               )}
             </div>
           </div>
@@ -174,7 +164,8 @@ WobjHeader.defaultProps = {
 const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
 
 export default injectIntl(
-  connect(mapStateToProps, { followWobj: followWobject, unfollowWobj: unfollowWobject })(
-    WobjHeader,
-  ),
+  connect(mapStateToProps, {
+    followWobj: followWobject,
+    unfollowWobj: unfollowWobject,
+  })(WobjHeader),
 );

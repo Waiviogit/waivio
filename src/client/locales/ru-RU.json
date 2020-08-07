@@ -953,6 +953,7 @@
   "mobnav_invite": "Пригласить",
   "mobnav_drafts": "Черновики",
   "approved_by_admin": "Одобрено админом",
+  "rejected_by_admin": "Отклонено админом",
   "min_70_is_required": "Необходимо не менее 70%",
   "manage_page_active": "Активная",
   "manage_page_inactive": "Неактивная",

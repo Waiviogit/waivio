@@ -23,8 +23,6 @@ import {
   hasType,
   accessTypesArr,
   calculateApprovePercent,
-  getApprovedField,
-  addActiveVotesInField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -57,8 +55,6 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
-import { getObject } from '../../../waivioApi/ApiClient';
-import { changeParent } from '../../object/wobjActions';
 
 import './ObjectInfo.less';
 
@@ -69,7 +65,7 @@ import './ObjectInfo.less';
     isAuthenticated: getIsAuthenticated(state),
     usedLocale: getSuitableLanguage(state),
   }),
-  { changeParent },
+  null,
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -81,7 +77,6 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
-    changeParent: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -98,7 +93,6 @@ class ObjectInfo extends React.Component {
     selectedField: null,
     showModal: false,
     showMore: {},
-    parentWobj: null,
   };
 
   getLink = link => {
@@ -134,22 +128,17 @@ class ObjectInfo extends React.Component {
 
   renderCategoryItems = (categoryItems, category) => {
     if (!isEmpty(categoryItems)) {
-      const categoryItemsWithVotes = categoryItems
-        .map(item => addActiveVotesInField(this.props.wobject, item, category))
-        .filter(
-          item => calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-        );
-      const onlyFiveItems = categoryItemsWithVotes.filter((f, i) => i < 5);
-      const tagArray = this.state.showMore[category] ? categoryItemsWithVotes : onlyFiveItems;
+      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
       return (
         <div>
           {tagArray.map(item => (
-            <Tag key={`${category}/${item.name}`} color="orange">
-              <Link to={`/object/${item.name}`}>{item.name}</Link>
+            <Tag key={`${category}/${item.body}`} color="orange">
+              <Link to={`/object/${item.body}`}>{item.body}</Link>
             </Tag>
           ))}
-          {categoryItemsWithVotes.length > 5 && !this.state.showMore[category] && (
+          {categoryItems.length > 5 && !this.state.showMore[category] && (
             <span
               role="presentation"
               className="show-more"
@@ -172,57 +161,20 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
-  renderTagCategories = tagCategories => {
-    const filteredTagCategories =
-      tagCategories &&
-      tagCategories.filter(
-        category =>
-          calculateApprovePercent(category.active_votes, category.weight, this.props.wobject) >=
-            70 &&
-          category.categoryItems &&
-          category.categoryItems.filter(item => {
-            const itemWithLike = addActiveVotesInField(this.props.wobject, item);
-            return (
-              calculateApprovePercent(
-                itemWithLike.active_votes,
-                itemWithLike.weight,
-                this.props.wobject,
-              ) >= 70
-            );
-          }).length,
-      );
-    if (filteredTagCategories) {
-      return filteredTagCategories.map(item => (
-        <div key={item.id}>
-          {`${item.body}:`}
-          <br />
-          {this.renderCategoryItems(item.categoryItems, item.id)}
-        </div>
-      ));
-    }
-    return null;
-  };
+  renderTagCategories = tagCategories =>
+    tagCategories.map(item => (
+      <div key={item.id}>
+        {`${item.body}:`}
+        <br />
+        {this.renderCategoryItems(item.items, item.id)}
+      </div>
+    ));
 
-  renderParent = permlink => {
-    if (
-      permlink &&
-      (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink)
-    ) {
-      const getParent = () =>
-        getObject(permlink).then(res => {
-          this.setState({ parentWobj: res });
-          this.props.changeParent(res);
-        });
-      getParent();
-    }
-
+  renderParent = () => {
+    const parent = get(this.props, ['wobject', 'parent']);
     return (
-      this.state.parentWobj && (
-        <ObjectCard
-          key={this.state.parentWobj.author_permlink}
-          wobject={this.state.parentWobj}
-          showFollow={false}
-        />
+      parent && (
+        <ObjectCard key={parent.author_permlink} wobject={parent.parentWobj} showFollow={false} />
       )
     );
   };
@@ -238,31 +190,31 @@ class ObjectInfo extends React.Component {
     const isHashtag = wobject.object_type === 'hashtag';
 
     let names = [];
-    let addressArr = [];
-    let address = '';
-    let description = '';
-    let price = '';
-    let workTime = '';
-    let avatar = '';
-    let short = '';
-    let background = '';
     let photosCount = 0;
-    let tagCategories = [];
+    const tagCategories = get(wobject, 'tagCategory', []);
     let phones = [];
-    let email = '';
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
-    const button = getApprovedField(wobject, 'button', usedLocale);
-    const map = getApprovedField(wobject, 'map', usedLocale);
-    const parent = getApprovedField(wobject, 'parent');
-    const status = getApprovedField(wobject, 'status', usedLocale);
-    const pictures =
-      wobject.preview_gallery &&
-      wobject.preview_gallery.filter(
-        picture =>
-          calculateApprovePercent(picture.active_votes, picture.weight, this.props.wobject) >= 70,
-      );
+    const button = get(wobject, 'button');
+    const map = get(wobject, ['map', 'coordinates'], []);
+    const parent = get(wobject, 'parent');
+    const status = get(wobject, 'status');
+    let address = get(wobject, 'address');
+    address = address
+      ? compact(Object.values(addressFields).map(fieldName => JSON.parse(address)[fieldName])).join(
+          ', ',
+        )
+      : [];
+    const description = get(wobject, 'description');
+    const price = get(wobject, 'price');
+    const avatar = get(wobject, 'avatar');
+    const background = get(wobject, 'background');
+    const pictures = get(wobject, 'preview_gallery');
+    const short = get(wobject, 'title');
+    const email = get(wobject, 'email');
+    const workTime = get(wobject, 'workTime');
+
     if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
         .filter(
@@ -271,23 +223,6 @@ class ObjectInfo extends React.Component {
             calculateApprovePercent(nameFld.active_votes, nameFld.weight, this.props.wobject) >= 70,
         )
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
-
-      const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
-      addressArr = adressFields
-        ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
-        : [];
-      address = compact(addressArr).join(', ');
-      description = getApprovedField(wobject, 'description', usedLocale);
-      avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
-      background = getFieldWithMaxWeight(wobject, objectFields.background);
-
-      short = getFieldWithMaxWeight(wobject, objectFields.title);
-
-      workTime = getFieldWithMaxWeight(wobject, objectFields.workTime);
-
-      email = getFieldWithMaxWeight(wobject, objectFields.email);
-
-      price = getFieldWithMaxWeight(wobject, objectFields.price);
 
       menuItems = uniqBy(get(wobject, 'menuItems', []), 'author_permlink');
       menuItems = menuItems.map(item => {
@@ -301,25 +236,12 @@ class ObjectInfo extends React.Component {
           active_votes: [...activeVotes],
         };
       });
-      menuLists =
-        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? menuItems.filter(
-              item =>
-                calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-            )
-          : null;
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
-          ? menuItems.filter(
-              item =>
-                item.object_type === OBJECT_TYPE.PAGE &&
-                calculateApprovePercent(item.active_votes, item.weight, this.props.wobject) >= 70,
-            )
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
           : null;
 
       photosCount = wobject.photos_count;
-
-      tagCategories = wobject.tagCategories;
 
       const filteredPhones = get(wobject, 'fields', []).filter(
         field =>
@@ -351,9 +273,7 @@ class ObjectInfo extends React.Component {
           calculateApprovePercent(field.active_votes, field.weight, this.props.wobject) >= 70,
       );
 
-    const isRenderMap =
-      map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
-    // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
+    const isRenderMap = map && isCoordinatesValid(map[0], map[1]);
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
       const shouldDisplay = renderFields.includes(name) || includes(TYPES_OF_MENU_ITEM, name);
@@ -586,7 +506,7 @@ class ObjectInfo extends React.Component {
                 {address}
                 {isRenderMap && (
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${map[0]},${map[1]}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="address-link"
@@ -721,7 +641,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {wobject && (wobject.name || wobject.default_name) && (
           <div className="object-sidebar">
-            {!isHashtag && listItem(objectFields.parent, parent ? this.renderParent(parent) : null)}
+            {!isHashtag && listItem(objectFields.parent, parent && this.renderParent())}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {!isHashtag && isRenderMenu && menuSection}
             {!isHashtag && aboutSection}

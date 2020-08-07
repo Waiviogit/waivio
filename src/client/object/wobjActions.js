@@ -159,23 +159,23 @@ export const rateObject = (author, permlink, authorPermlink, rate) => (
 
 export const GET_OBJECT_APPENDS = createAsyncActionType('@wobj/GET_OBJECT_APPENDS');
 
-export const getObjectAppends = (author, permlink, category = 'waivio-object') => (
-  dispatch,
-  getState,
-  { steemAPI },
-) => {
-  const state = getState();
-  const wobject = getObject(state);
-  const albums = getObjectAlbums(state);
-
-  return dispatch({
-    type: GET_OBJECT_APPENDS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes => apiRes.content && mapObjectAppends(apiRes.content, wobject, albums)),
-    meta: { sortBy: 'comments', category: author, limit: 10 },
-  });
-};
+// export const getObjectAppends = (author, permlink, category = 'waivio-object') => (
+//   dispatch,
+//   getState,
+//   { steemAPI },
+// ) => {
+//   const state = getState();
+//   const wobject = getObject(state);
+//   const albums = getObjectAlbums(state);
+//
+//   return dispatch({
+//     type: GET_OBJECT_APPENDS.ACTION,
+//     payload: steemAPI
+//       .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
+//       .then(apiRes => apiRes.content && mapObjectAppends(apiRes.content, wobject, albums)),
+//     meta: { sortBy: 'comments', category: author, limit: 10 },
+//   });
+// };
 
 export const VOTE_APPEND_START = '@wobj/VOTE_APPEND_START';
 export const VOTE_APPEND_SUCCESS = '@wobj/VOTE_APPEND_SUCCESS';
@@ -246,14 +246,6 @@ export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
       });
     });
 };
-
-export const SET_NEW_PARENT = 'SET_NEW_PARENT';
-
-export const changeParent = parent => dispatch =>
-  dispatch({
-    type: SET_NEW_PARENT,
-    payload: { parent },
-  });
 
 export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
 export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
