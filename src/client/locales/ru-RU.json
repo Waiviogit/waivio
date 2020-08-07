@@ -1311,5 +1311,6 @@
   "notification_bell_reblog": "{account} поделился постом {author}: {title}",
   "notification_bell_follow": "{follower} подписался {following}",
   "send_to": "Отправить",
-  "received_from_self": "получил от себя"
+  "received_from_self": "получил от себя",
+  "failed_to_get_campaign_data": "Не удалось получить данные о кампании: {error}"
 }

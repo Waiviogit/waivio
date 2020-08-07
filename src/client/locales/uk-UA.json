@@ -848,5 +848,6 @@
   "reward_has_been_decreased": "Винагороду зменьшено",
   "decrease_reward": "Зменшити винагороду",
   "send_to": "Відправити",
-  "received_from_self": "отриманий від себе"
+  "received_from_self": "отриманий від себе",
+  "failed_to_get_campaign_data": "Не вдалося отримати дані кампанії: {error}"
 }
