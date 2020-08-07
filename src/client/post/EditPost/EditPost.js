@@ -342,7 +342,10 @@ class EditPost extends Component {
                 {saving ? (
                   <Badge status="error" text="saving" />
                 ) : (
-                  <Badge status="success" text="saved" />
+                  <Badge
+                    status="success"
+                    text={intl.formatMessage({ id: 'saved', defaultMessage: 'saved' })}
+                  />
                 )}
               </div>
             )}
