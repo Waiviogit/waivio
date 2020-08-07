@@ -48,7 +48,6 @@ const objectSearchInput = props => {
 objectSearchInput.propTypes = {
   setEditorState: PropTypes.func.isRequired,
   getEditorState: PropTypes.func.isRequired,
-  // close: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
 };
 
@@ -64,7 +63,6 @@ class ObjectSideButton extends Component {
   static defaultProps = {
     setEditorState: () => {},
     getEditorState: () => {},
-    // close: () => {},
   };
 
   onClick = () => this.props.renderControl(objectSearchInput(this.props));

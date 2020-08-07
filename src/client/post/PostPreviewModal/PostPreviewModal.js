@@ -12,8 +12,9 @@ import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
 import { isContentValid } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
-import './PostPreviewModal.less';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
+
+import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 

@@ -266,7 +266,6 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
-    // eslint-disable-next-line no-underscore-dangle
     const campaignId = get(campaign, '_id', null);
     const postData = {
       body: content,

@@ -168,7 +168,7 @@ class Editor extends React.Component {
           onChange={event => this.setState({ titleValue: event.target.value })}
         />
         <div className="waiv-editor">
-          {isMounted ? (
+          {isMounted && (
             <MediumDraftEditor
               ref={this.refsEditor}
               placeholder={this.props.intl.formatMessage({
@@ -183,7 +183,7 @@ class Editor extends React.Component {
               intl={this.props.intl}
               handleHashtag={this.props.handleHashtag}
             />
-          ) : null}
+          )}
         </div>
       </div>
     );
