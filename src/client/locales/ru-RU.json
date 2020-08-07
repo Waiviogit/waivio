@@ -1312,5 +1312,10 @@
   "notification_bell_follow": "{follower} подписался {following}",
   "send_to": "Отправить",
   "received_from_self": "получил от себя",
-  "failed_to_get_campaign_data": "Не удалось получить данные о кампании: {error}"
+  "failed_to_get_campaign_data": "Не удалось получить данные о кампании: {error}",
+  "error_boundary_page": "Что-то пошло не так",
+  "error_boundary_page_brace": "Подождите, пока мы не исправим ошибку.",
+  "error_boundary_page_try_reload": "Вы можете попробовать перезагрузить страницу",
+  "error_boundary_page_go_to": "или вернуться на",
+  "error_boundary_page_home": "главную страницу"
 }
