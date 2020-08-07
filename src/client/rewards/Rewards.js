@@ -44,7 +44,12 @@ import {
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
-import { preparePropositionReqData, getActiveFilters, getSortChanged } from './rewardsHelper';
+import {
+  preparePropositionReqData,
+  getActiveFilters,
+  getSortChanged,
+  getSort,
+} from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -149,7 +154,14 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { userLocation } = this.props;
+    const { userLocation, match, username } = this.props;
+    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const sort = getSort(match, sortAll, sortEligible, sortReserved);
+    if (username && !url) {
+      this.getPropositionsByStatus({ username, sort });
+    } else if (url && !username && match.params.filterKey !== 'all') {
+      history.push(`/rewards/all`);
+    }
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
