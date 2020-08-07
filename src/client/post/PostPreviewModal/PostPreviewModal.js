@@ -9,11 +9,12 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
-import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
+import { isContentValid } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
-import './PostPreviewModal.less';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
+
+import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
@@ -48,6 +49,7 @@ class PostPreviewModal extends Component {
     onUpdate: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
+    titleValue: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
@@ -57,6 +59,7 @@ class PostPreviewModal extends Component {
     reviewData: null,
     isUpdating: false,
     isGuest: false,
+    titleValue: '',
   };
 
   constructor(props) {
@@ -64,7 +67,6 @@ class PostPreviewModal extends Component {
 
     this.state = {
       isModalOpen: false,
-      title: '',
       body: '',
       isConfirmed: false,
       isCheckReviewModalOpen: false,
@@ -86,11 +88,11 @@ class PostPreviewModal extends Component {
   };
 
   throttledUpdate = () => {
-    const { body, title, linkedObjects } = this.state;
-    const { topics, settings } = this.props;
+    const { body, linkedObjects } = this.state;
+    const { topics, settings, titleValue } = this.props;
     const postData = {
       body,
-      title,
+      titleValue,
       topics,
       linkedObjects,
       ...settings,
@@ -99,11 +101,9 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { postTitle, postBody } = splitPostContent(this.props.content);
     this.setState({
       isModalOpen: true,
-      title: postTitle,
-      body: postBody,
+      body: this.props.content,
     });
   };
 
@@ -146,7 +146,7 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { body, isConfirmed, isModalOpen, title } = this.state;
+    const { body, isConfirmed, isModalOpen } = this.state;
     const {
       content,
       intl,
@@ -158,9 +158,8 @@ class PostPreviewModal extends Component {
       settings,
       topics,
       isGuest,
+      titleValue,
     } = this.props;
-
-    const { postBody } = splitPostContent(content);
 
     return (
       <React.Fragment>
@@ -180,7 +179,7 @@ class PostPreviewModal extends Component {
             onCancel={this.hideModal}
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
-            <h1 className="StoryFull__title preview">{title}</h1>
+            <h1 className="StoryFull__title preview">{titleValue}</h1>
             <BodyContainer full body={body} />
             <TagsSelector
               className="post-preview-topics"
@@ -252,11 +251,7 @@ class PostPreviewModal extends Component {
         <div className="edit-post-controls">
           <Button
             htmlType="button"
-            disabled={
-              !content ||
-              !isContentValid(content) ||
-              !postBody.replace(new RegExp('\\*', 'g'), '').trim()
-            }
+            disabled={!content || !titleValue}
             onClick={this.showModal}
             size="large"
             className="edit-post-controls__publish-ready-btn"
