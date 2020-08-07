@@ -403,7 +403,9 @@ export default class CampaignButtons extends React.Component {
         onVisibleChange={this.handleVisibleChange}
         content={
           <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
-            {match.params.filterKey === 'reserved' || match.params.filterKey === 'all'
+            {!match.params.filterKey ||
+            match.params.filterKey === 'reserved' ||
+            match.params.filterKey === 'all'
               ? popoverMenu
               : map(this.getPopoverMenu(), item => {
                   switch (item.id) {
