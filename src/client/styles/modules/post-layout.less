@@ -21,7 +21,7 @@
   .rightContainer {
     float: right;
     display: none;
-    width: @right-width;
+    width: (@right-width - @margin);
 
     @media @small {
       display: block;
@@ -32,8 +32,16 @@
     float: left;
     width: 100%;
 
+    @media @large {
+      width: calc(100% - @right-width);
+    }
+
+    @media @medium {
+      width: calc(100% - @right-width);
+    }
+
     @media @small {
-      width: calc(100% - (@right-width + @margin));
+      width: calc(100% - @right-width);
     }
   }
 }

@@ -1,13 +1,56 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../components/Story/StoryFull';
 
+.waiv-editor-wrap {
+  width: 100%;
+  margin-left: 0;
+
+  .waiv-editor {
+    border: 1px solid @white-gainsboro;
+    background-color: @white;
+    width: 92%;
+    margin-left: 23px;
+    border-radius: 4px;
+
+    @media @small, @medium {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+}
+
 .md-RichEditor-root {
-  //background: @white;
   box-sizing: border-box;
-  //font-family: 'Georgia', serif;
   padding: 0 0 14px 0;
   position: relative;
   line-height: 1.4em;
+  min-height: 178px;
+}
+
+.md-RichEditor-title {
+  border: 1px solid @white-gainsboro;
+  background-color: @white;
+  color: @black;
+  font-size: 32px;
+  font-weight: bold;
+  padding: 6px 20px;
+  caret-color: @black;
+  resize: none;
+  margin-bottom: 10px;
+  width: 92%;
+  margin-left: 23px;
+
+  @media @small, @medium {
+    margin-left: 0;
+    width: 100%;
+    padding: 0 6px !important;
+  }
+}
+
+.md-RichEditor-title::placeholder {
+  font-size: 32px;
+  font-weight: bold;
+  color: @blue-botticelli;
 }
 
 .md-RichEditor-editor {
@@ -26,10 +69,8 @@
 
 .md-RichEditor-editor .public-DraftEditorPlaceholder-root:extend(.StoryFull__title) {
   color: @blue-botticelli;
-}
-.md-RichEditor-editor .public-DraftEditor-content {
-  //margin: 0px -15px -15px;
-  //padding: 15px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .md-RichEditor-editor .public-DraftEditor-content {
@@ -38,33 +79,6 @@
 
 .md-RichEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
   display: none;
-}
-
-.md-RichEditor-editor {
-  .StoryFull__title {
-    span[data-offset-key^='s_title'] {
-      br {
-        content: ' ';
-
-        &::before {
-          content: 'Title';
-          color: @blue-botticelli;
-        }
-      }
-    }
-  }
-
-  .StoryFull__title + div.md-block:nth-child(2) {
-    span[data-offset-key] {
-      br {
-        content: ' ';
-        &::before {
-          content: 'Write your story...';
-          color: @blue-botticelli;
-        }
-      }
-    }
-  }
 }
 
 .md-RichEditor-editor .md-RichEditor-blockquote {
@@ -98,9 +112,11 @@
       left: -30px;
     }
   }
+
   .public-DraftStyleDefault-depth0.public-DraftStyleDefault-listLTR {
     margin-left: 0;
   }
+
   .public-DraftStyleDefault-ol.public-DraftStyleDefault-ul {
     margin-top: 1.5rem;
   }
@@ -115,3 +131,5 @@
     display: block;
   }
 }
+
+@import 'index-nightmode';

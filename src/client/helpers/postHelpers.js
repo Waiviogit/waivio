@@ -133,15 +133,11 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
  * @param bodyKey - string (optional)
  * @returns Object with post's title and body - {postBody: string, postTitle: string}
  */
-export function splitPostContent(
-  markdownContent,
-  { titleKey, bodyKey } = { titleKey: 'postTitle', bodyKey: 'postBody' },
-) {
+
+export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'postBody' }) {
   const regExp = new RegExp('^(.*)\n'); // eslint-disable-line
-  const postTitle = regExp.exec(markdownContent);
-  const postBody = postTitle && markdownContent.replace(regExp, '');
+  const postBody = markdownContent.replace(regExp, '');
   return {
-    [titleKey]: postTitle ? postTitle[0].trim() : '',
     [bodyKey]: postBody || '',
   };
 }
@@ -157,13 +153,6 @@ export function getInitialState(props) {
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
-      title:
-        props.initObjects && props.initObjects.length
-          ? `Review: ${props.initObjects
-              .filter(obj => obj.match(/^\[(.+)\]\((\S+)\)/))
-              .map(obj => obj.match(/^\[(.+)\]\((\S+)\)/)[1])
-              .join(', ')}`
-          : '',
       body: props.initObjects
         ? props.initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
@@ -186,6 +175,7 @@ export function getInitialState(props) {
     isUpdating: false,
     permlink: null,
     originalBody: null,
+    titleValue: '',
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
@@ -198,7 +188,7 @@ export function getInitialState(props) {
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
-        body: get(draftPost, 'body', ''),
+        body: get(draftPost, 'originalBody', '') || get(draftPost, 'body', ''),
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
@@ -216,10 +206,11 @@ export function getInitialState(props) {
       originalBody: draftPost.originalBody || null,
     };
   }
+
   return state;
 }
 
 export function isContentValid(markdownContent) {
-  const { postTitle, postBody } = splitPostContent(markdownContent);
-  return Boolean(postTitle && postBody.trim());
+  const { postBody } = splitPostContent(markdownContent);
+  return Boolean(postBody.trim());
 }
