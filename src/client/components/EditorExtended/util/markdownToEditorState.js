@@ -253,19 +253,8 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 };
 
-function mdToDraftjs({ title, body } = { title: '', body: '' }, withTitle = true, extraStyles) {
+function mdToDraftjs({ body } = { body: '' }, extraStyles) {
   const blocks = [];
-  if (withTitle) {
-    blocks.push({
-      key: 's_title',
-      text: title,
-      type: Block.STORY_TITLE,
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    });
-  }
   let entityMap = {};
   if (body) {
     const paragraphs = splitMdBlocks(normalizeMd(body));
@@ -294,16 +283,6 @@ function mdToDraftjs({ title, body } = { title: '', body: '' }, withTitle = true
         type: '',
       };
     }
-  } else {
-    blocks.push({
-      key: 's_content',
-      text: '',
-      type: Block.UNSTYLED,
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    });
   }
   return {
     blocks,

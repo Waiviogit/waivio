@@ -14,7 +14,6 @@ import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
-
 import './CampaignFooter.less';
 
 @injectIntl
@@ -124,7 +123,9 @@ class CampaignFooter extends React.Component {
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
-        isRewards ? proposition.objects[0].reservationCreated : proposition.users[0].createdAt,
+        isRewards
+          ? get(proposition, ['objects', '0', 'reservationCreated'])
+          : get(proposition, ['users', '0', 'createdAt']),
         proposition.count_reservation_days,
       ),
     });
@@ -238,7 +239,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, daysLeft, sliderVisible } = this.state;
+    const { commentsVisible, modalVisible, daysLeft, sliderVisible } = this.state;
     const {
       post,
       postState,
@@ -270,7 +271,6 @@ class CampaignFooter extends React.Component {
     const hasComments = !isEmpty(proposition.conversation);
     const commentsAll = get(postCurrent, ['all']);
     const rootKey = findKey(commentsAll, ['depth', 2]);
-    const rootComment = get(commentsAll, [rootKey]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
     const numberOfComments = commentsArr.length;
@@ -329,22 +329,13 @@ class CampaignFooter extends React.Component {
               />
             </div>
           ))}
-        {hasComments && commentsVisible && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={rootComment}
-            getMessageHistory={getMessageHistory}
-          />
-        )}
-        {!singlePostVew && isComment && !hasComments && (
+        {!singlePostVew && (
           <Comments
             show={commentsVisible}
             isQuickComments={!singlePostVew}
             post={this.state.currentPost}
           />
         )}
-
         <Modal
           closable
           maskClosable={false}
