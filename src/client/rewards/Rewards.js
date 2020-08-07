@@ -315,27 +315,29 @@ class Rewards extends React.Component {
   getPropositionsByStatus = ({ username, sort }) => {
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
-      const sponsors = sortBy(data.value.sponsors);
+      // eslint-disable-next-line camelcase
+      const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
+      const newSponsors = sortBy(sponsors);
+      const rewardsTab = {
+        reserved: 'reserved',
+        eligible: 'active',
+        all: 'all',
+      };
       this.setState({
-        sponsors,
-        hasMore: data.value.hasMore,
-        campaignsTypes: data.value.campaigns_types,
+        sponsors: newSponsors,
+        hasMore,
+        campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (data.value.tabType === 'reserved') {
+      this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+
+      if (tabType === 'reserved') {
         this.setState({
-          propositionsReserved: data.value.campaigns,
-        });
-        this.props.history.push('/rewards/reserved/');
-      } else if (data.value.tabType === 'eligible') {
-        this.props.history.push('/rewards/active/');
-        this.setState({
-          propositions: data.value.campaigns,
+          propositionsReserved: campaigns,
         });
       } else {
-        this.props.history.push('/rewards/all/');
         this.setState({
-          propositions: data.value.campaigns,
+          propositions: campaigns,
         });
       }
     });

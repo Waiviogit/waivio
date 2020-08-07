@@ -20,20 +20,20 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
-          <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
+          <Checkbox checked={get(objectDetails, ['requirement_filters', 'expertise'])} disabled />
           <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
+          <Checkbox checked={get(objectDetails, ['requirement_filters', 'followers'])} disabled />
           <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
         </div>
         <div className="Details__criteria-row">
-          <Checkbox checked={objectDetails.requirement_filters.posts} disabled />
+          <Checkbox checked={get(objectDetails, ['requirement_filters', 'posts'])} disabled />
           <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={objectDetails.requirement_filters.frequency} disabled />
+            <Checkbox checked={get(objectDetails, ['requirement_filters', 'frequency'])} disabled />
             <div>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
