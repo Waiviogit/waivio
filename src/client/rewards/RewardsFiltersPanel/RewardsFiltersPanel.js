@@ -23,10 +23,15 @@ const RewardsFiltersPanel = ({
   activeHistoryFilters,
   messagesSponsors,
   setActiveMessagesFilters,
+  activeGuideHistoryFilters,
 }) => {
   const handleChange = useCallback(
     (filterName, key) => {
-      if (location.pathname !== '/rewards/history' && location.pathname !== '/rewards/messages') {
+      if (
+        location.pathname !== '/rewards/history' &&
+        location.pathname !== '/rewards/messages' &&
+        location.pathname !== '/rewards/guideHistory'
+      ) {
         setFilterValue(filterName, key);
       } else {
         setActiveMessagesFilters(filterName, key);
@@ -64,7 +69,10 @@ const RewardsFiltersPanel = ({
     () => ({
       campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
-      sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
+      sponsorsData:
+        location.pathname !== '/rewards/history' && location.pathname !== '/rewards/guideHistory'
+          ? sponsors
+          : messagesSponsors,
     }),
     [sponsors, messagesSponsors, location.pathname],
   );
@@ -101,7 +109,8 @@ const RewardsFiltersPanel = ({
           </React.Fragment>
         ) : (
           !includes(location.pathname, 'messages') &&
-          !includes(location.pathname, 'history') && (
+          !includes(location.pathname, 'history') &&
+          !includes(location.pathname, 'guideHistory') && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
                 {location.pathname === '/rewards/payables'
@@ -171,6 +180,32 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         )}
+        {location.pathname === '/rewards/guideHistory' && (
+          <React.Fragment>
+            <div className="RewardsFiltersPanel__title-text">
+              {`${intl.formatMessage({
+                id: 'mobnav_rewards',
+                defaultMessage: `Rewards`,
+              })}:`}
+            </div>
+            {map(rewardsTypesMessages, type =>
+              filterLayout(type, 'rewards', includes(activeGuideHistoryFilters.rewards, type)),
+            )}
+            <div className="RewardsFiltersPanel__title-text">
+              {intl.formatMessage({
+                id: 'sponsors',
+                defaultMessage: 'Sponsors',
+              })}
+            </div>
+            {map(sponsorsData, sponsor =>
+              filterLayout(
+                sponsor,
+                'messagesSponsors',
+                includes(activeGuideHistoryFilters.messagesSponsors, sponsor),
+              ),
+            )}
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
@@ -182,6 +217,7 @@ RewardsFiltersPanel.propTypes = {
   activeFilters: PropTypes.shape().isRequired,
   activeMessagesFilters: PropTypes.shape(),
   activeHistoryFilters: PropTypes.shape(),
+  activeGuideHistoryFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
@@ -197,6 +233,7 @@ RewardsFiltersPanel.defaultProps = {
   activeFilters: {},
   activeMessagesFilters: {},
   activeHistoryFilters: {},
+  activeGuideHistoryFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);

@@ -62,17 +62,19 @@ const RewardsComponent = memo(
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       if (username && !url) {
         getPropositionsByStatus({ username, sort });
-      } else if (username) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
+      } else if (url && !username && match.params.filterKey !== 'all') {
+        history.push(`/rewards/all`);
       }
-    }, [JSON.stringify(activeFilters)]);
+      if (pendingUpdate) {
+        dispatch(pendingUpdateSuccess());
+        delay(6000).then(() => {
+          getPropositions({ username, match, area, sort, activeFilters });
+        });
+      }
+    }, [JSON.stringify(activeFilters), username]);
 
     useEffect(() => {
-      if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
-        prevFilterKeyParams.current = filterKeyParams;
-        return;
-      }
-      if (!userLocation.lat || !userLocation.lon) return;
+      if (!userLocation.lat || !userLocation.lon || !url) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       prevFilterKeyParams.current = filterKeyParams;
@@ -83,14 +85,6 @@ const RewardsComponent = memo(
         });
       }
     }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
-
-    useEffect(() => {
-      if (campaignParent) return;
-      if (!username && match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
-    }, [username]);
-
     return (
       <div className="Rewards">
         <FilteredRewardsList

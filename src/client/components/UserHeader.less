@@ -109,6 +109,27 @@
   &__follows-you-cover-text-color {
     color: @white;
   }
+
+  &__bell {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+
+    .anticon-bell {
+      transition: 0.5s;
+      color: @blue-gullGray;
+      cursor: pointer;
+
+      &:hover {
+        color: @orange-hot;
+      }
+    }
+  }
+
+  &__buttons-container {
+    display: flex;
+  }
 }
 
 .UserHeader__container {
