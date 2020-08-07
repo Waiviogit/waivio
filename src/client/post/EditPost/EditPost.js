@@ -145,19 +145,21 @@ class EditPost extends Component {
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
-    getCampaignById(campaignId)
-      .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
-      .catch(error => {
-        message.error(
-          this.props.intl.formatMessage(
-            {
-              id: 'imageSetter_link_is_already_added',
-              defaultMessage: `Failed to get campaign data: {error}`,
-            },
-            { error },
-          ),
-        );
-      });
+    const isReview = !isEmpty(campaignId);
+    if (isReview)
+      getCampaignById(campaignId)
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => {
+          message.error(
+            this.props.intl.formatMessage(
+              {
+                id: 'imageSetter_link_is_already_added',
+                defaultMessage: `Failed to get campaign data: {error}`,
+              },
+              { error },
+            ),
+          );
+        });
   }
 
   componentDidUpdate(prevProps) {
