@@ -31,6 +31,7 @@ import {
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
+  getPendingUpdate,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -70,6 +71,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
+    pendingUpdate: getPendingUpdate(state),
   }),
   {
     assignProposition,
@@ -99,12 +101,14 @@ class Rewards extends React.Component {
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
     getRewardsGeneralCounts: PropTypes.func.isRequired,
+    pendingUpdate: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
     wobjects: [],
+    pendingUpdate: false,
   };
 
   state = {
@@ -173,6 +177,10 @@ class Rewards extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ url: this.props.match.url });
     }
+  }
+
+  componentWillUnmount() {
+    this.setState({ propositions: [], propositionsReserved: [] });
   }
 
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards, firstMapLoad }) => {
@@ -313,6 +321,7 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
+    const { pendingUpdate } = this.props;
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
       // eslint-disable-next-line camelcase
@@ -329,16 +338,19 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+      if (!pendingUpdate) this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
 
-      if (tabType === 'reserved') {
+      if (tabType === 'reserved' && !pendingUpdate) {
         this.setState({
           propositionsReserved: campaigns,
         });
-      } else {
+      } else if (!pendingUpdate) {
         this.setState({
           propositions: campaigns,
         });
+      }
+      if (pendingUpdate) {
+        this.setState({ url: this.props.match.url });
       }
     });
   };
@@ -544,6 +556,7 @@ class Rewards extends React.Component {
     getHistory,
     blacklistUsers,
   ) => {
+    const { pendingUpdate } = this.props;
     const {
       propositions,
       loadingAssignDiscard,
@@ -586,7 +599,7 @@ class Rewards extends React.Component {
     };
     const { intl, user } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap && isEmpty(propositionsReserved)) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
         return map(
           actualPropositions,
           proposition =>

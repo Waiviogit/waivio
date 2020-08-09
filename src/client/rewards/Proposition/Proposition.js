@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get, includes } from 'lodash';
+import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -63,10 +63,11 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
+    const permlink = filter(proposition.objects, object => object.permlink)[0].permlink;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
-      reservation_permlink: proposition.objects[0].permlink || proposition.users[0].permlink,
+      reservation_permlink: permlink || proposition.users[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>
@@ -86,15 +87,17 @@ const Proposition = ({
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
-      try {
-        return JSON.parse(user.json_metadata);
-      } catch (err) {
-        message.error(
-          intl.formatMessage({
-            id: 'something_went_wrong',
-            defaultMessage: 'Something went wrong',
-          }),
-        );
+      if (!isEmpty(user)) {
+        try {
+          return JSON.parse(user.json_metadata);
+        } catch (err) {
+          message.error(
+            intl.formatMessage({
+              id: 'something_went_wrong',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        }
       }
     };
     const userName = get(getJsonData(), ['profile', 'name']);

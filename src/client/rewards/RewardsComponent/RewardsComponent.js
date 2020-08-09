@@ -109,6 +109,7 @@ const RewardsComponent = memo(
             campaignsTypes,
             setFilterValue,
             activeFilters,
+            pendingUpdate,
           }}
         />
       </div>
