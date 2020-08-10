@@ -62,6 +62,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     isErrorLoading: getIsErrorLoading(state),
     operationNum: getOperationNum(state),
     isloadingMoreTransactions: getIsloadingMoreTransactions(state),
+    isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
   }),
   {
     getGlobalProperties,
@@ -100,6 +101,7 @@ class Wallet extends Component {
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
+    isloadingMoreDemoTransactions: PropTypes.bool,
     clearTransactionsHistory: PropTypes.func,
   };
 
@@ -114,6 +116,7 @@ class Wallet extends Component {
     isErrorLoading: false,
     operationNum: -1,
     isloadingMoreTransactions: false,
+    isloadingMoreDemoTransactions: false,
     clearTransactionsHistory: () => {},
   };
 
@@ -127,6 +130,8 @@ class Wallet extends Component {
       transactionsHistory,
     } = this.props;
 
+    const isGuest = guestUserRegex.test(user && user.name);
+
     const username = isCurrentUser
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
@@ -139,7 +144,7 @@ class Wallet extends Component {
       this.props.getUserAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[username])) {
+    if (!isGuest && isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
 
@@ -168,6 +173,7 @@ class Wallet extends Component {
       isErrorLoading,
       operationNum,
       isloadingMoreTransactions,
+      isloadingMoreDemoTransactions,
     } = this.props;
 
     const userKey = user.name;
@@ -206,6 +212,7 @@ class Wallet extends Component {
         isErrorLoading={isErrorLoading}
         operationNum={operationNum}
         isloadingMoreTransactions={isloadingMoreTransactions}
+        isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
       />
     );
 
