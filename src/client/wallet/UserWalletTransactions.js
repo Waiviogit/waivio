@@ -74,9 +74,10 @@ class UserWalletTransactions extends React.Component {
     } = this.props;
     let skip = 0;
     const limit = 10;
+    const actionLength = this.props.actions.length;
     if (this.isGuestPage()) {
-      if (this.props.actions.length >= limit) {
-        skip = this.props.actions.length;
+      if (actionLength >= limit) {
+        skip = actionLength;
       }
       // eslint-disable-next-line no-unused-expressions
       !isloadingMoreDemoTransactions &&
