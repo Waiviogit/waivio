@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate, get } from 'lodash';
+import { filter, includes, orderBy, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -9,8 +9,6 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { objectFields as objectTypes } from '../../common/constants/listOfFields';
-import { getApprovedField } from '../helpers/wObjectHelper';
 
 import './ObjectCardView.less';
 
@@ -156,6 +154,7 @@ const ObjectCardView = ({
             </div>
           </div>
         </div>
+        discover-objects
       </div>
     </React.Fragment>
   );
@@ -169,11 +168,9 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  passedParent: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedParent: {},
 };
 export default injectIntl(ObjectCardView);

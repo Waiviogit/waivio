@@ -39,9 +39,9 @@ export function handleValidateCampaignErrors(response) {
   return response;
 }
 
-export const getRecommendedObjects = () =>
+export const getRecommendedObjects = (locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers: { ...headers, app: config.appName },
+    headers: { ...headers, app: config.appName, locale: locale !== 'auto' ? locale : 'en-US' },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -68,6 +68,7 @@ export const getObjects = ({
       ...headers,
       app: config.appName,
       follower: follower,
+      locale,
     },
     method: 'POST',
     body: JSON.stringify(reqData),
@@ -79,6 +80,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     headers: {
       ...headers,
       app: config.appName,
+      locale,
     },
     method: 'POST',
     body: JSON.stringify({
@@ -88,28 +90,14 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requir
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, user, requiredField = [], usedLocale = 'en-US') => {
-  let queryString = '';
-
-  if (requiredField.length) {
-    queryString = Array.isArray(requiredField)
-      ? requiredField.reduce((acc, field, index) => {
-          if (index !== requiredField.length - 1) {
-            return `${acc}required_fields=${field}&`;
-          }
-
-          return `${acc}required_fields=${field}`;
-        }, '')
-      : `required_fields=${requiredField}`;
-  }
-
-  queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
+export const getObject = (authorPermlink, user, usedLocale = 'en-US') => {
+  const queryString = user ? `?user=${user}` : '';
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
       follower: user,
-      // locale: 'en-US'
+      locale: usedLocale,
     },
   })
     .then(handleErrors)
@@ -439,6 +427,7 @@ export const getWobjectsWithUserWeight = (
   authUser,
   objectTypes,
   excludeObjectTypes,
+  locale,
 ) => {
   const reqData = { skip, limit };
   if (objectTypes) reqData.object_types = objectTypes;
@@ -450,6 +439,7 @@ export const getWobjectsWithUserWeight = (
         ...headers,
         follower: authUser,
         app: config.appName,
+        locale: locale !== 'auto' ? locale : 'en-US',
       },
       method: 'POST',
       body: JSON.stringify(reqData),

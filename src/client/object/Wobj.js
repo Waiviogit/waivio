@@ -81,13 +81,7 @@ export default class Wobj extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(
-      getObject(match.params.name, getAuthenticatedUserName(store.getState()), [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]),
-    );
+    return store.dispatch(getObject(match.params.name, getAuthenticatedUserName(store.getState())));
   }
 
   constructor(props) {
@@ -106,11 +100,7 @@ export default class Wobj extends React.Component {
     const { match, wobject, authenticatedUserName } = this.props;
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName, [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]);
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }
 

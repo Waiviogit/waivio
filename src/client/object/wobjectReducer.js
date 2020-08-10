@@ -10,7 +10,7 @@ import {
   VOTE_APPEND_SUCCESS,
   UNFOLLOW_OBJECT,
 } from './wobjActions';
-import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import { getApprovedField } from '../helpers/wObjectHelper';
 
 const initialState = {
@@ -123,12 +123,8 @@ export default function wobjectReducer(state = initialState, action) {
             weight: 1,
           },
         ],
-        created: date,
-        append_field_name: payload.name,
-        append_field_weight: 1,
+        createdAt: date,
         author: payload.author,
-        author_original: payload.author,
-        author_rank: 0,
         body: payload.body,
         creator: payload.creator,
         curator_payout_value: '0.000 HBD',
@@ -143,7 +139,7 @@ export default function wobjectReducer(state = initialState, action) {
         permlink: payload.permlink,
         promoted: '0.000 HBD',
         total_payout_value: '0.000 HBD',
-        upvotedByModerator: false,
+        approvePercent: 100,
         url: `/waivio-object-type/@et42k/iqx-hashtag#@${payload.author_original}/${payload.permlink}`,
         weight: 1,
       };

@@ -8,7 +8,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 
 require('isomorphic-fetch');
@@ -169,13 +169,17 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObj = () => dispatch =>
-  dispatch({
+export const getRecommendedObj = () => (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+
+  return dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
-      promise: ApiClient.getRecommendedObjects(),
+      promise: ApiClient.getRecommendedObjects(locale),
     },
   });
+};
 
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 

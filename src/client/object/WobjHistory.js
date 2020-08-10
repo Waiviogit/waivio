@@ -151,9 +151,7 @@ class WobjHistory extends React.Component {
           return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
 
         default:
-          return wobj.fields.sort(
-            (before, after) => Date.parse(after.created) - Date.parse(before.created),
-          );
+          return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
       }
     };
     let content = object && object.fields && sortedList(object);

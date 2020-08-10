@@ -28,7 +28,6 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
   getFieldsByName,
@@ -190,22 +189,28 @@ class ObjectInfo extends React.Component {
     const isHashtag = wobject.object_type === 'hashtag';
 
     let names = [];
-    let photosCount = 0;
+    const photosCount = wobject.photos_count || 0;
     const tagCategories = get(wobject, 'tagCategory', []);
     let phones = [];
     let menuItems = [];
-    let menuLists = null;
+    const menuLists = null;
     let menuPages = null;
-    const button = get(wobject, 'button');
+    const button = get(wobject, 'button', []).map(btn => {
+      if (btn) {
+        return JSON.parse(btn.body);
+      }
+
+      return null;
+    });
     const map = get(wobject, ['map', 'coordinates'], []);
     const parent = get(wobject, 'parent');
-    const status = get(wobject, 'status');
+    const status = wobject.status && JSON.parse(wobject.status);
     let address = get(wobject, 'address');
     address = address
       ? compact(Object.values(addressFields).map(fieldName => JSON.parse(address)[fieldName])).join(
           ', ',
         )
-      : [];
+      : null;
     const description = get(wobject, 'description');
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
@@ -214,6 +219,7 @@ class ObjectInfo extends React.Component {
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
+    const linkField = wobject.link && JSON.parse(wobject.link);
 
     if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -241,17 +247,12 @@ class ObjectInfo extends React.Component {
           ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
           : null;
 
-      photosCount = wobject.photos_count;
-
       const filteredPhones = get(wobject, 'fields', []).filter(
-        field =>
-          field.name === objectFields.phone &&
-          calculateApprovePercent(field.active_votes, field.weight, this.props.wobject) >= 70,
+        field => field.name === objectFields.phone,
       );
       phones = orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
-    const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
     let profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -368,11 +369,10 @@ class ObjectInfo extends React.Component {
         )}
         <div className="object-sidebar__menu-items">
           <React.Fragment>
-            {isEditMode &&
-              listItem(
-                TYPES_OF_MENU_ITEM.LIST,
-                menuLists && menuLists.map(item => getMenuSectionLink(item)),
-              )}
+            {listItem(
+              TYPES_OF_MENU_ITEM.LIST,
+              wobject.menuItems && wobject.menuItems.map(item => getMenuSectionLink(item)),
+            )}
             {listItem(
               TYPES_OF_MENU_ITEM.PAGE,
               menuPages && menuPages.map(item => getMenuSectionLink(item)),
@@ -380,9 +380,7 @@ class ObjectInfo extends React.Component {
             {listItem(
               objectFields.button,
               button &&
-                button.title &&
-                button.link &&
-                getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
+                button.map(btn => getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...btn })),
             )}
             {listItem(
               objectFields.newsFilter,
@@ -587,16 +585,10 @@ class ObjectInfo extends React.Component {
           objectFields.email,
           email && (
             <div className="field-info">
-              {accessExtend ? (
-                <div className="email">
-                  <Icon type="mail" className="text-icon email" /> {email}
-                </div>
-              ) : (
-                <React.Fragment>
-                  <Icon type="mail" className="text-icon email" />
-                  <a href={`mailto:${email}`}> {email}</a>
-                </React.Fragment>
-              )}
+              <div className="email">
+                <Icon type="mail" className="text-icon email" />
+                {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
+              </div>
             </div>
           ),
         )}
@@ -611,21 +603,22 @@ class ObjectInfo extends React.Component {
         </div>
         {listItem(
           objectFields.avatar,
-          avatar ? (
+          avatar && (
             <div className="field-avatar">
               <img src={avatar} alt="pic" />
             </div>
-          ) : null,
+          ),
         )}
         {!isHashtag && listItem(objectFields.title, short)}
         {listItem(
           objectFields.background,
-          background ? (
+          background && (
             <div className="field-background">
               <img src={background} alt="pic" />
             </div>
-          ) : null,
+          ),
         )}
+        {console.log(status)}
         {listItem(
           objectFields.status,
           status && status.title && (

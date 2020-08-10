@@ -1,14 +1,8 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import {
-  getIsAuthenticated,
-  getAuthenticatedUserName,
-  getObjectAlbums,
-  getObject,
-} from '../reducers';
+import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { mapObjectAppends } from './wObjectHelper';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
