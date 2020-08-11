@@ -158,44 +158,46 @@ class Comments extends React.Component {
     );
   };
 
-  handleSubmitComment(parentP, commentValue) {
+  handleSubmitComment = async (parentP, commentValue) => {
     const { intl } = this.props;
-    const parentPost = parentP;
-    // foe object updates
-    if (parentPost.author_original) parentPost.author = parentPost.author_original;
-
-    this.setState({ showCommentFormLoading: true });
-    return this.props
-      .onSendComment(parentPost, commentValue)
-      .then(() => {
-        if (this.props.getMessageHistory) {
-          setTimeout(() => this.props.getMessageHistory(), 8000);
-        }
-      })
-      .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-
-        this.setState({
-          showCommentFormLoading: false,
-          commentFormText: '',
-          commentSubmitted: true,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          showCommentFormLoading: false,
-          commentFormText: commentValue,
-        });
-        return {
-          error: true,
-        };
+    try {
+      const parentPost = parentP;
+      // foe object updates
+      if (parentPost.author_original) parentPost.author = parentPost.author_original;
+      await this.setState({ showCommentFormLoading: true });
+      await this.props.onSendComment(parentPost, commentValue);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.props
+            .getMessageHistory()
+            .then(() => {
+              resolve();
+              message.success(
+                intl.formatMessage({
+                  id: 'notify_comment_sent',
+                  defaultMessage: 'Comment submitted',
+                }),
+              );
+              this.setState({
+                showCommentFormLoading: false,
+                commentFormText: '',
+                commentSubmitted: true,
+              });
+            })
+            .catch(error => reject(error));
+        }, 8000);
       });
-  }
+    } catch (error) {
+      this.setState({
+        showCommentFormLoading: false,
+        commentFormText: commentValue,
+      });
+      return {
+        error: true,
+      };
+    }
+    return null;
+  };
 
   commentsToRender(rootLevelComments, rootLinkedComment) {
     const { nRenderedComments, sort } = this.state;

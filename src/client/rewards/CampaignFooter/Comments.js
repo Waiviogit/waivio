@@ -131,35 +131,40 @@ const Comments = ({
     setReplyOpen(!editing ? false : replying);
   };
 
-  const handleSubmitComment = useCallback((parentP, commentValue) => {
-    const parentPost = parentP;
-    if (parentPost.author_original) parentPost.author = parentPost.author_original;
-
-    setLoading(true);
-    return onSendComment(parentPost, commentValue)
-      .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-        setLoading(false);
-        setCommentFormText('');
-        setCommentSubmitted(true);
-        setReplyOpen(false);
-      })
-      .then(() => {
-        setTimeout(() => getMessageHistory(), 8000);
-      })
-      .catch(() => {
-        setCommentFormText(commentValue);
-        setLoading(false);
-        return {
-          error: true,
-        };
+  const handleSubmitComment = async (parentP, commentValue) => {
+    try {
+      const parentPost = parentP;
+      if (parentPost.author_original) parentPost.author = parentPost.author_original;
+      await setLoading(true);
+      await onSendComment(parentPost, commentValue);
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          getMessageHistory()
+            .then(() => {
+              resolve();
+              message.success(
+                intl.formatMessage({
+                  id: 'notify_comment_sent',
+                  defaultMessage: 'Comment submitted',
+                }),
+              );
+              setLoading(false);
+              setCommentFormText('');
+              setCommentSubmitted(true);
+              setReplyOpen(false);
+            })
+            .catch(error => reject(error));
+        }, 8000);
       });
-  }, []);
+    } catch (error) {
+      setCommentFormText(commentValue);
+      setLoading(false);
+      return {
+        error: true,
+      };
+    }
+    return null;
+  };
 
   const getChildren = useCallback((obj, comments) => {
     const replyKey = get(obj, ['replies', '0']);
