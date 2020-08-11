@@ -31,7 +31,7 @@ export default class UserExpertise extends React.Component {
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;
-    
+
     return getWobjectsWithUserWeight(
       match.params.name,
       skip,

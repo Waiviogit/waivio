@@ -200,9 +200,7 @@ class ObjectInfo extends React.Component {
   renderParent = () => {
     const parent = get(this.props.wobject, 'parent');
     return (
-      parent && (
-        <ObjectCard key={parent.author_permlink} wobject={parent.parentWobj} showFollow={false} />
-      )
+      parent && <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
     );
   };
 

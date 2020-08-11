@@ -627,7 +627,11 @@ class Topnav extends React.Component {
                 <ObjectAvatar item={option} size={40} />
                 <div>
                   <div className="Topnav__search-content">{wobjName}</div>
-                  {parent && <div className="Topnav__search-content-small">{parent.name}</div>}
+                  {parent && (
+                    <div className="Topnav__search-content-small">
+                      {parent.name || parent.default_name}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="Topnav__search-content-small">{option.object_type}</div>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -7,17 +7,13 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
-import { AppSharedContext } from '../Wrapper';
-import { getClientWObj } from '../adapters';
 
 import './WaivioObject.less';
 
 const WaivioObject = ({ wobj, unfollow, follow }) => {
-  const { usedLocale } = useContext(AppSharedContext);
-  const wObject = getClientWObj(wobj, usedLocale);
-  const { default_name: defaultName, name } = wObject;
-  const address = wObject.address && JSON.parse(wObject.address);
-  const website = wObject.website && JSON.parse(wObject.website);
+  const { default_name: defaultName, name } = wobj;
+  const address = wobj.address && JSON.parse(wobj.address);
+  const website = wobj.website && JSON.parse(wobj.website);
 
   const objectName = name || defaultName;
   const websiteTitle = (website && website[websiteFields.title]) || objectFields.website;
