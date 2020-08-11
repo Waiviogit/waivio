@@ -93,7 +93,7 @@ class Rewards extends React.Component {
     history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     user: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
+    location: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
@@ -109,6 +109,7 @@ class Rewards extends React.Component {
     userLocation: {},
     wobjects: [],
     pendingUpdate: false,
+    location: {},
   };
 
   state = {
