@@ -33,6 +33,7 @@ class UserWalletTransactions extends React.Component {
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
+    isloadingMoreDemoTransactions: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -45,6 +46,7 @@ class UserWalletTransactions extends React.Component {
     isErrorLoading: false,
     operationNum: -1,
     isloadingMoreTransactions: false,
+    isloadingMoreDemoTransactions: false,
   };
 
   state = {
@@ -64,14 +66,22 @@ class UserWalletTransactions extends React.Component {
   isGuestPage = () => guestUserRegex.test(this.props.user && this.props.user.name);
 
   handleLoadMore = () => {
-    const { currentUsername, operationNum, isloadingMoreTransactions } = this.props;
+    const {
+      currentUsername,
+      operationNum,
+      isloadingMoreTransactions,
+      isloadingMoreDemoTransactions,
+    } = this.props;
     let skip = 0;
     const limit = 10;
+    const actionLength = this.props.actions.length;
     if (this.isGuestPage()) {
-      if (this.props.actions.length >= limit) {
-        skip = this.props.actions.length;
+      if (actionLength >= limit) {
+        skip = actionLength;
       }
-      this.props.getMoreUserAccountHistory(currentUsername, skip, limit);
+      // eslint-disable-next-line no-unused-expressions
+      !isloadingMoreDemoTransactions &&
+        this.props.getMoreUserAccountHistory(currentUsername, skip, limit);
     } else {
       // eslint-disable-next-line no-unused-expressions
       !isloadingMoreTransactions &&
