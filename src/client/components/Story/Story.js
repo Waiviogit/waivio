@@ -382,7 +382,6 @@ class Story extends React.Component {
         </div>
       );
     }
-
     return (
       <div className="Story" id={`${author}-${post.permlink}`}>
         {rebloggedUI}
