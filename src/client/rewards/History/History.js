@@ -192,7 +192,7 @@ History.propTypes = {
   activeMessagesFilters: PropTypes.shape().isRequired,
   activeHistoryFilters: PropTypes.shape().isRequired,
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
-  messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  messagesSponsors: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
   sortHistory: PropTypes.string,
@@ -206,6 +206,7 @@ History.defaultProps = {
   sortHistory: 'reservation',
   sortMessages: 'inquiryDate',
   sortGuideHistory: 'reservation',
+  messagesSponsors: [],
   setActiveMessagesFilters: () => {},
 };
 

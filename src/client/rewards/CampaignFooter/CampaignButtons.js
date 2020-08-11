@@ -34,7 +34,7 @@ export default class CampaignButtons extends React.Component {
     intl: PropTypes.shape().isRequired,
     daysLeft: PropTypes.number.isRequired,
     postState: PropTypes.shape().isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
     onLikeClick: PropTypes.func,
@@ -73,6 +73,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    onActionInitiated: () => {},
     blacklistUsers: [],
   };
 

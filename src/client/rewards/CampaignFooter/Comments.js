@@ -314,12 +314,18 @@ Comments.propTypes = {
   post: PropTypes.shape().isRequired,
   show: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
   intl: PropTypes.shape().isRequired,
-  onActionInitiated: PropTypes.func.isRequired,
+  onActionInitiated: PropTypes.func,
   currentComment: PropTypes.shape().isRequired,
-  parent: PropTypes.shape().isRequired,
+  parent: PropTypes.shape(),
   getMessageHistory: PropTypes.func.isRequired,
+};
+
+Comments.defaultProps = {
+  parent: {},
+  defaultVotePercent: 0,
+  onActionInitiated: () => {},
 };
 
 export default injectIntl(Comments);

@@ -321,12 +321,13 @@ FilteredRewardsList.defaultProps = {
   tabType: '',
   pendingUpdate: false,
   location: {},
+  filterKey: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
   loading: PropTypes.bool,
-  filterKey: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
   tabType: PropTypes.string,
   userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
