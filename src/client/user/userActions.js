@@ -386,7 +386,7 @@ export const declineProposition = ({
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
-          type,
+          type: type || 'waivio_reject_object_campaign',
           reservation_permlink: reservationPermlink,
         },
       }),
