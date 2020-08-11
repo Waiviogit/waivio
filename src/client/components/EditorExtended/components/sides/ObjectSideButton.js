@@ -9,7 +9,7 @@ import * as apiConfig from '../../../../../waivioApi/config.json';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
-    const objectType = selectedObject.type || selectedObject.object_type;
+    const objectType = selectedObject.default_name || selectedObject.name;
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
