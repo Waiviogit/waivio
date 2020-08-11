@@ -34,7 +34,10 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={requirementFilters.frequency} disabled />
+            <Checkbox
+              checked={requirementFilters.frequency && requirementFilters.not_same_assigns}
+              disabled
+            />
             <div>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
