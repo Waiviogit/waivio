@@ -159,7 +159,7 @@ class Rewards extends React.Component {
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
-    } else if (url && !username && match.params.filterKey !== 'all') {
+    } else if (match.params.filterKey !== 'all') {
       history.push(`/rewards/all`);
     }
     if (!size(userLocation)) {
