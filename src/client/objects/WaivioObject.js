@@ -15,7 +15,9 @@ import './WaivioObject.less';
 const WaivioObject = ({ wobj, unfollow, follow }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const wObject = getClientWObj(wobj, usedLocale);
-  const { address, default_name: defaultName, name, website } = wObject;
+  const { default_name: defaultName, name } = wObject;
+  const address = wObject.address && JSON.parse(wObject.address);
+  const website = wObject.website && JSON.parse(wObject.website);
 
   const objectName = name || defaultName;
   const websiteTitle = (website && website[websiteFields.title]) || objectFields.website;

@@ -375,7 +375,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
       comparator = (a, b) => (a.name > b.name ? 1 : -1);
       break;
   }
-  const sorted = uniqBy(items, 'id').sort(comparator);
+  const sorted = uniqBy(items, 'author_permlink').sort(comparator);
   const resultArr = [
     ...sorted.filter(item => item.type === 'list'),
     ...sorted.filter(item => item.type !== 'list'),
