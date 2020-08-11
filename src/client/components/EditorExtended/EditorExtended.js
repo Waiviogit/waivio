@@ -148,7 +148,7 @@ class Editor extends React.Component {
 
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
-    if (titleValue && titleValue.length > Editor.MAX_LENGTH - 1) {
+    if (titleValue && titleValue.length > Editor.MAX_LENGTH) {
       message.error(
         this.props.intl.formatMessage({
           id: 'title_error_too_long',
@@ -160,7 +160,7 @@ class Editor extends React.Component {
     return (
       <div className="waiv-editor-wrap">
         <Input.TextArea
-          maxLength={Editor.MAX_LENGTH}
+          maxLength={Editor.MAX_LENGTH + 1}
           autoSize
           className="md-RichEditor-title"
           value={titleValue}
