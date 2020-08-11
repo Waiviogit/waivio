@@ -63,11 +63,11 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const permlink = filter(proposition.objects, object => object.permlink)[0].permlink;
+    const reservationPermlink = filter(proposition.objects, object => object.permlink)[0].permlink;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
-      reservation_permlink: permlink || proposition.users[0].permlink,
+      reservation_permlink: reservationPermlink || get(proposition, ['users', '0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>

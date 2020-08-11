@@ -179,10 +179,6 @@ class Rewards extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState({ propositions: [], propositionsReserved: [] });
-  }
-
   setMapArea = ({ radius, coordinates, isMap, isSecondaryObjectsCards, firstMapLoad }) => {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
@@ -338,18 +334,18 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate) this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-
-      if (tabType === 'reserved' && !pendingUpdate) {
-        this.setState({
-          propositionsReserved: campaigns,
-        });
-      } else if (!pendingUpdate) {
-        this.setState({
-          propositions: campaigns,
-        });
-      }
-      if (pendingUpdate) {
+      if (!pendingUpdate) {
+        this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+        if (tabType === 'reserved') {
+          this.setState({
+            propositionsReserved: campaigns,
+          });
+        } else {
+          this.setState({
+            propositions: campaigns,
+          });
+        }
+      } else {
         this.setState({ url: this.props.match.url });
       }
     });

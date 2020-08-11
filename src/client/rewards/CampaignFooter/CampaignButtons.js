@@ -394,6 +394,7 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
+    const filterKey = match.params.filterKey;
 
     return (
       <Popover
@@ -403,9 +404,7 @@ export default class CampaignButtons extends React.Component {
         onVisibleChange={this.handleVisibleChange}
         content={
           <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
-            {!match.params.filterKey ||
-            match.params.filterKey === 'reserved' ||
-            match.params.filterKey === 'all'
+            {!filterKey || filterKey === 'reserved' || filterKey === 'all'
               ? popoverMenu
               : map(this.getPopoverMenu(), item => {
                   switch (item.id) {
