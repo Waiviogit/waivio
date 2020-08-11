@@ -168,6 +168,11 @@ class Comments extends React.Component {
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(() => {
+        if (this.props.getMessageHistory) {
+          setTimeout(() => this.props.getMessageHistory(), 8000);
+        }
+      })
+      .then(() => {
         message.success(
           intl.formatMessage({
             id: 'notify_comment_sent',
@@ -180,11 +185,6 @@ class Comments extends React.Component {
           commentFormText: '',
           commentSubmitted: true,
         });
-      })
-      .then(() => {
-        if (this.props.getMessageHistory) {
-          setTimeout(() => this.props.getMessageHistory(), 8000);
-        }
       })
       .catch(() => {
         this.setState({

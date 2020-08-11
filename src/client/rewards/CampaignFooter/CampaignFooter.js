@@ -114,10 +114,9 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition, match } = this.props;
-    const author = get(proposition, ['objects', '0', 'author']);
-    const permlink = get(proposition, ['objects', '0', 'permlink']);
-
-    if (author && permlink) {
+    const author = get(proposition, ['users', '0', 'name']);
+    const permlink = get(proposition, ['users', '0', 'permlink']);
+    if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
@@ -335,6 +334,7 @@ class CampaignFooter extends React.Component {
             show={commentsVisible}
             isQuickComments={!singlePostVew}
             post={this.state.currentPost}
+            getMessageHistory={getMessageHistory}
           />
         )}
         <Modal
