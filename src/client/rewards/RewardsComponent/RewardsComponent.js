@@ -1,6 +1,5 @@
 import React, { useEffect, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
@@ -16,7 +15,6 @@ const RewardsComponent = memo(
     activeFilters,
     area,
     getPropositions,
-    getPropositionsByStatus,
     intl,
     campaignsLayoutWrapLayout,
     loading,
@@ -50,28 +48,12 @@ const RewardsComponent = memo(
     const areaRewards = [+userLocation.lat, +userLocation.lon];
     const campaignParent = get(match, ['params', 'campaignParent']);
     const filterKeyParams = get(match, ['params', 'filterKey']);
-    const history = useHistory();
     const prevFilterKeyParams = useRef(undefined);
 
     const handleSortChange = sortRewards => {
       setSortValue(sortRewards);
       getPropositions({ username, match, area, sort: sortRewards, activeFilters });
     };
-
-    useEffect(() => {
-      const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      if (username && !url) {
-        getPropositionsByStatus({ username, sort });
-      } else if (url && !username && match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
-      if (pendingUpdate) {
-        dispatch(pendingUpdateSuccess());
-        delay(6000).then(() => {
-          getPropositions({ username, match, area, sort, activeFilters });
-        });
-      }
-    }, [JSON.stringify(activeFilters), username]);
 
     useEffect(() => {
       if (!userLocation.lat || !userLocation.lon || !url) return;
@@ -84,7 +66,7 @@ const RewardsComponent = memo(
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
+    }, [campaignParent, filterKeyParams, prevFilterKeyParams, JSON.stringify(activeFilters)]);
     return (
       <div className="Rewards">
         <FilteredRewardsList
