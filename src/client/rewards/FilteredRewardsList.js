@@ -48,6 +48,7 @@ const FilteredRewardsList = props => {
     setActiveMessagesFilters,
     activeGuideHistoryFilters,
     blacklistUsers,
+    pendingUpdate,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -147,7 +148,7 @@ const FilteredRewardsList = props => {
     ];
   }, [location, intl]);
 
-  return !loadingCampaigns ? (
+  return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
       <RewardBreadcrumb
         tabText={getTextByFilterKey(intl, filterKey || tabType)}
@@ -306,6 +307,7 @@ FilteredRewardsList.defaultProps = {
   setFilterValue: () => {},
   handleLoadMore: () => {},
   resetMapFilter: () => {},
+  getHistory: () => {},
   activeFilters: {},
   activeMessagesFilters: {},
   userName: '',
@@ -317,6 +319,8 @@ FilteredRewardsList.defaultProps = {
   activeGuideHistoryFilters: {},
   setActiveMessagesFilters: () => {},
   tabType: '',
+  pendingUpdate: false,
+  location: {},
 };
 
 FilteredRewardsList.propTypes = {
@@ -343,15 +347,16 @@ FilteredRewardsList.propTypes = {
   setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
-  location: PropTypes.string.isRequired,
+  location: PropTypes.shape(),
   sortHistory: PropTypes.string,
   sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,
-  getHistory: PropTypes.func.isRequired,
+  getHistory: PropTypes.func,
   blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   activeHistoryFilters: PropTypes.shape(),
   activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
+  pendingUpdate: PropTypes.bool,
 };
 
 export default FilteredRewardsList;

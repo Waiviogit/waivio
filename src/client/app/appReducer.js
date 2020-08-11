@@ -166,3 +166,5 @@ export const getWeightValue = (state, weight) => {
     value = (weight / recentClaims) * rewardBalance.replace(' HIVE', '') * rate * 1000000;
   return value;
 };
+export const getTranslationByKey = (state, key, defaultMessage = '') =>
+  get(getTranslations(state), key, defaultMessage);
