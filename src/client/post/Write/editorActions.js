@@ -11,7 +11,11 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpe
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../../search/searchActions';
-import { getAuthenticatedUserName, getHiveBeneficiaryAccount } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getHiveBeneficiaryAccount,
+  getTranslationByKey,
+} from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -265,11 +269,12 @@ export function createPost(postData, beneficiaries, isReview) {
             });
           }
           if (isGuest) {
+            const publicMessage = getTranslationByKey(state, 'post_publication');
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
             }
             if (result.status === 200) {
-              dispatch(notify('Your post will be posted soon', 'success'));
+              dispatch(notify(publicMessage, 'success'));
               dispatch(push('/'));
             }
           } else {
