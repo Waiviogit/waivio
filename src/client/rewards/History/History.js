@@ -58,6 +58,7 @@ const History = ({
         key => CAMPAIGNS_TYPES_MESSAGES[key] === activeFilters.caseStatus,
       );
       try {
+        setHasMore(false);
         const requestData = {
           onlyWithMessages: true,
           sort: sortChanged,
@@ -125,7 +126,7 @@ const History = ({
       setSortValue(sortChanged);
       getHistory(userName, sortChanged, filters, useLoader);
     },
-    [userName, activeMessagesFilters, activeHistoryFilters, activeGuideHistoryFilters],
+    [setSortValue, getHistory, userName, filters, useLoader],
   );
 
   useEffect(() => {
@@ -144,12 +145,12 @@ const History = ({
     location.pathname,
   ]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (hasMore) {
       setLoading(true);
       getHistory(userName, sortForFilters, filters, false, true);
     }
-  };
+  }, [filters, getHistory, hasMore, sortForFilters, userName]);
 
   return (
     <div className="history">
@@ -191,7 +192,7 @@ History.propTypes = {
   activeMessagesFilters: PropTypes.shape().isRequired,
   activeHistoryFilters: PropTypes.shape().isRequired,
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
-  messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  messagesSponsors: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
   sortHistory: PropTypes.string,
@@ -205,6 +206,7 @@ History.defaultProps = {
   sortHistory: 'reservation',
   sortMessages: 'inquiryDate',
   sortGuideHistory: 'reservation',
+  messagesSponsors: [],
   setActiveMessagesFilters: () => {},
 };
 
