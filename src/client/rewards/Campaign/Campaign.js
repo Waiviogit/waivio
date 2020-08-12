@@ -72,7 +72,7 @@ const Campaign = ({
 Campaign.propTypes = {
   proposition: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
-  filterKey: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
   history: PropTypes.shape().isRequired,
   rewardPriceCatalogWrap: PropTypes.string,
   rewardMaxCatalogWrap: PropTypes.string,
@@ -82,6 +82,7 @@ Campaign.defaultProps = {
   proposition: {},
   rewardPriceCatalogWrap: '',
   rewardMaxCatalogWrap: '',
+  filterKey: '',
 };
 
 export default injectIntl(withRouter(Campaign));

@@ -36,6 +36,7 @@ class SearchUsersAutocomplete extends React.Component {
     isSearchUser: false,
     value: undefined,
     onChange: undefined,
+    notGuest: false,
   };
   static propTypes = {
     intl: PropTypes.shape(),
@@ -48,6 +49,7 @@ class SearchUsersAutocomplete extends React.Component {
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
     isSearchUser: PropTypes.bool,
+    notGuest: PropTypes.bool,
     onChange: PropTypes.func,
   };
 
@@ -56,7 +58,10 @@ class SearchUsersAutocomplete extends React.Component {
     isOptionSelected: false,
   };
 
-  debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString), 300);
+  debouncedSearchByUser = _.debounce(
+    searchString => this.props.searchUsers(searchString, 15, this.props.notGuest),
+    300,
+  );
 
   handleSearch = value => {
     this.debouncedSearchByUser(value);
