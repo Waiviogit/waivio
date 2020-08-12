@@ -9,6 +9,7 @@ import * as apiConfig from '../../../../../waivioApi/config.json';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
+    const objectType = selectedObject.name || selectedObject.default_name;
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
@@ -30,7 +31,7 @@ const objectSearchInput = props => {
       anchorOffset: selectedObject.name.length,
       focusOffset: selectedObject.name.length,
     });
-
+    props.handleHashtag(objectType);
     props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
   };
 
@@ -47,7 +48,7 @@ const objectSearchInput = props => {
 objectSearchInput.propTypes = {
   setEditorState: PropTypes.func.isRequired,
   getEditorState: PropTypes.func.isRequired,
-  // close: PropTypes.func.isRequired,
+  handleHashtag: PropTypes.func.isRequired,
 };
 
 @injectIntl
@@ -62,7 +63,6 @@ class ObjectSideButton extends Component {
   static defaultProps = {
     setEditorState: () => {},
     getEditorState: () => {},
-    // close: () => {},
   };
 
   onClick = () => this.props.renderControl(objectSearchInput(this.props));

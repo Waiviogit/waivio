@@ -1,14 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { convertToRaw } from 'draft-js';
-import { forEach, get, has, keyBy, isEqual } from 'lodash';
-import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
+import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
+import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
+import { Input, message } from 'antd';
+import {
+  Editor as MediumDraftEditor,
+  createEditorState,
+  fromMarkdown,
+  Entity,
+  findLinkEntities,
+} from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { getClientWObj } from '../../adapters';
+import ObjectLink, { findObjEntities } from './components/entities/objectlink';
+import Link from './components/entities/link';
 
 const SIDE_BUTTONS = [
   {
@@ -29,11 +38,21 @@ const SIDE_BUTTONS = [
   },
 ];
 
+const defaultDecorators = new CompositeDecorator([
+  {
+    strategy: findObjEntities,
+    component: ObjectLink,
+  },
+  {
+    strategy: findLinkEntities,
+    component: Link,
+  },
+]);
+
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
     enabled: PropTypes.bool.isRequired,
-    withTitle: PropTypes.bool,
     initialContent: PropTypes.shape({
       title: PropTypes.string,
       body: PropTypes.string,
@@ -41,12 +60,15 @@ class Editor extends React.Component {
     locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
+    handleHashtag: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
-    withTitle: true,
     onChange: () => {},
+    handleHashtag: () => {},
   };
+
+  static MAX_LENGTH = 255;
 
   constructor(props) {
     super(props);
@@ -54,7 +76,8 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
-      editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
+      editorState: EditorState.createEmpty(defaultDecorators),
+      titleValue: '',
     };
 
     this.onChange = editorState => {
@@ -64,16 +87,16 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ isMounted: true }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent, this.props.withTitle)).then(() =>
+    this.setState({ isMounted: true, titleValue: this.props.initialContent.title }); // eslint-disable-line
+    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
       this.setFocusAfterMount(),
     );
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
-      this.setState({ editorEnabled: false });
-      const rawContent = fromMarkdown(nextProps.initialContent, nextProps.withTitle);
+      this.setState({ editorEnabled: false, titleValue: nextProps.initialContent.title });
+      const rawContent = fromMarkdown(nextProps.initialContent);
       this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
@@ -88,6 +111,7 @@ class Editor extends React.Component {
     const objectIds = Object.values(rawContent.entityMap)
       .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
       .map(entity => get(entity, 'data.object.id', ''));
+
     if (objectIds.length) {
       const response = await getObjectsByIds({
         authorPermlinks: objectIds,
@@ -110,32 +134,57 @@ class Editor extends React.Component {
         blocks: [...rawContent.blocks],
         entityMap,
       };
+
       this.handleContentChange(createEditorState(rawContentUpdated));
     }
+    // eslint-disable-next-line no-unused-expressions
+    !isEmpty(rawContent.blocks) && this.handleContentChange(createEditorState(rawContent));
   };
 
   handleContentChange = editorState => {
     this.onChange(editorState);
-    this.props.onChange(convertToRaw(editorState.getCurrentContent()));
+    this.props.onChange(convertToRaw(editorState.getCurrentContent()), this.state.titleValue);
   };
 
   render() {
-    const { editorState, isMounted, editorEnabled } = this.state;
+    const { editorState, isMounted, editorEnabled, titleValue } = this.state;
+    if (titleValue && titleValue.length > Editor.MAX_LENGTH) {
+      message.error(
+        this.props.intl.formatMessage({
+          id: 'title_error_too_long',
+          defaultMessage: "Title can't be longer than 255 characters.",
+        }),
+      );
+    }
+
     return (
-      <div className="waiv-editor">
-        {isMounted ? (
-          <MediumDraftEditor
-            ref={this.refsEditor}
-            placeholder=""
-            editorEnabled={editorEnabled && this.props.enabled}
-            editorState={editorState}
-            beforeInput={this.handleBeforeInput}
-            onChange={this.handleContentChange}
-            sideButtons={SIDE_BUTTONS}
-            withTitle={this.props.withTitle}
-            intl={this.props.intl}
-          />
-        ) : null}
+      <div className="waiv-editor-wrap">
+        <Input.TextArea
+          maxLength={Editor.MAX_LENGTH + 1}
+          autoSize
+          className="md-RichEditor-title"
+          value={titleValue}
+          placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
+          onChange={event => this.setState({ titleValue: event.target.value })}
+        />
+        <div className="waiv-editor">
+          {isMounted && (
+            <MediumDraftEditor
+              ref={this.refsEditor}
+              placeholder={this.props.intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Write your story...',
+              })}
+              editorEnabled={editorEnabled && this.props.enabled}
+              editorState={editorState}
+              beforeInput={this.handleBeforeInput}
+              onChange={this.handleContentChange}
+              sideButtons={SIDE_BUTTONS}
+              intl={this.props.intl}
+              handleHashtag={this.props.handleHashtag}
+            />
+          )}
+        </div>
       </div>
     );
   }

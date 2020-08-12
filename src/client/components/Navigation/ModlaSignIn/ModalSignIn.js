@@ -27,11 +27,11 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
   }, [showModal]);
 
   const responseSocial = async (response, socialNetwork) => {
+    setIsLoading(true);
     if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
       if (res) {
-        setIsLoading(true);
         dispatch(login(response.accessToken, socialNetwork)).then(() => {
           setIsLoading(false);
           batch(() => {
@@ -62,6 +62,10 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
         setIsFormVisible(true);
       }
     }
+  };
+
+  const handleClickLoading = () => {
+    setIsLoading(true);
   };
 
   const renderSignIn = () => (
@@ -109,7 +113,9 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
               })}
             </span>
           </p>
-          <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
+          <div onClick={handleClickLoading} role="presentation">
+            <SocialButtons className="ModalSignIn__social" responseSocial={responseSocial} />
+          </div>
           <p className="ModalSignIn__rules">
             {intl.formatMessage({
               id: 'sing_in_modal_rules',

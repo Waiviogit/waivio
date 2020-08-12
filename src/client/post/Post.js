@@ -28,7 +28,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 @connect(
   (state, ownProps) => ({
     edited: getIsPostEdited(state, ownProps.match.params.permlink),
-    content: getPostContent(state, ownProps.match.params.permlink),
+    content: getPostContent(state, ownProps.match.params.permlink, ownProps.match.params.author),
     isAuthFetching: getIsAuthFetching(state),
     fetching: getIsPostFetching(
       state,

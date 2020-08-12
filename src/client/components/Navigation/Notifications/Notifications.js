@@ -26,6 +26,9 @@ import NotificationTransferVesting from './NotificationTransferVesting';
 import NotificationChangeRecoveryAccount from './NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from './NotificationTransferFromSavings';
 import NotificationClaimReward from './NotificationClaimReward';
+import NotificationPostBell from './NotificationPostBell';
+import NotificationReblogBell from './NotificationReblogBell';
+import NotificationFollowBell from './NotificationFollowBell';
 
 import './Notification.less';
 import './Notifications.less';
@@ -148,7 +151,6 @@ class Notifications extends React.Component {
     } = this.props;
     const { displayedNotifications } = this.state;
     const displayEmptyNotifications = isEmpty(notifications) && !loadingNotifications;
-
     return (
       <div className="Notifications">
         <div
@@ -341,6 +343,33 @@ class Notifications extends React.Component {
               case notificationConstants.CLAIM_REWARD:
                 return (
                   <NotificationClaimReward
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_POST:
+                return (
+                  <NotificationPostBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_REBLOG:
+                return (
+                  <NotificationReblogBell
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_FOLLOW:
+                return (
+                  <NotificationFollowBell
                     key={key}
                     notification={notification}
                     read={read}

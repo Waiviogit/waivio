@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
@@ -48,7 +48,7 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-  const isMessages = match.params.filterKey === 'messages';
+  const isMessages = match.params[0] === 'messages' || match.params[0] === 'guideHistory';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
@@ -63,10 +63,11 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
+    const reservationPermlink = filter(proposition.objects, object => object.permlink)[0].permlink;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
-      reservation_permlink: proposition.objects[0].permlink || proposition.users[0].permlink,
+      reservation_permlink: reservationPermlink || get(proposition, ['users', '0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>
@@ -86,15 +87,17 @@ const Proposition = ({
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
-      try {
-        return JSON.parse(user.json_metadata);
-      } catch (err) {
-        message.error(
-          intl.formatMessage({
-            id: 'something_went_wrong',
-            defaultMessage: 'Something went wrong',
-          }),
-        );
+      if (!isEmpty(user)) {
+        try {
+          return JSON.parse(user.json_metadata);
+        } catch (err) {
+          message.error(
+            intl.formatMessage({
+              id: 'something_went_wrong',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        }
       }
     };
     const userName = get(getJsonData(), ['profile', 'name']);
@@ -163,8 +166,9 @@ const Proposition = ({
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
         {assigned ||
-        get(match, ['params', 'filterKey']) === 'history' ||
-        get(match, ['params', 'filterKey']) === 'messages' ? (
+        includes(match.url, 'history') ||
+        includes(match.url, 'guideHistory') ||
+        includes(match.url, 'messages') ? (
           <CampaignFooter
             post={post}
             loading={loading}

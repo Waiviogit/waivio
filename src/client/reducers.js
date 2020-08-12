@@ -68,7 +68,8 @@ export const getAuthenticatedUserPrivateEmail = state =>
   fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
-export const getPostContent = (state, permlink) => fromPosts.getPostContent(state.posts, permlink);
+export const getPostContent = (state, permlink, author) =>
+  fromPosts.getPostContent(state.posts, permlink, author);
 export const getPendingLikes = state => fromPosts.getPendingLikes(state.posts);
 export const getIsPostFetching = (state, author, permlink) =>
   fromPosts.getIsPostFetching(state.posts, author, permlink);
@@ -95,6 +96,8 @@ export const getAppUrl = state => fromApp.getAppUrl(state.app);
 export const getUsedLocale = state => fromApp.getUsedLocale(state.app);
 export const getScreenSize = state => fromApp.getScreenSize(state.app);
 export const getTranslations = state => fromApp.getTranslations(state.app);
+export const getTranslationByKey = (state, key, defaultMessage) =>
+  fromApp.getTranslationByKey(state.app, key, defaultMessage);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);

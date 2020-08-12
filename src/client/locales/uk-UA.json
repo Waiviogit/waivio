@@ -846,5 +846,9 @@
   "enter_amount_in_hive": "Введіть суму в HIVE",
   "reward_has_been_increased": "Винагороду збільшено",
   "reward_has_been_decreased": "Винагороду зменьшено",
-  "decrease_reward": "Зменшити винагороду"
+  "decrease_reward": "Зменшити винагороду",
+  "send_to": "Відправити",
+  "received_from_self": "отриманий від себе",
+  "failed_to_get_campaign_data": "Не вдалося отримати дані кампанії: {error}",
+  "history_and_sponsor_communications": "Історія та спонсорські комунікації"
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { getAuthenticatedUserName, getPendingUpdate } from '../../reducers';
@@ -16,7 +15,6 @@ const RewardsComponent = memo(
     activeFilters,
     area,
     getPropositions,
-    getPropositionsByStatus,
     intl,
     campaignsLayoutWrapLayout,
     loading,
@@ -50,7 +48,6 @@ const RewardsComponent = memo(
     const areaRewards = [+userLocation.lat, +userLocation.lon];
     const campaignParent = get(match, ['params', 'campaignParent']);
     const filterKeyParams = get(match, ['params', 'filterKey']);
-    const history = useHistory();
     const prevFilterKeyParams = useRef(undefined);
 
     const handleSortChange = sortRewards => {
@@ -59,20 +56,7 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      const sort = getSort(match, sortAll, sortEligible, sortReserved);
-      if (username && !url) {
-        getPropositionsByStatus({ username, sort });
-      } else if (username) {
-        getPropositions({ username, match, area: areaRewards, sort, activeFilters });
-      }
-    }, []);
-
-    useEffect(() => {
-      if (!prevFilterKeyParams.current || prevFilterKeyParams.current === 'undefined') {
-        prevFilterKeyParams.current = filterKeyParams;
-        return;
-      }
-      if (!userLocation.lat || !userLocation.lon) return;
+      if (!userLocation.lat || !userLocation.lon || !url) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       prevFilterKeyParams.current = filterKeyParams;
@@ -82,15 +66,7 @@ const RewardsComponent = memo(
           getPropositions({ username, match, area, sort, activeFilters });
         });
       }
-    }, [campaignParent, filterKeyParams, prevFilterKeyParams]);
-
-    useEffect(() => {
-      if (campaignParent) return;
-      if (!username && match.params.filterKey !== 'all') {
-        history.push(`/rewards/all`);
-      }
-    }, [username]);
-
+    }, [campaignParent, filterKeyParams, prevFilterKeyParams, JSON.stringify(activeFilters)]);
     return (
       <div className="Rewards">
         <FilteredRewardsList
@@ -115,6 +91,7 @@ const RewardsComponent = memo(
             campaignsTypes,
             setFilterValue,
             activeFilters,
+            pendingUpdate,
           }}
         />
       </div>

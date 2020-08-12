@@ -19,6 +19,7 @@ const FilteredRewardsList = props => {
     hasMore,
     loading,
     filterKey,
+    tabType,
     userName,
     match,
     propositions,
@@ -29,6 +30,7 @@ const FilteredRewardsList = props => {
     sortAll,
     sortReserved,
     sortHistory,
+    sortGuideHistory,
     sortMessages,
     handleSortChange,
     loadingCampaigns,
@@ -44,38 +46,57 @@ const FilteredRewardsList = props => {
     getHistory,
     activeHistoryFilters,
     setActiveMessagesFilters,
+    activeGuideHistoryFilters,
     blacklistUsers,
+    pendingUpdate,
   } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const sort = getSort(match, sortAll, sortEligible, sortReserved, sortHistory, sortMessages);
+  const sort = getSort(
+    match,
+    sortAll,
+    sortEligible,
+    sortReserved,
+    sortHistory,
+    sortGuideHistory,
+    sortMessages,
+  );
+
+  const historyLocation = '/rewards/history';
+  const messagesLocation = '/rewards/messages';
+  const guideHistoryLocation = '/rewards/guideHistory';
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
     !match.params.campaignParent &&
-    match.params.filterKey !== 'history' &&
-    match.params.filterKey !== 'messages';
+    location !== historyLocation &&
+    location !== messagesLocation &&
+    location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
-    if (location === '/rewards/history') {
+    if (location === historyLocation) {
       return activeHistoryFilters;
-    } else if (location === '/rewards/messages') {
+    } else if (location === messagesLocation) {
       return activeMessagesFilters;
+    } else if (location === guideHistoryLocation) {
+      return activeGuideHistoryFilters;
     }
     return activeFilters;
   }, [location, activeHistoryFilters, activeMessagesFilters, activeFilters]);
 
   const setFilters = useMemo(
     () =>
-      location === '/rewards/history' || location === '/rewards/messages'
+      location === historyLocation ||
+      location === messagesLocation ||
+      location === guideHistoryLocation
         ? setActiveMessagesFilters
         : setFilterValue,
     [location, setActiveMessagesFilters, setFilterValue],
   );
 
   const sortRewards = useMemo(() => {
-    if (location === '/rewards/messages') {
+    if (location === messagesLocation) {
       return [
         {
           key: 'inquiryDate',
@@ -94,7 +115,7 @@ const FilteredRewardsList = props => {
         },
       ];
     }
-    if (location === '/rewards/history') {
+    if (location === historyLocation || location === guideHistoryLocation) {
       return [
         {
           key: 'reservation',
@@ -127,11 +148,11 @@ const FilteredRewardsList = props => {
     ];
   }, [location, intl]);
 
-  return !loadingCampaigns ? (
+  return !loadingCampaigns && !pendingUpdate ? (
     <React.Fragment>
       <RewardBreadcrumb
-        tabText={getTextByFilterKey(intl, filterKey)}
-        filterKey={filterKey}
+        tabText={getTextByFilterKey(intl, filterKey || tabType)}
+        filterKey={filterKey || tabType}
         reqObject={
           !IsRequiredObjectWrap && propositions.length && propositions[0]
             ? propositions[0].required_object
@@ -144,10 +165,7 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap &&
-      filterKey !== 'history' &&
-      propositions.length &&
-      propositions[0] ? (
+      {!IsRequiredObjectWrap && propositions.length && propositions[0] ? (
         <div className="FilteredRewardsList__header">
           <Link
             to={`/object/${propositions[0].requiredObject}`}
@@ -168,8 +186,9 @@ const FilteredRewardsList = props => {
         </SortSelector>
       )}
       {(!isEmpty(sponsors) ||
-        match.params.filterKey === 'history' ||
-        match.params.filterKey === 'messages') && (
+        location === historyLocation ||
+        location === messagesLocation ||
+        location === guideHistoryLocation) && (
         <div className="FilteredRewardsList__filters-tags-block">
           <span className="FilteredRewardsList__filters-topic ttc">
             {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
@@ -208,8 +227,9 @@ const FilteredRewardsList = props => {
         </div>
       )}
       {!isEmpty(sponsors) &&
-        match.params.filterKey !== 'history' &&
-        match.params.filterKey !== 'messages' && (
+        location !== historyLocation &&
+        location !== messagesLocation &&
+        location !== guideHistoryLocation && (
           <div className="FilteredRewardsList__filters-toggle-map tc">
             <Button icon="compass" size="large" className="map-btn" onClick={showMap}>
               {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
@@ -287,20 +307,27 @@ FilteredRewardsList.defaultProps = {
   setFilterValue: () => {},
   handleLoadMore: () => {},
   resetMapFilter: () => {},
+  getHistory: () => {},
   activeFilters: {},
   activeMessagesFilters: {},
   userName: '',
   sortHistory: 'reservation',
+  sortGuideHistory: 'reservation',
   sortMessages: 'inquiryDate',
   blacklistUsers: [],
   activeHistoryFilters: {},
+  activeGuideHistoryFilters: {},
   setActiveMessagesFilters: () => {},
+  tabType: '',
+  pendingUpdate: false,
+  location: {},
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
+  tabType: PropTypes.string,
   userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   propositions: PropTypes.arrayOf(PropTypes.shape()),
@@ -320,13 +347,16 @@ FilteredRewardsList.propTypes = {
   setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
-  location: PropTypes.string.isRequired,
+  location: PropTypes.shape(),
   sortHistory: PropTypes.string,
+  sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,
-  getHistory: PropTypes.func.isRequired,
+  getHistory: PropTypes.func,
   blacklistUsers: PropTypes.arrayOf(PropTypes.string),
   activeHistoryFilters: PropTypes.shape(),
+  activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
+  pendingUpdate: PropTypes.bool,
 };
 
 export default FilteredRewardsList;
