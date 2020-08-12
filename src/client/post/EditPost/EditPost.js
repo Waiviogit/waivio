@@ -221,15 +221,21 @@ class EditPost extends Component {
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
-    const { linkedObjects, objPercentage } = this.state;
+    const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
+    const switchableObjName = switchableObj.name || switchableObj.default_name;
+
     linkedObjects.splice(switchableObj, 1);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
-    this.setState({ objPercentage: setObjPercents(linkedObjects, updPercentage) });
+    topics.splice(switchableObjName, 1);
+    this.setState({
+      objPercentage: setObjPercents(linkedObjects, updPercentage),
+      topics,
+    });
   }
 
   handleObjectSelect(object) {
