@@ -25,6 +25,8 @@ export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
 
 export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMMENT');
 
+export const GET_RESERVED_COMMENTS = '@comments/GET_RESERVED_COMMENTS';
+
 export const getSingleComment = (author, permlink, focus = false) => dispatch =>
   dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
@@ -271,3 +273,15 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     }
   });
 };
+
+export const getReservedComments = ({ category, author, permlink }) => dispatch =>
+  dispatch({
+    type: GET_RESERVED_COMMENTS,
+    payload: {
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
+        rootCommentsList: getRootCommentsList(apiRes),
+        commentsChildrenList: getCommentsChildrenLists(apiRes),
+        content: apiRes.content,
+      })),
+    },
+  });

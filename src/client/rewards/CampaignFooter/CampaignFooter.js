@@ -12,16 +12,22 @@ import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
+import { getReservedComments } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import './CampaignFooter.less';
 
 @injectIntl
 @withAuthActions
-@connect(state => ({
-  rate: getRate(state),
-  appUrl: getAppUrl(state),
-}))
+@connect(
+  state => ({
+    rate: getRate(state),
+    appUrl: getAppUrl(state),
+  }),
+  {
+    getReservedComments,
+  },
+)
 class CampaignFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
@@ -56,6 +62,7 @@ class CampaignFooter extends React.Component {
     match: PropTypes.shape().isRequired,
     getMessageHistory: PropTypes.func,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+    getReservedComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -76,6 +83,7 @@ class CampaignFooter extends React.Component {
     isComment: false,
     getMessageHistory: () => {},
     blacklistUsers: [],
+    getReservedComments: () => {},
   };
 
   constructor(props) {
@@ -91,6 +99,7 @@ class CampaignFooter extends React.Component {
       daysLeft: 0,
       loading: false,
       currentPost: {},
+      reservedContents: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -238,8 +247,33 @@ class CampaignFooter extends React.Component {
     this.setState({ isComment: !this.state.isComment });
   };
 
+  handleCommentClick = async isVisible => {
+    const { currentPost } = this.state;
+    const { category, author, permlink } = currentPost;
+    try {
+      const comments = await this.props.getReservedComments({ category, author, permlink });
+      const reservedContents = get(comments, ['value', 'content']);
+      await this.setState({ reservedContents });
+      await this.toggleCommentsVisibility(isVisible);
+    } catch (e) {
+      await message.error(
+        this.props.intl.formatMessage({
+          id: 'error_boundary_page',
+          defaultMessage: 'Something went wrong',
+        }),
+      );
+    }
+  };
+
   render() {
-    const { commentsVisible, modalVisible, daysLeft, sliderVisible } = this.state;
+    const {
+      commentsVisible,
+      modalVisible,
+      daysLeft,
+      sliderVisible,
+      currentPost,
+      reservedContents,
+    } = this.state;
     const {
       post,
       postState,
@@ -268,12 +302,12 @@ class CampaignFooter extends React.Component {
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
-    const hasComments = !isEmpty(proposition.conversation);
-    const commentsAll = get(postCurrent, ['all']);
+    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedContents);
+    const commentsAll = get(postCurrent, ['all']) || reservedContents;
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
-    const numberOfComments = commentsArr.length;
+    const numberOfComments = commentsArr.length || currentPost.children;
 
     return (
       <div className="CampaignFooter">
@@ -295,7 +329,7 @@ class CampaignFooter extends React.Component {
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
               onEditClick={this.handleEditClick}
-              onCommentClick={this.toggleCommentsVisibility}
+              onCommentClick={this.handleCommentClick}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
