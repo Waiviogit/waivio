@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { getAuthenticatedUser } from '../reducers';
-import './Avatar.less';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+
+import './Avatar.less';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
   const url = 'https://images.hive.blog/u';
@@ -44,12 +45,13 @@ const Avatar = ({ username, size }) => {
 };
 
 Avatar.propTypes = {
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
   size: PropTypes.number,
 };
 
 Avatar.defaultProps = {
   size: 100,
+  username: '',
 };
 
 export default Avatar;

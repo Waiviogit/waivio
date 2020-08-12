@@ -23,7 +23,7 @@ PolicyConfirmation.propTypes = {
   isChecked: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
   checkboxLabel: PropTypes.string,
-  policyText: PropTypes.string,
+  policyText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   className: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 };

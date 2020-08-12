@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
@@ -84,6 +84,7 @@ import './AppendForm.less';
 )
 @Form.create()
 @withEditor
+@injectIntl
 export default class AppendForm extends Component {
   static propTypes = {
     /* decorators */
@@ -745,9 +746,18 @@ export default class AppendForm extends Component {
     this.setState({ selectedObject: createdObject, votePercent: null }, this.handleSubmit);
   };
 
-  handleSelectObject = obj => {
+  handleSelectObject = (obj = {}) => {
+    const { wObject, intl } = this.props;
     const currentField = this.props.form.getFieldValue('currentField');
-    if (obj && obj.id) {
+
+    if (obj.author_permlink === wObject.author_permlink && currentField === 'parent') {
+      message.error(
+        intl.formatMessage({
+          id: 'dont_use_current_object_for_parent',
+          defaultMessage: 'You cannot use the current object as a parent',
+        }),
+      );
+    } else if (obj.id) {
       this.props.form.setFieldsValue({
         [currentField]: obj.id,
       });
