@@ -238,7 +238,7 @@ RewardsFiltersPanel.defaultProps = {
   messagesSponsors: [],
   setActiveMessagesFilters: () => {},
   setPayablesFilterValue: () => {},
-  activePayableFilters: () => {},
+  activePayableFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);
