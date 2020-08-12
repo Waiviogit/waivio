@@ -1324,6 +1324,7 @@
   "length_of_budget": "Campaign budget can't be longer than 10 characters.",
   "length_of_reward": "Reward can't be longer than 10 characters.",
   "error_boundary_page_home": "the home page",
+  "hashtag": "hashtag",
   "post_publication": "Your post will be posted soon",
   "menu": "Menu",
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent"

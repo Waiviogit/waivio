@@ -37,22 +37,10 @@ export default function wobjectReducer(state = initialState, action) {
         wobject: {},
       };
     case actions.GET_OBJECT_SUCCESS:
-      if (action.payload.id && state.wobject.id !== action.payload.id) {
-        return {
-          ...state,
-          wobject: {
-            ...action.payload,
-            name: getApprovedField(action.payload, 'name'),
-          },
-          isFetching: false,
-        };
-      }
-
       return {
         ...state,
         wobject: {
           ...action.payload,
-          fields: [...state.wobject.fields],
         },
         isFetching: false,
       };
@@ -65,6 +53,7 @@ export default function wobjectReducer(state = initialState, action) {
           listItems: [...state.wobject.listItems, action.payload],
         },
       };
+
     case RATE_WOBJECT_SUCCESS: {
       if (!state.wobject.fields) return state;
       const isNewVote = field =>

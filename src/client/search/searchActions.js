@@ -8,6 +8,7 @@ import {
   getFollowingList,
   getAuthenticatedUserName,
   getIsAuthenticated,
+  getLocale,
 } from '../reducers';
 import { replacer } from '../helpers/parser';
 
@@ -57,6 +58,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
   const state = getState();
   const searchString = replacer(search, '@');
   const user = getAuthenticatedUserName(state);
+  const locale = getLocale(state);
 
   if (searchString) {
     dispatch({
@@ -68,6 +70,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
           wobjectsLimi,
           objectTypesLimit,
           user,
+          locale,
         ).then(result => ({
           result,
           search: searchString,

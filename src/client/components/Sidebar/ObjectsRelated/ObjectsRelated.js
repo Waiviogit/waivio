@@ -1,13 +1,16 @@
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { injectIntl } from 'react-intl';
+
 import WeightTag from '../../WeightTag';
-import './ObjectsRelated.less';
 import { getAuthorsChildWobjects } from '../../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import ObjectCard from '../ObjectCard';
+import { AppSharedContext } from '../../../Wrapper';
+
+import './ObjectsRelated.less';
 
 const ObjectsRelated = ({ wobject, intl }) => {
   const [objectsState, setObjectsState] = useState({
@@ -17,10 +20,9 @@ const ObjectsRelated = ({ wobject, intl }) => {
     hasNext: true,
   });
   const [showModal, setShowModal] = useState(false);
-  // const [skipValue, setSkipValue] = useState(0);
-
+  const { usedLocale } = useContext(AppSharedContext);
   const getInitialWobjects = () => {
-    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
+    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5, usedLocale)
       .then(data => {
         const objects = data.map(wobj => ({
           ...wobj,
@@ -38,7 +40,7 @@ const ObjectsRelated = ({ wobject, intl }) => {
   };
 
   const getWobjects = () => {
-    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
+    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5, usedLocale)
       .then(data => {
         const objects = data.map(wobj => ({
           ...wobj,

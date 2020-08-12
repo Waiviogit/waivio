@@ -57,20 +57,15 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
-import { getObject } from '../../../waivioApi/ApiClient';
-import { changeParent } from '../../object/wobjActions';
 
 import './ObjectInfo.less';
 
 @withRouter
-@connect(
-  state => ({
-    albums: getObjectAlbums(state),
-    isAuthenticated: getIsAuthenticated(state),
-    usedLocale: getSuitableLanguage(state),
-  }),
-  { changeParent },
-)
+@connect(state => ({
+  albums: getObjectAlbums(state),
+  isAuthenticated: getIsAuthenticated(state),
+  usedLocale: getSuitableLanguage(state),
+}))
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
@@ -81,7 +76,6 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.arrayOf(PropTypes.shape()),
     usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
-    changeParent: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -203,27 +197,10 @@ class ObjectInfo extends React.Component {
     return null;
   };
 
-  renderParent = permlink => {
-    if (
-      permlink &&
-      (!this.state.parentWobj || permlink !== this.state.parentWobj.author_permlink)
-    ) {
-      const getParent = () =>
-        getObject(permlink).then(res => {
-          this.setState({ parentWobj: res });
-          this.props.changeParent(res);
-        });
-      getParent();
-    }
-
+  renderParent = () => {
+    const parent = get(this.props.wobject, 'parent');
     return (
-      this.state.parentWobj && (
-        <ObjectCard
-          key={this.state.parentWobj.author_permlink}
-          wobject={this.state.parentWobj}
-          showFollow={false}
-        />
-      )
+      parent && <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
     );
   };
 

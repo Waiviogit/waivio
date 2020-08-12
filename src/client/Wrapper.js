@@ -20,7 +20,6 @@ import {
   getTranslations,
   getNightmode,
   isGuestUser,
-  getStatusWithdraw,
 } from './reducers';
 import {
   login,
@@ -33,14 +32,12 @@ import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActio
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
-import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
-import Withdraw from './wallet/WithDraw';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -58,7 +55,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     followingList: state.user.following.list,
     followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
-    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     login,
@@ -96,7 +92,6 @@ class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool.isRequired,
-    isWithdrawOpen: PropTypes.bool.isRequired,
     dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
@@ -282,8 +277,6 @@ class Wrapper extends React.PureComponent {
                   location={history.location}
                 />
                 {renderRoutes(this.props.route.routes)}
-                <Transfer history={history} />
-                {this.props.isWithdrawOpen && <Withdraw />}
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
