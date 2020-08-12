@@ -154,7 +154,7 @@ const Comments = ({
               setReplyOpen(false);
             })
             .catch(error => reject(error));
-        }, 8000);
+        }, 10000);
       });
     } catch (error) {
       setCommentFormText(commentValue);

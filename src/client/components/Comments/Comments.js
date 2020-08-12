@@ -185,7 +185,7 @@ class Comments extends React.Component {
               });
             })
             .catch(error => reject(error));
-        }, 8000);
+        }, 10000);
       });
     } catch (error) {
       this.setState({
