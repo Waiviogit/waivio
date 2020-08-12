@@ -26,6 +26,7 @@ export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
 export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMMENT');
 
 export const GET_RESERVED_COMMENTS = '@comments/GET_RESERVED_COMMENTS';
+export const GET_RESERVED_COMMENTS_SUCCESS = '@comments/GET_RESERVED_COMMENTS_SUCCESS';
 
 export const getSingleComment = (author, permlink, focus = false) => dispatch =>
   dispatch({

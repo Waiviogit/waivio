@@ -10,7 +10,7 @@ import Comments from '../../comments/Comments';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import { getRate, getAppUrl } from '../../reducers';
+import { getRate, getAppUrl, getCommentsFromReserved } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import { getReservedComments } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
@@ -23,6 +23,7 @@ import './CampaignFooter.less';
   state => ({
     rate: getRate(state),
     appUrl: getAppUrl(state),
+    reservedComments: getCommentsFromReserved(state),
   }),
   {
     getReservedComments,
@@ -63,6 +64,7 @@ class CampaignFooter extends React.Component {
     getMessageHistory: PropTypes.func,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
     getReservedComments: PropTypes.func,
+    reservedComments: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -84,6 +86,7 @@ class CampaignFooter extends React.Component {
     getMessageHistory: () => {},
     blacklistUsers: [],
     getReservedComments: () => {},
+    reservedComments: {},
   };
 
   constructor(props) {
@@ -99,7 +102,6 @@ class CampaignFooter extends React.Component {
       daysLeft: 0,
       loading: false,
       currentPost: {},
-      reservedContents: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -238,23 +240,23 @@ class CampaignFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
-  toggleCommentsVisibility = isVisible => {
-    const { proposition } = this.props;
-    const hasComments = !isEmpty(proposition.conversation);
+  toggleCommentsVisibility = () => {
+    const { proposition, reservedComments } = this.props;
+    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
     if (hasComments) {
-      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
+      this.setState({ commentsVisible: !this.state.commentsVisible });
     }
     this.setState({ isComment: !this.state.isComment });
   };
 
-  handleCommentClick = async isVisible => {
+  handleCommentClick = async () => {
     const { currentPost } = this.state;
     const { category, author, permlink } = currentPost;
     try {
-      const comments = await this.props.getReservedComments({ category, author, permlink });
-      const reservedContents = get(comments, ['value', 'content']);
-      await this.setState({ reservedContents });
-      await this.toggleCommentsVisibility(isVisible);
+      await this.props.getReservedComments({ category, author, permlink });
+
+      await this.setState({ reservedComments: this.props.reservedComments });
+      await this.toggleCommentsVisibility();
     } catch (e) {
       await message.error(
         this.props.intl.formatMessage({
@@ -266,14 +268,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const {
-      commentsVisible,
-      modalVisible,
-      daysLeft,
-      sliderVisible,
-      currentPost,
-      reservedContents,
-    } = this.state;
+    const { commentsVisible, modalVisible, daysLeft, sliderVisible, currentPost } = this.state;
     const {
       post,
       postState,
@@ -293,6 +288,7 @@ class CampaignFooter extends React.Component {
       user,
       getMessageHistory,
       blacklistUsers,
+      reservedComments,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -302,8 +298,8 @@ class CampaignFooter extends React.Component {
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
-    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedContents);
-    const commentsAll = get(postCurrent, ['all']) || reservedContents;
+    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
+    const commentsAll = get(postCurrent, ['all']) || reservedComments;
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
@@ -369,6 +365,7 @@ class CampaignFooter extends React.Component {
             isQuickComments={!singlePostVew}
             post={this.state.currentPost}
             getMessageHistory={getMessageHistory}
+            match={match}
           />
         )}
         <Modal

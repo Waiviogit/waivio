@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
@@ -14,8 +15,12 @@ import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
 import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
+import { getReservedComments } from '../../comments/commentsActions';
 
 @injectIntl
+@connect(null, {
+  getReservedComments,
+})
 class Comments extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -45,6 +50,8 @@ class Comments extends React.Component {
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
+    getReservedComments: PropTypes.func,
+    match: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -57,11 +64,13 @@ class Comments extends React.Component {
     sliderMode: false,
     show: false,
     isQuickComments: false,
+    match: {},
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
     getMessageHistory: () => {},
+    getReservedComments: () => {},
   };
 
   constructor(props) {
@@ -158,6 +167,13 @@ class Comments extends React.Component {
     );
   };
 
+  onCommentSend = () => {
+    const { category, author, permlink } = this.props.parentPost;
+    return this.props.match.params.filterKey === 'reserved'
+      ? this.props.getReservedComments({ category, author, permlink })
+      : this.props.getMessageHistory();
+  };
+
   handleSubmitComment = async (parentP, commentValue) => {
     const { intl } = this.props;
     try {
@@ -168,8 +184,7 @@ class Comments extends React.Component {
       await this.props.onSendComment(parentPost, commentValue);
       await new Promise((resolve, reject) => {
         setTimeout(() => {
-          this.props
-            .getMessageHistory()
+          this.onCommentSend()
             .then(() => {
               resolve();
               message.success(
