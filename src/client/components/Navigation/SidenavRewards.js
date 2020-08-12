@@ -27,7 +27,7 @@ export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    isGuest: PropTypes.string.isRequired,
+    isGuest: PropTypes.bool.isRequired,
     hasReceivables: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,
     createdCampaignsCount: PropTypes.number,

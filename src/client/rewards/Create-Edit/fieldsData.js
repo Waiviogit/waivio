@@ -46,6 +46,13 @@ export default (messageFactory, validators, userName) => ({
     label: messageFactory('campaign_budget', 'Campaign budget (monthly, USD)'),
     rules: [
       {
+        max: 10,
+        message: messageFactory(
+          'length_of_budget',
+          "Campaign budget can't be longer than 10 characters.",
+        ),
+      },
+      {
         required: true,
         message: messageFactory('set_monthly_budget', 'Please, set your monthly budget!'),
       },
@@ -62,6 +69,10 @@ export default (messageFactory, validators, userName) => ({
     name: 'reward',
     label: messageFactory('reward_per_review_STEEM', 'Reward (per review, USD)'),
     rules: [
+      {
+        max: 10,
+        message: messageFactory('length_of_reward', "Reward can't be longer than 10 characters."),
+      },
       {
         required: true,
         message: messageFactory('set_reward', 'Please, set a reward!'),

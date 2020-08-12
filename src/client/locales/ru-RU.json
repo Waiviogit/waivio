@@ -1321,5 +1321,8 @@
   "error_boundary_page_try_reload": "Вы можете попробовать перезагрузить страницу",
   "error_boundary_page_go_to": "или вернуться на",
   "error_boundary_page_home": "главную страницу",
-  "reservations": "Резервации"
+  "reservations": "Резервации",
+  "length_of_budget": "Бюджет кампании не может быть длиннее 10 символов.",
+  "length_of_reward": "Награда не может быть длиннее 10 символов.",
+  "post_publication": "Ваш пост скоро будет опубликован"
 }
