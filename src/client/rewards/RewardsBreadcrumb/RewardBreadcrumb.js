@@ -50,7 +50,7 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location }) => {
 RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
-  filterKey: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
   location: PropTypes.shape(),
 };
 

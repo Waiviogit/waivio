@@ -850,5 +850,6 @@
   "send_to": "Відправити",
   "received_from_self": "отриманий від себе",
   "failed_to_get_campaign_data": "Не вдалося отримати дані кампанії: {error}",
-  "history_and_sponsor_communications": "Історія та спонсорські комунікації"
+  "history_and_sponsor_communications": "Історія та спонсорські комунікації",
+  "reservations": "Резервації"
 }

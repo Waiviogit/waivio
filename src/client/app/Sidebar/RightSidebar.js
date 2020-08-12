@@ -20,6 +20,7 @@ import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar
   authenticated: store.getIsAuthenticated(state),
   authUserName: store.getAuthenticatedUserName(state),
   isAuthFetching: store.getIsAuthFetching(state),
+  locale: store.getLocale(state),
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {
@@ -28,6 +29,7 @@ export default class RightSidebar extends React.Component {
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
+    locale: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -43,6 +45,7 @@ export default class RightSidebar extends React.Component {
       isAuthFetching,
       match,
       authUserName,
+      locale,
     } = this.props;
 
     if (isAuthFetching) {
@@ -73,7 +76,11 @@ export default class RightSidebar extends React.Component {
             path="/@:name"
             render={() =>
               authenticated && (
-                <ObjectWeightBlock username={match.params.name} authUser={authUserName} />
+                <ObjectWeightBlock
+                  username={match.params.name}
+                  authUser={authUserName}
+                  locale={locale}
+                />
               )
             }
           />

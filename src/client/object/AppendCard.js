@@ -133,13 +133,13 @@ const AppendCard = props => {
               <BTooltip
                 title={
                   <span>
-                    <FormattedDate value={`${props.post.created}Z`} />{' '}
-                    <FormattedTime value={`${props.post.created}Z`} />
+                    <FormattedDate value={props.post.createdAt} />{' '}
+                    <FormattedTime value={props.post.createdAt} />
                   </span>
                 }
               >
                 <span className="Story__date">
-                  <FormattedRelative value={`${props.post.created}Z`} />
+                  <FormattedRelative value={props.post.createdAt} />
                 </span>
               </BTooltip>
             </span>
@@ -154,8 +154,8 @@ const AppendCard = props => {
         >
           <h2>
             <FormattedMessage
-              id={`object_field_${props.post.append_field_name}`}
-              defaultMessage={props.post.append_field_name}
+              id={`object_field_${props.post.name}`}
+              defaultMessage={props.post.name}
             />
           </h2>
         </a>

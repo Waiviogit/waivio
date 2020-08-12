@@ -59,6 +59,7 @@ const LinkHiveAccountModal = ({
           defaultMessage: 'Find your account',
         })}
         style={{ width: '100%' }}
+        notGuest
       />
     );
   return (
@@ -103,13 +104,17 @@ const LinkHiveAccountModal = ({
 LinkHiveAccountModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   showModal: PropTypes.bool.isRequired,
-  hiveBeneficiaryAccount: PropTypes.string.isRequired,
+  hiveBeneficiaryAccount: PropTypes.string,
   isGuest: PropTypes.bool.isRequired,
   user: PropTypes.string.isRequired,
   handleOk: PropTypes.func.isRequired,
   handleSelect: PropTypes.func.isRequired,
   handleUnselectUser: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
+};
+
+LinkHiveAccountModal.defaultProps = {
+  hiveBeneficiaryAccount: '',
 };
 
 export default connect(state => ({

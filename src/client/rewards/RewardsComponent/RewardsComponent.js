@@ -110,7 +110,7 @@ RewardsComponent.propTypes = {
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   hasMore: PropTypes.bool,
   loading: PropTypes.bool,
-  sponsors: PropTypes.arrayOf(PropTypes.shape()),
+  sponsors: PropTypes.arrayOf(PropTypes.string),
   propositions: PropTypes.arrayOf(PropTypes.shape()),
   loadingCampaigns: PropTypes.bool,
   isSearchAreaFilter: PropTypes.bool,

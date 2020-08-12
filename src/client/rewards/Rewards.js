@@ -330,7 +330,7 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
-    const { pendingUpdate } = this.props;
+    const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
       // eslint-disable-next-line camelcase
@@ -347,7 +347,7 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate) {
+      if (!pendingUpdate && match.params.filterKey) {
         this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
         if (tabType === 'reserved') {
           this.setState({
