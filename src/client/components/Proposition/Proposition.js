@@ -88,7 +88,7 @@ class Proposition extends React.Component {
   }
 }
 Proposition.propTypes = {
-  objName: PropTypes.string.isRequired,
+  objName: PropTypes.string,
   fieldName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
@@ -102,6 +102,7 @@ Proposition.defaultProps = {
   handleSelectField: () => {},
   selectedField: '',
   linkTo: '',
+  objName: '',
 };
 
 export default injectIntl(Proposition);

@@ -103,7 +103,10 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
   }).catch(error => console.log('Object search >', error.message));
 };
 
-export const searchUsersAutoCompete = (userName, limit) => (dispatch, getState) => {
+export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
+  dispatch,
+  getState,
+) => {
   const search = replacer(userName, '@');
   const user = getAuthenticatedUserName(getState());
 
@@ -111,7 +114,7 @@ export const searchUsersAutoCompete = (userName, limit) => (dispatch, getState) 
     dispatch({
       type: SEARCH_USERS.ACTION,
       payload: {
-        promise: ApiClient.searchUsers(search, user, limit)
+        promise: ApiClient.searchUsers(search, user, limit, notGuest)
           .then(result => ({
             result,
             search,

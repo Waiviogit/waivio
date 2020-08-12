@@ -257,10 +257,10 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, username, limit = 15) =>
+export const searchUsers = (searchString, username, limit = 15, notGuest = false) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,

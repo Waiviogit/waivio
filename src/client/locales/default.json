@@ -1320,9 +1320,11 @@
   "error_boundary_page_brace": "Brace yourself till we get the error fixed.",
   "error_boundary_page_try_reload": "You may also refresh the page or try again later.",
   "error_boundary_page_go_to": "You can head back to",
-  "error_boundary_page_home": "the home page",
   "reservations": "Reservations",
   "length_of_budget": "Campaign budget can't be longer than 10 characters.",
   "length_of_reward": "Reward can't be longer than 10 characters.",
-  "post_publication": "Your post will be posted soon"
+  "error_boundary_page_home": "the home page",
+  "post_publication": "Your post will be posted soon",
+  "menu": "Menu",
+  "dont_use_current_object_for_parent": "You cannot use the current object as a parent"
 }
