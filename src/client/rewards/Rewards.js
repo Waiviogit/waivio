@@ -32,6 +32,7 @@ import {
   getIsMapModalOpen,
   getSuitableLanguage,
   getPendingUpdate,
+  isGuestUser,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -77,6 +78,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
     pendingUpdate: getPendingUpdate(state),
+    isGuest: isGuestUser(state),
   }),
   {
     assignProposition,
@@ -107,6 +109,7 @@ class Rewards extends React.Component {
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
     getRewardsGeneralCounts: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -115,6 +118,7 @@ class Rewards extends React.Component {
     wobjects: [],
     pendingUpdate: false,
     location: {},
+    isGuest: false,
   };
 
   state = {
@@ -164,8 +168,6 @@ class Rewards extends React.Component {
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
-    } else if (match.params.filterKey !== 'all') {
-      history.push(`/rewards/all`);
     }
     if (!size(userLocation)) {
       this.props.getCoordinates();
@@ -174,6 +176,21 @@ class Rewards extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
+    const { username, isGuest } = this.props;
+    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const sort = getSort(match, sortAll, sortEligible, sortReserved);
+    if (username !== nextProps.username && !url) {
+      const userName = username || nextProps.username;
+      this.getPropositionsByStatus({ username: userName, sort });
+    } else if (
+      !isGuest &&
+      !username &&
+      !nextProps.username &&
+      url &&
+      this.props.match.params.filterKey !== 'all'
+    ) {
+      this.props.history.push(`/rewards/all`);
+    }
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
@@ -330,7 +347,7 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
-    const { pendingUpdate } = this.props;
+    const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
       // eslint-disable-next-line camelcase
@@ -347,7 +364,7 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate) {
+      if (!pendingUpdate && match.params.filterKey) {
         this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
         if (tabType === 'reserved') {
           this.setState({

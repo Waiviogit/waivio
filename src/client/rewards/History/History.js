@@ -129,7 +129,7 @@ const History = ({
   );
 
   useEffect(() => {
-    getHistory(userName, sortForFilters, filters, useLoader);
+    if (userName) getHistory(userName, sortForFilters, filters, useLoader);
     if (!isHistory) {
       dispatch(getBlacklist(userName)).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
@@ -142,6 +142,7 @@ const History = ({
     JSON.stringify(activeHistoryFilters),
     JSON.stringify(activeGuideHistoryFilters),
     location.pathname,
+    userName,
   ]);
 
   const handleLoadMore = () => {
