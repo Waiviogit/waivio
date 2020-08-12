@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate, get } from 'lodash';
+import { filter, includes, orderBy, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -90,7 +90,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${!isEmpty(parent) && parent.author_permlink}`}
+                  to={`/object/${get(parent, 'author_permlink', '')}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >

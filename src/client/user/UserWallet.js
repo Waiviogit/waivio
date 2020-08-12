@@ -95,7 +95,7 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    transactionsHistory: PropTypes.oneOf([PropTypes.arrayOf(PropTypes.shape()), PropTypes.shape()]),
+    transactionsHistory: PropTypes.shape(),
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,

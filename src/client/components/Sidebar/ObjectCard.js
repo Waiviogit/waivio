@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { isEmpty } from 'lodash';
+
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 
 import './ObjectCard.less';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
-  if (wobject) {
+  if (!isEmpty(wobject)) {
     const name = wobject.name || wobject.default_name;
     const pathname = `/object/${wobject.author_permlink}`;
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
@@ -7,17 +7,18 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
+import { parseWobjectField } from '../helpers/wObjectHelper';
 
 import './WaivioObject.less';
 
 const WaivioObject = ({ wobj, unfollow, follow }) => {
   const { default_name: defaultName, name } = wobj;
-  const address = wobj.address && JSON.parse(wobj.address);
-  const website = wobj.website && JSON.parse(wobj.website);
+  const address = parseWobjectField(wobj, 'address');
+  const website = parseWobjectField(wobj, 'website');
 
   const objectName = name || defaultName;
-  const websiteTitle = (website && website[websiteFields.title]) || objectFields.website;
-  let websiteLink = website && website[websiteFields.link];
+  const websiteTitle = get(website, [websiteFields.title]) || objectFields.website;
+  let websiteLink = get(website, [websiteFields.link]);
   if (
     websiteLink &&
     websiteLink.indexOf('http://') === -1 &&
@@ -25,7 +26,7 @@ const WaivioObject = ({ wobj, unfollow, follow }) => {
   ) {
     websiteLink = `http://${websiteLink}`;
   }
-  const location = address && address[addressFields.city];
+  const location = get(address, [addressFields.city]);
   const pathName = `/object/${wobj.author_permlink}`;
 
   return (

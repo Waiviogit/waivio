@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import {
   getPosts,
@@ -151,7 +152,7 @@ class WobjHistory extends React.Component {
       }
     };
     let content = object && object.fields && sortedList(object);
-    const isFetching = content && content.length && content[0].name;
+    const isFetched = !isEmpty(content) && content[0].name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
@@ -161,11 +162,12 @@ class WobjHistory extends React.Component {
       return true;
     });
 
-    if (params[1] && content && content.length && content[0].name) {
+    if (params[1] && isFetched) {
       content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
     }
 
     const objName = object.name || object.default_name;
+
     const renderFields = () => {
       if (content) {
         return content.length ? (
@@ -237,7 +239,7 @@ class WobjHistory extends React.Component {
             </React.Fragment>
           )}
         </div>
-        {isFetching && (
+        {isFetched && (
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
               <SortSelector.Item key="recency">

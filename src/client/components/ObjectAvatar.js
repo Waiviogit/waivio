@@ -38,7 +38,7 @@ const ObjectAvatar = ({ item, size }) => {
 
 ObjectAvatar.propTypes = {
   item: PropTypes.shape({
-    parent: PropTypes.oneOfType([PropTypes.shape(), PropTypes.string]),
+    parent: PropTypes.shape(),
     avatar: PropTypes.string,
   }),
   size: PropTypes.number,
