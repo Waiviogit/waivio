@@ -24,7 +24,7 @@ const WalletFillOrderGet = ({ transactionDetails, timestamp }) => {
                   open_pays: <span>{transactionDetails.open_pays}</span>,
                   exchanger: (
                     <Link to={url}>
-                      <span className="username">{transactionDetails.exchanger}</span>
+                      <span className="username">{transactionDetails.open_owner}</span>
                     </Link>
                   ),
                 }}

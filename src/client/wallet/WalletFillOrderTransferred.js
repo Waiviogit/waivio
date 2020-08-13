@@ -26,7 +26,7 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays
                   current_pays: <span>{currentPays}</span>,
                   exchanger: (
                     <Link to={url}>
-                      <span className="username">{transactionDetails.exchanger}</span>
+                      <span className="username">{transactionDetails.open_owner}</span>
                     </Link>
                   ),
                 }}
