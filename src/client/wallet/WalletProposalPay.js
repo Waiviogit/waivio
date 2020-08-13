@@ -88,7 +88,7 @@ const WalletProposalPay = ({
 WalletProposalPay.propTypes = {
   receiver: PropTypes.string,
   payment: PropTypes.element,
-  timestamp: PropTypes.string,
+  timestamp: PropTypes.number,
   withdraw: PropTypes.string,
   getDetails: PropTypes.func,
   currentUsername: PropTypes.string,
@@ -98,7 +98,7 @@ WalletProposalPay.defaultProps = {
   receiver: '',
   memo: '',
   payment: <span />,
-  timestamp: '',
+  timestamp: 0,
   withdraw: '',
   getDetails: () => {},
   currentUsername: '',

@@ -151,7 +151,7 @@ class Manage extends React.Component {
             <button className="Manage__button">
               <Link to={`/rewards/create`}>
                 {intl.formatMessage({
-                  id: 'createNewCampaign',
+                  id: 'create_new_campaign',
                   defaultMessage: `Create new campaign`,
                 })}{' '}
               </Link>

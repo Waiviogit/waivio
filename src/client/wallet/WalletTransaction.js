@@ -162,7 +162,6 @@ WalletTransaction.propTypes = {
 };
 
 WalletTransaction.defaultProps = {
-  transactionHistory: {},
   isGuestPage: false,
   handleDetailsClick: () => {},
 };
