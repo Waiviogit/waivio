@@ -26,6 +26,10 @@ const ImageSetter = ({
   defaultImage,
   isRequired,
   isTitle,
+  setEditorState,
+  getEditorState,
+  addNewBlockAt,
+  Block,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -99,6 +103,32 @@ const ImageSetter = ({
     handleOnUploadImageByLink(defaultImage);
   }, []);
 
+  const handleRemoveImage = imageDetail => {
+    console.log('imageId: ', imageDetail);
+    const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
+    setCurrentImages(filteredImages);
+
+    // const contentState = getEditorState().getCurrentContent();
+    // const selection = getEditorState().getSelection();
+    // const key = selection.getAnchorKey();
+    // const currentBlock = contentState.getBlockForKey(key);
+    //
+    // const allBlocks = Object.fromEntries(get(contentState, 'blockMap._list._tail.array'));
+    // console.log('obj: ', allBlocks)
+    //
+    // for (const block in allBlocks) {
+    //   const a = allBlocks[block].data._root;
+    //
+    //   console.log(allBlocks[block].data._root)
+    // }
+
+    // allBlocks.forEach(block => {
+    //   console.log('getBlock: ', block[1].data._root.entries[0][1])
+    // })
+
+    if (!filteredImages.length) onImageLoaded([]);
+  };
+
   const handleChangeImage = async e => {
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
@@ -119,7 +149,23 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
+
+        if (newImage) {
+          const selection = getEditorState().getSelection();
+          const key = selection.getAnchorKey();
+
+          setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+          setEditorState(
+            addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+              // fix for issue with loading large images to digital-ocean
+              src: `${newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`}`,
+              alt: newImage.name,
+            }),
+          );
+        }
+
         uploadedImages.push(newImage);
+        // console.log('uploadedImages: ', uploadedImages)
       };
       const onErrorLoadImage = () => {
         setLoadingImage(false);
@@ -143,12 +189,6 @@ const ImageSetter = ({
       setLoadingImage(false);
       onLoadingImage(false);
     }
-  };
-
-  const handleRemoveImage = imageId => {
-    const filteredImages = currentImages.filter(f => f.id !== imageId);
-    setCurrentImages(filteredImages);
-    if (!filteredImages.length) onImageLoaded([]);
   };
 
   const renderTitle = () => {
@@ -185,7 +225,7 @@ const ImageSetter = ({
             <div className="image-box__preview" key={image.id}>
               <div
                 className="image-box__remove"
-                onClick={() => handleRemoveImage(image.id)}
+                onClick={() => handleRemoveImage(image)}
                 role="presentation"
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
@@ -270,10 +310,14 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
+  setEditorState: PropTypes.func.isRequired,
+  getEditorState: PropTypes.func.isRequired,
+  addNewBlockAt: PropTypes.func.isRequired,
+  Block: PropTypes.shape().isRequired,
 };
 
 ImageSetter.defaultProps = {
-  isMultiple: false,
+  isMultiple: true,
   defaultImage: '',
   isRequired: false,
   isTitle: true,
