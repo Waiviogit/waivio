@@ -182,12 +182,7 @@ class Rewards extends React.Component {
     if (username !== nextProps.username && !url) {
       const userName = username || nextProps.username;
       this.getPropositionsByStatus({ username: userName, sort });
-    } else if (
-      !authenticated &&
-      !nextProps.username &&
-      url &&
-      this.props.match.params.filterKey !== 'all'
-    ) {
+    } else if (!authenticated && this.props.match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
     if (match.path !== this.props.match.path) {
