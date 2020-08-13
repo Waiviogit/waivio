@@ -174,13 +174,13 @@ class Comments extends React.Component {
       : this.props.getMessageHistory();
   };
 
-  handleSubmitComment = (parentP, commentValue) => {
+  handleSubmitComment(parentP, commentValue) {
     const { intl } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     this.setState({ showCommentFormLoading: true });
-    this.props
+    return this.props
       .onSendComment(parentPost, commentValue)
       .then(() => {
         setTimeout(() => {
@@ -208,7 +208,7 @@ class Comments extends React.Component {
           error: true,
         };
       });
-  };
+  }
 
   commentsToRender(rootLevelComments, rootLinkedComment) {
     const { nRenderedComments, sort } = this.state;

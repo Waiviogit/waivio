@@ -246,7 +246,7 @@ class CampaignFooter extends React.Component {
     const { proposition, reservedComments } = this.props;
     const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
     if (hasComments) {
-      this.setState({ commentsVisible: !this.state.commentsVisible });
+      this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
   };
@@ -254,17 +254,23 @@ class CampaignFooter extends React.Component {
   handleCommentClick = () => {
     const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
-    try {
-      if (!commentsVisible) this.props.getReservedComments({ category, author, permlink });
-      this.setState({ reservedComments: this.props.reservedComments });
+    if (!commentsVisible) {
+      this.props
+        .getReservedComments({ category, author, permlink })
+        .then(() => {
+          this.setState({ reservedComments: this.props.reservedComments });
+          this.toggleCommentsVisibility();
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'error_boundary_page',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        });
+    } else {
       this.toggleCommentsVisibility();
-    } catch (e) {
-      message.error(
-        this.props.intl.formatMessage({
-          id: 'error_boundary_page',
-          defaultMessage: 'Something went wrong',
-        }),
-      );
     }
   };
 
@@ -304,7 +310,7 @@ class CampaignFooter extends React.Component {
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
-    const numberOfComments = commentsArr.length || currentPost.children;
+    const numberOfComments = currentPost.children;
 
     return (
       <div className="CampaignFooter">

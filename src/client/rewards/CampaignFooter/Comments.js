@@ -135,7 +135,7 @@ const Comments = ({
     const parentPost = parentP;
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     setLoading(true);
-    onSendComment(parentPost, commentValue)
+    return onSendComment(parentPost, commentValue)
       .then(() => {
         setTimeout(() => {
           getMessageHistory().then(() => {
