@@ -162,23 +162,18 @@ class Rewards extends React.Component {
     const { userLocation, match, username } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (match.params.campaignParent) return;
-
+    if (!size(userLocation)) {
+      this.props.getCoordinates();
+    }
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
     } else if (match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
-    if (!size(userLocation)) {
-      this.props.getCoordinates();
-    }
   }
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
-    const { username } = this.props;
-    const { sortAll, sortEligible, sortReserved, activeFilters, area } = this.state;
-    const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
@@ -187,17 +182,6 @@ class Rewards extends React.Component {
     }
     if (match.params.filterKey === 'reserved') {
       this.setState({ propositions: [] });
-    }
-    if (match.params.campaignParent !== this.props.match.params.campaignParent) {
-      const isRequestWithoutRequiredObject = true;
-      this.getPropositions({
-        username,
-        match: this.props.match,
-        area,
-        sort,
-        activeFilters,
-        isRequestWithoutRequiredObject,
-      });
     }
   }
 
@@ -254,13 +238,17 @@ class Rewards extends React.Component {
   };
 
   setFilterValue = (filterValue, key) => {
-    const activeFilters = this.state.activeFilters;
+    const activeFilters = { ...this.state.activeFilters };
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
     } else {
       activeFilters[key].push(filterValue);
     }
-    this.setState({ loadingCampaigns: true, activeFilters });
+    if (!this.state.url) {
+      this.setState({ activeFilters, url: this.props.match.url });
+    } else {
+      this.setState({ activeFilters });
+    }
   };
 
   setFilters = (filterKey, activeFilters) => {
@@ -363,8 +351,10 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate && match.params.filterKey) {
-        this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+        if (match.params.filterKey !== rewardsTab[tabType]) {
+          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+        }
         if (tabType === 'reserved') {
           this.setState({
             propositionsReserved: campaigns,
