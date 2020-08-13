@@ -11,11 +11,11 @@ import SortSelector from '../SortSelector/SortSelector';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
 import QuickCommentEditor from './QuickCommentEditor';
-import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
 import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
 import { getReservedComments } from '../../comments/commentsActions';
+import './Comments.less';
 
 @injectIntl
 @connect(null, {
@@ -174,43 +174,40 @@ class Comments extends React.Component {
       : this.props.getMessageHistory();
   };
 
-  handleSubmitComment = async (parentP, commentValue) => {
+  handleSubmitComment = (parentP, commentValue) => {
     const { intl } = this.props;
-    try {
-      const parentPost = parentP;
-      // foe object updates
-      if (parentPost.author_original) parentPost.author = parentPost.author_original;
-      this.setState({ showCommentFormLoading: true });
-      await this.props.onSendComment(parentPost, commentValue);
-      return new Promise((resolve, reject) => {
+    const parentPost = parentP;
+    // foe object updates
+    if (parentPost.author_original) parentPost.author = parentPost.author_original;
+    this.setState({ showCommentFormLoading: true });
+    this.props
+      .onSendComment(parentPost, commentValue)
+      .then(() => {
         setTimeout(() => {
-          this.onCommentSend()
-            .then(() => {
-              resolve();
-              message.success(
-                intl.formatMessage({
-                  id: 'notify_comment_sent',
-                  defaultMessage: 'Comment submitted',
-                }),
-              );
-              this.setState({
-                showCommentFormLoading: false,
-                commentFormText: '',
-                commentSubmitted: true,
-              });
-            })
-            .catch(error => reject(error));
+          this.onCommentSend().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            this.setState({
+              showCommentFormLoading: false,
+              commentFormText: '',
+              commentSubmitted: true,
+            });
+          });
         }, 10000);
+      })
+      .catch(() => {
+        this.setState({
+          showCommentFormLoading: false,
+          commentFormText: commentValue,
+        });
+        return {
+          error: true,
+        };
       });
-    } catch (error) {
-      this.setState({
-        showCommentFormLoading: false,
-        commentFormText: commentValue,
-      });
-      return {
-        error: true,
-      };
-    }
   };
 
   commentsToRender(rootLevelComments, rootLinkedComment) {

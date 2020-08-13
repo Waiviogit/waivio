@@ -131,39 +131,34 @@ const Comments = ({
     setReplyOpen(!editing ? false : replying);
   };
 
-  const handleSubmitComment = async (parentP, commentValue) => {
-    try {
-      const parentPost = parentP;
-      if (parentPost.author_original) parentPost.author = parentPost.author_original;
-      await setLoading(true);
-      await onSendComment(parentPost, commentValue);
-      await new Promise((resolve, reject) => {
+  const handleSubmitComment = (parentP, commentValue) => {
+    const parentPost = parentP;
+    if (parentPost.author_original) parentPost.author = parentPost.author_original;
+    setLoading(true);
+    onSendComment(parentPost, commentValue)
+      .then(() => {
         setTimeout(() => {
-          getMessageHistory()
-            .then(() => {
-              resolve();
-              message.success(
-                intl.formatMessage({
-                  id: 'notify_comment_sent',
-                  defaultMessage: 'Comment submitted',
-                }),
-              );
-              setLoading(false);
-              setCommentFormText('');
-              setCommentSubmitted(true);
-              setReplyOpen(false);
-            })
-            .catch(error => reject(error));
+          getMessageHistory().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            setLoading(false);
+            setCommentFormText('');
+            setCommentSubmitted(true);
+            setReplyOpen(false);
+          });
         }, 10000);
+      })
+      .catch(() => {
+        setCommentFormText(commentValue);
+        setLoading(false);
+        return {
+          error: true,
+        };
       });
-    } catch (error) {
-      setCommentFormText(commentValue);
-      setLoading(false);
-      return {
-        error: true,
-      };
-    }
-    return null;
   };
 
   const getChildren = useCallback((obj, comments) => {

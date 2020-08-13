@@ -251,15 +251,15 @@ class CampaignFooter extends React.Component {
     this.setState({ isComment: !this.state.isComment });
   };
 
-  handleCommentClick = async () => {
+  handleCommentClick = () => {
     const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
     try {
-      if (!commentsVisible) await this.props.getReservedComments({ category, author, permlink });
-      await this.setState({ reservedComments: this.props.reservedComments });
-      await this.toggleCommentsVisibility();
+      if (!commentsVisible) this.props.getReservedComments({ category, author, permlink });
+      this.setState({ reservedComments: this.props.reservedComments });
+      this.toggleCommentsVisibility();
     } catch (e) {
-      await message.error(
+      message.error(
         this.props.intl.formatMessage({
           id: 'error_boundary_page',
           defaultMessage: 'Something went wrong',
