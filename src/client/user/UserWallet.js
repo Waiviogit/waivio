@@ -17,6 +17,7 @@ import {
   getLoadingMoreUsersAccountHistory,
   getOperationNum,
   getScreenSize,
+  getStatusWithdraw,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransactions,
@@ -38,6 +39,8 @@ import {
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import Transfer from '../wallet/Transfer';
+import Withdraw from '../wallet/WithDraw';
 
 @withRouter
 @connect(
@@ -63,6 +66,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     operationNum: getOperationNum(state),
     isloadingMoreTransactions: getIsloadingMoreTransactions(state),
     isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     getGlobalProperties,
@@ -91,7 +95,7 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
+    transactionsHistory: PropTypes.shape(),
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
@@ -103,6 +107,8 @@ class Wallet extends Component {
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
     clearTransactionsHistory: PropTypes.func,
+    isWithdrawOpen: PropTypes.bool,
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -118,6 +124,8 @@ class Wallet extends Component {
     isloadingMoreTransactions: false,
     isloadingMoreDemoTransactions: false,
     clearTransactionsHistory: () => {},
+    isWithdrawOpen: false,
+    history: {},
   };
 
   componentDidMount() {
@@ -231,6 +239,8 @@ class Wallet extends Component {
         />
         {isMobile && <WalletSidebar />}
         {walletTransactions}
+        <Transfer history={this.props.history} />
+        {this.props.isWithdrawOpen && <Withdraw />}
       </div>
     );
   }

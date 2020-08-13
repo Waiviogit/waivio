@@ -203,5 +203,16 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
   return JSON.parse(approvedField.body);
 };
 
-/* eslint-enable no-underscore-dangle */
-/* eslint-enable camelcase */
+export const parseWobjectField = (wobject, fieldName) => {
+  if (isEmpty(wobject) || !fieldName) return null;
+
+  const wobjFields = get(wobject, fieldName);
+
+  if (typeof wobjFields !== 'string') return null;
+
+  try {
+    return JSON.parse(wobjFields);
+  } catch (err) {
+    return null;
+  }
+};

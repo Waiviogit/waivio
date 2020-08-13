@@ -108,7 +108,7 @@ class CatalogWrap extends React.Component {
   };
 
   componentDidMount() {
-    const { userName, match, wobject } = this.props;
+    const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
     if (!isEmpty(wobject)) {
       const requiredObject = this.getRequiredObject(wobject, match);
@@ -116,14 +116,12 @@ class CatalogWrap extends React.Component {
         this.getPropositions({ userName, match, requiredObject, sort });
       }
     } else {
-      getObject(match.params.name, userName, ['tagCategory', 'categoryItem', 'galleryItem']).then(
-        wObject => {
-          const requiredObject = this.getRequiredObject(wObject, match);
-          if (requiredObject) {
-            this.getPropositions({ userName, match, requiredObject, sort });
-          }
-        },
-      );
+      getObject(match.params.name, userName, locale).then(wObject => {
+        const requiredObject = this.getRequiredObject(wObject, match);
+        if (requiredObject) {
+          this.getPropositions({ userName, match, requiredObject, sort });
+        }
+      });
     }
   }
 
@@ -157,18 +155,11 @@ class CatalogWrap extends React.Component {
   };
 
   getObjectFromApi = (permlink, path) => {
-    this.setState({ loading: true });
-    getObject(permlink)
-      .then(res => {
-        let listItems =
-          (res &&
-            res.listItems &&
-            res.listItems.map(item => getClientWObj(item, this.props.locale))) ||
-          [];
-        listItems = listItems
-          .map(item => addActiveVotesInField(res, item))
-          .filter(item => calculateApprovePercent(item.active_votes, item.weight, res) >= 70);
+    const { userName, locale } = this.props;
 
+    this.setState({ loading: true });
+    getObject(permlink, userName, locale)
+      .then(res => {
         this.setState(prevState => {
           let breadcrumb = [];
           if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {
@@ -181,16 +172,17 @@ class CatalogWrap extends React.Component {
               ...prevState.breadcrumb,
               {
                 id: res.author_permlink,
-                name: getFieldWithMaxWeight(res, objectFields.name),
+                name: res.name || res.default_name,
                 path,
               },
             ];
           }
           const sorting = getListSorting(res);
+
           return {
             sort: sorting.type,
             wobjNested: getClientWObj(res, this.props.locale),
-            listItems: sortListItemsBy(listItems, sorting.type, sorting.order),
+            listItems: sortListItemsBy(res.listItems, sorting.type, sorting.order),
             breadcrumb,
             loading: false,
           };

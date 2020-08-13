@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
@@ -12,14 +13,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { AppSharedContext } from '../Wrapper';
-import {
-  accessTypesArr,
-  addActiveVotesInField,
-  calculateApprovePercent,
-  getApprovedField,
-  haveAccess,
-} from '../helpers/wObjectHelper';
+import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -35,17 +29,13 @@ const WobjHeader = ({
   followWobj,
   unfollowWobj,
 }) => {
-  const { usedLocale } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parent = wobject.parent && addActiveVotesInField(wobject, wobject.parent);
-  const parentName =
-    parent &&
-    calculateApprovePercent(parent.active_votes, parent.weight, wobject) >= 70 &&
-    (getApprovedField(wobject.parent, objectFields.name) || wobject.default_name);
+  const parent = get(wobject, 'parent', {});
+  const parentName = parent.name || parent.default_name;
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -65,7 +55,7 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
-  const name = getApprovedField(wobject, 'name', usedLocale) || wobject.default_name;
+  const name = wobject.name || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
 
   return (
