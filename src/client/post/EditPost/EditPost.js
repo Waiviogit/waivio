@@ -368,9 +368,15 @@ class EditPost extends Component {
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
-                  <Badge status="error" text="saving" />
+                  <Badge
+                    status="error"
+                    text={intl.formatMessage({ id: 'saving', defaultMessage: 'Saving...' })}
+                  />
                 ) : (
-                  <Badge status="success" text="saved" />
+                  <Badge
+                    status="success"
+                    text={intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' })}
+                  />
                 )}
               </div>
             )}
