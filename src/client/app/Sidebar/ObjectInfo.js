@@ -22,7 +22,8 @@ import {
   haveAccess,
   hasType,
   accessTypesArr,
-  calculateApprovePercent, parseWobjectField,
+  calculateApprovePercent,
+  parseWobjectField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -30,7 +31,8 @@ import {
   getFieldsCount,
   sortListItemsBy,
   combineObjectMenu,
-  getFieldsByName, getLink,
+  getFieldsByName,
+  getLink,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -57,12 +59,10 @@ import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
 
 @withRouter
-@connect(
-  state => ({
-    albums: getObjectAlbums(state),
-    isAuthenticated: getIsAuthenticated(state),
-  }),
-)
+@connect(state => ({
+  albums: getObjectAlbums(state),
+  isAuthenticated: getIsAuthenticated(state),
+}))
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
@@ -114,34 +114,34 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   renderCategoryItems = (categoryItems = [], category) => {
-      const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
-      const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
+    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+    const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
-      return (
-        <div>
-          {tagArray.map(item => (
-            <Tag key={`${category}/${item.body}`} color="orange">
-              <Link to={`/object/${item.body}`}>{item.body}</Link>
-            </Tag>
-          ))}
-          {categoryItems.length > 5 && !this.state.showMore[category] && (
-            <span
-              role="presentation"
-              className="show-more"
-              onClick={() =>
-                this.setState({
-                  showMore: {
-                    [category]: true,
-                  },
-                })
-              }
-            >
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-              ...
-            </span>
-          )}
-        </div>
-      );
+    return (
+      <div>
+        {tagArray.map(item => (
+          <Tag key={`${category}/${item.body}`} color="orange">
+            <Link to={`/object/${item.body}`}>{item.body}</Link>
+          </Tag>
+        ))}
+        {categoryItems.length > 5 && !this.state.showMore[category] && (
+          <span
+            role="presentation"
+            className="show-more"
+            onClick={() =>
+              this.setState({
+                showMore: {
+                  [category]: true,
+                },
+              })
+            }
+          >
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+            ...
+          </span>
+        )}
+      </div>
+    );
   };
 
   renderTagCategories = tagCategories =>
@@ -153,7 +153,9 @@ class ObjectInfo extends React.Component {
       </div>
     ));
 
-  renderParent = parent => (<ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />);
+  renderParent = parent => (
+    <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+  );
 
   render() {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
@@ -184,8 +186,11 @@ class ObjectInfo extends React.Component {
     const status = wobject.status && JSON.parse(wobject.status);
     let address = get(wobject, 'address');
     address = address
-      ? compact(Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]))
-        .join(', ',)
+      ? compact(
+          Object.values(addressFields).map(
+            fieldName => parseWobjectField(wobject, 'address')[fieldName],
+          ),
+        ).join(', ')
       : null;
     const description = get(wobject, 'description');
     const price = get(wobject, 'price');
@@ -359,13 +364,10 @@ class ObjectInfo extends React.Component {
           {!isEditMode &&
             menuLists &&
             sortListItemsBy(
-              combineObjectMenu(
-                menuLists,
-                {
-                  button,
-                  news: Boolean(newsFilter),
-                },
-              ),
+              combineObjectMenu(menuLists, {
+                button,
+                news: Boolean(newsFilter),
+              }),
               !isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
@@ -405,10 +407,7 @@ class ObjectInfo extends React.Component {
         )}
         {listItem(
           objectFields.rating,
-          <RateInfo
-            username={userName}
-            authorPermlink={wobject.author_permlink}
-          />,
+          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
         )}
         {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
         {listItem(objectFields.categoryItem, null)}
@@ -440,9 +439,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>
             )}
-            {pictures && (
-              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-            )}
+            {pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />}
           </div>
         )}
         {listItem(

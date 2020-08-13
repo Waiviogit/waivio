@@ -1,5 +1,5 @@
-import {get, some, find, filter, isEmpty, compact} from 'lodash';
-import {addressFields, objectFields} from '../../common/constants/listOfFields';
+import { get, some, find, filter, isEmpty, compact } from 'lodash';
+import { addressFields, objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 import { mainerName } from '../object/wObjectHelper';
@@ -217,6 +217,11 @@ export const parseWobjectField = (wobject, fieldName) => {
   }
 };
 
-export const parseAddress = wobject => wobject ? compact(Object.values(addressFields)
-  .map(fieldName => parseWobjectField(wobject, 'address')[fieldName]))
-  .join(', ',) : null;
+export const parseAddress = wobject =>
+  wobject
+    ? compact(
+        Object.values(addressFields).map(
+          fieldName => parseWobjectField(wobject, 'address')[fieldName],
+        ),
+      ).join(', ')
+    : null;
