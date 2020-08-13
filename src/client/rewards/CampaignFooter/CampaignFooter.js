@@ -252,11 +252,10 @@ class CampaignFooter extends React.Component {
   };
 
   handleCommentClick = async () => {
-    const { currentPost } = this.state;
+    const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
     try {
-      await this.props.getReservedComments({ category, author, permlink });
-
+      if (!commentsVisible) await this.props.getReservedComments({ category, author, permlink });
       await this.setState({ reservedComments: this.props.reservedComments });
       await this.toggleCommentsVisibility();
     } catch (e) {
