@@ -1327,5 +1327,6 @@
   "hashtag": "hashtag",
   "post_publication": "Your post will be posted soon",
   "menu": "Menu",
-  "dont_use_current_object_for_parent": "You cannot use the current object as a parent"
+  "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
+  "allow_to_publish_e-mail": "I allow to publish e-mail on my page"
 }
