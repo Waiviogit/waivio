@@ -180,9 +180,9 @@ class Comments extends React.Component {
       const parentPost = parentP;
       // foe object updates
       if (parentPost.author_original) parentPost.author = parentPost.author_original;
-      await this.setState({ showCommentFormLoading: true });
+      this.setState({ showCommentFormLoading: true });
       await this.props.onSendComment(parentPost, commentValue);
-      await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         setTimeout(() => {
           this.onCommentSend()
             .then(() => {
@@ -211,7 +211,6 @@ class Comments extends React.Component {
         error: true,
       };
     }
-    return null;
   };
 
   commentsToRender(rootLevelComments, rootLinkedComment) {
