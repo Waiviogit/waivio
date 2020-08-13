@@ -25,13 +25,12 @@ const ErrorBoundary = ComposedComponent => {
 
     render() {
       const { hasError } = this.state;
-
       return !hasError ? (
         <ComposedComponent {...this.props} />
       ) : (
         <div className="errorBoundary">
           <img
-            src="/images/icons/errorBoundary.svg"
+            src={'/images/icons/errorBoundary.svg'}
             alt="errorBoundary"
             className="errorBoundary__image"
           />

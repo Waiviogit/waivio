@@ -31,15 +31,12 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
-import { getApprovedField } from '../../helpers/wObjectHelper';
 import { pendingSearch } from '../../search/Search';
 
 import './Topnav.less';
@@ -616,8 +613,8 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = getApprovedField(option, objectFields.name) || option.default_name;
-          const parent = getApprovedField(option, objectFields.parent);
+          const wobjName = option.name || option.default_name;
+          const parent = option.parent;
 
           return wobjName ? (
             <AutoComplete.Option
@@ -632,7 +629,7 @@ class Topnav extends React.Component {
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
                     <div className="Topnav__search-content-small">
-                      {getFieldWithMaxWeight(parent, objectFields.name)}
+                      {parent.name || parent.default_name}
                     </div>
                   )}
                 </div>

@@ -34,7 +34,7 @@ export default class CampaignButtons extends React.Component {
     intl: PropTypes.shape().isRequired,
     daysLeft: PropTypes.number.isRequired,
     postState: PropTypes.shape().isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
     onLikeClick: PropTypes.func,
@@ -73,6 +73,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    onActionInitiated: () => {},
     blacklistUsers: [],
   };
 
@@ -96,8 +97,6 @@ export default class CampaignButtons extends React.Component {
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
-
-    this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
   }
 
   componentDidMount() {
@@ -560,15 +559,17 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
+    const status = get(proposition, ['users', '0', 'status'], '');
+    const buttonsTitleForRender = buttonsTitle[status];
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
           <div className="Buttons__wrap-text">
             {intl.formatMessage({
-              id: this.buttonsTitle.id,
-              defaultMessage: this.buttonsTitle.defaultMessage,
+              id: buttonsTitleForRender.id,
+              defaultMessage: buttonsTitleForRender.defaultMessage,
             })}
-            {this.buttonsTitle.defaultMessage === 'Reserved' &&
+            {buttonsTitleForRender.defaultMessage === 'Reserved' &&
               ` - ${daysLeft} ${intl.formatMessage({
                 id: 'campaign_buttons_days_left',
                 defaultMessage: 'days left',

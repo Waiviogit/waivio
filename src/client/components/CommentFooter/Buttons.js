@@ -21,7 +21,7 @@ class Buttons extends React.Component {
     user: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     editable: PropTypes.bool,
     editing: PropTypes.bool,
     replying: PropTypes.bool,
@@ -46,6 +46,7 @@ class Buttons extends React.Component {
     onDislikeClick: () => {},
     onReplyClick: () => {},
     onEditClick: () => {},
+    onActionInitiated: () => {},
   };
 
   constructor(props) {

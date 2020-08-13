@@ -8,13 +8,13 @@ import WalletFillOrderGet from './WalletFillOrderGet';
 import { epochToUTC } from '../helpers/formatter';
 
 const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays }) => {
-  const url = `/@${transactionDetails.exchanger}`;
+  const url = `/@${transactionDetails.open_owner}`;
   return (
     <React.Fragment>
       <WalletFillOrderGet transactionDetails={transactionDetails} timestamp={timestamp} />
       <div className="UserWalletTransactions__transaction">
         <div className="UserWalletTransactions__avatar">
-          <Avatar username={transactionDetails.account} size={40} />
+          <Avatar username={transactionDetails.open_owner} size={40} />
         </div>
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient">
@@ -26,7 +26,7 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays
                   current_pays: <span>{currentPays}</span>,
                   exchanger: (
                     <Link to={url}>
-                      <span className="username">{transactionDetails.exchanger}</span>
+                      <span className="username">{transactionDetails.open_owner}</span>
                     </Link>
                   ),
                 }}
@@ -57,16 +57,16 @@ const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays
 };
 
 WalletFillOrderTransferred.propTypes = {
-  transactionDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  transactionDetails: PropTypes.shape().isRequired,
   timestamp: PropTypes.number,
   currentPays: PropTypes.element,
-  exchanger: PropTypes.string,
+  open_owner: PropTypes.string,
 };
 
 WalletFillOrderTransferred.defaultProps = {
   timestamp: 0,
   currentPays: <span />,
-  exchanger: '',
+  open_owner: '',
 };
 
 export default WalletFillOrderTransferred;

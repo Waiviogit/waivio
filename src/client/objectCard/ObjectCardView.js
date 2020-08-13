@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, isEmpty, truncate } from 'lodash';
+import { filter, includes, orderBy, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -9,20 +9,18 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { objectFields as objectTypes } from '../../common/constants/listOfFields';
-import { getApprovedField } from '../helpers/wObjectHelper';
 
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
-  passedParent,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
+  const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
@@ -33,7 +31,6 @@ const ObjectCardView = ({
       setTags(currentTags);
     } else setTags([wObject.object_type]);
   }, []);
-
   const getObjectRatings = () => {
     const ratingFields = filter(wObject.fields, ['name', 'rating']);
     return ownRatesOnly
@@ -49,9 +46,7 @@ const ObjectCardView = ({
   const ratings = getObjectRatings();
 
   const avatarLayout = () => {
-    const parent = wObject.parent || passedParent;
-    const parentAvatar = getApprovedField(parent, 'avatar');
-    let url = getApprovedField(wObject, 'avatar') || parentAvatar;
+    let url = wObject.avatar || parent.avatar;
 
     if (!url) url = DEFAULTS.AVATAR;
 
@@ -69,8 +64,15 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName =
-    !isEmpty(wObject.parent) && getApprovedField(wObject.parent, objectTypes.name, '');
+  const parentName = parent.name || parent.default_name;
+  const description = wObject.description && (
+    <div className="ObjectCardView__title" title={wObject.description}>
+      {truncate(wObject.description, {
+        length: 140,
+        separator: ' ',
+      })}
+    </div>
+  );
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -83,12 +85,12 @@ const ObjectCardView = ({
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
-              {avatarLayout(wObject.avatar)}
+              {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${!isEmpty(wObject.parent) ? wObject.parent.author_permlink : null}`}
+                  to={`/object/${get(parent, 'author_permlink', '')}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -113,7 +115,7 @@ const ObjectCardView = ({
                   screenSize={screenSize}
                   username={username}
                   wobjId={wObject.id || wObject.author_permlink}
-                  wobjName={wObject.name || wObject.default_name}
+                  wobjName={objName}
                 />
               )}
               <span className="ObjectCardView__tag-text">
@@ -140,7 +142,6 @@ const ObjectCardView = ({
                   {wObject.address.city && <span>{wObject.address.city}</span>}
                 </div>
               )}
-              {/* eslint-disable-next-line no-nested-ternary */}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {truncate(wObject.title, {
@@ -148,14 +149,9 @@ const ObjectCardView = ({
                     separator: ' ',
                   })}
                 </div>
-              ) : wObject.description ? (
-                <div className="ObjectCardView__title" title={wObject.description}>
-                  {truncate(wObject.description, {
-                    length: 140,
-                    separator: ' ',
-                  })}
-                </div>
-              ) : null}
+              ) : (
+                description
+              )}
             </div>
           </div>
         </div>
@@ -172,11 +168,9 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  passedParent: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedParent: {},
 };
 export default injectIntl(ObjectCardView);

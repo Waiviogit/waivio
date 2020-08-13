@@ -2,15 +2,23 @@ import React from 'react';
 import { Tabs } from 'antd';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { connect } from 'react-redux';
+
+import { getLocale } from '../reducers';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
 import './UserExpertise.less';
 
 const TabPane = Tabs.TabPane;
+
+@connect(state => ({
+  locale: getLocale(state),
+}))
 export default class UserExpertise extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
+    locale: PropTypes.string.isRequired,
   };
 
   static limit = 30;
@@ -22,7 +30,8 @@ export default class UserExpertise extends React.Component {
   };
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
-    const { match } = this.props;
+    const { match, locale } = this.props;
+
     return getWobjectsWithUserWeight(
       match.params.name,
       skip,
@@ -30,6 +39,7 @@ export default class UserExpertise extends React.Component {
       authUser,
       isOnlyHashtags ? ['hashtag'] : null,
       !isOnlyHashtags ? ['hashtag'] : null,
+      locale,
     );
   };
 
