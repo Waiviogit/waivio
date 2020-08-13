@@ -1,5 +1,5 @@
-import { get, some, find, filter, isEmpty } from 'lodash';
-import { objectFields } from '../../common/constants/listOfFields';
+import {get, some, find, filter, isEmpty, compact} from 'lodash';
+import {addressFields, objectFields} from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 import { mainerName } from '../object/wObjectHelper';
@@ -203,5 +203,20 @@ export const getApprovedField = (wobj, fieldName, locale = 'en-US') => {
   return JSON.parse(approvedField.body);
 };
 
-/* eslint-enable no-underscore-dangle */
-/* eslint-enable camelcase */
+export const parseWobjectField = (wobject, fieldName) => {
+  if (isEmpty(wobject) || !fieldName) return null;
+
+  const wobjFields = get(wobject, fieldName);
+
+  if (typeof wobjFields !== 'string') return null;
+
+  try {
+    return JSON.parse(wobjFields);
+  } catch (err) {
+    return null;
+  }
+};
+
+export const parseAddress = wobject => wobject ? compact(Object.values(addressFields)
+  .map(fieldName => parseWobjectField(wobject, 'address')[fieldName]))
+  .join(', ',) : null;

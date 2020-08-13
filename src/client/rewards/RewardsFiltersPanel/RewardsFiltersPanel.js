@@ -220,11 +220,11 @@ RewardsFiltersPanel.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
-  location: PropTypes.shape().isRequired,
-  setPayablesFilterValue: PropTypes.func.isRequired,
-  setActiveMessagesFilters: PropTypes.func.isRequired,
-  activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  messagesSponsors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  location: PropTypes.shape(),
+  setPayablesFilterValue: PropTypes.func,
+  setActiveMessagesFilters: PropTypes.func,
+  activePayableFilters: PropTypes.arrayOf(PropTypes.shape()),
+  messagesSponsors: PropTypes.arrayOf(PropTypes.string),
 };
 
 RewardsFiltersPanel.defaultProps = {
@@ -234,6 +234,11 @@ RewardsFiltersPanel.defaultProps = {
   activeMessagesFilters: {},
   activeHistoryFilters: {},
   activeGuideHistoryFilters: {},
+  location: {},
+  messagesSponsors: [],
+  setActiveMessagesFilters: () => {},
+  setPayablesFilterValue: () => {},
+  activePayableFilters: {},
 };
 
 export default injectIntl(RewardsFiltersPanel);

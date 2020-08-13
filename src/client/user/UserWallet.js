@@ -17,6 +17,7 @@ import {
   getLoadingMoreUsersAccountHistory,
   getOperationNum,
   getScreenSize,
+  getStatusWithdraw,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransactions,
@@ -38,6 +39,8 @@ import {
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import Transfer from '../wallet/Transfer';
+import Withdraw from '../wallet/WithDraw';
 
 @withRouter
 @connect(
@@ -62,6 +65,8 @@ import { guestUserRegex } from '../helpers/regexHelpers';
     isErrorLoading: getIsErrorLoading(state),
     operationNum: getOperationNum(state),
     isloadingMoreTransactions: getIsloadingMoreTransactions(state),
+    isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
+    isWithdrawOpen: getStatusWithdraw(state),
   }),
   {
     getGlobalProperties,
@@ -90,7 +95,7 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
-    transactionsHistory: PropTypes.arrayOf(PropTypes.shape()),
+    transactionsHistory: PropTypes.shape(),
     getUserTransactionHistory: PropTypes.func.isRequired,
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
@@ -100,7 +105,10 @@ class Wallet extends Component {
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
+    isloadingMoreDemoTransactions: PropTypes.bool,
     clearTransactionsHistory: PropTypes.func,
+    isWithdrawOpen: PropTypes.bool,
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -114,7 +122,10 @@ class Wallet extends Component {
     isErrorLoading: false,
     operationNum: -1,
     isloadingMoreTransactions: false,
+    isloadingMoreDemoTransactions: false,
     clearTransactionsHistory: () => {},
+    isWithdrawOpen: false,
+    history: {},
   };
 
   componentDidMount() {
@@ -126,6 +137,8 @@ class Wallet extends Component {
       authenticatedUserName,
       transactionsHistory,
     } = this.props;
+
+    const isGuest = guestUserRegex.test(user && user.name);
 
     const username = isCurrentUser
       ? authenticatedUserName
@@ -139,7 +152,7 @@ class Wallet extends Component {
       this.props.getUserAccount(username);
     }
 
-    if (isEmpty(transactionsHistory[username])) {
+    if (!isGuest && isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
 
@@ -168,6 +181,7 @@ class Wallet extends Component {
       isErrorLoading,
       operationNum,
       isloadingMoreTransactions,
+      isloadingMoreDemoTransactions,
     } = this.props;
 
     const userKey = user.name;
@@ -206,6 +220,7 @@ class Wallet extends Component {
         isErrorLoading={isErrorLoading}
         operationNum={operationNum}
         isloadingMoreTransactions={isloadingMoreTransactions}
+        isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
       />
     );
 
@@ -224,6 +239,8 @@ class Wallet extends Component {
         />
         {isMobile && <WalletSidebar />}
         {walletTransactions}
+        <Transfer history={this.props.history} />
+        {this.props.isWithdrawOpen && <Withdraw />}
       </div>
     );
   }

@@ -90,7 +90,7 @@ export default class Transfer extends React.Component {
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
     notify: PropTypes.func,
-    hiveBeneficiaryAccount: PropTypes.string.isRequired,
+    hiveBeneficiaryAccount: PropTypes.string,
     saveSettings: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
@@ -110,6 +110,7 @@ export default class Transfer extends React.Component {
     isGuest: false,
     notify: () => {},
     searchByUser: [],
+    hiveBeneficiaryAccount: '',
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -499,11 +500,7 @@ export default class Transfer extends React.Component {
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
-      <Radio.Group
-        onChange={this.handleCurrencyChange}
-        className="Transfer__amount__type"
-        defaultValue={Transfer.CURRENCIES.HBD}
-      >
+      <Radio.Group onChange={this.handleCurrencyChange} className="Transfer__amount__type">
         <Radio.Button
           disabled={isChangesDisabled && this.state.currency !== Transfer.CURRENCIES.HIVE}
           value={Transfer.CURRENCIES.HIVE}

@@ -93,16 +93,17 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
   const authUserName = getAuthenticatedUserName(state);
+  const locale = getLocale(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
-  const targetUsername = username || store.getAuthenticatedUserName(state);
+  const targetUsername = username || authUserName;
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName, locale),
     },
   });
 };
@@ -389,7 +390,7 @@ export const declineProposition = ({
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${companyAuthor}/${companyPermlink}">${requiredObjectName} rewards campaign</a>`,
       json_metadata: JSON.stringify({
         waivioRewards: {
-          type,
+          type: type || 'waivio_reject_object_campaign',
           reservation_permlink: reservationPermlink,
         },
       }),

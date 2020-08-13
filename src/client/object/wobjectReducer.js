@@ -52,6 +52,7 @@ export default function wobjectReducer(state = initialState, action) {
           listItems: [...state.wobject.listItems, action.payload],
         },
       };
+
     case RATE_WOBJECT_SUCCESS: {
       if (!state.wobject.fields) return state;
       const isNewVote = field =>

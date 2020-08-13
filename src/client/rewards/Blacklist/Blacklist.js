@@ -97,12 +97,13 @@ const Blacklist = ({ intl, userName, match }) => {
 
 Blacklist.propTypes = {
   intl: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
+  match: PropTypes.shape(),
   userName: PropTypes.string,
 };
 
 Blacklist.defaultProps = {
   userName: '',
+  match: {},
 };
 
 export default injectIntl(Blacklist);

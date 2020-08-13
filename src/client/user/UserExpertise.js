@@ -1,11 +1,12 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { connect } from 'react-redux';
+
+import { getLocale } from '../reducers';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import { getLocale } from '../reducers';
 
 import './UserExpertise.less';
 
@@ -32,6 +33,7 @@ export default class UserExpertise extends React.Component {
 
   fetcher = (skip, authUser, isOnlyHashtags) => {
     const { match, locale } = this.props;
+
     return getWobjectsWithUserWeight(
       match.params.name,
       skip,

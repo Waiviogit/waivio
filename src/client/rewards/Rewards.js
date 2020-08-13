@@ -31,6 +31,7 @@ import {
   getUserLocation,
   getIsMapModalOpen,
   getSuitableLanguage,
+  getPendingUpdate,
 } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
@@ -44,7 +45,12 @@ import {
 } from '../user/userActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
-import { preparePropositionReqData, getActiveFilters, getSortChanged } from './rewardsHelper';
+import {
+  preparePropositionReqData,
+  getActiveFilters,
+  getSortChanged,
+  getSort,
+} from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -70,6 +76,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
+    pendingUpdate: getPendingUpdate(state),
   }),
   {
     assignProposition,
@@ -91,7 +98,7 @@ class Rewards extends React.Component {
     history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     user: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
+    location: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
@@ -99,12 +106,15 @@ class Rewards extends React.Component {
     getPropositionsForMap: PropTypes.func.isRequired,
     wobjects: PropTypes.arrayOf(PropTypes.shape()),
     getRewardsGeneralCounts: PropTypes.func.isRequired,
+    pendingUpdate: PropTypes.bool,
   };
 
   static defaultProps = {
     username: '',
     userLocation: {},
     wobjects: [],
+    pendingUpdate: false,
+    location: {},
   };
 
   state = {
@@ -149,7 +159,14 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { userLocation } = this.props;
+    const { userLocation, match, username } = this.props;
+    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const sort = getSort(match, sortAll, sortEligible, sortReserved);
+    if (username && !url) {
+      this.getPropositionsByStatus({ username, sort });
+    } else if (match.params.filterKey !== 'all') {
+      history.push(`/rewards/all`);
+    }
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
@@ -313,6 +330,7 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
+    const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
     this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
       // eslint-disable-next-line camelcase
@@ -329,16 +347,19 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-
-      if (tabType === 'reserved') {
-        this.setState({
-          propositionsReserved: campaigns,
-        });
+      if (!pendingUpdate && match.params.filterKey) {
+        this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+        if (tabType === 'reserved') {
+          this.setState({
+            propositionsReserved: campaigns,
+          });
+        } else {
+          this.setState({
+            propositions: campaigns,
+          });
+        }
       } else {
-        this.setState({
-          propositions: campaigns,
-        });
+        this.setState({ url: this.props.match.url });
       }
     });
   };
@@ -544,6 +565,7 @@ class Rewards extends React.Component {
     getHistory,
     blacklistUsers,
   ) => {
+    const { pendingUpdate } = this.props;
     const {
       propositions,
       loadingAssignDiscard,
@@ -586,7 +608,7 @@ class Rewards extends React.Component {
     };
     const { intl, user } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap && isEmpty(propositionsReserved)) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
         return map(
           actualPropositions,
           proposition =>

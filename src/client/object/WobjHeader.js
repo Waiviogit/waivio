@@ -35,10 +35,8 @@ const WobjHeader = ({
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
-  const parentName =
-    get(wobject, ['parent', 'name'], '') || get(wobject, ['parent', 'default_name'], '');
-  const name = wobject.name || wobject.default_name;
-  const isHashtag = wobject.object_type === 'hashtag';
+  const parent = get(wobject, 'parent', {});
+  const parentName = parent.name || parent.default_name;
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -58,6 +56,8 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
+  const name = wobject.name || wobject.default_name;
+  const isHashtag = wobject.object_type === 'hashtag';
 
   const statusFields = wobject.status ? getStatusLayout(wobject.status) : descriptionShort;
 

@@ -20,6 +20,7 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
+  const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
@@ -30,7 +31,6 @@ const ObjectCardView = ({
       setTags(currentTags);
     } else setTags([wObject.object_type]);
   }, []);
-
   const getObjectRatings = () => {
     const ratingFields = filter(wObject.fields, ['name', 'rating']);
     return ownRatesOnly
@@ -46,7 +46,7 @@ const ObjectCardView = ({
   const ratings = getObjectRatings();
 
   const avatarLayout = () => {
-    let url = wObject.avatar || get(wObject, ['parent', 'avatar']);
+    let url = wObject.avatar || parent.avatar;
 
     if (!url) url = DEFAULTS.AVATAR;
 
@@ -64,7 +64,15 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = get(wObject, ['parent', 'name']) || get(wObject, ['parent', 'default_name']);
+  const parentName = parent.name || parent.default_name;
+  const description = wObject.description && (
+    <div className="ObjectCardView__title" title={wObject.description}>
+      {truncate(wObject.description, {
+        length: 140,
+        separator: ' ',
+      })}
+    </div>
+  );
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -80,9 +88,9 @@ const ObjectCardView = ({
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
-              {wObject.parent && (
+              {parentName && (
                 <Link
-                  to={`/object/${wObject.parent.author_permlink}`}
+                  to={`/object/${get(parent, 'author_permlink', '')}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -107,7 +115,7 @@ const ObjectCardView = ({
                   screenSize={screenSize}
                   username={username}
                   wobjId={wObject.id || wObject.author_permlink}
-                  wobjName={wObject.name || wObject.default_name}
+                  wobjName={objName}
                 />
               )}
               <span className="ObjectCardView__tag-text">
@@ -142,19 +150,11 @@ const ObjectCardView = ({
                   })}
                 </div>
               ) : (
-                wObject.description && (
-                  <div className="ObjectCardView__title" title={wObject.description}>
-                    {truncate(wObject.description, {
-                      length: 140,
-                      separator: ' ',
-                    })}
-                  </div>
-                )
+                description
               )}
             </div>
           </div>
         </div>
-        discover-objects
       </div>
     </React.Fragment>
   );

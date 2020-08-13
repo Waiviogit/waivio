@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import {
   getPosts,
@@ -23,13 +24,13 @@ import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
-import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
 import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
 import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
 import AppendCard from './AppendCard';
+import Loading from '../components/Icon/Loading';
 
 import './WobjHistory.less';
 
@@ -149,13 +150,12 @@ class WobjHistory extends React.Component {
 
         case 'approval':
           return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
-
         default:
           return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
       }
     };
     let content = object && object.fields && sortedList(object);
-    const isFetching = content && content.length;
+    const isFetched = !isEmpty(content) && content[0].name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
       if (readLanguages.includes(lang.id)) {
@@ -165,24 +165,27 @@ class WobjHistory extends React.Component {
       return true;
     });
 
-    if (params[1] && content && content.length) {
+    if (params[1] && isFetched) {
       content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
     }
 
-    const objName = getFieldWithMaxWeight(object, objectFields.name);
+    const objName = object.name || object.default_name;
+
     const renderFields = () => {
-      if (content && content.length) {
-        return content.map(post => <AppendCard key={post.permlink} post={post} />);
+      if (content) {
+        return content.length ? (
+          content.map(post => <AppendCard key={post.permlink} post={post} />)
+        ) : (
+          <div className="object-feed__row justify-center">
+            <FormattedMessage
+              id="empty_object_profile"
+              defaultMessage="Be the first to write a review"
+            />
+          </div>
+        );
       }
 
-      return (
-        <div className="object-feed__row justify-center">
-          <FormattedMessage
-            id="empty_object_profile"
-            defaultMessage="Be the first to write a review"
-          />
-        </div>
-      );
+      return <Loading />;
     };
 
     return (
@@ -239,7 +242,7 @@ class WobjHistory extends React.Component {
             </React.Fragment>
           )}
         </div>
-        {isFetching && (
+        {isFetched && (
           <div className="wobj-history__sort">
             <SortSelector sort={sort} onChange={this.handleSortChange}>
               <SortSelector.Item key="recency">

@@ -27,7 +27,7 @@ export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    isGuest: PropTypes.string.isRequired,
+    isGuest: PropTypes.bool.isRequired,
     hasReceivables: PropTypes.bool,
     countTookPartCampaigns: PropTypes.number,
     createdCampaignsCount: PropTypes.number,
@@ -268,8 +268,8 @@ export default class SidenavRewards extends React.Component {
                       activeClassName="Sidenav__item--active"
                     >
                       {intl.formatMessage({
-                        id: 'history',
-                        defaultMessage: 'History',
+                        id: 'reservations',
+                        defaultMessage: 'Reservations',
                       })}
                     </NavLink>
                   </li>

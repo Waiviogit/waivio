@@ -96,6 +96,8 @@ export const getAppUrl = state => fromApp.getAppUrl(state.app);
 export const getUsedLocale = state => fromApp.getUsedLocale(state.app);
 export const getScreenSize = state => fromApp.getScreenSize(state.app);
 export const getTranslations = state => fromApp.getTranslations(state.app);
+export const getTranslationByKey = (state, key, defaultMessage) =>
+  fromApp.getTranslationByKey(state.app, key, defaultMessage);
 export const getCryptosPriceHistory = state => fromApp.getCryptosPriceHistory(state.app);
 export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);

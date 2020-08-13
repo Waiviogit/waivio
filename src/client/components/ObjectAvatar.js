@@ -18,8 +18,8 @@ const ObjectAvatar = ({ item, size }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-  let url = item.avatar || get(item, ['parent', 'avatar']);
-
+  const parent = get(item, ['parent'], {});
+  let url = item.avatar || parent.avatar;
   if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
   if (url) {
@@ -39,12 +39,7 @@ const ObjectAvatar = ({ item, size }) => {
 
 ObjectAvatar.propTypes = {
   item: PropTypes.shape({
-    parent: PropTypes.oneOfType([
-      PropTypes.shape({
-        avatar: PropTypes.string,
-      }),
-      PropTypes.string,
-    ]),
+    parent: PropTypes.shape(),
     avatar: PropTypes.string,
   }),
   size: PropTypes.number,

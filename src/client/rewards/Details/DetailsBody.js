@@ -15,6 +15,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const requirementFilters = get(objectDetails, ['requirement_filters'], {});
+  const frequency = requirementFilters.frequency && requirementFilters.not_same_assigns;
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -34,7 +35,7 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
         </div>
         {!!objectDetails.frequency_assign && (
           <div className="Details__criteria-row">
-            <Checkbox checked={requirementFilters.frequency} disabled />
+            <Checkbox checked={frequency} disabled />
             <div>
               {messageData.receivedRewardFrom}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>

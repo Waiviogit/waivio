@@ -382,7 +382,6 @@ class Story extends React.Component {
         </div>
       );
     }
-
     return (
       <div className="Story" id={`${author}-${post.permlink}`}>
         {rebloggedUI}
@@ -404,13 +403,13 @@ class Story extends React.Component {
                 <BTooltip
                   title={
                     <span>
-                      <FormattedDate value={`${post.created}Z`} />{' '}
-                      <FormattedTime value={`${post.created}Z`} />
+                      <FormattedDate value={post.createdAt} />{' '}
+                      <FormattedTime value={post.createdAt} />
                     </span>
                   }
                 >
                   <span className="Story__date">
-                    <FormattedRelative value={`${post.created}Z`} />
+                    <FormattedRelative value={post.createdAt} />
                   </span>
                 </BTooltip>
                 <PostedFrom post={post} />

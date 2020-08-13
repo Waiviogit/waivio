@@ -312,14 +312,15 @@ class ReportsForm extends Component {
               </Form.Item>
             </Col>
           </Row>
+          <span className="CreateReportForm__label">
+            {intl.formatMessage({
+              id: 'or_total_amount',
+              defaultMessage: 'Or total amount:',
+            })}
+          </span>
           <Row gutter={24} className="CreateReportForm__row">
             <Col span={7}>
-              <Form.Item
-                label={intl.formatMessage({
-                  id: 'or_total_amount',
-                  defaultMessage: 'Or total amount:',
-                })}
-              >
+              <Form.Item>
                 {form.getFieldDecorator('amount', {
                   rules: [{ required: false }],
                   initialValue: null,

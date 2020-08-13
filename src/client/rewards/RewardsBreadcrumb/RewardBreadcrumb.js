@@ -50,13 +50,14 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject, location }) => {
 RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
-  filterKey: PropTypes.string.isRequired,
-  location: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
+  location: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
+  location: {},
 };
 
 export default injectIntl(RewardBreadcrumb);

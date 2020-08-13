@@ -22,7 +22,7 @@ import {
   haveAccess,
   hasType,
   accessTypesArr,
-  calculateApprovePercent,
+  calculateApprovePercent, parseWobjectField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -30,7 +30,7 @@ import {
   getFieldsCount,
   sortListItemsBy,
   combineObjectMenu,
-  getFieldsByName,
+  getFieldsByName, getLink,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -45,13 +45,12 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums, getSuitableLanguage } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
 
@@ -62,9 +61,7 @@ import './ObjectInfo.less';
   state => ({
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
-    usedLocale: getSuitableLanguage(state),
   }),
-  null,
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -74,7 +71,6 @@ class ObjectInfo extends React.Component {
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool,
     albums: PropTypes.arrayOf(PropTypes.shape()),
-    usedLocale: PropTypes.string,
     history: PropTypes.shape().isRequired,
   };
 
@@ -85,20 +81,12 @@ class ObjectInfo extends React.Component {
     center: [],
     albums: [],
     isAuthenticated: false,
-    usedLocale: 'en-US',
   };
 
   state = {
     selectedField: null,
     showModal: false,
     showMore: {},
-  };
-
-  getLink = link => {
-    if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
-      return `http://${link}`;
-    }
-    return link;
   };
 
   getFieldLayout = (fieldName, params) => {
@@ -125,8 +113,7 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
-  renderCategoryItems = (categoryItems, category) => {
-    if (!isEmpty(categoryItems)) {
+  renderCategoryItems = (categoryItems = [], category) => {
       const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
       const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
@@ -155,9 +142,6 @@ class ObjectInfo extends React.Component {
           )}
         </div>
       );
-    }
-
-    return null;
   };
 
   renderTagCategories = tagCategories =>
@@ -165,21 +149,14 @@ class ObjectInfo extends React.Component {
       <div key={item.id}>
         {`${item.body}:`}
         <br />
-        {this.renderCategoryItems(item.items, item.id)}
+        {item.items && this.renderCategoryItems(item.items, item.id)}
       </div>
     ));
 
-  renderParent = () => {
-    const parent = get(this.props, ['wobject', 'parent']);
-    return (
-      parent && (
-        <ObjectCard key={parent.author_permlink} wobject={parent.parentWobj} showFollow={false} />
-      )
-    );
-  };
+  renderParent = parent => (<ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />);
 
   render() {
-    const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
+    const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const { website, newsFilter } = wobject;
@@ -207,9 +184,8 @@ class ObjectInfo extends React.Component {
     const status = wobject.status && JSON.parse(wobject.status);
     let address = get(wobject, 'address');
     address = address
-      ? compact(Object.values(addressFields).map(fieldName => JSON.parse(address)[fieldName])).join(
-          ', ',
-        )
+      ? compact(Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]))
+        .join(', ',)
       : null;
     const description = get(wobject, 'description');
     const price = get(wobject, 'price');
@@ -219,7 +195,7 @@ class ObjectInfo extends React.Component {
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
-    const linkField = wobject.link && JSON.parse(wobject.link);
+    const linkField = parseWobjectField(wobject, 'link');
 
     if (size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
@@ -266,13 +242,6 @@ class ObjectInfo extends React.Component {
     profile = pickBy(profile, identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const album = filter(albums, iteratee(['id', wobject.author_permlink]));
-    const hasGalleryImg =
-      wobject.fields &&
-      wobject.fields.filter(
-        field =>
-          field.name === objectFields.galleryItem &&
-          calculateApprovePercent(field.active_votes, field.weight, this.props.wobject) >= 70,
-      );
 
     const isRenderMap = map && isCoordinatesValid(map[0], map[1]);
     const listItem = (name, content) => {
@@ -331,7 +300,7 @@ class ObjectInfo extends React.Component {
           menuItem = (
             <Button
               className="LinkButton menu-btn field-button"
-              href={this.getLink(item.link)}
+              href={getLink(item.link)}
               target={'_blank'}
               block
             >
@@ -391,7 +360,7 @@ class ObjectInfo extends React.Component {
             menuLists &&
             sortListItemsBy(
               combineObjectMenu(
-                menuLists.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                menuLists,
                 {
                   button,
                   news: Boolean(newsFilter),
@@ -439,12 +408,11 @@ class ObjectInfo extends React.Component {
           <RateInfo
             username={userName}
             authorPermlink={wobject.author_permlink}
-            locale={this.props.usedLocale}
           />,
         )}
         {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
         {listItem(objectFields.categoryItem, null)}
-        {isRenderGallery && (hasGalleryImg || accessExtend) ? (
+        {isRenderGallery && (pictures || accessExtend) && (
           <div className="field-info">
             {accessExtend && (
               <div className="proposition-line">
@@ -472,19 +440,19 @@ class ObjectInfo extends React.Component {
                 )}
               </div>
             )}
-            {hasGalleryImg && (
+            {pictures && (
               <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
             )}
           </div>
-        ) : null}
+        )}
         {listItem(
           objectFields.price,
-          price ? (
+          price && (
             <React.Fragment>
               {!isEditMode && <span className="field-icon">$</span>}
               <span className="price-value">{price}</span>
             </React.Fragment>
-          ) : null,
+          ),
         )}
         {listItem(
           objectFields.workTime,
@@ -534,7 +502,7 @@ class ObjectInfo extends React.Component {
             <div className="field-website">
               <span className="field-website__title">
                 <i className="iconfont icon-link text-icon link" />
-                <a target="_blank" rel="noopener noreferrer" href={this.getLink(website.link)}>
+                <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
                   {website.title}
                 </a>
               </span>
@@ -618,7 +586,6 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {console.log(status)}
         {listItem(
           objectFields.status,
           status && status.title && (
@@ -634,11 +601,11 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {wobject && (wobject.name || wobject.default_name) && (
           <div className="object-sidebar">
-            {!isHashtag && listItem(objectFields.parent, parent && this.renderParent())}
+            {!isHashtag && listItem(objectFields.parent, parent && this.renderParent(parent))}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {!isHashtag && isRenderMenu && menuSection}
             {!isHashtag && aboutSection}
-            {isHashtag && isRenderGallery && (hasGalleryImg || accessExtend) ? (
+            {isHashtag && isRenderGallery && (pictures || accessExtend) && (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">
@@ -669,11 +636,11 @@ class ObjectInfo extends React.Component {
                     )}
                   </div>
                 )}
-                {hasGalleryImg && (
+                {pictures && (
                   <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
                 )}
               </div>
-            ) : null}
+            )}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>

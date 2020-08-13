@@ -235,7 +235,6 @@ class EditPost extends Component {
   handleObjectSelect(object) {
     this.setState(prevState => {
       const objName = object.name || object.default_name;
-      const objectType = object.type || object.object_type;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
@@ -244,7 +243,7 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith([...prevState.topics, objectType], isEqual),
+        topics: uniqWith([...prevState.topics, objName], isEqual),
       };
     });
   }

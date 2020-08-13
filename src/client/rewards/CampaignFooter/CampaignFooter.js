@@ -33,13 +33,13 @@ class CampaignFooter extends React.Component {
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     likeComment: PropTypes.func.isRequired,
     unfollowUser: PropTypes.func.isRequired,
     unfollowObject: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
     followObject: PropTypes.func.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
     pendingLike: PropTypes.bool,
@@ -76,6 +76,8 @@ class CampaignFooter extends React.Component {
     isComment: false,
     getMessageHistory: () => {},
     blacklistUsers: [],
+    defaultVotePercent: 0,
+    onActionInitiated: () => {},
   };
 
   constructor(props) {
@@ -114,9 +116,10 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition, match } = this.props;
-    const author = get(proposition, ['users', '0', 'name']);
-    const permlink = get(proposition, ['users', '0', 'permlink']);
-    if (!isEmpty(author) && !isEmpty(permlink)) {
+    const author = get(proposition, ['objects', '0', 'author']);
+    const permlink = get(proposition, ['objects', '0', 'permlink']);
+
+    if (author && permlink) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
@@ -319,7 +322,7 @@ class CampaignFooter extends React.Component {
         )}
         {hasComments &&
           map(commentsArr, currentComment => (
-            <div>
+            <div key={currentComment.post_id}>
               <CommentsMessages
                 show={commentsVisible}
                 user={user}

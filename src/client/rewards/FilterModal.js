@@ -172,8 +172,8 @@ const FilterModal = ({
 FilterModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   filters: PropTypes.shape().isRequired,
-  filtersHistory: PropTypes.shape().isRequired,
-  filtersMessages: PropTypes.shape().isRequired,
+  filtersHistory: PropTypes.shape(),
+  filtersMessages: PropTypes.shape(),
   activeFilters: PropTypes.shape(),
   activePayablesFilters: PropTypes.arrayOf(PropTypes.shape()),
   setFilterValue: PropTypes.func,
@@ -190,6 +190,8 @@ FilterModal.defaultProps = {
   activePayablesFilters: [],
   activeHistoryFilters: {},
   activeMessagesFilters: {},
+  filtersHistory: {},
+  filtersMessages: {},
 };
 
 export default FilterModal;
