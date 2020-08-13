@@ -162,10 +162,12 @@ class Rewards extends React.Component {
     const { userLocation, match, username } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
+    if (match.params.campaignParent) return;
+
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
     } else if (match.params.filterKey !== 'all') {
-      history.push(`/rewards/all`);
+      this.props.history.push(`/rewards/all`);
     }
     if (!size(userLocation)) {
       this.props.getCoordinates();
@@ -174,6 +176,9 @@ class Rewards extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
+    const { username } = this.props;
+    const { sortAll, sortEligible, sortReserved, activeFilters, area } = this.state;
+    const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
@@ -182,6 +187,17 @@ class Rewards extends React.Component {
     }
     if (match.params.filterKey === 'reserved') {
       this.setState({ propositions: [] });
+    }
+    if (match.params.campaignParent !== this.props.match.params.campaignParent) {
+      const isRequestWithoutRequiredObject = true;
+      this.getPropositions({
+        username,
+        match: this.props.match,
+        area,
+        sort,
+        activeFilters,
+        isRequestWithoutRequiredObject,
+      });
     }
   }
 
@@ -365,7 +381,7 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, sort, radius, activeFilters, limit },
+    { username, match, area, sort, radius, activeFilters, limit, isRequestWithoutRequiredObject },
     isMap,
     firstMapLoad,
   ) => {
@@ -383,6 +399,7 @@ class Rewards extends React.Component {
         simplified: !!isMap,
         firstMapLoad: !!isMap && firstMapLoad,
         isMap,
+        isRequestWithoutRequiredObject,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();

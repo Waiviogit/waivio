@@ -56,7 +56,7 @@ const RewardsComponent = memo(
     };
 
     useEffect(() => {
-      if (!userLocation.lat || !userLocation.lon || !url) return;
+      if (!userLocation.lat || !userLocation.lon || (!url && !campaignParent)) return;
       const sort = getSort(match, sortAll, sortEligible, sortReserved);
       getPropositions({ username, match, area: areaRewards, sort, activeFilters });
       prevFilterKeyParams.current = filterKeyParams;
