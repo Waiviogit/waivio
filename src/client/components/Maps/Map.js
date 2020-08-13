@@ -90,6 +90,7 @@ class MapOS extends React.Component {
     ) {
       this.setState({ zoom: nextProps.zoomMap });
     }
+    if (match.params.filterKey === 'reserved') this.setState({ zoom: DEFAULT_ZOOM });
   }
 
   componentDidUpdate(prevProps, prevState) {
