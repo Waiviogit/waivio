@@ -7,12 +7,12 @@ import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
 const WalletFillOrderGet = ({ transactionDetails, timestamp }) => {
-  const url = `/@${transactionDetails.exchanger}`;
+  const url = `/@${transactionDetails.open_owner}`;
   return (
     <React.Fragment>
       <div className="UserWalletTransactions__transaction">
         <div className="UserWalletTransactions__avatar">
-          <Avatar username={transactionDetails.account} size={40} />
+          <Avatar username={transactionDetails.open_owner} size={40} />
         </div>
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient">
@@ -55,14 +55,16 @@ const WalletFillOrderGet = ({ transactionDetails, timestamp }) => {
 };
 
 WalletFillOrderGet.propTypes = {
-  transactionDetails: PropTypes.arrayOf(PropTypes.object).isRequired,
+  transactionDetails: PropTypes.shape().isRequired,
   timestamp: PropTypes.number,
   open_pays: PropTypes.string,
+  open_owner: PropTypes.string,
 };
 
 WalletFillOrderGet.defaultProps = {
   timestamp: 0,
   open_pays: '',
+  open_owner: '',
 };
 
 export default WalletFillOrderGet;
