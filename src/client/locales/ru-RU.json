@@ -1329,5 +1329,6 @@
   "dont_use_current_object_for_parent": "Вы не можете использовать текущий объект как родителяю",
   "post_publication": "Ваш пост скоро будет опубликован",
   "error_boundary_page_home": "главную страницу",
-  "hashtag": "хэштег"
+  "hashtag": "хэштег",
+  "profile_email_placeholder": "Ваш email"
 }

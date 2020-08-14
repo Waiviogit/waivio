@@ -1328,5 +1328,6 @@
   "hashtag": "hashtag",
   "post_publication": "Your post will be posted soon",
   "menu": "Menu",
-  "dont_use_current_object_for_parent": "You cannot use the current object as a parent"
+  "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
+  "profile_email_placeholder": "Your email"
 }
