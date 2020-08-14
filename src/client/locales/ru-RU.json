@@ -1330,5 +1330,6 @@
   "post_publication": "Ваш пост скоро будет опубликован",
   "error_boundary_page_home": "главную страницу",
   "hashtag": "хэштег",
-  "profile_email_placeholder": "Ваш email"
+  "profile_email_placeholder": "Ваш email",
+  "create_new_campaign": "Создать новую компанию"
 }

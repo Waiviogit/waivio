@@ -1128,7 +1128,7 @@
   "approval": "Approval",
   "approved": "Approved",
   "fillOrder_wallet_transferred": "Sold {current_pays} to {exchanger}",
-  "fillOrder_wallet_get": "Bought {current_pays} from {exchanger}",
+  "fillOrder_wallet_get": "Bought {open_pays} from {exchanger}",
   "hive_power": "Hive** Power",
   "services": "Services",
   "links": "Links",
@@ -1329,5 +1329,6 @@
   "post_publication": "Your post will be posted soon",
   "menu": "Menu",
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
+  "create_new_campaign": "Create new campaign",
   "profile_email_placeholder": "Your email"
 }

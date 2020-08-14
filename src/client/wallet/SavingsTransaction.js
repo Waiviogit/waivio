@@ -88,7 +88,7 @@ const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, am
 );
 
 SavingsTransaction.propTypes = {
-  timestamp: PropTypes.string,
+  timestamp: PropTypes.number,
   transactionDetails: PropTypes.shape(),
   transactionType: PropTypes.string,
   amount: PropTypes.element,
