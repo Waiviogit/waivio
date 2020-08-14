@@ -157,7 +157,6 @@ const ImageSetter = ({
           setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
           setEditorState(
             addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-              // fix for issue with loading large images to digital-ocean
               src: `${newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`}`,
               alt: newImage.name,
             }),
