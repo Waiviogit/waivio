@@ -36,44 +36,13 @@ export default class ImageSideButton extends React.Component {
     this.setState({ isModal: true });
   }
 
-  handleOnOk = () => {
-    // const selection = this.props.getEditorState().getSelection();
-    // const key = selection.getAnchorKey();
-    // if (this.state.currentImage.length) {
-    //   const images = this.state.currentImage;
-    //   images.forEach(image => {
-    //     this.props.setEditorState(
-    //       addNewBlockAt(this.props.getEditorState(), key, Block.IMAGE, {
-    //         // fix for issue with loading large images to digital-ocean
-    //         src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-    //         alt: image.name,
-    //       })
-    //     );
-    //   })
-    // }
-    this.props.close();
-  };
+  handleOnOk = () => this.props.close();
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
   getImages = image => this.setState({ currentImage: image });
-
-  // For testing - don't load images to ipfs
-  // onChange(e) {
-  //   // e.preventDefault();
-  //   const file = e.target.files[0];
-  //   if (file.type.indexOf('image/') === 0) {
-  //     const src = URL.createObjectURL(file);
-  //     this.props.setEditorState(
-  //       addNewBlock(this.props.getEditorState(), Block.IMAGE, {
-  //         src,
-  //       }),
-  //     );
-  //   }
-  //   this.props.close();
-  // }
 
   render() {
     const { isLoading, isModal } = this.state;
