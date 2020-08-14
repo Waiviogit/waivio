@@ -5,7 +5,6 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
-const Uglifyjs = require('uglifyjs-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
@@ -45,10 +44,6 @@ module.exports = function createConfig(env = 'dev') {
         name: 'client',
         color: '#f56be2',
       }),
-
-      // new UglifyJsPlugin({
-      //   cache: true,
-      // }),
     ],
     module: {
       rules: [
@@ -96,11 +91,10 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new HardSourceWebpackPlugin(),
-      new Uglifyjs({
-        cache: true,
-        parallel: 4,
-      }),
     ];
+    config.optimization = {
+      minimize: false,
+    };
     config.resolve = {
       alias: {
         'react-dom': '@hot-loader/react-dom',
