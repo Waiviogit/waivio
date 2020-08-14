@@ -163,8 +163,8 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { userLocation, match, username } = this.props;
-    const { sortAll, sortEligible, sortReserved, url } = this.state;
+    const { userLocation, match, username, authenticated } = this.props;
+    const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
@@ -172,6 +172,8 @@ class Rewards extends React.Component {
     if (!size(userLocation)) {
       this.props.getCoordinates();
     }
+    if (!authenticated && match.params.filterKey === 'all')
+      this.getPropositions({ username, match, activeFilters, area, sort });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -182,7 +184,7 @@ class Rewards extends React.Component {
     if (username !== nextProps.username && !url) {
       const userName = username || nextProps.username;
       this.getPropositionsByStatus({ username: userName, sort });
-    } else if (!authenticated && this.props.match.params.filterKey !== 'all') {
+    } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
       this.props.history.push(`/rewards/all`);
     }
     if (match.path !== this.props.match.path) {
