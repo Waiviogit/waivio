@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
@@ -10,12 +11,16 @@ import SortSelector from '../SortSelector/SortSelector';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
 import QuickCommentEditor from './QuickCommentEditor';
-import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
 import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
+import { getReservedComments } from '../../comments/commentsActions';
+import './Comments.less';
 
 @injectIntl
+@connect(null, {
+  getReservedComments,
+})
 class Comments extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -45,6 +50,8 @@ class Comments extends React.Component {
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
+    getReservedComments: PropTypes.func,
+    match: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -57,11 +64,13 @@ class Comments extends React.Component {
     sliderMode: false,
     show: false,
     isQuickComments: false,
+    match: {},
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
     getMessageHistory: () => {},
+    getReservedComments: () => {},
   };
 
   constructor(props) {
@@ -158,33 +167,37 @@ class Comments extends React.Component {
     );
   };
 
+  onCommentSend = () => {
+    const { category, author, permlink } = this.props.parentPost;
+    return this.props.match.params.filterKey === 'reserved'
+      ? this.props.getReservedComments({ category, author, permlink })
+      : this.props.getMessageHistory();
+  };
+
   handleSubmitComment(parentP, commentValue) {
     const { intl } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
-
     this.setState({ showCommentFormLoading: true });
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-
-        this.setState({
-          showCommentFormLoading: false,
-          commentFormText: '',
-          commentSubmitted: true,
-        });
-      })
-      .then(() => {
-        if (this.props.getMessageHistory) {
-          setTimeout(() => this.props.getMessageHistory(), 8000);
-        }
+        setTimeout(() => {
+          this.onCommentSend().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            this.setState({
+              showCommentFormLoading: false,
+              commentFormText: '',
+              commentSubmitted: true,
+            });
+          });
+        }, 10000);
       })
       .catch(() => {
         this.setState({
