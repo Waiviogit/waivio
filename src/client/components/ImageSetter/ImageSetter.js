@@ -165,7 +165,6 @@ const ImageSetter = ({
         }
 
         uploadedImages.push(newImage);
-        // console.log('uploadedImages: ', uploadedImages)
       };
       const onErrorLoadImage = () => {
         setLoadingImage(false);
