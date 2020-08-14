@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon, message } from 'antd';
-import { map, isEmpty } from 'lodash';
+import { map, isEmpty, get, isEqual, isNil } from 'lodash';
+import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
@@ -104,27 +105,26 @@ const ImageSetter = ({
   }, []);
 
   const handleRemoveImage = imageDetail => {
-    console.log('imageId: ', imageDetail);
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
     setCurrentImages(filteredImages);
+    const contentState = getEditorState().getCurrentContent();
+    const allBlocks = contentState.getBlockMap();
 
-    // const contentState = getEditorState().getCurrentContent();
-    // const selection = getEditorState().getSelection();
-    // const key = selection.getAnchorKey();
-    // const currentBlock = contentState.getBlockForKey(key);
-    //
-    // const allBlocks = Object.fromEntries(get(contentState, 'blockMap._list._tail.array'));
-    // console.log('obj: ', allBlocks)
-    //
-    // for (const block in allBlocks) {
-    //   const a = allBlocks[block].data._root;
-    //
-    //   console.log(allBlocks[block].data._root)
-    // }
+    allBlocks.forEach((block, index) => {
+      // eslint-disable-next-line no-underscore-dangle
+      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
+      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
+        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const removeImage = contentState.getBlockMap().delete(index);
+        const contentAfterRemove = removeImage.delete(blockBefore);
+        const filtered = contentAfterRemove.filter(element => !isNil(element));
 
-    // allBlocks.forEach(block => {
-    //   console.log('getBlock: ', block[1].data._root.entries[0][1])
-    // })
+        const newContent = contentState.merge({
+          blockMap: filtered,
+        });
+        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
+      }
+    });
 
     if (!filteredImages.length) onImageLoaded([]);
   };
