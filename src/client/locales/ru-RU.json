@@ -1330,6 +1330,7 @@
   "post_publication": "Ваш пост скоро будет опубликован",
   "error_boundary_page_home": "главную страницу",
   "hashtag": "хэштег",
-  "only_pending_campaigns": "Редактировать можно только ожидающие кампании",
-  "create_new_campaign": "Создать новую компанию"
+  "profile_email_placeholder": "Ваш email",
+  "create_new_campaign": "Создать новую компанию",
+  "allow_to_publish_e-mail": "Я разрешаю публиковать e-mail на моей странице"
 }
