@@ -32,6 +32,10 @@ export default function requiresLogin(WrappedComponent) {
     userName: PropTypes.string.isRequired,
   };
 
+  Component.defaultProps = {
+    userName: '',
+  };
+
   const mapStateToProps = state => ({
     fetching: getIsAuthFetching(state),
     authenticated: getIsAuthenticated(state),
