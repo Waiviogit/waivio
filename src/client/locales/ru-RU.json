@@ -1329,5 +1329,7 @@
   "dont_use_current_object_for_parent": "Вы не можете использовать текущий объект как родителяю",
   "post_publication": "Ваш пост скоро будет опубликован",
   "error_boundary_page_home": "главную страницу",
-  "hashtag": "хэштег"
+  "hashtag": "хэштег",
+  "only_pending_campaigns": "Редактировать можно только ожидающие кампании",
+  "create_new_campaign": "Создать новую компанию"
 }
