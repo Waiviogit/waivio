@@ -165,7 +165,7 @@ class Rewards extends React.Component {
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
     } else if (match.params.filterKey !== 'all') {
-      history.push(`/rewards/all`);
+      this.props.history.push(`/rewards/all`);
     }
     if (!size(userLocation)) {
       this.props.getCoordinates();

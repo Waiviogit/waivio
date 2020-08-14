@@ -5,7 +5,7 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes, filter } from 'lodash';
+import { map, get, includes } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
@@ -18,23 +18,17 @@ import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
-import { getAuthenticatedUserName } from '../../reducers';
 import '../../components/StoryFooter/Buttons.less';
 
 @injectIntl
 @withAuthActions
-@connect(
-  state => ({
-    authenticatedUserName: getAuthenticatedUserName(state),
-  }),
-  {
-    rejectReview,
-    changeBlackAndWhiteLists,
-    setDataForSingleReport,
-    getBlacklist,
-    changeReward,
-  },
-)
+@connect(null, {
+  rejectReview,
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  changeReward,
+})
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -62,7 +56,6 @@ export default class CampaignButtons extends React.Component {
     setDataForSingleReport: PropTypes.func.isRequired,
     getBlacklist: PropTypes.func.isRequired,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
-    authenticatedUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -82,7 +75,6 @@ export default class CampaignButtons extends React.Component {
     getMessageHistory: () => {},
     onActionInitiated: () => {},
     blacklistUsers: [],
-    authenticatedUserName: '',
   };
 
   constructor(props) {
@@ -561,23 +553,15 @@ export default class CampaignButtons extends React.Component {
       match,
       user,
       proposition,
-      authenticatedUserName,
     } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', 'assigned']);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const status = get(proposition, ['users', '0', 'status'], '');
-    const authenticatedUserProposition = filter(
-      proposition.users,
-      propositionUser => authenticatedUserName === propositionUser.rootName,
-    );
-    const authenticatedUserPropositionStatus = get(authenticatedUserProposition, ['0', 'status']);
-    const isReserved = match.params.filterKey === 'reserved';
-    const buttonsTitleForRender = isReserved
-      ? buttonsTitle[authenticatedUserPropositionStatus]
-      : buttonsTitle[status];
+    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
+    const status = isReserved ? 'assigned' : get(proposition, ['users', '0', 'status'], '');
+    const buttonsTitleForRender = buttonsTitle[status];
 
     return (
       <div className="Buttons">
