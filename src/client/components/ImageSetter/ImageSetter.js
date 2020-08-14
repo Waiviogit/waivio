@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon, message } from 'antd';
-import { map, isEmpty, get, isEqual, isNil } from 'lodash';
+import { map, isEmpty, get, isEqual, isNil, size } from 'lodash';
 import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
@@ -126,7 +126,7 @@ const ImageSetter = ({
       }
     });
 
-    if (!filteredImages.length) onImageLoaded([]);
+    if (!size(filteredImages)) onImageLoaded([]);
   };
 
   const handleChangeImage = async e => {
