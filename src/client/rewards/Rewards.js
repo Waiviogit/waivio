@@ -192,8 +192,7 @@ class Rewards extends React.Component {
     }
     if (match.params.filterKey !== 'reserved') {
       this.setState({ propositionsReserved: [] });
-    }
-    if (match.params.filterKey === 'reserved') {
+    } else {
       this.setState({ propositions: [] });
     }
   }
