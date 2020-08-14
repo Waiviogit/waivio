@@ -119,6 +119,22 @@ const GuestSignUpFormContent = ({
             </Select>,
           )}
         </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('allow', {
+            rules: [
+              {
+                required: false,
+              },
+            ],
+          })(
+            <Checkbox>
+              <FormattedMessage
+                id="allow_to_publish_e-mail"
+                defaultMessage="I allow to publish e-mail on my page"
+              />
+            </Checkbox>,
+          )}
+        </Form.Item>
 
         <Form.Item
           validateStatus={agreementError ? 'error' : ''}

@@ -66,6 +66,7 @@ export default class Comments extends React.Component {
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
+    match: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -77,6 +78,7 @@ export default class Comments extends React.Component {
     pendingVotes: [],
     show: false,
     isQuickComments: false,
+    match: {},
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
@@ -194,6 +196,7 @@ export default class Comments extends React.Component {
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
           getMessageHistory={getMessageHistory}
+          match={this.props.match}
         />
       )
     );
