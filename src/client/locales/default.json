@@ -667,6 +667,7 @@
   "campaigns_be_suspended": "All campaigns will be suspended if accounts payable exceed 30 days",
   "remaining_balance_is_not_sufficient": "the remaining balance is not sufficient to cover outstanding obligations",
   "only_pending_campaigns": "Only pending campaigns can be edited",
+  "createNewCampaign": "Create new campaign",
   "campaign_budgets_calcualted": "Campaign budgets calculated from the 1st day of each month",
   "rewards_for": "Rewards for",
   "date": "date",
@@ -1127,7 +1128,7 @@
   "approval": "Approval",
   "approved": "Approved",
   "fillOrder_wallet_transferred": "Sold {current_pays} to {exchanger}",
-  "fillOrder_wallet_get": "Bought {current_pays} from {exchanger}",
+  "fillOrder_wallet_get": "Bought {open_pays} from {exchanger}",
   "hive_power": "Hive** Power",
   "services": "Services",
   "links": "Links",
@@ -1328,5 +1329,7 @@
   "post_publication": "Your post will be posted soon",
   "menu": "Menu",
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
+  "create_new_campaign": "Create new campaign",
+  "profile_email_placeholder": "Your email",
   "allow_to_publish_e-mail": "I allow to publish e-mail on my page"
 }

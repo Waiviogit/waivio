@@ -72,7 +72,7 @@ export default class Settings extends React.Component {
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
-    user: PropTypes.string,
+    user: PropTypes.shape({ name: PropTypes.string }),
     history: PropTypes.shape().isRequired,
   };
 
@@ -92,7 +92,7 @@ export default class Settings extends React.Component {
     reload: () => {},
     saveSettings: () => {},
     notify: () => {},
-    user: '',
+    user: {},
     history: {},
     resetSearchAutoCompete: () => {},
   };

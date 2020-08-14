@@ -48,7 +48,7 @@ export default class GuestsSettings extends React.Component {
     notify: PropTypes.func,
     resetSearchAutoCompete: PropTypes.func,
     hiveBeneficiaryAccount: PropTypes.string.isRequired,
-    privateEmail: PropTypes.string.isRequired,
+    privateEmail: PropTypes.string,
     user: PropTypes.string.isRequired,
     getUserPrivateEmail: PropTypes.func.isRequired,
   };
@@ -59,6 +59,7 @@ export default class GuestsSettings extends React.Component {
     saveSettings: () => {},
     notify: () => {},
     resetSearchAutoCompete: () => {},
+    privateEmail: '',
   };
 
   constructor(props) {

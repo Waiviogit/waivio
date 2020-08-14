@@ -147,7 +147,7 @@ class UserWalletTransactions extends React.Component {
               : transactions.map(transaction => (
                   <WalletTransaction
                     isGuestPage={this.isGuestPage()}
-                    key={transaction.timestamp}
+                    key={`${transaction.timestamp}${transaction.operationNum}`}
                     transaction={transaction}
                     currentUsername={currentUsername}
                     totalVestingShares={totalVestingShares}
