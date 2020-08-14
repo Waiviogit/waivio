@@ -90,6 +90,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
           alias: values.alias || '',
           locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
+          allowEmail: values.allow,
         };
         dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);

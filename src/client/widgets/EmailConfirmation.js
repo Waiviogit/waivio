@@ -211,7 +211,7 @@ EmailConfirmation.propTypes = {
   intl: PropTypes.shape().isRequired,
   visible: PropTypes.bool,
   handleClose: PropTypes.func,
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
@@ -222,6 +222,7 @@ EmailConfirmation.defaultProps = {
   visible: false,
   isSettings: false,
   handleClose: () => {},
+  email: '',
 };
 
 export default connect(
