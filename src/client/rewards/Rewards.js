@@ -166,11 +166,13 @@ class Rewards extends React.Component {
     const { userLocation, match, username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (username && !url) {
-      this.getPropositionsByStatus({ username, sort });
-    }
     if (!size(userLocation)) {
       this.props.getCoordinates();
+    }
+    if (username && !url) {
+      this.getPropositionsByStatus({ username, sort });
+    } else if (match.params.filterKey !== 'all') {
+      this.props.history.push(`/rewards/all`);
     }
     if (!authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, area, sort });
@@ -250,13 +252,17 @@ class Rewards extends React.Component {
   };
 
   setFilterValue = (filterValue, key) => {
-    const activeFilters = this.state.activeFilters;
+    const activeFilters = { ...this.state.activeFilters };
     if (includes(activeFilters[key], filterValue)) {
       remove(activeFilters[key], f => f === filterValue);
     } else {
       activeFilters[key].push(filterValue);
     }
-    this.setState({ loadingCampaigns: true, activeFilters });
+    if (!this.state.url) {
+      this.setState({ activeFilters, url: this.props.match.url });
+    } else {
+      this.setState({ activeFilters });
+    }
   };
 
   setFilters = (filterKey, activeFilters) => {
@@ -359,8 +365,10 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate && match.params.filterKey) {
-        this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+        if (match.params.filterKey !== rewardsTab[tabType]) {
+          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+        }
         if (tabType === 'reserved') {
           this.setState({
             propositionsReserved: campaigns,
@@ -377,7 +385,7 @@ class Rewards extends React.Component {
   };
 
   getPropositions = (
-    { username, match, area, sort, radius, activeFilters, limit },
+    { username, match, area, sort, radius, activeFilters, limit, isRequestWithoutRequiredObject },
     isMap,
     firstMapLoad,
   ) => {
@@ -395,6 +403,7 @@ class Rewards extends React.Component {
         simplified: !!isMap,
         firstMapLoad: !!isMap && firstMapLoad,
         isMap,
+        isRequestWithoutRequiredObject,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();

@@ -11,14 +11,22 @@ export const rewardPostContainerData = {
   author: 'monterey',
   permlink: 'test-post',
 };
-export const preparePropositionReqData = ({ username, match, limit = 10, sort, ...args }) => {
+export const preparePropositionReqData = ({
+  username,
+  match,
+  limit = 10,
+  sort,
+  isRequestWithoutRequiredObject,
+  ...args
+}) => {
   const reqData = {
     limit,
-    requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
     match,
     sort,
   };
+  if (!isRequestWithoutRequiredObject)
+    reqData.requiredObject = match.params.campaignParent || match.params.name;
 
   Object.keys(args).forEach(argName => {
     reqData[argName] = args[argName];

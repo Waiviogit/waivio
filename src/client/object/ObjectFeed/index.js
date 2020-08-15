@@ -24,7 +24,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
       let redirectUrl = `/editor?object=`;
-      redirectUrl += encodeURIComponent(`[${wobject.name}](${wobject.author_permlink})`);
+      redirectUrl += encodeURIComponent(
+        `[${wobject.name || wobject.default_name}](${wobject.author_permlink})`,
+      );
       if (!isEmpty(wobject.parent)) {
         const parentObject = getClientWObj(wobject.parent, usedLocale);
         redirectUrl += `&object=${encodeURIComponent(
