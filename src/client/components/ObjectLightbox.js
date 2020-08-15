@@ -30,8 +30,7 @@ export default class ObjectLightbox extends Component {
 
   componentDidMount() {
     const parent = getApprovedField(this.props.wobject, 'parent');
-
-    getObject(parent).then(res => this.setState({ parent: res }));
+    if (parent) getObject(parent).then(res => this.setState({ parent: res }));
   }
 
   handleAvatarClick = () => this.setState({ open: true });
