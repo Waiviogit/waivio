@@ -29,6 +29,7 @@ import NotificationClaimReward from './NotificationClaimReward';
 import NotificationPostBell from './NotificationPostBell';
 import NotificationReblogBell from './NotificationReblogBell';
 import NotificationFollowBell from './NotificationFollowBell';
+import NotificationCustomerSupport from './NotificationCustomerSupport';
 
 import './Notification.less';
 import './Notifications.less';
@@ -374,6 +375,16 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CUSTOMER_SUPPORT:
+                return (
+                  <NotificationCustomerSupport
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:

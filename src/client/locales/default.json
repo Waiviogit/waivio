@@ -1331,5 +1331,6 @@
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
   "create_new_campaign": "Create new campaign",
   "profile_email_placeholder": "Your email",
-  "allow_to_publish_e-mail": "I allow to publish e-mail on my page"
+  "allow_to_publish_e-mail": "I allow to publish e-mail on my page",
+  "customer_support": "{author} asked about {campaignName}"
 }
