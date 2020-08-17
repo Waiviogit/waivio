@@ -132,6 +132,7 @@ const broadcastComment = (
   isReview,
 ) => {
   const operations = [];
+  console.log('broadcastComment');
   const commentOp = [
     'comment',
     {
