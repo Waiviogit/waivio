@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
 import { Input, message } from 'antd';
@@ -49,6 +50,7 @@ const defaultDecorators = new CompositeDecorator([
   },
 ]);
 
+@injectIntl
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
