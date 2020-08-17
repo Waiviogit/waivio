@@ -18,7 +18,7 @@ import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData } from '../../helpers/wObjectHelper';
-import { getClientWObj, getServerWObj } from '../../adapters';
+import { getServerWObj } from '../../adapters';
 import './CreateObject.less';
 
 @injectIntl

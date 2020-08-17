@@ -8,18 +8,10 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import SortSelector from '../components/SortSelector/SortSelector';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
 import { getAuthenticatedUserName, isGuestUser } from '../reducers';
 
 import './UserDynamicList.less';
-
-const SORT_OPTIONS = {
-  RANK: 'rank',
-  ALPHABET: 'alphabet',
-  FOLLOWERS: 'followers',
-  RECENCY: 'recency',
-};
 
 class UserDynamicList extends React.Component {
   static propTypes = {
