@@ -775,6 +775,11 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',
     });
+  } else if (location === '/rewards/guideHistory') {
+    return intl.formatMessage({
+      id: 'history_of_reservations',
+      defaultMessage: 'History of reservations',
+    });
   }
   return intl.formatMessage(rewardText[filterKey]);
 };

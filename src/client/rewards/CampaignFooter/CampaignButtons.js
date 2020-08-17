@@ -296,7 +296,7 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus, match } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (match.params[0] === 'messages') {
+    if (match.params[0] === 'messages' || match.params[0] === 'guideHistory') {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -393,7 +393,7 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const filterKey = match.params.filterKey;
+    const isHistory = match.path === '/rewards/(history|guideHistory|messages)';
 
     return (
       <Popover
@@ -403,7 +403,7 @@ export default class CampaignButtons extends React.Component {
         onVisibleChange={this.handleVisibleChange}
         content={
           <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
-            {!filterKey || filterKey === 'reserved' || filterKey === 'all'
+            {!isHistory
               ? popoverMenu
               : map(this.getPopoverMenu(), item => {
                   switch (item.id) {
@@ -601,7 +601,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {match.params[0] === 'messages' && (
+        {(match.params[0] === 'messages' || match.params[0] === 'guideHistory') && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">

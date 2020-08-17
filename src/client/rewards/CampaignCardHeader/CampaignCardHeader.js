@@ -82,7 +82,11 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
+  match: PropTypes.shape(),
+};
+
+CampaignCardHeader.defaultProps = {
+  match: {},
 };
 
 export default injectIntl(CampaignCardHeader);

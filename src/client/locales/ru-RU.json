@@ -1332,5 +1332,6 @@
   "hashtag": "хэштег",
   "profile_email_placeholder": "Ваш email",
   "allow_to_publish_e-mail": "Я разрешаю публиковать e-mail на моей странице",
-  "create_new_campaign": "Создать новую кампанию"
+  "create_new_campaign": "Создать новую кампанию",
+  "history_of_reservations": "История резервирования"
 }
