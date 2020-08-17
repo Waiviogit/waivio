@@ -12,6 +12,7 @@ const initialState = {
     pendingFollows: [],
     isFetching: false,
     fetched: false,
+    sort: 'recency',
   },
   followingObjects: {
     list: [],
