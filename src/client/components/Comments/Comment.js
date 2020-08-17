@@ -290,7 +290,9 @@ class Comment extends React.Component {
         <div className="Comment__text">
           <Link to={`/@${author}`}>
             <span className="username">{author}</span>
-            <WeightTag weight={comment.author_reputation} />
+            <span className="weight">
+              <WeightTag weight={comment.author_reputation} />
+            </span>
             {author === rootPostAuthor && (
               <BTooltip
                 title={intl.formatMessage({
