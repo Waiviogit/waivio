@@ -131,13 +131,14 @@
   }
 
   &__payout {
+    color: @green;
     margin-left: auto;
   }
 
   &__payout-rewards {
-    &:after {
-      content: ' - ';
-      color: @blue-botticelli;
+    &:before {
+      content: ' + ';
+      color: @green;
     }
 
     &:last-of-type {
