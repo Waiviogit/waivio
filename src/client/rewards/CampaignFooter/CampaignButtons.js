@@ -560,7 +560,8 @@ export default class CampaignButtons extends React.Component {
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
     const status = get(proposition, ['users', '0', 'status'], '');
-    const buttonsTitleForRender = buttonsTitle[status];
+    const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
+
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
