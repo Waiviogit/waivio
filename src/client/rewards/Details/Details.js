@@ -43,7 +43,7 @@ const Details = ({
 
   const getProposedWobjName = () => {
     let result;
-    if (proposedWobj.name && proposedWobj.name.includes('&')) {
+    if (proposedWobj.name && proposedWobj.name.toString().includes('&')) {
       result = proposedWobj.name.replace('&', '%26');
     } else {
       result = proposedWobj.name;
