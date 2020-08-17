@@ -38,6 +38,7 @@ const Proposition = ({
   getMessageHistory,
   user,
   blacklistUsers,
+  users,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -84,6 +85,7 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
+  const userData = !isEmpty(users) ? get(users, [user.name, 'alias']) : null;
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
@@ -100,7 +102,7 @@ const Proposition = ({
         }
       }
     };
-    const userName = get(getJsonData(), ['profile', 'name']);
+    const userName = userData || get(getJsonData(), ['profile', 'name']) || user.name;
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
@@ -247,6 +249,7 @@ Proposition.propTypes = {
   assignCommentPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
+  users: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -254,6 +257,7 @@ Proposition.defaultProps = {
   post: {},
   assigned: null,
   loading: false,
+  users: {},
 };
 
 export default connect(

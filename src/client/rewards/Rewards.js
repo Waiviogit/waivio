@@ -24,6 +24,7 @@ import {
 import { HBD } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
+  getAllUsers,
   getAuthenticatedUserName,
   getCryptosPriceHistory,
   getObjectsMap,
@@ -74,6 +75,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     userLocation: getUserLocation(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
+    users: getAllUsers(state),
     wobjects: getObjectsMap(state),
     isFullscreenMode: getIsMapModalOpen(state),
     usedLocale: getSuitableLanguage(state),
@@ -110,6 +112,7 @@ class Rewards extends React.Component {
     getRewardsGeneralCounts: PropTypes.func.isRequired,
     pendingUpdate: PropTypes.bool,
     authenticated: PropTypes.bool,
+    users: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -119,6 +122,7 @@ class Rewards extends React.Component {
     pendingUpdate: false,
     location: {},
     authenticated: false,
+    users: {},
   };
 
   state = {
@@ -627,7 +631,7 @@ class Rewards extends React.Component {
         console.log(error);
       }
     };
-    const { intl, user } = this.props;
+    const { intl, user, users } = this.props;
     if (size(actualPropositions) !== 0) {
       if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
         return map(
@@ -668,6 +672,7 @@ class Rewards extends React.Component {
                 match={this.props.match}
                 getMessageHistory={getMessageHistory}
                 blacklistUsers={blacklistUsers}
+                users={users}
               />
             ),
         ),
