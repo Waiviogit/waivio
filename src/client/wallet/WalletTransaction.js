@@ -125,7 +125,14 @@ const WalletTransaction = ({
         <WalletFillOrderTransferred
           transactionDetails={transactionDetails}
           currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
           timestamp={transaction.timestamp}
+          exchanger={
+            currentUsername === transactionDetails.open_owner
+              ? transactionDetails.current_owner
+              : transactionDetails.open_owner
+          }
+          currentUsername={currentUsername}
         />
       );
     case accountHistoryConstants.CANCEL_ORDER:

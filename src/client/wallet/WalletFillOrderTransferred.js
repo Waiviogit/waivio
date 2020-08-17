@@ -4,38 +4,59 @@ import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { Link } from 'react-router-dom';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
-import WalletFillOrderGet from './WalletFillOrderGet';
 import { epochToUTC } from '../helpers/formatter';
 
-const WalletFillOrderTransferred = ({ transactionDetails, timestamp, currentPays }) => {
-  const url = `/@${transactionDetails.open_owner}`;
+const WalletFillOrderTransferred = ({
+  transactionDetails,
+  timestamp,
+  currentPays,
+  openPays,
+  exchanger,
+  currentUsername,
+}) => {
+  const url = `/@${exchanger}`;
   return (
     <React.Fragment>
-      <WalletFillOrderGet transactionDetails={transactionDetails} timestamp={timestamp} />
       <div className="UserWalletTransactions__transaction">
         <div className="UserWalletTransactions__avatar">
-          <Avatar username={transactionDetails.open_owner} size={40} />
+          <Avatar username={exchanger} size={40} />
         </div>
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient">
             <div>
               <FormattedMessage
-                id="fillOrder_wallet_transferred"
-                defaultMessage="Sold {current_pays} to {exchanger}"
+                id="exchange_with"
+                defaultMessage="Exchange with {exchanger}"
                 values={{
-                  current_pays: <span>{currentPays}</span>,
                   exchanger: (
                     <Link to={url}>
-                      <span className="username">{transactionDetails.open_owner}</span>
+                      <span className="username">{exchanger}</span>
                     </Link>
                   ),
                 }}
               />
             </div>
-            <div className="UserWalletTransactions__transfer">
-              {'- '}
-              {currentPays}
-            </div>
+            {currentUsername === transactionDetails.current_owner ? (
+              <span className="UserWalletTransactions__transfer">
+                {'- '}
+                {currentPays}
+                &ensp;
+                <span className="UserWalletTransactions__received">
+                  {'+ '}
+                  {openPays}
+                </span>
+              </span>
+            ) : (
+              <span className="UserWalletTransactions__transfer">
+                {'- '}
+                {openPays}
+                &ensp;
+                <span className="UserWalletTransactions__received">
+                  {'+ '}
+                  {currentPays}
+                </span>
+              </span>
+            )}
           </div>
           <span className="UserWalletTransactions__timestamp">
             <BTooltip
@@ -60,13 +81,17 @@ WalletFillOrderTransferred.propTypes = {
   transactionDetails: PropTypes.shape().isRequired,
   timestamp: PropTypes.number,
   currentPays: PropTypes.element,
-  open_owner: PropTypes.string,
+  openPays: PropTypes.element,
+  exchanger: PropTypes.string,
+  currentUsername: PropTypes.string,
 };
 
 WalletFillOrderTransferred.defaultProps = {
   timestamp: 0,
   currentPays: <span />,
-  open_owner: '',
+  openPays: <span />,
+  exchanger: '',
+  currentUsername: '',
 };
 
 export default WalletFillOrderTransferred;
