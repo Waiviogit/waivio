@@ -11,6 +11,7 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
 } from '../../reducers';
+import { MESSAGES, HISTORY } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import './Sidenav.less';
 
@@ -165,7 +166,7 @@ export default class SidenavRewards extends React.Component {
                         activeClassName="Sidenav__item--active"
                       >
                         {intl.formatMessage({
-                          id: 'history',
+                          id: HISTORY,
                           defaultMessage: `History`,
                         })}
                       </NavLink>
@@ -280,7 +281,7 @@ export default class SidenavRewards extends React.Component {
                       activeClassName="Sidenav__item--active"
                     >
                       {intl.formatMessage({
-                        id: 'messages',
+                        id: MESSAGES,
                         defaultMessage: `Messages`,
                       })}
                     </NavLink>

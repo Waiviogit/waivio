@@ -30,6 +30,7 @@ const Details = ({
 
   const isExpired = objectDetails.status === 'expired';
   const isInActive = objectDetails.status === 'inactive';
+  const proposedWobjName = proposedWobj.name;
 
   const getRequiredObjectName = () => {
     let result;
@@ -43,16 +44,16 @@ const Details = ({
 
   const getProposedWobjName = () => {
     let result;
-    if (proposedWobj.name && proposedWobj.name.includes('&')) {
-      result = proposedWobj.name.replace('&', '%26');
+    if (proposedWobjName && proposedWobjName.toString().includes('&')) {
+      result = proposedWobjName.replace('&', '%26');
     } else {
-      result = proposedWobj.name;
+      result = proposedWobjName;
     }
     return result;
   };
 
   const objName = getRequiredObjectName();
-  const proposedWobjName = getProposedWobjName();
+  const proposedWobjNewName = getProposedWobjName();
 
   return (
     <Modal
@@ -96,7 +97,7 @@ const Details = ({
           ) : (
             <Link
               // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
+              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
             >
               <Button type="primary">
                 {intl.formatMessage({
