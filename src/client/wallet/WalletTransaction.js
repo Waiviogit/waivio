@@ -15,7 +15,7 @@ import WalletProposalPay from './WalletProposalPay';
 
 import './UserWalletTransactions.less';
 
-const getFormattedTransactionAmount = (amount, currency) => {
+const getFormattedTransactionAmount = (amount, currency, type) => {
   if (!amount) {
     return null;
   }
@@ -23,6 +23,13 @@ const getFormattedTransactionAmount = (amount, currency) => {
   const transaction = amount.split(' ');
   const transactionAmount = parseFloat(transaction[0]);
   const transactionCurrency = currency || transaction[1];
+
+  if (type === accountHistoryConstants.CANCEL_ORDER) {
+    if (!transactionAmount) {
+      return null;
+    }
+  }
+
   return (
     <span>
       <FormattedNumber
@@ -132,8 +139,16 @@ const WalletTransaction = ({
       return (
         <WalletCancelOrder
           timestamp={transaction.timestamp}
-          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
-          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+          openPays={getFormattedTransactionAmount(
+            transactionDetails.open_pays,
+            undefined,
+            transactionType,
+          )}
+          currentPays={getFormattedTransactionAmount(
+            transactionDetails.current_pays,
+            undefined,
+            transactionType,
+          )}
         />
       );
     case accountHistoryConstants.PROPOSAL_PAY:
