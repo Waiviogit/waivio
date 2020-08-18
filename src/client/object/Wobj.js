@@ -149,6 +149,10 @@ export default class Wobj extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.clearObjectFromStore();
+  }
+
   toggleViewEditMode = isEditMode => {
     if (typeof isEditMode === 'boolean') {
       this.setState({ isEditMode });

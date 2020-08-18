@@ -3,14 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import { getRate, getAppUrl, getCommentsFromReserved } from '../../reducers';
+import {
+  getRate,
+  getAppUrl,
+  getCommentsFromReserved,
+  getAuthenticatedUserName,
+} from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import { getReservedComments } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
@@ -24,6 +29,7 @@ import './CampaignFooter.less';
     rate: getRate(state),
     appUrl: getAppUrl(state),
     reservedComments: getCommentsFromReserved(state),
+    userName: getAuthenticatedUserName(state),
   }),
   {
     getReservedComments,
@@ -65,6 +71,7 @@ class CampaignFooter extends React.Component {
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
     getReservedComments: PropTypes.func,
     reservedComments: PropTypes.shape(),
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -89,6 +96,7 @@ class CampaignFooter extends React.Component {
     onActionInitiated: () => {},
     getReservedComments: () => {},
     reservedComments: {},
+    userName: '',
   };
 
   constructor(props) {
@@ -126,19 +134,23 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition, match } = this.props;
+    const { proposition, match, userName } = this.props;
     const author = get(proposition, ['users', '0', 'name']);
     const permlink = get(proposition, ['users', '0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const currentUser = filter(
+      proposition.users,
+      user => user.name === userName && user.status === 'assigned',
+    );
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
         isRewards
           ? get(proposition, ['objects', '0', 'reservationCreated'])
-          : get(proposition, ['users', '0', 'createdAt']),
+          : get(currentUser, ['0', 'createdAt']),
         proposition.count_reservation_days,
       ),
     });
