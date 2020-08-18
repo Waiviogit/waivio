@@ -51,13 +51,13 @@ RewardBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
-  location: PropTypes.shape(),
+  location: PropTypes.string,
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
-  location: {},
+  location: '',
 };
 
 export default injectIntl(RewardBreadcrumb);

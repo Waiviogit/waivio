@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { message } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
-
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
