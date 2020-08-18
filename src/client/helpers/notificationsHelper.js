@@ -248,6 +248,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           rewardHBD: notification.rewardHBD,
         },
       );
+    case notificationConstants.CUSTOMER_SUPPORT:
+      return intl.formatMessage(
+        {
+          id: 'customer_support',
+          defaultMessage: '{author} asked about {campaignName}',
+        },
+        {
+          author: notification.author,
+          campaignName: notification.campaignName,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -297,6 +308,8 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.from}/transfers`;
     case notificationConstants.CLAIM_REWARD:
       return `/@${notification.account}`;
+    case notificationConstants.CUSTOMER_SUPPORT:
+      return `/@${currentAuthUsername}/${notification.permlink}`;
     default:
       return '/notifications-list';
   }
@@ -343,6 +356,8 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.from;
     case notificationConstants.CLAIM_REWARD:
       return notification.account;
+    case notificationConstants.CUSTOMER_SUPPORT:
+      return notification.author;
     default:
       return currentAuthUsername;
   }

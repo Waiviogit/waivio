@@ -148,7 +148,18 @@ class EditPost extends Component {
     const isReview = !isEmpty(campaignId);
     if (isReview)
       getCampaignById(campaignId)
-        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .then(campaignData => {
+          const requiredObj = get(campaignData.requiredObject, 'name', '');
+          const secondObj = get(campaignData.objects, '[0].name', '');
+          const reviewTitle = `Review: ${requiredObj}, ${secondObj}`;
+          return this.setState({
+            campaign: { ...campaignData, fetched: true },
+            draftContent: {
+              title: reviewTitle,
+            },
+            topics: [requiredObj, secondObj],
+          });
+        })
         .catch(error => {
           message.error(
             this.props.intl.formatMessage(
