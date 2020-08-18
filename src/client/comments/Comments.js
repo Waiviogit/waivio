@@ -80,6 +80,7 @@ export default class Comments extends React.Component {
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
+    getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
     parentAuthorIfGuest: PropTypes.string,
     parentPermlinkIfGuest: PropTypes.string,
@@ -102,6 +103,7 @@ export default class Comments extends React.Component {
     voteComment: () => {},
     sendComment: () => {},
     getMessageHistory: () => {},
+    getReservedComments: () => {},
   };
 
   state = {
@@ -176,6 +178,7 @@ export default class Comments extends React.Component {
       getMessageHistory,
       parentAuthorIfGuest,
       parentPermlinkIfGuest,
+      getReservedComments,
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
@@ -219,6 +222,7 @@ export default class Comments extends React.Component {
           match={this.props.match}
           parentAuthorIfGuest={parentAuthorIfGuest}
           parentPermlinkIfGuest={parentPermlinkIfGuest}
+          getReservedComments={getReservedComments}
         />
       )
     );

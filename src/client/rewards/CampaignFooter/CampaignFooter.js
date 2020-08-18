@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes, filter } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
@@ -113,6 +113,7 @@ class CampaignFooter extends React.Component {
       daysLeft: 0,
       loading: false,
       currentPost: {},
+      currentPostReserved: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -142,6 +143,8 @@ class CampaignFooter extends React.Component {
     );
     const author = get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
+    this.getReservedComments();
+
     if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
@@ -156,6 +159,23 @@ class CampaignFooter extends React.Component {
       ),
     });
   }
+
+  getReservedComments = () => {
+    const { proposition, userName } = this.props;
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
+    );
+    const author = get(currentUser, ['0', 'name']);
+    const permlink = get(currentUser, ['0', 'permlink']);
+    const { campaign_server: category } = proposition;
+    if (!isEmpty(author) && !isEmpty(permlink)) {
+      return this.props.getReservedComments({ category, author, permlink }).then(res => {
+        this.setState({ currentPostReserved: res.value });
+      });
+    }
+    return null;
+  };
 
   onLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
@@ -288,7 +308,13 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, daysLeft, sliderVisible, currentPost } = this.state;
+    const {
+      commentsVisible,
+      modalVisible,
+      daysLeft,
+      sliderVisible,
+      currentPostReserved,
+    } = this.state;
     const {
       post,
       postState,
@@ -324,7 +350,9 @@ class CampaignFooter extends React.Component {
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
-    const numberOfComments = currentPost.children;
+    const numberOfComments = postCurrent
+      ? size(commentsAll) - 1
+      : size(currentPostReserved.content) - 1;
     const currentUser = filter(
       proposition.users,
       usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
@@ -395,6 +423,7 @@ class CampaignFooter extends React.Component {
             match={match}
             parentAuthorIfGuest={parentAuthor}
             parentPermlinkIfGuest={parentPermlink}
+            getReservedComments={this.getReservedComments}
           />
         )}
         <Modal
