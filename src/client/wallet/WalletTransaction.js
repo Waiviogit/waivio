@@ -44,6 +44,10 @@ const WalletTransaction = ({
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
   const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
+  const fillOrderExchanger =
+    currentUsername === transactionDetails.open_owner
+      ? transactionDetails.current_owner
+      : transactionDetails.open_owner;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -127,11 +131,7 @@ const WalletTransaction = ({
           currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
           openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
           timestamp={transaction.timestamp}
-          exchanger={
-            currentUsername === transactionDetails.open_owner
-              ? transactionDetails.current_owner
-              : transactionDetails.open_owner
-          }
+          exchanger={fillOrderExchanger}
           currentUsername={currentUsername}
         />
       );

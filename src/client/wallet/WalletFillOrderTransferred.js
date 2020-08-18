@@ -6,6 +6,24 @@ import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
+// eslint-disable-next-line consistent-return
+const selectCurrectValue = (transactionDetails, currentPays, openPays, currentUsername) => {
+  const userEqual = currentUsername === transactionDetails.current_owner;
+  if (currentUsername === transactionDetails.current_owner) {
+    return (
+      <span className="UserWalletTransactions__transfer">
+        {'- '}
+        {userEqual ? currentPays : openPays}
+        &ensp;
+        <span className="UserWalletTransactions__received">
+          {'+ '}
+          {userEqual ? openPays : currentPays}
+        </span>
+      </span>
+    );
+  }
+};
+
 const WalletFillOrderTransferred = ({
   transactionDetails,
   timestamp,
@@ -36,27 +54,7 @@ const WalletFillOrderTransferred = ({
                 }}
               />
             </div>
-            {currentUsername === transactionDetails.current_owner ? (
-              <span className="UserWalletTransactions__transfer">
-                {'- '}
-                {currentPays}
-                &ensp;
-                <span className="UserWalletTransactions__received">
-                  {'+ '}
-                  {openPays}
-                </span>
-              </span>
-            ) : (
-              <span className="UserWalletTransactions__transfer">
-                {'- '}
-                {openPays}
-                &ensp;
-                <span className="UserWalletTransactions__received">
-                  {'+ '}
-                  {currentPays}
-                </span>
-              </span>
-            )}
+            {selectCurrectValue(transactionDetails, currentPays, openPays, currentUsername)}
           </div>
           <span className="UserWalletTransactions__timestamp">
             <BTooltip
