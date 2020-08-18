@@ -14,6 +14,7 @@ import { getDaysLeft } from '../rewardsHelper';
 import {
   getRate,
   getAppUrl,
+  isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
 } from '../../reducers';
@@ -31,6 +32,7 @@ import './CampaignFooter.less';
     appUrl: getAppUrl(state),
     reservedComments: getCommentsFromReserved(state),
     userName: getAuthenticatedUserName(state),
+    isGuest: isGuestUser(state),
   }),
   {
     getReservedComments,
@@ -73,6 +75,7 @@ class CampaignFooter extends React.Component {
     getReservedComments: PropTypes.func,
     reservedComments: PropTypes.shape(),
     userName: PropTypes.string,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -98,6 +101,7 @@ class CampaignFooter extends React.Component {
     getReservedComments: () => {},
     reservedComments: {},
     userName: '',
+    isGuest: false,
   };
 
   constructor(props) {
@@ -161,12 +165,12 @@ class CampaignFooter extends React.Component {
   }
 
   getReservedComments = () => {
-    const { proposition, userName } = this.props;
+    const { proposition, userName, isGuest } = this.props;
     const currentUser = filter(
       proposition.users,
       usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
     );
-    const author = get(currentUser, ['0', 'name']);
+    const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
     if (!isEmpty(author) && !isEmpty(permlink)) {
