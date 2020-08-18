@@ -1333,5 +1333,6 @@
   "profile_email_placeholder": "Ваш email",
   "allow_to_publish_e-mail": "Я разрешаю публиковать e-mail на моей странице",
   "create_new_campaign": "Создать новую кампанию",
-  "customer_support": "{author} спрашивает о {campaignName}"
+  "customer_support": "{author} спрашивает о {campaignName}",
+  "notify_campaign": "компании"
 }
