@@ -16,9 +16,9 @@ import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
-import '../../components/StoryFooter/Buttons.less';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
+import '../../components/StoryFooter/Buttons.less';
 
 @injectIntl
 @withAuthActions
@@ -550,13 +550,22 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, numberOfComments, daysLeft, propositionStatus, user, proposition } = this.props;
+    const {
+      intl,
+      numberOfComments,
+      daysLeft,
+      propositionStatus,
+      user,
+      proposition,
+      match,
+    } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', this.assigned]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const status = get(proposition, ['users', '0', 'status'], '');
+    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
+    const status = isReserved ? 'assigned' : get(proposition, ['users', '0', 'status'], '');
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
 
     return (

@@ -39,6 +39,7 @@ const Proposition = ({
   user,
   blacklistUsers,
   users,
+  wobjPrice,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -154,7 +155,12 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} match={match} />
+        <CampaignCardHeader
+          campaignData={proposition}
+          isWobjAssigned={assigned}
+          wobjPrice={wobjPrice}
+          match={match}
+        />
       </div>
       <div className="Proposition__card">
         <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
