@@ -7,10 +7,10 @@ import Avatar from '../../components/Avatar';
 import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData, match }) => {
+const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPrice }) => {
   const currentUSDPrice = getCurrentUSDPrice();
-  const price = get(campaignData, ['objects', '0', 'reward']);
-  const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
+  const price = get(campaignData, ['objects', '0', 'reward']) || wobjPrice;
+  const isAssigned = get(campaignData, ['objects', '0', 'assigned']) || isWobjAssigned;
   const isMessages =
     match &&
     (includes(match.url, 'history') ||
@@ -83,6 +83,13 @@ CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
+  isWobjAssigned: PropTypes.bool,
+  wobjPrice: PropTypes.number,
+};
+
+CampaignCardHeader.defaultProps = {
+  isWobjAssigned: false,
+  wobjPrice: 0,
 };
 
 export default injectIntl(CampaignCardHeader);

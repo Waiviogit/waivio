@@ -99,7 +99,7 @@ const ObjectCardView = ({
               )}
               <div className="ObjectCardView__name">
                 <Link
-                  to={pathName}
+                  to={`/object/${wObject.author_permlink}`}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
                 >
