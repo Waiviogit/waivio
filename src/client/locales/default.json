@@ -1331,7 +1331,9 @@
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
   "create_new_campaign": "Create new campaign",
   "profile_email_placeholder": "Your email",
+  "history_of_reservations": "History of reservations",
   "allow_to_publish_e-mail": "I allow to publish e-mail on my page",
+  "exchange_with": "Exchange with {exchanger}",
   "customer_support": "{author} asked about {campaignName}",
   "notify_campaign": "campaign",
   "cancel_limit_order": "Cancel limit order"

@@ -22,10 +22,7 @@ const WalletLimitOrder = ({ timestamp, openPays, currentPays }) => {
               }}
             />
           </div>
-          <div className="UserWalletTransactions__transfer">
-            {'- '}
-            {currentPays}
-          </div>
+          <div className="UserWalletTransactions__limit-order">{currentPays}</div>
         </div>
         <span className="UserWalletTransactions__timestamp">
           <BTooltip

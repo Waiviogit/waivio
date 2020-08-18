@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get, memoize } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
+import { ASSIGNED } from '../../../common/constants/rewards';
 import './CheckReviewModal.less';
 
 const getReviewRequirements = memoize((campaign, authorName) => ({
@@ -9,7 +10,7 @@ const getReviewRequirements = memoize((campaign, authorName) => ({
     minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
     secondaryObject: campaign.requiredObject,
     primaryObject: get(
-      campaign.users.find(user => user.status === 'assigned' && user.name === authorName),
+      campaign.users.find(user => user.status === ASSIGNED && user.name === authorName),
       'object_permlink',
       '',
     ),
