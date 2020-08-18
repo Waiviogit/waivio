@@ -35,8 +35,22 @@ import { notify } from '../app/Notification/notificationActions';
       {
         getComments: commentsActions.getComments,
         voteComment: (id, percent, vote) => commentsActions.likeComment(id, percent, vote),
-        sendComment: (parentPost, body, isUpdating, originalPost) =>
-          commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
+        sendComment: (
+          parentPost,
+          body,
+          isUpdating,
+          originalPost,
+          parentAuthorIfGuest,
+          parentPermlinkIfGuest,
+        ) =>
+          commentsActions.sendComment(
+            parentPost,
+            body,
+            isUpdating,
+            originalPost,
+            parentAuthorIfGuest,
+            parentPermlinkIfGuest,
+          ),
         notify,
       },
       dispatch,
@@ -67,6 +81,8 @@ export default class Comments extends React.Component {
     sendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
     match: PropTypes.shape(),
+    parentAuthorIfGuest: PropTypes.string,
+    parentPermlinkIfGuest: PropTypes.string,
   };
 
   static defaultProps = {
@@ -79,6 +95,8 @@ export default class Comments extends React.Component {
     show: false,
     isQuickComments: false,
     match: {},
+    parentAuthorIfGuest: '',
+    parentPermlinkIfGuest: '',
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
@@ -156,6 +174,8 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
       getMessageHistory,
+      parentAuthorIfGuest,
+      parentPermlinkIfGuest,
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
@@ -197,6 +217,8 @@ export default class Comments extends React.Component {
           onSendComment={this.props.sendComment}
           getMessageHistory={getMessageHistory}
           match={this.props.match}
+          parentAuthorIfGuest={parentAuthorIfGuest}
+          parentPermlinkIfGuest={parentPermlinkIfGuest}
         />
       )
     );

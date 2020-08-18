@@ -136,16 +136,16 @@ class CampaignFooter extends React.Component {
 
   componentDidMount() {
     const { proposition, match, userName } = this.props;
-    const author = get(proposition, ['users', '0', 'name']);
-    const permlink = get(proposition, ['users', '0', 'permlink']);
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
+    );
+    const author = get(currentUser, ['0', 'name']);
+    const permlink = get(currentUser, ['0', 'permlink']);
     if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
-    const currentUser = filter(
-      proposition.users,
-      user => user.name === userName && user.status === ASSIGNED,
-    );
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
@@ -309,6 +309,7 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
+      userName,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -324,6 +325,12 @@ class CampaignFooter extends React.Component {
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
     const numberOfComments = currentPost.children;
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
+    );
+    const parentAuthor = get(currentUser, ['0', 'rootName']);
+    const parentPermlink = get(currentUser, ['0', 'permlink']);
 
     return (
       <div className="CampaignFooter">
@@ -386,6 +393,8 @@ class CampaignFooter extends React.Component {
             post={this.state.currentPost}
             getMessageHistory={getMessageHistory}
             match={match}
+            parentAuthorIfGuest={parentAuthor}
+            parentPermlinkIfGuest={parentPermlink}
           />
         )}
         <Modal

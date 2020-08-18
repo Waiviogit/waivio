@@ -52,6 +52,8 @@ class Comments extends React.Component {
     getMessageHistory: PropTypes.func,
     getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
+    parentAuthorIfGuest: PropTypes.string,
+    parentPermlinkIfGuest: PropTypes.string,
   };
 
   static defaultProps = {
@@ -65,6 +67,8 @@ class Comments extends React.Component {
     show: false,
     isQuickComments: false,
     match: {},
+    parentAuthorIfGuest: '',
+    parentPermlinkIfGuest: '',
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
@@ -175,13 +179,20 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl } = this.props;
+    const { intl, parentAuthorIfGuest, parentPermlinkIfGuest } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     this.setState({ showCommentFormLoading: true });
     return this.props
-      .onSendComment(parentPost, commentValue)
+      .onSendComment(
+        parentPost,
+        commentValue,
+        false,
+        {},
+        parentAuthorIfGuest,
+        parentPermlinkIfGuest,
+      )
       .then(() => {
         setTimeout(() => {
           this.onCommentSend().then(() => {
