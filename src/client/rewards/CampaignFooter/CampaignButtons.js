@@ -97,6 +97,11 @@ export default class CampaignButtons extends React.Component {
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+
+    this.matchParams = this.props.match.params[0];
+    this.guideHistory = 'guideHistory';
+    this.messages = 'messages';
+    this.assigned = 'assigned';
   }
 
   componentDidMount() {
@@ -294,9 +299,9 @@ export default class CampaignButtons extends React.Component {
   };
 
   getPopoverMenu = () => {
-    const { propositionStatus, match } = this.props;
+    const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (match.params[0] === 'messages' || match.params[0] === 'guideHistory') {
+    if (this.matchParams === this.messages || this.matchParams === this.guideHistory) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -373,7 +378,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName =
-      match.params[0] === 'messages' || match.params[0] === 'guideHistory'
+      this.matchParams === this.messages || this.matchParams === this.guideHistory
         ? propositionUserName
         : user.name;
     const toggleModalReport = e => {
@@ -545,17 +550,9 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const {
-      intl,
-      numberOfComments,
-      daysLeft,
-      propositionStatus,
-      match,
-      user,
-      proposition,
-    } = this.props;
+    const { intl, numberOfComments, daysLeft, propositionStatus, user, proposition } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
-    const isAssigned = get(proposition, ['objects', '0', 'assigned']);
+    const isAssigned = get(proposition, ['objects', '0', this.assigned]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
@@ -591,7 +588,7 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {(isAssigned || status === 'assigned') && (
+        {(isAssigned || status === this.assigned) && this.matchParams !== this.guideHistory && (
           <React.Fragment>
             <Button type="primary" onClick={this.openModalDetails}>
               {intl.formatMessage({
@@ -601,7 +598,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {(match.params[0] === 'messages' || match.params[0] === 'guideHistory') && (
+        {(this.matchParams === this.messages || this.matchParams === this.guideHistory) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
@@ -610,7 +607,7 @@ export default class CampaignButtons extends React.Component {
             <WeightTag weight={propositionUserWeight} />
           </div>
         )}
-        {propositionStatus === 'completed' && match.params[0] === 'history' && (
+        {propositionStatus === 'completed' && this.matchParams === 'history' && (
           <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
               id: 'review',

@@ -91,7 +91,7 @@ const Proposition = ({
     const getJsonData = () => {
       if (!isEmpty(user)) {
         try {
-          return JSON.parse(user.posting_json_metadata);
+          return JSON.parse(user.posting_json_metadata) || JSON.parse(user.json_metadata);
         } catch (err) {
           message.error(
             intl.formatMessage({
