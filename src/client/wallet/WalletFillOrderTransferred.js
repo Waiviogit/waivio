@@ -6,7 +6,6 @@ import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
 
-// eslint-disable-next-line consistent-return
 const selectCurrectValue = (transactionDetails, currentPays, openPays, currentUsername) => {
   const userEqual = currentUsername === transactionDetails.current_owner;
   const currentValue = userEqual
