@@ -125,19 +125,25 @@
     }
   }
 
+  &__limit-order {
+    color: @black;
+    margin-left: auto;
+  }
+
   &__received.guest {
     color: @grey-mortar;
     margin-left: auto;
   }
 
   &__payout {
+    color: @green;
     margin-left: auto;
   }
 
   &__payout-rewards {
-    &:after {
-      content: ' - ';
-      color: @blue-botticelli;
+    &:before {
+      content: ' + ';
+      color: @green;
     }
 
     &:last-of-type {

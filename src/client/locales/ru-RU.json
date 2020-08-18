@@ -880,7 +880,7 @@
   "compensation_account": "Компенсационный счет",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Накапливает значение лайков из зарегистрированных спонсорских аккаунтов",
   "users_auto_complete_placeholder": "Найти пользователя",
-  "activate_campaign": "Активировать компании с наградами",
+  "activate_campaign": "Активировать кампании с наградами",
   "amount_sort": "количество",
   "expiry_sort": "истечение",
   "proximity_sort": "ближайшие",
@@ -1333,5 +1333,6 @@
   "profile_email_placeholder": "Ваш email",
   "allow_to_publish_e-mail": "Я разрешаю публиковать e-mail на моей странице",
   "create_new_campaign": "Создать новую кампанию",
-  "history_of_reservations": "История резервирования"
+  "history_of_reservations": "История резервирования",
+  "exchange_with": "Обмен с {exchanger}"
 }
