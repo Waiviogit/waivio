@@ -11,6 +11,7 @@ import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/Popov
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
+import { GUIDE_HISTORY, MESSAGES, ASSIGNED, HISTORY } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward } from '../../user/userActions';
@@ -99,9 +100,6 @@ export default class CampaignButtons extends React.Component {
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
     this.matchParams = this.props.match.params[0];
-    this.guideHistory = 'guideHistory';
-    this.messages = 'messages';
-    this.assigned = 'assigned';
   }
 
   componentDidMount() {
@@ -236,7 +234,7 @@ export default class CampaignButtons extends React.Component {
             .catch(error => reject(error));
         }, 10000);
       });
-      if (match.params[0] === 'history') {
+      if (match.params[0] === HISTORY) {
         message.success(
           this.props.intl.formatMessage({
             id: 'reward_has_been_decreased',
@@ -301,7 +299,7 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (this.matchParams === this.messages || this.matchParams === this.guideHistory) {
+    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -378,7 +376,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName =
-      this.matchParams === this.messages || this.matchParams === this.guideHistory
+      this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY
         ? propositionUserName
         : user.name;
     const toggleModalReport = e => {
@@ -560,12 +558,12 @@ export default class CampaignButtons extends React.Component {
       match,
     } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
-    const isAssigned = get(proposition, ['objects', '0', this.assigned]);
+    const isAssigned = get(proposition, ['objects', '0', ASSIGNED]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
     const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
-    const status = isReserved ? 'assigned' : get(proposition, ['users', '0', 'status'], '');
+    const status = isReserved ? ASSIGNED : get(proposition, ['users', '0', 'status'], '');
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
 
     return (
@@ -597,7 +595,7 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {(isAssigned || status === this.assigned) && this.matchParams !== this.guideHistory && (
+        {(isAssigned || status === ASSIGNED) && this.matchParams !== GUIDE_HISTORY && (
           <React.Fragment>
             <Button type="primary" onClick={this.openModalDetails}>
               {intl.formatMessage({
@@ -607,7 +605,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {(this.matchParams === this.messages || this.matchParams === this.guideHistory) && (
+        {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
@@ -616,7 +614,7 @@ export default class CampaignButtons extends React.Component {
             <WeightTag weight={propositionUserWeight} />
           </div>
         )}
-        {propositionStatus === 'completed' && this.matchParams === 'history' && (
+        {propositionStatus === 'completed' && this.matchParams === HISTORY && (
           <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
               id: 'review',

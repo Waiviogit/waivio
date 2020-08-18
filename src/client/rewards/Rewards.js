@@ -53,6 +53,7 @@ import {
   getSortChanged,
   getSort,
 } from './rewardsHelper';
+import { MESSAGES, HISTORY, GUIDE_HISTORY } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -244,11 +245,11 @@ class Rewards extends React.Component {
         return this.setState({ sortEligible: sort });
       case 'reserved':
         return this.setState({ sortReserved: sort });
-      case 'history':
+      case HISTORY:
         return this.setState({ sortHistory: sort });
-      case 'messages':
+      case MESSAGES:
         return this.setState({ sortMessages: sort });
-      case 'guideHistory':
+      case GUIDE_HISTORY:
         return this.setState({ sortGuideHistory: sort });
       default:
         return this.setState({ sortAll: sort });
@@ -270,9 +271,9 @@ class Rewards extends React.Component {
   };
 
   setFilters = (filterKey, activeFilters) => {
-    if (filterKey === 'history') {
+    if (filterKey === HISTORY) {
       this.setState({ activeHistoryFilters: activeFilters });
-    } else if (filterKey === 'guideHistory') {
+    } else if (filterKey === GUIDE_HISTORY) {
       this.setState({ activeGuideHistoryFilters: activeFilters });
     } else {
       this.setState({ activeMessagesFilters: activeFilters });
@@ -284,10 +285,10 @@ class Rewards extends React.Component {
     const paramsKey = match.params[0];
     let activeFilters;
     switch (paramsKey) {
-      case 'history':
+      case HISTORY:
         activeFilters = this.state.activeHistoryFilters;
         break;
-      case 'guideHistory':
+      case GUIDE_HISTORY:
         activeFilters = this.state.activeGuideHistoryFilters;
         break;
       default:
@@ -967,9 +968,9 @@ class Rewards extends React.Component {
                 </div>
               </Affix>
             )}
-            {(includes(match.url, 'history') ||
-              includes(match.url, 'guideHistory') ||
-              includes(match.url, 'messages')) && (
+            {(includes(match.url, HISTORY) ||
+              includes(match.url, GUIDE_HISTORY) ||
+              includes(match.url, MESSAGES)) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
