@@ -591,7 +591,7 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {isAssigned && (
+        {(isAssigned || status === 'assigned') && (
           <React.Fragment>
             <Button type="primary" onClick={this.openModalDetails}>
               {intl.formatMessage({
