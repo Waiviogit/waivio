@@ -9,19 +9,27 @@ import { epochToUTC } from '../helpers/formatter';
 // eslint-disable-next-line consistent-return
 const selectCurrectValue = (transactionDetails, currentPays, openPays, currentUsername) => {
   const userEqual = currentUsername === transactionDetails.current_owner;
-  if (currentUsername === transactionDetails.current_owner) {
-    return (
-      <span className="UserWalletTransactions__transfer">
-        {'- '}
-        {userEqual ? currentPays : openPays}
-        &ensp;
-        <span className="UserWalletTransactions__received">
-          {'+ '}
-          {userEqual ? openPays : currentPays}
-        </span>
+  const currentValue = userEqual
+    ? {
+        transfer: currentPays,
+        received: openPays,
+      }
+    : {
+        transfer: openPays,
+        received: currentPays,
+      };
+
+  return (
+    <span className="UserWalletTransactions__transfer">
+      {'- '}
+      {currentValue.transfer}
+      &ensp;
+      <span className="UserWalletTransactions__received">
+        {'+ '}
+        {currentValue.received}
       </span>
-    );
-  }
+    </span>
+  );
 };
 
 const WalletFillOrderTransferred = ({
