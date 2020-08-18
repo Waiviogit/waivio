@@ -154,7 +154,6 @@ class CreateObject extends React.Component {
               }),
               'success',
             );
-            this.props.history.push(`/object/${parentPermlink}`);
             this.props.onCreateObject(
               {
                 id: parentPermlink,
@@ -177,6 +176,7 @@ class CreateObject extends React.Component {
               },
               { locale: values.locale },
             );
+            this.onCloseModal();
           })
           .catch(error => {
             this.props.notify(
