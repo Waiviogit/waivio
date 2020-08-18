@@ -15,7 +15,7 @@ import WalletProposalPay from './WalletProposalPay';
 
 import './UserWalletTransactions.less';
 
-const getFormattedTransactionAmount = (amount, currency) => {
+const getFormattedTransactionAmount = (amount, currency, type) => {
   if (!amount) {
     return null;
   }
@@ -23,6 +23,13 @@ const getFormattedTransactionAmount = (amount, currency) => {
   const transaction = amount.split(' ');
   const transactionAmount = parseFloat(transaction[0]);
   const transactionCurrency = currency || transaction[1];
+
+  if (type === accountHistoryConstants.CANCEL_ORDER) {
+    if (!transactionAmount) {
+      return null;
+    }
+  }
+
   return (
     <span>
       <FormattedNumber
@@ -44,6 +51,10 @@ const WalletTransaction = ({
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
   const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
+  const fillOrderExchanger =
+    currentUsername === transactionDetails.open_owner
+      ? transactionDetails.current_owner
+      : transactionDetails.open_owner;
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
@@ -125,15 +136,26 @@ const WalletTransaction = ({
         <WalletFillOrderTransferred
           transactionDetails={transactionDetails}
           currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
           timestamp={transaction.timestamp}
+          exchanger={fillOrderExchanger}
+          currentUsername={currentUsername}
         />
       );
     case accountHistoryConstants.CANCEL_ORDER:
       return (
         <WalletCancelOrder
           timestamp={transaction.timestamp}
-          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
-          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+          openPays={getFormattedTransactionAmount(
+            transactionDetails.open_pays,
+            undefined,
+            transactionType,
+          )}
+          currentPays={getFormattedTransactionAmount(
+            transactionDetails.current_pays,
+            undefined,
+            transactionType,
+          )}
         />
       );
     case accountHistoryConstants.PROPOSAL_PAY:

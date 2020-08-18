@@ -4,18 +4,19 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { get, includes } from 'lodash';
 import Avatar from '../../components/Avatar';
+import { GUIDE_HISTORY, MESSAGES, HISTORY, ASSIGNED } from '../../../common/constants/rewards';
 import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData, match }) => {
+const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPrice }) => {
   const currentUSDPrice = getCurrentUSDPrice();
-  const price = get(campaignData, ['objects', '0', 'reward']);
-  const isAssigned = get(campaignData, ['objects', '0', 'assigned']);
+  const price = get(campaignData, ['objects', '0', 'reward']) || wobjPrice;
+  const isAssigned = get(campaignData, ['objects', '0', ASSIGNED]) || isWobjAssigned;
   const isMessages =
     match &&
-    (includes(match.url, 'history') ||
-      includes(match.url, 'guideHistory') ||
-      includes(match.url, 'messages'));
+    (includes(match.url, HISTORY) ||
+      includes(match.url, GUIDE_HISTORY) ||
+      includes(match.url, MESSAGES));
   const rewardPriceHive = `${
     price ? price.toFixed(3) : (campaignData.reward / currentUSDPrice).toFixed(3)
   } HIVE`;
@@ -82,7 +83,15 @@ const CampaignCardHeader = ({ intl, campaignData, match }) => {
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
+  match: PropTypes.shape(),
+  isWobjAssigned: PropTypes.bool,
+  wobjPrice: PropTypes.number,
+};
+
+CampaignCardHeader.defaultProps = {
+  isWobjAssigned: false,
+  wobjPrice: 0,
+  match: {},
 };
 
 export default injectIntl(CampaignCardHeader);
