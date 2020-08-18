@@ -7,6 +7,7 @@ import { findKey, find, get, isEmpty, map, includes, filter } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
+import { ASSIGNED } from '../../../common/constants/rewards';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
@@ -143,7 +144,7 @@ class CampaignFooter extends React.Component {
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
     const currentUser = filter(
       proposition.users,
-      user => user.name === userName && user.status === 'assigned',
+      user => user.name === userName && user.status === ASSIGNED,
     );
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({

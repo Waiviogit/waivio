@@ -31,4 +31,12 @@ export const CAMPAIGNS_TYPES_MESSAGES = {
   close: 'closed',
 };
 
+export const GUIDE_HISTORY = 'guideHistory';
+
+export const MESSAGES = 'messages';
+
+export const HISTORY = 'history';
+
+export const ASSIGNED = 'assigned';
+
 export default null;
