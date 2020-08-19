@@ -140,13 +140,15 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition, match, userName } = this.props;
-    const currentUser = filter(
-      proposition.users,
-      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
-    );
-    const author = get(currentUser, ['0', 'name']);
-    const permlink = get(currentUser, ['0', 'permlink']);
+    const { proposition, match } = this.props;
+    const currentUser = this.getCurrentUser();
+    const isReserved = match.params.filterKey === 'reserved';
+    const author = isReserved
+      ? get(currentUser, ['0', 'name'])
+      : get(proposition, ['users', '0', 'name']);
+    const permlink = isReserved
+      ? get(currentUser, ['0', 'permlink'])
+      : get(proposition, ['users', '0', 'permlink']);
     this.getReservedComments();
 
     if (!isEmpty(author) && !isEmpty(permlink)) {
@@ -164,12 +166,17 @@ class CampaignFooter extends React.Component {
     });
   }
 
-  getReservedComments = () => {
-    const { proposition, userName, isGuest } = this.props;
-    const currentUser = filter(
+  getCurrentUser = () => {
+    const { proposition, userName } = this.props;
+    return filter(
       proposition.users,
       usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
     );
+  };
+
+  getReservedComments = () => {
+    const { proposition, isGuest } = this.props;
+    const currentUser = this.getCurrentUser();
     const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
@@ -339,7 +346,6 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
-      userName,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -357,10 +363,7 @@ class CampaignFooter extends React.Component {
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-    const currentUser = filter(
-      proposition.users,
-      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
-    );
+    const currentUser = this.getCurrentUser();
     const parentAuthor = get(currentUser, ['0', 'rootName']);
     const parentPermlink = get(currentUser, ['0', 'permlink']);
 

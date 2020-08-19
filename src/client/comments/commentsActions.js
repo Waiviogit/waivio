@@ -164,10 +164,12 @@ export const sendComment = (
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
+  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
+
   const author = isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating
     ? originalComment.permlink
-    : createCommentPermlink(parentAuthor, parentPermlink);
+    : createCommentPermlink(parentAuthor, parentPermlinkToSend);
 
   const jsonMetadata = createPostMetadata(
     body,
@@ -187,8 +189,6 @@ export const sendComment = (
     });
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
-
-  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
 
   return dispatch({
     type: SEND_COMMENT,
