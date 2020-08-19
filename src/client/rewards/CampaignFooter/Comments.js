@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { find, get, pick } from 'lodash';
+import { find, get, pick, isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
@@ -173,6 +173,8 @@ const Comments = ({
     });
   };
 
+  const parentPost = !isEmpty(parent) ? parent : commentObj;
+
   return (
     <React.Fragment>
       {show && (
@@ -271,7 +273,7 @@ const Comments = ({
             )}
             {editable && editing && (
               <QuickCommentEditor
-                parentPost={parent || commentObj}
+                parentPost={parentPost}
                 username={user.name}
                 onSubmit={handleEditComment}
                 isLoading={loading}
