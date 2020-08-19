@@ -14,6 +14,7 @@ class ObjectWeightBlock extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
     authUser: PropTypes.string,
+    locale: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -27,7 +28,15 @@ class ObjectWeightBlock extends React.Component {
   };
 
   componentDidMount() {
-    getWobjectsWithUserWeight(this.props.username, 0, 5, this.props.authUser)
+    getWobjectsWithUserWeight(
+      this.props.username,
+      0,
+      5,
+      this.props.authUser,
+      null,
+      null,
+      this.props.locale,
+    )
       .then(response => {
         this.setState({
           wObjects: response.wobjects,

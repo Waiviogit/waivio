@@ -8,7 +8,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelper';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
 
 require('isomorphic-fetch');
@@ -93,16 +93,17 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const skip = 0;
   const limit = state.auth.user.objects_following_count;
   const authUserName = getAuthenticatedUserName(state);
+  const locale = getLocale(state);
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
-  const targetUsername = username || store.getAuthenticatedUserName(state);
+  const targetUsername = username || authUserName;
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit, authUserName, locale),
     },
   });
 };

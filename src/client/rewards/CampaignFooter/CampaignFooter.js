@@ -3,25 +3,39 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
+import { ASSIGNED } from '../../../common/constants/rewards';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
-import { getRate, getAppUrl } from '../../reducers';
+import {
+  getRate,
+  getAppUrl,
+  getCommentsFromReserved,
+  getAuthenticatedUserName,
+} from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
+import { getReservedComments } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import './CampaignFooter.less';
 
 @injectIntl
 @withAuthActions
-@connect(state => ({
-  rate: getRate(state),
-  appUrl: getAppUrl(state),
-}))
+@connect(
+  state => ({
+    rate: getRate(state),
+    appUrl: getAppUrl(state),
+    reservedComments: getCommentsFromReserved(state),
+    userName: getAuthenticatedUserName(state),
+  }),
+  {
+    getReservedComments,
+  },
+)
 class CampaignFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
@@ -33,13 +47,13 @@ class CampaignFooter extends React.Component {
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     likeComment: PropTypes.func.isRequired,
     unfollowUser: PropTypes.func.isRequired,
     unfollowObject: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
     followObject: PropTypes.func.isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
     pendingLike: PropTypes.bool,
@@ -56,6 +70,9 @@ class CampaignFooter extends React.Component {
     match: PropTypes.shape().isRequired,
     getMessageHistory: PropTypes.func,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+    getReservedComments: PropTypes.func,
+    reservedComments: PropTypes.shape(),
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -76,6 +93,11 @@ class CampaignFooter extends React.Component {
     isComment: false,
     getMessageHistory: () => {},
     blacklistUsers: [],
+    defaultVotePercent: 0,
+    onActionInitiated: () => {},
+    getReservedComments: () => {},
+    reservedComments: {},
+    userName: '',
   };
 
   constructor(props) {
@@ -113,20 +135,23 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { proposition, match } = this.props;
-    const author = get(proposition, ['objects', '0', 'author']);
-    const permlink = get(proposition, ['objects', '0', 'permlink']);
-
-    if (author && permlink) {
+    const { proposition, match, userName } = this.props;
+    const author = get(proposition, ['users', '0', 'name']);
+    const permlink = get(proposition, ['users', '0', 'permlink']);
+    if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
     const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const currentUser = filter(
+      proposition.users,
+      user => user.name === userName && user.status === ASSIGNED,
+    );
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       daysLeft: getDaysLeft(
         isRewards
           ? get(proposition, ['objects', '0', 'reservationCreated'])
-          : get(proposition, ['users', '0', 'createdAt']),
+          : get(currentUser, ['0', 'createdAt']),
         proposition.count_reservation_days,
       ),
     });
@@ -230,17 +255,40 @@ class CampaignFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
-  toggleCommentsVisibility = isVisible => {
-    const { proposition } = this.props;
-    const hasComments = !isEmpty(proposition.conversation);
+  toggleCommentsVisibility = () => {
+    const { proposition, reservedComments } = this.props;
+    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
     if (hasComments) {
-      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
+      this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
     }
     this.setState({ isComment: !this.state.isComment });
   };
 
+  handleCommentClick = () => {
+    const { currentPost, commentsVisible } = this.state;
+    const { category, author, permlink } = currentPost;
+    if (!commentsVisible) {
+      this.props
+        .getReservedComments({ category, author, permlink })
+        .then(() => {
+          this.setState({ reservedComments: this.props.reservedComments });
+          this.toggleCommentsVisibility();
+        })
+        .catch(() => {
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'error_boundary_page',
+              defaultMessage: 'Something went wrong',
+            }),
+          );
+        });
+    } else {
+      this.toggleCommentsVisibility();
+    }
+  };
+
   render() {
-    const { commentsVisible, modalVisible, daysLeft, sliderVisible } = this.state;
+    const { commentsVisible, modalVisible, daysLeft, sliderVisible, currentPost } = this.state;
     const {
       post,
       postState,
@@ -260,6 +308,7 @@ class CampaignFooter extends React.Component {
       user,
       getMessageHistory,
       blacklistUsers,
+      reservedComments,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -269,12 +318,12 @@ class CampaignFooter extends React.Component {
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
     const postCurrent = proposition.conversation;
-    const hasComments = !isEmpty(proposition.conversation);
-    const commentsAll = get(postCurrent, ['all']);
+    const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
+    const commentsAll = get(postCurrent, ['all']) || reservedComments;
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
-    const numberOfComments = commentsArr.length;
+    const numberOfComments = currentPost.children;
 
     return (
       <div className="CampaignFooter">
@@ -296,7 +345,7 @@ class CampaignFooter extends React.Component {
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
               onEditClick={this.handleEditClick}
-              onCommentClick={this.toggleCommentsVisibility}
+              onCommentClick={this.handleCommentClick}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
               propositionGuideName={proposition.guide.name}
@@ -320,7 +369,7 @@ class CampaignFooter extends React.Component {
         )}
         {hasComments &&
           map(commentsArr, currentComment => (
-            <div>
+            <div key={currentComment.post_id}>
               <CommentsMessages
                 show={commentsVisible}
                 user={user}
@@ -335,6 +384,8 @@ class CampaignFooter extends React.Component {
             show={commentsVisible}
             isQuickComments={!singlePostVew}
             post={this.state.currentPost}
+            getMessageHistory={getMessageHistory}
+            match={match}
           />
         )}
         <Modal

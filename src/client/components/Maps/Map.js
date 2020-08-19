@@ -47,7 +47,7 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: 0,
+      zoom: this.props.match.params.filterKey === 'reserved' ? DEFAULT_ZOOM : 0,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
       radius: DEFAULT_RADIUS,

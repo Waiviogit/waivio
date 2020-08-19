@@ -11,14 +11,15 @@ import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/Popov
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
+import { GUIDE_HISTORY, MESSAGES, ASSIGNED, HISTORY } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
-import '../../components/StoryFooter/Buttons.less';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
+import '../../components/StoryFooter/Buttons.less';
 
 @injectIntl
 @withAuthActions
@@ -34,7 +35,7 @@ export default class CampaignButtons extends React.Component {
     intl: PropTypes.shape().isRequired,
     daysLeft: PropTypes.number.isRequired,
     postState: PropTypes.shape().isRequired,
-    onActionInitiated: PropTypes.func.isRequired,
+    onActionInitiated: PropTypes.func,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
     onLikeClick: PropTypes.func,
@@ -73,6 +74,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: () => {},
     numberOfComments: null,
     getMessageHistory: () => {},
+    onActionInitiated: () => {},
     blacklistUsers: [],
   };
 
@@ -97,7 +99,7 @@ export default class CampaignButtons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
-    this.buttonsTitle = buttonsTitle[this.props.propositionStatus] || buttonsTitle.default;
+    this.matchParams = this.props.match.params[0];
   }
 
   componentDidMount() {
@@ -232,7 +234,7 @@ export default class CampaignButtons extends React.Component {
             .catch(error => reject(error));
         }, 10000);
       });
-      if (match.params[0] === 'history') {
+      if (match.params[0] === HISTORY) {
         message.success(
           this.props.intl.formatMessage({
             id: 'reward_has_been_decreased',
@@ -295,9 +297,9 @@ export default class CampaignButtons extends React.Component {
   };
 
   getPopoverMenu = () => {
-    const { propositionStatus, match } = this.props;
+    const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (match.params[0] === 'messages') {
+    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -374,7 +376,7 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName =
-      match.params[0] === 'messages' || match.params[0] === 'guideHistory'
+      this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY
         ? propositionUserName
         : user.name;
     const toggleModalReport = e => {
@@ -394,7 +396,7 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const filterKey = match.params.filterKey;
+    const isHistory = match.path === '/rewards/(history|guideHistory|messages)';
 
     return (
       <Popover
@@ -404,7 +406,7 @@ export default class CampaignButtons extends React.Component {
         onVisibleChange={this.handleVisibleChange}
         content={
           <PopoverMenu hide={this.hide} onSelect={handlePostPopoverMenuClick} bold={false}>
-            {!filterKey || filterKey === 'reserved' || filterKey === 'all'
+            {!isHistory
               ? popoverMenu
               : map(this.getPopoverMenu(), item => {
                   switch (item.id) {
@@ -551,24 +553,28 @@ export default class CampaignButtons extends React.Component {
       numberOfComments,
       daysLeft,
       propositionStatus,
-      match,
       user,
       proposition,
+      match,
     } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
-    const isAssigned = get(proposition, ['objects', '0', 'assigned']);
+    const isAssigned = get(proposition, ['objects', '0', ASSIGNED]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
+    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
+    const status = isReserved ? ASSIGNED : get(proposition, ['users', '0', 'status'], '');
+    const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
+
     return (
       <div className="Buttons">
         <div className="Buttons__wrap">
           <div className="Buttons__wrap-text">
             {intl.formatMessage({
-              id: this.buttonsTitle.id,
-              defaultMessage: this.buttonsTitle.defaultMessage,
+              id: buttonsTitleForRender.id,
+              defaultMessage: buttonsTitleForRender.defaultMessage,
             })}
-            {this.buttonsTitle.defaultMessage === 'Reserved' &&
+            {buttonsTitleForRender.defaultMessage === 'Reserved' &&
               ` - ${daysLeft} ${intl.formatMessage({
                 id: 'campaign_buttons_days_left',
                 defaultMessage: 'days left',
@@ -589,7 +595,7 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {isAssigned && (
+        {(isAssigned || status === ASSIGNED) && this.matchParams !== GUIDE_HISTORY && (
           <React.Fragment>
             <Button type="primary" onClick={this.openModalDetails}>
               {intl.formatMessage({
@@ -599,7 +605,7 @@ export default class CampaignButtons extends React.Component {
             </Button>
           </React.Fragment>
         )}
-        {match.params[0] === 'messages' && (
+        {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">
@@ -608,7 +614,7 @@ export default class CampaignButtons extends React.Component {
             <WeightTag weight={propositionUserWeight} />
           </div>
         )}
-        {propositionStatus === 'completed' && match.params[0] === 'history' && (
+        {propositionStatus === 'completed' && this.matchParams === HISTORY && (
           <Link to={`/@${user.name}/${reviewPermlink}`}>
             {intl.formatMessage({
               id: 'review',

@@ -131,26 +131,26 @@ const Comments = ({
     setReplyOpen(!editing ? false : replying);
   };
 
-  const handleSubmitComment = useCallback((parentP, commentValue) => {
+  const handleSubmitComment = (parentP, commentValue) => {
     const parentPost = parentP;
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
-
     setLoading(true);
     return onSendComment(parentPost, commentValue)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-        setLoading(false);
-        setCommentFormText('');
-        setCommentSubmitted(true);
-        setReplyOpen(false);
-      })
-      .then(() => {
-        setTimeout(() => getMessageHistory(), 8000);
+        setTimeout(() => {
+          getMessageHistory().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            setLoading(false);
+            setCommentFormText('');
+            setCommentSubmitted(true);
+            setReplyOpen(false);
+          });
+        }, 10000);
       })
       .catch(() => {
         setCommentFormText(commentValue);
@@ -159,7 +159,7 @@ const Comments = ({
           error: true,
         };
       });
-  }, []);
+  };
 
   const getChildren = useCallback((obj, comments) => {
     const replyKey = get(obj, ['replies', '0']);
@@ -314,12 +314,18 @@ Comments.propTypes = {
   post: PropTypes.shape().isRequired,
   show: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
   intl: PropTypes.shape().isRequired,
-  onActionInitiated: PropTypes.func.isRequired,
+  onActionInitiated: PropTypes.func,
   currentComment: PropTypes.shape().isRequired,
-  parent: PropTypes.shape().isRequired,
+  parent: PropTypes.shape(),
   getMessageHistory: PropTypes.func.isRequired,
+};
+
+Comments.defaultProps = {
+  parent: {},
+  defaultVotePercent: 0,
+  onActionInitiated: () => {},
 };
 
 export default injectIntl(Comments);

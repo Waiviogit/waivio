@@ -1,11 +1,10 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getAlbums } from '../object/ObjectGallery/galleryActions';
+import { getAlbums } from './ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
 import { getUsedLocale } from '../reducers';
-import { getClientWObj } from '../adapters';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
@@ -14,13 +13,13 @@ export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
-export const getObject = (authorPermlink, user, requiredField) => (dispatch, getState) => {
+export const getObject = (authorPermlink, user) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, user, requiredField)
-      .then(wobj => getClientWObj(wobj, usedLocale))
-      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
+    payload: ApiClient.getObject(authorPermlink, user, usedLocale).catch(() =>
+      dispatch({ type: GET_OBJECT_ERROR }),
+    ),
   });
 };
 

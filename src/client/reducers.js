@@ -272,6 +272,7 @@ export const getCountTookPartCampaigns = state =>
   fromRewards.getCountTookPartCampaigns(state.rewards);
 export const getCreatedCampaignsCount = state =>
   fromRewards.getCreatedCampaignsCount(state.rewards);
+export const getCommentsFromReserved = state => fromRewards.getCommentsFromReserved(state.rewards);
 
 // common selectors
 

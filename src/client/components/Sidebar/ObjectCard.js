@@ -1,47 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { isEmpty } from 'lodash';
+
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getApprovedField } from '../../helpers/wObjectHelper';
 
 import './ObjectCard.less';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
-  const name = getApprovedField(wobject, 'name') || wobject.default_name;
-  const pathname = `/object/${wobject.author_permlink}`;
+  if (!isEmpty(wobject)) {
+    const name = wobject.name || wobject.default_name;
+    const pathname = `/object/${wobject.author_permlink}`;
 
-  return (
-    <div key={wobject.author_permlink} className="ObjectCard">
-      <div className="ObjectCard__top">
-        <div className="ObjectCard__links">
-          <Link to={{ pathname }} title={name} target={isNewWindow ? '_blank' : null}>
-            <ObjectAvatar item={wobject} size={34} />
-          </Link>
-          <Link
-            to={{ pathname }}
-            title={name}
-            className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
-          >
-            {name}
-          </Link>
+    return (
+      <div key={wobject.author_permlink} className="ObjectCard">
+        <div className="ObjectCard__top">
+          <div className="ObjectCard__links">
+            <Link to={{ pathname }} title={name} target={isNewWindow ? '_blank' : null}>
+              <ObjectAvatar item={wobject} size={34} />
+            </Link>
+            <Link
+              to={{ pathname }}
+              title={name}
+              className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
+            >
+              {name}
+            </Link>
+          </div>
+          {alt && <span className="ObjectCard__alt">{alt}</span>}
         </div>
-        {alt && <span className="ObjectCard__alt">{alt}</span>}
+        <div className="ObjectCard__follow">
+          {showFollow && (
+            <FollowButton
+              wobj={wobject}
+              following={wobject.youFollows}
+              followingType="wobject"
+              unfollowObject={unfollow}
+              followObject={follow}
+              secondary
+            />
+          )}
+        </div>
       </div>
-      <div className="ObjectCard__follow">
-        {showFollow && (
-          <FollowButton
-            wobj={wobject}
-            following={wobject.youFollows}
-            followingType="wobject"
-            unfollowObject={unfollow}
-            followObject={follow}
-            secondary
-          />
-        )}
-      </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 };
 
 ObjectCard.propTypes = {

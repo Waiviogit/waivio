@@ -148,7 +148,18 @@ class EditPost extends Component {
     const isReview = !isEmpty(campaignId);
     if (isReview)
       getCampaignById(campaignId)
-        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .then(campaignData => {
+          const requiredObj = get(campaignData.requiredObject, 'name', '');
+          const secondObj = get(campaignData.objects, '[0].name', '');
+          const reviewTitle = `Review: ${requiredObj}, ${secondObj}`;
+          return this.setState({
+            campaign: { ...campaignData, fetched: true },
+            draftContent: {
+              title: reviewTitle,
+            },
+            topics: [requiredObj, secondObj],
+          });
+        })
         .catch(error => {
           message.error(
             this.props.intl.formatMessage(
@@ -221,15 +232,21 @@ class EditPost extends Component {
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
-    const { linkedObjects, objPercentage } = this.state;
+    const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
+    const switchableObjName = switchableObj.name || switchableObj.default_name;
+
     linkedObjects.splice(switchableObj, 1);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
-    this.setState({ objPercentage: setObjPercents(linkedObjects, updPercentage) });
+    topics.splice(switchableObjName, 1);
+    this.setState({
+      objPercentage: setObjPercents(linkedObjects, updPercentage),
+      topics,
+    });
   }
 
   handleObjectSelect(object) {
@@ -362,9 +379,15 @@ class EditPost extends Component {
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
-                  <Badge status="error" text="saving" />
+                  <Badge
+                    status="error"
+                    text={intl.formatMessage({ id: 'saving', defaultMessage: 'Saving...' })}
+                  />
                 ) : (
-                  <Badge status="success" text="saved" />
+                  <Badge
+                    status="success"
+                    text={intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' })}
+                  />
                 )}
               </div>
             )}

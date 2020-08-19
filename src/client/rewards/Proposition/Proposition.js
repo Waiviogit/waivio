@@ -10,6 +10,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
+import { GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import {
@@ -38,6 +39,8 @@ const Proposition = ({
   getMessageHistory,
   user,
   blacklistUsers,
+  users,
+  wobjPrice,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -48,7 +51,7 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-  const isMessages = match.params[0] === 'messages' || match.params[0] === 'guideHistory';
+  const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
@@ -84,12 +87,13 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
+  const userData = !isEmpty(users) ? get(users, [user.name, 'alias']) : null;
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
       if (!isEmpty(user)) {
         try {
-          return JSON.parse(user.json_metadata);
+          return JSON.parse(user.posting_json_metadata) || JSON.parse(user.json_metadata);
         } catch (err) {
           message.error(
             intl.formatMessage({
@@ -100,7 +104,7 @@ const Proposition = ({
         }
       }
     };
-    const userName = get(getJsonData(), ['profile', 'name']);
+    const userName = userData || get(getJsonData(), ['profile', 'name']) || user.name;
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
@@ -152,7 +156,12 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} match={match} />
+        <CampaignCardHeader
+          campaignData={proposition}
+          isWobjAssigned={assigned}
+          wobjPrice={wobjPrice}
+          match={match}
+        />
       </div>
       <div className="Proposition__card">
         <ObjectCardView passedParent={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
@@ -166,9 +175,9 @@ const Proposition = ({
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
         {assigned ||
-        includes(match.url, 'history') ||
-        includes(match.url, 'guideHistory') ||
-        includes(match.url, 'messages') ? (
+        includes(match.url, HISTORY) ||
+        includes(match.url, GUIDE_HISTORY) ||
+        includes(match.url, MESSAGES) ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -247,6 +256,7 @@ Proposition.propTypes = {
   assignCommentPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
+  users: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -254,6 +264,7 @@ Proposition.defaultProps = {
   post: {},
   assigned: null,
   loading: false,
+  users: {},
 };
 
 export default connect(

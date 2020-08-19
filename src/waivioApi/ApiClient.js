@@ -67,48 +67,36 @@ export const getObjects = ({
     headers: {
       ...headers,
       app: config.appName,
-      follower: follower,
+      follower,
+      locale,
     },
     method: 'POST',
     body: JSON.stringify(reqData),
   }).then(res => res.json());
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', requiredFields = [] }) =>
+export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
       app: config.appName,
+      locale,
     },
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
       locale,
-      required_fields: requiredFields,
     }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, user, requiredField = []) => {
-  let queryString = '';
-
-  if (requiredField.length) {
-    queryString = Array.isArray(requiredField)
-      ? requiredField.reduce((acc, field, index) => {
-          if (index !== requiredField.length - 1) {
-            return `${acc}required_fields=${field}&`;
-          }
-
-          return `${acc}required_fields=${field}`;
-        }, '')
-      : `required_fields=${requiredField}`;
-  }
-
-  queryString = user ? `?user=${user}&${queryString}` : `?${queryString}`;
+export const getObject = (authorPermlink, user, locale) => {
+  const queryString = user ? `?user=${user}` : '';
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
     headers: {
       app: config.appName,
       follower: user,
+      locale,
     },
   })
     .then(handleErrors)
@@ -257,10 +245,10 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     .then(res => res.json());
 };
 
-export const searchUsers = (searchString, username, limit = 15) =>
+export const searchUsers = (searchString, username, limit = 15, notGuest = false) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}&notGuest=${notGuest}`,
       {
         headers: {
           ...headers,
@@ -294,8 +282,8 @@ export const postAppendWaivioObject = postData =>
     .catch(error => error);
 
 // region Follow API requests
-export const getAllFollowingObjects = (username, skip, limit, authUser) => {
-  const actualHeaders = authUser ? { ...headers, follower: authUser } : headers;
+export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
+  const actualHeaders = authUser ? { ...headers, follower: authUser, locale } : headers;
 
   return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
@@ -435,6 +423,7 @@ export const getWobjectsWithUserWeight = (
   authUser,
   objectTypes,
   excludeObjectTypes,
+  locale,
 ) => {
   const reqData = { skip, limit };
   if (objectTypes) reqData.object_types = objectTypes;
@@ -446,6 +435,7 @@ export const getWobjectsWithUserWeight = (
         ...headers,
         follower: authUser,
         app: config.appName,
+        locale,
       },
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -490,7 +480,7 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
       .catch(error => reject(error));
   });
 
-export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
+export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30, locale) =>
   new Promise((resolve, reject) =>
     fetch(
       `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
@@ -498,6 +488,7 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
         headers: {
           ...headers,
           app: config.appName,
+          locale,
         },
         method: 'GET',
       },
@@ -508,10 +499,14 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
       .catch(error => reject(error)),
   );
 
-export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
+export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
-      headers,
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
       method: 'POST',
       body: JSON.stringify({ limit, skip, wobjects_count }),
     })
@@ -533,7 +528,14 @@ export const getObjectType = (typeName, requestData) =>
       .catch(error => reject(error));
   });
 
-export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectTypesLimit = 5, user) =>
+export const getSearchResult = (
+  string,
+  userLimit = 3,
+  wobjectsLimit,
+  objectTypesLimit = 5,
+  user,
+  locale,
+) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers: {
@@ -541,6 +543,7 @@ export const getSearchResult = (string, userLimit = 3, wobjectsLimit, objectType
         following: user,
         follower: user,
         app: config.appName,
+        locale,
       },
       method: 'POST',
       body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),

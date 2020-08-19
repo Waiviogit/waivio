@@ -320,13 +320,14 @@ FilteredRewardsList.defaultProps = {
   setActiveMessagesFilters: () => {},
   tabType: '',
   pendingUpdate: false,
-  location: {},
+  location: '',
+  filterKey: '',
 };
 
 FilteredRewardsList.propTypes = {
   hasMore: PropTypes.bool,
   loading: PropTypes.bool,
-  filterKey: PropTypes.string.isRequired,
+  filterKey: PropTypes.string,
   tabType: PropTypes.string,
   userName: PropTypes.string,
   match: PropTypes.shape().isRequired,
@@ -347,7 +348,7 @@ FilteredRewardsList.propTypes = {
   setFilterValue: PropTypes.func,
   campaignsTypes: PropTypes.arrayOf(PropTypes.string),
   messages: PropTypes.arrayOf(PropTypes.shape()),
-  location: PropTypes.shape(),
+  location: PropTypes.string,
   sortHistory: PropTypes.string,
   sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,

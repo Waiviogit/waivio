@@ -106,7 +106,7 @@ const ClaimReward = ({
 );
 
 ClaimReward.propTypes = {
-  timestamp: PropTypes.string.isRequired,
+  timestamp: PropTypes.number.isRequired,
   rewardSteem: PropTypes.string.isRequired,
   rewardSbd: PropTypes.string.isRequired,
   rewardVests: PropTypes.string.isRequired,
