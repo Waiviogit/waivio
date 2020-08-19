@@ -43,7 +43,6 @@ class UserDynamicList extends React.Component {
     authUser: '',
     showAuthorizedUser: false,
     userName: '',
-    intl: {},
     sort: '',
   };
   constructor(props) {
@@ -72,7 +71,6 @@ class UserDynamicList extends React.Component {
       );
     }
     if (!prevProps.sort && sort) {
-      console.log(sort);
       fetcher(users, authUser, sort).then(newUsers =>
         this.setState({
           loading: false,
@@ -172,7 +170,7 @@ class UserDynamicList extends React.Component {
         this.handleSorting(sorting);
       })
       .catch(err => {
-        console.error(err.message);
+        message.error(err.message);
       });
   };
 
@@ -194,7 +192,7 @@ class UserDynamicList extends React.Component {
             }),
           )
           .catch(err => {
-            console.error(err.message);
+            message.error(err.message);
           });
       },
     );

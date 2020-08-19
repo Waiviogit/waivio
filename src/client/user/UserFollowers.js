@@ -10,7 +10,6 @@ const UserFollowers = ({ match }) => {
   const sort = useSelector(state => state.auth.sort);
 
   const fetcher = async () => {
-    console.log(skip, limit);
     const response = await getFollowersFromAPI(match.params.name, limit, skip, sort);
     const users = response.followers;
     skip += limit;
