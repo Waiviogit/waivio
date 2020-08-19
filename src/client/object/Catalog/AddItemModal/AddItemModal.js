@@ -116,8 +116,7 @@ class AddItemModal extends Component {
               this.handleToggleModal();
             }
           })
-          .catch(error => {
-            console.log(`Add list item error:`, error);
+          .catch(() => {
             this.setState({ isLoading: false });
             message.error(
               intl.formatMessage({

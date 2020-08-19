@@ -184,8 +184,10 @@ export default class AppendForm extends Component {
         this.props
           .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
           .then(res => {
-            if (res.value.message) {
-              message.error(res.value.message);
+            const mssg = get(res, ['value', 'message']);
+
+            if (mssg) {
+              message.error(mssg);
             } else {
               if (data.votePower !== null) {
                 if (objectFields.rating === formValues.currentField && formValues.rate) {

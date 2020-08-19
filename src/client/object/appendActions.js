@@ -15,39 +15,38 @@ export const appendObject = (postData, { follow, isLike = true } = {}) => (
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
 
-  return new Promise((resolve, reject) =>
-    postAppendWaivioObject(postData)
-      .then(res => {
-        if (!res.message) {
-          if (postData.votePower !== null && isLike)
-            dispatch(
-              voteObject(res.author, res.permlink, postData.votePower || getVotePercent(state)),
-            );
-          if (follow) dispatch(followObject(postData.parentPermlink));
+  return postAppendWaivioObject(postData)
+    .then(res => {
+      if (!res.message) {
+        if (postData.votePower !== null && isLike)
+          dispatch(
+            voteObject(res.author, res.permlink, postData.votePower || getVotePercent(state)),
+          );
+        if (follow) dispatch(followObject(postData.parentPermlink));
 
-          busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.posts]);
-          busyAPI.subscribe((response, mess) => {
-            if (
-              subscribeTypes.posts === mess.type &&
-              mess.notification.blockParsed === res.block_num
-            ) {
-              resolve(res);
-              dispatch({
-                type: APPEND_WAIVIO_OBJECT.ACTION,
-                payload: {
-                  promise: getChangedField(
-                    res.parentPermlink,
-                    postData.field.name,
-                    res.author,
-                    res.permlink,
-                    locale,
-                  ),
-                },
-              });
-            }
-          });
-        }
-      })
-      .catch(e => reject(e)),
-  );
+        busyAPI.sendAsync(subscribeMethod, [voter, res.block_num, subscribeTypes.posts]);
+        busyAPI.subscribe((response, mess) => {
+          if (
+            subscribeTypes.posts === mess.type &&
+            mess.notification.blockParsed === res.block_num
+          ) {
+            dispatch({
+              type: APPEND_WAIVIO_OBJECT.ACTION,
+              payload: {
+                promise: getChangedField(
+                  res.parentPermlink,
+                  postData.field.name,
+                  res.author,
+                  res.permlink,
+                  locale,
+                ),
+              },
+            });
+          }
+        });
+      }
+
+      return res;
+    })
+    .catch(e => e);
 };
