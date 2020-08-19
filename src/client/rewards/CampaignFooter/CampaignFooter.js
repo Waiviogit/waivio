@@ -7,7 +7,7 @@ import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
-import { ASSIGNED } from '../../../common/constants/rewards';
+import { ASSIGNED, IS_RESERVED } from '../../../common/constants/rewards';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
@@ -120,6 +120,8 @@ class CampaignFooter extends React.Component {
       currentPostReserved: {},
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
+
+    this.isReserved = this.props.match.params.filterKey === IS_RESERVED;
   }
 
   componentWillMount() {
@@ -142,11 +144,10 @@ class CampaignFooter extends React.Component {
   componentDidMount() {
     const { proposition, match } = this.props;
     const currentUser = this.getCurrentUser();
-    const isReserved = match.params.filterKey === 'reserved';
-    const author = isReserved
+    const author = this.isReserved
       ? get(currentUser, ['0', 'name'])
       : get(proposition, ['users', '0', 'name']);
-    const permlink = isReserved
+    const permlink = this.isReserved
       ? get(currentUser, ['0', 'permlink'])
       : get(proposition, ['users', '0', 'permlink']);
     this.getReservedComments();
@@ -168,10 +169,17 @@ class CampaignFooter extends React.Component {
 
   getCurrentUser = () => {
     const { proposition, userName } = this.props;
-    return filter(
-      proposition.users,
-      usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
-    );
+    let currentUser;
+    if (this.isReserved) {
+      currentUser = filter(
+        proposition.users,
+        usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
+      );
+    } else {
+      currentUser = filter(proposition.users, usersItem => usersItem.name === userName);
+    }
+
+    return currentUser;
   };
 
   getReservedComments = () => {
@@ -365,7 +373,9 @@ class CampaignFooter extends React.Component {
       : size(currentPostReserved.content) - 1;
     const currentUser = this.getCurrentUser();
     const parentAuthor = get(currentUser, ['0', 'rootName']);
-    const parentPermlink = get(currentUser, ['0', 'permlink']);
+    const parentPermlink = !this.isReserved
+      ? get(proposition, ['users', '0', 'permlink'])
+      : get(currentUser, ['0', 'permlink']);
 
     return (
       <div className="CampaignFooter">
