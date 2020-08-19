@@ -46,7 +46,7 @@ const PowerUpTransactionTo = ({ timestamp, amount, to }) => (
 );
 
 PowerUpTransactionTo.propTypes = {
-  timestamp: PropTypes.string.isRequired,
+  timestamp: PropTypes.number.isRequired,
   amount: PropTypes.element.isRequired,
   to: PropTypes.string.isRequired,
 };

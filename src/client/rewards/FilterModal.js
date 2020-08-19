@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { get, map, find } from 'lodash';
 import { Checkbox } from 'antd';
+import { MESSAGES, HISTORY } from '../../common/constants/rewards';
 import { sortStrings } from '../helpers/sortHelpers';
 
 const FilterModal = ({
@@ -19,8 +20,8 @@ const FilterModal = ({
 }) => {
   const [collapsedFilters, setCollapsedFilters] = useState([]);
   const isPayables = !!(get(filters, 'payables', null) || get(filters, 'receivables', null));
-  const isHistory = match ? match.params.filterKey === 'history' : null;
-  const isMessages = match ? match.params.filterKey === 'messages' : null;
+  const isHistory = match ? match.params.filterKey === HISTORY : null;
+  const isMessages = match ? match.params.filterKey === MESSAGES : null;
 
   const modifyFilterName = name => {
     if (name === 'types') return 'rewards_for';

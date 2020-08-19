@@ -7,6 +7,9 @@ import { payablesFilterData } from '../rewardsHelper';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
+  MESSAGES,
+  HISTORY,
+  GUIDE_HISTORY,
 } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
@@ -108,9 +111,9 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         ) : (
-          !includes(location.pathname, 'messages') &&
-          !includes(location.pathname, 'history') &&
-          !includes(location.pathname, 'guideHistory') && (
+          !includes(location.pathname, MESSAGES) &&
+          !includes(location.pathname, HISTORY) &&
+          !includes(location.pathname, GUIDE_HISTORY) && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
                 {location.pathname === '/rewards/payables'
