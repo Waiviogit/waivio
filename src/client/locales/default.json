@@ -1331,5 +1331,6 @@
   "menu": "Menu",
   "dont_use_current_object_for_parent": "You cannot use the current object as a parent",
   "create_new_campaign": "Create new campaign",
-  "profile_email_placeholder": "Your email"
+  "profile_email_placeholder": "Your email",
+  "page": "Page"
 }

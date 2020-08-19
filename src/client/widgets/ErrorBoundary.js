@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { FormattedMessage } from 'react-intl';
 
+import './widgetsStyle.less';
+
 export function getDisplayName(ComposedComponent) {
   if (ComposedComponent.displayName) {
     return ComposedComponent.displayName;

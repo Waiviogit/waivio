@@ -208,7 +208,7 @@ export default class AppendForm extends Component {
                   },
                   {
                     field: form.getFieldValue('currentField'),
-                    wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                    wobject: wObject.name || wObject.default_name,
                   },
                 ),
               );

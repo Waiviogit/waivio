@@ -1360,7 +1360,21 @@ export const getTransferDetails = withdrawId => {
   ).then(res => res.json());
 };
 
-// injected as extra argument in Redux Thunk
+export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
+  fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .catch(error => error);
+
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
   broadcastGuestOperation,

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
 import { Input, message } from 'antd';
+import { injectIntl } from 'react-intl';
+
 import {
   Editor as MediumDraftEditor,
   createEditorState,
@@ -194,4 +196,4 @@ class Editor extends React.Component {
   }
 }
 
-export default Editor;
+export default injectIntl(Editor);

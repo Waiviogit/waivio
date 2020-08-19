@@ -1,8 +1,12 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
-import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { get } from 'lodash';
+
+import { getIsAuthenticated, getAuthenticatedUserName, getLocale } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import { getChangedField } from '../../waivioApi/ApiClient';
+import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -151,26 +155,6 @@ export const rateObject = (author, permlink, authorPermlink, rate) => (
   });
 };
 
-export const GET_OBJECT_APPENDS = createAsyncActionType('@wobj/GET_OBJECT_APPENDS');
-
-// export const getObjectAppends = (author, permlink, category = 'waivio-object') => (
-//   dispatch,
-//   getState,
-//   { steemAPI },
-// ) => {
-//   const state = getState();
-//   const wobject = getObject(state);
-//   const albums = getObjectAlbums(state);
-//
-//   return dispatch({
-//     type: GET_OBJECT_APPENDS.ACTION,
-//     payload: steemAPI
-//       .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-//       .then(apiRes => apiRes.content && mapObjectAppends(apiRes.content, wobject, albums)),
-//     meta: { sortBy: 'comments', category: author, limit: 10 },
-//   });
-// };
-
 export const VOTE_APPEND_START = '@wobj/VOTE_APPEND_START';
 export const VOTE_APPEND_SUCCESS = '@wobj/VOTE_APPEND_SUCCESS';
 export const VOTE_APPEND_ERROR = '@wobj/VOTE_APPEND_ERROR';
@@ -185,23 +169,39 @@ export const sendCommentAppend = (permlink, comment) => dispatch =>
     },
   });
 
-export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
+export const GET_CHANGED_WOBJECT_FIELD = createAsyncActionType('@wobj/GET_CHANGED_WOBJECT_FIELD');
+export const getChangedWobjectField = (authorPermlink, fieldName, author, permlink, blockNum) => (
+  dispatch,
+  getState,
+  { busyAPI },
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const voter = getAuthenticatedUserName(state);
+
+  busyAPI.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
+  busyAPI.subscribe((response, mess) => {
+    if (subscribeTypes.votes === mess.type && mess.notification.blockParsed === blockNum) {
+      // eslint-disable-next-line no-underscore-dangle
+      dispatch({
+        type: GET_CHANGED_WOBJECT_FIELD.ACTION,
+        payload: {
+          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale),
+        },
+      });
+    }
+  });
+};
+
+export const voteAppends = (postId, author, permlink, weight = 10000) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
   const { auth, object } = getState();
-  const post = object.wobject.fields.find(field => field.permlink === permlink);
+  const wobj = get(object, 'wobject', {});
+  const post = wobj.fields.find(field => field.permlink === permlink);
   const voter = auth.user.name;
-  const voteData = {
-    postId,
-    voter,
-    weight,
-    permlink,
-    postPermlink: postId,
-    percent: weight,
-    type,
-  };
 
   if (!auth.isAuthenticated) {
     return null;
@@ -218,15 +218,17 @@ export const voteAppends = (postId, author, permlink, weight = 10000, type) => (
 
   return steemConnectAPI
     .vote(voter, post.author_original || author, post.permlink, weight)
-    .then(() =>
-      dispatch({
-        type: VOTE_APPEND_SUCCESS,
-        payload: {
-          post,
-          permlink,
-          ...voteData,
-        },
-      }),
+    .then(data => data.json())
+    .then(res =>
+      dispatch(
+        getChangedWobjectField(
+          wobj.author_permlink,
+          post.name,
+          post.author,
+          post.permlink,
+          res.block_num,
+        ),
+      ),
     )
     .catch(e => {
       message.error(e.error_description);

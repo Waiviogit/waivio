@@ -2,7 +2,20 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq, filter, max, min, some } from 'lodash';
+import {
+  get,
+  has,
+  isEmpty,
+  isEqual,
+  map,
+  forEach,
+  uniq,
+  filter,
+  max,
+  min,
+  some,
+  size,
+} from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -11,12 +24,11 @@ import {
   getListItemLink,
   sortListItemsBy,
 } from '../wObjectHelper';
-import { getClientWObj, getServerWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
-import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient';
+import { getObject, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
 import {
   getSuitableLanguage,
@@ -27,11 +39,7 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import {
-  addActiveVotesInField,
-  calculateApprovePercent,
-  hasType,
-} from '../../helpers/wObjectHelper';
+import { hasType } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -47,9 +55,9 @@ import Campaign from '../../rewards/Campaign/Campaign';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
-  const type =
-    wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'recency';
+  const type = size(wobj[objectFields.sorting]) ? 'custom' : 'recency';
   const order = type === 'custom' ? wobj[objectFields.sorting] : null;
+
   return { type, order };
 };
 
@@ -181,7 +189,7 @@ class CatalogWrap extends React.Component {
 
           return {
             sort: sorting.type,
-            wobjNested: getClientWObj(res, this.props.locale),
+            wobjNested: res,
             listItems: sortListItemsBy(res.listItems, sorting.type, sorting.order),
             breadcrumb,
             loading: false,
@@ -207,33 +215,20 @@ class CatalogWrap extends React.Component {
       }
       if (location.hash) {
         if (!isInitialState) this.setState({ loading: true });
-        // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
+        console.log(permlinks);
         const { locale } = this.props;
-        getObjectsByIds({ authorPermlinks: permlinks, locale })
-          .then(res =>
-            permlinks.map(permlink =>
-              getClientWObj(
-                res.wobjects.find(wobj => wobj.author_permlink === permlink),
-                locale,
-              ),
-            ),
-          )
-          .then(res => {
-            const crumbs = res.map(obj => ({
-              id: obj.id,
-              name: obj.name,
-              path: `${location.hash.split(obj.id)[0]}${obj.id}`,
-            }));
-            if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
-            this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
-          });
+        getObjectsByIds({ authorPermlinks: permlinks, locale }).then(res => {
+          const crumbs = res.wobjects.map(obj => ({
+            id: obj.id,
+            name: obj.name,
+            path: `${location.hash.split(obj.id)[0]}${obj.id}`,
+          }));
+          if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
+          this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
+        });
       } else {
-        sortedItems = sortListItemsBy(
-          items.map(item => getClientWObj(item, this.props.locale)),
-          sorting.type,
-          sorting.order,
-        );
+        sortedItems = sortListItemsBy(items, sorting.type, sorting.order);
       }
     }
     return {
@@ -248,6 +243,7 @@ class CatalogWrap extends React.Component {
   handleAddItem = listItem => {
     const { breadcrumb, listItems, sort } = this.state;
     const { wobject } = this.props;
+
     this.setState({
       listItems: sortListItemsBy(
         [...listItems, listItem],
@@ -256,7 +252,7 @@ class CatalogWrap extends React.Component {
       ),
     });
     if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
-      this.props.addItemToWobjStore(getServerWObj(listItem));
+      this.props.addItemToWobjStore(listItem);
     }
   };
 
@@ -362,18 +358,8 @@ class CatalogWrap extends React.Component {
     const { listItems, breadcrumb, propositions } = this.state;
     let listRow;
     if (propositions) {
-      let actualListItems =
-        listItems && listItems.map(item => addActiveVotesInField(this.props.wobject, item));
-
-      actualListItems =
-        actualListItems &&
-        actualListItems.filter(
-          list =>
-            !list.status &&
-            calculateApprovePercent(list.active_votes, list.weight, this.props.wobject) >= 70,
-        );
-
-      if (isEmpty(actualListItems) && !isEmpty(breadcrumb)) {
+      console.log(this.props.wobject);
+      if (isEmpty(listItems) && !isEmpty(breadcrumb)) {
         return (
           <div>
             {this.props.intl.formatMessage({
@@ -387,8 +373,7 @@ class CatalogWrap extends React.Component {
       const campaignObjects = map(propositions, item =>
         map(item.objects, obj => get(obj, ['object', 'author_permlink'])),
       );
-
-      listRow = map(actualListItems, listItem => this.getListRow(listItem, campaignObjects));
+      listRow = map(listItems, listItem => this.getListRow(listItem, campaignObjects));
     }
     return listRow;
   };

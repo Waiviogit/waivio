@@ -277,33 +277,6 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
   );
 };
 
-export const mapObjectAppends = (comments = {}, wObj = {}, albums = []) => {
-  const galleryImages = [];
-
-  if (albums) albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
-
-  const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
-  const fields = wObj && wObj.fields ? wObj.fields : [];
-
-  return [...fields, ...galleryImages, ...albums].map(field => {
-    const matchComment = filteredComments.find(
-      comment => comment.permlink === field.permlink && comment.author === field.author,
-    );
-    const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
-
-    return {
-      ...matchComment,
-      active_votes: field.active_votes,
-      author: field.creator,
-      author_original: field.author,
-      author_rank: (rankedUser && rankedUser.rank) || 0,
-      append_field_name: field.name || '',
-      append_field_weight: field.weight || null,
-      upvotedByModerator: field.upvotedByModerator ? field.upvotedByModerator : false,
-    };
-  });
-};
-
 export const hasField = (post, fieldName, locale) => {
   const parsedMetadata = post && post.json_metadata && attempt(JSON.parse, post.json_metadata);
   if (!parsedMetadata || isError(parsedMetadata)) return false;
