@@ -72,8 +72,8 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
     <React.Fragment>
       <h2 className="ModalSignIn__title">
         {intl.formatMessage({
-          id: 'login',
-          defaultMessage: 'Log in',
+          id: 'signinForRewards',
+          defaultMessage: 'Sign in for rewards!',
         })}
       </h2>
       {isLoading ? (
@@ -83,7 +83,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
           <p className="ModalSignIn__rules">
             {intl.formatMessage({
               id: 'sing_in_modal_message',
-              defaultMessage: 'Waivio is powered by Steem open social blockchain',
+              defaultMessage: 'Waivio is powered by Hive open social blockchain',
             })}
           </p>
           <p className="ModalSignIn__title ModalSignIn__title--lined">
@@ -177,7 +177,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
         <a role="presentation" onClick={() => setIsModalOpen(true)}>
           {intl.formatMessage({
             id: 'signin',
-            defaultMessage: 'Log in',
+            defaultMessage: 'Sign in',
           })}
         </a>
       )}
