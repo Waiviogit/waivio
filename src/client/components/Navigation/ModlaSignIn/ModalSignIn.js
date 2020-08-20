@@ -70,12 +70,21 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
 
   const renderSignIn = () => (
     <React.Fragment>
-      <h2 className="ModalSignIn__title">
-        {intl.formatMessage({
-          id: 'signinForRewards',
-          defaultMessage: 'Sign in for rewards!',
-        })}
-      </h2>
+      {isLoading ? (
+        <h2 className="ModalSignIn__loading">
+          {intl.formatMessage({
+            id: 'signing',
+            defaultMessage: 'Signing in!',
+          })}
+        </h2>
+      ) : (
+        <h2 className="ModalSignIn__title">
+          {intl.formatMessage({
+            id: 'signinForRewards',
+            defaultMessage: 'Sign in for rewards!',
+          })}
+        </h2>
+      )}
       {isLoading ? (
         <Spinner />
       ) : (
