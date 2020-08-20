@@ -52,7 +52,9 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
   dispatch,
   getState,
 ) => {
+  const state = getState();
   const user_languages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
@@ -62,6 +64,7 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       skip: 0,
       limit,
       user_languages,
+      locale,
     }),
     meta: {
       sortBy,
@@ -76,6 +79,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const feed = getFeed(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
   const user_languages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
   const lastId = getLastPostId(state);
 
   if (!feedContent.length) return Promise.resolve(null);
@@ -89,6 +93,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
       limit,
       user_languages,
       lastId,
+      locale,
     }),
     meta: {
       sortBy,
@@ -105,8 +110,10 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   let startAuthor = '';
   let startPermlink = '';
   let userBlogPosts = [];
+  const state = getState();
+  const locale = getLocale(state);
+
   if (!initialLoad) {
-    const state = getState();
     const feed = getFeed(state);
     const posts = getPosts(state);
     userBlogPosts = getFeedFromState('blog', userName, feed);
@@ -120,12 +127,16 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   }
   return dispatch({
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserProfileBlog(userName, {
-      startAuthor,
-      startPermlink,
-      limit,
-      skip: userBlogPosts.length,
-    }),
+    payload: ApiClient.getUserProfileBlog(
+      userName,
+      {
+        startAuthor,
+        startPermlink,
+        limit,
+        skip: userBlogPosts.length,
+      },
+      locale,
+    ),
     meta: {
       sortBy: 'blog',
       category: userName,
@@ -135,10 +146,13 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
 };
 
 export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
+  const state = getState();
   const user_languages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
+
   dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserFeedContent(userName, limit, user_languages),
+    payload: ApiClient.getUserFeedContent(userName, limit, user_languages, locale),
     meta: {
       sortBy: 'feed',
       category: userName,
@@ -152,6 +166,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
   const feed = getFeed(state);
   const feedContent = getFeedFromState('feed', userName, feed);
   const user_languages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
   const lastId = getLastPostId(state);
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
@@ -167,6 +182,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       skip: countWithWobj,
       user_languages,
       lastId,
+      locale,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
@@ -197,10 +213,13 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
 };
 
 export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+  const state = getState();
   const readLanguages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
+
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
@@ -212,6 +231,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10, skip 
   const state = getState();
   const feed = getFeed(state);
   const user_languages = getUserLocalesArray(getState);
+  const locale = getLocale(state);
   const lastId = getLastPostId(state);
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -228,6 +248,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10, skip 
       limit,
       user_languages,
       lastId,
+      locale,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });

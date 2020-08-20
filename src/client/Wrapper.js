@@ -222,10 +222,13 @@ class Wrapper extends React.PureComponent {
         this.props.history.push('/objects');
         break;
       case 'wallet':
-        this.props.history.push('/wallet');
+        this.props.history.push(`/@${this.props.username}/transfers`);
         break;
       case 'my-profile':
         this.props.history.push(`/@${this.props.username}`);
+        break;
+      case 'rewards':
+        this.props.history.push('/rewards/active');
         break;
       default:
         break;

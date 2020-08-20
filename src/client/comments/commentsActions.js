@@ -135,18 +135,20 @@ export const getComments = postId => (dispatch, getState) => {
   }
 };
 
-export const sendComment = (parentPost, body, isUpdating = false, originalComment) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const sendComment = (
+  parentPost,
+  body,
+  isUpdating = false,
+  originalComment,
+  parentAuthorIfGuest,
+  parentPermlinkIfGuest,
+) => (dispatch, getState, { steemConnectAPI }) => {
   const { category, id, permlink: parentPermlink } = parentPost;
   let parentAuthor;
-
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
   } else if (parentPost.root_author && parentPost.guestInfo) {
-    parentAuthor = parentPost.root_author;
+    parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;
   }
@@ -161,14 +163,17 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
+  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
+
   const author = isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating
     ? originalComment.permlink
-    : createCommentPermlink(parentAuthor, parentPermlink);
+    : createCommentPermlink(parentAuthor, parentPermlinkToSend);
+  const currCategory = category ? [category] : [];
 
   const jsonMetadata = createPostMetadata(
     body,
-    [category],
+    currCategory,
     isUpdating && jsonParse(originalComment.json_metadata),
   );
 
@@ -191,7 +196,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
       promise: steemConnectAPI
         .comment(
           parentAuthor,
-          parentPermlink,
+          parentPermlinkToSend,
           author,
           permlink,
           '',

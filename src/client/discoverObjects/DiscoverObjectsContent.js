@@ -275,7 +275,6 @@ class DiscoverObjectsContent extends Component {
       userName,
       match,
     } = this.props;
-
     const sortSelector = hasMap ? (
       <SortSelector sort={sort} onChange={this.handleChangeSorting}>
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
