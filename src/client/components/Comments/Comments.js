@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
+import { get } from 'lodash';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { sortComments } from '../../helpers/sortHelpers';
 import Loading from '../Icon/Loading';
@@ -14,13 +14,9 @@ import QuickCommentEditor from './QuickCommentEditor';
 import MoreCommentsButton from './MoreCommentsButton';
 import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
-import { getReservedComments } from '../../comments/commentsActions';
 import './Comments.less';
 
 @injectIntl
-@connect(null, {
-  getReservedComments,
-})
 class Comments extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -52,6 +48,9 @@ class Comments extends React.Component {
     getMessageHistory: PropTypes.func,
     getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
+    history: PropTypes.bool,
+    parentAuthorIfGuest: PropTypes.string,
+    parentPermlinkIfGuest: PropTypes.string,
   };
 
   static defaultProps = {
@@ -64,7 +63,10 @@ class Comments extends React.Component {
     sliderMode: false,
     show: false,
     isQuickComments: false,
+    history: false,
     match: {},
+    parentAuthorIfGuest: '',
+    parentPermlinkIfGuest: '',
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
@@ -169,35 +171,50 @@ class Comments extends React.Component {
 
   onCommentSend = () => {
     const { category, author, permlink } = this.props.parentPost;
-    return this.props.match.params.filterKey === 'reserved'
+    return get(this.props.match, ['params', 'filterKey']) === 'reserved'
       ? this.props.getReservedComments({ category, author, permlink })
       : this.props.getMessageHistory();
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl } = this.props;
+    const { intl, history, parentAuthorIfGuest, parentPermlinkIfGuest } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     this.setState({ showCommentFormLoading: true });
     return this.props
-      .onSendComment(parentPost, commentValue)
+      .onSendComment(
+        parentPost,
+        commentValue,
+        false,
+        {},
+        parentAuthorIfGuest,
+        parentPermlinkIfGuest,
+      )
       .then(() => {
-        setTimeout(() => {
-          this.onCommentSend().then(() => {
-            message.success(
-              intl.formatMessage({
-                id: 'notify_comment_sent',
-                defaultMessage: 'Comment submitted',
-              }),
-            );
-            this.setState({
-              showCommentFormLoading: false,
-              commentFormText: '',
-              commentSubmitted: true,
+        if (history) {
+          setTimeout(() => {
+            this.onCommentSend().then(() => {
+              message.success(
+                intl.formatMessage({
+                  id: 'notify_comment_sent',
+                  defaultMessage: 'Comment submitted',
+                }),
+              );
+              this.setState({
+                showCommentFormLoading: false,
+                commentFormText: '',
+                commentSubmitted: true,
+              });
             });
+          }, 10000);
+        } else {
+          this.setState({
+            showCommentFormLoading: false,
+            commentFormText: '',
+            commentSubmitted: true,
           });
-        }, 10000);
+        }
       })
       .catch(() => {
         this.setState({

@@ -1336,5 +1336,6 @@
   "exchange_with": "Exchange with {exchanger}",
   "customer_support": "{author} asked about {campaignName}",
   "notify_campaign": "campaign",
-  "cancel_limit_order": "Cancel limit order"
+  "cancel_limit_order": "Cancel limit order",
+  "menu_rewards": "Rewards"
 }
