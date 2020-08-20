@@ -595,16 +595,18 @@ export default class CampaignButtons extends React.Component {
           </div>
           {this.renderPostPopoverMenu()}
         </div>
-        {(isAssigned || status === ASSIGNED) && this.matchParams !== GUIDE_HISTORY && (
-          <React.Fragment>
-            <Button type="primary" onClick={this.openModalDetails}>
-              {intl.formatMessage({
-                id: 'campaign_buttons_write_review',
-                defaultMessage: `Write review`,
-              })}
-            </Button>
-          </React.Fragment>
-        )}
+        {(isAssigned || status === ASSIGNED) &&
+          this.matchParams !== GUIDE_HISTORY &&
+          this.matchParams !== MESSAGES && (
+            <React.Fragment>
+              <Button type="primary" onClick={this.openModalDetails}>
+                {intl.formatMessage({
+                  id: 'campaign_buttons_write_review',
+                  defaultMessage: `Write review`,
+                })}
+              </Button>
+            </React.Fragment>
+          )}
         {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
