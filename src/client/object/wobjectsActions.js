@@ -6,7 +6,6 @@ import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
 import { getLocale, getUsedLocale } from '../reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
-import { getUserLocalesArray } from '../feed/feedActions';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -42,12 +41,12 @@ export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
   '@objects/GET_FEED_CONTENT_BY_OBJECT',
 );
 export const getFeedContentByObject = object => (dispatch, getState) => {
-  const locale = getLocale(getState);
-  const readLanguages = getUserLocalesArray(getState);
+  const state = getState();
+  const locale = getLocale(state);
 
   return dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, 10, readLanguages, locale),
+    payload: ApiClient.getFeedContentByObject(object, 10, '', locale),
   }).catch(() => {});
 };
 
