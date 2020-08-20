@@ -148,7 +148,7 @@ const AppendCard = props => {
       </div>
       <div className="Story__content">
         <a
-          href={`/@${props.post.author_original}/${props.post.permlink}`}
+          href={`/@${props.post.author}/${props.post.permlink}`}
           rel="noopener noreferrer"
           className="Story__content__title"
         >
@@ -160,7 +160,7 @@ const AppendCard = props => {
           </h2>
         </a>
         <a
-          href={`/@${props.post.author_original}/${props.post.permlink}`}
+          href={`/@${props.post.author}/${props.post.permlink}`}
           rel="noopener noreferrer"
           target="_blank"
           className="Story__content__preview"
