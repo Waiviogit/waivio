@@ -380,7 +380,7 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|transfers|activity|expertise|about)?',
+        path: '/@:name/(comments|followers|following|reblogs|transfers|activity|expertise|about)?',
         component: User,
         exact: true,
         routes: [
@@ -400,7 +400,7 @@ const routes = [
             component: UserFollowers,
           },
           {
-            path: '/@:name/followed',
+            path: '/@:name/following',
             exact: true,
             component: UserFollowing,
           },

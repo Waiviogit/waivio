@@ -66,6 +66,8 @@ export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUser
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 export const getAuthenticatedUserPrivateEmail = state =>
   fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
+export const getAuthorizationUserFollowSort = state =>
+  fromAuth.getAuthorizationUserFollowSort(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink, author) =>
