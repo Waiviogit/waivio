@@ -35,8 +35,22 @@ import { notify } from '../app/Notification/notificationActions';
       {
         getComments: commentsActions.getComments,
         voteComment: (id, percent, vote) => commentsActions.likeComment(id, percent, vote),
-        sendComment: (parentPost, body, isUpdating, originalPost) =>
-          commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
+        sendComment: (
+          parentPost,
+          body,
+          isUpdating,
+          originalPost,
+          parentAuthorIfGuest,
+          parentPermlinkIfGuest,
+        ) =>
+          commentsActions.sendComment(
+            parentPost,
+            body,
+            isUpdating,
+            originalPost,
+            parentAuthorIfGuest,
+            parentPermlinkIfGuest,
+          ),
         notify,
       },
       dispatch,
@@ -66,7 +80,11 @@ export default class Comments extends React.Component {
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
+    getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
+    history: PropTypes.bool,
+    parentAuthorIfGuest: PropTypes.string,
+    parentPermlinkIfGuest: PropTypes.string,
   };
 
   static defaultProps = {
@@ -84,6 +102,10 @@ export default class Comments extends React.Component {
     voteComment: () => {},
     sendComment: () => {},
     getMessageHistory: () => {},
+    history: false,
+    getReservedComments: () => {},
+    parentAuthorIfGuest: {},
+    parentPermlinkIfGuest: {},
   };
 
   state = {
@@ -156,6 +178,10 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
       getMessageHistory,
+      history,
+      parentAuthorIfGuest,
+      parentPermlinkIfGuest,
+      getReservedComments,
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
@@ -197,6 +223,10 @@ export default class Comments extends React.Component {
           onSendComment={this.props.sendComment}
           getMessageHistory={getMessageHistory}
           match={this.props.match}
+          history={history}
+          parentAuthorIfGuest={parentAuthorIfGuest}
+          parentPermlinkIfGuest={parentPermlinkIfGuest}
+          getReservedComments={getReservedComments}
         />
       )
     );
