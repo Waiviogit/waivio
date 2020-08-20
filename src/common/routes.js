@@ -317,6 +317,11 @@ const routes = [
             exact: true,
             component: RewardsComponent,
           },
+          {
+            path: '/wallet',
+            exact: true,
+            component: Wallet,
+          },
         ],
       },
       {

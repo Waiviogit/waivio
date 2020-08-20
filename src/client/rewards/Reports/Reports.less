@@ -182,6 +182,13 @@
         line-height: 1.3;
       }
 
+      td p {
+        width: 80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       &__action-items {
         margin-left: 2px !important;
       }
@@ -206,6 +213,12 @@
     .PaymentTable,
     .ant-form {
       width: 68%;
+    }
+
+    .PaymentTable {
+      td p {
+        width: 70px;
+      }
     }
   }
 }

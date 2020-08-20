@@ -207,14 +207,16 @@ const Proposition = ({
                     defaultMessage: `Reserve`,
                   })}
                 </Button>
-                {proposition.count_reservation_days &&
-                  `${intl.formatMessage({
-                    id: 'for_days',
-                    defaultMessage: `for`,
-                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
-                    id: 'days',
-                    defaultMessage: `days`,
-                  })}`}
+                <div className="Proposition__footer-button-days">
+                  {proposition.count_reservation_days &&
+                    `${intl.formatMessage({
+                      id: 'for_days',
+                      defaultMessage: `for`,
+                    })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                      id: 'days',
+                      defaultMessage: `days`,
+                    })}`}
+                </div>
               </div>
             )}
             <div className="Proposition__footer-details" onClick={toggleModalDetails}>
