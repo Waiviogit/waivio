@@ -6,8 +6,8 @@ import { Modal, Tag } from 'antd';
 import PaymentCard from '../PaymentCard/PaymentCard';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
-import './Debts.less';
 import FilterModal from '../FilterModal';
+import './Debts.less';
 
 const Debts = ({
   intl,
