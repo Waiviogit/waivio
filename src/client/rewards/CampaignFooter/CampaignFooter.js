@@ -386,6 +386,7 @@ class CampaignFooter extends React.Component {
             post={this.state.currentPost}
             getMessageHistory={getMessageHistory}
             match={match}
+            history
           />
         )}
         <Modal

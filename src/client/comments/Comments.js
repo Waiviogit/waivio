@@ -67,6 +67,7 @@ export default class Comments extends React.Component {
     sendComment: PropTypes.func,
     getMessageHistory: PropTypes.func,
     match: PropTypes.shape(),
+    history: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -84,6 +85,7 @@ export default class Comments extends React.Component {
     voteComment: () => {},
     sendComment: () => {},
     getMessageHistory: () => {},
+    history: false,
   };
 
   state = {
@@ -156,6 +158,7 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
       getMessageHistory,
+      history,
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
@@ -197,6 +200,7 @@ export default class Comments extends React.Component {
           onSendComment={this.props.sendComment}
           getMessageHistory={getMessageHistory}
           match={this.props.match}
+          history={history}
         />
       )
     );

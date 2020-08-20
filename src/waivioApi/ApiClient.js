@@ -107,13 +107,13 @@ export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 // region Feed requests
-export const getFeedContentByObject = (name, limit = 10, user_languages) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
-        locale: user_languages,
+        locale,
       },
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
@@ -130,13 +130,14 @@ export const getMoreFeedContentByObject = ({
   limit = 10,
   user_languages,
   lastId,
+  locale,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
-        locale: user_languages,
+        locale,
       },
       method: 'POST',
       body: JSON.stringify({ skip, limit, user_languages, lastId }),
@@ -151,7 +152,7 @@ export const getFeedContent = (sortBy, queryData, locale) =>
       headers: {
         ...headers,
         app: config.appName,
-        locale: queryData.user_languages,
+        locale,
       },
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -186,12 +187,12 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
-export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
+export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers: {
         ...headers,
-        locale: user_languages,
+        locale,
         app: config.appName,
       },
       method: 'POST',
@@ -208,10 +209,11 @@ export const getMoreUserFeedContent = ({
   skip = 0,
   user_languages,
   lastId,
+  locale,
 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify({
         skip,
