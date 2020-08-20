@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
 import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
@@ -164,9 +164,8 @@ export const sendComment = (
   }
 
   const parentPermlinkToSend =
-    parentPermlinkIfGuest || !isEmpty(get(originalComment, 'replies'))
-      ? parentPost.parent_permlink
-      : parentPermlink;
+    parentPermlinkIfGuest ||
+    (parentPost.post_id === originalComment.post_id ? parentPost.parent_permlink : parentPermlink);
 
   const author = isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating

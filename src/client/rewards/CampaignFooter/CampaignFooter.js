@@ -362,9 +362,10 @@ class CampaignFooter extends React.Component {
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
-    const postCurrent = proposition.conversation;
     const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
+    const postCurrent = proposition.conversation;
     const commentsAll = get(postCurrent, ['all']) || reservedComments;
+    const postAll = postCurrent || { all: commentsAll };
     const rootKey = findKey(commentsAll, ['depth', 2]);
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
@@ -425,7 +426,7 @@ class CampaignFooter extends React.Component {
               <CommentsMessages
                 show={commentsVisible}
                 user={user}
-                post={postCurrent}
+                post={postAll}
                 getMessageHistory={getMessageHistory}
                 currentComment={currentComment}
                 history

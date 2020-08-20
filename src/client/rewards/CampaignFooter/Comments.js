@@ -169,12 +169,11 @@ const Comments = ({
     return get(comments, ['all', replyKey]);
   }, []);
 
-  const handleEditComment = (parentPost, commentValue) => {
+  const handleEditComment = (parentPost, commentValue) =>
     onSendComment(parentPost, commentValue, true, commentObj).then(() => {
       setEditOpen(false);
       setTimeout(() => getMessageHistory(), 10000);
     });
-  };
 
   const parentPost = !isEmpty(parent) ? parent : commentObj;
 
