@@ -120,14 +120,18 @@ export default class ObjectFeed extends React.Component {
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject =
-        get(nextProps.wobject, ['parent', 'author_permlink']) ||
-        get(nextProps.wobject, ['author_permlink']);
-      this.getPropositions({
+      const requiredObject = get(nextProps.wobject, ['parent']);
+      const primaryObject = get(nextProps.wobject, ['author_permlink']);
+      const reqData = {
         userName: nextProps.userName,
-        requiredObject,
         match: nextProps.match,
-      });
+      };
+      if (requiredObject) {
+        reqData.requiredObject = requiredObject;
+      } else {
+        reqData.primaryObject = primaryObject;
+      }
+      this.getPropositions(reqData);
     }
 
     if (nextPropswobjectId === this.mountedId) {
@@ -157,9 +161,10 @@ export default class ObjectFeed extends React.Component {
     return currentUSDPrice;
   };
 
-  getPropositions = ({ userName, requiredObject, match }) => {
+  getPropositions = reqData => {
+    const { match } = this.props;
     this.setState({ loadingPropositions: true });
-    ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
+    ApiClient.getPropositions(reqData).then(data => {
       const currentProposition = filter(
         data.campaigns,
         obj => obj.required_object.author_permlink === match.params.name,
