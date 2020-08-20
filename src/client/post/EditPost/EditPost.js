@@ -294,9 +294,9 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
-    const object = get(linkedObjects, '[0]', {});
-    const objName = object.author_permlink;
-    if (object.type === 'hashtag' && objName) {
+    const currentObject = get(linkedObjects, '[0]', {});
+    const objName = currentObject.author_permlink;
+    if (currentObject.type === 'hashtag' && objName) {
       this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objName], isEqual) }));
     }
     const campaignId = get(campaign, '_id', null);
