@@ -95,7 +95,9 @@ export default class RightSidebar extends React.Component {
           />
         </Switch>
 
-        {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
+        {showPostRecommendation && (
+          <PostRecommendation isAuthFetching={isAuthFetching} locale={locale} />
+        )}
       </div>
     );
   }
