@@ -120,7 +120,9 @@ export default class ObjectFeed extends React.Component {
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+      const requiredObject =
+        get(nextProps.wobject, ['parent', 'author_permlink']) ||
+        get(nextProps.wobject, ['author_permlink']);
       this.getPropositions({
         userName: nextProps.userName,
         requiredObject,
