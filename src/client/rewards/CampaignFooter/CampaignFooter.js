@@ -428,6 +428,7 @@ class CampaignFooter extends React.Component {
                 post={postCurrent}
                 getMessageHistory={getMessageHistory}
                 currentComment={currentComment}
+                history
               />
             </div>
           ))}

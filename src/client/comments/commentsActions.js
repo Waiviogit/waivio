@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
 import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
@@ -163,7 +163,10 @@ export const sendComment = (
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
-  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
+  const parentPermlinkToSend =
+    parentPermlinkIfGuest || !isEmpty(get(originalComment, 'replies'))
+      ? parentPost.parent_permlink
+      : parentPermlink;
 
   const author = isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating

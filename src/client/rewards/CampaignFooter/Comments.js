@@ -132,25 +132,28 @@ const Comments = ({
   };
 
   const handleSubmitComment = (parentP, commentValue) => {
+    const { history } = this.props;
     const parentPost = parentP;
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     setLoading(true);
     return onSendComment(parentPost, commentValue)
       .then(() => {
-        setTimeout(() => {
-          getMessageHistory().then(() => {
-            message.success(
-              intl.formatMessage({
-                id: 'notify_comment_sent',
-                defaultMessage: 'Comment submitted',
-              }),
-            );
-            setLoading(false);
-            setCommentFormText('');
-            setCommentSubmitted(true);
-            setReplyOpen(false);
-          });
-        }, 10000);
+        if (history) {
+          setTimeout(() => {
+            getMessageHistory().then(() => {
+              message.success(
+                intl.formatMessage({
+                  id: 'notify_comment_sent',
+                  defaultMessage: 'Comment submitted',
+                }),
+              );
+              setLoading(false);
+              setCommentFormText('');
+              setCommentSubmitted(true);
+              setReplyOpen(false);
+            });
+          }, 10000);
+        }
       })
       .catch(() => {
         setCommentFormText(commentValue);
@@ -322,11 +325,13 @@ Comments.propTypes = {
   currentComment: PropTypes.shape().isRequired,
   parent: PropTypes.shape(),
   getMessageHistory: PropTypes.func.isRequired,
+  history: PropTypes.bool,
 };
 
 Comments.defaultProps = {
   parent: {},
   defaultVotePercent: 0,
+  history: false,
   onActionInitiated: () => {},
 };
 
