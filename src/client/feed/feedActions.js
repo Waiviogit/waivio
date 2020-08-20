@@ -105,8 +105,10 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   let startAuthor = '';
   let startPermlink = '';
   let userBlogPosts = [];
+  const state = getState();
+  const locale = getLocale(state);
+
   if (!initialLoad) {
-    const state = getState();
     const feed = getFeed(state);
     const posts = getPosts(state);
     userBlogPosts = getFeedFromState('blog', userName, feed);
@@ -120,12 +122,16 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   }
   return dispatch({
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserProfileBlog(userName, {
-      startAuthor,
-      startPermlink,
-      limit,
-      skip: userBlogPosts.length,
-    }),
+    payload: ApiClient.getUserProfileBlog(
+      userName,
+      {
+        startAuthor,
+        startPermlink,
+        limit,
+        skip: userBlogPosts.length,
+      },
+      locale,
+    ),
     meta: {
       sortBy: 'blog',
       category: userName,
