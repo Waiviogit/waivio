@@ -82,6 +82,7 @@ export default class Comments extends React.Component {
     getMessageHistory: PropTypes.func,
     getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
+    history: PropTypes.bool,
     parentAuthorIfGuest: PropTypes.string,
     parentPermlinkIfGuest: PropTypes.string,
   };
@@ -96,14 +97,15 @@ export default class Comments extends React.Component {
     show: false,
     isQuickComments: false,
     match: {},
-    parentAuthorIfGuest: '',
-    parentPermlinkIfGuest: '',
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
     getMessageHistory: () => {},
+    history: false,
     getReservedComments: () => {},
+    parentAuthorIfGuest: {},
+    parentPermlinkIfGuest: {},
   };
 
   state = {
@@ -176,6 +178,7 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
       getMessageHistory,
+      history,
       parentAuthorIfGuest,
       parentPermlinkIfGuest,
       getReservedComments,
@@ -220,6 +223,7 @@ export default class Comments extends React.Component {
           onSendComment={this.props.sendComment}
           getMessageHistory={getMessageHistory}
           match={this.props.match}
+          history={history}
           parentAuthorIfGuest={parentAuthorIfGuest}
           parentPermlinkIfGuest={parentPermlinkIfGuest}
           getReservedComments={getReservedComments}

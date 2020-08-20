@@ -176,7 +176,7 @@ class CreateObject extends React.Component {
               },
               { locale: values.locale },
             );
-            this.onCloseModal();
+            this.setState({ loading: false, isModalOpen: false });
           })
           .catch(error => {
             this.props.notify(

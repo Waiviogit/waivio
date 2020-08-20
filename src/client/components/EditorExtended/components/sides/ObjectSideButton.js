@@ -9,7 +9,7 @@ import * as apiConfig from '../../../../../waivioApi/config.json';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
-    const objectType = selectedObject.name || selectedObject.default_name;
+    const objectName = selectedObject.author_permlink;
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
@@ -31,7 +31,7 @@ const objectSearchInput = props => {
       anchorOffset: selectedObject.name.length,
       focusOffset: selectedObject.name.length,
     });
-    props.handleHashtag(objectType);
+    if (selectedObject.type === 'hashtag') props.handleHashtag(objectName);
     props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
   };
 

@@ -1337,5 +1337,7 @@
   "exchange_with": "Обмен с {exchanger}",
   "customer_support": "{author} спрашивает о {campaignName}",
   "notify_campaign": "компании",
-  "cancel_limit_order": "Лимитный заказ отменен"
+  "cancel_limit_order": "Лимитный заказ отменен",
+  "menu_rewards": "Награды"
+
 }

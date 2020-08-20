@@ -145,7 +145,6 @@ export const sendComment = (
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const { category, id, permlink: parentPermlink } = parentPost;
   let parentAuthor;
-
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
   } else if (parentPost.root_author && parentPost.guestInfo) {
@@ -170,10 +169,11 @@ export const sendComment = (
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(parentAuthor, parentPermlinkToSend);
+  const currCategory = category ? [category] : [];
 
   const jsonMetadata = createPostMetadata(
     body,
-    [category],
+    currCategory,
     isUpdating && jsonParse(originalComment.json_metadata),
   );
 
