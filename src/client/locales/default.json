@@ -1337,5 +1337,6 @@
   "customer_support": "{author} asked about {campaignName}",
   "notify_campaign": "campaign",
   "cancel_limit_order": "Cancel limit order",
+  "menu_rewards": "Rewards",
   "signing": "Signing in"
 }

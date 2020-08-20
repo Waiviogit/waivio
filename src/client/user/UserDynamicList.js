@@ -5,24 +5,34 @@ import { message } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import SortSelector from '../components/SortSelector/SortSelector';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
-import { getAuthenticatedUserName, isGuestUser } from '../reducers';
-
+import { getAuthenticatedUserName, isGuestUser, getAuthorizationUserFollowSort } from '../reducers';
+import { changeSorting } from '../auth/authActions';
 import './UserDynamicList.less';
+
+const SORT_OPTIONS = {
+  RANK: 'rank',
+  ALPHABET: 'alphabet',
+  FOLLOWERS: 'followers',
+  RECENCY: 'recency',
+};
 
 class UserDynamicList extends React.Component {
   static propTypes = {
+    dispatchChangeFollowSorting: PropTypes.func.isRequired,
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
     userName: PropTypes.string,
     unfollowUser: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
-    authUser: PropTypes.string.isRequired,
+    authUser: PropTypes.string,
     isGuest: PropTypes.bool.isRequired,
     changeCounterFollow: PropTypes.func.isRequired,
+    sort: PropTypes.string,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -30,8 +40,10 @@ class UserDynamicList extends React.Component {
     }).isRequired,
   };
   static defaultProps = {
+    authUser: '',
     showAuthorizedUser: false,
     userName: '',
+    sort: '',
   };
   constructor(props) {
     super(props);
@@ -39,13 +51,14 @@ class UserDynamicList extends React.Component {
       loading: false,
       hasMore: true,
       users: [],
+      sort: '',
     };
 
     this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    const { fetcher, authUser } = this.props;
+    const { fetcher, authUser, sort } = this.props;
     const { users } = this.state;
 
     if (!prevProps.authUser && authUser) {
@@ -53,6 +66,14 @@ class UserDynamicList extends React.Component {
         this.setState({
           loading: false,
           hasMore: newUsers.hasMore,
+          users: [...newUsers.users],
+        }),
+      );
+    }
+    if (!prevProps.sort && sort) {
+      fetcher(users, authUser, sort).then(newUsers =>
+        this.setState({
+          loading: false,
           users: [...newUsers.users],
         }),
       );
@@ -142,48 +163,110 @@ class UserDynamicList extends React.Component {
     });
   };
 
+  handleChangeSorting = sorting => {
+    this.props
+      .dispatchChangeFollowSorting(sorting)
+      .then(() => {
+        this.handleSorting(sorting);
+      })
+      .catch(err => {
+        message.error(err.message);
+      });
+  };
+
+  handleSorting(sorting) {
+    const { fetcher } = this.props;
+    const { users } = this.state;
+
+    this.setState(
+      {
+        loading: true,
+        sort: sorting,
+      },
+      () => {
+        fetcher(users, sorting)
+          .then(newUsers =>
+            this.setState({
+              loading: false,
+              users: [...newUsers.users],
+            }),
+          )
+          .catch(err => {
+            message.error(err.message);
+          });
+      },
+    );
+  }
+
   render() {
     const { loading, hasMore, users } = this.state;
     const empty = !hasMore && users.length === 0;
+    const { sort } = this.props;
 
     return (
-      <div className="UserDynamicList">
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          loadingMore={loading}
-          hasMore={hasMore}
-          loader={<Loading />}
-          loadMore={this.handleLoadMore}
-        >
-          {users.map(user => {
-            if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
-              return (
-                <UserCard
-                  key={user.name}
-                  user={user}
-                  unfollow={this.unFollow}
-                  follow={this.follow}
-                  alt={<WeightTag weight={user.wobjects_weight || user.weight} />}
-                />
-              );
-            }
-            return null;
-          })}
-        </ReduxInfiniteScroll>
-        {empty && (
-          <div className="UserDynamicList__empty">
-            <FormattedMessage id="list_empty" defaultMessage="No data" />
-          </div>
-        )}
-      </div>
+      <React.Fragment>
+        <div>
+          <SortSelector sort={sort} onChange={this.handleChangeSorting}>
+            <SortSelector.Item key={SORT_OPTIONS.RANK}>
+              <FormattedMessage id="rank" defaultMessage="Rank" />
+            </SortSelector.Item>
+            <SortSelector.Item key={SORT_OPTIONS.ALPHABET}>
+              <FormattedMessage id="alphabet" defaultMessage="A..Z" />
+            </SortSelector.Item>
+            <SortSelector.Item key={SORT_OPTIONS.FOLLOWERS}>
+              <FormattedMessage id="followers" defaultMessage="Followers" />
+            </SortSelector.Item>
+            <SortSelector.Item key={SORT_OPTIONS.RECENCY}>
+              <FormattedMessage id="recency" defaultMessage="Recency" />
+            </SortSelector.Item>
+          </SortSelector>
+        </div>
+        <div className="UserDynamicList">
+          <ReduxInfiniteScroll
+            elementIsScrollable={false}
+            loadingMore={loading}
+            hasMore={hasMore}
+            loader={<Loading />}
+            loadMore={this.handleLoadMore}
+          >
+            {users.map(user => {
+              if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
+                return (
+                  <UserCard
+                    key={user.name}
+                    user={user}
+                    unfollow={this.unFollow}
+                    follow={this.follow}
+                    alt={<WeightTag weight={user.wobjects_weight || user.weight} />}
+                  />
+                );
+              }
+              return null;
+            })}
+          </ReduxInfiniteScroll>
+          {empty && (
+            <div className="UserDynamicList__empty">
+              <FormattedMessage id="list_empty" defaultMessage="No data" />
+            </div>
+          )}
+        </div>
+      </React.Fragment>
     );
   }
 }
 
 export default withRouter(
-  connect(state => ({ isGuest: isGuestUser(state), authUser: getAuthenticatedUserName(state) }), {
-    unfollowUser,
-    followUser,
-    changeCounterFollow,
-  })(UserDynamicList),
+  connect(
+    state => ({
+      isGuest: isGuestUser(state),
+      authUser: getAuthenticatedUserName(state),
+      sort: getAuthorizationUserFollowSort(state),
+    }),
+    {
+      unfollowUser,
+      followUser,
+      changeCounterFollow,
+      dispatchChangeFollowSorting: changeSorting,
+    },
+  )(UserDynamicList),
 );
