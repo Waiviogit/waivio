@@ -58,14 +58,14 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
             <div className="username">{`@${campaignData.guide.name}`}</div>
           </Link>
           <div className="total-paid">
-            <div>
+            <div className="total-paid__liquid">
               {intl.formatMessage({
                 id: 'total_paid_liquid',
                 defaultMessage: 'Total paid (liquid)',
               })}
+              :
             </div>
-            <div className="total-paid__colon">:</div>
-            <div>
+            <div className="total-paid__currency">
               {`${
                 campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
               } HIVE`}{' '}
