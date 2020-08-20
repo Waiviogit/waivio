@@ -39,11 +39,11 @@ const MobileNavigation = ({ location, match }) => {
       id: 'objects',
     },
     rewards: {
-      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history|messages)/,
+      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
       id: 'rewards',
     },
     rewardsCampaigns: {
-      regExp: /(^\/rewards\/)(create|manage|payables|match-bot)$/,
+      regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
       id: 'campaigns',
     },
   };
@@ -109,9 +109,21 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'campaigns';
       filterName = 'payables';
       break;
+    case '/rewards/guideHistory':
+      pageName = 'campaigns';
+      filterName = 'reservations';
+      break;
+    case '/rewards/messages':
+      pageName = 'campaigns';
+      filterName = 'messages';
+      break;
     case '/rewards/match-bot':
       pageName = 'campaigns';
       filterName = 'match_bot';
+      break;
+    case '/rewards/blacklist':
+      pageName = 'campaigns';
+      filterName = 'blacklist';
       break;
     case '/rewards/id':
       pageName = 'campaigns';

@@ -280,9 +280,14 @@ const FilteredRewardsList = props => {
             caseStatus: CAMPAIGNS_TYPES_MESSAGES,
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
           }}
+          filtersGuideHistory={{
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+            messagesSponsors: sponsors,
+          }}
           setFilterValue={setFilterValue}
           match={match}
           activeHistoryFilters={activeHistoryFilters}
+          activeGuideHistoryFilters={activeGuideHistoryFilters}
           setActiveMessagesFilters={setActiveMessagesFilters}
         />
       </Modal>
