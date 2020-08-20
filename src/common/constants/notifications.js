@@ -21,6 +21,7 @@ export const CLAIM_REWARD = 'claimReward';
 export const BELL_POST = 'bellPost';
 export const BELL_REBLOG = 'bellReblog';
 export const BELL_FOLLOW = 'bellFollow';
+export const CUSTOMER_SUPPORT = 'campaignMessage';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -43,6 +44,7 @@ export const PARSED_NOTIFICATIONS = [
   CHANGE_RECOVERY_ACCOUNT,
   TRANSFER_FROM_SAVINGS,
   CLAIM_REWARD,
+  CUSTOMER_SUPPORT,
 ];
 
 export const BUSY_API_TYPES = {

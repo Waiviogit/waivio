@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { isEmpty, map, get, reduce, round } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { REWARD } from '../../common/constants/rewards';
+import { REWARD, MESSAGES, GUIDE_HISTORY, HISTORY } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
 export const displayLimit = 10;
@@ -11,14 +11,22 @@ export const rewardPostContainerData = {
   author: 'monterey',
   permlink: 'test-post',
 };
-export const preparePropositionReqData = ({ username, match, limit = 10, sort, ...args }) => {
+export const preparePropositionReqData = ({
+  username,
+  match,
+  limit = 10,
+  sort,
+  isRequestWithoutRequiredObject,
+  ...args
+}) => {
   const reqData = {
     limit,
-    requiredObject: match.params.campaignParent || match.params.name,
     userName: username,
     match,
     sort,
   };
+  if (!isRequestWithoutRequiredObject)
+    reqData.requiredObject = match.params.campaignParent || match.params.name;
 
   Object.keys(args).forEach(argName => {
     reqData[argName] = args[argName];
@@ -49,7 +57,7 @@ export const getUrl = match => {
 export const getTextByFilterKey = (intl, filterKey) => {
   switch (filterKey) {
     case 'active':
-    case 'history':
+    case HISTORY:
     case 'reserved':
       return `${intl.formatMessage({
         id: 'rewards',
@@ -533,11 +541,11 @@ export const getSort = (
       return sortEligible;
     case 'reserved':
       return sortReserved;
-    case 'history':
+    case HISTORY:
       return sortHistory;
-    case 'messages':
+    case MESSAGES:
       return sortMessages;
-    case 'guideHistory':
+    case GUIDE_HISTORY:
       return sortGuideHistory;
     default:
       return sortAll;
@@ -759,13 +767,18 @@ export const buttonsTitle = {
 export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
   if (location === '/rewards/messages') {
     return intl.formatMessage({
-      id: 'messages',
+      id: MESSAGES,
       defaultMessage: 'Messages',
     });
   } else if (location === '/rewards/history') {
     return intl.formatMessage({
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',
+    });
+  } else if (location === '/rewards/guideHistory') {
+    return intl.formatMessage({
+      id: 'history_of_reservations',
+      defaultMessage: 'History of reservations',
     });
   }
   return intl.formatMessage(rewardText[filterKey]);
@@ -778,11 +791,11 @@ export const getActiveFilters = ({
   activeGuideHistoryFilters,
 }) => {
   switch (path) {
-    case 'history':
+    case HISTORY:
       return activeHistoryFilters;
-    case 'messages':
+    case MESSAGES:
       return activeMessagesFilters;
-    case 'guideHistory':
+    case GUIDE_HISTORY:
       return activeGuideHistoryFilters;
     default:
       return '';
@@ -791,11 +804,11 @@ export const getActiveFilters = ({
 
 export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
   switch (path) {
-    case 'history':
+    case HISTORY:
       return sortHistory;
-    case 'messages':
+    case MESSAGES:
       return sortMessages;
-    case 'guideHistory':
+    case GUIDE_HISTORY:
       return sortGuideHistory;
     default:
       return '';
