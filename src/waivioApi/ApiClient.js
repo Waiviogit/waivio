@@ -109,8 +109,12 @@ export const getUsersByObject = object =>
 // region Feed requests
 export const getFeedContentByObject = (name, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
-      headers,
+    fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale: user_languages,
+      },
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
     })
@@ -128,8 +132,12 @@ export const getMoreFeedContentByObject = ({
   lastId,
 }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
-      headers,
+    fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.posts}`, {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale: user_languages,
+      },
       method: 'POST',
       body: JSON.stringify({ skip, limit, user_languages, lastId }),
     })
@@ -137,12 +145,13 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData) =>
+export const getFeedContent = (sortBy, queryData, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
+        locale: queryData.user_languages,
       },
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -155,10 +164,15 @@ export const getFeedContent = (sortBy, queryData) =>
 export const getUserProfileBlog = (
   userName,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
+  locale,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
-      headers,
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
       method: 'POST',
       body: JSON.stringify({
         limit,
@@ -175,7 +189,11 @@ export const getUserProfileBlog = (
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
-      headers,
+      headers: {
+        ...headers,
+        locale: user_languages,
+        app: config.appName,
+      },
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
     })
