@@ -152,11 +152,7 @@ class Topnav extends React.Component {
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
-    const wobjectAllCount = wobjectsCounts
-      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-      : null;
-    const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
-    const countArr = [{ name: 'All', count: countAllSearch }];
+    const countArr = [];
 
     if (!isEmpty(wobjectsCounts)) {
       const wobjList = listOfObjectTypes.reduce((acc, i) => {
@@ -771,6 +767,8 @@ class Topnav extends React.Component {
     const formattedAutoCompleteDropdown = isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
+
+    // const searchAllBtn = { this.state.currentItem === "all" ? null : (dropdownOptions.concat([downBar])) }
 
     return (
       <div className="Topnav">
