@@ -151,13 +151,23 @@ class EditPost extends Component {
         .then(campaignData => {
           const requiredObj = get(campaignData.requiredObject, 'name', '');
           const secondObj = get(campaignData.objects, '[0].name', '');
+
+          const requiredObjPermlink = get(campaignData, 'requiredObject', '');
+          const secondObjPermlink = get(campaignData, 'objects[0]', '');
+          const topics = [];
+          if (
+            requiredObjPermlink.object_type === 'hashtag' ||
+            secondObjPermlink.object_type === 'hashtag'
+          ) {
+            topics.push(requiredObjPermlink.author_permlink || secondObjPermlink.author_permlink);
+          }
           const reviewTitle = `Review: ${requiredObj}, ${secondObj}`;
           return this.setState({
             campaign: { ...campaignData, fetched: true },
             draftContent: {
               title: reviewTitle,
             },
-            topics: [requiredObj, secondObj],
+            topics,
           });
         })
         .catch(error => {
@@ -251,7 +261,7 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const objName = object.name || object.default_name;
+      const objName = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
@@ -260,7 +270,7 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith([...prevState.topics, objName], isEqual),
+        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objName], isEqual),
       };
     });
   }
@@ -284,6 +294,11 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
+    const currentObject = get(linkedObjects, '[0]', {});
+    const objName = currentObject.author_permlink;
+    if (currentObject.type === 'hashtag' && objName) {
+      this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objName], isEqual) }));
+    }
     const campaignId = get(campaign, '_id', null);
     const postData = {
       body: content,
@@ -348,8 +363,8 @@ class EditPost extends Component {
     this.props.saveDraft(draft, redirect, this.props.intl);
   }, 1500);
 
-  handleHashtag = objectType =>
-    this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objectType], isEqual) }));
+  handleHashtag = objectName =>
+    this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objectName], isEqual) }));
 
   render() {
     const {

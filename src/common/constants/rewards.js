@@ -39,4 +39,6 @@ export const HISTORY = 'history';
 
 export const ASSIGNED = 'assigned';
 
+export const IS_RESERVED = 'reserved';
+
 export default null;
