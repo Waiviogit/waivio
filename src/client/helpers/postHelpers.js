@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import { fromPairs, get, attempt, isError, includes, unescape, split } from 'lodash';
+import { fromPairs, get, attempt, isError, includes, unescape, split, isEmpty } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex, botNameRegex } from './regexHelpers';
@@ -114,7 +114,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData, cam
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
-  metaData.tags = tags.map(tag => tag.toLowerCase());
+  if (!isEmpty(tags)) metaData.tags = tags.map(tag => tag.toLowerCase());
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;

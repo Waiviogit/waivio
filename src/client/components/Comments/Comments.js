@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
+import { get } from 'lodash';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { sortComments } from '../../helpers/sortHelpers';
 import Loading from '../Icon/Loading';
@@ -52,6 +53,7 @@ class Comments extends React.Component {
     getMessageHistory: PropTypes.func,
     getReservedComments: PropTypes.func,
     match: PropTypes.shape(),
+    history: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -64,6 +66,7 @@ class Comments extends React.Component {
     sliderMode: false,
     show: false,
     isQuickComments: false,
+    history: false,
     match: {},
     notify: () => {},
     onLikeClick: () => {},
@@ -169,13 +172,13 @@ class Comments extends React.Component {
 
   onCommentSend = () => {
     const { category, author, permlink } = this.props.parentPost;
-    return this.props.match.params.filterKey === 'reserved'
+    return get(this.props.match, 'params', 'filterKey') === 'reserved'
       ? this.props.getReservedComments({ category, author, permlink })
       : this.props.getMessageHistory();
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl } = this.props;
+    const { intl, history } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
@@ -183,21 +186,29 @@ class Comments extends React.Component {
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(() => {
-        setTimeout(() => {
-          this.onCommentSend().then(() => {
-            message.success(
-              intl.formatMessage({
-                id: 'notify_comment_sent',
-                defaultMessage: 'Comment submitted',
-              }),
-            );
-            this.setState({
-              showCommentFormLoading: false,
-              commentFormText: '',
-              commentSubmitted: true,
+        if (history) {
+          setTimeout(() => {
+            this.onCommentSend().then(() => {
+              message.success(
+                intl.formatMessage({
+                  id: 'notify_comment_sent',
+                  defaultMessage: 'Comment submitted',
+                }),
+              );
+              this.setState({
+                showCommentFormLoading: false,
+                commentFormText: '',
+                commentSubmitted: true,
+              });
             });
+          }, 10000);
+        } else {
+          this.setState({
+            showCommentFormLoading: false,
+            commentFormText: '',
+            commentSubmitted: true,
           });
-        }, 10000);
+        }
       })
       .catch(() => {
         this.setState({
