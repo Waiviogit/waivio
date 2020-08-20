@@ -1,4 +1,4 @@
-import { isEmpty, uniq, map, get } from 'lodash';
+import { isEmpty, uniq, map, get, filter } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -54,7 +54,6 @@ export default class ObjectFeed extends React.Component {
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
-    currentProposition: PropTypes.arrayOf(PropTypes.shape()),
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
@@ -66,7 +65,6 @@ export default class ObjectFeed extends React.Component {
     getMoreObjectPosts: () => {},
     readLocales: [],
     handleCreatePost: () => {},
-    currentProposition: {},
   };
 
   state = {
@@ -79,17 +77,28 @@ export default class ObjectFeed extends React.Component {
   };
 
   componentDidMount() {
-    const { match, limit, readLocales } = this.props;
+    const { match, limit, readLocales, wobject } = this.props;
     const { name } = match.params;
+    // eslint-disable-next-line no-underscore-dangle
+    const wobjectId = wobject._id;
     this.props.getObjectPosts({
       object: name,
       username: name,
       readLanguages: readLocales,
       limit,
     });
+
+    if (wobjectId) {
+      this.mountedId = wobjectId;
+    }
   }
+
   componentWillReceiveProps(nextProps) {
     const { match, limit, readLocales } = this.props;
+    // eslint-disable-next-line no-underscore-dangle
+    const nextPropswobjectId = nextProps.wobject._id;
+    // eslint-disable-next-line no-underscore-dangle
+    const thisPropsWobjectId = this.props.wobject._id;
     if (
       readLocales !== nextProps.readLocales ||
       match.params.name !== nextProps.match.params.name
@@ -109,16 +118,29 @@ export default class ObjectFeed extends React.Component {
       }
       window.scrollTo(0, 0);
     }
+
+    if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
+      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+      this.getPropositions({
+        userName: nextProps.userName,
+        requiredObject,
+        match: nextProps.match,
+      });
+    }
+
+    if (nextPropswobjectId === this.mountedId) {
+      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+      this.getPropositions({
+        userName: nextProps.userName,
+        requiredObject,
+        match: nextProps.match,
+      });
+    }
+
+    this.mountedId = null;
   }
 
-  componentDidUpdate() {
-    const { needUpdate } = this.state;
-    const { userName, wobject, match } = this.props;
-    const requiredObject = get(wobject, ['parent', 'author_permlink']);
-    if (needUpdate && requiredObject) {
-      this.getPropositions({ userName, requiredObject, match });
-    }
-  }
+  mountedId = null;
 
   getCurrentUSDPrice = () => {
     const { cryptosPriceHistory } = this.props;
@@ -134,9 +156,17 @@ export default class ObjectFeed extends React.Component {
   };
 
   getPropositions = ({ userName, requiredObject, match }) => {
-    this.setState({ loadingPropositions: true, needUpdate: false });
+    this.setState({ loadingPropositions: true });
     ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
-      this.setState({ allPropositions: data.campaigns, loadingPropositions: false });
+      const currentProposition = filter(
+        data.campaigns,
+        obj => obj.required_object.author_permlink === match.params.name,
+      );
+      this.setState({
+        allPropositions: data.campaigns,
+        currentProposition,
+        loadingPropositions: false,
+      });
     });
   };
 
@@ -150,6 +180,7 @@ export default class ObjectFeed extends React.Component {
             <Proposition
               proposition={proposition}
               wobj={wobj.object}
+              wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
               assignProposition={this.assignPropositionHandler}
               discardProposition={this.discardProposition}
@@ -270,8 +301,8 @@ export default class ObjectFeed extends React.Component {
   // END Propositions
 
   render() {
-    const { feed, limit, handleCreatePost, wobject, currentProposition, intl } = this.props;
-    const { loadingPropositions, allPropositions } = this.state;
+    const { feed, limit, handleCreatePost, wobject, intl } = this.props;
+    const { loadingPropositions, allPropositions, currentProposition } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
     const content = uniq(objectFeed);

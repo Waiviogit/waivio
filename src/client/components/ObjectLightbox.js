@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
+import { isEmpty } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -30,8 +31,7 @@ export default class ObjectLightbox extends Component {
 
   componentDidMount() {
     const parent = getApprovedField(this.props.wobject, 'parent');
-
-    getObject(parent).then(res => this.setState({ parent: res }));
+    if (!isEmpty(parent)) getObject(parent).then(res => this.setState({ parent: res }));
   }
 
   handleAvatarClick = () => this.setState({ open: true });

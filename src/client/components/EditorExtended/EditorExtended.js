@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
 import { Input, message } from 'antd';
@@ -49,6 +50,7 @@ const defaultDecorators = new CompositeDecorator([
   },
 ]);
 
+@injectIntl
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
@@ -146,26 +148,30 @@ class Editor extends React.Component {
     this.props.onChange(convertToRaw(editorState.getCurrentContent()), this.state.titleValue);
   };
 
+  validateLength = event => {
+    this.setState({ titleValue: event.target.value }, () => {
+      if (this.state.titleValue && this.state.titleValue.length === Editor.MAX_LENGTH) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'title_error_too_long',
+            defaultMessage: "Title can't be longer than 255 characters.",
+          }),
+        );
+      }
+    });
+  };
+
   render() {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
-    if (titleValue && titleValue.length > Editor.MAX_LENGTH) {
-      message.error(
-        this.props.intl.formatMessage({
-          id: 'title_error_too_long',
-          defaultMessage: "Title can't be longer than 255 characters.",
-        }),
-      );
-    }
-
     return (
       <div className="waiv-editor-wrap">
         <Input.TextArea
-          maxLength={Editor.MAX_LENGTH + 1}
+          maxLength={Editor.MAX_LENGTH}
           autoSize
           className="md-RichEditor-title"
           value={titleValue}
           placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-          onChange={event => this.setState({ titleValue: event.target.value })}
+          onChange={event => this.validateLength(event)}
         />
         <div className="waiv-editor">
           {isMounted && (

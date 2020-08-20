@@ -3,6 +3,7 @@ import {
   SET_DATA_FOR_SINGLE_REPORT,
   GET_REWARDS_GENERAL_COUNTS,
 } from './rewardsActions';
+import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
 const initialState = {
   singleReportData: {},
@@ -11,6 +12,7 @@ const initialState = {
   hasReceivables: '',
   countTookPartCampaigns: 0,
   createdCampaignsCount: 0,
+  reservedComments: {},
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -34,6 +36,12 @@ const rewardsReducer = (state = initialState, action) => {
         createdCampaignsCount: action.payload.count_campaigns,
       };
     }
+    case GET_RESERVED_COMMENTS_SUCCESS: {
+      return {
+        ...state,
+        reservedComments: action.payload.content,
+      };
+    }
     default:
       return state;
   }
@@ -48,3 +56,4 @@ export const getTabType = state => state.tabType;
 export const getHasReceivables = state => state.hasReceivables;
 export const getCountTookPartCampaigns = state => state.countTookPartCampaigns;
 export const getCreatedCampaignsCount = state => state.createdCampaignsCount;
+export const getCommentsFromReserved = state => state.reservedComments;

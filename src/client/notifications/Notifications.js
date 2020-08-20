@@ -34,6 +34,7 @@ import NotificationTransferVesting from '../components/Navigation/Notifications/
 import NotificationChangeRecoveryAccount from '../components/Navigation/Notifications/NotificationChangeRecoveryAccount';
 import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
 import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
+import NotificationCustomerSupport from '../components/Navigation/Notifications/NotificationCustomerSupport';
 
 import './Notifications.less';
 
@@ -263,6 +264,16 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.CUSTOMER_SUPPORT:
+                return (
+                  <NotificationCustomerSupport
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:

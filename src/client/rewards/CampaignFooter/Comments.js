@@ -131,26 +131,26 @@ const Comments = ({
     setReplyOpen(!editing ? false : replying);
   };
 
-  const handleSubmitComment = useCallback((parentP, commentValue) => {
+  const handleSubmitComment = (parentP, commentValue) => {
     const parentPost = parentP;
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
-
     setLoading(true);
     return onSendComment(parentPost, commentValue)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-        setLoading(false);
-        setCommentFormText('');
-        setCommentSubmitted(true);
-        setReplyOpen(false);
-      })
-      .then(() => {
-        setTimeout(() => getMessageHistory(), 8000);
+        setTimeout(() => {
+          getMessageHistory().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            setLoading(false);
+            setCommentFormText('');
+            setCommentSubmitted(true);
+            setReplyOpen(false);
+          });
+        }, 10000);
       })
       .catch(() => {
         setCommentFormText(commentValue);
@@ -159,7 +159,7 @@ const Comments = ({
           error: true,
         };
       });
-  }, []);
+  };
 
   const getChildren = useCallback((obj, comments) => {
     const replyKey = get(obj, ['replies', '0']);

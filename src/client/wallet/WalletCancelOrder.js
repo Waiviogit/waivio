@@ -11,19 +11,22 @@ const WalletCancelOrder = ({ timestamp, openPays, currentPays }) => (
     </div>
     <div className="UserWalletTransactions__content">
       <div className="UserWalletTransactions__content-recipient">
-        <div>
-          <FormattedMessage
-            id="cancel_order"
-            defaultMessage="Cancel order to buy {open_pays}"
-            values={{
-              open_pays: <span>{openPays}</span>,
-            }}
-          />
-        </div>
-        <div className="UserWalletTransactions__received">
-          {'+ '}
-          {currentPays}
-        </div>
+        {openPays ? (
+          <div>
+            <FormattedMessage
+              id="cancel_order"
+              defaultMessage="Cancel order to buy {open_pays}"
+              values={{
+                open_pays: <span className="cancel-order-open-pays">{openPays}</span>,
+              }}
+            />
+          </div>
+        ) : (
+          <FormattedMessage id="cancel_limit_order" defaultMessage="Cancel limit order" />
+        )}
+        {currentPays && (
+          <div className="UserWalletTransactions__cancel-order-current-pays">{currentPays}</div>
+        )}
       </div>
       <span className="UserWalletTransactions__timestamp">
         <BTooltip

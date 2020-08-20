@@ -298,6 +298,7 @@ class CatalogWrap extends React.Component {
             <Proposition
               proposition={proposition}
               wobj={wobj.object}
+              wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
               assignProposition={this.assignPropositionHandler}
               discardProposition={this.discardProposition}
