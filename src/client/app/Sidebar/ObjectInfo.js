@@ -8,9 +8,9 @@ import {
   orderBy,
   pickBy,
   identity,
-  filter,
-  iteratee,
   includes,
+  has,
+  setWith,
 } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
@@ -204,6 +204,15 @@ class ObjectInfo extends React.Component {
     );
   };
 
+  validatedAlbums = albums =>
+    albums.map(album => {
+      if (!has(album, 'active_votes') && !has(album, 'weight')) {
+        setWith(album, '[active_votes]', []);
+        setWith(album, '[weight]', 0);
+      }
+      return album;
+    });
+
   render() {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
@@ -319,7 +328,7 @@ class ObjectInfo extends React.Component {
 
     profile = pickBy(profile, identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const album = filter(albums, iteratee(['id', wobject.author_permlink]));
+    const allAlbums = this.validatedAlbums(albums);
     const hasGalleryImg =
       wobject.fields &&
       wobject.fields.filter(
@@ -523,8 +532,8 @@ class ObjectInfo extends React.Component {
                 <span className="proposition-line__text">{photosCount}</span>
                 {showModal && (
                   <CreateImage
-                    albums={albums}
-                    selectedAlbum={album[0]}
+                    albums={allAlbums}
+                    selectedAlbum={allAlbums[0]}
                     showModal={showModal}
                     hideModal={this.handleToggleModal}
                   />
@@ -725,8 +734,8 @@ class ObjectInfo extends React.Component {
                     <span className="proposition-line__text">{photosCount}</span>
                     {showModal && (
                       <CreateImage
-                        albums={albums}
-                        selectedAlbum={album[0]}
+                        albums={allAlbums}
+                        selectedAlbum={allAlbums[0]}
                         showModal={showModal}
                         hideModal={this.handleToggleModal}
                       />

@@ -243,7 +243,6 @@ class CreateImage extends React.Component {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
     const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
-
     return (
       <Modal
         title={intl.formatMessage({
@@ -259,7 +258,9 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
+              initialValue: selectedAlbum
+                ? selectedAlbum.id || selectedAlbum.body
+                : 'Choose an album',
               rules: [
                 {
                   required: true,
@@ -275,7 +276,10 @@ class CreateImage extends React.Component {
             })(
               <Select disabled={loading}>
                 {map(albums, album => (
-                  <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
+                  <Select.Option
+                    key={`${album.id || album.weight}${album.body}`}
+                    value={album.id || album.body}
+                  >
                     {album.body}
                   </Select.Option>
                 ))}

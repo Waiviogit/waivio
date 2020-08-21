@@ -69,11 +69,7 @@ export default function withEditor(WrappedComponent) {
         body: formData,
       })
         .then(res => res.json())
-        .then(res => {
-          console.log('res: ', res);
-          console.log('blob: ', blob);
-          return callback(res.image, blob.name);
-        })
+        .then(res => callback(res.image, blob.name))
         .catch(() => {
           errorCallback();
           message.error(
