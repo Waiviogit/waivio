@@ -32,7 +32,6 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import ObjectAvatar from '../ObjectAvatar';
-import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
@@ -237,12 +236,6 @@ class Topnav extends React.Component {
         })}
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="signup">
-            <ModalSignUp isButton={false} />
-          </Menu.Item>
-          <Menu.Item key="divider" disabled>
-            |
-          </Menu.Item>
           <Menu.Item key="login">
             <ModalSignIn next={next} />
           </Menu.Item>
