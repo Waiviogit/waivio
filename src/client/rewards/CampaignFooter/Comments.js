@@ -29,6 +29,8 @@ const Comments = ({
   currentComment,
   getMessageHistory,
   parent,
+  getReservedComments,
+  reserved,
 }) => {
   const [replying, setReplyOpen] = useState(false);
   const [editing, setEditOpen] = useState(false);
@@ -132,28 +134,25 @@ const Comments = ({
   };
 
   const handleSubmitComment = (parentP, commentValue) => {
-    const { history } = this.props;
     const parentPost = parentP;
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
     setLoading(true);
-    return onSendComment(parentPost, commentValue)
+    return onSendComment(parentPost, commentValue, false, commentObj)
       .then(() => {
-        if (history) {
-          setTimeout(() => {
-            getMessageHistory().then(() => {
-              message.success(
-                intl.formatMessage({
-                  id: 'notify_comment_sent',
-                  defaultMessage: 'Comment submitted',
-                }),
-              );
-              setLoading(false);
-              setCommentFormText('');
-              setCommentSubmitted(true);
-              setReplyOpen(false);
-            });
-          }, 10000);
-        }
+        setTimeout(() => {
+          getMessageHistory().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            setLoading(false);
+            setCommentFormText('');
+            setCommentSubmitted(true);
+            setReplyOpen(false);
+          });
+        }, 10000);
       })
       .catch(() => {
         setCommentFormText(commentValue);
@@ -169,13 +168,34 @@ const Comments = ({
     return get(comments, ['all', replyKey]);
   }, []);
 
-  const handleEditComment = (parentPost, commentValue) =>
-    onSendComment(parentPost, commentValue, true, commentObj).then(() => {
-      setEditOpen(false);
-      setTimeout(() => getMessageHistory(), 10000);
-    });
-
   const parentPost = !isEmpty(parent) ? parent : commentObj;
+
+  const onCommentSend = () => {
+    const { category, parentAuthor, parentPermlink } = parentPost;
+    return reserved
+      ? getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
+      : getMessageHistory();
+  };
+
+  const handleEditComment = (parentP, commentValue) => {
+    setLoading(true);
+    return onSendComment(parentP, commentValue, true, commentObj).then(() => {
+      setTimeout(
+        () =>
+          onCommentSend().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_updated',
+                defaultMessage: 'Comment updated',
+              }),
+            );
+            setLoading(false);
+            setEditOpen(false);
+          }),
+        10000,
+      );
+    });
+  };
 
   return (
     <React.Fragment>
@@ -323,15 +343,18 @@ Comments.propTypes = {
   onActionInitiated: PropTypes.func,
   currentComment: PropTypes.shape().isRequired,
   parent: PropTypes.shape(),
-  getMessageHistory: PropTypes.func.isRequired,
-  history: PropTypes.bool,
+  getMessageHistory: PropTypes.func,
+  getReservedComments: PropTypes.func,
+  reserved: PropTypes.bool,
 };
 
 Comments.defaultProps = {
   parent: {},
   defaultVotePercent: 0,
-  history: false,
+  reserved: false,
   onActionInitiated: () => {},
+  getReservedComments: () => {},
+  getMessageHistory: () => {},
 };
 
 export default injectIntl(Comments);
