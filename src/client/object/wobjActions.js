@@ -182,7 +182,6 @@ export const getChangedWobjectField = (authorPermlink, fieldName, author, permli
   busyAPI.sendAsync(subscribeMethod, [voter, blockNum, subscribeTypes.votes]);
   busyAPI.subscribe((response, mess) => {
     if (subscribeTypes.votes === mess.type && mess.notification.blockParsed === blockNum) {
-      // eslint-disable-next-line no-underscore-dangle
       dispatch({
         type: GET_CHANGED_WOBJECT_FIELD.ACTION,
         payload: {
