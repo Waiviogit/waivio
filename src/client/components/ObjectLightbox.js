@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
-import { isEmpty } from 'lodash';
+import { get } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
-import { getApprovedField } from '../helpers/wObjectHelper';
-import { getObject } from '../../waivioApi/ApiClient';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -19,7 +17,7 @@ export default class ObjectLightbox extends Component {
   };
 
   static defaultProps = {
-    wobject: undefined,
+    wobject: {},
     accessExtend: false,
     size: 100,
   };
@@ -29,20 +27,15 @@ export default class ObjectLightbox extends Component {
     parent: {},
   };
 
-  componentDidMount() {
-    const parent = getApprovedField(this.props.wobject, 'parent');
-    if (!isEmpty(parent)) getObject(parent).then(res => this.setState({ parent: res }));
-  }
-
   handleAvatarClick = () => this.setState({ open: true });
 
   handleCloseRequest = () => this.setState({ open: false });
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = getApprovedField(wobject, 'avatar');
-    const objectName = getApprovedField(wobject, objectFields.name) || wobject.default_name;
-    const currentImage = imageUrl || getApprovedField(wobject.parent, 'avatar') || DEFAULTS.AVATAR;
+    const imageUrl = wobject.avatar;
+    const objectName = wobject.name || wobject.default_name;
+    const currentImage = imageUrl || get(wobject.parent, 'avatar') || DEFAULTS.AVATAR;
 
     return (
       <React.Fragment>
