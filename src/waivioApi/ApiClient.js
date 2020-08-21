@@ -1052,9 +1052,9 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0) =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort) =>
   fetch(
-    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: {
         ...headers,
@@ -1067,13 +1067,13 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) =>
     .then(data => data)
     .catch(err => console.error(err));
 
-export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser) => {
+export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser, sort) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
 
   return fetch(
-    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: actualHeaders,
     },

@@ -6,9 +6,14 @@ import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import './UserFollowing.less';
-import { getAuthenticatedUserName, getUser, isGuestUser } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getUser,
+  isGuestUser,
+  getAuthorizationUserFollowSort,
+} from '../reducers';
 import { notify } from '../app/Notification/notificationActions';
+import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;
 
@@ -17,6 +22,7 @@ const TabPane = Tabs.TabPane;
     user: getUser(state, ownProps.match.params.name),
     authUser: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    sort: getAuthorizationUserFollowSort(state),
   }),
   {
     notify,
@@ -27,10 +33,12 @@ export default class UserFollowing extends React.Component {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     authUser: PropTypes.string,
+    sort: PropTypes.string,
   };
 
   static defaultProps = {
     authUser: '',
+    sort: 'recency',
   };
 
   static limit = 50;
@@ -49,9 +57,10 @@ export default class UserFollowing extends React.Component {
       this.limit,
       this.skip,
       this.props.authUser,
+      this.props.sort,
     );
     const users = response.users;
-    this.skip += this.limit;
+    UserFollowing.skip += UserFollowing.limit;
     return { users, hasMore: response.hasMore };
   }
 
