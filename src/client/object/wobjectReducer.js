@@ -82,11 +82,11 @@ export default function wobjectReducer(state = initialState, action) {
 
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       if (isEmpty(action.payload)) return state;
-      const { toDispay, field } = action.payload;
+      const { toDisplay, field } = action.payload;
       return {
         ...state,
         wobject: {
-          [field.name]: toDispay || '',
+          [field.name]: toDisplay || '',
           ...state.wobject,
           fields: [...state.wobject.fields, field],
         },

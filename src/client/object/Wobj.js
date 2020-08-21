@@ -19,7 +19,7 @@ import {
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
-import { resetGallery } from '../object/ObjectGallery/galleryActions';
+import { resetGallery } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';

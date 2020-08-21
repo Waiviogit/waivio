@@ -14,7 +14,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import {accessTypesArr, haveAccess, parseWobjectField} from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -37,7 +37,7 @@ const WobjHeader = ({
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
   const parentName = parent.name || parent.default_name;
-
+  const status = parseWobjectField(wobject, 'status');
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -59,7 +59,7 @@ const WobjHeader = ({
   const name = wobject.name || wobject.default_name;
   const isHashtag = wobject.object_type === 'hashtag';
 
-  const statusFields = wobject.status ? getStatusLayout(wobject.status) : descriptionShort;
+  const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
