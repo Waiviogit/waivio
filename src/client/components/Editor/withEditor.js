@@ -70,7 +70,9 @@ export default function withEditor(WrappedComponent) {
       })
         .then(res => res.json())
         .then(res => {
-          callback(res.image, blob.name);
+          console.log('res: ', res);
+          console.log('blob: ', blob);
+          return callback(res.image, blob.name);
         })
         .catch(() => {
           errorCallback();

@@ -31,6 +31,7 @@ const ImageSetter = ({
   getEditorState,
   addNewBlockAt,
   Block,
+  selection,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -70,8 +71,7 @@ const ImageSetter = ({
       );
     }
 
-    if (image) {
-      const selection = getEditorState().getSelection();
+    if (selection && image) {
       const key = selection.getAnchorKey();
 
       setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
@@ -163,10 +163,10 @@ const ImageSetter = ({
           id: uuidv4(),
         };
 
-        if (newImage) {
-          const selection = getEditorState().getSelection();
-          const key = selection.getAnchorKey();
+        uploadedImages.push(newImage);
 
+        if (selection && newImage) {
+          const key = selection.getAnchorKey();
           setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
           setEditorState(
             addNewBlockAt(getEditorState(), key, Block.IMAGE, {
@@ -175,8 +175,6 @@ const ImageSetter = ({
             }),
           );
         }
-
-        uploadedImages.push(newImage);
       };
       const onErrorLoadImage = () => {
         setLoadingImage(false);
@@ -321,10 +319,11 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
-  setEditorState: PropTypes.func.isRequired,
-  getEditorState: PropTypes.func.isRequired,
-  addNewBlockAt: PropTypes.func.isRequired,
-  Block: PropTypes.shape().isRequired,
+  setEditorState: PropTypes.func,
+  getEditorState: PropTypes.func,
+  addNewBlockAt: PropTypes.func,
+  selection: PropTypes.func,
+  Block: PropTypes.shape(),
 };
 
 ImageSetter.defaultProps = {
@@ -332,6 +331,11 @@ ImageSetter.defaultProps = {
   defaultImage: '',
   isRequired: false,
   isTitle: true,
+  setEditorState: () => {},
+  getEditorState: () => {},
+  addNewBlockAt: () => {},
+  selection: undefined,
+  Block: {},
 };
 
 export default withEditor(injectIntl(ImageSetter));
