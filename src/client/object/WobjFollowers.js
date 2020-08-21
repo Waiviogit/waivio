@@ -8,7 +8,7 @@ import { getAuthenticatedUserName } from '../reducers';
 @connect(state => ({
   user: getAuthenticatedUserName(state),
 }))
-export default class WobjFollowers extends React.Component {
+class WobjFollowers extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     user: PropTypes.string.isRequired,
@@ -31,3 +31,5 @@ export default class WobjFollowers extends React.Component {
     return <UserDynamicList limit={WobjFollowers.limit} fetcher={this.fetcher} />;
   }
 }
+
+export default WobjFollowers;

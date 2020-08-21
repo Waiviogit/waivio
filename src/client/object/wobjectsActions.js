@@ -15,6 +15,7 @@ export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
+
   return dispatch({
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, user, usedLocale).catch(() =>

@@ -94,5 +94,6 @@
   "finalConfirmTransaction": "/confirm-transaction",
   "getWithdrawData": "/get-withdraw-data",
   "setPendingStatus": "/set-pending-transfer",
-  "reservationCurrency": "/reservationCurrency"
+  "reservationCurrency": "/reservationCurrency",
+  "getField": "/getField"
 }

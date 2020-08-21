@@ -51,6 +51,7 @@ class Comments extends React.Component {
     history: PropTypes.bool,
     parentAuthorIfGuest: PropTypes.string,
     parentPermlinkIfGuest: PropTypes.string,
+    isUpdating: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -64,6 +65,7 @@ class Comments extends React.Component {
     show: false,
     isQuickComments: false,
     history: false,
+    isUpdating: false,
     match: {},
     parentAuthorIfGuest: '',
     parentPermlinkIfGuest: '',
@@ -177,7 +179,7 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl, history, parentAuthorIfGuest, parentPermlinkIfGuest } = this.props;
+    const { intl, history, parentAuthorIfGuest, parentPermlinkIfGuest, isUpdating } = this.props;
     const parentPost = parentP;
     // foe object updates
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
@@ -186,7 +188,7 @@ class Comments extends React.Component {
       .onSendComment(
         parentPost,
         commentValue,
-        false,
+        isUpdating,
         {},
         parentAuthorIfGuest,
         parentPermlinkIfGuest,

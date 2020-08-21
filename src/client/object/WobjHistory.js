@@ -59,7 +59,6 @@ class WobjHistory extends React.Component {
   };
 
   static defaultProps = {
-    getObjectComments: () => {},
     readLanguages: ['en-US'],
     isAuthenticated: false,
     comments: {},

@@ -1338,5 +1338,7 @@
   "notify_campaign": "campaign",
   "cancel_limit_order": "Cancel limit order",
   "menu_rewards": "Rewards",
-  "signing": "Signing in"
+  "signing": "Signing in",
+  "alphabet": "A..Z",
+  "page": "Page"
 }
