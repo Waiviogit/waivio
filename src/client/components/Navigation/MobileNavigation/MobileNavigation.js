@@ -17,6 +17,7 @@ import {
   PATH_NAME_MANAGE,
   PATH_NAME_PAYABLES,
   PATH_NAME_BLACKLIST,
+  CAMPAIGNS,
 } from '../../../../common/constants/rewards';
 import './MobileNavigation.less';
 
@@ -56,7 +57,7 @@ const MobileNavigation = ({ location, match }) => {
     },
     rewardsCampaigns: {
       regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
-      id: 'campaigns',
+      id: CAMPAIGNS,
     },
   };
 
@@ -110,35 +111,35 @@ const MobileNavigation = ({ location, match }) => {
       filterName = 'receivables';
       break;
     case PATH_NAME_CREATE:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'create';
       break;
     case PATH_NAME_MANAGE:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'manage';
       break;
     case PATH_NAME_PAYABLES:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'payables';
       break;
     case PATH_NAME_GUIDE_HISTORY:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'reservations';
       break;
     case PATH_NAME_MESSAGES:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'messages';
       break;
     case PATH_NAME_MATCH_BOT:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'match_bot';
       break;
     case PATH_NAME_BLACKLIST:
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'blacklist';
       break;
     case '/rewards/id':
-      pageName = 'campaigns';
+      pageName = CAMPAIGNS;
       filterName = 'match_bot';
       break;
     case '/drafts':
