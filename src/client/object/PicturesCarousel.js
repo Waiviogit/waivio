@@ -29,6 +29,7 @@ Arrow.defaultProps = {
 
 const PicturesCarousel = ({ pics, objectID }) => {
   const settings = {
+    dots: false,
     arrows: true,
     lazyLoad: true,
     nextArrow: <Arrow icon="right" />,
