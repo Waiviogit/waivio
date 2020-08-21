@@ -21,7 +21,7 @@ import {
   findIndex,
   sortBy,
 } from 'lodash';
-import { HBD } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAllUsers,
@@ -45,6 +45,7 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
+import { getCryptoPriceHistory } from '../app/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
 import {
@@ -92,6 +93,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     setUpdatedFlag,
     getPropositionsForMap,
     getRewardsGeneralCounts,
+    getCryptoPriceHistory,
   },
 )
 class Rewards extends React.Component {
@@ -114,6 +116,7 @@ class Rewards extends React.Component {
     pendingUpdate: PropTypes.bool,
     authenticated: PropTypes.bool,
     users: PropTypes.shape(),
+    getCryptoPriceHistory: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -168,8 +171,15 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    const { userLocation, match, username, authenticated } = this.props;
+    const {
+      userLocation,
+      match,
+      username,
+      authenticated,
+      getCryptoPriceHistory: getCryptoPriceHistoryAction,
+    } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
+    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (!size(userLocation)) {
       this.props.getCoordinates();
