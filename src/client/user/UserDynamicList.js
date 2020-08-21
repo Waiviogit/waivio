@@ -205,7 +205,7 @@ class UserDynamicList extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
+        <div className="sortSelector">
           <SortSelector sort={sort} onChange={this.handleChangeSorting}>
             <SortSelector.Item key={SORT_OPTIONS.RANK}>
               <FormattedMessage id="rank" defaultMessage="Rank" />
