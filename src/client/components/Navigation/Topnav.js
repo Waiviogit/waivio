@@ -767,11 +767,11 @@ class Topnav extends React.Component {
         </div>
       </AutoComplete.Option>
     );
-    const formattedAutoCompleteDropdown = isEmpty(dropdownOptions)
-      ? dropdownOptions
-      : dropdownOptions.concat([downBar]);
 
-    // const searchAllBtn = { this.state.currentItem === "all" ? null : (dropdownOptions.concat([downBar])) }
+    const allDownBar =
+      this.state.currentItem === 'All' ? dropdownOptions : dropdownOptions.concat([downBar]);
+
+    const formattedAutoCompleteDropdown = isEmpty(dropdownOptions) ? dropdownOptions : allDownBar;
 
     return (
       <div className="Topnav">
