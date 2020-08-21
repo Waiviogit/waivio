@@ -41,4 +41,15 @@ export const ASSIGNED = 'assigned';
 
 export const IS_RESERVED = 'reserved';
 
+export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
+export const PATH_NAME_MESSAGES = '/rewards/messages';
+export const PATH_NAME_ACTIVE = '/rewards/active';
+export const PATH_NAME_RECEIVABLES = '/rewards/receivables';
+export const PATH_NAME_DISCOVER = '/discover';
+export const PATH_NAME_CREATE = '/rewards/create';
+export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
+export const PATH_NAME_MANAGE = '/rewards/manage';
+export const PATH_NAME_PAYABLES = '/rewards/payables';
+export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
+
 export default null;
