@@ -15,6 +15,7 @@ import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config';
 import { getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
+import { PATH_NAME_MANAGE } from '../../../common/constants/rewards';
 import './CreateReward.less';
 
 @withRouter
@@ -257,7 +258,7 @@ class CreateRewardForm extends React.Component {
   };
 
   manageRedirect = () => {
-    this.props.history.push('/rewards/manage');
+    this.props.history.push(PATH_NAME_MANAGE);
   };
 
   handleSetState = (stateData, callbackData) => {

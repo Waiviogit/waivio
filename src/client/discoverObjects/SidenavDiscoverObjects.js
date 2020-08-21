@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { size } from 'lodash';
 import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
+import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
 
 const typesLimit = 5;
 const SidenavDiscoverObjects = ({ withTitle }) => {
@@ -139,7 +140,9 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
               <li key="all-types" className="ttc">
                 <NavLink
                   to={`/discover`}
-                  isActive={() => pathname === '/discover' || pathname.includes('/discover/')}
+                  isActive={() =>
+                    pathname === PATH_NAME_DISCOVER || pathname.includes('/discover/')
+                  }
                   className="sidenav-discover-objects__item"
                   activeClassName="Sidenav__item--active"
                 >

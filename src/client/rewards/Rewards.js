@@ -54,7 +54,13 @@ import {
   getSortChanged,
   getSort,
 } from './rewardsHelper';
-import { MESSAGES, HISTORY, GUIDE_HISTORY } from '../../common/constants/rewards';
+import {
+  MESSAGES,
+  HISTORY,
+  GUIDE_HISTORY,
+  PATH_NAME_RECEIVABLES,
+  PATH_NAME_PAYABLES,
+} from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -927,7 +933,7 @@ class Rewards extends React.Component {
               <MobileNavigation />
               {renderedRoutes}
             </div>
-            {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
+            {(match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_RECEIVABLES) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel

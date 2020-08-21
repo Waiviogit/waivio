@@ -12,7 +12,12 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import FilterModal from './FilterModal';
-import { REWARDS_TYPES_MESSAGES, CAMPAIGNS_TYPES_MESSAGES } from '../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+} from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
@@ -64,8 +69,8 @@ const FilteredRewardsList = props => {
   );
 
   const historyLocation = '/rewards/history';
-  const messagesLocation = '/rewards/messages';
-  const guideHistoryLocation = '/rewards/guideHistory';
+  const messagesLocation = PATH_NAME_MESSAGES;
+  const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =

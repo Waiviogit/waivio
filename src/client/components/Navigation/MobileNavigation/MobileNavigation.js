@@ -6,6 +6,18 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getIsAuthenticated } from '../../../reducers';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
+import {
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_ACTIVE,
+  PATH_NAME_RECEIVABLES,
+  PATH_NAME_DISCOVER,
+  PATH_NAME_CREATE,
+  PATH_NAME_MATCH_BOT,
+  PATH_NAME_MANAGE,
+  PATH_NAME_PAYABLES,
+  PATH_NAME_BLACKLIST,
+} from '../../../../common/constants/rewards';
 import './MobileNavigation.less';
 
 const MobileNavigation = ({ location, match }) => {
@@ -85,43 +97,43 @@ const MobileNavigation = ({ location, match }) => {
       pageName = pages.rewardsCampaigns.id;
       filterName = url.match(pages.rewardsCampaigns.regExp)[2];
       break;
-    case '/discover':
+    case PATH_NAME_DISCOVER:
       pageName = 'users';
       filterName = 'all';
       break;
-    case '/rewards/active':
+    case PATH_NAME_ACTIVE:
       pageName = 'rewards';
       filterName = 'eligible';
       break;
-    case '/rewards/receivables':
+    case PATH_NAME_RECEIVABLES:
       pageName = 'rewards';
       filterName = 'receivables';
       break;
-    case '/rewards/create':
+    case PATH_NAME_CREATE:
       pageName = 'campaigns';
       filterName = 'create';
       break;
-    case '/rewards/manage':
+    case PATH_NAME_MANAGE:
       pageName = 'campaigns';
       filterName = 'manage';
       break;
-    case '/rewards/payables':
+    case PATH_NAME_PAYABLES:
       pageName = 'campaigns';
       filterName = 'payables';
       break;
-    case '/rewards/guideHistory':
+    case PATH_NAME_GUIDE_HISTORY:
       pageName = 'campaigns';
       filterName = 'reservations';
       break;
-    case '/rewards/messages':
+    case PATH_NAME_MESSAGES:
       pageName = 'campaigns';
       filterName = 'messages';
       break;
-    case '/rewards/match-bot':
+    case PATH_NAME_MATCH_BOT:
       pageName = 'campaigns';
       filterName = 'match_bot';
       break;
-    case '/rewards/blacklist':
+    case PATH_NAME_BLACKLIST:
       pageName = 'campaigns';
       filterName = 'blacklist';
       break;
