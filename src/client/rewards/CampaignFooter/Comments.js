@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { memo, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { find, get, pick, isEmpty } from 'lodash';
+import { find, get, pick, isEmpty, times, compact, orderBy, map } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
@@ -19,320 +19,352 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import * as commentsActions from '../../comments/commentsActions';
 
-const Comments = ({
-  show,
-  post,
-  user,
-  defaultVotePercent,
-  intl,
-  onActionInitiated,
-  currentComment,
-  getMessageHistory,
-  parent,
-  getReservedComments,
-  reserved,
-}) => {
-  const [replying, setReplyOpen] = useState(false);
-  const [editing, setEditOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [pendingLike, setPendingLike] = useState(false);
-  const [pendingDisLike, setPendingDisLike] = useState(false);
-  const [commentFormText, setCommentFormText] = useState('');
-  const [commentSubmitted, setCommentSubmitted] = useState(false);
-  const dispatch = useDispatch();
-
-  const commentObj = useMemo(() => currentComment || get(post, ['firstAppeal']), [
-    currentComment,
+const Comments = memo(
+  ({
+    show,
     post,
-  ]);
+    user,
+    defaultVotePercent,
+    intl,
+    onActionInitiated,
+    currentComment,
+    getMessageHistory,
+    parent,
+    getReservedComments,
+    matchPath,
+  }) => {
+    const [replying, setReplyOpen] = useState(false);
+    const [editing, setEditOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [pendingLike, setPendingLike] = useState(false);
+    const [pendingDisLike, setPendingDisLike] = useState(false);
+    const [commentFormText, setCommentFormText] = useState('');
+    const [commentSubmitted, setCommentSubmitted] = useState(false);
+    const dispatch = useDispatch();
 
-  const {
-    author,
-    created: commentCreated,
-    body: postBody,
-    active_votes: activeVotes,
-    post_id: postId,
-    children,
-    permlink,
-    depth,
-  } = useMemo(
-    () =>
-      pick(commentObj, [
-        'author',
-        'created',
-        'body',
-        'active_votes',
-        'post_id',
-        'children',
-        'permlink',
-        'depth',
-      ]),
-    [commentObj],
-  );
+    const commentObj = useMemo(() => currentComment || get(post, ['firstAppeal']), [
+      currentComment,
+      post,
+    ]);
 
-  const userVote = find(activeVotes, { voter: user.name });
+    const {
+      author,
+      created: commentCreated,
+      body: postBody,
+      active_votes: activeVotes,
+      post_id: postId,
+      children,
+      permlink,
+      depth,
+    } = useMemo(
+      () =>
+        pick(commentObj, [
+          'author',
+          'created',
+          'body',
+          'active_votes',
+          'post_id',
+          'children',
+          'permlink',
+          'depth',
+        ]),
+      [commentObj],
+    );
 
-  const onSendComment = useCallback(
-    (parentPost, commentBody, isUpdating, originalPost) =>
-      dispatch(commentsActions.sendComment(parentPost, commentBody, isUpdating, originalPost)),
-    [dispatch, commentsActions.sendComment],
-  );
+    const userVote = find(activeVotes, { voter: user.name });
 
-  const handleReplyClick = useCallback(() => {
-    setReplyOpen(!replying);
-    setEditOpen(!replying ? false : editing);
-  }, [replying, editing, setReplyOpen, setEditOpen]);
+    const onSendComment = useCallback(
+      (parentPost, commentBody, isUpdating, originalPost) =>
+        dispatch(commentsActions.sendComment(parentPost, commentBody, isUpdating, originalPost)),
+      [dispatch],
+    );
 
-  const userUpVoted = userVote && userVote.percent > 0;
-  const userDownVoted = userVote && userVote.percent < 0;
-  const editable = author === user.name;
+    const handleReplyClick = useCallback(() => {
+      setReplyOpen(!replying);
+      setEditOpen(!replying ? false : editing);
+    }, [replying, editing, setReplyOpen, setEditOpen]);
 
-  let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
-  if (userUpVoted) {
-    likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
-  }
+    const userUpVoted = userVote && userVote.percent > 0;
+    const userDownVoted = userVote && userVote.percent < 0;
+    const editable = author === user.name;
 
-  const onLikeClick = useCallback(
-    id => {
-      const currentPost = find(post.all, obj => obj.post_id === id);
-      const weight = !userVote || userVote.percent <= 0 ? 10000 : 0;
-      dispatch(voteHistoryPost(currentPost, author, permlink, weight))
-        .then(() => {
-          setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 10000);
-        })
-        .catch(() => setPendingLike(false));
-    },
-    [post, userVote, voteHistoryPost, getMessageHistory],
-  );
+    let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
+    if (userUpVoted) {
+      likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
+    }
 
-  const handleLikeClick = id => {
-    setPendingLike(true);
-    onLikeClick(id);
-  };
+    const onLikeClick = useCallback(
+      id => {
+        const currentPost = find(post.all, obj => obj.post_id === id);
+        const weight = !userVote || userVote.percent <= 0 ? 10000 : 0;
+        dispatch(voteHistoryPost(currentPost, author, permlink, weight))
+          .then(() => {
+            setTimeout(() => getMessageHistory().finally(() => setPendingLike(false)), 10000);
+          })
+          .catch(() => setPendingLike(false));
+      },
+      [post.all, userVote, dispatch, author, permlink, getMessageHistory],
+    );
 
-  const onDislikeClick = useCallback(
-    id => {
-      const currentPost = find(post.all, obj => obj.post_id === id);
-      const weight = !userVote || userVote.percent >= 0 ? -10000 : 0;
-      dispatch(voteHistoryPost(currentPost, author, permlink, weight))
-        .then(() => {
-          setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 10000);
-        })
-        .catch(() => setPendingDisLike(false));
-    },
-    [post, userVote, voteHistoryPost, getMessageHistory],
-  );
+    const handleLikeClick = id => {
+      setPendingLike(true);
+      onLikeClick(id);
+    };
 
-  const handleDislikeClick = id => {
-    setPendingDisLike(true);
-    onDislikeClick(id);
-  };
+    const onDislikeClick = useCallback(
+      id => {
+        const currentPost = find(post.all, obj => obj.post_id === id);
+        const weight = !userVote || userVote.percent >= 0 ? -10000 : 0;
+        dispatch(voteHistoryPost(currentPost, author, permlink, weight))
+          .then(() => {
+            setTimeout(() => getMessageHistory().finally(() => setPendingDisLike(false)), 10000);
+          })
+          .catch(() => setPendingDisLike(false));
+      },
+      [post.all, userVote, dispatch, author, permlink, getMessageHistory],
+    );
 
-  const handleEditClick = () => {
-    setEditOpen(!editing);
-    setReplyOpen(!editing ? false : replying);
-  };
+    const handleDislikeClick = id => {
+      setPendingDisLike(true);
+      onDislikeClick(id);
+    };
 
-  const handleSubmitComment = (parentP, commentValue) => {
-    const parentPost = parentP;
-    if (parentPost.author_original) parentPost.author = parentPost.author_original;
-    setLoading(true);
-    return onSendComment(parentPost, commentValue, false, commentObj)
-      .then(() => {
-        setTimeout(() => {
-          getMessageHistory().then(() => {
-            message.success(
-              intl.formatMessage({
-                id: 'notify_comment_sent',
-                defaultMessage: 'Comment submitted',
-              }),
-            );
+    const handleEditClick = useCallback(() => {
+      setEditOpen(!editing);
+      setReplyOpen(!editing ? false : replying);
+    }, [setEditOpen, setReplyOpen, editing, replying]);
+
+    const parentPost = useMemo(() => (!isEmpty(parent) ? parent : commentObj), [
+      parent,
+      commentObj,
+    ]);
+
+    const onCommentSend = useCallback(() => {
+      const { category, parentAuthor, parentPermlink } = parentPost;
+
+      return !matchPath
+        ? getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
+        : getMessageHistory();
+    }, [parentPost, matchPath, getReservedComments, getMessageHistory]);
+
+    const handleSubmitComment = useCallback(
+      (parentP, commentValue) => {
+        const parentComment = parentP;
+        if (parentComment.author_original) parentComment.author = parentComment.author_original;
+        setLoading(true);
+        return onSendComment(parentComment, commentValue, false, commentObj)
+          .then(() => {
+            setTimeout(() => {
+              onCommentSend().then(() => {
+                message.success(
+                  intl.formatMessage({
+                    id: 'notify_comment_sent',
+                    defaultMessage: 'Comment submitted',
+                  }),
+                );
+                setLoading(false);
+                setCommentFormText('');
+                setCommentSubmitted(true);
+                setReplyOpen(false);
+              });
+            }, 10000);
+          })
+          .catch(() => {
+            setCommentFormText(commentValue);
             setLoading(false);
-            setCommentFormText('');
-            setCommentSubmitted(true);
-            setReplyOpen(false);
+            return {
+              error: true,
+            };
           });
-        }, 10000);
-      })
-      .catch(() => {
-        setCommentFormText(commentValue);
-        setLoading(false);
-        return {
-          error: true,
+      },
+      [commentObj, intl, onSendComment, onCommentSend],
+    );
+
+    const getChildren = useCallback((obj, comments, index) => {
+      const replyKey = get(obj, ['replies', index]);
+      return get(comments, ['all', replyKey]);
+    }, []);
+
+    const handleEditComment = useCallback(
+      (parentP, commentValue) => {
+        setLoading(true);
+        const parentPostObj = {
+          ...parentP,
+          permlink: parentP.parent_permlink,
         };
-      });
-  };
-
-  const getChildren = useCallback((obj, comments) => {
-    const replyKey = get(obj, ['replies', '0']);
-    return get(comments, ['all', replyKey]);
-  }, []);
-
-  const parentPost = !isEmpty(parent) ? parent : commentObj;
-
-  const onCommentSend = () => {
-    const { category, parentAuthor, parentPermlink } = parentPost;
-    return reserved
-      ? getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
-      : getMessageHistory();
-  };
-
-  const handleEditComment = (parentP, commentValue) => {
-    setLoading(true);
-    return onSendComment(parentP, commentValue, true, commentObj).then(() => {
-      setTimeout(
-        () =>
-          onCommentSend().then(() => {
-            message.success(
-              intl.formatMessage({
-                id: 'notify_comment_updated',
-                defaultMessage: 'Comment updated',
+        return onSendComment(parentPostObj, commentValue, true, commentObj).then(() => {
+          setTimeout(
+            () =>
+              onCommentSend().then(() => {
+                message.success(
+                  intl.formatMessage({
+                    id: 'notify_comment_updated',
+                    defaultMessage: 'Comment updated',
+                  }),
+                );
+                setLoading(false);
+                setEditOpen(false);
               }),
-            );
-            setLoading(false);
-            setEditOpen(false);
-          }),
-        10000,
-      );
-    });
-  };
+            10000,
+          );
+        });
+      },
+      [commentObj, intl, onSendComment, onCommentSend],
+    );
 
-  return (
-    <React.Fragment>
-      {show && (
-        <div className="Comment">
-          <Link to={`/@${author}`} style={{ height: 32 }}>
-            <Avatar username={author} size={32} />
-          </Link>
-          <div className="Comment__text">
-            <Link to={`/@${author}`}>
-              <span className="username">{author}</span>
+    const childrenArr = useMemo(() => {
+      if (!children) {
+        return null;
+      }
+
+      const currentChildren = compact(
+        times(children, index => getChildren(commentObj, post, index)),
+      );
+
+      return orderBy(currentChildren, ['post_id'], ['desc']);
+    }, [children, commentObj, getChildren, post]);
+
+    return (
+      <React.Fragment>
+        {show && (
+          <div className="Comment">
+            <Link to={`/@${author}`} style={{ height: 32 }}>
+              <Avatar username={author} size={32} />
             </Link>
-            <span className="Comment__date">
-              <BTooltip
-                title={
+            <div className="Comment__text">
+              <Link to={`/@${author}`}>
+                <span className="username">{author}</span>
+              </Link>
+              <span className="Comment__date">
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedDate value={`${commentCreated}Z`} />{' '}
+                      <FormattedTime value={`${commentCreated}Z`} />
+                    </span>
+                  }
+                >
+                  <FormattedRelative value={commentCreated} />
+                </BTooltip>
+              </span>
+              <div className="Comment__content">
+                <BodyContainer body={postBody} />
+              </div>
+              <div>
+                <BTooltip title={likeTooltip}>
+                  <a
+                    role="presentation"
+                    className={classNames('CommentFooter__link', {
+                      'CommentFooter__link--active': userUpVoted,
+                    })}
+                    onClick={() => handleLikeClick(postId)}
+                  >
+                    {pendingLike ? (
+                      <Icon type="loading" />
+                    ) : (
+                      <i className="iconfont icon-praise_fill" />
+                    )}
+                  </a>
+                </BTooltip>
+                <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
+                  <a
+                    role="presentation"
+                    className={classNames('CommentFooter__link', {
+                      'CommentFooter__link--active': userDownVoted,
+                    })}
+                    onClick={() => handleDislikeClick(postId)}
+                  >
+                    {pendingDisLike ? (
+                      <Icon type="loading" />
+                    ) : (
+                      <i className="iconfont icon-praise_fill Comment__icon_dislike" />
+                    )}
+                  </a>
+                </BTooltip>
+                {user.name && (
                   <span>
-                    <FormattedDate value={`${commentCreated}Z`} />{' '}
-                    <FormattedTime value={`${commentCreated}Z`} />
+                    <span className="CommentFooter__bullet" />
+                    <a
+                      role="presentation"
+                      className={classNames('CommentFooter__link', {
+                        'CommentFooter__link--active': replying,
+                      })}
+                      onClick={handleReplyClick}
+                    >
+                      <FormattedMessage id="reply" defaultMessage="Reply" />
+                    </a>
                   </span>
-                }
-              >
-                <FormattedRelative value={commentCreated} />
-              </BTooltip>
-            </span>
-            <div className="Comment__content">
-              <BodyContainer body={postBody} />
-            </div>
-            <div>
-              <BTooltip title={likeTooltip}>
-                <a
-                  role="presentation"
-                  className={classNames('CommentFooter__link', {
-                    'CommentFooter__link--active': userUpVoted,
-                  })}
-                  onClick={() => handleLikeClick(postId)}
-                >
-                  {pendingLike ? (
-                    <Icon type="loading" />
-                  ) : (
-                    <i className="iconfont icon-praise_fill" />
-                  )}
-                </a>
-              </BTooltip>
-              <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
-                <a
-                  role="presentation"
-                  className={classNames('CommentFooter__link', {
-                    'CommentFooter__link--active': userDownVoted,
-                  })}
-                  onClick={() => handleDislikeClick(postId)}
-                >
-                  {pendingDisLike ? (
-                    <Icon type="loading" />
-                  ) : (
-                    <i className="iconfont icon-praise_fill Comment__icon_dislike" />
-                  )}
-                </a>
-              </BTooltip>
-              {user.name && (
-                <span>
-                  <span className="CommentFooter__bullet" />
-                  <a
-                    role="presentation"
-                    className={classNames('CommentFooter__link', {
-                      'CommentFooter__link--active': replying,
-                    })}
-                    onClick={handleReplyClick}
-                  >
-                    <FormattedMessage id="reply" defaultMessage="Reply" />
-                  </a>
-                </span>
-              )}
-              {editable && (
-                <span>
-                  <span className="CommentFooter__bullet" />
-                  <a
-                    role="presentation"
-                    className={classNames('CommentFooter__link', {
-                      'CommentFooter__link--active': editing,
-                    })}
-                    onClick={handleEditClick}
-                  >
-                    <FormattedMessage id="edit" defaultMessage="Edit" />
-                  </a>
-                </span>
-              )}
-            </div>
-            {replying && (
-              <QuickCommentEditor
-                parentPost={commentObj}
-                username={user.name}
-                onSubmit={handleSubmitComment}
-                isLoading={loading}
-                inputValue={commentFormText}
-                submitted={commentSubmitted}
-              />
-            )}
-            {editable && editing && (
-              <QuickCommentEditor
-                parentPost={parentPost}
-                username={user.name}
-                onSubmit={handleEditComment}
-                isLoading={loading}
-                inputValue={postBody}
-                submitted={commentSubmitted}
-                onClose={handleEditClick}
-              />
-            )}
-            <div
-              className={classNames('Comment__replies', {
-                'Comment__replies--no-indent': depth >= 1,
-                'Comment__replies--never-indent': depth >= 5,
-              })}
-            >
-              {Boolean(children) && (
-                <Comments
-                  {...{
-                    intl,
-                    show,
-                    user,
-                    post,
-                    defaultVotePercent,
-                    onActionInitiated,
-                    parent: commentObj,
-                    currentComment: getChildren(commentObj, post),
-                    onLikeClick,
-                    getMessageHistory,
-                  }}
+                )}
+                {editable && (
+                  <span>
+                    <span className="CommentFooter__bullet" />
+                    <a
+                      role="presentation"
+                      className={classNames('CommentFooter__link', {
+                        'CommentFooter__link--active': editing,
+                      })}
+                      onClick={handleEditClick}
+                    >
+                      <FormattedMessage id="edit" defaultMessage="Edit" />
+                    </a>
+                  </span>
+                )}
+              </div>
+              {replying && (
+                <QuickCommentEditor
+                  parentPost={commentObj}
+                  username={user.name}
+                  onSubmit={handleSubmitComment}
+                  isLoading={loading}
+                  inputValue={commentFormText}
+                  submitted={commentSubmitted}
                 />
               )}
+              {editable && editing && (
+                <QuickCommentEditor
+                  parentPost={commentObj}
+                  username={user.name}
+                  onSubmit={handleEditComment}
+                  isLoading={loading}
+                  inputValue={postBody}
+                  submitted={commentSubmitted}
+                  onClose={handleEditClick}
+                />
+              )}
+              <div
+                className={classNames('Comment__replies', {
+                  'Comment__replies--no-indent': depth >= 1,
+                  'Comment__replies--never-indent': depth >= 5,
+                })}
+              >
+                {childrenArr &&
+                  map(childrenArr, currentChild => (
+                    <Comments
+                      key={`comments-${currentChild.post_id}`}
+                      {...{
+                        intl,
+                        show,
+                        user,
+                        post,
+                        defaultVotePercent,
+                        onActionInitiated,
+                        parent: parentPost,
+                        currentComment: currentChild,
+                        onLikeClick,
+                        getMessageHistory,
+                        getReservedComments,
+                        matchPath,
+                      }}
+                    />
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </React.Fragment>
-  );
-};
+        )}
+      </React.Fragment>
+    );
+  },
+);
 
 Comments.propTypes = {
   post: PropTypes.shape().isRequired,
@@ -345,13 +377,13 @@ Comments.propTypes = {
   parent: PropTypes.shape(),
   getMessageHistory: PropTypes.func,
   getReservedComments: PropTypes.func,
-  reserved: PropTypes.bool,
+  matchPath: PropTypes.string,
 };
 
 Comments.defaultProps = {
   parent: {},
   defaultVotePercent: 0,
-  reserved: false,
+  matchPath: '',
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},

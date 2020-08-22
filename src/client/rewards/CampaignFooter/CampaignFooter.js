@@ -367,6 +367,7 @@ class CampaignFooter extends React.Component {
     const commentsAll = get(postCurrent, ['all']) || reservedComments;
     const postAll = postCurrent || { all: commentsAll };
     const rootKey = findKey(commentsAll, ['depth', 2]);
+    const rootComment = commentsAll[rootKey];
     const repliesKeys = get(commentsAll, [rootKey, 'replies']);
     const commentsArr = map(repliesKeys, key => get(commentsAll, [key]));
     const numberOfComments = postCurrent
@@ -430,7 +431,8 @@ class CampaignFooter extends React.Component {
                 getMessageHistory={getMessageHistory}
                 currentComment={currentComment}
                 getReservedComments={this.getReservedComments}
-                reserved
+                parent={rootComment}
+                matchPath={match.params[0]}
               />
             </div>
           ))}
