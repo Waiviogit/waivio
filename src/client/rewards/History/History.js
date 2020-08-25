@@ -12,6 +12,7 @@ import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
   PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 
 const History = ({
@@ -33,7 +34,7 @@ const History = ({
 }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const isHistory = location.pathname === '/rewards/history';
+  const isHistory = location.pathname === PATH_NAME_HISTORY;
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
 
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);

@@ -13,6 +13,7 @@ import {
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
   PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
@@ -35,7 +36,7 @@ const RewardsFiltersPanel = ({
   const handleChange = useCallback(
     (filterName, key) => {
       if (
-        location.pathname !== '/rewards/history' &&
+        location.pathname !== PATH_NAME_HISTORY &&
         location.pathname !== PATH_NAME_MESSAGES &&
         location.pathname !== PATH_NAME_GUIDE_HISTORY
       ) {
@@ -76,7 +77,7 @@ const RewardsFiltersPanel = ({
     () => ({
       campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
-      sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
+      sponsorsData: location.pathname !== PATH_NAME_HISTORY ? sponsors : messagesSponsors,
       campaignsData: messagesCampaigns,
     }),
     [sponsors, messagesSponsors, messagesCampaigns, location.pathname],
@@ -159,7 +160,7 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         )}
-        {location.pathname === '/rewards/history' && (
+        {location.pathname === PATH_NAME_HISTORY && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({

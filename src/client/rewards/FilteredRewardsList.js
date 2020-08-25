@@ -17,6 +17,7 @@ import {
   CAMPAIGNS_TYPES_MESSAGES,
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
+  PATH_NAME_HISTORY,
 } from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
@@ -69,7 +70,7 @@ const FilteredRewardsList = props => {
     sortMessages,
   );
 
-  const historyLocation = '/rewards/history';
+  const historyLocation = PATH_NAME_HISTORY;
   const messagesLocation = PATH_NAME_MESSAGES;
   const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
 
