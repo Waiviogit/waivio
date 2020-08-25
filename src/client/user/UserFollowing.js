@@ -79,23 +79,6 @@ export default class UserFollowing extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserFollowing__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />
-                </span>
-                <span className="UserFollowing__badge">
-                  <FormattedNumber
-                    value={user.objects_following_count ? user.objects_following_count : 0}
-                  />
-                </span>
-              </React.Fragment>
-            }
-            key="1"
-          >
-            <ObjectDynamicList limit={UserFollowing.limit} fetcher={this.objectFetcher} />
-          </TabPane>
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserFollowing__item">
                   <FormattedMessage id="users" defaultMessage="Users" />
                 </span>
                 <span className="UserFollowing__badge">
@@ -105,9 +88,26 @@ export default class UserFollowing extends React.Component {
                 </span>
               </React.Fragment>
             }
-            key="2"
+            key="1"
           >
             <UserDynamicList limit={UserFollowing.limit} fetcher={this.fetcher} />
+          </TabPane>
+          <TabPane
+            tab={
+              <React.Fragment>
+                <span className="UserFollowing__item">
+                  <FormattedMessage id="objects" defaultMessage="Objects" />
+                </span>
+                <span className="UserFollowing__badge">
+                  <FormattedNumber
+                    value={user.objects_following_count ? user.objects_following_count : 0}
+                  />
+                </span>
+              </React.Fragment>
+            }
+            key="2"
+          >
+            <ObjectDynamicList limit={UserFollowing.limit} fetcher={this.objectFetcher} />
           </TabPane>
         </Tabs>
       </div>
