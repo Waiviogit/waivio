@@ -162,11 +162,12 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
         {
           id: 'suspended_status',
           defaultMessage:
-            'After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review',
+            'Warning: in {days} day(s) all {sponsor} campaigns will be suspended because the accounts payable for {reviewAuthor}',
         },
         {
           days: notification.days,
           sponsor: notification.sponsor,
+          reviewAuthor: notification.reviewAuthor,
         },
       );
     case notificationConstants.WITHDRAW_ROUTE:
