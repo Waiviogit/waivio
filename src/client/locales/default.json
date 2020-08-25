@@ -1061,7 +1061,7 @@
   "vote_price": "Vote Value",
   "steem_reputation": "Hive reputation",
   "steem_accounts": "HIVE ACCOUNTS",
-  "sing_in_modal_message": "Waivio is powered by Hive open social blockchain",
+  "sing_in_modal_message": "Waivio is powered by the Hive open social blockchain",
   "sing_in_modal_rules": "By using this Service, you agree to be bound by",
   "privacy_policy": "the Privacy Policy",
   "cookies_policy": "the Cookies Policy",
@@ -1339,5 +1339,6 @@
   "cancel_limit_order": "Cancel limit order",
   "menu_rewards": "Rewards",
   "signing": "Signing in",
-  "alphabet": "A..Z"
+  "alphabet": "A..Z",
+  "page": "Page"
 }

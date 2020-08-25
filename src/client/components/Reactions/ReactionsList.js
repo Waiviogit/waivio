@@ -9,15 +9,13 @@ import UserCard from '../UserCard';
 import USDDisplay from '../Utils/USDDisplay';
 import { checkFollowing } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../user/usersActions';
-import { getIsAuthenticated, getObjectAdmins, getObjectModerators } from '../../reducers';
+import { getIsAuthenticated } from '../../reducers';
 
 import './ReactionsList.less';
 
 @connect(
   state => ({
     isAuth: getIsAuthenticated(state),
-    moderatorsList: getObjectModerators(state),
-    adminsList: getObjectAdmins(state),
   }),
   {
     unfollow: unfollowUser,
@@ -28,8 +26,6 @@ export default class UserList extends React.Component {
   static propTypes = {
     votes: PropTypes.arrayOf(PropTypes.shape()),
     ratio: PropTypes.number,
-    moderatorsList: PropTypes.arrayOf(PropTypes.string),
-    adminsList: PropTypes.arrayOf(PropTypes.string),
     name: PropTypes.string,
     unfollow: PropTypes.func,
     follow: PropTypes.func,
@@ -39,8 +35,6 @@ export default class UserList extends React.Component {
   static defaultProps = {
     votes: [],
     ratio: 0,
-    moderatorsList: [],
-    adminsList: [],
     name: '',
     unfollow: () => {},
     follow: () => {},
@@ -53,7 +47,7 @@ export default class UserList extends React.Component {
   };
 
   componentDidMount() {
-    const { votes, moderatorsList, adminsList, name, isAuth } = this.props;
+    const { votes, name, isAuth } = this.props;
     const usersList = votes.map(vote => vote.voter);
 
     if (isAuth) {
@@ -64,8 +58,6 @@ export default class UserList extends React.Component {
           return {
             ...vote,
             name: vote.voter,
-            admin: adminsList.includes(vote.voter),
-            moderator: moderatorsList.includes(vote.voter),
             youFollows: follow[vote.voter],
             pending: false,
           };
@@ -130,19 +122,16 @@ export default class UserList extends React.Component {
   };
 
   render() {
-    const { votes, ratio, isAuth, adminsList, moderatorsList } = this.props;
+    const { votes, ratio, isAuth } = this.props;
     const defaultPageItems = 20;
     const noOfItemsToShow = defaultPageItems * this.state.page;
     const voteValue = vote => (vote.rshares_weight || vote.rshares) * ratio || 0;
     const votesList = votes.map(vote => ({
       ...vote,
       name: vote.voter,
-      admin: adminsList.includes(vote.voter),
-      moderator: moderatorsList.includes(vote.voter),
       pending: false,
       youFollows: false,
     }));
-
     const currentVoterList =
       isAuth && this.state.usersList.length ? this.state.usersList : votesList;
     const moderators = currentVoterList.filter(v => v.moderator);
@@ -163,8 +152,6 @@ export default class UserList extends React.Component {
               <UserCard
                 key={vote.voter}
                 user={vote}
-                admin={vote.admin}
-                moderator={vote.moderator}
                 follow={this.followUser}
                 unfollow={this.unfollowUser}
                 showFollow={false}
