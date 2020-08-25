@@ -46,7 +46,7 @@ class CampaignFooter extends React.Component {
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     proposedWobj: PropTypes.shape().isRequired,
-    proposition: PropTypes.shape().isRequired,
+    proposition: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
@@ -105,6 +105,7 @@ class CampaignFooter extends React.Component {
     userName: '',
     isGuest: false,
     sendComment: () => {},
+    proposition: {},
   };
 
   constructor(props) {
