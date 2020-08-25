@@ -244,7 +244,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         wobject: {
           ...state.wobject,
-          fields: [...fields],
+          fields,
           [field.name]: toDisplay || '',
           pending: false,
         },
@@ -263,5 +263,5 @@ export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields || [];
 export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
-export const getRatingFields = state => state.wobject.rating;
+export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;

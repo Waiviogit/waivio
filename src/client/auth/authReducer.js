@@ -164,4 +164,5 @@ export const getAuthenticatedUserAvatar = state => {
 };
 export const getAuthorizationUserFollowSort = state => state.sort;
 export const getHasMap = state => state.map;
+
 export const isGuestUser = state => state.isGuestUser;

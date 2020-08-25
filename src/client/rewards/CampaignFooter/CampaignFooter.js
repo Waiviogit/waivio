@@ -7,7 +7,7 @@ import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
-import { ASSIGNED, IS_RESERVED } from '../../../common/constants/rewards';
+import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import CommentsMessages from './Comments';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
@@ -265,7 +265,7 @@ class CampaignFooter extends React.Component {
           id: 'discarded_successfully',
           defaultMessage: 'Reservation released. It will be available for reservation soon.',
         }),
-        this.props.history.push('/rewards/active'),
+        this.props.history.push(PATH_NAME_ACTIVE),
       );
     });
   };

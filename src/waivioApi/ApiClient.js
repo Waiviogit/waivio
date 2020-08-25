@@ -638,6 +638,7 @@ export const getPropositions = ({
   simplified,
   firstMapLoad,
   isMap,
+  primaryObject,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -646,6 +647,7 @@ export const getPropositions = ({
       status,
       approved,
       requiredObject,
+      primaryObject,
       sort,
     };
 
@@ -1069,7 +1071,7 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort) =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency') =>
   fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
@@ -1084,7 +1086,13 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort) =>
     .then(data => data)
     .catch(err => console.error(err));
 
-export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser, sort) => {
+export const getFollowingsFromAPI = (
+  username,
+  limit = 100,
+  skip = 0,
+  authUser,
+  sort = 'recency',
+) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
