@@ -28,6 +28,7 @@ const RewardsFiltersPanel = ({
   activeMessagesFilters,
   activeHistoryFilters,
   messagesSponsors,
+  messagesCampaigns,
   setActiveMessagesFilters,
   activeGuideHistoryFilters,
 }) => {
@@ -71,16 +72,14 @@ const RewardsFiltersPanel = ({
     [setPayablesFilterValue, intl.formatMessage],
   );
 
-  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
+  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData, campaignsData } = useMemo(
     () => ({
       campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
-      sponsorsData:
-        location.pathname !== '/rewards/history' && location.pathname !== PATH_NAME_GUIDE_HISTORY
-          ? sponsors
-          : messagesSponsors,
+      sponsorsData: location.pathname !== '/rewards/history' ? sponsors : messagesSponsors,
+      campaignsData: messagesCampaigns,
     }),
-    [sponsors, messagesSponsors, location.pathname],
+    [sponsors, messagesSponsors, messagesCampaigns, location.pathname],
   );
 
   return (
@@ -199,15 +198,15 @@ const RewardsFiltersPanel = ({
             )}
             <div className="RewardsFiltersPanel__title-text">
               {intl.formatMessage({
-                id: 'sponsors',
-                defaultMessage: 'Sponsors',
+                id: 'mobnav_campaigns',
+                defaultMessage: 'Campaigns',
               })}
             </div>
-            {map(sponsorsData, sponsor =>
+            {map(campaignsData, campaign =>
               filterLayout(
-                sponsor,
-                'messagesSponsors',
-                includes(activeGuideHistoryFilters.messagesSponsors, sponsor),
+                campaign,
+                'messagesCampaigns',
+                includes(activeGuideHistoryFilters.messagesCampaigns, campaign),
               ),
             )}
           </React.Fragment>
@@ -231,6 +230,7 @@ RewardsFiltersPanel.propTypes = {
   setActiveMessagesFilters: PropTypes.func,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()),
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 RewardsFiltersPanel.defaultProps = {
@@ -242,6 +242,7 @@ RewardsFiltersPanel.defaultProps = {
   activeGuideHistoryFilters: {},
   location: {},
   messagesSponsors: [],
+  messagesCampaigns: [],
   setActiveMessagesFilters: () => {},
   setPayablesFilterValue: () => {},
   activePayableFilters: {},

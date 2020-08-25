@@ -22,6 +22,7 @@ const History = ({
   activeGuideHistoryFilters,
   messagesSponsors,
   setMessagesSponsors,
+  setMessagesCampaigns,
   match,
   setSortValue,
   sortHistory,
@@ -77,7 +78,7 @@ const History = ({
         }
         if (isGuideHistory) {
           requestData.guideName = username;
-          requestData.guideNames = activeFilters.messagesSponsors;
+          requestData.campaignNames = activeFilters.messagesCampaigns;
           requestData.onlyWithMessages = false;
         }
 
@@ -90,6 +91,7 @@ const History = ({
         setMessagesSponsors(
           !isGuideHistory ? uniq(messagesSponsors.concat(data.sponsors)) : data.sponsors,
         );
+        setMessagesCampaigns(data.campaigns_names);
         setLoading(false);
         setHasMore(data.hasMore);
       } finally {
@@ -196,6 +198,7 @@ History.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
+  setMessagesCampaigns: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
   sortHistory: PropTypes.string,
   sortGuideHistory: PropTypes.string,
