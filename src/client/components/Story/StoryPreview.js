@@ -43,6 +43,8 @@ const StoryPreview = ({ post, isUpdates }) => {
     }
   }
 
+  if(isUpdates) imagePath = getProxyImageURL(post.body, 'preview')
+
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
 
@@ -139,6 +141,11 @@ const StoryPreview = ({ post, isUpdates }) => {
 
 StoryPreview.propTypes = {
   post: PropTypes.shape().isRequired,
+  isUpdates: PropTypes.bool
 };
+
+StoryPreview.defaultProps = {
+  isUpdates: false,
+}
 
 export default StoryPreview;
