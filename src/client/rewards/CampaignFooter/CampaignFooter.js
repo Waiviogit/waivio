@@ -6,7 +6,6 @@ import { message, Modal } from 'antd';
 import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
-import Comments from '../../comments/Comments';
 import CommentsMessages from './CommentsMessages';
 import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
@@ -19,9 +18,10 @@ import {
   getAuthenticatedUserName,
 } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
-import { getReservedComments } from '../../comments/commentsActions';
+import { getReservedComments, sendComment } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
+import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import './CampaignFooter.less';
 
 @injectIntl
@@ -36,6 +36,7 @@ import './CampaignFooter.less';
   }),
   {
     getReservedComments,
+    sendComment,
   },
 )
 class CampaignFooter extends React.Component {
@@ -76,6 +77,7 @@ class CampaignFooter extends React.Component {
     reservedComments: PropTypes.shape(),
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
+    sendComment: PropTypes.func,
   };
 
   static defaultProps = {
@@ -102,6 +104,7 @@ class CampaignFooter extends React.Component {
     reservedComments: {},
     userName: '',
     isGuest: false,
+    sendComment: () => {},
   };
 
   constructor(props) {
@@ -118,6 +121,9 @@ class CampaignFooter extends React.Component {
       loading: false,
       currentPost: {},
       currentPostReserved: {},
+      commentFromText: '',
+      commentSubmitted: false,
+      loadingComments: false,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
@@ -326,13 +332,55 @@ class CampaignFooter extends React.Component {
     }
   };
 
+  onCommentSend = () => {
+    const { match, getMessageHistory } = this.props;
+    const { category, parentAuthor, parentPermlink } = this.state.currentPost;
+
+    return !match.params[0]
+      ? this.getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
+      : getMessageHistory();
+  };
+
+  handleSubmitComment = (parentP, commentValue) => {
+    const { intl } = this.props;
+    const parentComment = parentP;
+    if (parentComment.author_original) parentComment.author = parentComment.author_original;
+    this.setState({ loadingComments: true });
+    const commentObj = get(parentComment, ['firstAppeal']);
+    return this.props
+      .sendComment(parentComment, commentValue, false, commentObj)
+      .then(() => {
+        setTimeout(() => {
+          this.onCommentSend().then(() => {
+            message.success(
+              intl.formatMessage({
+                id: 'notify_comment_sent',
+                defaultMessage: 'Comment submitted',
+              }),
+            );
+            this.setState({ loadingComments: false, commentFromText: '', commentSubmitted: true });
+          });
+        }, 10000);
+      })
+      .catch(() => {
+        this.setState({ commentFromText: commentValue, loadingComments: false });
+        return {
+          error: true,
+        };
+      });
+  };
+
   render() {
     const {
       commentsVisible,
       modalVisible,
       daysLeft,
       sliderVisible,
+      currentPost,
       currentPostReserved,
+      commentFormText,
+      commentSubmitted,
+      loadingComments,
     } = this.state;
     const {
       post,
@@ -437,16 +485,15 @@ class CampaignFooter extends React.Component {
             </div>
           ))}
         {!singlePostVew && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={this.state.currentPost}
-            getMessageHistory={getMessageHistory}
-            match={match}
-            history
+          <QuickCommentEditor
+            parentPost={currentPost}
+            username={user.name}
+            onSubmit={this.handleSubmitComment}
+            isLoading={loadingComments}
+            inputValue={commentFormText}
+            submitted={commentSubmitted}
             parentAuthorIfGuest={parentAuthor}
             parentPermlinkIfGuest={parentPermlink}
-            getReservedComments={this.getReservedComments}
           />
         )}
         <Modal
