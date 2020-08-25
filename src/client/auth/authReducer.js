@@ -162,6 +162,7 @@ export const getAuthenticatedUserAvatar = state => {
   }
   return undefined;
 };
-
 export const getAuthorizationUserFollowSort = state => state.sort;
+export const getHasMap = state => state.map;
+
 export const isGuestUser = state => state.isGuestUser;

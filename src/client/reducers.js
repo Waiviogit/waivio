@@ -66,6 +66,8 @@ export const getAuthenticatedUserAvatar = state => fromAuth.getAuthenticatedUser
 export const isGuestUser = state => fromAuth.isGuestUser(state.auth);
 export const getAuthenticatedUserPrivateEmail = state =>
   fromAuth.getAuthenticatedUserPrivateEmail(state.auth);
+export const getAuthorizationUserFollowSort = state =>
+  fromAuth.getAuthorizationUserFollowSort(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, permlink, author) =>
@@ -103,8 +105,6 @@ export const getShowPostModal = state => fromApp.getShowPostModal(state.app);
 export const getCurrentShownPost = state => fromApp.getCurrentShownPost(state.app);
 export const getIsMobile = state => fromApp.getIsMobile(state.app);
 export const getWeightValue = (state, weight) => fromApp.getWeightValue(state.app, weight);
-export const getAuthorizationUserFollowSort = state =>
-  fromAuth.getAuthorizationUserFollowSort(state.auth);
 
 export const getFeed = state => fromFeed.getFeed(state.feed);
 

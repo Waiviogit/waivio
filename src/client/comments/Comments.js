@@ -65,6 +65,7 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
+    isUpdating: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -80,6 +81,7 @@ export default class Comments extends React.Component {
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
+    isUpdating: false,
   };
 
   state = {
@@ -190,6 +192,7 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
+          isUpdating={this.props.isUpdating}
         />
       )
     );

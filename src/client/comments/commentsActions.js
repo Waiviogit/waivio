@@ -144,13 +144,13 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   let parentAuthor;
 
   if (isUpdating) {
-    parentAuthor = originalComment.parent_author;
+    parentAuthor = parentPost.author;
   } else if (parentPost.root_author && parentPost.guestInfo) {
     parentAuthor = parentPost.root_author;
   } else {
     parentAuthor = parentPost.author;
   }
-  const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
+  const guestParentAuthor = get(parentPost, ['guestInfo', 'userId']);
   const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
@@ -184,7 +184,6 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     });
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
-
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -211,11 +210,11 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               !isUpdating,
             ),
           );
-          if (parentPost.append_field_name) {
+          if (parentPost.name) {
             dispatch(sendCommentAppend(parentPost.permlink));
           }
           setTimeout(
-            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
+            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
             auth.isGuestUser ? 6000 : 2000,
           );
 
