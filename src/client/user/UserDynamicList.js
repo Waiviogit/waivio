@@ -12,14 +12,8 @@ import WeightTag from '../components/WeightTag';
 import { changeCounterFollow, followUser, unfollowUser } from './usersActions';
 import { getAuthenticatedUserName, isGuestUser, getAuthorizationUserFollowSort } from '../reducers';
 import { changeSorting } from '../auth/authActions';
+import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
 import './UserDynamicList.less';
-
-const SORT_OPTIONS = {
-  RANK: 'rank',
-  ALPHABET: 'alphabet',
-  FOLLOWERS: 'followers',
-  RECENCY: 'recency',
-};
 
 class UserDynamicList extends React.Component {
   static propTypes = {
@@ -32,7 +26,7 @@ class UserDynamicList extends React.Component {
     authUser: PropTypes.string,
     isGuest: PropTypes.bool.isRequired,
     changeCounterFollow: PropTypes.func.isRequired,
-    sort: PropTypes.string,
+    sort: PropTypes.string.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
         name: PropTypes.string,
@@ -43,7 +37,6 @@ class UserDynamicList extends React.Component {
     authUser: '',
     showAuthorizedUser: false,
     userName: '',
-    sort: '',
   };
   constructor(props) {
     super(props);
@@ -51,7 +44,6 @@ class UserDynamicList extends React.Component {
       loading: false,
       hasMore: true,
       users: [],
-      sort: '',
     };
 
     this.handleLoadMore = this.handleLoadMore.bind(this);
