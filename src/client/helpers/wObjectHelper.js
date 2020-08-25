@@ -216,3 +216,5 @@ export const parseWobjectField = (wobject, fieldName) => {
     return null;
   }
 };
+
+export const getObjectName = wobj => wobj.name || wobj.default_name;

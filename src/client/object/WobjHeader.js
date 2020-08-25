@@ -13,7 +13,7 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import {accessTypesArr, getObjectName, haveAccess} from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -55,7 +55,7 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
-  const name = wobject.name || wobject.default_name;
+  const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
 
   return (
