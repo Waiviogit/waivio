@@ -75,7 +75,9 @@ const CommentsMessages = memo(
 
     const onSendComment = useCallback(
       (parentPost, commentBody, isUpdating, originalPost) =>
-        dispatch(commentsActions.sendComment(parentPost, commentBody, isUpdating, originalPost)),
+        dispatch(
+          commentsActions.sendCommentMessages(parentPost, commentBody, isUpdating, originalPost),
+        ),
       [dispatch],
     );
 

@@ -18,7 +18,7 @@ import {
   getAuthenticatedUserName,
 } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
-import { getReservedComments, sendComment } from '../../comments/commentsActions';
+import { getReservedComments, sendCommentMessages } from '../../comments/commentsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { getContent } from '../../../waivioApi/ApiClient';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
@@ -36,7 +36,7 @@ import './CampaignFooter.less';
   }),
   {
     getReservedComments,
-    sendComment,
+    sendCommentMessages,
   },
 )
 class CampaignFooter extends React.Component {
@@ -77,7 +77,7 @@ class CampaignFooter extends React.Component {
     reservedComments: PropTypes.shape(),
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
-    sendComment: PropTypes.func,
+    sendCommentMessages: PropTypes.func,
   };
 
   static defaultProps = {
@@ -104,7 +104,7 @@ class CampaignFooter extends React.Component {
     reservedComments: {},
     userName: '',
     isGuest: false,
-    sendComment: () => {},
+    sendCommentMessages: () => {},
     proposition: {},
   };
 
@@ -342,14 +342,21 @@ class CampaignFooter extends React.Component {
       : getMessageHistory();
   };
 
-  handleSubmitComment = (parentP, commentValue) => {
+  handleSubmitComment = (parentP, commentValue, parentAuthorIfGuest, parentPermlinkIfGuest) => {
     const { intl } = this.props;
     const parentComment = parentP;
     if (parentComment.author_original) parentComment.author = parentComment.author_original;
     this.setState({ loadingComments: true });
     const commentObj = get(parentComment, ['firstAppeal']);
     return this.props
-      .sendComment(parentComment, commentValue, false, commentObj)
+      .sendCommentMessages(
+        parentComment,
+        commentValue,
+        false,
+        commentObj,
+        parentAuthorIfGuest,
+        parentPermlinkIfGuest,
+      )
       .then(() => {
         setTimeout(() => {
           this.onCommentSend().then(() => {
