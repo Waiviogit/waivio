@@ -638,6 +638,7 @@ export const getPropositions = ({
   simplified,
   firstMapLoad,
   isMap,
+  primaryObject,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -646,6 +647,7 @@ export const getPropositions = ({
       status,
       approved,
       requiredObject,
+      primaryObject,
       sort,
     };
 
