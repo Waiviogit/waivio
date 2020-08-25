@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { upperFirst } from 'lodash';
+import { upperFirst, size } from 'lodash';
 import moment from 'moment';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -74,7 +74,7 @@ class UserWalletTransactions extends React.Component {
     } = this.props;
     let skip = 0;
     const limit = 10;
-    const actionLength = this.props.actions.length;
+    const actionLength = size(this.props.actions);
     if (this.isGuestPage()) {
       if (actionLength >= limit) {
         skip = actionLength;
