@@ -21,6 +21,7 @@ const History = ({
   activeHistoryFilters,
   activeGuideHistoryFilters,
   messagesSponsors,
+  messagesCampaigns,
   setMessagesSponsors,
   setMessagesCampaigns,
   match,
@@ -169,6 +170,7 @@ const History = ({
           messages,
           handleSortChange,
           sponsors: messagesSponsors,
+          messagesCampaigns,
           tabType: 'history',
           location: location.pathname,
           sortHistory,
@@ -197,6 +199,7 @@ History.propTypes = {
   activeHistoryFilters: PropTypes.shape().isRequired,
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
   setMessagesCampaigns: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
@@ -212,6 +215,7 @@ History.defaultProps = {
   sortMessages: 'inquiryDate',
   sortGuideHistory: 'reservation',
   messagesSponsors: [],
+  messagesCampaigns: [],
   setActiveMessagesFilters: () => {},
 };
 

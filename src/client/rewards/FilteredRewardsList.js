@@ -42,6 +42,7 @@ const FilteredRewardsList = props => {
     campaignsLayoutWrapLayout,
     handleLoadMore,
     sponsors,
+    messagesCampaigns,
     activeFilters,
     setFilterValue,
     campaignsTypes,
@@ -287,7 +288,7 @@ const FilteredRewardsList = props => {
           }}
           filtersGuideHistory={{
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
-            messagesSponsors: sponsors,
+            messagesCampaigns,
           }}
           setFilterValue={setFilterValue}
           match={match}
@@ -332,6 +333,7 @@ FilteredRewardsList.defaultProps = {
   pendingUpdate: false,
   location: '',
   filterKey: '',
+  messagesCampaigns: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -368,6 +370,7 @@ FilteredRewardsList.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
   pendingUpdate: PropTypes.bool,
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;
