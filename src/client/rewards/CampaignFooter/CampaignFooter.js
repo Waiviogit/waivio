@@ -8,7 +8,7 @@ import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import { ASSIGNED, IS_RESERVED } from '../../../common/constants/rewards';
-import CommentsMessages from './Comments';
+import CommentsMessages from './CommentsMessages';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {

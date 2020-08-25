@@ -19,7 +19,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import * as commentsActions from '../../comments/commentsActions';
 
-const Comments = memo(
+const CommentsMessages = memo(
   ({
     show,
     post,
@@ -339,7 +339,7 @@ const Comments = memo(
               >
                 {childrenArr &&
                   map(childrenArr, currentChild => (
-                    <Comments
+                    <CommentsMessages
                       key={`comments-${currentChild.post_id}`}
                       {...{
                         intl,
@@ -366,7 +366,7 @@ const Comments = memo(
   },
 );
 
-Comments.propTypes = {
+CommentsMessages.propTypes = {
   post: PropTypes.shape().isRequired,
   show: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
@@ -380,7 +380,7 @@ Comments.propTypes = {
   matchPath: PropTypes.string,
 };
 
-Comments.defaultProps = {
+CommentsMessages.defaultProps = {
   parent: {},
   defaultVotePercent: 0,
   matchPath: '',
@@ -389,4 +389,4 @@ Comments.defaultProps = {
   getMessageHistory: () => {},
 };
 
-export default injectIntl(Comments);
+export default injectIntl(CommentsMessages);
