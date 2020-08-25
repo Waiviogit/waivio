@@ -11,6 +11,7 @@ import { getAuthenticatedUserName } from '../../reducers';
 import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
+  PATH_NAME_GUIDE_HISTORY,
 } from '../../../common/constants/rewards';
 
 const History = ({
@@ -31,7 +32,7 @@ const History = ({
   const location = useLocation();
   const dispatch = useDispatch();
   const isHistory = location.pathname === '/rewards/history';
-  const isGuideHistory = location.pathname === '/rewards/guideHistory';
+  const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
 
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);

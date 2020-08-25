@@ -10,6 +10,9 @@ import {
   MESSAGES,
   HISTORY,
   GUIDE_HISTORY,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_PAYABLES,
 } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
@@ -32,8 +35,8 @@ const RewardsFiltersPanel = ({
     (filterName, key) => {
       if (
         location.pathname !== '/rewards/history' &&
-        location.pathname !== '/rewards/messages' &&
-        location.pathname !== '/rewards/guideHistory'
+        location.pathname !== PATH_NAME_MESSAGES &&
+        location.pathname !== PATH_NAME_GUIDE_HISTORY
       ) {
         setFilterValue(filterName, key);
       } else {
@@ -73,7 +76,7 @@ const RewardsFiltersPanel = ({
       campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
       sponsorsData:
-        location.pathname !== '/rewards/history' && location.pathname !== '/rewards/guideHistory'
+        location.pathname !== '/rewards/history' && location.pathname !== PATH_NAME_GUIDE_HISTORY
           ? sponsors
           : messagesSponsors,
     }),
@@ -116,7 +119,7 @@ const RewardsFiltersPanel = ({
           !includes(location.pathname, GUIDE_HISTORY) && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
-                {location.pathname === '/rewards/payables'
+                {location.pathname === PATH_NAME_PAYABLES
                   ? intl.formatMessage({
                       id: 'payables',
                       defaultMessage: 'Payables',
@@ -135,7 +138,7 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' && (
+        {location.pathname === PATH_NAME_MESSAGES && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -183,7 +186,7 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         )}
-        {location.pathname === '/rewards/guideHistory' && (
+        {location.pathname === PATH_NAME_GUIDE_HISTORY && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
