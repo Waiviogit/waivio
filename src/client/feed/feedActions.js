@@ -10,15 +10,12 @@ import {
   getFeed,
   getPosts,
   getBookmarks as getBookmarksSelector,
-  getObject,
   getLocale,
   getReadLanguages,
-  getObjectAlbums,
   getLastPostId,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { mapObjectAppends } from '../object/wObjectHelper';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
@@ -194,23 +191,6 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink),
     meta: { sortBy: 'comments', category: username, limit },
   });
-
-export const getObjectComments = (author, permlink, category = 'waivio-object') => (
-  dispatch,
-  getState,
-  { steemAPI },
-) => {
-  const state = getState();
-  const wobject = getObject(state);
-  const albums = getObjectAlbums(state);
-  return dispatch({
-    type: GET_USER_COMMENTS.ACTION,
-    payload: steemAPI
-      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes => mapObjectAppends(apiRes.content, wobject, albums)),
-    meta: { sortBy: 'comments', category: author, limit: 10 },
-  });
-};
 
 export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
   const state = getState();

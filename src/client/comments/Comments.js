@@ -85,6 +85,7 @@ export default class Comments extends React.Component {
     history: PropTypes.bool,
     parentAuthorIfGuest: PropTypes.string,
     parentPermlinkIfGuest: PropTypes.string,
+    isUpdating: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -106,6 +107,7 @@ export default class Comments extends React.Component {
     getReservedComments: () => {},
     parentAuthorIfGuest: {},
     parentPermlinkIfGuest: {},
+    isUpdating: false,
   };
 
   state = {
@@ -227,6 +229,7 @@ export default class Comments extends React.Component {
           parentAuthorIfGuest={parentAuthorIfGuest}
           parentPermlinkIfGuest={parentPermlinkIfGuest}
           getReservedComments={getReservedComments}
+          isUpdating={this.props.isUpdating}
         />
       )
     );

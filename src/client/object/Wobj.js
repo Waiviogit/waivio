@@ -19,7 +19,7 @@ import {
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
-import { resetGallery } from '../object/ObjectGallery/galleryActions';
+import { resetGallery } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
@@ -81,13 +81,7 @@ export default class Wobj extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(
-      getObject(match.params.name, getAuthenticatedUserName(store.getState()), [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]),
-    );
+    return store.dispatch(getObject(match.params.name, getAuthenticatedUserName(store.getState())));
   }
 
   constructor(props) {
@@ -106,11 +100,7 @@ export default class Wobj extends React.Component {
     const { match, wobject, authenticatedUserName } = this.props;
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName, [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]);
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }
 
@@ -147,10 +137,6 @@ export default class Wobj extends React.Component {
         'galleryItem',
       ]);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.clearObjectFromStore();
   }
 
   toggleViewEditMode = isEditMode => {

@@ -50,7 +50,6 @@ const defaultDecorators = new CompositeDecorator([
   },
 ]);
 
-@injectIntl
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
@@ -196,4 +195,4 @@ class Editor extends React.Component {
   }
 }
 
-export default Editor;
+export default injectIntl(Editor);

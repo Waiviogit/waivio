@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
 import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
@@ -146,13 +146,13 @@ export const sendComment = (
   const { category, id, permlink: parentPermlink } = parentPost;
   let parentAuthor;
   if (isUpdating) {
-    parentAuthor = originalComment.parent_author;
+    parentAuthor = parentPost.author;
   } else if (parentPost.root_author && parentPost.guestInfo) {
     parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;
   }
-  const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
+  const guestParentAuthor = get(parentPost, ['guestInfo', 'userId']);
   const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
@@ -163,14 +163,14 @@ export const sendComment = (
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
-  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
-
-  const author = isUpdating ? originalComment.author : auth.user.name;
+  const parentPermlinkToSend = !isEmpty(parentPermlinkIfGuest)
+    ? parentPermlinkIfGuest
+    : parentPermlink;
+  const author = auth.user.name;
   const permlink = isUpdating
-    ? originalComment.permlink
+    ? parentPost.permlink
     : createCommentPermlink(parentAuthor, parentPermlinkToSend);
   const currCategory = category ? [category] : [];
-
   const jsonMetadata = createPostMetadata(
     body,
     currCategory,
@@ -189,7 +189,6 @@ export const sendComment = (
     });
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
-
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -216,11 +215,11 @@ export const sendComment = (
               !isUpdating,
             ),
           );
-          if (parentPost.append_field_name) {
+          if (parentPost.name) {
             dispatch(sendCommentAppend(parentPost.permlink));
           }
           setTimeout(
-            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
+            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
             auth.isGuestUser ? 6000 : 2000,
           );
 
