@@ -1,5 +1,5 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -242,7 +242,11 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
+    const uplListSize = size(uploadingList);
+    const isLoading = uplListSize ? loading : Boolean(uplListSize);
+    const albumInitialValue = selectedAlbum
+      ? selectedAlbum.id || selectedAlbum.body
+      : 'Choose an album';
     return (
       <Modal
         title={intl.formatMessage({
@@ -258,9 +262,7 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum
-                ? selectedAlbum.id || selectedAlbum.body
-                : 'Choose an album',
+              initialValue: albumInitialValue,
               rules: [
                 {
                   required: true,
