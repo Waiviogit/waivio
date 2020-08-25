@@ -4,6 +4,15 @@ import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
 import Loading from '../client/components/Icon/Loading';
 import Post from '../client/post/Post';
+import {
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_RECEIVABLES,
+  PATH_NAME_CREATE,
+  PATH_NAME_MATCH_BOT,
+  PATH_NAME_MANAGE,
+  PATH_NAME_PAYABLES,
+} from './constants/rewards';
 
 const Bookmarks = Loadable({
   loader: () => import('../client/bookmarks/Bookmarks'),
@@ -231,10 +240,10 @@ const routes = [
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/(history|guideHistory|messages)',
-          '/rewards/payables',
+          PATH_NAME_PAYABLES,
           '/rewards/reports',
           '/rewards/blacklist/:listType?',
-          '/rewards/receivables',
+          PATH_NAME_RECEIVABLES,
           '/rewards/payables/@:userName/:reservationPermlink?',
           '/rewards/receivables/@:userName/:reservationPermlink?',
           '/rewards/:filterKey/:campaignParent?',
@@ -243,22 +252,22 @@ const routes = [
         component: Rewards,
         routes: [
           {
-            path: '/rewards/create',
+            path: PATH_NAME_CREATE,
             exact: true,
             component: CreateRewardForm,
           },
           {
-            path: '/rewards/manage',
+            path: PATH_NAME_MANAGE,
             exact: true,
             component: ManageCampaign,
           },
           {
-            path: '/rewards/receivables',
+            path: PATH_NAME_RECEIVABLES,
             exact: true,
             component: ReceivablesCampaign,
           },
           {
-            path: '/rewards/payables',
+            path: PATH_NAME_PAYABLES,
             exact: true,
             component: PayablesCampaign,
           },
@@ -278,7 +287,7 @@ const routes = [
             component: PaymentCampaign,
           },
           {
-            path: '/rewards/match-bot',
+            path: PATH_NAME_MATCH_BOT,
             exact: true,
             component: MatchBotCampaign,
           },
@@ -288,12 +297,12 @@ const routes = [
             component: HistoryCampaign,
           },
           {
-            path: '/rewards/guideHistory',
+            path: PATH_NAME_GUIDE_HISTORY,
             exact: true,
             component: HistoryCampaign,
           },
           {
-            path: '/rewards/messages',
+            path: PATH_NAME_MESSAGES,
             exact: true,
             component: HistoryCampaign,
           },

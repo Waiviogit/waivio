@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getAuthenticatedUser } from '../../reducers';
+import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
 import './TopNavigation.less';
 
 const LINKS = {
@@ -25,7 +26,7 @@ const LINKS = {
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
   ABOUT: '/object/ylr-waivio',
   NOTIFICATIONS: '/notifications-list',
-  USERS: '/discover',
+  USERS: PATH_NAME_DISCOVER,
   BLOG: '/blog',
   FEED: '/feed',
 };
