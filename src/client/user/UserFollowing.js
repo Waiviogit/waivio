@@ -90,9 +90,7 @@ export default class UserFollowing extends React.Component {
                   <FormattedMessage id="users" defaultMessage="Users" />
                 </span>
                 <span className="UserFollowing__badge">
-                  <FormattedNumber
-                    value={user.users_following_count ? user.users_following_count : 0}
-                  />
+                  <FormattedNumber value={user.users_following_count || 0} />
                 </span>
               </React.Fragment>
             }

@@ -444,20 +444,6 @@ export default class Settings extends React.Component {
                     </Checkbox>
                   </div>
                 </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage
-                      id="linked_hive_account"
-                      defaultMessage="Linked Hive account"
-                    />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="linked_hive_account_details"
-                      defaultMessage="Registered Hive account becomes the recipient for all your author rewards, other rewards, and your transfers."
-                    />
-                  </p>
-                </div>
                 <Action primary big loading={loading} onClick={this.handleSave}>
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
