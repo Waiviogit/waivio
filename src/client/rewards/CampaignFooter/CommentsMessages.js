@@ -32,6 +32,7 @@ const CommentsMessages = memo(
     parent,
     getReservedComments,
     matchPath,
+    isGuest,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -144,7 +145,7 @@ const CommentsMessages = memo(
     const onCommentSend = useCallback(() => {
       const { category, parentAuthor, parentPermlink } = parentPost;
 
-      return !matchPath
+      return isGuest || !matchPath
         ? getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
         : getMessageHistory();
     }, [parentPost, matchPath, getReservedComments, getMessageHistory]);
@@ -356,6 +357,7 @@ const CommentsMessages = memo(
                         getMessageHistory,
                         getReservedComments,
                         matchPath,
+                        isGuest,
                       }}
                     />
                   ))}
@@ -380,12 +382,14 @@ CommentsMessages.propTypes = {
   getMessageHistory: PropTypes.func,
   getReservedComments: PropTypes.func,
   matchPath: PropTypes.string,
+  isGuest: PropTypes.bool,
 };
 
 CommentsMessages.defaultProps = {
   parent: {},
   defaultVotePercent: 0,
   matchPath: '',
+  isGuest: false,
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},

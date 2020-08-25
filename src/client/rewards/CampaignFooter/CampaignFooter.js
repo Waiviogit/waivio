@@ -334,15 +334,21 @@ class CampaignFooter extends React.Component {
   };
 
   onCommentSend = () => {
-    const { match, getMessageHistory } = this.props;
+    const { match, getMessageHistory, isGuest } = this.props;
     const { category, parentAuthor, parentPermlink } = this.state.currentPost;
 
-    return !match.params[0]
+    return isGuest || !match.params[0]
       ? this.getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
       : getMessageHistory();
   };
 
-  handleSubmitComment = (parentP, commentValue, parentAuthorIfGuest, parentPermlinkIfGuest) => {
+  handleSubmitComment = (parentP, commentValue) => {
+    const { proposition } = this.props;
+    const currentUser = this.getCurrentUser();
+    const parentAuthorIfGuest = get(currentUser, ['0', 'rootName']);
+    const parentPermlinkIfGuest = !this.isReserved
+      ? get(proposition, ['users', '0', 'permlink'])
+      : get(currentUser, ['0', 'permlink']);
     const { intl } = this.props;
     const parentComment = parentP;
     if (parentComment.author_original) parentComment.author = parentComment.author_original;
@@ -410,6 +416,7 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
+      isGuest,
     } = this.props;
     const isRewards =
       match.params.filterKey === 'reserved' ||
@@ -429,11 +436,6 @@ class CampaignFooter extends React.Component {
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-    const currentUser = this.getCurrentUser();
-    const parentAuthor = get(currentUser, ['0', 'rootName']);
-    const parentPermlink = !this.isReserved
-      ? get(proposition, ['users', '0', 'permlink'])
-      : get(currentUser, ['0', 'permlink']);
 
     return (
       <div className="CampaignFooter">
@@ -489,6 +491,7 @@ class CampaignFooter extends React.Component {
                 getReservedComments={this.getReservedComments}
                 parent={rootComment}
                 matchPath={match.params[0]}
+                isGuest={isGuest}
               />
             </div>
           ))}
@@ -500,8 +503,6 @@ class CampaignFooter extends React.Component {
             isLoading={loadingComments}
             inputValue={commentFormText}
             submitted={commentSubmitted}
-            parentAuthorIfGuest={parentAuthor}
-            parentPermlinkIfGuest={parentPermlink}
           />
         )}
         <Modal
