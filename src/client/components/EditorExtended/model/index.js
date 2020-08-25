@@ -145,8 +145,8 @@ export const addNewBlockAt = (
 
   const newContent = content.merge({
     blockMap: newBlockMap,
-    selectionAfter: selection,
-    selectionBefore: selection.merge({
+    selectionBefore: selection,
+    selectionAfter: selection.merge({
       anchorKey: newBlockKey,
       anchorOffset: 0,
       focusKey: newBlockKey,
@@ -154,7 +154,7 @@ export const addNewBlockAt = (
       isBackward: false,
     }),
   });
-  return EditorState.push(editorState, newContent, 'split-block');
+  return EditorState.moveFocusToEnd(EditorState.push(editorState, newContent, 'split-block'));
 };
 
 /**

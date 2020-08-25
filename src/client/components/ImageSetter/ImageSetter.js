@@ -117,31 +117,6 @@ const ImageSetter = ({
     handleOnUploadImageByLink(defaultImage);
   }, []);
 
-  const handleRemoveImage = imageDetail => {
-    const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
-    setCurrentImages(filteredImages);
-    const contentState = getEditorState().getCurrentContent();
-    const allBlocks = contentState.getBlockMap();
-
-    allBlocks.forEach((block, index) => {
-      // eslint-disable-next-line no-underscore-dangle
-      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
-      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockAfter(index).getKey();
-        const removeImage = contentState.getBlockMap().delete(index);
-        const contentAfterRemove = removeImage.delete(blockBefore);
-        const filtered = contentAfterRemove.filter(element => !isNil(element));
-
-        const newContent = contentState.merge({
-          blockMap: filtered,
-        });
-        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
-      }
-    });
-
-    if (!size(filteredImages)) onImageLoaded([]);
-  };
-
   const handleChangeImage = async e => {
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
@@ -162,18 +137,21 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
-
         if (newImage) {
-          const selection = getEditorState().getSelection();
-          const key = selection.getAnchorKey();
+          setTimeout(() => {
+            const selection = getEditorState().getSelection();
+            const key = selection.getAnchorKey();
 
-          setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-          setEditorState(
-            addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-              src: `${newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`}`,
-              alt: newImage.name,
-            }),
-          );
+            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+            setEditorState(
+              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+                src: `${
+                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                }`,
+                alt: newImage.name,
+              }),
+            );
+          }, 1000);
         }
 
         uploadedImages.push(newImage);
@@ -200,6 +178,31 @@ const ImageSetter = ({
       setLoadingImage(false);
       onLoadingImage(false);
     }
+  };
+
+  const handleRemoveImage = imageDetail => {
+    const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
+    setCurrentImages(filteredImages);
+    const contentState = getEditorState().getCurrentContent();
+    const allBlocks = contentState.getBlockMap();
+
+    allBlocks.forEach((block, index) => {
+      // eslint-disable-next-line no-underscore-dangle
+      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
+      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
+        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const removeImage = contentState.getBlockMap().delete(index);
+        const contentAfterRemove = removeImage.delete(blockBefore);
+        const filtered = contentAfterRemove.filter(element => !isNil(element));
+
+        const newContent = contentState.merge({
+          blockMap: filtered,
+        });
+        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
+      }
+    });
+
+    if (!size(filteredImages)) onImageLoaded([]);
   };
 
   const renderTitle = () => {
