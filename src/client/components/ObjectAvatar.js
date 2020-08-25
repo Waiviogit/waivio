@@ -1,6 +1,7 @@
-import { filter, maxBy, includes, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { filter, maxBy, includes, get } from 'lodash';
+
 import DEFAULTS from '../object/const/defaultValues';
 
 import './ObjectAvatar.less';

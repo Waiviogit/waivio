@@ -39,9 +39,9 @@ export function handleValidateCampaignErrors(response) {
   return response;
 }
 
-export const getRecommendedObjects = () =>
+export const getRecommendedObjects = (locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers: { ...headers, app: config.appName },
+    headers: { ...headers, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -1387,7 +1387,21 @@ export const getTransferDetails = withdrawId => {
   ).then(res => res.json());
 };
 
-// injected as extra argument in Redux Thunk
+export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
+  fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .catch(error => error);
+
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
   broadcastGuestOperation,
