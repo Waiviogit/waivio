@@ -119,6 +119,7 @@ class Editor extends React.Component {
         locale: this.props.locale,
         requiredFields: ['rating'],
       });
+
       const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
