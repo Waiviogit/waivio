@@ -11,7 +11,7 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
 } from '../../reducers';
-import { MESSAGES, HISTORY } from '../../../common/constants/rewards';
+import { MESSAGES, HISTORY, PATH_NAME_HISTORY } from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import './Sidenav.less';
 
@@ -161,7 +161,7 @@ export default class SidenavRewards extends React.Component {
                   {!!countTookPartCampaigns && (
                     <li>
                       <NavLink
-                        to={`/rewards/history`}
+                        to={PATH_NAME_HISTORY}
                         className="sidenav-discover-objects__item"
                         activeClassName="Sidenav__item--active"
                       >

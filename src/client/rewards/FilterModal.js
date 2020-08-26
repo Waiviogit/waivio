@@ -31,6 +31,7 @@ const FilterModal = ({
     if (name === 'types') return 'rewards_for';
     if (name === 'guideNames') return 'sponsors';
     if (name === 'messagesSponsors') return 'sponsors';
+    if (name === 'messagesCampaigns') return 'campaigns';
     if (name === 'caseStatus') return 'Case status';
     return name;
   };

@@ -17,6 +17,7 @@ import {
   CAMPAIGNS_TYPES_MESSAGES,
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
+  PATH_NAME_HISTORY,
 } from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
@@ -42,6 +43,7 @@ const FilteredRewardsList = props => {
     campaignsLayoutWrapLayout,
     handleLoadMore,
     sponsors,
+    messagesCampaigns,
     activeFilters,
     setFilterValue,
     campaignsTypes,
@@ -68,7 +70,7 @@ const FilteredRewardsList = props => {
     sortMessages,
   );
 
-  const historyLocation = '/rewards/history';
+  const historyLocation = PATH_NAME_HISTORY;
   const messagesLocation = PATH_NAME_MESSAGES;
   const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
 
@@ -287,7 +289,7 @@ const FilteredRewardsList = props => {
           }}
           filtersGuideHistory={{
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
-            messagesSponsors: sponsors,
+            messagesCampaigns,
           }}
           setFilterValue={setFilterValue}
           match={match}
@@ -332,6 +334,7 @@ FilteredRewardsList.defaultProps = {
   pendingUpdate: false,
   location: '',
   filterKey: '',
+  messagesCampaigns: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -368,6 +371,7 @@ FilteredRewardsList.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
   pendingUpdate: PropTypes.bool,
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;
