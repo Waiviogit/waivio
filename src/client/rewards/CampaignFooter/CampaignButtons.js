@@ -161,7 +161,7 @@ export default class CampaignButtons extends React.Component {
     const companyPermlink = get(proposition, 'activation_permlink');
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
     const objPermlink = get(proposition, ['users', '0', 'object_permlink']);
-    const userName = get(proposition, ['users', '0', 'name']);
+    const userName = get(proposition, ['users', '0', 'rootName']);
     return this.props
       .rejectReview({
         companyAuthor,
