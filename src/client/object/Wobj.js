@@ -18,7 +18,7 @@ import {
   getLocale,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
+import { clearObjectFromStore, getObject } from './wobjectsActions';
 import { resetGallery } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
@@ -30,6 +30,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 import NotFound from '../statics/NotFound';
+import { getObjectName } from '../helpers/wObjectHelper';
 
 @withRouter
 @connect(
@@ -47,7 +48,7 @@ import NotFound from '../statics/NotFound';
   }),
   {
     clearObjectFromStore,
-    getObjectInfo,
+    getObject,
     resetGallery,
   },
 )
@@ -60,7 +61,7 @@ export default class Wobj extends React.Component {
     history: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
-    getObjectInfo: PropTypes.func.isRequired,
+    getObject: PropTypes.func.isRequired,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
@@ -100,7 +101,7 @@ export default class Wobj extends React.Component {
     const { match, wobject, authenticatedUserName } = this.props;
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+      this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
 
@@ -131,11 +132,7 @@ export default class Wobj extends React.Component {
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
-      this.props.getObjectInfo(match.params.name, authenticatedUserName, [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]);
+      this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
 
@@ -160,7 +157,7 @@ export default class Wobj extends React.Component {
     } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = wobject.name || wobject.default_name || '';
+    const objectName = getObjectName(wobject);
     if (!objectName && !isFetching) {
       return (
         <div className="main-panel">
