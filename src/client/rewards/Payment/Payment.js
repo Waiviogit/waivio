@@ -26,6 +26,7 @@ const Payment = ({
   hiveBeneficiaryAccount,
   openLinkModal,
   openTransf,
+  history,
 }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
@@ -142,7 +143,7 @@ const Payment = ({
           match={match}
         />
       )}
-      <Transfer />
+      <Transfer history={history} />
     </div>
   );
 };
@@ -150,6 +151,7 @@ const Payment = ({
 Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool,
   hiveBeneficiaryAccount: PropTypes.string,
