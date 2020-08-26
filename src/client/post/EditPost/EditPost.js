@@ -263,18 +263,16 @@ class EditPost extends Component {
   handleObjectSelect(object) {
     this.setState(prevState => {
       const objName = object.name || object.default_name;
+      const objPermlink = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
           title: this.state.titleValue,
           body: `${this.state.content}${separator}[${objName}](${getObjectUrl(
-            object.id || object.author_permlink,
+            object.id || objPermlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith(
-          object.type === 'hashtag' && [...prevState.topics, object.author_permlink],
-          isEqual,
-        ),
+        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objPermlink], isEqual),
       };
     });
   }
