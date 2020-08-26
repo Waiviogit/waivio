@@ -1182,7 +1182,7 @@
   "unfollowed_wobject": "Отписался {object_type} {name}",
   "currency": "Валюта",
   "paid_hive": "Оплачено (HIVE)",
-  "suspended_status": "По истечению {days} дней {sponsor} компания будет заблокирована, пожалуйста, оплатите долг за отзыв",
+  "suspended_status": "Предупреждение: через {days} дня(-ей) все кампании {sponsor} будут приостановлены, так как кредиторская задолженность для {reviewAuthor}",
   "withdraw_route": "Аккаунт {to_account} зарегистрированный маршрут вывода для аккаунта {from_account}",
   "change_password": "Аккаунт {account} инициировал процедуру изменения пароля",
   "transfer_from": "Вы перевели {amount} {to}",
