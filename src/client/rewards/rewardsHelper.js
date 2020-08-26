@@ -10,6 +10,7 @@ import {
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
   PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
@@ -778,7 +779,7 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
       id: MESSAGES,
       defaultMessage: 'Messages',
     });
-  } else if (location === '/rewards/history') {
+  } else if (location === PATH_NAME_HISTORY) {
     return intl.formatMessage({
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',

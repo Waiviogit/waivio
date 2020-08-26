@@ -12,6 +12,7 @@ import {
   REWARDS_TYPES_MESSAGES,
   CAMPAIGNS_TYPES_MESSAGES,
   PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 
 const History = ({
@@ -21,7 +22,9 @@ const History = ({
   activeHistoryFilters,
   activeGuideHistoryFilters,
   messagesSponsors,
+  messagesCampaigns,
   setMessagesSponsors,
+  setMessagesCampaigns,
   match,
   setSortValue,
   sortHistory,
@@ -31,7 +34,7 @@ const History = ({
 }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const isHistory = location.pathname === '/rewards/history';
+  const isHistory = location.pathname === PATH_NAME_HISTORY;
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
 
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
@@ -77,7 +80,7 @@ const History = ({
         }
         if (isGuideHistory) {
           requestData.guideName = username;
-          requestData.guideNames = activeFilters.messagesSponsors;
+          requestData.campaignNames = activeFilters.messagesCampaigns;
           requestData.onlyWithMessages = false;
         }
 
@@ -90,6 +93,7 @@ const History = ({
         setMessagesSponsors(
           !isGuideHistory ? uniq(messagesSponsors.concat(data.sponsors)) : data.sponsors,
         );
+        setMessagesCampaigns(data.campaigns_names);
         setLoading(false);
         setHasMore(data.hasMore);
       } finally {
@@ -167,6 +171,7 @@ const History = ({
           messages,
           handleSortChange,
           sponsors: messagesSponsors,
+          messagesCampaigns,
           tabType: 'history',
           location: location.pathname,
           sortHistory,
@@ -195,7 +200,9 @@ History.propTypes = {
   activeHistoryFilters: PropTypes.shape().isRequired,
   activeGuideHistoryFilters: PropTypes.shape().isRequired,
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
   setMessagesSponsors: PropTypes.func.isRequired,
+  setMessagesCampaigns: PropTypes.func.isRequired,
   setSortValue: PropTypes.func,
   sortHistory: PropTypes.string,
   sortGuideHistory: PropTypes.string,
@@ -209,6 +216,7 @@ History.defaultProps = {
   sortMessages: 'inquiryDate',
   sortGuideHistory: 'reservation',
   messagesSponsors: [],
+  messagesCampaigns: [],
   setActiveMessagesFilters: () => {},
 };
 

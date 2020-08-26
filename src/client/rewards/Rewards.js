@@ -158,6 +158,7 @@ class Rewards extends React.Component {
     isSearchAreaFilter: false,
     isAssign: false,
     messagesSponsors: [],
+    messagesCampaigns: [],
     messages: [],
     zoomMap: 0,
     fetched: true,
@@ -171,7 +172,7 @@ class Rewards extends React.Component {
     },
     activeGuideHistoryFilters: {
       rewards: [],
-      messagesSponsors: [],
+      messagesCampaigns: [],
     },
     url: '',
   };
@@ -313,6 +314,7 @@ class Rewards extends React.Component {
     switch (key) {
       case 'rewards':
       case 'messagesSponsors':
+      case 'messagesCampaigns':
         if (includes(activeFilters[key], filterValue)) {
           remove(activeFilters[key], f => f === filterValue);
         } else {
@@ -336,6 +338,7 @@ class Rewards extends React.Component {
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
+  setMessagesCampaigns = messagesCampaigns => this.setState({ messagesCampaigns });
 
   setPayablesFilterValue = filterValue => {
     let activeFilters = [...this.state.activePayableFilters];
@@ -813,6 +816,7 @@ class Rewards extends React.Component {
       loadingCampaigns,
       zoomMap,
       messagesSponsors,
+      messagesCampaigns,
       fetched,
       area,
       radius,
@@ -882,7 +886,9 @@ class Rewards extends React.Component {
       activeMessagesFilters,
       activeHistoryFilters,
       setMessagesSponsors: this.setMessagesSponsors,
+      setMessagesCampaigns: this.setMessagesCampaigns,
       messagesSponsors,
+      messagesCampaigns,
       sortHistory,
       sortMessages,
       sortGuideHistory,
@@ -978,6 +984,7 @@ class Rewards extends React.Component {
                         activeHistoryFilters={activeHistoryFilters}
                         activeGuideHistoryFilters={activeGuideHistoryFilters}
                         messagesSponsors={messagesSponsors}
+                        messagesCampaigns={messagesCampaigns}
                         setActiveMessagesFilters={this.setActiveMessagesFilters}
                       />
                     )}
@@ -997,6 +1004,7 @@ class Rewards extends React.Component {
                     activeHistoryFilters={activeHistoryFilters}
                     activeGuideHistoryFilters={activeGuideHistoryFilters}
                     messagesSponsors={messagesSponsors}
+                    messagesCampaigns={messagesCampaigns}
                     setActiveMessagesFilters={this.setActiveMessagesFilters}
                   />
                 </div>
