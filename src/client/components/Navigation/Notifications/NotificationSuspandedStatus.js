@@ -23,10 +23,11 @@ const NotificationSuspandedStatus = ({ notification, read, onClick }) => {
         <div className="Notification__text__message">
           <FormattedMessage
             id="suspended_status"
-            defaultMessage="After {days} day(s) {sponsor} campaigns will be blocked, please pay the debt for the review"
+            defaultMessage="Warning: in {days} day(s) all {sponsor} campaigns will be suspended because the accounts payable for {reviewAuthor}"
             values={{
               days: <span className="username">{notification.days}</span>,
               sponsor: <span>{notification.sponsor}</span>,
+              reviewAuthor: <span>{notification.reviewAuthor}</span>,
             }}
           />
         </div>

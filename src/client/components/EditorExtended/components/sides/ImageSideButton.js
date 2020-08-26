@@ -77,13 +77,14 @@ export default class ImageSideButton extends React.Component {
           onOk={this.handleOnOk}
         >
           <ImageSetter
+            onImageLoaded={this.getImages}
+            onLoadingImage={this.onLoadingImage}
+            isRequired
             Block={Block}
             addNewBlockAt={addNewBlockAt}
             setEditorState={this.onChange}
             getEditorState={this.props.getEditorState}
-            onImageLoaded={this.getImages}
-            onLoadingImage={this.onLoadingImage}
-            isRequired
+            selection={this.props.getEditorState().getSelection()}
           />
         </Modal>
       </React.Fragment>
