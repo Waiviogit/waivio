@@ -263,6 +263,15 @@ export default function wobjectReducer(state = initialState, action) {
 
       if (isArraysFields) {
         key = key === objectFields.categoryItem ? objectFields.tagCategory : objectFields.menuItems;
+
+        return {
+          ...state,
+          wobject: {
+            [key]: [...toDisplay] || '',
+            ...state.wobject,
+            fields: [...state.wobject.fields, field],
+          },
+        };
       }
 
       fields.splice(findIndex, 1, { ...fields[findIndex], ...field, loading: false });
