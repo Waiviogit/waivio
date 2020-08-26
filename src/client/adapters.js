@@ -1,4 +1,4 @@
-import { isEmpty, get, has } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
@@ -31,12 +31,7 @@ export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
   };
 
   if (serverWObj.parent) {
-    if (result.avatar === DEFAULTS.AVATAR && has(serverWObj, ['parent', 'fields'])) {
-      const parentFieldMaxWeight = getFieldsWithMaxWeight(serverWObj.parent);
-      if (parentFieldMaxWeight && parentFieldMaxWeight.avatar) {
-        result.avatar = parentFieldMaxWeight.avatar;
-      }
-    } else {
+    if (result.avatar === DEFAULTS.AVATAR) {
       result.avatar = get(serverWObj, ['parent', 'avatar']);
     }
   }
