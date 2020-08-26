@@ -224,3 +224,5 @@ export const parseAddress = wobject => {
     Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]),
   ).join(', ');
 };
+
+export const getObjectName = wobj => wobj.name || wobj.default_name;

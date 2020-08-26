@@ -166,6 +166,7 @@ class EditPost extends Component {
             campaign: { ...campaignData, fetched: true },
             draftContent: {
               title: reviewTitle,
+              body: this.state.draftContent.body,
             },
             topics,
           });
@@ -261,16 +262,17 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const objName = object.author_permlink;
+      const objName = object.name || object.default_name;
+      const objPermlink = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
           title: this.state.titleValue,
           body: `${this.state.content}${separator}[${objName}](${getObjectUrl(
-            object.id || object.author_permlink,
+            object.id || objPermlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objName], isEqual),
+        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objPermlink], isEqual),
       };
     });
   }
