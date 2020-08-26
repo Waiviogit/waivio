@@ -7,8 +7,6 @@ import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
-import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
@@ -99,6 +97,11 @@ class MapOS extends React.Component {
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
 
+    if (prevPropsMatch === 'reserved' && propsMatch !== prevPropsMatch) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ zoom: 0 });
+    }
+
     if (
       (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match)) ||
       prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
@@ -160,12 +163,10 @@ class MapOS extends React.Component {
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
-        const lat =
-          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude) ||
-          get(wobject, 'map.coordinates[1]');
-        const lng =
-          getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude) ||
-          get(wobject, 'map.coordinates[0]');
+        const json = wobject.map;
+        const parsedMap = !isEmpty(json) ? JSON.parse(json) : null;
+        const lat = parsedMap ? parsedMap.latitude : null;
+        const lng = parsedMap ? parsedMap.longitude : null;
         const isMarked =
           Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
           match.path.includes('rewards');
