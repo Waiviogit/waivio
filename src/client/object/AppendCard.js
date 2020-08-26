@@ -41,7 +41,6 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(props.post.child);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-  const postId = `${props.post.author}/${props.post.permlink}`;
 
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
@@ -61,15 +60,15 @@ const AppendCard = props => {
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
-  function handleLikeClick(post, weight = 10000, type) {
+  function handleLikeClick(post, weight = 10000) {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(postId, props.post.author, props.post.permlink, 0, type);
+      props.voteAppends(props.post.author, props.post.permlink, 0);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(postId, props.post.author, props.post.permlink, weight, type);
+      props.voteAppends(props.post.author, props.post.permlink, weight);
     }
   }
 
@@ -83,15 +82,15 @@ const AppendCard = props => {
     setSliderValue(value);
   }
 
-  function handleReportClick(post, myWeight, type) {
+  function handleReportClick(post, myWeight) {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
 
     if (isReject) {
-      props.voteAppends(postId, post.author, post.permlink, 0, type);
+      props.voteAppends(post.author, post.permlink, 0);
     } else {
-      props.voteAppends(postId, post.author, post.permlink, myWeight, type);
+      props.voteAppends(post.author, post.permlink, myWeight);
     }
   }
 
@@ -108,13 +107,7 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    props.voteAppends(
-      postId,
-      props.post.author,
-      props.post.permlink,
-      sliderValue * 100,
-      'approved',
-    );
+    props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
   }
 
   return (

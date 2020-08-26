@@ -7,6 +7,7 @@ import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { APPEND_WAIVIO_OBJECT } from './appendActions';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -170,11 +171,15 @@ export const sendCommentAppend = (permlink, comment) => dispatch =>
   });
 
 export const GET_CHANGED_WOBJECT_FIELD = createAsyncActionType('@wobj/GET_CHANGED_WOBJECT_FIELD');
-export const getChangedWobjectField = (authorPermlink, fieldName, author, permlink, blockNum) => (
-  dispatch,
-  getState,
-  { busyAPI },
-) => {
+
+export const getChangedWobjectField = (
+  authorPermlink,
+  fieldName,
+  author,
+  permlink,
+  blockNum,
+  isNew = false,
+) => (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
@@ -185,22 +190,28 @@ export const getChangedWobjectField = (authorPermlink, fieldName, author, permli
       dispatch({
         type: GET_CHANGED_WOBJECT_FIELD.ACTION,
         payload: {
-          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale),
+          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(() =>
+            dispatch({
+              type: APPEND_WAIVIO_OBJECT.SUCCESS,
+            }),
+          ),
         },
+        meta: { isNew },
       });
     }
   });
 };
 
-export const voteAppends = (postId, author, permlink, weight = 10000) => (
+export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
   const { auth, object } = getState();
   const wobj = get(object, 'wobject', {});
-  const post = wobj.fields.find(field => field.permlink === permlink);
+  const post = wobj.fields.find(field => field.permlink === permlink) || null;
   const voter = auth.user.name;
+  const fieldName = name || post.name;
 
   if (!auth.isAuthenticated) {
     return null;
@@ -211,21 +222,21 @@ export const voteAppends = (postId, author, permlink, weight = 10000) => (
     payload: {
       post,
       permlink,
-      postId,
     },
   });
 
   return steemConnectAPI
-    .vote(voter, post.author_original || author, post.permlink, weight)
+    .vote(voter, author, permlink, weight)
     .then(data => data.json())
     .then(res =>
       dispatch(
         getChangedWobjectField(
           wobj.author_permlink,
-          post.name,
-          post.author,
-          post.permlink,
+          fieldName,
+          author,
+          permlink,
           res.block_num,
+          isNew,
         ),
       ),
     )
@@ -235,7 +246,6 @@ export const voteAppends = (postId, author, permlink, weight = 10000) => (
         type: VOTE_APPEND_ERROR,
         payload: {
           post,
-          postId,
           permlink,
         },
       });

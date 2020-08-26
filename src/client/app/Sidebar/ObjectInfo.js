@@ -259,6 +259,7 @@ class ObjectInfo extends React.Component {
         }
       : {};
     const phones = get(wobject, 'phone', []);
+    const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const album = filter(albums, iteratee(['id', wobject.author_permlink]));
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
@@ -523,8 +524,8 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {this.listItem(objectFields.pageContent, null)}
-            {!hasType(wobject, OBJECT_TYPE.HASHTAG) && menuSection}
-            {aboutSection}
+            {!isHashtag && menuSection}
+            {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>
