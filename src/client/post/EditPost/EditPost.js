@@ -166,6 +166,7 @@ class EditPost extends Component {
             campaign: { ...campaignData, fetched: true },
             draftContent: {
               title: reviewTitle,
+              body: this.state.draftContent.body,
             },
             topics,
           });
@@ -196,6 +197,7 @@ class EditPost extends Component {
   }
 
   handleChangeContent(rawContent, title) {
+    console.log('rawContent: ', rawContent);
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
