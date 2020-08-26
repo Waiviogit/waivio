@@ -1,5 +1,5 @@
 import React from 'react';
-import { map, size } from 'lodash';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -214,7 +214,7 @@ class CreateImage extends React.Component {
       const response = await this.props.appendObject(postData);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (response.value.transactionId) {
+      if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
@@ -242,8 +242,7 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const uplListSize = size(uploadingList);
-    const isLoading = uplListSize ? loading : Boolean(uplListSize);
+    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length); // must be uploadingList.length
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
