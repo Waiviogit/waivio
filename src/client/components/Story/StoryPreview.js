@@ -22,20 +22,16 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../helpers/regexHelpers';
 
-const StoryPreview = ({ post }) => {
+const StoryPreview = ({ post, isUpdates }) => {
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
+  const field = get(jsonMetadata, ['wobj', 'field'], {});
   let imagePath = '';
 
   if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
     imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
   } else if (
-    jsonMetadata &&
-    jsonMetadata.wobj &&
-    jsonMetadata.wobj.field &&
-    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
-      jsonMetadata.wobj.field.name,
-    )
+    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
   ) {
     imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
@@ -44,6 +40,9 @@ const StoryPreview = ({ post }) => {
       imagePath = getProxyImageURL(contentImages[0], 'preview');
     }
   }
+
+  if (isUpdates && (post.name === objectFields.avatar || post.name === objectFields.galleryItem))
+    imagePath = getProxyImageURL(post.body, 'preview');
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
@@ -135,12 +134,16 @@ const StoryPreview = ({ post }) => {
   } else {
     bodyData.push(preview.text());
   }
-
   return <div>{bodyData}</div>;
 };
 
 StoryPreview.propTypes = {
   post: PropTypes.shape().isRequired,
+  isUpdates: PropTypes.bool,
+};
+
+StoryPreview.defaultProps = {
+  isUpdates: false,
 };
 
 export default StoryPreview;

@@ -11,6 +11,7 @@ import {
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
 } from './wobjActions';
+import { objectFields } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
@@ -83,10 +84,28 @@ export default function wobjectReducer(state = initialState, action) {
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       if (isEmpty(action.payload)) return state;
       const { toDisplay, field } = action.payload;
+      const isArraysFields = [objectFields.categoryItem, objectFields.listItem].includes(
+        field.name,
+      );
+      let key = field.name;
+
+      if (isArraysFields) {
+        key = key === objectFields.categoryItem ? objectFields.tagCategory : objectFields.menuItems;
+
+        return {
+          ...state,
+          wobject: {
+            [key]: [...toDisplay] || '',
+            ...state.wobject,
+            fields: [...state.wobject.fields, field],
+          },
+        };
+      }
+
       return {
         ...state,
         wobject: {
-          [field.name]: toDisplay || '',
+          [key]: toDisplay || '',
           ...state.wobject,
           fields: [...state.wobject.fields, field],
         },
@@ -237,6 +256,23 @@ export default function wobjectReducer(state = initialState, action) {
       const { toDisplay, field } = action.payload;
       const fields = [...state.wobject.fields];
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);
+      const isArraysFields = [objectFields.categoryItem, objectFields.listItem].includes(
+        field.name,
+      );
+      let key = field.name;
+
+      if (isArraysFields) {
+        key = key === objectFields.categoryItem ? objectFields.tagCategory : objectFields.menuItems;
+
+        return {
+          ...state,
+          wobject: {
+            [key]: [...toDisplay] || '',
+            ...state.wobject,
+            fields: [...state.wobject.fields, field],
+          },
+        };
+      }
 
       fields.splice(findIndex, 1, { ...fields[findIndex], ...field, loading: false });
 
@@ -245,7 +281,7 @@ export default function wobjectReducer(state = initialState, action) {
         wobject: {
           ...state.wobject,
           fields,
-          [field.name]: toDisplay || '',
+          [key]: toDisplay || '',
           pending: false,
         },
       };

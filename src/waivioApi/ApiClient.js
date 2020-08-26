@@ -1224,7 +1224,7 @@ export const getPostCommentsFromApi = ({ category, author, permlink }) =>
 
 export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: { ...headers, locale },
     method: 'POST',
     body: JSON.stringify({
       limit,
@@ -1235,9 +1235,9 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
     }),
   }).then(res => res.json());
 
-export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20, locale }) => {
   const actualHeaders = userName
-    ? { ...headers, following: userName, follower: userName }
+    ? { ...headers, following: userName, follower: userName, locale }
     : headers;
 
   return fetch(`${config.apiPrefix}${config.getUsers}`, {

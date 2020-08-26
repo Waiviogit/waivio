@@ -169,7 +169,7 @@ const AppendCard = props => {
           target="_blank"
           className="Story__content__preview"
         >
-          <StoryPreview post={props.post} />
+          <StoryPreview post={props.post} isUpdates />
         </a>
         <ApprovingCard post={props.post} />
       </div>
