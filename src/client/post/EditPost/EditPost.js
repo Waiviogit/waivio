@@ -261,7 +261,7 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const objName = object.author_permlink;
+      const objName = object.name || object.default_name;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
@@ -270,7 +270,10 @@ class EditPost extends Component {
             object.id || object.author_permlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objName], isEqual),
+        topics: uniqWith(
+          object.type === 'hashtag' && [...prevState.topics, object.author_permlink],
+          isEqual,
+        ),
       };
     });
   }
