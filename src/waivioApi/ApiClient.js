@@ -639,6 +639,7 @@ export const getPropositions = ({
   firstMapLoad,
   isMap,
   primaryObject,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -670,7 +671,7 @@ export const getPropositions = ({
     const url = getUrl(match);
 
     fetch(url, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -691,6 +692,7 @@ export const getHistory = ({
   status,
   guideNames,
   campaignNames,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -713,7 +715,7 @@ export const getHistory = ({
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -827,10 +829,16 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
+export const getRewardsGeneralCounts = ({
+  userName,
+  sort,
+  limit = 30,
+  skip = 0,
+  locale = 'en-US',
+} = {}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify({
         userName: userName,

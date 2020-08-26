@@ -372,40 +372,42 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
-    const { pendingUpdate, match } = this.props;
+    const { pendingUpdate, match, usedLocale } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
-      // eslint-disable-next-line camelcase
-      const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
-      const newSponsors = sortBy(sponsors);
-      const rewardsTab = {
-        reserved: 'reserved',
-        eligible: 'active',
-        all: 'all',
-      };
-      this.setState({
-        sponsors: newSponsors,
-        hasMore,
-        campaignsTypes: campaigns_types,
-        loadingCampaigns: false,
-      });
-      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
-        if (match.params.filterKey !== rewardsTab[tabType]) {
-          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-        }
-        if (tabType === 'reserved') {
-          this.setState({
-            propositionsReserved: campaigns,
-          });
+    this.props
+      .getRewardsGeneralCounts({ userName: username, sort, locale: usedLocale })
+      .then(data => {
+        // eslint-disable-next-line camelcase
+        const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
+        const newSponsors = sortBy(sponsors);
+        const rewardsTab = {
+          reserved: 'reserved',
+          eligible: 'active',
+          all: 'all',
+        };
+        this.setState({
+          sponsors: newSponsors,
+          hasMore,
+          campaignsTypes: campaigns_types,
+          loadingCampaigns: false,
+        });
+        if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+          if (match.params.filterKey !== rewardsTab[tabType]) {
+            this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+          }
+          if (tabType === 'reserved') {
+            this.setState({
+              propositionsReserved: campaigns,
+            });
+          } else {
+            this.setState({
+              propositions: campaigns,
+            });
+          }
         } else {
-          this.setState({
-            propositions: campaigns,
-          });
+          this.setState({ url: this.props.match.url });
         }
-      } else {
-        this.setState({ url: this.props.match.url });
-      }
-    });
+      });
   };
 
   getPropositions = (
@@ -413,6 +415,7 @@ class Rewards extends React.Component {
     isMap,
     firstMapLoad,
   ) => {
+    const { usedLocale } = this.props;
     this.setState({ loadingCampaigns: !isMap });
     getPropositions(
       preparePropositionReqData({
@@ -428,9 +431,11 @@ class Rewards extends React.Component {
         firstMapLoad: !!isMap && firstMapLoad,
         isMap,
         isRequestWithoutRequiredObject,
+        locale: usedLocale,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors);
       this.setState({
         campaignsTypes: data.campaigns_types,
         area,
@@ -438,6 +443,7 @@ class Rewards extends React.Component {
         loading: false,
         fetched: false,
         hasMore: data.hasMore,
+        sponsors,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -451,9 +457,7 @@ class Rewards extends React.Component {
           propositions: data.campaigns,
           loadingCampaigns: false,
         });
-        const sponsors = sortBy(data.sponsors);
         this.setState({
-          sponsors,
           propositions: data.campaigns,
         });
       }
@@ -850,6 +854,7 @@ class Rewards extends React.Component {
         : 0;
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
+      usedLocale,
       currentSteemPrice,
       hasMore,
       IsRequiredObjectWrap,
