@@ -28,16 +28,7 @@ import { calculateApprovePercent } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
-  const { type, sortCustom } = wobj;
-  const wobject = get(wobj, 'fields', null);
-  const menuItems =
-    wobject &&
-    wobject.filter(
-      field =>
-        field.type === 'menuList' &&
-        calculateApprovePercent(field.active_votes, field.weight, wobj) >= 70 &&
-        !field.status,
-    );
+  const { object_type: type, sortCustom, menuItems } = wobj;
 
   switch (type && type.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
@@ -51,11 +42,12 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
     default:
       if (menuItems && menuItems.length) {
         const winnerItem = menuItems && menuItems.sort((a, b) => b.weight - a.weight)[0];
+
         url =
           sortCustom && winnerItem
             ? `${pathname}/menu#${(sortCustom &&
                 sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-                winnerItem.body}`
+                winnerItem.author_permlink}`
             : pathname;
       } else if (screenSize !== 'large') {
         url = `${pathname}/about`;

@@ -12,6 +12,7 @@ import {
   accessTypesArr,
   parseWobjectField,
   parseAddress,
+  getObjectName,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import { getFieldsCount, getFieldsByName, getLink } from '../../object/wObjectHelper';
@@ -228,7 +229,7 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const { website, newsFilter } = wobject;
-    const wobjName = wobject && (wobject.name || wobject.default_name);
+    const wobjName = getObjectName(wobject);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const names = getFieldsByName(wobject, objectFields.name)
       .filter(nameFld => nameFld.body !== (wobject.name || wobject.default_name))
@@ -257,9 +258,7 @@ class ObjectInfo extends React.Component {
           github: linkField[linkFields.linkGitHub] || '',
         }
       : {};
-    const menuItems = get(wobject, 'listItem', []);
     const phones = get(wobject, 'phone', []);
-    const menuLists = menuItems;
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const album = filter(albums, iteratee(['id', wobject.author_permlink]));
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
@@ -288,20 +287,18 @@ class ObjectInfo extends React.Component {
               TYPES_OF_MENU_ITEM.LIST,
               wobject.menuItems && wobject.menuItems.map(item => this.getMenuSectionLink(item)),
             )}
-            {!isEmpty(button) &&
-              this.listItem(
-                objectFields.button,
-                !isEmpty(button) &&
-                  button.map(btn =>
-                    this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...btn }),
-                  ),
-              )}
+            {this.listItem(
+              objectFields.button,
+              !isEmpty(button) &&
+                button.map(btn =>
+                  this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...btn }),
+                ),
+            )}
             {this.listItem(
               objectFields.newsFilter,
               newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
             )}
           </React.Fragment>
-          {!isEmpty(menuLists) && this.listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );

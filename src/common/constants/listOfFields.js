@@ -25,6 +25,7 @@ export const objectFields = {
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
   tagCategory: 'tagCategory',
+  menuItems: 'menuItems',
   categoryItem: 'categoryItem',
 };
 
@@ -131,7 +132,6 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.galleryAlbum,
         objectFields.tagCategory,
         objectFields.workTime,
-        TYPES_OF_MENU_ITEM.PAGE,
       ];
     case OBJECT_TYPE.LIST:
       return [

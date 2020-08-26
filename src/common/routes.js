@@ -12,6 +12,7 @@ import {
   PATH_NAME_MATCH_BOT,
   PATH_NAME_MANAGE,
   PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
 } from './constants/rewards';
 
 const Bookmarks = Loadable({
@@ -292,7 +293,7 @@ const routes = [
             component: MatchBotCampaign,
           },
           {
-            path: '/rewards/history',
+            path: PATH_NAME_HISTORY,
             exact: true,
             component: HistoryCampaign,
           },
