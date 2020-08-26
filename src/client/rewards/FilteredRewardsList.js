@@ -12,7 +12,13 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import FilterModal from './FilterModal';
-import { REWARDS_TYPES_MESSAGES, CAMPAIGNS_TYPES_MESSAGES } from '../../common/constants/rewards';
+import {
+  REWARDS_TYPES_MESSAGES,
+  CAMPAIGNS_TYPES_MESSAGES,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_HISTORY,
+} from '../../common/constants/rewards';
 
 const FilteredRewardsList = props => {
   const {
@@ -37,6 +43,7 @@ const FilteredRewardsList = props => {
     campaignsLayoutWrapLayout,
     handleLoadMore,
     sponsors,
+    messagesCampaigns,
     activeFilters,
     setFilterValue,
     campaignsTypes,
@@ -63,9 +70,9 @@ const FilteredRewardsList = props => {
     sortMessages,
   );
 
-  const historyLocation = '/rewards/history';
-  const messagesLocation = '/rewards/messages';
-  const guideHistoryLocation = '/rewards/guideHistory';
+  const historyLocation = PATH_NAME_HISTORY;
+  const messagesLocation = PATH_NAME_MESSAGES;
+  const guideHistoryLocation = PATH_NAME_GUIDE_HISTORY;
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
   const IsRequiredObjectWrap =
@@ -280,9 +287,14 @@ const FilteredRewardsList = props => {
             caseStatus: CAMPAIGNS_TYPES_MESSAGES,
             rewards: Object.values(REWARDS_TYPES_MESSAGES),
           }}
+          filtersGuideHistory={{
+            rewards: Object.values(REWARDS_TYPES_MESSAGES),
+            messagesCampaigns,
+          }}
           setFilterValue={setFilterValue}
           match={match}
           activeHistoryFilters={activeHistoryFilters}
+          activeGuideHistoryFilters={activeGuideHistoryFilters}
           setActiveMessagesFilters={setActiveMessagesFilters}
         />
       </Modal>
@@ -322,6 +334,7 @@ FilteredRewardsList.defaultProps = {
   pendingUpdate: false,
   location: '',
   filterKey: '',
+  messagesCampaigns: [],
 };
 
 FilteredRewardsList.propTypes = {
@@ -358,6 +371,7 @@ FilteredRewardsList.propTypes = {
   activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
   pendingUpdate: PropTypes.bool,
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default FilteredRewardsList;

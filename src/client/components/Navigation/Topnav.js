@@ -32,7 +32,6 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import ObjectAvatar from '../ObjectAvatar';
-import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
@@ -152,11 +151,7 @@ class Topnav extends React.Component {
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
-    const wobjectAllCount = wobjectsCounts
-      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-      : null;
-    const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
-    const countArr = [{ name: 'All', count: countAllSearch }];
+    const countArr = [];
 
     if (!isEmpty(wobjectsCounts)) {
       const wobjList = listOfObjectTypes.reduce((acc, i) => {
@@ -241,12 +236,6 @@ class Topnav extends React.Component {
         })}
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="signup">
-            <ModalSignUp isButton={false} />
-          </Menu.Item>
-          <Menu.Item key="divider" disabled>
-            |
-          </Menu.Item>
           <Menu.Item key="login">
             <ModalSignIn next={next} />
           </Menu.Item>
@@ -343,11 +332,14 @@ class Topnav extends React.Component {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="my-profile" fullScreenHidden>
+                  <PopoverMenuItem key="my-profile">
                     <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="feed" fullScreenHidden>
+                  <PopoverMenuItem key="feed">
                     <FormattedMessage id="feed" defaultMessage="Feed" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="rewards">
+                    <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="news" fullScreenHidden>
                     <FormattedMessage id="news" defaultMessage="News" />
@@ -355,7 +347,7 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="objects" fullScreenHidden>
                     <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet" fullScreenHidden>
+                  <PopoverMenuItem key="wallet">
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="settings">
@@ -768,9 +760,11 @@ class Topnav extends React.Component {
         </div>
       </AutoComplete.Option>
     );
-    const formattedAutoCompleteDropdown = isEmpty(dropdownOptions)
-      ? dropdownOptions
-      : dropdownOptions.concat([downBar]);
+
+    const allDownBar =
+      this.state.currentItem === 'All' ? dropdownOptions : dropdownOptions.concat([downBar]);
+
+    const formattedAutoCompleteDropdown = isEmpty(dropdownOptions) ? dropdownOptions : allDownBar;
 
     return (
       <div className="Topnav">

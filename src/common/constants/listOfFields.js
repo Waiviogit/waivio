@@ -25,6 +25,7 @@ export const objectFields = {
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
   tagCategory: 'tagCategory',
+  menuItems: 'menuItems',
   categoryItem: 'categoryItem',
 };
 
@@ -130,7 +131,6 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.galleryItem,
         objectFields.galleryAlbum,
         objectFields.tagCategory,
-        objectFields.categoryItem,
         objectFields.workTime,
       ];
     case OBJECT_TYPE.LIST:
@@ -148,6 +148,15 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.categoryItem,
         objectFields.status,
         objectFields.workTime,
+        TYPES_OF_MENU_ITEM.LIST,
+        TYPES_OF_MENU_ITEM.BUTTON,
+      ];
+    case OBJECT_TYPE.HASHTAG:
+      return [
+        objectFields.avatar,
+        objectFields.background,
+        objectFields.galleryItem,
+        objectFields.status,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

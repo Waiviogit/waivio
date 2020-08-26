@@ -2,7 +2,16 @@ import { useSelector } from 'react-redux';
 import { isEmpty, map, get, reduce, round } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
-import { REWARD, MESSAGES, GUIDE_HISTORY, HISTORY } from '../../common/constants/rewards';
+import {
+  REWARD,
+  MESSAGES,
+  GUIDE_HISTORY,
+  HISTORY,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
+} from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
 export const displayLimit = 10;
@@ -356,7 +365,7 @@ export const getProcessingFee = data => {
 };
 
 export const payablesFilterData = location => {
-  if (location.pathname === '/rewards/payables') {
+  if (location.pathname === PATH_NAME_PAYABLES) {
     return [
       {
         filterName: 'days',
@@ -765,17 +774,17 @@ export const buttonsTitle = {
 };
 
 export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  if (location === '/rewards/messages') {
+  if (location === PATH_NAME_MESSAGES) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
     });
-  } else if (location === '/rewards/history') {
+  } else if (location === PATH_NAME_HISTORY) {
     return intl.formatMessage({
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',
     });
-  } else if (location === '/rewards/guideHistory') {
+  } else if (location === PATH_NAME_GUIDE_HISTORY) {
     return intl.formatMessage({
       id: 'history_of_reservations',
       defaultMessage: 'History of reservations',

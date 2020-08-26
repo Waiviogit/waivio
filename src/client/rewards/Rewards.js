@@ -21,7 +21,7 @@ import {
   findIndex,
   sortBy,
 } from 'lodash';
-import { HBD } from '../../common/constants/cryptos';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 import {
   getAuthenticatedUser,
   getAllUsers,
@@ -45,6 +45,7 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
+import { getCryptoPriceHistory } from '../app/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import { getPropositions } from '../../waivioApi/ApiClient';
 import {
@@ -53,7 +54,13 @@ import {
   getSortChanged,
   getSort,
 } from './rewardsHelper';
-import { MESSAGES, HISTORY, GUIDE_HISTORY } from '../../common/constants/rewards';
+import {
+  MESSAGES,
+  HISTORY,
+  GUIDE_HISTORY,
+  PATH_NAME_RECEIVABLES,
+  PATH_NAME_PAYABLES,
+} from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
@@ -92,6 +99,7 @@ import { getZoom } from '../components/Maps/mapHelper';
     setUpdatedFlag,
     getPropositionsForMap,
     getRewardsGeneralCounts,
+    getCryptoPriceHistory,
   },
 )
 class Rewards extends React.Component {
@@ -114,6 +122,7 @@ class Rewards extends React.Component {
     pendingUpdate: PropTypes.bool,
     authenticated: PropTypes.bool,
     users: PropTypes.shape(),
+    getCryptoPriceHistory: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -149,6 +158,7 @@ class Rewards extends React.Component {
     isSearchAreaFilter: false,
     isAssign: false,
     messagesSponsors: [],
+    messagesCampaigns: [],
     messages: [],
     zoomMap: 0,
     fetched: true,
@@ -162,14 +172,21 @@ class Rewards extends React.Component {
     },
     activeGuideHistoryFilters: {
       rewards: [],
-      messagesSponsors: [],
+      messagesCampaigns: [],
     },
     url: '',
   };
 
   componentDidMount() {
-    const { userLocation, match, username, authenticated } = this.props;
+    const {
+      userLocation,
+      match,
+      username,
+      authenticated,
+      getCryptoPriceHistory: getCryptoPriceHistoryAction,
+    } = this.props;
     const { sortAll, sortEligible, sortReserved, url, activeFilters, area } = this.state;
+    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
     if (!size(userLocation)) {
       this.props.getCoordinates();
@@ -297,6 +314,7 @@ class Rewards extends React.Component {
     switch (key) {
       case 'rewards':
       case 'messagesSponsors':
+      case 'messagesCampaigns':
         if (includes(activeFilters[key], filterValue)) {
           remove(activeFilters[key], f => f === filterValue);
         } else {
@@ -320,6 +338,7 @@ class Rewards extends React.Component {
   };
 
   setMessagesSponsors = messagesSponsors => this.setState({ messagesSponsors });
+  setMessagesCampaigns = messagesCampaigns => this.setState({ messagesCampaigns });
 
   setPayablesFilterValue = filterValue => {
     let activeFilters = [...this.state.activePayableFilters];
@@ -797,6 +816,7 @@ class Rewards extends React.Component {
       loadingCampaigns,
       zoomMap,
       messagesSponsors,
+      messagesCampaigns,
       fetched,
       area,
       radius,
@@ -866,7 +886,9 @@ class Rewards extends React.Component {
       activeMessagesFilters,
       activeHistoryFilters,
       setMessagesSponsors: this.setMessagesSponsors,
+      setMessagesCampaigns: this.setMessagesCampaigns,
       messagesSponsors,
+      messagesCampaigns,
       sortHistory,
       sortMessages,
       sortGuideHistory,
@@ -917,7 +939,7 @@ class Rewards extends React.Component {
               <MobileNavigation />
               {renderedRoutes}
             </div>
-            {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
+            {(match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_RECEIVABLES) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
@@ -962,6 +984,7 @@ class Rewards extends React.Component {
                         activeHistoryFilters={activeHistoryFilters}
                         activeGuideHistoryFilters={activeGuideHistoryFilters}
                         messagesSponsors={messagesSponsors}
+                        messagesCampaigns={messagesCampaigns}
                         setActiveMessagesFilters={this.setActiveMessagesFilters}
                       />
                     )}
@@ -981,6 +1004,7 @@ class Rewards extends React.Component {
                     activeHistoryFilters={activeHistoryFilters}
                     activeGuideHistoryFilters={activeGuideHistoryFilters}
                     messagesSponsors={messagesSponsors}
+                    messagesCampaigns={messagesCampaigns}
                     setActiveMessagesFilters={this.setActiveMessagesFilters}
                   />
                 </div>

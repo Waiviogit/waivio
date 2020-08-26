@@ -29,29 +29,28 @@ Arrow.defaultProps = {
 
 const PicturesCarousel = ({ pics, objectID }) => {
   const settings = {
+    dots: false,
     arrows: true,
     lazyLoad: true,
     nextArrow: <Arrow icon="right" />,
     prevArrow: <Arrow icon="left" />,
   };
 
-  return (
-    pics && (
-      <div className="PicturesCarousel">
-        <Carousel {...settings}>
-          {map(pics, pic => (
-            <Link
-              key={pic.id}
-              to={{ pathname: `/object/${objectID}/gallery/album/${pic.id}` }}
-              className="PicturesCarousel__imageWrap"
-            >
-              <img src={pic.body} alt="pic" className="PicturesCarousel__image" />
-            </Link>
-          ))}
-        </Carousel>
-      </div>
-    )
-  );
+  return pics ? (
+    <div className="PicturesCarousel">
+      <Carousel {...settings}>
+        {map(pics, pic => (
+          <Link
+            key={pic.id}
+            to={{ pathname: `/object/${objectID}/gallery/album/${pic.id}` }}
+            className="PicturesCarousel__imageWrap"
+          >
+            <img src={pic.body} alt="pic" className="PicturesCarousel__image" />
+          </Link>
+        ))}
+      </Carousel>
+    </div>
+  ) : null;
 };
 
 PicturesCarousel.propTypes = {

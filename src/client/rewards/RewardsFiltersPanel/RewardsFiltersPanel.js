@@ -10,6 +10,10 @@ import {
   MESSAGES,
   HISTORY,
   GUIDE_HISTORY,
+  PATH_NAME_GUIDE_HISTORY,
+  PATH_NAME_MESSAGES,
+  PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
 } from '../../../common/constants/rewards';
 import './RewardsFiltersPanel.less';
 
@@ -25,15 +29,16 @@ const RewardsFiltersPanel = ({
   activeMessagesFilters,
   activeHistoryFilters,
   messagesSponsors,
+  messagesCampaigns,
   setActiveMessagesFilters,
   activeGuideHistoryFilters,
 }) => {
   const handleChange = useCallback(
     (filterName, key) => {
       if (
-        location.pathname !== '/rewards/history' &&
-        location.pathname !== '/rewards/messages' &&
-        location.pathname !== '/rewards/guideHistory'
+        location.pathname !== PATH_NAME_HISTORY &&
+        location.pathname !== PATH_NAME_MESSAGES &&
+        location.pathname !== PATH_NAME_GUIDE_HISTORY
       ) {
         setFilterValue(filterName, key);
       } else {
@@ -68,16 +73,14 @@ const RewardsFiltersPanel = ({
     [setPayablesFilterValue, intl.formatMessage],
   );
 
-  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData } = useMemo(
+  const { campaignsTypesMessages, rewardsTypesMessages, sponsorsData, campaignsData } = useMemo(
     () => ({
       campaignsTypesMessages: Object.values(CAMPAIGNS_TYPES_MESSAGES),
       rewardsTypesMessages: Object.values(REWARDS_TYPES_MESSAGES),
-      sponsorsData:
-        location.pathname !== '/rewards/history' && location.pathname !== '/rewards/guideHistory'
-          ? sponsors
-          : messagesSponsors,
+      sponsorsData: location.pathname !== PATH_NAME_HISTORY ? sponsors : messagesSponsors,
+      campaignsData: messagesCampaigns,
     }),
-    [sponsors, messagesSponsors, location.pathname],
+    [sponsors, messagesSponsors, messagesCampaigns, location.pathname],
   );
 
   return (
@@ -116,7 +119,7 @@ const RewardsFiltersPanel = ({
           !includes(location.pathname, GUIDE_HISTORY) && (
             <React.Fragment>
               <div className="RewardsFiltersPanel__title-text">
-                {location.pathname === '/rewards/payables'
+                {location.pathname === PATH_NAME_PAYABLES
                   ? intl.formatMessage({
                       id: 'payables',
                       defaultMessage: 'Payables',
@@ -135,7 +138,7 @@ const RewardsFiltersPanel = ({
             </React.Fragment>
           )
         )}
-        {location.pathname === '/rewards/messages' && (
+        {location.pathname === PATH_NAME_MESSAGES && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -157,7 +160,7 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         )}
-        {location.pathname === '/rewards/history' && (
+        {location.pathname === PATH_NAME_HISTORY && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -183,7 +186,7 @@ const RewardsFiltersPanel = ({
             )}
           </React.Fragment>
         )}
-        {location.pathname === '/rewards/guideHistory' && (
+        {location.pathname === PATH_NAME_GUIDE_HISTORY && (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({
@@ -196,15 +199,15 @@ const RewardsFiltersPanel = ({
             )}
             <div className="RewardsFiltersPanel__title-text">
               {intl.formatMessage({
-                id: 'sponsors',
-                defaultMessage: 'Sponsors',
+                id: 'mobnav_campaigns',
+                defaultMessage: 'Campaigns',
               })}
             </div>
-            {map(sponsorsData, sponsor =>
+            {map(campaignsData, campaign =>
               filterLayout(
-                sponsor,
-                'messagesSponsors',
-                includes(activeGuideHistoryFilters.messagesSponsors, sponsor),
+                campaign,
+                'messagesCampaigns',
+                includes(activeGuideHistoryFilters.messagesCampaigns, campaign),
               ),
             )}
           </React.Fragment>
@@ -228,6 +231,7 @@ RewardsFiltersPanel.propTypes = {
   setActiveMessagesFilters: PropTypes.func,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()),
   messagesSponsors: PropTypes.arrayOf(PropTypes.string),
+  messagesCampaigns: PropTypes.arrayOf(PropTypes.string),
 };
 
 RewardsFiltersPanel.defaultProps = {
@@ -239,6 +243,7 @@ RewardsFiltersPanel.defaultProps = {
   activeGuideHistoryFilters: {},
   location: {},
   messagesSponsors: [],
+  messagesCampaigns: [],
   setActiveMessagesFilters: () => {},
   setPayablesFilterValue: () => {},
   activePayableFilters: {},

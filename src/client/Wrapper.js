@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+
 import enUS from 'antd/lib/locale-provider/en_US';
 import ruRU from 'antd/lib/locale-provider/ru_RU';
 import ukUA from 'antd/lib/locale-provider/uk_UA';
@@ -27,16 +28,15 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from './auth/authActions';
-import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import { getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
-import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
-import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -52,20 +52,15 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     locale: getLocale(state),
     nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
-    followingList: state.user.following.list,
-    followingObjectsList: state.user.followingObjects.list,
     isGuest: isGuestUser(state),
   }),
   {
     login,
     logout,
-    getFollowing,
-    getFollowingObjects,
     getNotifications,
     getRate,
     getRewardFund,
     busyLogin,
-    getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
     dispatchGetAuthGuestBalance,
   },
@@ -82,10 +77,7 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     logout: PropTypes.func,
-    getFollowing: PropTypes.func,
-    getFollowingObjects: PropTypes.func,
     getRewardFund: PropTypes.func,
-    getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
@@ -101,10 +93,7 @@ class Wrapper extends React.PureComponent {
     username: '',
     login: () => {},
     logout: () => {},
-    getFollowing: () => {},
-    getFollowingObjects: () => {},
     getRewardFund: () => {},
-    getRebloggedList: () => {},
     getRate: () => {},
     getTrendingTopics: () => {},
     getNotifications: () => {},
@@ -141,29 +130,18 @@ class Wrapper extends React.PureComponent {
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
 
-  // eslint-disable-next-line consistent-return
   componentDidMount() {
     this.props.login().then(() => {
       batch(() => {
-        this.props.getFollowing();
-        this.props.getFollowingObjects();
         this.props.getNotifications();
         this.props.busyLogin();
         this.props.getRewardFund();
-        this.props.getRebloggedList();
-        this.props.getRate();
         this.props.dispatchGetAuthGuestBalance();
+        this.props.getRate();
       });
-    });
-
-    batch(() => {
-      this.props.getRewardFund();
-      this.props.getRebloggedList();
-      this.props.getRate();
     });
   }
 
-  // eslint-disable-next-line consistent-return
   componentWillReceiveProps(nextProps) {
     const { locale } = this.props;
 
@@ -172,7 +150,6 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   componentDidUpdate() {
     if (this.props.nightmode) {
       document.body.classList.add('nightmode');
@@ -222,10 +199,13 @@ class Wrapper extends React.PureComponent {
         this.props.history.push('/objects');
         break;
       case 'wallet':
-        this.props.history.push('/wallet');
+        this.props.history.push(`/@${this.props.username}/transfers`);
         break;
       case 'my-profile':
         this.props.history.push(`/@${this.props.username}`);
+        break;
+      case 'rewards':
+        this.props.history.push(PATH_NAME_ACTIVE);
         break;
       default:
         break;
@@ -253,7 +233,6 @@ class Wrapper extends React.PureComponent {
       username,
       isNewUser,
     } = this.props;
-
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
 
@@ -277,7 +256,6 @@ class Wrapper extends React.PureComponent {
                   location={history.location}
                 />
                 {renderRoutes(this.props.route.routes)}
-                <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
                 {isNewUser && <WelcomeModal location={history.location.pathname} />}

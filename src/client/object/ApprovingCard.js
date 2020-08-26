@@ -4,7 +4,6 @@ import { Tag } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { calculateApprovePercent } from '../helpers/wObjectHelper';
 import {
   getAuthenticatedUserName,
   getObjectAdmins,
@@ -24,28 +23,22 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
       rate *
       1000000
     : 0;
-  const percent =
-    post.active_votes &&
-    calculateApprovePercent(post.active_votes, post.weight, {
-      moderators: moderatorsList,
-      admins: adminsList,
-    });
   const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
   const appendState = mainerName(post.active_votes, moderatorsList, adminsList);
 
   const classListApproveTag = classNames({
-    AppendCard__green: percent >= 70,
-    AppendCard__red: percent <= 70,
+    AppendCard__green: post.approvePercent >= 70,
+    AppendCard__red: post.approvePercent <= 70,
   });
   const classListModal = classNames('AppendCard__approving', {
     'AppendCard__approving--modal': modal,
   });
 
-  const text = (mainer, name, status) => (
+  const text = (role, name, status) => (
     <span>
       {intl.formatMessage({
-        id: `${status}_by_${mainer}`,
-        defaultMessage: `${status} by ${mainer}`,
+        id: `${status}_by_${role}`,
+        defaultMessage: `${status} by ${role}`,
       })}{' '}
       <a href={`/@${name}`} className="AppendCard__name-admin">
         @{name}
@@ -63,7 +56,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
         :{' '}
         <Tag>
           <span>
-            <span className={classListApproveTag}>{percent.toFixed(2)}%</span>
+            <span className={classListApproveTag}>{post.approvePercent.toFixed(2)}%</span>
           </span>
         </Tag>
         {!appendState && !modal && (
@@ -83,15 +76,15 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
         :{' '}
         <Tag>
           <span className={classListApproveTag} title={voteValue}>
-            {appendState
+            {post.adminVote
               ? intl.formatMessage({
-                  id: appendState.status,
-                  defaultMessage: appendState.status,
+                  id: post.adminVote.status,
+                  defaultMessage: post.adminVote.status,
                 })
               : calcVoteValue}
           </span>
         </Tag>
-        {appendState && text(appendState.mainer, appendState.name, appendState.status)}
+        {post.adminVote && text(post.adminVote.role, post.adminVote.name, post.adminVote.status)}
       </div>
     </div>
   );
@@ -103,6 +96,12 @@ ApprovingCard.propTypes = {
     append_field_weight: PropTypes.number,
     weight: PropTypes.number,
     active_votes: PropTypes.arrayOf(PropTypes.shape({})),
+    approvePercent: PropTypes.number,
+    adminVote: PropTypes.shape({
+      role: PropTypes.string,
+      name: PropTypes.string,
+      status: PropTypes.string,
+    }),
   }).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

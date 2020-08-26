@@ -6,9 +6,14 @@ import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import './UserFollowing.less';
-import { getAuthenticatedUserName, getUser, isGuestUser } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getUser,
+  isGuestUser,
+  getAuthorizationUserFollowSort,
+} from '../reducers';
 import { notify } from '../app/Notification/notificationActions';
+import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;
 
@@ -17,6 +22,7 @@ const TabPane = Tabs.TabPane;
     user: getUser(state, ownProps.match.params.name),
     authUser: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    sort: getAuthorizationUserFollowSort(state),
   }),
   {
     notify,
@@ -27,10 +33,12 @@ export default class UserFollowing extends React.Component {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     authUser: PropTypes.string,
+    sort: PropTypes.string,
   };
 
   static defaultProps = {
     authUser: '',
+    sort: 'recency',
   };
 
   static limit = 50;
@@ -49,9 +57,10 @@ export default class UserFollowing extends React.Component {
       this.limit,
       this.skip,
       this.props.authUser,
+      this.props.sort,
     );
     const users = response.users;
-    this.skip += this.limit;
+    UserFollowing.skip += UserFollowing.limit;
     return { users, hasMore: response.hasMore };
   }
 
@@ -70,23 +79,6 @@ export default class UserFollowing extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserFollowing__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />
-                </span>
-                <span className="UserFollowing__badge">
-                  <FormattedNumber
-                    value={user.objects_following_count ? user.objects_following_count : 0}
-                  />
-                </span>
-              </React.Fragment>
-            }
-            key="1"
-          >
-            <ObjectDynamicList limit={UserFollowing.limit} fetcher={this.objectFetcher} />
-          </TabPane>
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserFollowing__item">
                   <FormattedMessage id="users" defaultMessage="Users" />
                 </span>
                 <span className="UserFollowing__badge">
@@ -96,9 +88,26 @@ export default class UserFollowing extends React.Component {
                 </span>
               </React.Fragment>
             }
-            key="2"
+            key="1"
           >
             <UserDynamicList limit={UserFollowing.limit} fetcher={this.fetcher} />
+          </TabPane>
+          <TabPane
+            tab={
+              <React.Fragment>
+                <span className="UserFollowing__item">
+                  <FormattedMessage id="objects" defaultMessage="Objects" />
+                </span>
+                <span className="UserFollowing__badge">
+                  <FormattedNumber
+                    value={user.objects_following_count ? user.objects_following_count : 0}
+                  />
+                </span>
+              </React.Fragment>
+            }
+            key="2"
+          >
+            <ObjectDynamicList limit={UserFollowing.limit} fetcher={this.objectFetcher} />
           </TabPane>
         </Tabs>
       </div>

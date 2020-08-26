@@ -37,6 +37,8 @@ export const RELOAD_ERROR = '@auth/RELOAD_ERROR';
 
 export const LOGOUT = '@auth/LOGOUT';
 
+export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
+
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
@@ -50,6 +52,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
+
   if (isGuest) {
     return dispatch({
       type: UPDATE_GUEST_BALANCE.ACTION,
@@ -206,6 +209,14 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
       promise: busyAPI.sendAsync(method, [accessToken]),
     },
   });
+};
+
+export const changeSorting = sorting => dispatch => {
+  dispatch({
+    type: CHANGE_SORTING_FOLLOW,
+    payload: sorting,
+  });
+  return Promise.resolve();
 };
 
 export const updateProfile = (username, values) => (dispatch, getState) => {

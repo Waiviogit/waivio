@@ -94,7 +94,7 @@ export default class ObjectGalleryAlbum extends Component {
                 </a>
                 <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
                 <CreateImage
-                  albums={albums}
+                  albums={album}
                   selectedAlbum={album[0]}
                   showModal={showModal}
                   hideModal={this.handleToggleModal}

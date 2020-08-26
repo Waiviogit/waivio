@@ -50,7 +50,6 @@ const defaultDecorators = new CompositeDecorator([
   },
 ]);
 
-@injectIntl
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
@@ -120,6 +119,7 @@ class Editor extends React.Component {
         locale: this.props.locale,
         requiredFields: ['rating'],
       });
+
       const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
@@ -196,4 +196,4 @@ class Editor extends React.Component {
   }
 }
 
-export default Editor;
+export default injectIntl(Editor);

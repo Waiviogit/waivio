@@ -15,6 +15,7 @@ export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
+
   return dispatch({
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, user, usedLocale).catch(() =>
@@ -51,8 +52,8 @@ export const getFeedContentByObject = object => (dispatch, getState) => {
 };
 
 export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
-  dispatch(getObject(authorPermlink, username, requiredField));
   dispatch(getAlbums(authorPermlink));
+  return dispatch(getObject(authorPermlink, username, requiredField));
 };
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';

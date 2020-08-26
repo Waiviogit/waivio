@@ -24,7 +24,6 @@ export default class ObjectLightbox extends Component {
 
   state = {
     open: false,
-    parent: {},
   };
 
   handleAvatarClick = () => this.setState({ open: true });
@@ -33,9 +32,8 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = wobject.avatar;
     const objectName = wobject.name || wobject.default_name;
-    const currentImage = imageUrl || get(wobject.parent, 'avatar') || DEFAULTS.AVATAR;
+    const currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']) || DEFAULTS.AVATAR;
 
     return (
       <React.Fragment>
@@ -59,7 +57,7 @@ export default class ObjectLightbox extends Component {
         ) : (
           <React.Fragment>
             <a role="presentation" onClick={this.handleAvatarClick}>
-              <ObjectAvatar item={wobject} parent={this.state.parent} size={size} />
+              <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (
               <Lightbox mainSrc={currentImage} onCloseRequest={this.handleCloseRequest} />

@@ -41,8 +41,6 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(props.post.child);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-  const author =
-    props.post.guestInfo && !props.post.depth ? props.post.root_author : props.post.author;
   const postId = `${props.post.author}/${props.post.permlink}`;
 
   const calculateSliderValue = () => {
@@ -67,11 +65,11 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(postId, author, props.post.permlink, 0, type);
+      props.voteAppends(postId, props.post.author, props.post.permlink, 0, type);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(postId, author, props.post.permlink, weight, type);
+      props.voteAppends(postId, props.post.author, props.post.permlink, weight, type);
     }
   }
 
@@ -110,7 +108,13 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    props.voteAppends(postId, author, props.post.permlink, sliderValue * 100, 'approve');
+    props.voteAppends(
+      postId,
+      props.post.author,
+      props.post.permlink,
+      sliderValue * 100,
+      'approved',
+    );
   }
 
   return (
@@ -165,7 +169,7 @@ const AppendCard = props => {
           target="_blank"
           className="Story__content__preview"
         >
-          <StoryPreview post={props.post} />
+          <StoryPreview post={props.post} isUpdates />
         </a>
         <ApprovingCard post={props.post} />
       </div>
@@ -196,7 +200,7 @@ const AppendCard = props => {
             isPostCashout={isPostCashout(props.post)}
           />
         )}
-        <Comments show={commentsVisible} isQuickComments post={props.post} />
+        <Comments show={commentsVisible} isQuickComments post={props.post} isUpdating />
       </div>
     </div>
   );

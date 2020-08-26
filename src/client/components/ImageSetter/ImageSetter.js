@@ -31,6 +31,7 @@ const ImageSetter = ({
   getEditorState,
   addNewBlockAt,
   Block,
+  selection,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -70,9 +71,9 @@ const ImageSetter = ({
       );
     }
 
-    if (image) {
-      const selection = getEditorState().getSelection();
-      const key = selection.getAnchorKey();
+    if (selection && image) {
+      const selectionBlock = getEditorState().getSelection();
+      const key = selectionBlock.getAnchorKey();
 
       setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
       setEditorState(
@@ -117,31 +118,6 @@ const ImageSetter = ({
     handleOnUploadImageByLink(defaultImage);
   }, []);
 
-  const handleRemoveImage = imageDetail => {
-    const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
-    setCurrentImages(filteredImages);
-    const contentState = getEditorState().getCurrentContent();
-    const allBlocks = contentState.getBlockMap();
-
-    allBlocks.forEach((block, index) => {
-      // eslint-disable-next-line no-underscore-dangle
-      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
-      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockAfter(index).getKey();
-        const removeImage = contentState.getBlockMap().delete(index);
-        const contentAfterRemove = removeImage.delete(blockBefore);
-        const filtered = contentAfterRemove.filter(element => !isNil(element));
-
-        const newContent = contentState.merge({
-          blockMap: filtered,
-        });
-        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
-      }
-    });
-
-    if (!size(filteredImages)) onImageLoaded([]);
-  };
-
   const handleChangeImage = async e => {
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
@@ -162,18 +138,21 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
+        if (selection && newImage) {
+          setTimeout(() => {
+            const selectionBlock = getEditorState().getSelection();
+            const key = selectionBlock.getAnchorKey();
 
-        if (newImage) {
-          const selection = getEditorState().getSelection();
-          const key = selection.getAnchorKey();
-
-          setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-          setEditorState(
-            addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-              src: `${newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`}`,
-              alt: newImage.name,
-            }),
-          );
+            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+            setEditorState(
+              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+                src: `${
+                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                }`,
+                alt: newImage.name,
+              }),
+            );
+          }, 1000);
         }
 
         uploadedImages.push(newImage);
@@ -200,6 +179,31 @@ const ImageSetter = ({
       setLoadingImage(false);
       onLoadingImage(false);
     }
+  };
+
+  const handleRemoveImage = imageDetail => {
+    const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
+    setCurrentImages(filteredImages);
+    const contentState = getEditorState().getCurrentContent();
+    const allBlocks = contentState.getBlockMap();
+
+    allBlocks.forEach((block, index) => {
+      // eslint-disable-next-line no-underscore-dangle
+      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
+      if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
+        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const removeImage = contentState.getBlockMap().delete(index);
+        const contentAfterRemove = removeImage.delete(blockBefore);
+        const filtered = contentAfterRemove.filter(element => !isNil(element));
+
+        const newContent = contentState.merge({
+          blockMap: filtered,
+        });
+        setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
+      }
+    });
+
+    if (!size(filteredImages)) onImageLoaded([]);
   };
 
   const renderTitle = () => {
@@ -321,10 +325,11 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
-  setEditorState: PropTypes.func.isRequired,
-  getEditorState: PropTypes.func.isRequired,
-  addNewBlockAt: PropTypes.func.isRequired,
-  Block: PropTypes.shape().isRequired,
+  setEditorState: PropTypes.func,
+  getEditorState: PropTypes.func,
+  addNewBlockAt: PropTypes.func,
+  selection: PropTypes.func,
+  Block: PropTypes.shape(),
 };
 
 ImageSetter.defaultProps = {
@@ -332,6 +337,11 @@ ImageSetter.defaultProps = {
   defaultImage: '',
   isRequired: false,
   isTitle: true,
+  setEditorState: () => {},
+  getEditorState: () => {},
+  addNewBlockAt: () => {},
+  selection: undefined,
+  Block: {},
 };
 
 export default withEditor(injectIntl(ImageSetter));

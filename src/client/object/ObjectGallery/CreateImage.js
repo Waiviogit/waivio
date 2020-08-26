@@ -214,7 +214,7 @@ class CreateImage extends React.Component {
       const response = await this.props.appendObject(postData);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (response.value.transactionId) {
+      if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
@@ -242,7 +242,11 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
+    const uploadingListLength = uploadingList.length;
+    const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
+    const albumInitialValue = selectedAlbum
+      ? selectedAlbum.id || selectedAlbum.body
+      : 'Choose an album';
 
     return (
       <Modal
@@ -259,7 +263,7 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
+              initialValue: albumInitialValue,
               rules: [
                 {
                   required: true,
@@ -275,7 +279,10 @@ class CreateImage extends React.Component {
             })(
               <Select disabled={loading}>
                 {map(albums, album => (
-                  <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
+                  <Select.Option
+                    key={`${album.id || album.weight}${album.body}`}
+                    value={album.id || album.body}
+                  >
                     {album.body}
                   </Select.Option>
                 ))}

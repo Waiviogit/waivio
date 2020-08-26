@@ -1,5 +1,5 @@
-import { get, some, find, filter, isEmpty } from 'lodash';
-import { objectFields } from '../../common/constants/listOfFields';
+import { get, some, find, filter, isEmpty, compact } from 'lodash';
+import { addressFields, objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 import { mainerName } from '../object/wObjectHelper';
@@ -216,3 +216,13 @@ export const parseWobjectField = (wobject, fieldName) => {
     return null;
   }
 };
+
+export const parseAddress = wobject => {
+  if (isEmpty(wobject) || !wobject.address) return null;
+
+  return compact(
+    Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]),
+  ).join(', ');
+};
+
+export const getObjectName = wobj => wobj.name || wobj.default_name;

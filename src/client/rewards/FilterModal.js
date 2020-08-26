@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { get, map, find } from 'lodash';
 import { Checkbox } from 'antd';
-import { MESSAGES, HISTORY } from '../../common/constants/rewards';
+import { MESSAGES, HISTORY, GUIDE_HISTORY } from '../../common/constants/rewards';
 import { sortStrings } from '../helpers/sortHelpers';
 
 const FilterModal = ({
@@ -12,21 +12,26 @@ const FilterModal = ({
   activeFilters,
   filtersHistory,
   filtersMessages,
+  filtersGuideHistory,
   setFilterValue,
   activePayablesFilters,
   activeHistoryFilters,
   activeMessagesFilters,
+  activeGuideHistoryFilters,
   setActiveMessagesFilters,
 }) => {
   const [collapsedFilters, setCollapsedFilters] = useState([]);
   const isPayables = !!(get(filters, 'payables', null) || get(filters, 'receivables', null));
-  const isHistory = match ? match.params.filterKey === HISTORY : null;
-  const isMessages = match ? match.params.filterKey === MESSAGES : null;
+  const isHistory = match ? match.params[0] === HISTORY : null;
+  const isMessages = match ? match.params[0] === MESSAGES : null;
+  const isGuideHistory = match ? match.params[0] === GUIDE_HISTORY : null;
+  const history = isHistory || isMessages || isGuideHistory;
 
   const modifyFilterName = name => {
     if (name === 'types') return 'rewards_for';
     if (name === 'guideNames') return 'sponsors';
     if (name === 'messagesSponsors') return 'sponsors';
+    if (name === 'messagesCampaigns') return 'campaigns';
     if (name === 'caseStatus') return 'Case status';
     return name;
   };
@@ -47,7 +52,7 @@ const FilterModal = ({
         value => value.filterName === filterValue,
       );
       setFilterValue(settedValue);
-    } else if (isHistory || isMessages) {
+    } else if (history) {
       setActiveMessagesFilters(filterValue, filter);
     } else {
       setFilterValue(filterValue, filter);
@@ -71,9 +76,21 @@ const FilterModal = ({
       );
     });
 
+  const filtersCheked = useMemo(() => {
+    if (isHistory) return activeHistoryFilters;
+    if (isMessages) return activeMessagesFilters;
+    return activeGuideHistoryFilters;
+  }, [
+    isHistory,
+    isMessages,
+    isGuideHistory,
+    activeHistoryFilters,
+    activeMessagesFilters,
+    activeGuideHistoryFilters,
+  ]);
+
   const renderHistoryValues = (filterName, filterValues) =>
     map(filterValues, value => {
-      const filtersCheked = isHistory ? activeHistoryFilters : activeMessagesFilters;
       const isChecked =
         filterName !== 'caseStatus'
           ? get(filtersCheked, [filterName], []).some(active => active === value)
@@ -116,16 +133,20 @@ const FilterModal = ({
       );
     });
 
-  const getFiltersForMap = () => {
-    if (isHistory) {
-      return filtersHistory;
-    } else if (isMessages) {
-      return filtersMessages;
-    }
+  const filtersForMap = useMemo(() => {
+    if (isHistory) return filtersHistory;
+    if (isMessages) return filtersMessages;
+    if (isGuideHistory) return filtersGuideHistory;
     return filters;
-  };
-
-  const filtersForMap = getFiltersForMap();
+  }, [
+    isHistory,
+    isMessages,
+    isGuideHistory,
+    filtersHistory,
+    filtersMessages,
+    filtersGuideHistory,
+    filters,
+  ]);
 
   return (
     <div className="SidebarContentBlock__content">
@@ -158,8 +179,9 @@ const FilterModal = ({
                   {!isPayables &&
                     !isMessages &&
                     !isHistory &&
+                    !isGuideHistory &&
                     renderValues(filterName, filterValues)}
-                  {(isMessages || isHistory) && renderHistoryValues(filterName, filterValues)}
+                  {history && renderHistoryValues(filterName, filterValues)}
                 </div>
               )}
             </div>
@@ -175,11 +197,13 @@ FilterModal.propTypes = {
   filters: PropTypes.shape().isRequired,
   filtersHistory: PropTypes.shape(),
   filtersMessages: PropTypes.shape(),
+  filtersGuideHistory: PropTypes.shape(),
   activeFilters: PropTypes.shape(),
   activePayablesFilters: PropTypes.arrayOf(PropTypes.shape()),
   setFilterValue: PropTypes.func,
   activeHistoryFilters: PropTypes.shape(),
   activeMessagesFilters: PropTypes.shape(),
+  activeGuideHistoryFilters: PropTypes.shape(),
   setActiveMessagesFilters: PropTypes.func,
   match: PropTypes.shape().isRequired,
 };
@@ -191,8 +215,10 @@ FilterModal.defaultProps = {
   activePayablesFilters: [],
   activeHistoryFilters: {},
   activeMessagesFilters: {},
+  activeGuideHistoryFilters: {},
   filtersHistory: {},
   filtersMessages: {},
+  filtersGuideHistory: {},
 };
 
 export default FilterModal;

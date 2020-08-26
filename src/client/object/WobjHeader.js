@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
+
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
@@ -13,7 +14,12 @@ import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import {
+  accessTypesArr,
+  haveAccess,
+  getObjectName,
+  parseWobjectField,
+} from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
 
 import '../components/ObjectHeader.less';
@@ -36,7 +42,7 @@ const WobjHeader = ({
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
   const parentName = parent.name || parent.default_name;
-
+  const status = parseWobjectField(wobject, 'status');
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -55,8 +61,10 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
-  const name = wobject.name || wobject.default_name;
+  const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
+
+  const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
   return (
     <div className="ObjectHeader ObjectHeader--cover" style={style}>
@@ -108,17 +116,14 @@ const WobjHeader = ({
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {/* eslint-disable-next-line no-nested-ternary */}
               {!isHashtag && canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
                   objName={wobject.name}
                 />
-              ) : wobject.status ? (
-                getStatusLayout(wobject.status)
               ) : (
-                descriptionShort
+                statusFields
               )}
             </div>
           </div>
@@ -164,7 +169,8 @@ WobjHeader.defaultProps = {
 const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
 
 export default injectIntl(
-  connect(mapStateToProps, { followWobj: followWobject, unfollowWobj: unfollowWobject })(
-    WobjHeader,
-  ),
+  connect(mapStateToProps, {
+    followWobj: followWobject,
+    unfollowWobj: unfollowWobject,
+  })(WobjHeader),
 );

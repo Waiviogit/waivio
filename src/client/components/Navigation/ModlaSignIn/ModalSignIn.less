@@ -19,6 +19,13 @@
   }
 
   &__title {
+    color: @primary-color;
+    font-size: 21px;
+
+    @media @xsmall {
+      font-size: 25px;
+    }
+
     &--lined {
       width: 100%;
       min-width: 230px;
@@ -57,6 +64,15 @@
         right: 0;
         top: 50%;
       }
+    }
+  }
+
+  &__loading {
+    color: @grey-mortar;
+    font-size: 21px;
+
+    @media @xsmall {
+      font-size: 25px;
     }
   }
 
@@ -142,4 +158,10 @@
       margin: 30px 0 0;
     }
   }
+}
+
+.ModalGuestForm {
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px 25px;
 }

@@ -142,14 +142,15 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
 ) => {
   const { category, id, permlink: parentPermlink } = parentPost;
   let parentAuthor;
+
   if (isUpdating) {
-    parentAuthor = originalComment.parent_author;
+    parentAuthor = parentPost.author;
   } else if (parentPost.root_author && parentPost.guestInfo) {
     parentAuthor = parentPost.root_author;
   } else {
     parentAuthor = parentPost.author;
   }
-  const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
+  const guestParentAuthor = get(parentPost, ['guestInfo', 'userId']);
   const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
@@ -183,7 +184,6 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     });
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
-
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -210,11 +210,11 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               !isUpdating,
             ),
           );
-          if (parentPost.append_field_name) {
+          if (parentPost.name) {
             dispatch(sendCommentAppend(parentPost.permlink));
           }
           setTimeout(
-            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
+            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
             auth.isGuestUser ? 6000 : 2000,
           );
 
@@ -226,6 +226,88 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
             });
           }
         })
+        .catch(err => {
+          dispatch(notify(err.error.message || err.error_description, 'error'));
+          dispatch(SEND_COMMENT_ERROR);
+        }),
+    },
+    meta: {
+      parentId: parentPost.id,
+      rootPostId,
+      isEditing: isUpdating,
+      isReplyToComment: parentPost.id !== id,
+    },
+  });
+};
+
+export const sendCommentMessages = (
+  parentPost,
+  body,
+  isUpdating = false,
+  originalComment,
+  parentAuthorIfGuest,
+  parentPermlinkIfGuest,
+) => (dispatch, getState, { steemConnectAPI }) => {
+  const { category, id, permlink: parentPermlink } = parentPost;
+  let parentAuthor;
+  if (isUpdating) {
+    parentAuthor = originalComment.parent_author;
+  } else if (parentPost.root_author && parentPost.guestInfo) {
+    parentAuthor = parentAuthorIfGuest;
+  } else {
+    parentAuthor = parentPost.author;
+  }
+  const { auth, comments } = getState();
+
+  if (!auth.isAuthenticated) {
+    return dispatch(notify('You have to be logged in to comment', 'error'));
+  }
+
+  if (!body || !body.length) {
+    return dispatch(notify("Message can't be empty", 'error'));
+  }
+
+  const parentPermlinkToSend = parentPermlinkIfGuest || parentPermlink;
+
+  const author = isUpdating ? originalComment.author : auth.user.name;
+  const permlink = isUpdating
+    ? originalComment.permlink
+    : createCommentPermlink(parentAuthor, parentPermlinkToSend);
+  const currCategory = category ? [category] : [];
+
+  const jsonMetadata = createPostMetadata(
+    body,
+    currCategory,
+    isUpdating && jsonParse(originalComment.json_metadata),
+  );
+
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
+  let rootPostId = null;
+  if (parentPost.parent_author) {
+    const { comments: commentsState } = comments;
+    const commentsWithBotAuthor = {};
+    Object.values(commentsState).forEach(val => {
+      commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
+    });
+    rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
+  }
+
+  return dispatch({
+    type: SEND_COMMENT,
+    payload: {
+      promise: steemConnectAPI
+        .comment(
+          parentAuthor,
+          parentPermlinkToSend,
+          author,
+          permlink,
+          '',
+          newBody,
+          jsonMetadata,
+          parentPost.root_author,
+        )
         .catch(err => {
           dispatch(notify(err.error.message || err.error_description, 'error'));
           dispatch(SEND_COMMENT_ERROR);

@@ -1,9 +1,10 @@
-import { isEmpty, uniq, map, get, filter } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, message } from 'antd';
+import { isEmpty, uniq, map, get, filter } from 'lodash';
+
 import Feed from '../../feed/Feed';
 import { getFeed, getReadLanguages, getCryptosPriceHistory } from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
@@ -53,7 +54,7 @@ export default class ObjectFeed extends React.Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
-    wobject: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape(),
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
@@ -65,6 +66,7 @@ export default class ObjectFeed extends React.Component {
     getMoreObjectPosts: () => {},
     readLocales: [],
     handleCreatePost: () => {},
+    wobject: {},
   };
 
   state = {
@@ -79,8 +81,8 @@ export default class ObjectFeed extends React.Component {
   componentDidMount() {
     const { match, limit, readLocales, wobject } = this.props;
     const { name } = match.params;
-    // eslint-disable-next-line no-underscore-dangle
-    const wobjectId = wobject._id;
+    const wobjectId = get(wobject, '_id');
+
     this.props.getObjectPosts({
       object: name,
       username: name,
@@ -94,42 +96,43 @@ export default class ObjectFeed extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit, readLocales } = this.props;
-    // eslint-disable-next-line no-underscore-dangle
-    const nextPropswobjectId = nextProps.wobject._id;
-    // eslint-disable-next-line no-underscore-dangle
-    const thisPropsWobjectId = this.props.wobject._id;
-    if (
-      readLocales !== nextProps.readLocales ||
-      match.params.name !== nextProps.match.params.name
-    ) {
-      if (
-        readLocales !== nextProps.readLocales ||
-        (nextProps.feed &&
-          nextProps.feed.objectPosts &&
-          !nextProps.feed.objectPosts[nextProps.match.params.name])
-      ) {
+    const { match, limit } = this.props;
+    const nextPropswobjectId = get(nextProps, ['wobject', '_id']);
+    const thisPropsWobjectId = get(this.props, ['wobject', '_id']);
+    const nextName = get(nextProps, ['match', 'params', 'name']);
+    const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
+
+    if (match.params.name !== nextName) {
+      if (objectPosts) {
         this.props.getObjectPosts({
-          object: nextProps.match.params.name,
-          username: nextProps.match.params.name,
+          object: nextName,
+          username: nextName,
           readLanguages: nextProps.readLocales,
           limit,
         });
       }
+
       window.scrollTo(0, 0);
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
-      this.getPropositions({
+      const requiredObject = get(nextProps.wobject, ['parent']);
+      const primaryObject = get(nextProps.wobject, ['author_permlink']);
+      const reqData = {
         userName: nextProps.userName,
-        requiredObject,
         match: nextProps.match,
-      });
+      };
+      if (requiredObject) {
+        reqData.requiredObject = requiredObject;
+      } else {
+        reqData.primaryObject = primaryObject;
+      }
+      this.getPropositions(reqData);
     }
 
     if (nextPropswobjectId === this.mountedId) {
       const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+
       this.getPropositions({
         userName: nextProps.userName,
         requiredObject,
@@ -146,18 +149,14 @@ export default class ObjectFeed extends React.Component {
     const { cryptosPriceHistory } = this.props;
 
     if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
-    const currentUSDPrice =
-      cryptosPriceHistory &&
-      cryptosPriceHistory.hive &&
-      cryptosPriceHistory.hive.usdPriceHistory &&
-      cryptosPriceHistory.hive.usdPriceHistory.usd;
 
-    return currentUSDPrice;
+    return get(cryptosPriceHistory, ['hive', 'usdPriceHistory', 'usd']);
   };
 
-  getPropositions = ({ userName, requiredObject, match }) => {
+  getPropositions = reqData => {
+    const { match } = this.props;
     this.setState({ loadingPropositions: true });
-    ApiClient.getPropositions({ userName, requiredObject, match }).then(data => {
+    ApiClient.getPropositions(reqData).then(data => {
       const currentProposition = filter(
         data.campaigns,
         obj => obj.required_object.author_permlink === match.params.name,
@@ -175,8 +174,7 @@ export default class ObjectFeed extends React.Component {
       map(
         proposition.objects,
         wobj =>
-          wobj.object &&
-          wobj.object.author_permlink === this.props.match.params.name && (
+          get(wobj, ['object', 'author_permlink']) === this.props.match.params.name && (
             <Proposition
               proposition={proposition}
               wobj={wobj.object}
@@ -225,7 +223,6 @@ export default class ObjectFeed extends React.Component {
             defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
           }),
         );
-        // eslint-disable-next-line no-unreachable
         const updatedPropositions = this.updateProposition(
           companyId,
           true,
