@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, get, pickBy, identity, filter, iteratee, size } from 'lodash';
+import { isEmpty, get, pickBy, identity, size, has, setWith } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -224,6 +224,15 @@ class ObjectInfo extends React.Component {
     );
   };
 
+  validatedAlbums = albums =>
+    albums.map(album => {
+      if (!has(album, 'active_votes') && !has(album, 'weight')) {
+        setWith(album, '[active_votes]', []);
+        setWith(album, '[weight]', 0);
+      }
+      return album;
+    });
+
   render() {
     const { wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
@@ -260,7 +269,7 @@ class ObjectInfo extends React.Component {
       : {};
     const phones = get(wobject, 'phone', []);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const album = filter(albums, iteratee(['id', wobject.author_permlink]));
+    const allAlbums = this.validatedAlbums(albums);
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
     const button = get(wobject, 'button', []).map(btn => {
       if (btn) {
@@ -361,8 +370,8 @@ class ObjectInfo extends React.Component {
                 <span className="proposition-line__text">{photosCount}</span>
                 {showModal && (
                   <CreateImage
-                    albums={albums}
-                    selectedAlbum={album[0]}
+                    albums={allAlbums}
+                    selectedAlbum={allAlbums[0]}
                     showModal={showModal}
                     hideModal={this.handleToggleModal}
                   />
