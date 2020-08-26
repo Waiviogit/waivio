@@ -31,6 +31,7 @@ const ImageSetter = ({
   getEditorState,
   addNewBlockAt,
   Block,
+  selection,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -70,9 +71,9 @@ const ImageSetter = ({
       );
     }
 
-    if (image) {
-      const selection = getEditorState().getSelection();
-      const key = selection.getAnchorKey();
+    if (selection && image) {
+      const selectionBlock = getEditorState().getSelection();
+      const key = selectionBlock.getAnchorKey();
 
       setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
       setEditorState(
@@ -137,10 +138,10 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
-        if (newImage) {
+        if (selection && newImage) {
           setTimeout(() => {
-            const selection = getEditorState().getSelection();
-            const key = selection.getAnchorKey();
+            const selectionBlock = getEditorState().getSelection();
+            const key = selectionBlock.getAnchorKey();
 
             setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
             setEditorState(
@@ -324,10 +325,11 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
-  setEditorState: PropTypes.func.isRequired,
-  getEditorState: PropTypes.func.isRequired,
-  addNewBlockAt: PropTypes.func.isRequired,
-  Block: PropTypes.shape().isRequired,
+  setEditorState: PropTypes.func,
+  getEditorState: PropTypes.func,
+  addNewBlockAt: PropTypes.func,
+  selection: PropTypes.func,
+  Block: PropTypes.shape(),
 };
 
 ImageSetter.defaultProps = {
@@ -335,6 +337,11 @@ ImageSetter.defaultProps = {
   defaultImage: '',
   isRequired: false,
   isTitle: true,
+  setEditorState: () => {},
+  getEditorState: () => {},
+  addNewBlockAt: () => {},
+  selection: undefined,
+  Block: {},
 };
 
 export default withEditor(injectIntl(ImageSetter));

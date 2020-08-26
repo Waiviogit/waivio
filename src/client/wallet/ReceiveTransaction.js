@@ -146,7 +146,7 @@ ReceiveTransaction.defaultProps = {
   amount: <span />,
   timestamp: 0,
   isGuestPage: false,
-  details: null,
+  details: {},
   type: '',
   username: '',
 };
