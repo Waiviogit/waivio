@@ -35,22 +35,8 @@ import { notify } from '../app/Notification/notificationActions';
       {
         getComments: commentsActions.getComments,
         voteComment: (id, percent, vote) => commentsActions.likeComment(id, percent, vote),
-        sendComment: (
-          parentPost,
-          body,
-          isUpdating,
-          originalPost,
-          parentAuthorIfGuest,
-          parentPermlinkIfGuest,
-        ) =>
-          commentsActions.sendComment(
-            parentPost,
-            body,
-            isUpdating,
-            originalPost,
-            parentAuthorIfGuest,
-            parentPermlinkIfGuest,
-          ),
+        sendComment: (parentPost, body, isUpdating, originalPost) =>
+          commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
         notify,
       },
       dispatch,
@@ -79,12 +65,6 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
-    getMessageHistory: PropTypes.func,
-    getReservedComments: PropTypes.func,
-    match: PropTypes.shape(),
-    history: PropTypes.bool,
-    parentAuthorIfGuest: PropTypes.string,
-    parentPermlinkIfGuest: PropTypes.string,
     isUpdating: PropTypes.bool,
   };
 
@@ -97,16 +77,10 @@ export default class Comments extends React.Component {
     pendingVotes: [],
     show: false,
     isQuickComments: false,
-    match: {},
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
-    getMessageHistory: () => {},
-    history: false,
-    getReservedComments: () => {},
-    parentAuthorIfGuest: {},
-    parentPermlinkIfGuest: {},
     isUpdating: false,
   };
 
@@ -179,11 +153,6 @@ export default class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      getMessageHistory,
-      history,
-      parentAuthorIfGuest,
-      parentPermlinkIfGuest,
-      getReservedComments,
     } = this.props;
     const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
@@ -223,12 +192,6 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
-          getMessageHistory={getMessageHistory}
-          match={this.props.match}
-          history={history}
-          parentAuthorIfGuest={parentAuthorIfGuest}
-          parentPermlinkIfGuest={parentPermlinkIfGuest}
-          getReservedComments={getReservedComments}
           isUpdating={this.props.isUpdating}
         />
       )
