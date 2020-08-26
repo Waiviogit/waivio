@@ -32,10 +32,9 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = wobject.avatar;
     const objectName = wobject.name || wobject.default_name;
-    const currentImage = imageUrl || get(wobject, ['parent', 'avatar']) || DEFAULTS.AVATAR;
-    console.log(currentImage);
+    const currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']) || DEFAULTS.AVATAR;
+
     return (
       <React.Fragment>
         {accessExtend && !currentImage ? (

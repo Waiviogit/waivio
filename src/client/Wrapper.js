@@ -36,6 +36,7 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -204,7 +205,7 @@ class Wrapper extends React.PureComponent {
         this.props.history.push(`/@${this.props.username}`);
         break;
       case 'rewards':
-        this.props.history.push('/rewards/active');
+        this.props.history.push(PATH_NAME_ACTIVE);
         break;
       default:
         break;
@@ -232,7 +233,6 @@ class Wrapper extends React.PureComponent {
       username,
       isNewUser,
     } = this.props;
-
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
 

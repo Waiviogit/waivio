@@ -31,9 +31,7 @@ const StoryPreview = ({ post, isUpdates }) => {
   if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
     imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
   } else if (
-    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
-      field.name,
-    )
+    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
   ) {
     imagePath = getProxyImageURL(jsonMetadata.wobj.field.body, 'preview');
   } else {
@@ -43,7 +41,8 @@ const StoryPreview = ({ post, isUpdates }) => {
     }
   }
 
-  if(isUpdates) imagePath = getProxyImageURL(post.body, 'preview')
+  if (isUpdates && (post.name === objectFields.avatar || post.name === objectFields.galleryItem))
+    imagePath = getProxyImageURL(post.body, 'preview');
 
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
@@ -135,17 +134,16 @@ const StoryPreview = ({ post, isUpdates }) => {
   } else {
     bodyData.push(preview.text());
   }
-
   return <div>{bodyData}</div>;
 };
 
 StoryPreview.propTypes = {
   post: PropTypes.shape().isRequired,
-  isUpdates: PropTypes.bool
+  isUpdates: PropTypes.bool,
 };
 
 StoryPreview.defaultProps = {
   isUpdates: false,
-}
+};
 
 export default StoryPreview;

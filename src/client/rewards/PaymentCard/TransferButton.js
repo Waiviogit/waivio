@@ -10,6 +10,7 @@ import { openTransfer } from '../../wallet/walletActions';
 import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { openLinkHiveAccountModal } from '../../settings/settingsActions';
 import { guestUserRegex } from '../../helpers/regexHelpers';
+import { PATH_NAME_RECEIVABLES, PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
 
 const TransferButton = ({
   match,
@@ -25,7 +26,7 @@ const TransferButton = ({
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
   const payableForRender = Math.abs(payable);
-  const pathRecivables = match.path === '/rewards/receivables';
+  const pathRecivables = match.path === PATH_NAME_RECEIVABLES;
   const isOverpayment = payable < 0;
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const handleClick = () => {
@@ -51,7 +52,7 @@ const TransferButton = ({
         </Action>
       )}
       {pathRecivables && payable >= 0 && <span>{` ${payable && payable.toFixed(3)} HIVE`}</span>}
-      {match.path === '/rewards/payables' && (
+      {match.path === PATH_NAME_PAYABLES && (
         <Action
           className="WalletSidebar__transfer"
           primary={payable > 0}

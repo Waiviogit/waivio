@@ -39,9 +39,9 @@ export function handleValidateCampaignErrors(response) {
   return response;
 }
 
-export const getRecommendedObjects = () =>
+export const getRecommendedObjects = (locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers: { ...headers, app: config.appName },
+    headers: { ...headers, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
@@ -638,6 +638,7 @@ export const getPropositions = ({
   simplified,
   firstMapLoad,
   isMap,
+  primaryObject,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -646,6 +647,7 @@ export const getPropositions = ({
       status,
       approved,
       requiredObject,
+      primaryObject,
       sort,
     };
 
@@ -1069,9 +1071,9 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0) =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency') =>
   fetch(
-    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: {
         ...headers,
@@ -1084,13 +1086,19 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) =>
     .then(data => data)
     .catch(err => console.error(err));
 
-export const getFollowingsFromAPI = (username, limit = 100, skip = 0, authUser) => {
+export const getFollowingsFromAPI = (
+  username,
+  limit = 100,
+  skip = 0,
+  authUser,
+  sort = 'recency',
+) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
 
   return fetch(
-    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: actualHeaders,
     },
@@ -1377,7 +1385,21 @@ export const getTransferDetails = withdrawId => {
   ).then(res => res.json());
 };
 
-// injected as extra argument in Redux Thunk
+export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
+  fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .catch(error => error);
+
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
   broadcastGuestOperation,
