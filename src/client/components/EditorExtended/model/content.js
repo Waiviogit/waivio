@@ -26,7 +26,6 @@ const createEditorState = (content = null, decorators = defaultDecorators) => {
     contentState = convertFromRaw(content);
   }
   initialEditorState = EditorState.createWithContent(contentState, decorators);
-  // return EditorState.moveSelectionToEnd(initialEditorState);
   return initialEditorState;
 };
 

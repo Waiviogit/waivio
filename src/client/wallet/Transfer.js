@@ -143,11 +143,20 @@ export default class Transfer extends React.Component {
   };
 
   componentDidMount() {
-    const { cryptosPriceHistory, getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
+    const {
+      cryptosPriceHistory,
+      getCryptoPriceHistory: getCryptoPriceHistoryAction,
+      to,
+      amount,
+    } = this.props;
     const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
     const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
     if (isNull(currentHiveRate) || isNull(currentHBDRate))
       getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
+    this.props.form.setFieldsValue({
+      to,
+      amount,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -403,7 +412,6 @@ export default class Transfer extends React.Component {
   showSelectedUser = () => {
     const { to, hiveBeneficiaryAccount, isGuest, form, amount } = this.props;
     const { searchName } = this.state;
-
     const userName = isEmpty(searchName) ? to : searchName;
     const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
     if (isGuest && hiveBeneficiaryAccount && !form.getFieldValue('to')) {

@@ -1,13 +1,14 @@
-import _ from 'lodash';
+import { isEmpty, map, slice, size } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import UserCard from '../UserCard';
 import WeightTag from '../WeightTag';
-import './ObjectExpertise.less';
 import { getWobjectsExpertise } from '../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
+
+import './ObjectExpertise.less';
 
 const ObjectExpertise = ({ username, wobject }) => {
   const [experts, setExperts] = useState({ user: {}, users: [], loading: true });
@@ -19,14 +20,13 @@ const ObjectExpertise = ({ username, wobject }) => {
       .then(data => {
         setExperts({ ...data, loading: false });
       })
-      // eslint-disable-next-line no-unused-vars
-      .catch(err => setExperts({ user: {}, users: [], loading: false }));
+      .catch(() => setExperts({ user: {}, users: [], loading: false }));
   }, [wobject.author_permlink]);
   let renderExperts = null;
 
   if (loading) {
     renderExperts = <RightSidebarLoading />;
-  } else if (!loading && !_.isEmpty(users)) {
+  } else if (!loading && !isEmpty(users)) {
     renderExperts = (
       <div className="SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">
@@ -35,7 +35,7 @@ const ObjectExpertise = ({ username, wobject }) => {
         </h4>
         <div className="SidebarContentBlock__content">
           {users &&
-            _.map(_.slice(users, 0, 5), u => (
+            map(slice(users, 0, 5), u => (
               <UserCard
                 key={u.name}
                 user={u}
@@ -56,7 +56,7 @@ const ObjectExpertise = ({ username, wobject }) => {
             </React.Fragment>
           )}
 
-          {_.size(users) > 5 && (
+          {size(users) > 5 && (
             <React.Fragment>
               <h4 className="ObjectExpertise__more">
                 <Link to={`/object/${wobject.author_permlink}/expertise`}>

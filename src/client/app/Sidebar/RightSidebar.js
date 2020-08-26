@@ -29,13 +29,14 @@ export default class RightSidebar extends React.Component {
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
-    locale: PropTypes.string.isRequired,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
     showPostRecommendation: false,
     match: {},
     authUserName: '',
+    locale: 'en-US',
   };
 
   render() {
@@ -95,9 +96,7 @@ export default class RightSidebar extends React.Component {
           />
         </Switch>
 
-        {showPostRecommendation && (
-          <PostRecommendation isAuthFetching={isAuthFetching} locale={locale} />
-        )}
+        {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
       </div>
     );
   }

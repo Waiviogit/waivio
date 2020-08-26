@@ -1338,6 +1338,7 @@
   "customer_support": "{author} спрашивает о {campaignName}",
   "notify_campaign": "компании",
   "cancel_limit_order": "Лимитный заказ отменен",
-  "menu_rewards": "Награды"
+  "menu_rewards": "Награды",
+  "page": "Страница"
 
 }

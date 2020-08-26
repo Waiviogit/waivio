@@ -101,7 +101,7 @@ const ModalSignIn = ({ next, intl, showModal, handleLoginModalCancel, hideLink }
             <p className="ModalSignIn__rules">
               {intl.formatMessage({
                 id: 'sing_in_modal_message',
-                defaultMessage: 'Waivio is powered by Hive open social blockchain',
+                defaultMessage: 'Waivio is powered by the Hive open social blockchain',
               })}
             </p>
             <p className="ModalSignIn__title ModalSignIn__title--lined">

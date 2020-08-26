@@ -6,8 +6,7 @@ import Avatar from '../components/Avatar';
 
 import './UserCard.less';
 
-const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator }) => {
-  const status = moderator ? 'moderator' : 'admin';
+const UserCard = ({ user, alt, showFollow, unfollow, follow }) => {
   const cardView = showFollow ? 'UserCard__left' : 'UserCard__sidebar';
   const weightBlock = showFollow ? 'UserCard__alt BlockWeight' : 'UserCard__short';
   const followersCountBlock = showFollow ? 'reblogged' : 'rebloggedFollowersNone';
@@ -23,9 +22,9 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, admin, moderator })
             <Link to={`/@${user.name}`}>
               <span className="username">{user.name}</span>
             </Link>
-            {(admin || moderator) && (
+            {user.admin && (
               <span>
-                &nbsp;(<span className="UserCard__status">{status}</span>)
+                &nbsp;(<span className="UserCard__status">admin</span>)
               </span>
             )}
           </div>
@@ -55,8 +54,6 @@ UserCard.propTypes = {
   showFollow: PropTypes.bool,
   unfollow: PropTypes.func,
   follow: PropTypes.func,
-  admin: PropTypes.bool,
-  moderator: PropTypes.bool,
 };
 
 UserCard.defaultProps = {
@@ -66,8 +63,6 @@ UserCard.defaultProps = {
   authUser: '',
   unfollow: () => {},
   follow: () => {},
-  admin: false,
-  moderator: false,
 };
 
 export default UserCard;
