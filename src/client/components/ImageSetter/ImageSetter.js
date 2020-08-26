@@ -138,7 +138,7 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
-        if (newImage) {
+        if (selection && newImage) {
           setTimeout(() => {
             const selectionBlock = getEditorState().getSelection();
             const key = selectionBlock.getAnchorKey();
