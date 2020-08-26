@@ -242,7 +242,8 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length); // must be uploadingList.length
+    const uploadingListLength = uploadingList.length;
+    const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
