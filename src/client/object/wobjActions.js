@@ -2,7 +2,7 @@ import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get } from 'lodash';
 
-import { getIsAuthenticated, getAuthenticatedUserName, getLocale } from '../reducers';
+import { getIsAuthenticated, getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getChangedField } from '../../waivioApi/ApiClient';
@@ -190,10 +190,14 @@ export const getChangedWobjectField = (
       dispatch({
         type: GET_CHANGED_WOBJECT_FIELD.ACTION,
         payload: {
-          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(() =>
-            dispatch({
-              type: APPEND_WAIVIO_OBJECT.SUCCESS,
-            }),
+          promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(
+            res => {
+              dispatch({
+                type: APPEND_WAIVIO_OBJECT.SUCCESS,
+              });
+
+              return res;
+            },
           ),
         },
         meta: { isNew },
@@ -207,15 +211,14 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   getState,
   { steemConnectAPI },
 ) => {
-  const { auth, object } = getState();
-  const wobj = get(object, 'wobject', {});
+  const state = getState();
+  const wobj = get(state, ['object', 'wobject'], {});
   const post = wobj.fields.find(field => field.permlink === permlink) || null;
-  const voter = auth.user.name;
+  const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
   const fieldName = name || post.name;
 
-  if (!auth.isAuthenticated) {
-    return null;
-  }
+  if (!getIsAuthenticated(state)) return null;
 
   dispatch({
     type: VOTE_APPEND_START,
@@ -227,9 +230,10 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
-    .then(data => data.json())
-    .then(res =>
-      dispatch(
+    .then(async data => {
+      const res = isGuest ? await data.json() : data.result;
+
+      return dispatch(
         getChangedWobjectField(
           wobj.author_permlink,
           fieldName,
@@ -238,11 +242,12 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
           res.block_num,
           isNew,
         ),
-      ),
-    )
+      );
+    })
     .catch(e => {
       message.error(e.error_description);
-      dispatch({
+
+      return dispatch({
         type: VOTE_APPEND_ERROR,
         payload: {
           post,

@@ -47,7 +47,7 @@ export default class Comments extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
+    defaultVotePercent: PropTypes.number,
     sliderMode: PropTypes.bool,
     username: PropTypes.string,
     post: PropTypes.shape(),
@@ -82,6 +82,7 @@ export default class Comments extends React.Component {
     voteComment: () => {},
     sendComment: () => {},
     isUpdating: false,
+    defaultVotePercent: 100,
   };
 
   state = {
@@ -153,10 +154,10 @@ export default class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
+      isUpdating,
     } = this.props;
-    const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
+    const postId = isUpdating ? `${post.author}/${post.permlink}` : post.id;
     let rootLevelComments = [];
-
     const parentNode = comments.childrenById[postId];
 
     if (parentNode instanceof Array) {
@@ -192,7 +193,6 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
-          isUpdating={this.props.isUpdating}
         />
       )
     );

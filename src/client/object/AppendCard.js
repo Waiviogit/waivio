@@ -38,7 +38,7 @@ import '../components/StoryFooter/Buttons.less';
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
   const [reactionsModalVisible, showReactionModal] = useState(false);
-  const [commentsVisible, setCommentsVisible] = useState(props.post.child);
+  const [commentsVisible, setCommentsVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
 
@@ -98,7 +98,7 @@ const AppendCard = props => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!commentsVisible) {
+    if (!commentsVisible && props.post.children) {
       setCommentsVisible(true);
     } else {
       setCommentsVisible(false);
