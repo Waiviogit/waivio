@@ -9,7 +9,6 @@ import moment from 'moment';
 import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
-import { getClientWObj } from '../../adapters';
 import { AppSharedContext } from '../../Wrapper';
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../../waivioApi/config';
@@ -38,7 +37,6 @@ class CreateRewardForm extends React.Component {
     match: PropTypes.shape().isRequired,
     currentSteemDollarPrice: PropTypes.number,
     /* from context */
-    usedLocale: PropTypes.string,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
   };
@@ -160,11 +158,9 @@ class CreateRewardForm extends React.Component {
           campaignType: campaign.type,
           budget: campaign.budget,
           reward: campaign.reward,
-          primaryObject: getClientWObj(values[0], this.props.usedLocale),
-          secondaryObjectsList: values[1].map(obj => getClientWObj(obj, this.props.usedLocale)),
-          sponsorsList: !isEmpty(sponsors)
-            ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
-            : [],
+          primaryObject: values[0],
+          secondaryObjectsList: values[1].map(obj => obj),
+          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => obj) : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
