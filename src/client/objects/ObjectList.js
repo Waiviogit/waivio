@@ -8,7 +8,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
 import { followWobject, unfollowWobject } from '../object/wobjActions';
-import { getAuthenticatedUserName, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getLocale, isGuestUser } from '../reducers';
 
 const displayLimit = 30;
 
@@ -16,6 +16,7 @@ const displayLimit = 30;
   state => ({
     isGuest: isGuestUser(state),
     user: getAuthenticatedUserName(state),
+    locale: getLocale(state),
   }),
   {
     followWobj: followWobject,
@@ -29,6 +30,7 @@ export default class ObjectList extends React.Component {
     followWobj: PropTypes.func,
     isGuest: PropTypes.bool,
     user: PropTypes.string,
+    locale: PropTypes.string.isRequired,
   };
   static defaultProps = {
     isOnlyHashtags: false,
@@ -49,6 +51,7 @@ export default class ObjectList extends React.Component {
       limit: displayLimit,
       isOnlyHashtags: this.props.isOnlyHashtags,
       follower: this.props.user,
+      locale: this.props.locale,
     }).then(wobjs => {
       this.setState({ wobjs: wobjs.wobjects });
     });
@@ -60,6 +63,7 @@ export default class ObjectList extends React.Component {
         limit: displayLimit,
         isOnlyHashtags: this.props.isOnlyHashtags,
         follower: this.props.user,
+        locale: this.props.locale,
       }).then(wobjs => {
         this.setState({ wobjs: wobjs.wobjects });
       });
@@ -81,6 +85,7 @@ export default class ObjectList extends React.Component {
           skip,
           isOnlyHashtags: this.props.isOnlyHashtags,
           follower: this.props.user,
+          locale: this.props.locale,
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,

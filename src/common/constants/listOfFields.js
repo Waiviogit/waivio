@@ -152,12 +152,7 @@ export const getAllowedFieldsByObjType = objectType => {
         TYPES_OF_MENU_ITEM.BUTTON,
       ];
     case OBJECT_TYPE.HASHTAG:
-      return [
-        objectFields.avatar,
-        objectFields.background,
-        objectFields.galleryItem,
-        objectFields.status,
-      ];
+      return [objectFields.avatar, objectFields.background, objectFields.status];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];
       const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];

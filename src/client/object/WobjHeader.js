@@ -41,8 +41,11 @@ const WobjHeader = ({
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
-  const parentName = parent.name || parent.default_name;
+  const parentName = getObjectName(parent);
   const status = parseWobjectField(wobject, 'status');
+  const name = getObjectName(wobject);
+  const isHashtag = wobject.object_type === 'hashtag';
+
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -61,8 +64,6 @@ const WobjHeader = ({
 
     return `${link}/reviews`;
   };
-  const name = getObjectName(wobject);
-  const isHashtag = wobject.object_type === 'hashtag';
 
   const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
@@ -73,7 +74,7 @@ const WobjHeader = ({
         <div className="ObjectHeader__user">
           {parentName && (
             <Link
-              to={`/object/${wobject.parent.author_permlink}`}
+              to={`/object/${parent.author_permlink}`}
               title={`${intl.formatMessage({
                 id: 'GoTo',
                 defaultMessage: 'Go to',
