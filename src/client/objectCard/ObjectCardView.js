@@ -42,7 +42,7 @@ const ObjectCardView = ({
         }))
       : ratingFields;
   };
-  const pathName = pathNameAvatar || `/object/${wObject.id}`;
+  const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
   const ratings = getObjectRatings();
 
   const avatarLayout = () => {
