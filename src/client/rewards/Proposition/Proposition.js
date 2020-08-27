@@ -5,7 +5,6 @@ import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
-import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';

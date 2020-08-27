@@ -87,11 +87,10 @@ class MapOS extends React.Component {
     ) {
       this.setState({ zoom: nextProps.zoomMap });
     }
-    if (match.params.filterKey === 'reserved') this.setState({ zoom: DEFAULT_ZOOM });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { center, zoom, radius } = this.state;
+    const { center, zoom } = this.state;
     const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
@@ -102,7 +101,9 @@ class MapOS extends React.Component {
     }
 
     if (
-      (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match) && radius) ||
+      (propsMatch !== prevPropsMatch &&
+        !isEqual(prevProps.match, this.props.match) &&
+        propsMatch !== 'reserved') ||
       prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
     ) {
       const firstMapLoad = true;

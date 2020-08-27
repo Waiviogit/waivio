@@ -70,7 +70,6 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
 import { getZoom } from '../components/Maps/mapHelper';
 
@@ -433,15 +432,11 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
-      const sponsors = sortBy(data.sponsors);
       this.setState({
-        campaignsTypes: data.campaigns_types,
         area,
         radius,
         loading: false,
         fetched: false,
-        hasMore: data.hasMore,
-        sponsors,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -451,12 +446,15 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
+        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
-        });
-        this.setState({
-          propositions: data.campaigns,
+          campaignsTypes: data.campaigns_types,
+          area,
+          radius,
+          hasMore: data.hasMore,
+          sponsors,
         });
       }
       if (isMap && firstMapLoad) {
@@ -845,7 +843,7 @@ class Rewards extends React.Component {
       activeGuideHistoryFilters,
       url,
     } = this.state;
-    const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
+    const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
