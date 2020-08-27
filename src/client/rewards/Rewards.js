@@ -727,7 +727,7 @@ class Rewards extends React.Component {
       radius,
       isSearchAreaFilter,
     } = this.state;
-    const { username, match } = this.props;
+    const { username, match, usedLocale } = this.props;
     if (hasMore) {
       this.setState(
         {
@@ -739,6 +739,7 @@ class Rewards extends React.Component {
             match,
             sort,
             area,
+            usedLocale,
             ...activeFilters,
           });
           reqData.skip = propositions.length;
@@ -761,6 +762,7 @@ class Rewards extends React.Component {
 
   getCampaignsObjectsForMap = () => {
     const { propositions, propositionsReserved } = this.state;
+    const { match } = this.props;
     const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
@@ -776,7 +778,15 @@ class Rewards extends React.Component {
     const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
       secondaryObjectsWithUniqueCoordinates,
     );
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWeight];
+    const campaignsObjectsForMap =
+      match.params.filterKey === 'reserved'
+        ? map(newPropositions, proposition => {
+            const propositionObject = get(proposition, ['objects', '0', 'object']);
+            return !isEmpty(propositionObject.map)
+              ? propositionObject
+              : proposition.required_object;
+          })
+        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
     return campaignsObjectsForMap;
   };
