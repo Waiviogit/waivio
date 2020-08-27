@@ -44,6 +44,7 @@ export const getObjectType = (
     wobjects_skip: skip,
     filter: filters,
     sort,
+    locale: usedLocale,
   };
   if (username) preparedData.userName = username;
   dispatch({

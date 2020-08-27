@@ -541,10 +541,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
       .catch(error => reject(error));
   });
 
-export const getObjectType = (typeName, requestData) =>
-  new Promise((resolve, reject) => {
+export const getObjectType = (typeName, requestData) => {
+  const { locale = 'en-US' } = requestData;
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(requestData),
     })
@@ -552,6 +553,7 @@ export const getObjectType = (typeName, requestData) =>
       .then(data => resolve(data))
       .catch(error => reject(error));
   });
+};
 
 export const getSearchResult = (
   string,
