@@ -4,6 +4,7 @@ import { Tag } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+
 import {
   getAuthenticatedUserName,
   getObjectAdmins,
