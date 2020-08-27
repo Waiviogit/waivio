@@ -235,12 +235,12 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const { history } = this.props;
+    const { history, intl } = this.props;
     const { campaign } = this.state;
     const postData = this.buildPost();
     const isReview =
       !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
-    this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, this.props.intl);
+    this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
