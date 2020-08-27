@@ -196,10 +196,11 @@ export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, g
   const state = getState();
   const readLanguages = getUserLocalesArray(getState);
   const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
 
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages, locale, follower),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };

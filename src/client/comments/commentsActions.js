@@ -8,6 +8,7 @@ import { findRoot } from '../helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { POST_AUTHOR_FOR_REWARDS_COMMENTS } from '../../common/constants/waivio';
 import { sendCommentAppend } from '../object/wobjActions';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -28,12 +29,17 @@ export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMM
 export const GET_RESERVED_COMMENTS = '@comments/GET_RESERVED_COMMENTS';
 export const GET_RESERVED_COMMENTS_SUCCESS = '@comments/GET_RESERVED_COMMENTS_SUCCESS';
 
-export const getSingleComment = (author, permlink, focus = false) => dispatch =>
-  dispatch({
+export const getSingleComment = (author, permlink, focus = false) => (dispatch, getState) => {
+  const state = getState;
+  const locale = getLocale(state);
+  const follower = getAuthenticatedUserName(state);
+
+  return dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
-    payload: ApiClient.getContent(author, permlink).then(res => res),
+    payload: ApiClient.getContent(author, permlink, locale, follower).then(res => res),
     meta: { focus },
   });
+};
 
 export const getFakeSingleComment = (
   parentAuthor,
