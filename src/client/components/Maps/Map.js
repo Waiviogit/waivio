@@ -91,7 +91,7 @@ class MapOS extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { center, zoom } = this.state;
+    const { center, zoom, radius } = this.state;
     const { match } = this.props;
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
@@ -102,7 +102,7 @@ class MapOS extends React.Component {
     }
 
     if (
-      (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match)) ||
+      (propsMatch !== prevPropsMatch && !isEqual(prevProps.match, this.props.match) && radius) ||
       prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
     ) {
       const firstMapLoad = true;
@@ -127,14 +127,13 @@ class MapOS extends React.Component {
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    if (firstMapLoad)
-      setMapArea({
-        radius: newRadius,
-        coordinates: center,
-        isMap: true,
-        isSecondaryObjectsCards,
-        firstMapLoad,
-      });
+    setMapArea({
+      radius: newRadius,
+      coordinates: center,
+      isMap: true,
+      isSecondaryObjectsCards,
+      firstMapLoad,
+    });
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
