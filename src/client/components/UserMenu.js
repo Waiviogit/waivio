@@ -85,10 +85,10 @@ class UserMenu extends React.Component {
                 </span>
               </li>
               <li
-                className={this.getItemClasses('followed')}
+                className={this.getItemClasses('following')}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="followed"
+                data-key="following"
               >
                 <FormattedMessage id="following" defaultMessage="Following" />
                 <span className="UserMenu__badge">
