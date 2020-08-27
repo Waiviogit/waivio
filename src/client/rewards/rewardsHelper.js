@@ -245,7 +245,7 @@ export const getMinExpertise = ({
       2,
     );
   }
-  return '';
+  return 0;
 };
 
 export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
