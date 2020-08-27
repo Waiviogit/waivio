@@ -832,7 +832,7 @@ export const getCampaignsByGuideName = guideName =>
 export const getRewardsGeneralCounts = ({
   userName,
   sort,
-  limit = 30,
+  limit = 10,
   skip = 0,
   locale = 'en-US',
 } = {}) =>

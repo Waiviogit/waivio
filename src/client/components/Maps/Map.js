@@ -6,7 +6,6 @@ import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
-import { getClientWObj } from '../../adapters';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
@@ -190,9 +189,9 @@ class MapOS extends React.Component {
   };
 
   getOverlayLayout = () => {
-    const { onMarkerClick, usedLocale } = this.props;
+    const { onMarkerClick } = this.props;
     const { infoboxData } = this.state;
-    const wobj = getClientWObj(infoboxData.wobject, usedLocale);
+    const wobj = infoboxData.wobject;
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
@@ -204,7 +203,7 @@ class MapOS extends React.Component {
         >
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div role="presentation" className="MapOS__overlay-wrap-name">
-            {wobj.name}
+            {wobj.name || wobj.default_name}
           </div>
         </div>
       </Overlay>
@@ -384,7 +383,6 @@ MapOS.propTypes = {
   width: PropTypes.number,
   userLocation: PropTypes.shape(),
   customControl: PropTypes.node,
-  usedLocale: PropTypes.string,
   onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,

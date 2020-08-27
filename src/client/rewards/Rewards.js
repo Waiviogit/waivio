@@ -372,42 +372,40 @@ class Rewards extends React.Component {
   };
 
   getPropositionsByStatus = ({ username, sort }) => {
-    const { pendingUpdate, match, usedLocale } = this.props;
+    const { pendingUpdate, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.props
-      .getRewardsGeneralCounts({ userName: username, sort, locale: usedLocale })
-      .then(data => {
-        // eslint-disable-next-line camelcase
-        const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
-        const newSponsors = sortBy(sponsors);
-        const rewardsTab = {
-          reserved: 'reserved',
-          eligible: 'active',
-          all: 'all',
-        };
-        this.setState({
-          sponsors: newSponsors,
-          hasMore,
-          campaignsTypes: campaigns_types,
-          loadingCampaigns: false,
-        });
-        if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
-          if (match.params.filterKey !== rewardsTab[tabType]) {
-            this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
-          }
-          if (tabType === 'reserved') {
-            this.setState({
-              propositionsReserved: campaigns,
-            });
-          } else {
-            this.setState({
-              propositions: campaigns,
-            });
-          }
-        } else {
-          this.setState({ url: this.props.match.url });
-        }
+    this.props.getRewardsGeneralCounts({ userName: username, sort }).then(data => {
+      // eslint-disable-next-line camelcase
+      const { sponsors, hasMore, campaigns_types, campaigns, tabType } = data.value;
+      const newSponsors = sortBy(sponsors);
+      const rewardsTab = {
+        reserved: 'reserved',
+        eligible: 'active',
+        all: 'all',
+      };
+      this.setState({
+        sponsors: newSponsors,
+        hasMore,
+        campaignsTypes: campaigns_types,
+        loadingCampaigns: false,
       });
+      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+        if (match.params.filterKey !== rewardsTab[tabType]) {
+          this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
+        }
+        if (tabType === 'reserved') {
+          this.setState({
+            propositionsReserved: campaigns,
+          });
+        } else {
+          this.setState({
+            propositions: campaigns,
+          });
+        }
+      } else {
+        this.setState({ url: this.props.match.url });
+      }
+    });
   };
 
   getPropositions = (
