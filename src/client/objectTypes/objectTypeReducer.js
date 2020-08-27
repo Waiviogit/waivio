@@ -1,6 +1,5 @@
 import { get, isEmpty, omit, reduce, filter } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
-import { getClientWObj } from '../adapters';
 
 const initialState = {
   data: {},
@@ -22,7 +21,6 @@ const objectType = (state = initialState, action) => {
         fetching: true,
       };
     case wobjTypeActions.GET_OBJECT_TYPE.SUCCESS: {
-      const { locale } = action.meta;
       const {
         related_wobjects: relatedWobjects,
         hasMoreWobjects,
@@ -31,13 +29,11 @@ const objectType = (state = initialState, action) => {
       } = action.payload;
       const filteredObjects = [
         ...state.filteredObjects,
-        ...relatedWobjects
-          .filter(
-            wObj =>
-              !wObj.status ||
-              (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-          )
-          .map(wObj => getClientWObj(wObj, locale)),
+        ...relatedWobjects.filter(
+          wObj =>
+            !wObj.status ||
+            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+        ),
       ];
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
