@@ -170,13 +170,16 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObj = () => dispatch =>
-  dispatch({
+export const getRecommendedObj = () => (dispatch, getState) => {
+  const locale = getLocale(getState());
+
+  return dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
-      promise: ApiClient.getRecommendedObjects(),
+      promise: ApiClient.getRecommendedObjects(locale),
     },
   });
+};
 
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 
