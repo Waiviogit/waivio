@@ -62,6 +62,8 @@ class ObjectMenu extends React.Component {
   render() {
     const isList = hasType(this.props.wobject, OBJECT_TYPE.LIST);
     const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
+    const isHashtag = hasType(this.props.wobject, OBJECT_TYPE.HASHTAG);
+
     return (
       <div className="ObjectMenu">
         <div className="container menu-layout">
@@ -111,7 +113,7 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
-              {this.props.accessExtend && !isPage && (
+              {this.props.accessExtend && !isPage && !isHashtag && (
                 <li
                   className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
                   onClick={this.handleClick}

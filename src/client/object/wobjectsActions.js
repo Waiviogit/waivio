@@ -53,7 +53,7 @@ export const getFeedContentByObject = object => (dispatch, getState) => {
 
 export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
   dispatch(getAlbums(authorPermlink));
-  return dispatch(getObject(authorPermlink, username, requiredField));
+  dispatch(getObject(authorPermlink, username, requiredField));
 };
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
