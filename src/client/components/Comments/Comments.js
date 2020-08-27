@@ -227,7 +227,6 @@ class Comments extends React.Component {
       defaultVotePercent,
     } = this.props;
     const { sort } = this.state;
-
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, size } from 'lodash';
 
 import {
   getPosts,
@@ -13,6 +13,7 @@ import {
   getObjectAlbums,
   getRewardFund,
   getRate,
+  getIsAppendLoading,
 } from '../reducers';
 import {
   objectFields,
@@ -42,6 +43,7 @@ import './WobjHistory.less';
   albums: getObjectAlbums(state),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
+  appendLoading: getIsAppendLoading(state),
 }))
 class WobjHistory extends React.Component {
   static propTypes = {
@@ -56,11 +58,13 @@ class WobjHistory extends React.Component {
       reward_balance: PropTypes.string,
     }).isRequired,
     rate: PropTypes.number.isRequired,
+    appendLoading: PropTypes.bool,
   };
 
   static defaultProps = {
     readLanguages: ['en-US'],
     isAuthenticated: false,
+    appendLoading: false,
     comments: {},
     object: {},
   };
@@ -127,7 +131,7 @@ class WobjHistory extends React.Component {
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { object, readLanguages, isAuthenticated, rewardFund, rate } = this.props;
+    const { object, readLanguages, isAuthenticated, rewardFund, rate, appendLoading } = this.props;
     const { params } = this.props.match;
     const isFullParams =
       rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
@@ -168,8 +172,8 @@ class WobjHistory extends React.Component {
     const objName = object.name || object.default_name;
 
     const renderFields = () => {
-      if (content) {
-        return content.length ? (
+      if (!appendLoading) {
+        return size(content) ? (
           content.map(post => <AppendCard key={post.permlink} post={post} />)
         ) : (
           <div className="object-feed__row justify-center">
