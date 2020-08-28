@@ -155,7 +155,8 @@ class MapOS extends React.Component {
   calculateRadius = zoom => {
     const { width, isFullscreenMode } = this.props;
     let radius = getRadius(zoom);
-    if (isFullscreenMode) radius = (radius * this.mapRef.current.state.width) / width;
+    if (isFullscreenMode)
+      radius = this.mapRef.current ? (radius * this.mapRef.current.state.width) / width : null;
     return radius;
   };
 
