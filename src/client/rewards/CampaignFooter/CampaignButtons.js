@@ -5,13 +5,22 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes } from 'lodash';
+import { map, get, includes, filter } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
-import { GUIDE_HISTORY, MESSAGES, ASSIGNED, HISTORY } from '../../../common/constants/rewards';
+import {
+  GUIDE_HISTORY,
+  MESSAGES,
+  ASSIGNED,
+  HISTORY,
+  REJECTED,
+  COMPLETED,
+  RELEASED,
+  IS_RESERVED,
+} from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward } from '../../user/userActions';
@@ -547,23 +556,28 @@ export default class CampaignButtons extends React.Component {
     );
   }
 
+  getPropositionStatus = (proposition, user) => {
+    const { match } = this.props;
+    const isReserved = match.params.filterKey === IS_RESERVED || includes(match.path, 'object');
+    const isAll = match.params.filterKey === 'all';
+    const unsuitableStatus = REJECTED || COMPLETED || RELEASED;
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === user.name && usersItem.status !== unsuitableStatus,
+    );
+    if (isReserved) return ASSIGNED;
+    if (isAll) return currentUser[0].status;
+    return get(proposition, ['users', '0', 'status'], '');
+  };
+
   render() {
-    const {
-      intl,
-      numberOfComments,
-      daysLeft,
-      propositionStatus,
-      user,
-      proposition,
-      match,
-    } = this.props;
+    const { intl, numberOfComments, daysLeft, propositionStatus, user, proposition } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', ASSIGNED]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
-    const status = isReserved ? ASSIGNED : get(proposition, ['users', '0', 'status'], '');
+    const status = this.getPropositionStatus(proposition, user);
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
 
     return (
