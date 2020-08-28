@@ -26,6 +26,7 @@ const History = ({
   setMessagesSponsors,
   setMessagesCampaigns,
   match,
+  usedLocale,
   setSortValue,
   sortHistory,
   sortMessages,
@@ -68,6 +69,7 @@ const History = ({
           sort: sortChanged,
           rewards,
           status: activeFilters.status,
+          locale: usedLocale,
         };
         requestData.skip = loadMore ? messages.length : 0;
         if (isHistory) {
@@ -208,6 +210,7 @@ History.propTypes = {
   sortGuideHistory: PropTypes.string,
   sortMessages: PropTypes.string,
   setActiveMessagesFilters: PropTypes.func,
+  usedLocale: PropTypes.string,
 };
 
 History.defaultProps = {
@@ -217,6 +220,7 @@ History.defaultProps = {
   sortGuideHistory: 'reservation',
   messagesSponsors: [],
   messagesCampaigns: [],
+  usedLocale: 'en-US',
   setActiveMessagesFilters: () => {},
 };
 

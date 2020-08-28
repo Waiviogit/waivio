@@ -173,6 +173,7 @@ class CreateObject extends React.Component {
                 rank: 1,
                 type: objData.type,
                 background: '',
+                author_permlink: parentPermlink,
               },
               { locale: values.locale },
             );
