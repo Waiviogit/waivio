@@ -5,6 +5,7 @@ import { filter, maxBy, includes, get } from 'lodash';
 import DEFAULTS from '../object/const/defaultValues';
 
 import './ObjectAvatar.less';
+import { getProxyImageURL } from '../helpers/image';
 
 export const getObjectUrl = item => {
   const avatarFields = filter(item.fields, o => o.name === 'avatar');
@@ -20,6 +21,9 @@ const ObjectAvatar = ({ item, size }) => {
   };
   const parent = get(item, ['parent'], {});
   let url = item.avatar || parent.avatar;
+
+  if (url) url = getProxyImageURL(url, 'preview');
+
   if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
   if (url) {

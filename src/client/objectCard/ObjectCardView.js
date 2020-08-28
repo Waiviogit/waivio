@@ -11,6 +11,8 @@ import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 
 import './ObjectCardView.less';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getProxyImageURL } from '../helpers/image';
 
 const ObjectCardView = ({
   intl,
@@ -40,6 +42,8 @@ const ObjectCardView = ({
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;
 
+    if (url) url = getProxyImageURL(url, 'preview');
+
     if (!url) url = DEFAULTS.AVATAR;
 
     if (includes(url, 'waivio.')) url = `${url}_medium`;
@@ -55,8 +59,8 @@ const ObjectCardView = ({
       />
     );
   };
-  const objName = wObject.name || wObject.default_name;
-  const parentName = parent.name || parent.default_name;
+  const objName = getObjectName(wObject);
+  const parentName = getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
