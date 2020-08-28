@@ -35,7 +35,6 @@ export const getObjectType = (
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
-  const locale = getLocale(state);
   const sort = getObjectTypeSorting(state);
 
   const preparedData = {
@@ -49,7 +48,7 @@ export const getObjectType = (
   if (username) preparedData.userName = username;
   dispatch({
     type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData, locale),
+    payload: ApiClient.getObjectType(objectTypeName, preparedData),
     meta: {
       locale,
     },
