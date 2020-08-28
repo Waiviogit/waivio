@@ -160,17 +160,6 @@ class MapOS extends React.Component {
     return radius;
   };
 
-  getParsedMap = wobject => {
-    const json = wobject.map;
-    let parsedMap;
-    try {
-      parsedMap = JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
-    return parsedMap;
-  };
-
   getMarkers = () => {
     const { wobjects, match } = this.props;
     return (
