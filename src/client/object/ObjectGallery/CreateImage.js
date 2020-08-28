@@ -348,7 +348,7 @@ CreateImage.propTypes = {
   addImageToAlbumStore: PropTypes.func,
   rewardFund: PropTypes.shape(),
   rate: PropTypes.number,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
 };
 
 CreateImage.defaultProps = {
@@ -360,6 +360,7 @@ CreateImage.defaultProps = {
   addImageToAlbumStore: () => {},
   rewardFund: {},
   rate: 0,
+  defaultVotePercent: 100,
 };
 
 export default injectIntl(Form.create()(CreateImage));

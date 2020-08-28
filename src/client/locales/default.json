@@ -484,6 +484,7 @@
   "object_field_galleryAlbum": "Gallery album",
   "object_field_tagCategory": "Tag category",
   "object_field_categoryItem": "Tag",
+  "object_field_pageLink": "Page",
   "field_error": "{field} is required",
   "object_link_required": "Link to new object is required",
   "append_send": "Submit",
@@ -1340,5 +1341,6 @@
   "menu_rewards": "Rewards",
   "signing": "Signing in",
   "alphabet": "A..Z",
-  "page": "Page"
+  "page": "Page",
+  "imageSetter_invalid_link": "The link is invalid"
 }

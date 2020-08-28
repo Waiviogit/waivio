@@ -191,8 +191,7 @@ export default class AppendForm extends Component {
             } else {
               if (data.votePower !== null) {
                 if (objectFields.rating === formValues.currentField && formValues.rate) {
-                  const { author, permlink } = res.value;
-
+                  const { author, permlink } = res;
                   this.props.rateObject(
                     author,
                     permlink,

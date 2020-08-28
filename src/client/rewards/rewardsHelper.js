@@ -26,6 +26,7 @@ export const preparePropositionReqData = ({
   limit = 10,
   sort,
   isRequestWithoutRequiredObject,
+  locale,
   ...args
 }) => {
   const reqData = {
@@ -33,6 +34,7 @@ export const preparePropositionReqData = ({
     userName: username,
     match,
     sort,
+    locale,
   };
   if (!isRequestWithoutRequiredObject)
     reqData.requiredObject = match.params.campaignParent || match.params.name;
@@ -245,7 +247,7 @@ export const getMinExpertise = ({
       2,
     );
   }
-  return '';
+  return 0;
 };
 
 export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>

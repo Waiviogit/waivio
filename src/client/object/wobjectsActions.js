@@ -4,7 +4,7 @@ import { getAlbums } from './ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
-import { getLocale, getUsedLocale } from '../reducers';
+import { getAuthenticatedUserName, getLocale, getUsedLocale } from '../reducers';
 import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
@@ -44,16 +44,17 @@ export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
 export const getFeedContentByObject = object => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
+  const name = getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, 10, '', locale),
+    payload: ApiClient.getFeedContentByObject(object, 10, '', locale, name),
   }).catch(() => {});
 };
 
 export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
   dispatch(getAlbums(authorPermlink));
-  return dispatch(getObject(authorPermlink, username, requiredField));
+  dispatch(getObject(authorPermlink, username, requiredField));
 };
 
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';

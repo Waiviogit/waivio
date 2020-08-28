@@ -1339,6 +1339,9 @@
   "notify_campaign": "компании",
   "cancel_limit_order": "Лимитный заказ отменен",
   "menu_rewards": "Награды",
-  "page": "Страница"
-
+  "page": "Страница",
+  "signinForRewards": "Войдите в систему, чтобы получить награды!",
+  "signing": "Вход в систему",
+  "object_field_pageLink": "Страница",
+  "imageSetter_invalid_link": "Неправильная ссылка"
 }

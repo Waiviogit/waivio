@@ -94,11 +94,12 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
 ) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
+  const locale = getLocale(state);
   const search = replacer(searchString, '@');
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent).then(result => ({
+    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale).then(result => ({
       result,
       search,
       locale: usedLocale,
