@@ -235,11 +235,12 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const { history } = this.props;
+    const { history, intl } = this.props;
+    const { campaign } = this.state;
     const postData = this.buildPost();
     const isReview =
       !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
-    this.props.createPost(postData, this.props.beneficiaries, isReview);
+    this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
@@ -310,13 +311,6 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
-
-    if (campaign && campaign.alias) {
-      postData.body += `\n***\n${this.props.intl.formatMessage({
-        id: `check_review_post_add_text`,
-        defaultMessage: 'This review was sponsored in part by',
-      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
-    }
 
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
