@@ -318,7 +318,7 @@ export const testImage = (url, callback, timeout = 3000) => {
 /**
  *
  * @param items - array of waivio objects
- * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'custom'
+ * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
  * @param sortOrder - array of strings (object permlinks)
  * @returns {*}
  */
@@ -329,6 +329,9 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
   switch (sortBy) {
     case 'rank':
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
+      break;
+    case 'recency':
+      comparator = (a, b) => (a.createdAt < b.createdAt ? 1 : -1);
       break;
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);
