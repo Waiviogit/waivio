@@ -85,7 +85,7 @@ class UserMenu extends React.Component {
                 </span>
               </li>
               <li
-                className={this.getItemClasses('followed')}
+                className={this.getItemClasses('following')}
                 onClick={this.handleClick}
                 role="presentation"
                 data-key="following"

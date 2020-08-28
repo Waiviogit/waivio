@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, truncate, get } from 'lodash';
+import { includes, orderBy, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -21,6 +21,9 @@ const ObjectCardView = ({
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const parent = get(wObject, 'parent', {});
+  const street = get(wObject, ['address', 'street'], '');
+  const address = get(wObject, ['address', 'address'], '');
+  const city = get(wObject, ['address', 'city'], '');
 
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
@@ -31,19 +34,8 @@ const ObjectCardView = ({
       setTags(currentTags);
     } else setTags([wObject.object_type]);
   }, []);
-  const getObjectRatings = () => {
-    const ratingFields = filter(wObject.fields, ['name', 'rating']);
-    return ownRatesOnly
-      ? ratingFields.map(rating => ({
-          ...rating,
-          rating_votes:
-            (rating.rating_votes && rating.rating_votes.filter(vote => vote.voter === username)) ||
-            [],
-        }))
-      : ratingFields;
-  };
-  const pathName = pathNameAvatar || `/object/${wObject.id}`;
-  const ratings = getObjectRatings();
+
+  const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;
@@ -107,11 +99,11 @@ const ObjectCardView = ({
                 </Link>
                 {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
               </div>
-              {ratings && (
+              {wObject.rating && (
                 <RatingsWrap
                   mobileView={mobileView}
                   ownRatesOnly={ownRatesOnly}
-                  ratings={ratings}
+                  ratings={wObject.rating}
                   screenSize={screenSize}
                   username={username}
                   wobjId={wObject.id || wObject.author_permlink}
@@ -132,14 +124,8 @@ const ObjectCardView = ({
               </span>
               {wObject.address && (
                 <div className="ObjectCardView__tag-text">
-                  {(wObject.address.street || wObject.address.address) && (
-                    <span>
-                      {`${
-                        wObject.address.street ? wObject.address.street : wObject.address.address
-                      }, `}
-                    </span>
-                  )}
-                  {wObject.address.city && <span>{wObject.address.city}</span>}
+                  {(street || address) && <span>{`${street || address}, `}</span>}
+                  {city && <span>{city}</span>}
                 </div>
               )}
               {wObject.title ? (
