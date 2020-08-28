@@ -159,14 +159,25 @@ class MapOS extends React.Component {
     return radius;
   };
 
+  getParsedMap = wobject => {
+    const json = wobject.map;
+    let parsedMap;
+    try {
+      parsedMap = JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+    return parsedMap;
+  };
+
   getMarkers = () => {
     const { wobjects, match } = this.props;
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
         const parsedMap = getParsedMap(wobject);
-        const lat = parsedMap.latitude;
-        const lng = parsedMap.longitude;
+        const lat = get(parsedMap, ['latitude']);
+        const lng = get(parsedMap, ['longitude']);
         const isMarked =
           Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
           match.path.includes('rewards');
