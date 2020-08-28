@@ -6,7 +6,12 @@ import { Button, Icon, message } from 'antd';
 import { isEmpty, uniq, map, get, filter } from 'lodash';
 
 import Feed from '../../feed/Feed';
-import { getFeed, getReadLanguages, getCryptosPriceHistory } from '../../reducers';
+import {
+  getFeed,
+  getReadLanguages,
+  getCryptosPriceHistory,
+  getSuitableLanguage,
+} from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
 import {
   getFeedLoadingFromState,
@@ -28,6 +33,7 @@ import './ObjectFeed.less';
   state => ({
     feed: getFeed(state),
     readLocales: getReadLanguages(state),
+    usedLocale: getSuitableLanguage(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
   {
@@ -43,6 +49,7 @@ export default class ObjectFeed extends React.Component {
     /* from connect */
     feed: PropTypes.shape().isRequired,
     getObjectPosts: PropTypes.func,
+    usedLocale: PropTypes.string,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
     readLocales: PropTypes.arrayOf(PropTypes.string),
@@ -67,6 +74,7 @@ export default class ObjectFeed extends React.Component {
     readLocales: [],
     handleCreatePost: () => {},
     wobject: {},
+    usedLocale: 'en-US',
   };
 
   state = {
@@ -96,7 +104,7 @@ export default class ObjectFeed extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
+    const { match, limit, usedLocale } = this.props;
     const nextPropswobjectId = get(nextProps, ['wobject', '_id']);
     const thisPropsWobjectId = get(this.props, ['wobject', '_id']);
     const nextName = get(nextProps, ['match', 'params', 'name']);
@@ -116,11 +124,12 @@ export default class ObjectFeed extends React.Component {
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent']);
+      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
       const primaryObject = get(nextProps.wobject, ['author_permlink']);
       const reqData = {
         userName: nextProps.userName,
         match: nextProps.match,
+        locale: usedLocale,
       };
       if (requiredObject) {
         reqData.requiredObject = requiredObject;
@@ -137,6 +146,7 @@ export default class ObjectFeed extends React.Component {
         userName: nextProps.userName,
         requiredObject,
         match: nextProps.match,
+        locale: usedLocale,
       });
     }
 

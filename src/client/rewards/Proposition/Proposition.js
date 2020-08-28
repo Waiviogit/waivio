@@ -5,7 +5,6 @@ import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
-import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
@@ -45,12 +44,11 @@ const Proposition = ({
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
   const isEligible = getEligibility(proposition);
-  const { usedLocale } = useContext(AppSharedContext);
-  const proposedWobj = getClientWObj(wobj, usedLocale);
+  const proposedWobj = wobj;
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = getClientWObj(proposition.required_object, usedLocale);
-  const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
+  const parentObject = get(proposition, ['required_object'], {});
+  const requiredObjectName = get(proposition, ['required_object', 'name'], '');
   const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);

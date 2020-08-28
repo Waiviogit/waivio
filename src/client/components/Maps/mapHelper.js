@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { forEach } from 'lodash';
+import { forEach, isEmpty } from 'lodash';
 import { handleErrors } from '../../../waivioApi/ApiClient';
 import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
 
@@ -47,4 +47,14 @@ export const getZoom = radius => {
     }
   });
   return zoom;
+};
+
+export const getParsedMap = wobject => {
+  if (isEmpty(wobject)) return {};
+  const json = wobject.map;
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
 };
