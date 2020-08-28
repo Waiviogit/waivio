@@ -5,7 +5,7 @@ import {
   getObjectTypeSorting,
   getUserLocation,
   getQueryString,
-  getSuitableLanguage,
+  getLocale,
   getAuthenticatedUserName,
   getLocale,
 } from '../reducers';
@@ -36,7 +36,7 @@ export const getObjectType = (
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
-  const usedLocale = getSuitableLanguage(state);
+  const locale = getLocale(state);
   const sort = getObjectTypeSorting(state);
   const locale = getLocale(state);
 
@@ -46,13 +46,14 @@ export const getObjectType = (
     wobjects_skip: skip,
     filter: filters,
     sort,
+    locale,
   };
   if (username) preparedData.userName = username;
   dispatch({
     type: actionType,
     payload: ApiClient.getObjectType(objectTypeName, preparedData, locale),
     meta: {
-      locale: usedLocale,
+      locale,
     },
   });
 };

@@ -1341,5 +1341,6 @@
   "menu_rewards": "Rewards",
   "signing": "Signing in",
   "alphabet": "A..Z",
-  "page": "Page"
+  "page": "Page",
+  "imageSetter_invalid_link": "The link is invalid"
 }

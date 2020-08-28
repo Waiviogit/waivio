@@ -268,6 +268,7 @@ class CatalogWrap extends React.Component {
       match,
       requiredObject,
       sort: 'reward',
+      locale: this.props.locale,
     }).then(data => {
       this.setState({
         propositions: data.campaigns,

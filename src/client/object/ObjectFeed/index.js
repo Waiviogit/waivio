@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
-import { getIsAuthenticated, getSuitableLanguage } from '../../reducers';
+import { getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import { getClientWObj } from '../../adapters';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -19,7 +19,6 @@ const propTypes = {
 const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
-  const usedLocale = useSelector(getSuitableLanguage);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -28,9 +27,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
         `[${wobject.name || wobject.default_name}](${wobject.author_permlink})`,
       );
       if (!isEmpty(wobject.parent)) {
-        const parentObject = getClientWObj(wobject.parent, usedLocale);
+        const parentObject = wobject.parent;
         redirectUrl += `&object=${encodeURIComponent(
-          `[${parentObject.name}](${parentObject.author_permlink})`,
+          `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
         )}`;
       }
       history.push(redirectUrl);
