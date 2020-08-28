@@ -160,7 +160,7 @@ class CreateRewardForm extends React.Component {
           reward: campaign.reward,
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
-          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => obj) : [],
+          sponsorsList: !isEmpty(sponsors) ? values[2] : [],
           reservationPeriod: campaign.count_reservation_days,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,

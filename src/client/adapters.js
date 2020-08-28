@@ -32,7 +32,10 @@ export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
 
   if (serverWObj.parent) {
     if (result.avatar === DEFAULTS.AVATAR) {
-      result.avatar = get(serverWObj, ['parent', 'avatar']);
+      const parentFieldMaxWeight = getFieldsWithMaxWeight(serverWObj.parent);
+      if (parentFieldMaxWeight && parentFieldMaxWeight.avatar) {
+        result.avatar = parentFieldMaxWeight.avatar;
+      }
     }
   }
 

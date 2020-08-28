@@ -7,6 +7,7 @@ import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
+import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
 import { getRadius } from './mapHelper';
 import {
@@ -44,7 +45,7 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      zoom: this.props.match.params.filterKey === 'reserved' ? DEFAULT_ZOOM : 0,
+      zoom: this.props.match.params.filterKey === IS_RESERVED ? DEFAULT_ZOOM : 0,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isInitial: true,
       radius: DEFAULT_RADIUS,
@@ -62,7 +63,7 @@ class MapOS extends React.Component {
   componentDidMount() {
     const { radius, center } = this.state;
     const { setMapArea, match } = this.props;
-    if (match.params.filterKey !== 'reserved')
+    if (match.params.filterKey !== IS_RESERVED)
       setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
     document.addEventListener('click', this.handleClick);
   }
@@ -95,7 +96,7 @@ class MapOS extends React.Component {
     const propsMatch = get(match, ['params', 'filterKey']);
     const prevPropsMatch = get(prevProps.match, ['params', 'filterKey']);
 
-    if (prevPropsMatch === 'reserved' && propsMatch !== prevPropsMatch) {
+    if (prevPropsMatch === IS_RESERVED && propsMatch !== prevPropsMatch) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
     }
@@ -103,7 +104,7 @@ class MapOS extends React.Component {
     if (
       (propsMatch !== prevPropsMatch &&
         !isEqual(prevProps.match, this.props.match) &&
-        propsMatch !== 'reserved') ||
+        propsMatch !== IS_RESERVED) ||
       prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
     ) {
       const firstMapLoad = true;
@@ -124,7 +125,7 @@ class MapOS extends React.Component {
   updateMap = firstMapLoad => {
     const { match } = this.props;
     const isSecondaryObjectsCards =
-      !isEmpty(match.params.campaignParent) || match.params.filterKey === 'reserved';
+      !isEmpty(match.params.campaignParent) || match.params.filterKey === IS_RESERVED;
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
