@@ -240,11 +240,11 @@ class CatalogWrap extends React.Component {
   };
 
   handleAddItem = listItem => {
-    const { breadcrumb, listItems, sort } = this.state;
+    const { breadcrumb, listItems } = this.state;
     const { wobject } = this.props;
 
     this.setState({
-      listItems: sortListItemsBy([...listItems, listItem], sort, sort === 'recency'),
+      listItems: sortListItemsBy([...listItems, listItem], 'recency'),
     });
     if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
       this.props.addItemToWobjStore(listItem);
