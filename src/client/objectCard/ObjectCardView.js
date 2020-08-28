@@ -43,8 +43,7 @@ const ObjectCardView = ({
     let url = wObject.avatar || parent.avatar;
 
     if (url) url = getProxyImageURL(url, 'preview');
-
-    if (!url) url = DEFAULTS.AVATAR;
+    else url = DEFAULTS.AVATAR;
 
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 

@@ -23,20 +23,14 @@ const ObjectAvatar = ({ item, size }) => {
   let url = item.avatar || parent.avatar;
 
   if (url) url = getProxyImageURL(url, 'preview');
+  else url = DEFAULTS.AVATAR;
 
   if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
-  if (url) {
-    style = {
-      ...style,
-      backgroundImage: `url(${url})`,
-    };
-  } else {
-    style = {
-      ...style,
-      backgroundImage: `url(${DEFAULTS.AVATAR})`,
-    };
-  }
+  style = {
+    ...style,
+    backgroundImage: `url(${url})`,
+  };
 
   return <div className="ObjectAvatar" style={style} />;
 };
