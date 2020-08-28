@@ -310,7 +310,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.CLAIM_REWARD:
       return `/@${notification.account}`;
     case notificationConstants.CUSTOMER_SUPPORT:
-      return `/@${currentAuthUsername}/${notification.permlink}`;
+      return `/@${notification.author}/${notification.permlink}`;
     default:
       return '/notifications-list';
   }
