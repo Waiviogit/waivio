@@ -50,7 +50,6 @@ const CommentsMessages = memo(
     ]);
 
     const {
-      author,
       created: commentCreated,
       body: postBody,
       active_votes: activeVotes,
@@ -61,7 +60,6 @@ const CommentsMessages = memo(
     } = useMemo(
       () =>
         pick(commentObj, [
-          'author',
           'created',
           'body',
           'active_votes',
@@ -72,6 +70,8 @@ const CommentsMessages = memo(
         ]),
       [commentObj],
     );
+
+    const author = isGuest ? get(commentObj, ['guestInfo', 'userId']) : get(commentObj, ['author']);
 
     const time = moment.parseZone(commentCreated).valueOf();
 
