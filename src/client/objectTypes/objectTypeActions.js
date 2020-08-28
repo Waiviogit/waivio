@@ -36,6 +36,7 @@ export const getObjectType = (
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const sort = getObjectTypeSorting(state);
+  const locale = getLocale(state);
 
   const preparedData = {
     wobjects_count: limit,
