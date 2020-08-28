@@ -35,7 +35,7 @@ const ObjectCardView = ({
     } else setTags([wObject.object_type]);
   }, []);
 
-  const pathName = pathNameAvatar || `/object/${wObject.id}`;
+  const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;

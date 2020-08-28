@@ -240,15 +240,11 @@ class CatalogWrap extends React.Component {
   };
 
   handleAddItem = listItem => {
-    const { breadcrumb, listItems, sort } = this.state;
+    const { breadcrumb, listItems } = this.state;
     const { wobject } = this.props;
 
     this.setState({
-      listItems: sortListItemsBy(
-        [...listItems, listItem],
-        sort,
-        sort === 'custom' ? wobject[objectFields.sorting] : null,
-      ),
+      listItems: sortListItemsBy([...listItems, listItem], 'recency'),
     });
     if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
       this.props.addItemToWobjStore(listItem);
@@ -352,7 +348,7 @@ class CatalogWrap extends React.Component {
         />
       );
     }
-    return <div key={`category-${listItem.id}`}>{item}</div>;
+    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
   getMenuList = () => {
