@@ -1341,6 +1341,6 @@
   "menu_rewards": "Награды",
   "page": "Страница",
   "signinForRewards": "Войдите в систему, чтобы получить награды!",
-  "signing": "Вход в систему"
-
+  "signing": "Вход в систему",
+  "object_field_pageLink": "Страница"
 }

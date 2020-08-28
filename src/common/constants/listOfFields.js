@@ -27,6 +27,7 @@ export const objectFields = {
   tagCategory: 'tagCategory',
   menuItems: 'menuItems',
   categoryItem: 'categoryItem',
+  pageLink: 'pageLink',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -152,7 +153,7 @@ export const getAllowedFieldsByObjType = objectType => {
         TYPES_OF_MENU_ITEM.BUTTON,
       ];
     case OBJECT_TYPE.HASHTAG:
-      return [objectFields.avatar, objectFields.background, objectFields.status];
+      return [objectFields.avatar, objectFields.status];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];
       const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];

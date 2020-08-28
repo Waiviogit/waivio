@@ -484,6 +484,7 @@
   "object_field_galleryAlbum": "Gallery album",
   "object_field_tagCategory": "Tag category",
   "object_field_categoryItem": "Tag",
+  "object_field_pageLink": "Page",
   "field_error": "{field} is required",
   "object_link_required": "Link to new object is required",
   "append_send": "Submit",
