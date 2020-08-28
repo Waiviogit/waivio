@@ -66,7 +66,8 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const reservationPermlink = filter(proposition.objects, object => object.permlink)[0].permlink;
+    const permlink = filter(proposition.objects, object => object.permlink);
+    const reservationPermlink = !isEmpty(permlink) ? permlink[0].permlink : null;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
