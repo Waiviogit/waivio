@@ -189,12 +189,20 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData, beneficiaries, isReview) {
+export function createPost(postData, beneficiaries, isReview, campaign, intl) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
 
   return (dispatch, getState, { steemConnectAPI }) => {
+    if (isReview) {
+      // eslint-disable-next-line no-param-reassign
+      postData.body += `\n***\n${intl.formatMessage({
+        id: `check_review_post_add_text`,
+        defaultMessage: 'This review was sponsored in part by',
+      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+    }
+
     const {
       parentAuthor,
       parentPermlink,
@@ -208,6 +216,7 @@ export function createPost(postData, beneficiaries, isReview) {
       draftId,
       isUpdating,
     } = postData;
+
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
       : createPermlink(title, author, parentAuthor, parentPermlink);
