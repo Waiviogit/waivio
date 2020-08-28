@@ -339,7 +339,7 @@ class Topnav extends React.Component {
                     <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="my-profile">
-                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
+                    <FormattedMessage id="my_profile" defaultMessage="Profile" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="news" fullScreenHidden>
                     <FormattedMessage id="news" defaultMessage="News" />
