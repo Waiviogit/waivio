@@ -48,3 +48,14 @@ export const getZoom = radius => {
   });
   return zoom;
 };
+
+export const getParsedMap = wobject => {
+  const json = wobject.map;
+  let parsedMap;
+  try {
+    parsedMap = JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+  return parsedMap;
+};

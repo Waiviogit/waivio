@@ -29,11 +29,12 @@ const objectType = (state = initialState, action) => {
       } = action.payload;
       const filteredObjects = [
         ...state.filteredObjects,
-        ...relatedWobjects.filter(
-          wObj =>
-            !wObj.status ||
-            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-        ),
+        ...relatedWobjects.filter(wObj => {
+          const wobjStatus = wObj.status;
+          return (
+            !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
+          );
+        }),
       ];
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)

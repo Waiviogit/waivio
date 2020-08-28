@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
-import { getRadius } from './mapHelper';
+import { getRadius, getParsedMap } from './mapHelper';
 import {
   getFilteredObjectsMap,
   getIsMapModalOpen,
@@ -20,6 +20,7 @@ import {
 import { setMapFullscreenMode, resetUpdatedFlag } from './mapActions';
 import mapProvider from '../../helpers/mapProvider';
 import CustomMarker from './CustomMarker';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import './Map.less';
 
 const defaultCoords = {
@@ -163,13 +164,7 @@ class MapOS extends React.Component {
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
-        const json = wobject.map;
-        let parsedMap;
-        try {
-          parsedMap = JSON.parse(json);
-        } catch (e) {
-          return null;
-        }
+        const parsedMap = getParsedMap(wobject);
         const lat = parsedMap.latitude;
         const lng = parsedMap.longitude;
         const isMarked =
@@ -204,7 +199,7 @@ class MapOS extends React.Component {
         >
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div role="presentation" className="MapOS__overlay-wrap-name">
-            {wobj.name || wobj.default_name}
+            {getObjectName(wobj)}
           </div>
         </div>
       </Overlay>

@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
-import { getRadius } from './mapHelper';
+import { getRadius, getParsedMap } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
 import { getIsMapModalOpen } from '../../reducers';
@@ -58,13 +58,7 @@ class MapObjectInfo extends React.Component {
 
   getMarkers = () => {
     const { wobject } = this.props;
-    const json = wobject.map;
-    let parsedMap;
-    try {
-      parsedMap = JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
+    const parsedMap = getParsedMap(wobject);
     const lat = parsedMap.latitude;
     const lng = parsedMap.longitude;
     const isMarked = Boolean(

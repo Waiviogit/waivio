@@ -1,4 +1,4 @@
-import { getAuthenticatedUserName, getSuitableLanguage } from '../reducers';
+import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -90,7 +90,7 @@ export const GET_REWARDS_GENERAL_COUNTS = createAsyncActionType(
 
 export const getRewardsGeneralCounts = ({ userName, sort }) => (dispatch, getState) => {
   const state = getState();
-  const locale = getSuitableLanguage(state);
+  const locale = getLocale(state);
 
   return dispatch({
     type: GET_REWARDS_GENERAL_COUNTS.ACTION,

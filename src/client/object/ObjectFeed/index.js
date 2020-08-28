@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import { getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -28,7 +29,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
       if (!isEmpty(wobject.parent)) {
         const parentObject = wobject.parent;
         redirectUrl += `&object=${encodeURIComponent(
-          `[${parentObject.name || parentObject.default_name}](${parentObject.author_permlink})`,
+          `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
         )}`;
       }
       history.push(redirectUrl);
