@@ -7,7 +7,6 @@ import {
   getQueryString,
   getLocale,
   getAuthenticatedUserName,
-  getLocale,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -38,7 +37,6 @@ export const getObjectType = (
   const username = getAuthenticatedUserName(state);
   const locale = getLocale(state);
   const sort = getObjectTypeSorting(state);
-  const locale = getLocale(state);
 
   const preparedData = {
     wobjects_count: limit,
