@@ -61,7 +61,6 @@ export default class ObjectGalleryAlbum extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.albums);
     if (isEmpty(this.props.albums)) this.props.getAlbums(this.props.match.params.name);
   }
 
