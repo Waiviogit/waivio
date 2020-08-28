@@ -5,8 +5,9 @@ import {
   getObjectTypeSorting,
   getUserLocation,
   getQueryString,
-  getSuitableLanguage,
+  getLocale,
   getAuthenticatedUserName,
+  getLocale,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -35,8 +36,9 @@ export const getObjectType = (
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
-  const usedLocale = getSuitableLanguage(state);
+  const locale = getLocale(state);
   const sort = getObjectTypeSorting(state);
+  const locale = getLocale(state);
 
   const preparedData = {
     wobjects_count: limit,
@@ -44,13 +46,14 @@ export const getObjectType = (
     wobjects_skip: skip,
     filter: filters,
     sort,
+    locale,
   };
   if (username) preparedData.userName = username;
   dispatch({
     type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData),
+    payload: ApiClient.getObjectType(objectTypeName, preparedData, locale),
     meta: {
-      locale: usedLocale,
+      locale,
     },
   });
 };
