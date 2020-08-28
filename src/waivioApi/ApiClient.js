@@ -541,10 +541,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
       .catch(error => reject(error));
   });
 
-export const getObjectType = (typeName, requestData) =>
-  new Promise((resolve, reject) => {
+export const getObjectType = (typeName, requestData) => {
+  const { locale = 'en-US' } = requestData;
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(requestData),
     })
@@ -552,6 +553,7 @@ export const getObjectType = (typeName, requestData) =>
       .then(data => resolve(data))
       .catch(error => reject(error));
   });
+};
 
 export const getSearchResult = (
   string,
@@ -644,6 +646,7 @@ export const getPropositions = ({
   firstMapLoad,
   isMap,
   primaryObject,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -675,7 +678,7 @@ export const getPropositions = ({
     const url = getUrl(match);
 
     fetch(url, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -696,6 +699,7 @@ export const getHistory = ({
   status,
   guideNames,
   campaignNames,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -718,7 +722,7 @@ export const getHistory = ({
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -832,10 +836,16 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
+export const getRewardsGeneralCounts = ({
+  userName,
+  sort,
+  limit = 10,
+  skip = 0,
+  locale = 'en-US',
+} = {}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify({
         userName: userName,

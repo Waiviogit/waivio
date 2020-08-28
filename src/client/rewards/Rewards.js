@@ -70,7 +70,6 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
 import { getZoom } from '../components/Maps/mapHelper';
 
@@ -232,7 +231,7 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    if (!isSecondaryObjectsCards) {
+    if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
@@ -413,6 +412,7 @@ class Rewards extends React.Component {
     isMap,
     firstMapLoad,
   ) => {
+    const { usedLocale } = this.props;
     this.setState({ loadingCampaigns: !isMap });
     getPropositions(
       preparePropositionReqData({
@@ -428,16 +428,15 @@ class Rewards extends React.Component {
         firstMapLoad: !!isMap && firstMapLoad,
         isMap,
         isRequestWithoutRequiredObject,
+        locale: usedLocale,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
       this.setState({
-        campaignsTypes: data.campaigns_types,
         area,
         radius,
         loading: false,
         fetched: false,
-        hasMore: data.hasMore,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -447,14 +446,15 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
+        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
-        });
-        const sponsors = sortBy(data.sponsors);
-        this.setState({
+          campaignsTypes: data.campaigns_types,
+          area,
+          radius,
+          hasMore: data.hasMore,
           sponsors,
-          propositions: data.campaigns,
         });
       }
       if (isMap && firstMapLoad) {
@@ -725,7 +725,7 @@ class Rewards extends React.Component {
       radius,
       isSearchAreaFilter,
     } = this.state;
-    const { username, match } = this.props;
+    const { username, match, usedLocale } = this.props;
     if (hasMore) {
       this.setState(
         {
@@ -737,6 +737,7 @@ class Rewards extends React.Component {
             match,
             sort,
             area,
+            usedLocale,
             ...activeFilters,
           });
           reqData.skip = propositions.length;
@@ -759,6 +760,7 @@ class Rewards extends React.Component {
 
   getCampaignsObjectsForMap = () => {
     const { propositions, propositionsReserved } = this.state;
+    const { match } = this.props;
     const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
@@ -774,7 +776,15 @@ class Rewards extends React.Component {
     const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
       secondaryObjectsWithUniqueCoordinates,
     );
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWeight];
+    const campaignsObjectsForMap =
+      match.params.filterKey === 'reserved'
+        ? map(newPropositions, proposition => {
+            const propositionObject = get(proposition, ['objects', '0', 'object']);
+            return !isEmpty(propositionObject.map)
+              ? propositionObject
+              : proposition.required_object;
+          })
+        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
     return campaignsObjectsForMap;
   };
@@ -833,7 +843,7 @@ class Rewards extends React.Component {
       activeGuideHistoryFilters,
       url,
     } = this.state;
-    const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
+    const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
@@ -850,6 +860,7 @@ class Rewards extends React.Component {
         : 0;
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
+      usedLocale,
       currentSteemPrice,
       hasMore,
       IsRequiredObjectWrap,
