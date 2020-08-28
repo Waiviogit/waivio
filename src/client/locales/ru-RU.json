@@ -1342,6 +1342,7 @@
   "page": "Страница",
   "signinForRewards": "Войдите в систему, чтобы получить награды!",
   "signing": "Вход в систему",
-  "imageSetter_invalid_link": "Неправильная ссылка",
-  "my-profile": "Профиль"
+  "object_field_pageLink": "Страница",
+  "my-profile": "Профиль",
+  "imageSetter_invalid_link": "Неправильная ссылка"
 }
