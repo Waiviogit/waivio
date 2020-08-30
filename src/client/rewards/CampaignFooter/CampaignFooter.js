@@ -486,6 +486,7 @@ class CampaignFooter extends React.Component {
                 parent={rootComment}
                 matchPath={match.params[0]}
                 isGuest={isGuest}
+                proposition={proposition}
               />
             </div>
           ))}
