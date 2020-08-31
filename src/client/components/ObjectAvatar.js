@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { filter, maxBy, includes, get } from 'lodash';
 
 import DEFAULTS from '../object/const/defaultValues';
+import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectAvatar.less';
-import { getProxyImageURL } from '../helpers/image';
 
 export const getObjectUrl = item => {
   const avatarFields = filter(item.fields, o => o.name === 'avatar');
