@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _, { isEmpty, omit } from 'lodash';
+import _, { isEmpty, omit, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -37,6 +37,8 @@ import { assignProposition, declineProposition, getCoordinates } from '../user/u
 // eslint-disable-next-line import/extensions
 import * as apiConfig from '../../waivioApi/config';
 import { RADIUS, ZOOM } from '../../common/constants/map';
+import { getCryptoPriceHistory } from '../app/appActions';
+import { HBD, HIVE } from '../../common/constants/cryptos';
 
 const modalName = {
   FILTERS: 'filters',
@@ -71,6 +73,7 @@ const SORT_OPTIONS = {
     declineProposition,
     getObjectTypeMap,
     getCoordinates,
+    getCryptoPriceHistory,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -98,6 +101,7 @@ class DiscoverObjectsContent extends Component {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
+    getCryptoPriceHistory: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -124,8 +128,13 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, typeName } = this.props;
+    const {
+      dispatchGetObjectType,
+      typeName,
+      getCryptoPriceHistory: getCryptoPriceHistoryAction,
+    } = this.props;
     dispatchGetObjectType(typeName, { skip: 0 });
+    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentWillUnmount() {
@@ -355,12 +364,20 @@ class DiscoverObjectsContent extends Component {
           >
             {filteredObjects.map(wObj => {
               if (wObj.campaigns) {
+                const minReward = get(wObj, ['campaigns', 'min_reward']);
+                const rewardPricePassed = minReward ? `${minReward.toFixed(2)} USD` : '';
+                const maxReward = get(wObj, ['campaigns', 'max_reward']);
+                const rewardMaxPassed =
+                  maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
                 return (
                   <Campaign
                     proposition={wObj}
                     filterKey={'all'}
                     key={wObj.id}
+                    passedParent={wObj.parent}
                     userName={userName}
+                    rewardPricePassed={!rewardMaxPassed ? rewardPricePassed : null}
+                    rewardMaxPassed={rewardMaxPassed || null}
                   />
                 );
               }
