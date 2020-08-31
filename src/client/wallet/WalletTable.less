@@ -1,0 +1,41 @@
+@import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/custom.less';
+
+.WalletTable {
+  border: 1px solid @black;
+  text-align: center;
+  text-transform: capitalize;
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+
+  & th {
+    border: 1px solid @black;
+    vertical-align: top;
+  }
+
+  & td {
+    font-size: 15px;
+    border: 1px solid @black;
+  }
+
+  &__view-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-bottom: -15px;
+    cursor: pointer;
+    color: @orange-hot;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: @neon-carrot;
+    }
+
+    &:active {
+      color: @active-orange-btn;
+    }
+  }
+}
+
+@import 'WalletTable-nightmode';

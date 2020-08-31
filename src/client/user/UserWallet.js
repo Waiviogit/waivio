@@ -129,6 +129,10 @@ class Wallet extends Component {
     history: {},
   };
 
+  state = {
+    isTable: false,
+  };
+
   componentDidMount() {
     const {
       totalVestingShares,
@@ -238,6 +242,14 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
+        <span
+          className="WalletTable__view-btn"
+          role="presentation"
+          onClick={() => this.props.history.push(`/@${user.name}/table`)}
+          onChange={() => this.setState({ isTable: true })}
+        >
+          Table view
+        </span>
         {isMobile && <WalletSidebar />}
         {walletTransactions}
         <Transfer history={this.props.history} />
