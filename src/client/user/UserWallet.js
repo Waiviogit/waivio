@@ -43,6 +43,8 @@ import Transfer from '../wallet/Transfer';
 import Withdraw from '../wallet/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
 
+import './UserWallet.less';
+
 @withRouter
 @connect(
   (state, ownProps) => ({
@@ -243,7 +245,7 @@ class Wallet extends Component {
           isGuest={isGuest}
         />
         <span
-          className="WalletTable__view-btn"
+          className="UserWallet__view-btn"
           role="presentation"
           onClick={() => this.props.history.push(`/@${user.name}/table`)}
           onChange={() => this.setState({ isTable: true })}
