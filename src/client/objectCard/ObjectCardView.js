@@ -4,11 +4,12 @@ import { includes, orderBy, truncate, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { getObjectName } from '../helpers/wObjectHelper';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
 
@@ -40,7 +41,8 @@ const ObjectCardView = ({
   const avatarLayout = () => {
     let url = wObject.avatar || passedParent.avatar;
 
-    if (!url) url = DEFAULTS.AVATAR;
+    if (url) url = getProxyImageURL(url, 'preview');
+    else url = DEFAULTS.AVATAR;
 
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
@@ -56,6 +58,7 @@ const ObjectCardView = ({
     );
   };
   const objName = getObjectName(wObject);
+  const parentName = getObjectName(passedParent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -79,13 +82,13 @@ const ObjectCardView = ({
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
-              {passedParent.name && (
+              {parentName && (
                 <Link
                   to={`/object/${get(passedParent, 'author_permlink', '')}`}
-                  title={goToObjTitle(passedParent.name)}
+                  title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
-                  {passedParent.name}
+                  {parentName}
                 </Link>
               )}
               <div className="ObjectCardView__name">
