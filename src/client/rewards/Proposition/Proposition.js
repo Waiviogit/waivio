@@ -47,7 +47,9 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = get(proposition, ['required_object'], {});
   const requiredObjectName = getObjectName(proposition.required_object);
-  const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
+  const isMessages = !isEmpty(match)
+    ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
+    : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
