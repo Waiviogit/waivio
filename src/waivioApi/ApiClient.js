@@ -243,7 +243,7 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getContent = (author, permlink = '', locale, follower) => {
+export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
       headers: { ...headers, locale, follower },
@@ -253,7 +253,6 @@ export const getContent = (author, permlink = '', locale, follower) => {
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-};
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15, locale) => {
   const requestBody = { search_string: searchString, limit };
