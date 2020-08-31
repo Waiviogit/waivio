@@ -9,10 +9,10 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-
-import './ObjectCardView.less';
 import { getObjectName } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
+
+import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
