@@ -119,13 +119,13 @@ class CatalogWrap extends React.Component {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
     if (!isEmpty(wobject)) {
-      const requiredObject = this.getRequiredObject(wobject, match);
+      const requiredObject = wobject.author_permlink;
       if (requiredObject) {
         this.getPropositions({ userName, match, requiredObject, sort });
       }
     } else {
       getObject(match.params.name, userName, locale).then(wObject => {
-        const requiredObject = this.getRequiredObject(wObject, match);
+        const requiredObject = wObject.author_permlink;
         if (requiredObject) {
           this.getPropositions({ userName, match, requiredObject, sort });
         }
@@ -332,11 +332,11 @@ class CatalogWrap extends React.Component {
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
-    const isList = listItem.type === OBJ_TYPE.LIST;
+    const isList = listItem.object_type === OBJ_TYPE.LIST;
     const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
     let item;
     if (isList) {
-      item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
+      item = <CategoryItemView wObject={listItem} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = this.renderProposition(propositions, listItem);
     } else {
