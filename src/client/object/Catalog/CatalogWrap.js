@@ -119,13 +119,13 @@ class CatalogWrap extends React.Component {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
     if (!isEmpty(wobject)) {
-      const requiredObject = this.getRequiredObject(wobject, match);
+      const requiredObject = wobject.author_permlink;
       if (requiredObject) {
         this.getPropositions({ userName, match, requiredObject, sort });
       }
     } else {
       getObject(match.params.name, userName, locale).then(wObject => {
-        const requiredObject = this.getRequiredObject(wObject, match);
+        const requiredObject = wObject.author_permlink;
         if (requiredObject) {
           this.getPropositions({ userName, match, requiredObject, sort });
         }
@@ -501,6 +501,9 @@ class CatalogWrap extends React.Component {
       currWobject[objectFields.sorting] &&
       currWobject[objectFields.sorting].length ? (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="recency">
+            <FormattedMessage id="recency" defaultMessage="Recency" />
+          </SortSelector.Item>
           <SortSelector.Item key="custom">
             <FormattedMessage id="custom" defaultMessage="Custom" />
           </SortSelector.Item>
@@ -520,6 +523,9 @@ class CatalogWrap extends React.Component {
         </SortSelector>
       ) : (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="recency">
+            <FormattedMessage id="recency" defaultMessage="Recency" />
+          </SortSelector.Item>
           <SortSelector.Item key="rank">
             <FormattedMessage id="rank" defaultMessage="Rank" />
           </SortSelector.Item>
