@@ -38,8 +38,10 @@ export const MESSAGES = 'messages';
 export const HISTORY = 'history';
 
 export const ASSIGNED = 'assigned';
+export const UNASSIGNED = 'unassigned';
 
 export const IS_RESERVED = 'reserved';
+export const IS_ALL = 'all';
 export const CAMPAIGNS = 'campaigns';
 
 export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
