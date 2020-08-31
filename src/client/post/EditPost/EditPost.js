@@ -43,6 +43,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './EditPost.less';
 
@@ -148,28 +149,28 @@ class EditPost extends Component {
     const isReview = !isEmpty(campaignId);
     if (isReview)
       getCampaignById(campaignId)
-        .then(campaignData => {
-          const requiredObj = get(campaignData.requiredObject, 'name', '');
-          const secondObj = get(campaignData.objects, '[0].name', '');
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .then(() => {
+          setTimeout(() => {
+            const { linkedObjects } = this.state;
+            const requiredObj = get(linkedObjects, '[0]', '');
+            const secondObj = get(linkedObjects, '[1]', '');
+            const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(
+              secondObj,
+            )}`;
 
-          const requiredObjPermlink = get(campaignData, 'requiredObject', '');
-          const secondObjPermlink = get(campaignData, 'objects[0]', '');
-          const topics = [];
-          if (
-            requiredObjPermlink.object_type === 'hashtag' ||
-            secondObjPermlink.object_type === 'hashtag'
-          ) {
-            topics.push(requiredObjPermlink.author_permlink || secondObjPermlink.author_permlink);
-          }
-          const reviewTitle = `Review: ${requiredObj}, ${secondObj}`;
-          return this.setState({
-            campaign: { ...campaignData, fetched: true },
-            draftContent: {
-              title: reviewTitle,
-              body: this.state.draftContent.body,
-            },
-            topics,
-          });
+            const topics = [];
+            if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
+              topics.push(requiredObj.author_permlink || secondObj.author_permlink);
+            }
+            return this.setState({
+              draftContent: {
+                title: reviewTitle,
+                body: this.state.draftContent.body,
+              },
+              topics,
+            });
+          }, 300);
         })
         .catch(error => {
           message.error(
@@ -438,7 +439,6 @@ class EditPost extends Component {
               handleSelect={this.handleObjectSelect}
             />
             <CreateObject onCreateObject={this.handleCreateObject} />
-
             {linkedObjects.map(wObj => (
               <PostObjectCard
                 isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}

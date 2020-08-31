@@ -11,7 +11,14 @@ import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/Popov
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
 import { popoverDataHistory, buttonsTitle, getPopoverDataMessages } from '../rewardsHelper';
-import { GUIDE_HISTORY, MESSAGES, ASSIGNED, HISTORY } from '../../../common/constants/rewards';
+import {
+  GUIDE_HISTORY,
+  MESSAGES,
+  ASSIGNED,
+  HISTORY,
+  IS_RESERVED,
+  IS_ALL,
+} from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward } from '../../user/userActions';
@@ -547,23 +554,24 @@ export default class CampaignButtons extends React.Component {
     );
   }
 
+  getPropositionStatus = proposition => {
+    const { match } = this.props;
+    const isReserved =
+      match.params.filterKey === IS_RESERVED ||
+      match.params.filterKey === IS_ALL ||
+      includes(match.path, 'object');
+    if (isReserved) return ASSIGNED;
+    return get(proposition, ['users', '0', 'status'], '');
+  };
+
   render() {
-    const {
-      intl,
-      numberOfComments,
-      daysLeft,
-      propositionStatus,
-      user,
-      proposition,
-      match,
-    } = this.props;
+    const { intl, numberOfComments, daysLeft, propositionStatus, user, proposition } = this.props;
     const { value, isOpenModalEnterAmount, isLoading } = this.state;
     const isAssigned = get(proposition, ['objects', '0', ASSIGNED]);
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const propositionUserWeight = get(proposition, ['users', '0', 'wobjects_weight']);
-    const isReserved = match.params.filterKey === 'reserved' || includes(match.path, 'object');
-    const status = isReserved ? ASSIGNED : get(proposition, ['users', '0', 'status'], '');
+    const status = this.getPropositionStatus(proposition);
     const buttonsTitleForRender = buttonsTitle[status] || buttonsTitle.default;
 
     return (

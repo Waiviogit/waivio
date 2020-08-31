@@ -226,6 +226,7 @@ export const getIsStartSearchAutoComplete = state =>
   fromSearch.getIsStartSearchAutoComplete(state.search);
 export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
+export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
