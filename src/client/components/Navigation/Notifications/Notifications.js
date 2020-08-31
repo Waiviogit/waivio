@@ -384,7 +384,6 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
-                    currentAuthUsername={currentAuthUsername}
                   />
                 );
               default:
