@@ -246,6 +246,7 @@ class CatalogWrap extends React.Component {
     this.setState({
       listItems: sortListItemsBy([...listItems, listItem], 'recency'),
     });
+
     if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
       this.props.addItemToWobjStore(listItem);
     }
@@ -332,7 +333,7 @@ class CatalogWrap extends React.Component {
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
-    const isList = listItem.object_type === OBJ_TYPE.LIST;
+    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
     let item;
     if (isList) {

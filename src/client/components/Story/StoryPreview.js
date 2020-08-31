@@ -61,6 +61,7 @@ const StoryPreview = ({ post, isUpdates }) => {
   }
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
+  console.log(post.body);
 
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
