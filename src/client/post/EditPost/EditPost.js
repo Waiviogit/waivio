@@ -43,6 +43,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './EditPost.less';
 
@@ -152,16 +153,16 @@ class EditPost extends Component {
         .then(() => {
           setTimeout(() => {
             const { linkedObjects } = this.state;
-            const requiredObj = get(linkedObjects, '[0]', '') || get(linkedObjects, '[0]', {});
-            const secondObj = get(linkedObjects, '[1]', '') || get(linkedObjects, '[1]', {});
-            const reviewTitle = `Review: ${requiredObj.name ||
-              requiredObj.default_name}, ${secondObj.name || secondObj.default_name}`;
+            const requiredObj = get(linkedObjects, '[0]', '');
+            const secondObj = get(linkedObjects, '[1]', '');
+            const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(
+              secondObj,
+            )}`;
 
             const topics = [];
             if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
               topics.push(requiredObj.author_permlink || secondObj.author_permlink);
             }
-
             return this.setState({
               draftContent: {
                 title: reviewTitle,
