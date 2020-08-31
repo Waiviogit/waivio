@@ -255,7 +255,6 @@ class StoryFull extends React.Component {
       isOriginalPost,
       match,
     } = this.props;
-    console.log('match', match);
     const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -328,7 +327,6 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-    console.log('linkedObjects', linkedObjects);
 
     return (
       <div className="StoryFull">

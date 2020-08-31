@@ -174,6 +174,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
+        follower: userName,
       },
       method: 'POST',
       body: JSON.stringify({

@@ -13,6 +13,7 @@ import {
   getIsPostFailed,
   getUser,
   getIsAuthFetching,
+  getSuitableLanguage,
 } from '../reducers';
 import { getContent } from './postActions';
 import { getUserAccount } from '../user/usersActions';
@@ -38,6 +39,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),
     failed: getIsPostFailed(state, ownProps.match.params.author, ownProps.match.params.permlink),
     user: getUser(state, ownProps.match.params.author),
+    locale: getSuitableLanguage(state),
   }),
   { getContent, getUserAccount },
 )
@@ -53,6 +55,7 @@ export default class Post extends React.Component {
     failed: PropTypes.bool,
     getContent: PropTypes.func,
     getUserAccount: PropTypes.func,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -62,6 +65,7 @@ export default class Post extends React.Component {
     fetching: false,
     loaded: false,
     failed: false,
+    locale: 'en-US',
     getContent: () => {},
     getUserAccount: () => {},
   };
@@ -132,7 +136,7 @@ export default class Post extends React.Component {
   };
 
   render() {
-    const { content, fetching, loaded, failed, isAuthFetching, user, match } = this.props;
+    const { content, fetching, loaded, failed, isAuthFetching, user, match, locale } = this.props;
 
     if (failed) return <Error404 />;
     if (fetching || !content) return <Loading />;
@@ -150,7 +154,7 @@ export default class Post extends React.Component {
           <div className="post-layout container">
             <Affix className="rightContainer" stickPosition={77}>
               <div className="right">
-                <PostRecommendation isAuthFetching={isAuthFetching} />
+                <PostRecommendation isAuthFetching={isAuthFetching} locale={locale} />
               </div>
             </Affix>
             {showPost ? (
