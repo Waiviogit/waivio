@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,14 +11,12 @@ import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import {
   rejectReservationCampaign,
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
-import { generatePermlink } from '../../helpers/wObjectHelper';
-import { AppSharedContext } from '../../Wrapper';
+import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
@@ -48,7 +46,7 @@ const Proposition = ({
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = get(proposition, ['required_object'], {});
-  const requiredObjectName = get(proposition, ['required_object', 'name'], '');
+  const requiredObjectName = getObjectName(proposition.required_object);
   const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
@@ -64,7 +62,8 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const reservationPermlink = filter(proposition.objects, object => object.permlink)[0].permlink;
+    const permlinks = filter(proposition.objects, object => object.permlink);
+    const reservationPermlink = get(permlinks, ['0', 'permlink']);
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,

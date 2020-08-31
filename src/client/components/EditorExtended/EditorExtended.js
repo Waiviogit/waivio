@@ -140,7 +140,11 @@ class Editor extends React.Component {
       this.handleContentChange(createEditorState(rawContentUpdated));
     }
     // eslint-disable-next-line no-unused-expressions
-    !isEmpty(rawContent.blocks) && this.handleContentChange(createEditorState(rawContent));
+    !isEmpty(rawContent.blocks) &&
+      setTimeout(
+        () => this.handleContentChange(EditorState.moveFocusToEnd(createEditorState(rawContent))),
+        0,
+      );
   };
 
   handleContentChange = editorState => {

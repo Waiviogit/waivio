@@ -4,7 +4,11 @@ import _ from 'lodash';
 import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
+import {
+  clearSearchObjectsResults,
+  resetToInitialIsClearSearchObj,
+  searchObjectsAutoCompete,
+} from '../../search/searchActions';
 import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
@@ -21,6 +25,7 @@ import './SearchObjectsAutocomplete.less';
   {
     searchObjects: searchObjectsAutoCompete,
     clearSearchResults: clearSearchObjectsResults,
+    resetIsClearSearchFlag: resetToInitialIsClearSearchObj,
   },
 )
 class SearchObjectsAutocomplete extends Component {
@@ -34,6 +39,7 @@ class SearchObjectsAutocomplete extends Component {
     objectType: '',
     searchObjects: () => {},
     clearSearchResults: () => {},
+    resetIsClearSearchFlag: () => {},
     handleSelect: () => {},
     allowClear: true,
     rowIndex: 0,
@@ -64,6 +70,7 @@ class SearchObjectsAutocomplete extends Component {
     autoFocus: PropTypes.bool,
     style: PropTypes.shape({}),
     isSearchObject: PropTypes.bool,
+    resetIsClearSearchFlag: PropTypes.func,
   };
 
   constructor(props) {
@@ -115,6 +122,7 @@ class SearchObjectsAutocomplete extends Component {
       this.props.ruleIndex,
     );
     this.props.clearSearchResults();
+    setTimeout(() => this.props.resetIsClearSearchFlag(), 300);
     this.setState({ searchString: '' });
   }
 
