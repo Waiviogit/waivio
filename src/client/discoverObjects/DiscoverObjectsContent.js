@@ -381,7 +381,14 @@ class DiscoverObjectsContent extends Component {
                   />
                 ));
               }
-              return <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />;
+              return (
+                <ObjectCardView
+                  key={wObj.id}
+                  wObject={wObj}
+                  passedParent={wObj.parent}
+                  intl={intl}
+                />
+              );
             })}
           </ReduxInfiniteScroll>
         ) : (
