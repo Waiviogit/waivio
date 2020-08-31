@@ -154,14 +154,14 @@ const broadcastComment = (
     allow_votes: true,
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 HBD',
-    percent_steem_dollars: 10000,
+    percent_hive_dollars: 10000,
     extensions: [],
   };
 
   if (reward === rewardsValues.none) {
     commentOptionsConfig.max_accepted_payout = '0.000 HBD';
   } else if (reward === rewardsValues.all) {
-    commentOptionsConfig.percent_steem_dollars = 0;
+    commentOptionsConfig.percent_hive_dollars = 0;
   }
 
   if (referral && referral !== authUsername) {
