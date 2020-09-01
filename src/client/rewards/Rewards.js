@@ -204,7 +204,7 @@ class Rewards extends React.Component {
     const { username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (username !== nextProps.username && !url) {
+    if (username !== nextProps.username) {
       const userName = username || nextProps.username;
       this.getPropositionsByStatus({ username: userName, sort });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
