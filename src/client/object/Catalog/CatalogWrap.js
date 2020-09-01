@@ -39,7 +39,7 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { hasType } from '../../helpers/wObjectHelper';
+import { getObjectName, hasType } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -180,7 +180,7 @@ class CatalogWrap extends React.Component {
               ...prevState.breadcrumb,
               {
                 id: res.author_permlink,
-                name: res.name || res.default_name,
+                name: getObjectName(res),
                 path,
               },
             ];
