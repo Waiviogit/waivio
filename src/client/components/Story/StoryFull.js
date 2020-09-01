@@ -31,7 +31,7 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../user/userActions';
+import { assignProposition } from '../../user/userActions';
 
 import './StoryFull.less';
 
@@ -39,7 +39,6 @@ import './StoryFull.less';
 @withAuthActions
 @connect(null, {
   assignProposition,
-  declineProposition,
 })
 class StoryFull extends React.Component {
   static propTypes = {
@@ -66,8 +65,8 @@ class StoryFull extends React.Component {
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     match: PropTypes.shape(),
-    assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
+    assignProposition: PropTypes.func,
+    history: PropTypes.shape(),
     /* from context */
     isOriginalPost: PropTypes.string,
   };
@@ -88,10 +87,12 @@ class StoryFull extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onEditClick: () => {},
+    assignProposition: () => {},
     postState: {},
     isOriginalPost: '',
     defaultVotePercent: 0,
     match: {},
+    history: {},
   };
 
   constructor(props) {
@@ -168,11 +169,28 @@ class StoryFull extends React.Component {
     }
   }
 
-  assignPropositionHandler = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => {
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+    proposition,
+    proposedWobj,
+  }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssign: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        resPermlink,
+        objPermlink,
+        companyId,
+        proposition,
+        proposedWobj,
+        appName,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
@@ -187,44 +205,6 @@ class StoryFull extends React.Component {
           this.props.intl.formatMessage({
             id: 'cannot_reserve_company',
             defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
-
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssign: true });
-    this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
           }),
         );
         this.setState({ loadingAssign: false });
@@ -253,6 +233,7 @@ class StoryFull extends React.Component {
       onEditClick,
       isOriginalPost,
       match,
+      history,
     } = this.props;
     const { loadingAssign } = this.state;
     const taggedObjects = [];
@@ -492,6 +473,8 @@ class StoryFull extends React.Component {
                       key={obj.author_permlink}
                       assigned={proposition.assigned}
                       match={match}
+                      user={user}
+                      history={history}
                     />
                   ));
                 }

@@ -131,12 +131,10 @@ const Proposition = ({
             currencyId,
           }),
         )
-        .then(({ isAssign }) => {
-          if (isAssign) {
-            setModalDetailsOpen(!isModalDetailsOpen);
-            setReservation(true);
-            history.push('/rewards/reserved');
-          }
+        .then(() => {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          setReservation(true);
+          history.push('/rewards/reserved');
         })
         .catch(e => {
           if (e.error_description || e.message) {
