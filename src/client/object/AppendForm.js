@@ -24,7 +24,6 @@ import apiConfig from '../../waivioApi/config.json';
 import {
   addressFields,
   buttonFields,
-  getAllowedFieldsByObjType,
   linkFields,
   mapFields,
   objectFields,
@@ -51,12 +50,16 @@ import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import { getField } from '../helpers/wObjectHelper';
-import { appendObject } from '../object/appendActions';
+import { getField, getObjectName, hasType } from '../helpers/wObjectHelper';
+import { appendObject } from './appendActions';
 import withEditor from '../components/Editor/withEditor';
 import { getVoteValue } from '../helpers/user';
-import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
-import { rateObject } from '../object/wobjActions';
+import {
+  getExposedFieldsByObjType,
+  getInnerFieldWithMaxWeight,
+  getListItems,
+} from './wObjectHelper';
+import { rateObject } from './wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
@@ -173,7 +176,7 @@ export default class AppendForm extends Component {
               },
               {
                 field: form.getFieldValue('currentField'),
-                wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+                wobject: getObjectName(wObject),
               },
             ),
           );
@@ -432,9 +435,6 @@ export default class AppendForm extends Component {
     });
   };
 
-  // News Filter Block
-
-  // eslint-disable-next-line react/sort-comp
   addNewNewsFilterLine = () => {
     const allowList = this.state.allowList;
     allowList[this.state.allowList.length] = [];
@@ -1461,13 +1461,12 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { intl, chosenLocale, usedLocale, currentField, form, wObject } = this.props;
+    const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
     const isCustomSortingList =
-      wObject.object_type &&
-      wObject.object_type.toLowerCase() === OBJECT_TYPE.LIST &&
+      hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];
@@ -1488,18 +1487,10 @@ export default class AppendForm extends Component {
       );
     }
 
-    getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
-      let intlId = option;
-      let metaInfo = '';
-      if (includes(TYPES_OF_MENU_ITEM, option)) {
-        intlId = 'menuItem';
-        metaInfo = option;
-      }
+    getExposedFieldsByObjType(wObject).forEach(option => {
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          <FormattedMessage id={`object_field_${intlId}`} defaultMessage={option} />
-          {metaInfo &&
-            ` (${intl.formatMessage({ id: `object_field_${metaInfo}`, defaultMessage: option })})`}
+          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
         </Select.Option>,
       );
     });

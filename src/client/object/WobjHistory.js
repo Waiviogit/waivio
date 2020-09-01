@@ -15,11 +15,7 @@ import {
   getRate,
   getIsAppendLoading,
 } from '../reducers';
-import {
-  objectFields,
-  getAllowedFieldsByObjType,
-  sortingMenuName,
-} from '../../common/constants/listOfFields';
+import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
@@ -32,6 +28,8 @@ import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
 import AppendCard from './AppendCard';
 import Loading from '../components/Icon/Loading';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getExposedFieldsByObjType } from './wObjectHelper';
 
 import './WobjHistory.less';
 
@@ -122,6 +120,18 @@ class WobjHistory extends React.Component {
 
   handleSortChange = sort => this.setState({ sort });
 
+  sortedList = (wobj, voteValue, sort) => {
+    switch (sort) {
+      case 'vote':
+        return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
+
+      case 'approval':
+        return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
+      default:
+        return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
+    }
+  };
+
   render() {
     const {
       field,
@@ -143,18 +153,7 @@ class WobjHistory extends React.Component {
           1000000
         : 0;
 
-    const sortedList = wobj => {
-      switch (sort) {
-        case 'vote':
-          return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
-
-        case 'approval':
-          return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
-        default:
-          return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
-      }
-    };
-    let content = object && object.fields && sortedList(object);
+    let content = object && object.fields && this.sortedList(object, voteValue, sort);
     const isFetched = !isEmpty(content) && content[0].name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
@@ -166,10 +165,14 @@ class WobjHistory extends React.Component {
     });
 
     if (params[1] && isFetched) {
-      content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
+      if (sortingMenuName[params[1]]) {
+        content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
+      } else {
+        content = content.filter(f => f.name === params[1]);
+      }
     }
 
-    const objName = object.name || object.default_name;
+    const objName = getObjectName(object);
 
     const renderFields = () => {
       if (!appendLoading) {
@@ -198,7 +201,7 @@ class WobjHistory extends React.Component {
             value={field}
             onChange={this.handleFieldChange}
           >
-            {getAllowedFieldsByObjType(this.props.object.object_type).map(f => (
+            {getExposedFieldsByObjType(this.props.object).map(f => (
               <Select.Option key={f}>
                 <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
               </Select.Option>

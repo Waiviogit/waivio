@@ -15,7 +15,12 @@ import {
   getObjectName,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldsCount, getFieldsByName, getLink } from '../../object/wObjectHelper';
+import {
+  getFieldsCount,
+  getFieldsByName,
+  getLink,
+  getExposedFieldsByObjType,
+} from '../../object/wObjectHelper';
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
@@ -97,10 +102,8 @@ class ObjectInfo extends React.Component {
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;
     const fieldsCount = getFieldsCount(wobject, name);
-    const exposedFields = get(wobject, 'exposedFields', []);
-    const shouldDisplay = exposedFields.includes('listItem')
-      ? [...exposedFields, TYPES_OF_MENU_ITEM.PAGE]
-      : exposedFields;
+    const exposedFields = getExposedFieldsByObjType(wobject);
+    const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
     return (
@@ -189,9 +192,10 @@ class ObjectInfo extends React.Component {
         })}
         to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body}`}
       >
-        {item.alias || item.name || item.default_name}
+        {item.alias || getObjectName(wobject)}
       </LinkButton>
     );
+
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -324,7 +328,7 @@ class ObjectInfo extends React.Component {
           <div className="object-sidebar__menu-items">
             <React.Fragment>
               {this.listItem(
-                objectFields.listItem,
+                TYPES_OF_MENU_ITEM.LIST,
                 !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
               )}
               {this.listItem(
@@ -569,7 +573,7 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {!isHashtag && menuSection()}
+            {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
