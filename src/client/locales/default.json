@@ -1342,5 +1342,6 @@
   "signing": "Signing in",
   "alphabet": "A..Z",
   "page": "Page",
-  "imageSetter_invalid_link": "The link is invalid"
+  "imageSetter_invalid_link": "The link is invalid",
+  "restaurant": "restaurant"
 }

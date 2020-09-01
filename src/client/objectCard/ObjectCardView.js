@@ -17,7 +17,7 @@ import './ObjectCardView.less';
 const ObjectCardView = ({
   intl,
   wObject,
-  options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
+  options: { mobileView = 'compact', ownRatesOnly = false },
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -37,7 +37,7 @@ const ObjectCardView = ({
     } else setTags([wObject.object_type]);
   }, []);
 
-  const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
+  const pathName = wObject.defaultShowLink;
 
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;

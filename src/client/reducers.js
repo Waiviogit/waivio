@@ -236,6 +236,8 @@ export const getObjectModerators = state => fromObject.getObjectModerators(state
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
+export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.object);
+export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>

@@ -119,7 +119,7 @@ class Story extends React.Component {
   }
 
   getObjectLayout = wobj => {
-    const pathName = `/object/${wobj.author_permlink}`;
+    const pathName = wobj.defaultShowLink;
     let name = '';
 
     if (wobj.objectName) {
