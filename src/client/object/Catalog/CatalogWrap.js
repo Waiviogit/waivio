@@ -307,13 +307,13 @@ class CatalogWrap extends React.Component {
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
     const linkTo = getListItemLink(listItem, this.props.location);
-    const isList = listItem.type === OBJ_TYPE.LIST;
+    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
 
     let item;
 
     if (isList) {
-      item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
+      item = <CategoryItemView wObject={listItem} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = this.renderProposition(propositions, listItem);
     } else {
