@@ -24,7 +24,7 @@ import {
 } from '../../common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
-import { calculateApprovePercent } from '../helpers/wObjectHelper';
+import { calculateApprovePercent, getObjectName } from '../helpers/wObjectHelper';
 
 export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
   let url = pathname + hash;
@@ -331,16 +331,16 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
       comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
     case 'recency':
+    default:
       comparator = (a, b) => (a.createdAt < b.createdAt ? 1 : -1);
       break;
     case 'by-name-desc':
-      comparator = (a, b) => (a.name < b.name ? 1 : -1);
+      comparator = (a, b) => (getObjectName(a) < getObjectName(b) ? 1 : -1);
       break;
     case 'custom':
       break;
     case 'by-name-asc':
-    default:
-      comparator = (a, b) => (a.name > b.name ? 1 : -1);
+      comparator = (a, b) => (getObjectName(a) > getObjectName(b) ? 1 : -1);
       break;
   }
   const sorted = uniqBy(items, 'author_permlink').sort(comparator);

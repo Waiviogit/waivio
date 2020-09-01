@@ -243,7 +243,7 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getContent = (author, permlink, locale, follower) =>
+export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
       headers: { ...headers, locale, follower },
