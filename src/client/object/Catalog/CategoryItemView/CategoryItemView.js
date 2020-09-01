@@ -9,6 +9,7 @@ const CategoryItemView = ({ wObject, intl }) => {
   const pathName = `/object/${wObject.author_permlink}`;
   return (
     <Link
+      key={wObject.author_permlink}
       to={pathName}
       title={`${intl.formatMessage({
         id: 'GoTo',
