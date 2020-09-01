@@ -84,12 +84,12 @@ export default class Post extends React.Component {
   };
 
   componentDidMount() {
-    const { match, edited, fetching, loaded, failed, content, locale } = this.props;
+    const { match, edited, fetching, loaded, failed, content } = this.props;
     const { author, permlink } = match.params;
     const shouldUpdate = (!loaded && !failed) || edited;
 
     if (shouldUpdate && !fetching) {
-      if (locale) this.props.getContent(author, permlink, false, locale);
+      this.props.getContent(author, permlink, false);
       this.props.getUserAccount(author);
     }
 
@@ -103,14 +103,13 @@ export default class Post extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
     const { author, permlink } = nextProps.match.params;
     const { author: prevAuthor, permlink: prevPermlink } = this.props.match.params;
 
     const shouldUpdate = author !== prevAuthor || permlink !== prevPermlink;
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
-        if (locale) this.props.getContent(author, permlink, false, locale);
+        this.props.getContent(author, permlink, false);
         this.props.getUserAccount(author);
       });
     }

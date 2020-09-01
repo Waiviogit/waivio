@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _, { isEmpty, omit, get } from 'lodash';
+import { isEmpty, omit, get, size, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -258,8 +258,7 @@ class DiscoverObjectsContent extends Component {
         );
         this.setState({ loadingAssign: false });
       })
-      .catch(e => {
-        console.log(e.toString());
+      .catch(() => {
         message.error(
           this.props.intl.formatMessage({
             id: 'cannot_reject_campaign',
@@ -277,7 +276,7 @@ class DiscoverObjectsContent extends Component {
       isFetching,
       hasMap,
       availableFilters,
-      activeFilters: { map, ...chosenFilters },
+      activeFilters: { map: mapFilters, ...chosenFilters },
       sort,
       filteredObjects,
       hasMoreObjects,
@@ -307,7 +306,7 @@ class DiscoverObjectsContent extends Component {
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
-          {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+          {size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
@@ -317,7 +316,7 @@ class DiscoverObjectsContent extends Component {
                   {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                 </span>
                 {this.getCommonFiltersLayout()}
-                {_.map(chosenFilters, (filterValues, filterName) =>
+                {map(chosenFilters, (filterValues, filterName) =>
                   filterValues.map(filterValue => (
                     <Tag
                       className="ttc"
@@ -343,7 +342,7 @@ class DiscoverObjectsContent extends Component {
                 <Button
                   icon="compass"
                   size="large"
-                  className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                  className={isEmpty(mapFilters) ? 'map-btn' : 'map-btn active'}
                   onClick={this.showMap}
                 >
                   {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}

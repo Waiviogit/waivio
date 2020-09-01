@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get } from 'lodash';
+import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -22,6 +22,7 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
+  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const street = get(wObject, ['address', 'street'], '');
   const address = get(wObject, ['address', 'address'], '');
   const city = get(wObject, ['address', 'city'], '');
@@ -39,7 +40,7 @@ const ObjectCardView = ({
   const pathName = pathNameAvatar || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || passedParent.avatar;
+    let url = wObject.avatar || parent.avatar;
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
@@ -58,7 +59,7 @@ const ObjectCardView = ({
     );
   };
   const objName = getObjectName(wObject);
-  const parentName = getObjectName(passedParent);
+  const parentName = getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -84,7 +85,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${get(passedParent, 'author_permlink', '')}`}
+                  to={`/object/${get(parent, 'author_permlink', '')}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >

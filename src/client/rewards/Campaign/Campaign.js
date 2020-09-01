@@ -61,7 +61,7 @@ const Campaign = ({
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardMax || rewardMaxPassed}`}</span>
+                <span className="fw6 ml1">{rewardMax || rewardMaxPassed}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>

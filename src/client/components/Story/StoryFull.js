@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { forEach, get, isEmpty, map } from 'lodash';
+import { forEach, get, isEmpty, map, size } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -220,8 +220,7 @@ class StoryFull extends React.Component {
         );
         this.setState({ loadingAssign: false });
       })
-      .catch(e => {
-        console.log(e.toString());
+      .catch(() => {
         message.error(
           this.props.intl.formatMessage({
             id: 'cannot_reject_campaign',
@@ -479,7 +478,7 @@ class StoryFull extends React.Component {
                     />
                   );
                 }
-                if (obj.propositions && obj.propositions.length) {
+                if (size(obj.propositions)) {
                   return obj.propositions.map(proposition => (
                     <Proposition
                       guide={proposition.guide}
@@ -490,13 +489,13 @@ class StoryFull extends React.Component {
                       discardProposition={this.discardProposition}
                       authorizedUserName={user.name}
                       loading={loadingAssign}
-                      key={`${obj.author_permlink}`}
+                      key={obj.author_permlink}
                       assigned={proposition.assigned}
                       match={match}
                     />
                   ));
                 }
-                return <ObjectCardView key={`${obj.id}`} wObject={obj} passedParent={obj.parent} />;
+                return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
               })}
             </Collapse.Panel>
           )}

@@ -1,5 +1,6 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getLocale } from '../reducers';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 
@@ -14,10 +15,12 @@ export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
 export const LIKE_POST_HISTORY = '@post/LIKE_POST_HISTORY';
 
-export const getContent = (author, permlink, afterLike, locale) => dispatch => {
+export const getContent = (author, permlink, afterLike) => (dispatch, getState) => {
   if (!author || !permlink) {
     return null;
   }
+  const state = getState();
+  const locale = getLocale(state);
 
   // eslint-disable-next-line consistent-return
   const doApiRequest = () => ApiClient.getContent(author, permlink, locale);
