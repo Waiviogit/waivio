@@ -128,9 +128,10 @@ class CampaignFooter extends React.Component {
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
-    this.isReserved =
-      this.props.match.params.filterKey === IS_RESERVED ||
-      this.props.match.params.filterKey === IS_ALL;
+    this.isReserved = !isEmpty(this.props.match)
+      ? this.props.match.params.filterKey === IS_RESERVED ||
+        this.props.match.params.filterKey === IS_ALL
+      : '';
   }
 
   componentWillMount() {
@@ -412,10 +413,11 @@ class CampaignFooter extends React.Component {
       reservedComments,
       isGuest,
     } = this.props;
-    const isRewards =
-      match.params.filterKey === 'reserved' ||
-      match.params.filterKey === 'all' ||
-      includes(match.path, 'object');
+    const isRewards = !isEmpty(match)
+      ? match.params.filterKey === 'reserved' ||
+        match.params.filterKey === 'all' ||
+        includes(match.path, 'object')
+      : '';
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);

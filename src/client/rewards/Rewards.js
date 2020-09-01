@@ -719,13 +719,17 @@ class Rewards extends React.Component {
     const {
       propositions,
       hasMore,
-      sort,
       area,
       activeFilters,
       radius,
       isSearchAreaFilter,
+      sortAll,
+      sortEligible,
+      sortReserved,
     } = this.state;
     const { username, match, usedLocale } = this.props;
+    const path = match.params.filterKey;
+    const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
     if (hasMore) {
       this.setState(
         {
@@ -735,7 +739,7 @@ class Rewards extends React.Component {
           const reqData = preparePropositionReqData({
             username,
             match,
-            sort,
+            sort: sortChanged,
             area,
             usedLocale,
             ...activeFilters,
