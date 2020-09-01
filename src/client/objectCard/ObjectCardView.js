@@ -75,11 +75,16 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   return (
-    <React.Fragment>
+    <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
+            <Link
+              to={pathName}
+              title={goToObjTitle(objName)}
+              className="ObjectCardView__avatar"
+              key={wObject.author_permlink}
+            >
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
@@ -94,6 +99,7 @@ const ObjectCardView = ({
               )}
               <div className="ObjectCardView__name">
                 <Link
+                  key={wObject.author_permlink}
                   to={`/object/${wObject.author_permlink}`}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
@@ -145,7 +151,7 @@ const ObjectCardView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
