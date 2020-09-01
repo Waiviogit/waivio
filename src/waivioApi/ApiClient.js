@@ -259,7 +259,7 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15,
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
-    headers: { ...headers, locale },
+    headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
   })

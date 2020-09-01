@@ -7,11 +7,12 @@ import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 
 import './ObjectCard.less';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
   if (!isEmpty(wobject)) {
-    const name = wobject.name || wobject.default_name;
-    const pathname = `/object/${wobject.author_permlink}`;
+    const name = getObjectName(wobject);
+    const pathname = wobject.defaultShowLink;
 
     return (
       <div key={wobject.author_permlink} className="ObjectCard">
@@ -50,7 +51,7 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow })
 };
 
 ObjectCard.propTypes = {
-  wobject: PropTypes.shape().isRequired,
+  wobject: PropTypes.shape(),
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
   isNewWindow: PropTypes.bool,
@@ -64,6 +65,7 @@ ObjectCard.defaultProps = {
   isNewWindow: false,
   unfollow: () => {},
   follow: () => {},
+  wobject: {},
 };
 
 export default ObjectCard;

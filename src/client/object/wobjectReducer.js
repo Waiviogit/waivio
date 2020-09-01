@@ -13,6 +13,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 const initialState = {
   wobject: {},
   isFetching: false,
+  isFailed: false,
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -26,6 +27,7 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         isFetching: false,
+        isFailed: true,
       };
     case actions.CLEAR_OBJECT:
       return {
@@ -39,6 +41,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...action.payload,
         },
         isFetching: false,
+        isFailed: false,
       };
 
     case actions.ADD_ITEM_TO_LIST:
@@ -278,3 +281,5 @@ export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
 export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;
+export const getWobjectIsFailed = state => state.wobject.isFailed;
+export const getWobjectIsFatching = state => state.wobject.isFetching;

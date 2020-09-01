@@ -39,6 +39,7 @@ import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
 
 import './Topnav.less';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @withRouter
@@ -496,14 +497,14 @@ class Topnav extends React.Component {
         return;
       }
     }
-    let redirectUrl = '';
 
+    let redirectUrl = '';
     switch (data.props.marker) {
       case Topnav.markers.USER:
         redirectUrl = `/@${value.replace('user', '')}`;
         break;
       case Topnav.markers.WOBJ:
-        redirectUrl = `/object/${value.replace('wobj', '')}`;
+        redirectUrl = value.replace('wobj', '');
         break;
       default:
         redirectUrl = `/discover-objects/${value.replace('type', '')}`;
@@ -522,7 +523,7 @@ class Topnav extends React.Component {
         currentItem: '',
       });
     }
-
+    console.log(value);
     if (value[0] === '@') {
       this.setState({
         searchBarValue: value,
@@ -605,14 +606,14 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = option.name || option.default_name;
+          const wobjName = getObjectName(option);
           const parent = option.parent;
 
           return wobjName ? (
             <AutoComplete.Option
               marker={Topnav.markers.WOBJ}
               key={`wobj${wobjName}`}
-              value={`wobj${option.author_permlink}`}
+              value={`wobj${option.defaultShowLink}`}
               className="Topnav__search-autocomplete"
             >
               <div className="Topnav__search-content-wrap">
@@ -620,9 +621,7 @@ class Topnav extends React.Component {
                 <div>
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
-                    <div className="Topnav__search-content-small">
-                      {parent.name || parent.default_name}
-                    </div>
+                    <div className="Topnav__search-content-small">{getObjectName(parent)}</div>
                   )}
                 </div>
               </div>
