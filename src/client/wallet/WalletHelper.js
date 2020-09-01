@@ -1,8 +1,10 @@
 import React from 'react';
-import { FormattedDate, FormattedTime } from 'react-intl';
-import { get, size } from 'lodash';
+import { Link } from 'react-router-dom';
+import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
+import { get, size, truncate, floor } from 'lodash';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
+import formatter from '../helpers/steemitFormatter';
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleLoadMoreTransactions = ({
@@ -88,5 +90,183 @@ export const getCurrentRows = data => {
         <td className="">{fieldMemo}</td>
       </tr>
     </React.Fragment>
+  );
+};
+
+export const validateGuestTransferTitle = (details, username) => {
+  const postPermlink = details && details.post_permlink;
+  const postParentAuthor = details && details.post_parent_author;
+  const postParentPermlink = details && details.post_parent_permlink;
+  const title = details && details.title;
+  const post = details && postParentAuthor === '';
+
+  const urlComment = `/@${postParentAuthor}/${postParentPermlink}#@${username}/${postPermlink}`;
+
+  if (post) {
+    const urlPost = `/@${username}/${postPermlink}`;
+    return (
+      <FormattedMessage
+        id="review_author_rewards"
+        defaultMessage="Author rewards: {title}"
+        values={{
+          title: (
+            <Link to={urlPost}>
+              <span className="username">{truncate(title, { length: 30 })}</span>
+            </Link>
+          ),
+        }}
+      />
+    );
+  }
+  return (
+    <FormattedMessage
+      id="comments_author_rewards"
+      defaultMessage="Author rewards for comments: {title}"
+      values={{
+        title: (
+          <Link to={urlComment}>
+            <span className="username">{truncate(title, { length: 15 })}</span>
+          </Link>
+        ),
+      }}
+    />
+  );
+};
+
+export const getFormattedClaimRewardPayout = (
+  rewardSteem,
+  rewardSbd,
+  rewardVests,
+  totalVestingShares,
+  totalVestingFundSteem,
+  usedClassName,
+) => {
+  const payouts = [];
+  const parsedRewardSteem = parseFloat(rewardSteem);
+  const parsedRewardSbd = parseFloat(rewardSbd);
+  const parsedRewardVests = parseFloat(
+    formatter.vestToSteem(rewardVests, totalVestingShares, totalVestingFundSteem),
+  );
+
+  if (parsedRewardSteem > 0) {
+    payouts.push(
+      <span key="HIVE" className={usedClassName}>
+        <FormattedNumber
+          value={parsedRewardSteem}
+          minimumFractionDigits={3}
+          maximumFractionDigits={3}
+        />
+        {' HIVE'}
+      </span>,
+    );
+  }
+
+  if (parsedRewardSbd > 0) {
+    payouts.push(
+      <span key="HBD" className={usedClassName}>
+        <FormattedNumber
+          value={parsedRewardSbd}
+          minimumFractionDigits={3}
+          maximumFractionDigits={3}
+        />
+        {' HBD'}
+      </span>,
+    );
+  }
+
+  if (parsedRewardVests > 0) {
+    payouts.push(
+      <span key="HP" className={usedClassName}>
+        <FormattedNumber
+          value={parsedRewardVests}
+          minimumFractionDigits={3}
+          maximumFractionDigits={3}
+        />
+        {' HP'}
+      </span>,
+    );
+  }
+  return {
+    payouts,
+    HIVE: parsedRewardSteem ? floor(parsedRewardSteem, 3) : null,
+    HBD: parsedRewardSbd ? floor(parsedRewardSbd, 3) : null,
+    HP: parsedRewardVests ? floor(parsedRewardVests, 3) : null,
+  };
+};
+
+export const getSavingsTransactionMessage = (transactionType, transactionDetails, amount) => {
+  switch (transactionType) {
+    case 'cancel_transfer_from_savings':
+      return (
+        <FormattedMessage
+          id="cancel_transfer_from_savings"
+          defaultMessage="Cancel transfer from savings (request {requestId})"
+          values={{
+            requestId: transactionDetails.request_id,
+          }}
+        />
+      );
+    case 'transfer_to_savings':
+      return (
+        <FormattedMessage
+          id="transfer_to_savings"
+          defaultMessage="Transfer to savings {amount} to {username}"
+          values={{
+            amount,
+            username: (
+              <Link to={`/@${transactionDetails.to}`}>
+                <span className="username">{transactionDetails.to}</span>
+              </Link>
+            ),
+          }}
+        />
+      );
+    case 'transfer_from_savings':
+      return (
+        <FormattedMessage
+          id="transfer_from_savings"
+          defaultMessage="Transfer from savings {amount} to {username}"
+          values={{
+            amount,
+            username: (
+              <Link to={`/@${transactionDetails.from}`}>
+                <span className="username">{transactionDetails.from}</span>
+              </Link>
+            ),
+          }}
+        />
+      );
+    default:
+      return null;
+  }
+};
+
+export const selectCurrectFillOrderValue = (
+  transactionDetails,
+  currentPays,
+  openPays,
+  currentUsername,
+) => {
+  const userEqual = currentUsername === transactionDetails.current_owner;
+  const currentValue = userEqual
+    ? {
+        transfer: currentPays,
+        received: openPays,
+      }
+    : {
+        transfer: openPays,
+        received: currentPays,
+      };
+
+  return (
+    <span className="UserWalletTransactions__transfer">
+      {'- '}
+      {currentValue.transfer}
+      &ensp;
+      <span className="UserWalletTransactions__received">
+        {'+ '}
+        {currentValue.received}
+      </span>
+    </span>
   );
 };

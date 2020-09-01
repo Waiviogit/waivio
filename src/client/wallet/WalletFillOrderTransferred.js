@@ -5,31 +5,7 @@ import { Link } from 'react-router-dom';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
-
-const selectCurrectValue = (transactionDetails, currentPays, openPays, currentUsername) => {
-  const userEqual = currentUsername === transactionDetails.current_owner;
-  const currentValue = userEqual
-    ? {
-        transfer: currentPays,
-        received: openPays,
-      }
-    : {
-        transfer: openPays,
-        received: currentPays,
-      };
-
-  return (
-    <span className="UserWalletTransactions__transfer">
-      {'- '}
-      {currentValue.transfer}
-      &ensp;
-      <span className="UserWalletTransactions__received">
-        {'+ '}
-        {currentValue.received}
-      </span>
-    </span>
-  );
-};
+import { selectCurrectFillOrderValue } from './WalletHelper';
 
 const WalletFillOrderTransferred = ({
   transactionDetails,
@@ -61,7 +37,12 @@ const WalletFillOrderTransferred = ({
                 }}
               />
             </div>
-            {selectCurrectValue(transactionDetails, currentPays, openPays, currentUsername)}
+            {selectCurrectFillOrderValue(
+              transactionDetails,
+              currentPays,
+              openPays,
+              currentUsername,
+            )}
           </div>
           <span className="UserWalletTransactions__timestamp">
             <BTooltip

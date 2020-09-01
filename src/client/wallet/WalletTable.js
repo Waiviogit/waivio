@@ -7,14 +7,16 @@ import './WalletTable.less';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
   getTransactions,
   getUser,
   getUsersTransactions,
-  isGuestUser,
 } from '../reducers';
 import { getDataDemoTransactions } from './WalletHelper';
 import WalletTableBodyRow from './WalletTableBodyRow';
 import { guestUserRegex } from '../helpers/regexHelpers';
+import * as store from '../reducers';
 
 const getCurrentTransactions = (props, isGuestPage) => {
   const { user, transactionsHistory, demoTransactionsHistory } = props;
@@ -25,7 +27,7 @@ const getCurrentTransactions = (props, isGuestPage) => {
 };
 
 const WalletTable = props => {
-  const { user, intl } = props;
+  const { user, intl, authUserName, totalVestingShares, totalVestingFundSteem } = props;
   const isGuestPage = guestUserRegex.test(user && user.name);
   const transactions = getCurrentTransactions(props, isGuestPage);
   const currentUsername = user.name;
@@ -80,6 +82,9 @@ const WalletTable = props => {
                 transaction={transaction}
                 isGuestPage={isGuestPage}
                 currentUsername={currentUsername}
+                authUserName={authUserName}
+                totalVestingShares={totalVestingShares}
+                totalVestingFundSteem={totalVestingFundSteem}
               />
             ))}
         </tbody>
@@ -95,9 +100,13 @@ WalletTable.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string,
   }).isRequired,
+  authUserName: PropTypes.string,
+  totalVestingShares: PropTypes.string.isRequired,
+  totalVestingFundSteem: PropTypes.string.isRequired,
 };
 
 WalletTable.defaultProps = {
+  authUserName: '',
   transactionsHistory: {},
   demoTransactionsHistory: {},
 };
@@ -107,8 +116,10 @@ const mapStateToProps = (state, ownProps) => ({
     ownProps.isCurrentUser || ownProps.match.params.name === getAuthenticatedUserName(state)
       ? getAuthenticatedUser(state)
       : getUser(state, ownProps.match.params.name),
-  isGuest: isGuestUser(state),
+  authUserName: store.getAuthenticatedUserName(state),
   transactionsHistory: getTransactions(state),
   demoTransactionsHistory: getUsersTransactions(state),
+  totalVestingShares: getTotalVestingShares(state),
+  totalVestingFundSteem: getTotalVestingFundSteem(state),
 });
 export default connect(mapStateToProps, {})(injectIntl(WalletTable));
