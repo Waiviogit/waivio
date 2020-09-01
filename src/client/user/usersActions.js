@@ -70,13 +70,16 @@ export const unfollowUser = (username, top = false) => (
     return Promise.reject('User is not authenticated');
   }
 
+  const authUser = getAuthenticatedUserName(state);
+
   return dispatch({
     type: UNFOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.unfollow(authUser, username),
     },
     meta: {
       username,
+      changeCount: authUser === username,
       top,
     },
   });
@@ -90,14 +93,19 @@ export const followUser = (username, top = false) => (dispatch, getState, { stee
     return Promise.reject('User is not authenticated');
   }
 
+  const authUser = getAuthenticatedUserName(state);
+  console.log(authUser === username);
+  console.log(authUser);
+  console.log(username);
   return dispatch({
     type: FOLLOW_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.follow(authUser, username),
     },
     meta: {
       username,
       top,
+      changeCount: authUser === username,
     },
   });
 };
