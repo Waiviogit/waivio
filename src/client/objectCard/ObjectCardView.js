@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get } from 'lodash';
+import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
@@ -18,11 +17,12 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
+  passedParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = get(wObject, 'parent', {});
+  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const street = get(wObject, ['address', 'street'], '');
   const address = get(wObject, ['address', 'address'], '');
   const city = get(wObject, ['address', 'city'], '');
@@ -75,11 +75,16 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   return (
-    <React.Fragment>
+    <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
+            <Link
+              to={pathName}
+              title={goToObjTitle(objName)}
+              className="ObjectCardView__avatar"
+              key={wObject.author_permlink}
+            >
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
@@ -94,6 +99,7 @@ const ObjectCardView = ({
               )}
               <div className="ObjectCardView__name">
                 <Link
+                  key={wObject.author_permlink}
                   to={`/object/${wObject.author_permlink}`}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
@@ -145,13 +151,14 @@ const ObjectCardView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape().isRequired,
+  passedParent: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -161,5 +168,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
+  passedParent: {},
 };
 export default injectIntl(ObjectCardView);
