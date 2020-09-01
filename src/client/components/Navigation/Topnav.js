@@ -37,9 +37,9 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './Topnav.less';
-import { getObjectName } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @withRouter
@@ -523,7 +523,7 @@ class Topnav extends React.Component {
         currentItem: '',
       });
     }
-    console.log(value);
+
     if (value[0] === '@') {
       this.setState({
         searchBarValue: value,

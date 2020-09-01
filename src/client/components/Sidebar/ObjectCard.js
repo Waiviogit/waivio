@@ -5,9 +5,9 @@ import { isEmpty } from 'lodash';
 
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './ObjectCard.less';
-import { getObjectName } from '../../helpers/wObjectHelper';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow }) => {
   if (!isEmpty(wobject)) {
