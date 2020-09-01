@@ -351,7 +351,7 @@ CreateTag.propTypes = {
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
   usedLocale: PropTypes.string,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
   rewardFund: PropTypes.shape(),
   rate: PropTypes.number,
 };
@@ -366,6 +366,7 @@ CreateTag.defaultProps = {
   usedLocale: 'en-US',
   rewardFund: {},
   rate: 0,
+  defaultVotePercent: 100,
 };
 
 export default injectIntl(Form.create()(CreateTag));

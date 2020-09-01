@@ -14,6 +14,7 @@ import {
   findIndex,
   isEqual,
   map,
+  size,
 } from 'lodash';
 import { getClientWObj } from '../adapters';
 import {
@@ -21,41 +22,12 @@ import {
   objectFieldsWithInnerData,
   TYPES_OF_MENU_ITEM,
   objectFields,
+  TYPES_OF_MENU_ITEM as OBJECT_TYPES,
+  sortingMenuName,
 } from '../../common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 import { calculateApprovePercent, getObjectName } from '../helpers/wObjectHelper';
-
-export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
-  let url = pathname + hash;
-  const { object_type: type, sortCustom, menuItems } = wobj;
-
-  switch (type && type.toLowerCase()) {
-    case OBJECT_TYPE.PAGE:
-      url = `${pathname}/${OBJECT_TYPE.PAGE}`;
-      break;
-    case OBJECT_TYPE.LIST:
-      url = `${pathname}/${OBJECT_TYPE.LIST}`;
-      break;
-    case OBJECT_TYPE.HASHTAG:
-      break;
-    default:
-      if (menuItems && menuItems.length) {
-        const winnerItem = menuItems && menuItems.sort((a, b) => b.weight - a.weight)[0];
-
-        url =
-          sortCustom && winnerItem
-            ? `${pathname}/menu#${(sortCustom &&
-                sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
-                winnerItem.author_permlink}`
-            : pathname;
-      } else if (screenSize !== 'large') {
-        url = `${pathname}/about`;
-      }
-      break;
-  }
-  return url;
-};
 
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
@@ -239,17 +211,14 @@ export const getListItemLink = (listItem, location) => {
 };
 
 export const getFieldsCount = (wObject, fieldName) => {
-  let count = 0;
-  if (includes(TYPES_OF_MENU_ITEM, fieldName)) {
-    count = getListItems(wObject, { uniq: true }).filter(item =>
-      fieldName === TYPES_OF_MENU_ITEM.LIST
-        ? item.object_type === OBJECT_TYPE.LIST
-        : item.object_type === OBJECT_TYPE.PAGE,
-    ).length;
-  } else {
-    count = get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
-  }
-  return count;
+  const fields = get(wObject, 'fields', []);
+
+  if (sortingMenuName[fieldName])
+    return size(
+      fields.filter(field => field.name === objectFields.listItem && field.type === fieldName),
+    );
+
+  return size(fields.filter(field => field.name === fieldName));
 };
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
@@ -450,4 +419,34 @@ export const getLink = link => {
     return `http://${link}`;
   }
   return link;
+};
+
+export const getLinkEdit = (wobject, isEditMode, isMobile) => {
+  const link = `/object/${wobject.author_permlink}`;
+  if (isEditMode) return null;
+  if (isMobile) return `${link}/about`;
+  if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
+    return `${link}/${wobject.object_type}`;
+
+  return `${link}/reviews`;
+};
+
+export const getListSorting = wobj => {
+  const type = size(wobj[objectFields.sorting]) ? 'custom' : 'recency';
+  const order = type === 'custom' ? wobj[objectFields.sorting] : null;
+
+  return { type, order };
+};
+
+export const getExposedFieldsByObjType = wobj => {
+  const exposedFields = get(wobj, 'exposedFields', []);
+  const renderedFields = exposedFields.includes('listItem')
+    ? [
+        ...exposedFields.filter(f => f !== objectFields.listItem),
+        TYPES_OF_MENU_ITEM.PAGE,
+        TYPES_OF_MENU_ITEM.LIST,
+      ]
+    : exposedFields;
+
+  return renderedFields.sort();
 };
