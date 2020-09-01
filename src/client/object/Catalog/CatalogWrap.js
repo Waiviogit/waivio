@@ -321,8 +321,8 @@ class CatalogWrap extends React.Component {
       <Campaign
         proposition={propositions[0]}
         filterKey="all"
-        rewardPriceCatalogWrap={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
-        rewardMaxCatalogWrap={rewardMaxCatalogWrap || null}
+        rewardPricePassed={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
+        rewardMaxPassed={rewardMaxCatalogWrap || null}
         key={`${propositions[0].required_object.author_permlink}${propositions[0].required_object.createdAt}`}
         userName={userName}
       />
