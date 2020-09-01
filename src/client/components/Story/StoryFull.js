@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import { forEach, get, isEmpty, map, size } from 'lodash';
 import readingTime from 'reading-time';
 import {
@@ -31,15 +32,26 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition } from '../../user/userActions';
+import { assignProposition, declineProposition } from '../../user/userActions';
+import { getCryptosPriceHistory } from '../../reducers';
+import { getCryptoPriceHistory } from '../../app/appActions';
+import { HBD, HIVE } from '../../../common/constants/cryptos';
 
 import './StoryFull.less';
 
 @injectIntl
+@withRouter
 @withAuthActions
-@connect(null, {
-  assignProposition,
-})
+@connect(
+  state => ({
+    cryptosPriceHistory: getCryptosPriceHistory(state),
+  }),
+  {
+    assignProposition,
+    declineProposition,
+    getCryptoPriceHistory,
+  },
+)
 class StoryFull extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -66,7 +78,9 @@ class StoryFull extends React.Component {
     onEditClick: PropTypes.func,
     match: PropTypes.shape(),
     assignProposition: PropTypes.func,
+    declineProposition: PropTypes.func,
     history: PropTypes.shape(),
+    getCryptoPriceHistory: PropTypes.func.isRequired,
     /* from context */
     isOriginalPost: PropTypes.string,
   };
@@ -88,6 +102,7 @@ class StoryFull extends React.Component {
     onShareClick: () => {},
     onEditClick: () => {},
     assignProposition: () => {},
+    declineProposition: () => {},
     postState: {},
     isOriginalPost: '',
     defaultVotePercent: 0,
@@ -114,6 +129,8 @@ class StoryFull extends React.Component {
   }
 
   componentDidMount() {
+    const { getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
+    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     document.body.classList.add('white-bg');
   }
 
@@ -205,6 +222,44 @@ class StoryFull extends React.Component {
           this.props.intl.formatMessage({
             id: 'cannot_reserve_company',
             defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      });
+  };
+
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
+    this.setState({ loadingAssign: true });
+    this.props
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      })
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
           }),
         );
         this.setState({ loadingAssign: false });
