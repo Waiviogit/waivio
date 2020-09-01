@@ -14,13 +14,13 @@ export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
 export const LIKE_POST_HISTORY = '@post/LIKE_POST_HISTORY';
 
-export const getContent = (author, permlink, afterLike) => dispatch => {
+export const getContent = (author, permlink, afterLike, locale) => dispatch => {
   if (!author || !permlink) {
     return null;
   }
 
   // eslint-disable-next-line consistent-return
-  const doApiRequest = () => ApiClient.getContent(author, permlink);
+  const doApiRequest = () => ApiClient.getContent(author, permlink, locale);
 
   return dispatch({
     type: GET_CONTENT.ACTION,
