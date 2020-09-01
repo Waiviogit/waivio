@@ -16,7 +16,7 @@ import SteemSignUpCard from '../SteemSignUpCard/SteemSignUpCard';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import './ModalSignUp.less';
 
-const ModalSignUp = ({ isButton }) => {
+const ModalSignUp = ({ isButton, caption }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,7 +95,7 @@ const ModalSignUp = ({ isButton }) => {
 
   return (
     <React.Fragment>
-      <SignUpButton isButton={isButton} setIsModalOpen={memoizedSetIsModalOpen} />
+      <SignUpButton isButton={isButton} setIsModalOpen={memoizedSetIsModalOpen} caption={caption} />
       <Modal width={416} visible={isModalOpen} onCancel={memoizedHandleCloseModal} footer={null}>
         <div className="ModalSignUp">
           {isFormVisible ? (
@@ -111,6 +111,11 @@ const ModalSignUp = ({ isButton }) => {
 
 ModalSignUp.propTypes = {
   isButton: PropTypes.bool.isRequired,
+  caption: PropTypes.string,
+};
+
+ModalSignUp.defaultProps = {
+  caption: 'signin',
 };
 
 export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));
