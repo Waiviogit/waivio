@@ -109,7 +109,7 @@ class Wallet extends Component {
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
-    clearTransactionsHistory: PropTypes.func,
+    // clearTransactionsHistory: PropTypes.func,
     isWithdrawOpen: PropTypes.bool,
     history: PropTypes.shape(),
   };
@@ -166,9 +166,13 @@ class Wallet extends Component {
     this.props.getUserAccountHistory(username);
   }
 
-  componentWillUnmount() {
-    this.props.clearTransactionsHistory();
-  }
+  // Todo раскоментить
+  // componentWillUnmount() {
+  //   if (this.props.location.pathname !== `/@${this.props.user.name}/transfers`) {
+  //     console.log('here')
+  //     this.props.clearTransactionsHistory();
+  //   }
+  // }
 
   render() {
     const {
@@ -247,7 +251,7 @@ class Wallet extends Component {
         <span
           className="UserWallet__view-btn"
           role="presentation"
-          onClick={() => this.props.history.push(`/@${user.name}/table`)}
+          onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
           onChange={() => this.setState({ isTable: true })}
         >
           Table view

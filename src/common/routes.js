@@ -399,8 +399,10 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path:
-          '/@:name/(comments|followers|following|reblogs|transfers|table|activity|expertise|about)?',
+        path: [
+          '/@:name/(comments|followers|following|reblogs|activity|transfers|expertise|about)?',
+          '/@:name/transfers/table',
+        ],
         component: User,
         exact: true,
         routes: [
@@ -435,10 +437,11 @@ const routes = [
             component: UserWallet,
           },
           {
-            path: '/@:name/table',
+            path: '/@:name/transfers/table',
             exact: true,
             component: WalletTable,
           },
+
           {
             path: '/@:name/activity',
             exact: true,

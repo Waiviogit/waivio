@@ -60,7 +60,7 @@ export default class RightSidebar extends React.Component {
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
-          <Route path="/@:name/table" />
+          <Route path="/@:name/transfers/table" />
           <Route path="/trending/:tag" component={FeedSidebar} />
           <Route path="/created/:tag" component={FeedSidebar} />
           <Route path="/hot/:tag" component={FeedSidebar} />
