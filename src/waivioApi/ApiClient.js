@@ -174,6 +174,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
+        follower: userName,
       },
       method: 'POST',
       body: JSON.stringify({
@@ -243,7 +244,7 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getContent = (author, permlink, locale, follower) =>
+export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
       headers: { ...headers, locale, follower },
@@ -259,7 +260,7 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15,
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
-    headers: { ...headers, locale },
+    headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
   })
