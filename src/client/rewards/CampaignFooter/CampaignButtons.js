@@ -5,7 +5,7 @@ import { Icon, Button, message, Modal, InputNumber } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { map, get, includes } from 'lodash';
+import { map, get, includes, isEmpty } from 'lodash';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import BTooltip from '../../components/BTooltip';
@@ -106,7 +106,7 @@ export default class CampaignButtons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
 
-    this.matchParams = this.props.match.params[0];
+    this.matchParams = !isEmpty(this.props.match) ? this.props.match.params[0] : '';
   }
 
   componentDidMount() {
@@ -556,10 +556,11 @@ export default class CampaignButtons extends React.Component {
 
   getPropositionStatus = proposition => {
     const { match } = this.props;
-    const isReserved =
-      match.params.filterKey === IS_RESERVED ||
-      match.params.filterKey === IS_ALL ||
-      includes(match.path, 'object');
+    const isReserved = !isEmpty(match)
+      ? match.params.filterKey === IS_RESERVED ||
+        match.params.filterKey === IS_ALL ||
+        includes(match.path, 'object')
+      : '';
     if (isReserved) return ASSIGNED;
     return get(proposition, ['users', '0', 'status'], '');
   };

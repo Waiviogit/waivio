@@ -13,9 +13,15 @@ import {
   parseWobjectField,
   parseAddress,
   getObjectName,
+  parseButtonsField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldsCount, getFieldsByName, getLink } from '../../object/wObjectHelper';
+import {
+  getFieldsCount,
+  getFieldsByName,
+  getLink,
+  getExposedFieldsByObjType,
+} from '../../object/wObjectHelper';
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
@@ -97,10 +103,8 @@ class ObjectInfo extends React.Component {
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;
     const fieldsCount = getFieldsCount(wobject, name);
-    const exposedFields = get(wobject, 'exposedFields', []);
-    const shouldDisplay = exposedFields.includes('listItem')
-      ? [...exposedFields, TYPES_OF_MENU_ITEM.PAGE]
-      : exposedFields;
+    const exposedFields = getExposedFieldsByObjType(wobject);
+    const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
     return (
@@ -187,11 +191,13 @@ class ObjectInfo extends React.Component {
         className={classNames('menu-btn', {
           active: location.hash.slice(1).split('/')[0] === item.body,
         })}
-        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body}`}
+        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body ||
+          item.author_permlink}`}
       >
-        {item.alias || item.name || item.default_name}
+        {item.alias || getObjectName(item)}
       </LinkButton>
     );
+
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -241,7 +247,8 @@ class ObjectInfo extends React.Component {
     const { wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { website, newsFilter } = wobject;
+    const { newsFilter } = wobject;
+    const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const names = getFieldsByName(wobject, objectFields.name)
@@ -278,33 +285,24 @@ class ObjectInfo extends React.Component {
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const allAlbums = this.validatedAlbums(albums);
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
-    const menuLinks = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.LIST);
+    const menuLinks = isEmpty(wobject.menuItems)
+      ? listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.LIST)
+      : wobject.menuItems;
     const menuPages = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.PAGE);
-    const button = get(wobject, 'button', []).map(btn => {
-      if (btn) {
-        try {
-          return {
-            ...btn,
-            id: TYPES_OF_MENU_ITEM.BUTTON,
-            body: JSON.parse(btn.body),
-          };
-        } catch (err) {
-          return null;
-        }
-      }
-
-      return null;
-    });
+    const button = parseButtonsField(wobject);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
         const buttonArray = [
+          ...menuLinks,
+          ...menuPages,
           ...button,
-          ...listItems,
           { id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter },
         ];
         const sortButtons = customSort.reduce((acc, curr) => {
-          const currentLink = buttonArray.find(btn => btn.body === curr);
+          const currentLink = buttonArray.find(
+            btn => btn.body === curr || btn.author_permlink === curr || btn.id === curr,
+          );
 
           return currentLink ? [...acc, currentLink] : acc;
         }, []);
@@ -324,7 +322,7 @@ class ObjectInfo extends React.Component {
           <div className="object-sidebar__menu-items">
             <React.Fragment>
               {this.listItem(
-                objectFields.listItem,
+                TYPES_OF_MENU_ITEM.LIST,
                 !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
               )}
               {this.listItem(
@@ -569,7 +567,7 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {!isHashtag && menuSection()}
+            {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
