@@ -538,7 +538,7 @@ class CatalogWrap extends React.Component {
                         <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                         <Link
                           className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `/object/${crumb.author_permlink}` }}
+                          to={{ pathname: `${crumb.defaultShowLink}` }}
                         >
                           <i className="iconfont icon-send PostModal__icon" />
                         </Link>
@@ -546,7 +546,7 @@ class CatalogWrap extends React.Component {
                     ) : (
                       <Link
                         className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.author_permlink }}
+                        to={{ pathname: location.pathname, hash: crumb.defaultShowLink }}
                         title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                           crumb.name
                         }`}
