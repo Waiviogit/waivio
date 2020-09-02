@@ -109,7 +109,7 @@ class Wallet extends Component {
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
-    // clearTransactionsHistory: PropTypes.func,
+    clearTransactionsHistory: PropTypes.func,
     isWithdrawOpen: PropTypes.bool,
     history: PropTypes.shape(),
   };
@@ -133,6 +133,7 @@ class Wallet extends Component {
 
   state = {
     isTable: false,
+    savedTransactions: [],
   };
 
   componentDidMount() {
@@ -166,13 +167,13 @@ class Wallet extends Component {
     this.props.getUserAccountHistory(username);
   }
 
-  // Todo раскоментить
-  // componentWillUnmount() {
-  //   if (this.props.location.pathname !== `/@${this.props.user.name}/transfers`) {
-  //     console.log('here')
-  //     this.props.clearTransactionsHistory();
-  //   }
-  // }
+  componentWillUnmount() {
+    const { isCurrentUser, authenticatedUserName, history } = this.props;
+    const username = isCurrentUser
+      ? authenticatedUserName
+      : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+    this.props.clearTransactionsHistory(history.location, username);
+  }
 
   render() {
     const {
@@ -194,7 +195,6 @@ class Wallet extends Component {
       isloadingMoreTransactions,
       isloadingMoreDemoTransactions,
     } = this.props;
-
     const userKey = user.name;
     const demoTransactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
