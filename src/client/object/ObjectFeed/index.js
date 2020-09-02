@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
-import ModalSignUp from '../../components/Navigation/ModalSignUp/ModalSignUp';
 import { getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
 import { getObjectName } from '../../helpers/wObjectHelper';
@@ -18,7 +17,6 @@ const propTypes = {
 };
 
 const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
-  /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
 
   const handleCreatePost = () => {
@@ -39,30 +37,22 @@ const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
 
   return (
     <React.Fragment>
-      {isAuthenticated ? (
-        <div>
-          <div className="object-feed__row justify-end">
-            <IconButton
-              icon={<Icon type="plus-circle" />}
-              onClick={handleCreatePost}
-              caption={
-                <FormattedMessage id="write_new_review" defaultMessage="Write a new review" />
-              }
-            />
-          </div>
-          <ObjectFeed
-            match={match}
-            userName={userName}
-            history={history}
-            handleCreatePost={handleCreatePost}
-            wobject={wobject}
+      {isAuthenticated && (
+        <div className="object-feed__row justify-end">
+          <IconButton
+            icon={<Icon type="plus-circle" />}
+            onClick={handleCreatePost}
+            caption={<FormattedMessage id="write_new_review" defaultMessage="Write a new review" />}
           />
         </div>
-      ) : (
-        <div className="object-feed__row justify-center">
-          <ModalSignUp isButton={false} caption="empty_object_profile" />
-        </div>
       )}
+      <ObjectFeed
+        match={match}
+        userName={userName}
+        history={history}
+        handleCreatePost={handleCreatePost}
+        wobject={wobject}
+      />
     </React.Fragment>
   );
 };
