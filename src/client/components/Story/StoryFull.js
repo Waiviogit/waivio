@@ -477,8 +477,8 @@ class StoryFull extends React.Component {
                     />
                   );
                 }
-                if (size(obj.propositions)) {
-                  const newPropositions = this.getNewPropositions(obj.propositions);
+                const newPropositions = this.getNewPropositions(obj.propositions);
+                if (size(newPropositions)) {
                   return !isEmpty(newPropositions)
                     ? newPropositions.map(proposition => (
                         <Proposition

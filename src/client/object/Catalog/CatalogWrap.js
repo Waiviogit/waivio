@@ -87,7 +87,7 @@ class CatalogWrap extends React.Component {
   state = {
     loadingAssignDiscard: false,
     propositions: [],
-    sort: 'reward',
+    sort: 'recency',
     isAssign: false,
     loadingPropositions: false,
     needUpdate: true,
