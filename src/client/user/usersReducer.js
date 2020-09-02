@@ -136,7 +136,6 @@ export default function usersReducer(state = initialState, action) {
           },
         };
       }
-      const followersCount = action.meta.changeCount ? 1 : 0;
 
       return {
         ...state,
@@ -144,7 +143,6 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [action.meta.username]: {
             ...state.users[action.meta.username],
-            followers_count: state.users[action.meta.username].followers_count - followersCount,
             youFollows: false,
             pending: false,
           },
@@ -266,16 +264,14 @@ export default function usersReducer(state = initialState, action) {
         };
       }
 
-      const followersCount = action.meta.changeCount ? 1 : 0;
       const currentUser = state.users[action.meta.username];
-      console.log(followersCount);
+
       return {
         ...state,
         users: {
           ...state.users,
           [action.meta.username]: {
             ...currentUser,
-            followers_count: currentUser.followers_count + followersCount,
             youFollows: true,
             pending: false,
           },
