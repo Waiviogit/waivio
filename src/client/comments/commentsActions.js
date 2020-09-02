@@ -258,7 +258,7 @@ export const sendCommentMessages = (
   let parentAuthor;
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
-  } else if (parentPost.root_author && parentPost.guestInfo) {
+  } else if (parentPost.guestInfo) {
     parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;

@@ -187,8 +187,8 @@ class CampaignFooter extends React.Component {
   getReservedComments = () => {
     const { proposition, isGuest } = this.props;
     const currentUser = this.getCurrentUser();
-    const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
-    const permlink = get(currentUser, ['0', 'permlink']);
+    const author = isGuest ? get(currentUser, ['rootName']) : get(currentUser, ['0', 'name']);
+    const permlink = isGuest ? get(currentUser, ['permlink']) : get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
     if (!isEmpty(author) && !isEmpty(permlink)) {
       return this.props.getReservedComments({ category, author, permlink }).then(res => {
@@ -340,7 +340,8 @@ class CampaignFooter extends React.Component {
   handleSubmitComment = (parentP, commentValue) => {
     const { proposition } = this.props;
     const currentUser = this.getCurrentUser();
-    const parentAuthorIfGuest = get(currentUser, ['0', 'rootName']);
+    const parentAuthorIfGuest =
+      get(currentUser, ['0', 'rootName']) || get(currentUser, ['rootName']);
     const parentPermlinkIfGuest = !this.isReserved
       ? get(proposition, ['users', '0', 'permlink'])
       : get(currentUser, ['0', 'permlink']);
