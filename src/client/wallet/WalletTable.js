@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { DatePicker, Form } from 'antd';
 import { injectIntl } from 'react-intl';
 import { get, map } from 'lodash';
 import {
@@ -28,6 +29,20 @@ const getCurrentTransactions = (props, isGuestPage) => {
   return isGuestPage ? demoTransactions : transactions;
 };
 
+const filterPanel = intl => (
+  <Form layout="vertical">
+    <Form.Item>
+      <DatePicker
+        allowClear={false}
+        placeholder={intl.formatMessage({
+          id: 'date_picker_placeholder',
+          defaultMessage: 'Select date',
+        })}
+      />
+    </Form.Item>
+  </Form>
+);
+
 const WalletTable = props => {
   const {
     user,
@@ -51,6 +66,7 @@ const WalletTable = props => {
   const currentUsername = user.name;
   return (
     <React.Fragment>
+      {filterPanel(intl)}
       <table className="WalletTable">
         <thead>
           <tr>
