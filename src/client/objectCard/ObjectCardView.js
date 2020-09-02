@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -23,9 +23,7 @@ const ObjectCardView = ({
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
-  const street = get(wObject, ['address', 'street'], '');
-  const address = get(wObject, ['address', 'address'], '');
-  const city = get(wObject, ['address', 'city'], '');
+  const address = parseAddress(wObject);
 
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
@@ -131,12 +129,7 @@ const ObjectCardView = ({
                   </span>
                 ))}
               </span>
-              {wObject.address && (
-                <div className="ObjectCardView__tag-text">
-                  {(street || address) && <span>{`${street || address}, `}</span>}
-                  {city && <span>{city}</span>}
-                </div>
-              )}
+              {address && <div className="ObjectCardView__tag-text">{address}</div>}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {truncate(wObject.title, {
