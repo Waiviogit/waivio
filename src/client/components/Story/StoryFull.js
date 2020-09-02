@@ -24,7 +24,6 @@ import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getClientWObj } from '../../adapters';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
@@ -58,7 +57,6 @@ class StoryFull extends React.Component {
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     /* from context */
-    usedLocale: PropTypes.string.isRequired,
     isOriginalPost: PropTypes.string,
   };
 
@@ -176,7 +174,6 @@ class StoryFull extends React.Component {
       onLikeClick,
       onShareClick,
       onEditClick,
-      usedLocale,
       isOriginalPost,
     } = this.props;
     const taggedObjects = [];
@@ -384,7 +381,7 @@ class StoryFull extends React.Component {
               key="1"
             >
               {map(linkedObjects, obj => {
-                const wobj = getClientWObj(obj, usedLocale);
+                const wobj = obj;
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
@@ -398,7 +395,7 @@ class StoryFull extends React.Component {
               key="2"
             >
               {map(taggedObjects, obj => {
-                const wobj = getClientWObj(obj, usedLocale);
+                const wobj = obj;
 
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}

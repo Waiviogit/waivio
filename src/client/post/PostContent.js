@@ -15,7 +15,6 @@ import {
   getRebloggedList,
   getPendingReblogs,
   getFollowingList,
-  getPendingFollows,
   getIsEditorSaving,
   getVotingPower,
   getRewardFund,
@@ -23,7 +22,12 @@ import {
   getAppUrl,
 } from '../reducers';
 import { editPost } from './Write/editorActions';
-import { votePost } from './postActions';
+import {
+  errorFollowingPostAuthor,
+  followingPostAuthor,
+  pendingFollowingPostAuthor,
+  votePost,
+} from './postActions';
 import { reblog } from '../app/Reblog/reblogActions';
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { followUser, unfollowUser } from '../user/userActions';
@@ -44,7 +48,6 @@ import { getProxyImageURL } from '../helpers/image';
     reblogList: getRebloggedList(state),
     pendingReblogs: getPendingReblogs(state),
     followingList: getFollowingList(state),
-    pendingFollows: getPendingFollows(state),
     saving: getIsEditorSaving(state),
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
@@ -59,6 +62,9 @@ import { getProxyImageURL } from '../helpers/image';
     followUser,
     unfollowUser,
     push,
+    pendingFollowingPostAuthor,
+    followingPostAuthor,
+    errorFollowingPostAuthor,
   },
 )
 class PostContent extends React.Component {
@@ -71,7 +77,6 @@ class PostContent extends React.Component {
     reblogList: PropTypes.arrayOf(PropTypes.string),
     pendingReblogs: PropTypes.arrayOf(PropTypes.string),
     followingList: PropTypes.arrayOf(PropTypes.string),
-    pendingFollows: PropTypes.arrayOf(PropTypes.string),
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string).isRequired,
     saving: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
@@ -87,6 +92,9 @@ class PostContent extends React.Component {
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
     isOriginalPost: PropTypes.string,
+    pendingFollowingPostAuthor: PropTypes.func.isRequired,
+    followingPostAuthor: PropTypes.func.isRequired,
+    errorFollowingPostAuthor: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -173,12 +181,21 @@ class PostContent extends React.Component {
 
   handleFollowClick = post => {
     const authorName = this.getAuthorName(post);
-    const isFollowed = this.props.followingList.includes(authorName);
-    if (isFollowed) {
-      this.props.unfollowUser(authorName);
-    } else {
-      this.props.followUser(authorName);
+    const postId = `${post.author}/${post.permlink}`;
+
+    this.props.pendingFollowingPostAuthor(postId);
+
+    if (post.youFollows) {
+      return this.props
+        .unfollowUser(authorName)
+        .then(() => this.props.followingPostAuthor(postId))
+        .catch(() => this.props.errorFollowingPostAuthor(postId));
     }
+
+    return this.props
+      .followUser(authorName)
+      .then(() => this.props.followingPostAuthor(postId))
+      .catch(() => this.props.errorFollowingPostAuthor(postId));
   };
 
   handleEditClick = post => {
@@ -196,7 +213,6 @@ class PostContent extends React.Component {
       reblogList,
       pendingReblogs,
       followingList,
-      pendingFollows,
       bookmarks,
       pendingBookmarks,
       saving,
@@ -287,7 +303,6 @@ class PostContent extends React.Component {
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
-          pendingFollow={pendingFollows.includes(authorName)}
           pendingBookmark={pendingBookmarks.includes(content.id)}
           saving={saving}
           rewardFund={rewardFund}
