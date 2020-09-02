@@ -286,6 +286,20 @@ export const clearTransactionsHistory = (location, username) => dispatch => {
   }
 };
 
+export const OPEN_WALLET_TABLE = '@wallet/OPEN_WALLET_TABLE';
+
+export const openWalletTable = () => dispatch =>
+  dispatch({
+    type: OPEN_WALLET_TABLE,
+  });
+
+export const CLOSE_WALLET_TABLE = '@wallet/OPEN_WALLET_TABLE';
+
+export const closeWalletTable = () => dispatch =>
+  dispatch({
+    type: CLOSE_WALLET_TABLE,
+  });
+
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
 export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
 

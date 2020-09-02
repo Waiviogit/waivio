@@ -27,6 +27,7 @@ const initialState = {
   withdrawOpen: false,
   isErrorLoading: false,
   operationNum: -1,
+  isOpenWalletTable: false,
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -193,6 +194,16 @@ export default function walletReducer(state = initialState, action) {
         hasMore: false,
         operationNum: -1,
         transactionsHistory: {},
+      };
+    case walletActions.OPEN_WALLET_TABLE:
+      return {
+        ...state,
+        isOpenWalletTable: true,
+      };
+    case walletActions.CLOSE_WALLET_TABLE:
+      return {
+        ...state,
+        isOpenWalletTable: false,
       };
     case walletActions.GET_USER_EST_ACCOUNT_VALUE.START:
       return {

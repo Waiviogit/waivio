@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -13,6 +13,7 @@ import {
   getUser,
   getUsersTransactions,
 } from '../reducers';
+import { openWalletTable, closeWalletTable } from './walletActions';
 import { getDataDemoTransactions } from './WalletHelper';
 import WalletTableBodyRow from './WalletTableBodyRow';
 import { guestUserRegex } from '../helpers/regexHelpers';
@@ -27,7 +28,16 @@ const getCurrentTransactions = (props, isGuestPage) => {
 };
 
 const WalletTable = props => {
-  const { user, intl, authUserName, totalVestingShares, totalVestingFundSteem } = props;
+  const { user, intl, authUserName, totalVestingShares, totalVestingFundSteem, history } = props;
+  console.log('history: ', history);
+  useEffect(() => {
+    props.openWalletTable();
+    return () => {
+      // not working
+      props.closeWalletTable();
+    };
+  }, [props.history.location.pathname]);
+
   const isGuestPage = guestUserRegex.test(user && user.name);
   const transactions = getCurrentTransactions(props, isGuestPage);
   const currentUsername = user.name;
@@ -103,12 +113,17 @@ WalletTable.propTypes = {
   authUserName: PropTypes.string,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
+  openWalletTable: PropTypes.func,
+  closeWalletTable: PropTypes.func,
+  history: PropTypes.shape().isRequired,
 };
 
 WalletTable.defaultProps = {
   authUserName: '',
   transactionsHistory: {},
   demoTransactionsHistory: {},
+  openWalletTable: () => {},
+  closeWalletTable: () => {},
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -122,4 +137,7 @@ const mapStateToProps = (state, ownProps) => ({
   totalVestingShares: getTotalVestingShares(state),
   totalVestingFundSteem: getTotalVestingFundSteem(state),
 });
-export default connect(mapStateToProps, {})(injectIntl(WalletTable));
+export default connect(mapStateToProps, {
+  openWalletTable,
+  closeWalletTable,
+})(injectIntl(WalletTable));
