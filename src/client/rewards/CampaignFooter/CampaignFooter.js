@@ -7,7 +7,7 @@ import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
-import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
+import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {
@@ -128,11 +128,14 @@ class CampaignFooter extends React.Component {
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
-    this.isReserved = this.props.match.params.filterKey === IS_RESERVED;
+    this.isReserved = !isEmpty(this.props.match)
+      ? this.props.match.params.filterKey === IS_RESERVED ||
+        this.props.match.params.filterKey === IS_ALL
+      : '';
   }
 
   componentWillMount() {
-    const { user, post, defaultVotePercent } = this.props;
+    const { user, post, defaultVotePercent, proposition } = this.props;
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
@@ -146,10 +149,6 @@ class CampaignFooter extends React.Component {
         });
       }
     }
-  }
-
-  componentDidMount() {
-    const { proposition, match } = this.props;
     const currentUser = this.getCurrentUser();
     const author = this.isReserved
       ? get(currentUser, ['0', 'name'])
@@ -162,15 +161,11 @@ class CampaignFooter extends React.Component {
     if (!isEmpty(author) && !isEmpty(permlink)) {
       getContent(author, permlink).then(res => this.setState({ currentPost: res }));
     }
-    const isRewards = match.params.filterKey === 'reserved' || match.params.filterKey === 'all';
+    const reservationsTime =
+      get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      daysLeft: getDaysLeft(
-        isRewards
-          ? get(proposition, ['objects', '0', 'reservationCreated'])
-          : get(currentUser, ['0', 'createdAt']),
-        proposition.count_reservation_days,
-      ),
+      daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
     });
   }
 
@@ -183,7 +178,7 @@ class CampaignFooter extends React.Component {
         usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
       );
     } else {
-      currentUser = filter(proposition.users, usersItem => usersItem.name === userName);
+      currentUser = get(proposition, ['users', '0']);
     }
 
     return currentUser;
@@ -418,10 +413,11 @@ class CampaignFooter extends React.Component {
       reservedComments,
       isGuest,
     } = this.props;
-    const isRewards =
-      match.params.filterKey === 'reserved' ||
-      match.params.filterKey === 'all' ||
-      includes(match.path, 'object');
+    const isRewards = !isEmpty(match)
+      ? match.params.filterKey === 'reserved' ||
+        match.params.filterKey === 'all' ||
+        includes(match.path, 'object')
+      : '';
     const propositionStatus = isRewards
       ? get(proposition, ['status'])
       : get(proposition, ['users', '0', 'status']);
@@ -492,6 +488,7 @@ class CampaignFooter extends React.Component {
                 parent={rootComment}
                 matchPath={match.params[0]}
                 isGuest={isGuest}
+                proposition={proposition}
               />
             </div>
           ))}
