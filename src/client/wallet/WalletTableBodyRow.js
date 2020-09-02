@@ -9,6 +9,7 @@ import {
   getFormattedClaimRewardPayout,
   getSavingsTransactionMessage,
   getTransactionCurrency,
+  selectCurrectFillOrderValue,
   validateGuestTransferTitle,
 } from './WalletHelper';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
@@ -24,7 +25,6 @@ const WalletTableBodyRow = props => {
     totalVestingShares,
     totalVestingFundSteem,
   } = props;
-  console.log('transaction: ', transaction);
   const transactionType = transaction.type;
   let description = '';
 
@@ -197,13 +197,18 @@ const WalletTableBodyRow = props => {
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: description,
-        fieldMemo: transaction.memo,
       };
       return getCurrentRows(data);
     }
     case accountHistoryConstants.FILL_ORDER: {
-      const currentPaysAmount = getTransactionCurrency(transaction.current_pays);
-      // const openPaysAmount = getTransactionCurrency(transaction.current_pays);
+      const fillOrderAmount = selectCurrectFillOrderValue(
+        transaction,
+        transaction.current_pays,
+        transaction.open_pays,
+        currentUsername,
+      );
+      const paysAmountReceived = getTransactionCurrency(fillOrderAmount.received);
+      const paysAmountTransfer = getTransactionCurrency(fillOrderAmount.transfer);
       const fillOrderExchanger =
         currentUsername === transaction.open_owner
           ? transaction.current_owner
@@ -224,17 +229,92 @@ const WalletTableBodyRow = props => {
       );
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
-        fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
-        fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: description,
-        fieldMemo: transaction.memo,
+      };
+      if (paysAmountReceived.currency === 'HIVE') {
+        data.fieldHIVE = `${paysAmountReceived.amount}`;
+        data.fieldHBD = `- ${paysAmountTransfer.amount}`;
+      } else {
+        data.fieldHIVE = `- ${paysAmountTransfer.amount}`;
+        data.fieldHBD = `${paysAmountReceived.amount}`;
+      }
+      return getCurrentRows(data);
+    }
+    case accountHistoryConstants.CANCEL_ORDER: {
+      const openPaysAmount = getTransactionCurrency(
+        transaction.open_pays,
+        undefined,
+        transactionType,
+      );
+      const currentPaysAmount = getTransactionCurrency(
+        transaction.current_pays,
+        undefined,
+        transactionType,
+      );
+      description = openPaysAmount ? (
+        <FormattedMessage
+          id="cancel_order"
+          defaultMessage="Cancel order to buy {open_pays}"
+          values={{
+            open_pays: <span className="cancel-order-open-pays">{transaction.open_pays}</span>,
+          }}
+        />
+      ) : (
+        <FormattedMessage id="cancel_limit_order" defaultMessage="Cancel limit order" />
+      );
+      data = {
+        time: dateTableField(transaction.timestamp, isGuestPage),
+        fieldHIVE:
+          currentPaysAmount &&
+          currentPaysAmount.currency === 'HIVE' &&
+          `${currentPaysAmount.amount}`,
+        fieldHBD:
+          currentPaysAmount &&
+          currentPaysAmount.currency === 'HBD' &&
+          `${currentPaysAmount.amount}`,
+        fieldDescription: description,
       };
       return getCurrentRows(data);
     }
-    case accountHistoryConstants.CANCEL_ORDER:
-      return null;
-    case accountHistoryConstants.PROPOSAL_PAY:
-      return null;
+    case accountHistoryConstants.PROPOSAL_PAY: {
+      const receiver = transaction.receiver;
+      const proposalAmount = getTransactionCurrency(transaction.payment);
+      const termsOperation = receiver === currentUsername && receiver !== 'steem.dao' ? '' : '- ';
+      description =
+        receiver === currentUsername && receiver !== 'steem.dao' ? (
+          <FormattedMessage
+            id="proposal_payment_from"
+            defaultMessage="Proposal payment from {steem_dao}"
+            values={{
+              steem_dao: (
+                <Link to={`/@steem.dao`}>
+                  <span className="username">steem.dao</span>
+                </Link>
+              ),
+            }}
+          />
+        ) : (
+          <FormattedMessage
+            id="proposal_payment_to"
+            defaultMessage="Proposal payment to {receiver}"
+            values={{
+              receiver: (
+                <Link to={`/@${receiver}`}>
+                  <span className="username">{receiver}</span>
+                </Link>
+              ),
+            }}
+          />
+        );
+      data = {
+        time: dateTableField(transaction.timestamp, isGuestPage),
+        fieldHIVE:
+          proposalAmount.currency === 'HIVE' && `${termsOperation}${proposalAmount.amount}`,
+        fieldHBD: proposalAmount.currency === 'HBD' && `${termsOperation}${proposalAmount.amount}`,
+        fieldDescription: description,
+      };
+      return getCurrentRows(data);
+    }
     default:
       return null;
   }

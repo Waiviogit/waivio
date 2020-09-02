@@ -5,6 +5,7 @@ import { get, size, truncate, floor } from 'lodash';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
 import formatter from '../helpers/steemitFormatter';
+import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleLoadMoreTransactions = ({
@@ -58,13 +59,20 @@ export const dateTableField = (timestamp, isGuestPage) => (
   </BTooltip>
 );
 
-export const getTransactionCurrency = (amount, currency) => {
+export const getTransactionCurrency = (amount, currency, type) => {
   if (!amount) {
     return null;
   }
   const transaction = amount.split(' ');
   const transactionAmount = parseFloat(get(transaction, '[0]', null));
   const transactionCurrency = get(transaction, '[1]', currency);
+
+  if (type === accountHistoryConstants.CANCEL_ORDER) {
+    if (!transactionAmount) {
+      return null;
+    }
+  }
+
   return {
     amount: transactionAmount,
     currency: transactionCurrency,
@@ -246,9 +254,8 @@ export const selectCurrectFillOrderValue = (
   currentPays,
   openPays,
   currentUsername,
-) => {
-  const userEqual = currentUsername === transactionDetails.current_owner;
-  const currentValue = userEqual
+) =>
+  currentUsername === transactionDetails.current_owner
     ? {
         transfer: currentPays,
         received: openPays,
@@ -257,16 +264,3 @@ export const selectCurrectFillOrderValue = (
         transfer: openPays,
         received: currentPays,
       };
-
-  return (
-    <span className="UserWalletTransactions__transfer">
-      {'- '}
-      {currentValue.transfer}
-      &ensp;
-      <span className="UserWalletTransactions__received">
-        {'+ '}
-        {currentValue.received}
-      </span>
-    </span>
-  );
-};

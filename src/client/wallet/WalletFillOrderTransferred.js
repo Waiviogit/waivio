@@ -16,6 +16,12 @@ const WalletFillOrderTransferred = ({
   currentUsername,
 }) => {
   const url = `/@${exchanger}`;
+  const currentOrderValue = selectCurrectFillOrderValue(
+    transactionDetails,
+    currentPays,
+    openPays,
+    currentUsername,
+  );
   return (
     <React.Fragment>
       <div className="UserWalletTransactions__transaction">
@@ -37,12 +43,15 @@ const WalletFillOrderTransferred = ({
                 }}
               />
             </div>
-            {selectCurrectFillOrderValue(
-              transactionDetails,
-              currentPays,
-              openPays,
-              currentUsername,
-            )}
+            <span className="UserWalletTransactions__transfer">
+              {'- '}
+              {currentOrderValue.transfer}
+              &ensp;
+              <span className="UserWalletTransactions__received">
+                {'+ '}
+                {currentOrderValue.received}
+              </span>
+            </span>
           </div>
           <span className="UserWalletTransactions__timestamp">
             <BTooltip
