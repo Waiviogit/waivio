@@ -503,7 +503,7 @@
   "object_field_background": "Фон",
   "object_field_phone": "Телефон",
   "object_field_email": "Email",
-  "object_field_sortCustom": "Сортировка",
+  "object_field_sortCustom": "Пользовательская сортировка",
   "object_field_listItem": "Элемент списка",
   "object_field_menuItem": "Элемент меню",
   "object_field_list": "Список",
@@ -1344,5 +1344,7 @@
   "signing": "Вход в систему",
   "object_field_pageLink": "Страница",
   "my-profile": "Профиль",
-  "imageSetter_invalid_link": "Неправильная ссылка"
+  "imageSetter_invalid_link": "Неправильная ссылка",
+  "restaurant": "Ресторан",
+  "object_field_authority": "Авторитет"
 }

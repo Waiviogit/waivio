@@ -11,6 +11,9 @@ import {
   PATH_NAME_MESSAGES,
   PATH_NAME_PAYABLES,
   PATH_NAME_HISTORY,
+  IS_ACTIVE,
+  IS_ALL,
+  IS_RESERVED,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
@@ -813,7 +816,15 @@ export const getActiveFilters = ({
   }
 };
 
-export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
+export const getSortChanged = ({
+  path,
+  sortHistory,
+  sortMessages,
+  sortGuideHistory,
+  sortAll,
+  sortEligible,
+  sortReserved,
+}) => {
   switch (path) {
     case HISTORY:
       return sortHistory;
@@ -821,6 +832,12 @@ export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHisto
       return sortMessages;
     case GUIDE_HISTORY:
       return sortGuideHistory;
+    case IS_ACTIVE:
+      return sortEligible;
+    case IS_ALL:
+      return sortAll;
+    case IS_RESERVED:
+      return sortReserved;
     default:
       return '';
   }
