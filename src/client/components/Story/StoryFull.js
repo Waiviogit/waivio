@@ -33,24 +33,15 @@ import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../user/userActions';
-import { getCryptosPriceHistory } from '../../reducers';
-import { getCryptoPriceHistory } from '../../app/appActions';
-import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { UNASSIGNED } from '../../../common/constants/rewards';
 import './StoryFull.less';
 
 @injectIntl
 @withRouter
 @withAuthActions
-@connect(
-  state => ({
-    cryptosPriceHistory: getCryptosPriceHistory(state),
-  }),
-  {
-    assignProposition,
-    getCryptoPriceHistory,
-  },
-)
+@connect(null, {
+  assignProposition,
+})
 class StoryFull extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -78,7 +69,6 @@ class StoryFull extends React.Component {
     match: PropTypes.shape(),
     assignProposition: PropTypes.func,
     history: PropTypes.shape(),
-    getCryptoPriceHistory: PropTypes.func.isRequired,
     /* from context */
     isOriginalPost: PropTypes.string,
   };
@@ -127,8 +117,6 @@ class StoryFull extends React.Component {
   }
 
   componentDidMount() {
-    const { getCryptoPriceHistory: getCryptoPriceHistoryAction } = this.props;
-    getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
     document.body.classList.add('white-bg');
   }
 
