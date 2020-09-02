@@ -1,5 +1,9 @@
 import { get, some, find, filter, isEmpty, compact } from 'lodash';
-import { addressFields, objectFields } from '../../common/constants/listOfFields';
+import {
+  addressFields,
+  objectFields,
+  TYPES_OF_MENU_ITEM,
+} from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 import { mainerName } from '../object/wObjectHelper';
@@ -216,6 +220,23 @@ export const parseWobjectField = (wobject, fieldName) => {
     return null;
   }
 };
+
+export const parseButtonsField = wobject =>
+  get(wobject, 'button', []).map(btn => {
+    if (btn) {
+      try {
+        return {
+          ...btn,
+          id: TYPES_OF_MENU_ITEM.BUTTON,
+          body: JSON.parse(btn.body),
+        };
+      } catch (err) {
+        return null;
+      }
+    }
+
+    return null;
+  });
 
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
