@@ -1346,12 +1346,13 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
+        const buttons = parseButtonsField(wObject);
         const listItems =
-          get(wObject, 'listItem').map(item => ({
+          get(wObject, 'listItem', []).map(item => ({
             id: item.body,
             content: <DnDListItem name={item.alias} type={item.type} />,
           })) || [];
-        const buttons = parseButtonsField(wObject);
+
         if (!isEmpty(buttons)) {
           buttons.forEach(btn => {
             listItems.push({
