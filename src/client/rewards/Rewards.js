@@ -192,8 +192,6 @@ class Rewards extends React.Component {
     }
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
-    } else if (match.params.filterKey !== 'all') {
-      this.props.history.push(`/rewards/all`);
     }
     if (!authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, area, sort });
@@ -204,7 +202,7 @@ class Rewards extends React.Component {
     const { username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (username !== nextProps.username && !url) {
+    if (username !== nextProps.username) {
       const userName = username || nextProps.username;
       this.getPropositionsByStatus({ username: userName, sort });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
