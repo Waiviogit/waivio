@@ -11,6 +11,7 @@ import {
   getUser,
   isGuestUser,
   getAuthorizationUserFollowSort,
+  getLocale,
 } from '../reducers';
 import { notify } from '../app/Notification/notificationActions';
 import './UserFollowing.less';
@@ -23,6 +24,7 @@ const TabPane = Tabs.TabPane;
     authUser: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
     sort: getAuthorizationUserFollowSort(state),
+    locale: getLocale(state),
   }),
   {
     notify,
@@ -34,6 +36,7 @@ export default class UserFollowing extends React.Component {
     match: PropTypes.shape().isRequired,
     authUser: PropTypes.string,
     sort: PropTypes.string,
+    locale: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -65,8 +68,8 @@ export default class UserFollowing extends React.Component {
   }
 
   objectFetcher = skip => {
-    const { match, authUser } = this.props;
-    return getWobjectFollowing(match.params.name, skip, UserFollowing.limit, authUser);
+    const { match, authUser, locale } = this.props;
+    return getWobjectFollowing(match.params.name, skip, UserFollowing.limit, authUser, locale);
   };
 
   render() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, get, pickBy, identity, size, has, setWith } from 'lodash';
+import { isEmpty, get, pickBy, identity, size, has, setWith, uniq } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -15,12 +15,16 @@ import {
   getObjectName,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldsCount, getFieldsByName, getLink } from '../../object/wObjectHelper';
+import {
+  getFieldsCount,
+  getFieldsByName,
+  getLink,
+  getExposedFieldsByObjType,
+} from '../../object/wObjectHelper';
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
   linkFields,
-  getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
 import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
@@ -87,6 +91,7 @@ class ObjectInfo extends React.Component {
       default:
         break;
     }
+
     return null;
   };
 
@@ -97,8 +102,8 @@ class ObjectInfo extends React.Component {
   listItem = (name, content) => {
     const { wobject, userName, isEditMode } = this.props;
     const fieldsCount = getFieldsCount(wobject, name);
-    const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const shouldDisplay = renderFields.includes(name);
+    const exposedFields = getExposedFieldsByObjType(wobject);
+    const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
     return (
@@ -111,7 +116,7 @@ class ObjectInfo extends React.Component {
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={name}
-                  objName={wobject.name || wobject.default_name}
+                  objName={getObjectName(wobject)}
                   handleSelectField={this.handleSelectField}
                   selectedField={this.state.selectedField}
                   linkTo={
@@ -177,28 +182,30 @@ class ObjectInfo extends React.Component {
       </div>
     ));
 
-  getMenuSectionLink = item => {
+  getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
+
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
-          active: location.hash.slice(1).split('/')[0] === item.author_permlink,
+          active: location.hash.slice(1).split('/')[0] === item.body,
         })}
-        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
+        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body}`}
       >
-        {item.alias || item.name || item.default_name}
+        {item.alias || getObjectName(wobject)}
       </LinkButton>
     );
+
     switch (item.id) {
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
           <Button
             className="LinkButton menu-btn field-button"
-            href={getLink(item.link)}
+            href={getLink(item.body.link)}
             target={'_blank'}
             block
           >
-            {item.title}
+            {item.body.title}
           </Button>
         );
         break;
@@ -217,8 +224,9 @@ class ObjectInfo extends React.Component {
       default:
         break;
     }
+
     return (
-      <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
+      <div className="object-sidebar__menu-item" key={item.permlink}>
         {menuItem}
       </div>
     );
@@ -258,6 +266,8 @@ class ObjectInfo extends React.Component {
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
+    const listItems = get(wobject, 'listItem', []);
+    const customSort = get(wobject, 'sortCustom', []);
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -268,13 +278,20 @@ class ObjectInfo extends React.Component {
         }
       : {};
     const phones = get(wobject, 'phone', []);
+    const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const allAlbums = this.validatedAlbums(albums);
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
+    const menuLinks = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.LIST);
+    const menuPages = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.PAGE);
     const button = get(wobject, 'button', []).map(btn => {
       if (btn) {
         try {
-          return JSON.parse(btn.body);
+          return {
+            ...btn,
+            id: TYPES_OF_MENU_ITEM.BUTTON,
+            body: JSON.parse(btn.body),
+          };
         } catch (err) {
           return null;
         }
@@ -283,34 +300,59 @@ class ObjectInfo extends React.Component {
       return null;
     });
 
-    const menuSection = (
-      <React.Fragment>
-        {isEditMode && (
-          <div className="object-sidebar__section-title">
-            <FormattedMessage id="menu" defaultMessage="Menu" />
+    const menuSection = () => {
+      if (!isEditMode && !isEmpty(customSort)) {
+        const buttonArray = [
+          ...button,
+          ...listItems,
+          { id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter },
+        ];
+        const sortButtons = customSort.reduce((acc, curr) => {
+          const currentLink = buttonArray.find(btn => btn.body === curr);
+
+          return currentLink ? [...acc, currentLink] : acc;
+        }, []);
+
+        return uniq([...sortButtons, ...buttonArray]).map(item =>
+          this.getMenuSectionLink({ id: item.name, ...item }),
+        );
+      }
+
+      return (
+        <React.Fragment>
+          {isEditMode && (
+            <div className="object-sidebar__section-title">
+              <FormattedMessage id="menu" defaultMessage="Menu" />
+            </div>
+          )}
+          <div className="object-sidebar__menu-items">
+            <React.Fragment>
+              {this.listItem(
+                TYPES_OF_MENU_ITEM.LIST,
+                !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
+              )}
+              {this.listItem(
+                TYPES_OF_MENU_ITEM.PAGE,
+                !isEmpty(menuPages) &&
+                  menuPages.map(page =>
+                    this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
+                  ),
+              )}
+              {this.listItem(
+                objectFields.button,
+                !isEmpty(button) &&
+                  button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
+              )}
+              {this.listItem(
+                objectFields.newsFilter,
+                newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+              )}
+              {this.listItem(objectFields.sorting, null)}
+            </React.Fragment>
           </div>
-        )}
-        <div className="object-sidebar__menu-items">
-          <React.Fragment>
-            {this.listItem(
-              TYPES_OF_MENU_ITEM.LIST,
-              wobject.menuItems && wobject.menuItems.map(item => this.getMenuSectionLink(item)),
-            )}
-            {this.listItem(
-              objectFields.button,
-              !isEmpty(button) &&
-                button.map(btn =>
-                  this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...btn }),
-                ),
-            )}
-            {this.listItem(
-              objectFields.newsFilter,
-              newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
-            )}
-          </React.Fragment>
-        </div>
-      </React.Fragment>
-    );
+        </React.Fragment>
+      );
+    };
 
     const listSection = (
       <React.Fragment>
@@ -531,9 +573,8 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {this.listItem(objectFields.pageContent, null)}
-            {!hasType(wobject, OBJECT_TYPE.HASHTAG) && menuSection}
-            {aboutSection}
+            {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
+            {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>

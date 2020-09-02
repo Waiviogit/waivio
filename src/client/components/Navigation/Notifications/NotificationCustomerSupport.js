@@ -7,9 +7,9 @@ import { epochToUTC } from '../../../helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationCustomerSupport = ({ notification, read, onClick, currentAuthUsername }) => (
+const NotificationCustomerSupport = ({ notification, read, onClick }) => (
   <Link
-    to={`/@${currentAuthUsername}/${notification.permlink}`}
+    to={`/@${notification.author}/${notification.permlink}`}
     onClick={onClick}
     className={classNames('Notification', {
       'Notification--unread': !read,
@@ -49,7 +49,6 @@ NotificationCustomerSupport.propTypes = {
     timestamp: PropTypes.number,
   }),
   onClick: PropTypes.func,
-  currentAuthUsername: PropTypes.string,
 };
 
 NotificationCustomerSupport.defaultProps = {

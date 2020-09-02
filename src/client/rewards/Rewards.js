@@ -70,7 +70,6 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getClientWObj } from '../adapters';
 import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
 import { getZoom } from '../components/Maps/mapHelper';
 
@@ -193,8 +192,6 @@ class Rewards extends React.Component {
     }
     if (username && !url) {
       this.getPropositionsByStatus({ username, sort });
-    } else if (match.params.filterKey !== 'all') {
-      this.props.history.push(`/rewards/all`);
     }
     if (!authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, area, sort });
@@ -205,7 +202,7 @@ class Rewards extends React.Component {
     const { username, authenticated } = this.props;
     const { sortAll, sortEligible, sortReserved, url } = this.state;
     const sort = getSort(match, sortAll, sortEligible, sortReserved);
-    if (username !== nextProps.username && !url) {
+    if (username !== nextProps.username) {
       const userName = username || nextProps.username;
       this.getPropositionsByStatus({ username: userName, sort });
     } else if (!authenticated && url && this.props.match.params.filterKey !== 'all') {
@@ -232,7 +229,7 @@ class Rewards extends React.Component {
     const { username, match, isFullscreenMode } = this.props;
     const limit = isFullscreenMode ? 200 : 50;
     const { activeFilters } = this.state;
-    if (!isSecondaryObjectsCards) {
+    if (!isSecondaryObjectsCards || (isSecondaryObjectsCards && !firstMapLoad)) {
       this.getPropositions(
         { username, match, area: coordinates, radius, activeFilters, limit },
         isMap,
@@ -413,6 +410,7 @@ class Rewards extends React.Component {
     isMap,
     firstMapLoad,
   ) => {
+    const { usedLocale } = this.props;
     this.setState({ loadingCampaigns: !isMap });
     getPropositions(
       preparePropositionReqData({
@@ -428,16 +426,15 @@ class Rewards extends React.Component {
         firstMapLoad: !!isMap && firstMapLoad,
         isMap,
         isRequestWithoutRequiredObject,
+        locale: usedLocale,
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
       this.setState({
-        campaignsTypes: data.campaigns_types,
         area,
         radius,
         loading: false,
         fetched: false,
-        hasMore: data.hasMore,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -447,14 +444,15 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
+        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
-        });
-        const sponsors = sortBy(data.sponsors);
-        this.setState({
+          campaignsTypes: data.campaigns_types,
+          area,
+          radius,
+          hasMore: data.hasMore,
           sponsors,
-          propositions: data.campaigns,
         });
       }
       if (isMap && firstMapLoad) {
@@ -719,13 +717,17 @@ class Rewards extends React.Component {
     const {
       propositions,
       hasMore,
-      sort,
       area,
       activeFilters,
       radius,
       isSearchAreaFilter,
+      sortAll,
+      sortEligible,
+      sortReserved,
     } = this.state;
-    const { username, match } = this.props;
+    const { username, match, usedLocale } = this.props;
+    const path = match.params.filterKey;
+    const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
     if (hasMore) {
       this.setState(
         {
@@ -735,8 +737,9 @@ class Rewards extends React.Component {
           const reqData = preparePropositionReqData({
             username,
             match,
-            sort,
+            sort: sortChanged,
             area,
+            usedLocale,
             ...activeFilters,
           });
           reqData.skip = propositions.length;
@@ -759,6 +762,7 @@ class Rewards extends React.Component {
 
   getCampaignsObjectsForMap = () => {
     const { propositions, propositionsReserved } = this.state;
+    const { match } = this.props;
     const newPropositions = !isEmpty(propositions) ? propositions : propositionsReserved;
     const secondaryObjects = flatten(
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
@@ -774,7 +778,15 @@ class Rewards extends React.Component {
     const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
       secondaryObjectsWithUniqueCoordinates,
     );
-    const campaignsObjectsForMap = [primaryObjectForMap, ...secondaryObjectsWithWeight];
+    const campaignsObjectsForMap =
+      match.params.filterKey === 'reserved'
+        ? map(newPropositions, proposition => {
+            const propositionObject = get(proposition, ['objects', '0', 'object']);
+            return !isEmpty(propositionObject.map)
+              ? propositionObject
+              : proposition.required_object;
+          })
+        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
     return campaignsObjectsForMap;
   };
@@ -833,7 +845,7 @@ class Rewards extends React.Component {
       activeGuideHistoryFilters,
       url,
     } = this.state;
-    const mapWobjects = map(wobjects, wobj => getClientWObj(wobj.required_object, usedLocale));
+    const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
@@ -850,6 +862,7 @@ class Rewards extends React.Component {
         : 0;
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
+      usedLocale,
       currentSteemPrice,
       hasMore,
       IsRequiredObjectWrap,

@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { find, get, pick, isEmpty, times, compact, orderBy, map } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
@@ -33,6 +34,7 @@ const CommentsMessages = memo(
     getReservedComments,
     matchPath,
     isGuest,
+    proposition,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -71,6 +73,10 @@ const CommentsMessages = memo(
         ]),
       [commentObj],
     );
+
+    const propositionUserName = get(proposition, ['users', '0', 'name']);
+
+    const time = moment.parseZone(commentCreated).valueOf();
 
     const userVote = find(activeVotes, { voter: user.name });
 
@@ -231,12 +237,12 @@ const CommentsMessages = memo(
       <React.Fragment>
         {show && (
           <div className="Comment">
-            <Link to={`/@${author}`} style={{ height: 32 }}>
-              <Avatar username={author} size={32} />
+            <Link to={`/@${propositionUserName}`} style={{ height: 32 }}>
+              <Avatar username={propositionUserName} size={32} />
             </Link>
             <div className="Comment__text">
-              <Link to={`/@${author}`}>
-                <span className="username">{author}</span>
+              <Link to={`/@${propositionUserName}`}>
+                <span className="username">{propositionUserName}</span>
               </Link>
               <span className="Comment__date">
                 <BTooltip
@@ -247,7 +253,7 @@ const CommentsMessages = memo(
                     </span>
                   }
                 >
-                  <FormattedRelative value={commentCreated} />
+                  <FormattedRelative value={time} />
                 </BTooltip>
               </span>
               <div className="Comment__content">
@@ -383,6 +389,7 @@ CommentsMessages.propTypes = {
   getReservedComments: PropTypes.func,
   matchPath: PropTypes.string,
   isGuest: PropTypes.bool,
+  proposition: PropTypes.shape(),
 };
 
 CommentsMessages.defaultProps = {
@@ -390,6 +397,7 @@ CommentsMessages.defaultProps = {
   defaultVotePercent: 0,
   matchPath: '',
   isGuest: false,
+  proposition: {},
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},

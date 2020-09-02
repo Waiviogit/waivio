@@ -12,7 +12,6 @@ import ObjectType from './ObjectType';
 import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
-import OBJECT_TYPES from '../object/const/objectTypes';
 import { objectFields } from '../../common/constants/listOfFields';
 import {
   accessTypesArr,
@@ -21,6 +20,7 @@ import {
   parseWobjectField,
 } from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
+import { getLinkEdit } from './wObjectHelper';
 
 import '../components/ObjectHeader.less';
 
@@ -41,8 +41,11 @@ const WobjHeader = ({
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
-  const parentName = parent.name || parent.default_name;
+  const parentName = getObjectName(parent);
   const status = parseWobjectField(wobject, 'status');
+  const name = getObjectName(wobject);
+  const isHashtag = wobject.object_type === 'hashtag';
+
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -51,18 +54,6 @@ const WobjHeader = ({
       )}
     </div>
   );
-
-  const getLink = () => {
-    const link = `/object/${wobject.author_permlink}`;
-    if (isEditMode) return null;
-    if (isMobile) return `${link}/about`;
-    if (wobject.object_type === OBJECT_TYPES.LIST || wobject.object_type === OBJECT_TYPES.PAGE)
-      return `${link}/${wobject.object_type}`;
-
-    return `${link}/reviews`;
-  };
-  const name = getObjectName(wobject);
-  const isHashtag = wobject.object_type === 'hashtag';
 
   const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
@@ -73,7 +64,7 @@ const WobjHeader = ({
         <div className="ObjectHeader__user">
           {parentName && (
             <Link
-              to={`/object/${wobject.parent.author_permlink}`}
+              to={wobject.defaultShowLink}
               title={`${intl.formatMessage({
                 id: 'GoTo',
                 defaultMessage: 'Go to',
@@ -97,7 +88,7 @@ const WobjHeader = ({
                   followingType="wobject"
                 />
                 {accessExtend && authenticated && (
-                  <Link to={getLink()}>
+                  <Link to={getLinkEdit(wobject, isEditMode, isMobile)}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
@@ -120,7 +111,7 @@ const WobjHeader = ({
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
-                  objName={wobject.name}
+                  objName={name}
                 />
               ) : (
                 statusFields

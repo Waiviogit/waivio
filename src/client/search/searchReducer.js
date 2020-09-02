@@ -17,6 +17,7 @@ const initialState = {
   isStartSearchAutoComplete: false,
   isStartSearchUser: false,
   isStartSearchObject: false,
+  isClearSearchObjects: false,
 };
 
 export default (state = initialState, action) => {
@@ -152,11 +153,17 @@ export default (state = initialState, action) => {
         usersForDiscoverPage: [],
       };
     }
-
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
         searchObjectsResults: [],
+        isClearSearchObjects: true,
+      };
+    }
+    case searchActions.RESET_TO_INITIAL_IS_CLEAR_SEARCH_OBJECTS: {
+      return {
+        ...state,
+        isClearSearchObjects: false,
       };
     }
     case searchActions.UNFOLLOW_SEARCH_USER.SUCCESS: {
@@ -325,3 +332,4 @@ export const getBeneficiariesUsers = state => state.beneficiariesUsers;
 export const getIsStartSearchAutoComplete = state => state.isStartSearchAutoComplete;
 export const getIsStartSearchUser = state => state.isStartSearchUser;
 export const getIsStartSearchObject = state => state.isStartSearchObject;
+export const getIsClearSearchObjects = state => state.isClearSearchObjects;
