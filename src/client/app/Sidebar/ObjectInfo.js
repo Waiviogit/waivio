@@ -482,7 +482,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.website,
-          website && (
+          website && website.title && website.link && (
             <div className="field-website">
               <span className="field-website__title">
                 <i className="iconfont icon-link text-icon link" />

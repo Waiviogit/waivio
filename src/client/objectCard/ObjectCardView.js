@@ -24,8 +24,7 @@ const ObjectCardView = ({
   const [tags, setTags] = useState([]);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const address = parseAddress(wObject);
-  console.log(address);
-  console.log(wObject);
+
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
       const currentTags = wObject.tagCategories
