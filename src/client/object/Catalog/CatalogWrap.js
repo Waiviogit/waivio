@@ -524,7 +524,6 @@ class CatalogWrap extends React.Component {
 
     const menuItem = wobject.menuItems;
 
-    console.log(menuItem);
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (
