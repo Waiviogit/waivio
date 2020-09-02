@@ -13,6 +13,7 @@ import {
   parseWobjectField,
   parseAddress,
   getObjectName,
+  parseButtonsField,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -190,7 +191,8 @@ class ObjectInfo extends React.Component {
         className={classNames('menu-btn', {
           active: location.hash.slice(1).split('/')[0] === item.body,
         })}
-        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body}`}
+        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body ||
+          item.author_permlink}`}
       >
         {item.alias || getObjectName(item)}
       </LinkButton>
@@ -287,21 +289,7 @@ class ObjectInfo extends React.Component {
       ? listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.LIST)
       : wobject.menuItems;
     const menuPages = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.PAGE);
-    const button = get(wobject, 'button', []).map(btn => {
-      if (btn) {
-        try {
-          return {
-            ...btn,
-            id: TYPES_OF_MENU_ITEM.BUTTON,
-            body: JSON.parse(btn.body),
-          };
-        } catch (err) {
-          return null;
-        }
-      }
-
-      return null;
-    });
+    const button = parseButtonsField(wobject);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
@@ -313,7 +301,7 @@ class ObjectInfo extends React.Component {
         ];
         const sortButtons = customSort.reduce((acc, curr) => {
           const currentLink = buttonArray.find(
-            btn => btn.body === curr || btn.author_permlink === curr,
+            btn => btn.body === curr || btn.author_permlink === curr || btn.id === curr,
           );
 
           return currentLink ? [...acc, currentLink] : acc;
