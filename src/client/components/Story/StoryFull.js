@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size } from 'lodash';
+import { forEach, get, isEmpty, map, size, filter } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -32,11 +32,11 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../user/userActions';
+import { assignProposition } from '../../user/userActions';
 import { getCryptosPriceHistory } from '../../reducers';
 import { getCryptoPriceHistory } from '../../app/appActions';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
-
+import { UNASSIGNED } from '../../../common/constants/rewards';
 import './StoryFull.less';
 
 @injectIntl
@@ -48,7 +48,6 @@ import './StoryFull.less';
   }),
   {
     assignProposition,
-    declineProposition,
     getCryptoPriceHistory,
   },
 )
@@ -78,7 +77,6 @@ class StoryFull extends React.Component {
     onEditClick: PropTypes.func,
     match: PropTypes.shape(),
     assignProposition: PropTypes.func,
-    declineProposition: PropTypes.func,
     history: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
     /* from context */
@@ -228,42 +226,19 @@ class StoryFull extends React.Component {
       });
   };
 
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssign: true });
-    this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
+  getNewPropositions = propositions => {
+    const { user } = this.props;
+    const newPropositions = [];
+    map(propositions, proposition => {
+      const currentUser = filter(
+        proposition.users,
+        usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
+      );
+      if (!isEmpty(currentUser) && !proposition.assigned) {
+        newPropositions.push(proposition);
+      }
+    });
+    return newPropositions;
   };
 
   render() {
@@ -515,23 +490,24 @@ class StoryFull extends React.Component {
                   );
                 }
                 if (size(obj.propositions)) {
-                  return obj.propositions.map(proposition => (
-                    <Proposition
-                      guide={proposition.guide}
-                      proposition={proposition}
-                      wobj={obj}
-                      assignCommentPermlink={obj.permlink}
-                      assignProposition={this.assignPropositionHandler}
-                      discardProposition={this.discardProposition}
-                      authorizedUserName={user.name}
-                      loading={loadingAssign}
-                      key={obj.author_permlink}
-                      assigned={proposition.assigned}
-                      match={match}
-                      user={user}
-                      history={history}
-                    />
-                  ));
+                  const newPropositions = this.getNewPropositions(obj.propositions);
+                  return !isEmpty(newPropositions)
+                    ? newPropositions.map(proposition => (
+                        <Proposition
+                          guide={proposition.guide}
+                          proposition={proposition}
+                          wobj={obj}
+                          assignCommentPermlink={obj.permlink}
+                          assignProposition={this.assignPropositionHandler}
+                          authorizedUserName={user.name}
+                          loading={loadingAssign}
+                          key={obj.author_permlink}
+                          match={match}
+                          user={user}
+                          history={history}
+                        />
+                      ))
+                    : null;
                 }
                 return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
               })}

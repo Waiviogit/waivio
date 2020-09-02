@@ -140,7 +140,9 @@ const Proposition = ({
         .then(() => {
           setModalDetailsOpen(!isModalDetailsOpen);
           setReservation(true);
-          history.push('/rewards/reserved');
+          setTimeout(() => {
+            history.push('/rewards/reserved');
+          }, 5000);
         })
         .catch(e => {
           if (e.error_description || e.message) {
