@@ -1344,5 +1344,6 @@
   "alphabet": "A..Z",
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
-  "restaurant": "restaurant"
+  "restaurant": "restaurant",
+  "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:"
 }

@@ -1346,5 +1346,6 @@
   "my-profile": "Профиль",
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
-  "object_field_authority": "Авторитет"
+  "object_field_authority": "Авторитет",
+  "rewards_from_sponsors_you_are_following:": "Награды от спонсоров, за которыми вы следите:"
 }

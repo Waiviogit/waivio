@@ -53,6 +53,11 @@ const getMenuConfig = ({ isAuthenticated }) => ({
         intlId: 'notifications',
         linkTo: '/notifications-list',
       },
+      {
+        name: 'Rewards',
+        intlId: 'menu_rewards',
+        linkTo: '/rewards-list',
+      },
       // {
       //   name: 'Updates',
       //   intlId: 'updates',

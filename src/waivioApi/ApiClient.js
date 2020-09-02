@@ -1418,6 +1418,17 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
+export const getFollowingSponsorsRewards = ({ userName }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
   broadcastGuestOperation,
