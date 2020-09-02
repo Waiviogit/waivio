@@ -9,7 +9,6 @@ import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects
 const LeftSidebar = () => (
   <Switch>
     <Route path="/@:name/wallet" component={SidebarMenu} />
-    <Route path="/@:name/transfers/table" />
     <Route path="/@:name" component={UserInfo} />
     <Route path="/object/:name" component={UserInfo} />
     <Route

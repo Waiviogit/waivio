@@ -293,7 +293,7 @@ export const openWalletTable = () => dispatch =>
     type: OPEN_WALLET_TABLE,
   });
 
-export const CLOSE_WALLET_TABLE = '@wallet/OPEN_WALLET_TABLE';
+export const CLOSE_WALLET_TABLE = '@wallet/CLOSE_WALLET_TABLE';
 
 export const closeWalletTable = () => dispatch =>
   dispatch({

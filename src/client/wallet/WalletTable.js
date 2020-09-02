@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { get, map } from 'lodash';
-import './WalletTable.less';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -19,6 +18,8 @@ import WalletTableBodyRow from './WalletTableBodyRow';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import * as store from '../reducers';
 
+import './WalletTable.less';
+
 const getCurrentTransactions = (props, isGuestPage) => {
   const { user, transactionsHistory, demoTransactionsHistory } = props;
   const username = user.name;
@@ -28,15 +29,22 @@ const getCurrentTransactions = (props, isGuestPage) => {
 };
 
 const WalletTable = props => {
-  const { user, intl, authUserName, totalVestingShares, totalVestingFundSteem, history } = props;
-  console.log('history: ', history);
+  const {
+    user,
+    intl,
+    authUserName,
+    totalVestingShares,
+    totalVestingFundSteem,
+    history,
+    openTable,
+    closeTable,
+  } = props;
   useEffect(() => {
-    props.openWalletTable();
+    openTable();
     return () => {
-      // not working
-      props.closeWalletTable();
+      closeTable();
     };
-  }, [props.history.location.pathname]);
+  }, [history.location.pathname]);
 
   const isGuestPage = guestUserRegex.test(user && user.name);
   const transactions = getCurrentTransactions(props, isGuestPage);
@@ -113,8 +121,8 @@ WalletTable.propTypes = {
   authUserName: PropTypes.string,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
-  openWalletTable: PropTypes.func,
-  closeWalletTable: PropTypes.func,
+  openTable: PropTypes.func,
+  closeTable: PropTypes.func,
   history: PropTypes.shape().isRequired,
 };
 
@@ -122,8 +130,8 @@ WalletTable.defaultProps = {
   authUserName: '',
   transactionsHistory: {},
   demoTransactionsHistory: {},
-  openWalletTable: () => {},
-  closeWalletTable: () => {},
+  openTable: () => {},
+  closeTable: () => {},
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -138,6 +146,6 @@ const mapStateToProps = (state, ownProps) => ({
   totalVestingFundSteem: getTotalVestingFundSteem(state),
 });
 export default connect(mapStateToProps, {
-  openWalletTable,
-  closeWalletTable,
+  openTable: openWalletTable,
+  closeTable: closeWalletTable,
 })(injectIntl(WalletTable));

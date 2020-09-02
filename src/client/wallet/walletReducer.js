@@ -316,3 +316,4 @@ export const hasMoreGuestActions = state => state.hasMoreGuestActions;
 export const getIsErrorLoading = state => state.isErrorLoading;
 export const getOperationNum = state => state.operationNum;
 export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;
+export const getIsOpenWalletTable = state => state.isOpenWalletTable;

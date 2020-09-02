@@ -172,6 +172,7 @@ export const getIsErrorLoading = state => fromWallet.getIsErrorLoading(state.wal
 export const getOperationNum = state => fromWallet.getOperationNum(state.wallet);
 export const getIsloadingMoreTransactions = state =>
   fromWallet.getIsloadingMoreTransactions(state.wallet);
+export const getIsOpenWalletTable = state => fromWallet.getIsOpenWalletTable(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);

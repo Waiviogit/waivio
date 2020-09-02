@@ -9,14 +9,45 @@
   table-layout: fixed;
   width: 100%;
 
+  & span.username {
+    transition: 0.5s;
+
+    &:hover {
+      color: @orange-hot;
+    }
+  }
+
   & th {
     border: 1px solid @black;
     vertical-align: top;
+    color: @black;
+    font-weight: 600;
   }
 
   & td {
     font-size: 15px;
     border: 1px solid @black;
+    color: @black;
+  }
+
+  &__date {
+    width: 120px;
+  }
+
+  &__HIVE {
+    width: 120px;
+  }
+
+  &__HP {
+    width: 120px;
+  }
+
+  &__HBD {
+    width: 120px;
+  }
+
+  &__description {
+    //width: 450px;
   }
 }
 

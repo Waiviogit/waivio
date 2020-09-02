@@ -10,6 +10,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
+  getIsOpenWalletTable,
   getIsUserFailed,
   getIsUserLoaded,
   getRate,
@@ -43,6 +44,7 @@ import DEFAULTS from '../object/const/defaultValues';
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     allUsers: getAllUsers(state), // DO NOT DELETE! Auxiliary selector. Without it, "user" is not always updated
+    isOpenWalletTable: getIsOpenWalletTable(state),
   }),
   {
     getUserAccount,
@@ -66,6 +68,7 @@ export default class User extends React.Component {
     usersAccountHistory: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    isOpenWalletTable: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -74,6 +77,7 @@ export default class User extends React.Component {
     failed: false,
     getUserAccount: () => {},
     openTransfer: () => {},
+    isOpenWalletTable: false,
   };
 
   componentDidMount() {
@@ -112,6 +116,7 @@ export default class User extends React.Component {
       rewardFund,
       rate,
       user,
+      isOpenWalletTable,
     } = this.props;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -196,17 +201,25 @@ export default class User extends React.Component {
           />
         )}
         <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className={classNames('left', { 'display-none': isAboutPage })}>
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
-            </Affix>
+          <div className={`feed-layout ${isOpenWalletTable ? 'table-wrap' : 'container'}`}>
+            {!isOpenWalletTable && (
+              <React.Fragment>
+                <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+                  <div className={classNames('left', { 'display-none': isAboutPage })}>
+                    <LeftSidebar />
+                  </div>
+                </Affix>
+                <Affix className="rightContainer" stickPosition={72}>
+                  <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+                </Affix>
+              </React.Fragment>
+            )}
             {loaded && (
-              <div className={classNames('center', { pa3: isAboutPage })}>
+              <div
+                className={
+                  isOpenWalletTable ? 'display-table' : classNames('center', { pa3: isAboutPage })
+                }
+              >
                 {renderRoutes(this.props.route.routes)}
               </div>
             )}
