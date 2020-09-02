@@ -113,6 +113,4 @@ ModalSignUp.propTypes = {
   isButton: PropTypes.bool.isRequired,
 };
 
-ModalSignUp.defaultProps = {};
-
 export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));
