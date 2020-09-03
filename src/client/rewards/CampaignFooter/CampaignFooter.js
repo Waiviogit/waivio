@@ -185,9 +185,12 @@ class CampaignFooter extends React.Component {
   };
 
   getReservedComments = () => {
-    const { proposition, isGuest } = this.props;
+    const { proposition } = this.props;
     const currentUser = this.getCurrentUser();
-    const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
+    const currentUserName = get(currentUser, ['0', 'name']);
+    const author = includes(currentUserName, 'waivio')
+      ? get(currentUser, ['0', 'rootName'])
+      : get(currentUser, ['0', 'name']);
     const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
     if (!isEmpty(author) && !isEmpty(permlink)) {
@@ -486,6 +489,7 @@ class CampaignFooter extends React.Component {
                 matchPath={match.params[0]}
                 isGuest={isGuest}
                 proposition={proposition}
+                match={match}
               />
             </div>
           ))}

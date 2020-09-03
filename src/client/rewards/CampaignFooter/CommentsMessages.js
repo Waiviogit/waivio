@@ -35,6 +35,7 @@ const CommentsMessages = memo(
     matchPath,
     isGuest,
     proposition,
+    match,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -74,7 +75,9 @@ const CommentsMessages = memo(
       [commentObj],
     );
 
-    const propositionUserName = get(proposition, ['users', '0', 'name']);
+    const commentAuthor = commentObj.guestInfo
+      ? get(commentObj, ['guestInfo', 'userId'], '')
+      : author;
 
     const time = moment.parseZone(commentCreated).valueOf();
 
@@ -166,7 +169,7 @@ const CommentsMessages = memo(
       (parentP, commentValue) => {
         const parentComment = parentP;
         if (parentComment.author_original) parentComment.author = parentComment.author_original;
-        const parentAuthorIfGuest = isGuest ? parentComment.author : '';
+        const parentAuthorIfGuest = parentComment.guestInfo ? parentComment.author : '';
         setLoading(true);
         return onSendComment(parentComment, commentValue, false, commentObj, parentAuthorIfGuest)
           .then(() => {
@@ -244,12 +247,12 @@ const CommentsMessages = memo(
       <React.Fragment>
         {show && (
           <div className="Comment">
-            <Link to={`/@${propositionUserName}`} style={{ height: 32 }}>
-              <Avatar username={propositionUserName} size={32} />
+            <Link to={`/@${commentAuthor}`} style={{ height: 32 }}>
+              <Avatar username={commentAuthor} size={32} />
             </Link>
             <div className="Comment__text">
-              <Link to={`/@${propositionUserName}`}>
-                <span className="username">{propositionUserName}</span>
+              <Link to={`/@${commentAuthor}`}>
+                <span className="username">{commentAuthor}</span>
               </Link>
               <span className="Comment__date">
                 <BTooltip
@@ -372,6 +375,7 @@ const CommentsMessages = memo(
                         matchPath,
                         isGuest,
                         proposition,
+                        match,
                       }}
                     />
                   ))}
@@ -398,6 +402,7 @@ CommentsMessages.propTypes = {
   matchPath: PropTypes.string,
   isGuest: PropTypes.bool,
   proposition: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 CommentsMessages.defaultProps = {
@@ -406,6 +411,7 @@ CommentsMessages.defaultProps = {
   matchPath: '',
   isGuest: false,
   proposition: {},
+  match: {},
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},
