@@ -35,7 +35,6 @@ const CommentsMessages = memo(
     matchPath,
     isGuest,
     proposition,
-    match,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -365,7 +364,6 @@ const CommentsMessages = memo(
                         getReservedComments,
                         matchPath,
                         isGuest,
-                        match,
                       }}
                     />
                   ))}
@@ -392,7 +390,6 @@ CommentsMessages.propTypes = {
   matchPath: PropTypes.string,
   isGuest: PropTypes.bool,
   proposition: PropTypes.shape(),
-  match: PropTypes.shape(),
 };
 
 CommentsMessages.defaultProps = {
@@ -401,7 +398,6 @@ CommentsMessages.defaultProps = {
   matchPath: '',
   isGuest: false,
   proposition: {},
-  match: {},
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},
