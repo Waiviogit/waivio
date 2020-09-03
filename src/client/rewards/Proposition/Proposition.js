@@ -67,10 +67,13 @@ const Proposition = ({
     const permlinks = filter(proposition.objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
-    const currentUser = filter(
-      proposition.users,
-      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
-    );
+    const currentUser =
+      isMessages || match.params[0] === HISTORY
+        ? proposition.users
+        : filter(
+            proposition.users,
+            usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+          );
 
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
