@@ -1347,5 +1347,6 @@
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
   "object_field_authority": "Авторитет",
-  "rewards_from_sponsors_you_are_following:": "Награды от спонсоров, за которыми вы следите:"
+  "rewards_from_sponsors_you_are_following:": "Награды от спонсоров, за которыми вы следите:",
+  "no_rewards_posted_by_sponsors_you_are_following": "Нет наград от спонсоров, на которых вы подписаны"
 }

@@ -1345,5 +1345,6 @@
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
   "restaurant": "restaurant",
-  "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:"
+  "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:",
+  "no_rewards_posted_by_sponsors_you_are_following": "No rewards posted by the sponsors you are following"
 }
