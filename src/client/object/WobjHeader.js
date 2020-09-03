@@ -64,7 +64,7 @@ const WobjHeader = ({
         <div className="ObjectHeader__user">
           {parentName && (
             <Link
-              to={wobject.defaultShowLink}
+              to={parent.defaultShowLink}
               title={`${intl.formatMessage({
                 id: 'GoTo',
                 defaultMessage: 'Go to',
