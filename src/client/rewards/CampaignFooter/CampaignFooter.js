@@ -188,9 +188,7 @@ class CampaignFooter extends React.Component {
     const { proposition, isGuest } = this.props;
     const currentUser = this.getCurrentUser();
     const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
-    const permlink = isGuest
-      ? get(currentUser, ['0', 'permlink'])
-      : get(currentUser, ['0', 'permlink']);
+    const permlink = get(currentUser, ['0', 'permlink']);
     const { campaign_server: category } = proposition;
     if (!isEmpty(author) && !isEmpty(permlink)) {
       return this.props.getReservedComments({ category, author, permlink }).then(res => {
