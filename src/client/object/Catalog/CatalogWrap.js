@@ -2,7 +2,20 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq, filter, max, min, some } from 'lodash';
+import {
+  get,
+  has,
+  isEmpty,
+  isEqual,
+  map,
+  forEach,
+  uniq,
+  filter,
+  max,
+  min,
+  some,
+  size,
+} from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -96,6 +109,7 @@ class CatalogWrap extends React.Component {
   componentDidMount() {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
+    console.log('component mount');
     if (!isEmpty(wobject)) {
       this.getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
     } else {
@@ -179,15 +193,17 @@ class CatalogWrap extends React.Component {
     let sortedItems = [];
     const breadcrumb = [];
     const items = getListItems(wobject);
-    if (items && items.length) {
+
+    if (size(items)) {
       sorting = getListSorting(wobject);
       if (wobject.object_type === OBJ_TYPE.LIST) {
         breadcrumb.push({
           id: wobject.author_permlink,
-          name: getFieldWithMaxWeight(wobject, objectFields.name),
+          name: getObjectName(wobject),
           path: '',
         });
       }
+
       if (location.hash) {
         if (!isInitialState) this.setState({ loading: true });
         const permlinks = location.hash.slice(1).split('/');
