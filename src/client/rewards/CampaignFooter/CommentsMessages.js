@@ -2,7 +2,7 @@ import React, { memo, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { find, get, pick, isEmpty, times, compact, orderBy, map } from 'lodash';
+import { find, get, pick, isEmpty, times, compact, orderBy, map, filter } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
@@ -19,6 +19,7 @@ import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import * as commentsActions from '../../comments/commentsActions';
+import { ASSIGNED } from '../../../common/constants/rewards';
 
 const CommentsMessages = memo(
   ({
@@ -35,6 +36,7 @@ const CommentsMessages = memo(
     matchPath,
     isGuest,
     proposition,
+    match,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -74,7 +76,14 @@ const CommentsMessages = memo(
       [commentObj],
     );
 
-    const propositionUserName = get(proposition, ['users', '0', 'name']);
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+    );
+
+    const propositionUserName = match.params.filterKey
+      ? get(currentUser, ['0', 'name'])
+      : get(proposition, ['users', '0', 'name']);
 
     const time = moment.parseZone(commentCreated).valueOf();
 
@@ -364,6 +373,7 @@ const CommentsMessages = memo(
                         getReservedComments,
                         matchPath,
                         isGuest,
+                        match,
                       }}
                     />
                   ))}
@@ -390,6 +400,7 @@ CommentsMessages.propTypes = {
   matchPath: PropTypes.string,
   isGuest: PropTypes.bool,
   proposition: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 CommentsMessages.defaultProps = {
@@ -398,6 +409,7 @@ CommentsMessages.defaultProps = {
   matchPath: '',
   isGuest: false,
   proposition: {},
+  match: {},
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},
