@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { forEach, isEmpty, map } from 'lodash';
+import { withRouter } from 'react-router';
+import { forEach, get, isEmpty, map, size, filter } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -10,8 +11,9 @@ import {
   FormattedTime,
   injectIntl,
 } from 'react-intl';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Collapse } from 'antd';
+import { Collapse, message } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { extractImageTags } from '../../helpers/parser';
 import { dropCategory, isPostDeleted, replaceBotWithGuestName } from '../../helpers/postHelpers';
@@ -27,11 +29,19 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
-
+import Campaign from '../../rewards/Campaign/Campaign';
+import Proposition from '../../rewards/Proposition/Proposition';
+import * as apiConfig from '../../../waivioApi/config.json';
+import { assignProposition } from '../../user/userActions';
+import { UNASSIGNED } from '../../../common/constants/rewards';
 import './StoryFull.less';
 
 @injectIntl
+@withRouter
 @withAuthActions
+@connect(null, {
+  assignProposition,
+})
 class StoryFull extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -56,7 +66,9 @@ class StoryFull extends React.Component {
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
-    /* from context */
+    match: PropTypes.shape(),
+    assignProposition: PropTypes.func,
+    history: PropTypes.shape(),
     isOriginalPost: PropTypes.string,
   };
 
@@ -76,9 +88,13 @@ class StoryFull extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onEditClick: () => {},
+    assignProposition: () => {},
+    declineProposition: () => {},
     postState: {},
     isOriginalPost: '',
     defaultVotePercent: 0,
+    match: {},
+    history: {},
   };
 
   constructor(props) {
@@ -89,6 +105,7 @@ class StoryFull extends React.Component {
         open: false,
         index: 0,
       },
+      loadingAssign: false,
     };
 
     this.images = [];
@@ -154,6 +171,63 @@ class StoryFull extends React.Component {
     }
   }
 
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+    proposition,
+    proposedWobj,
+  }) => {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    this.setState({ loadingAssign: true });
+    this.props
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        resPermlink,
+        objPermlink,
+        companyId,
+        proposition,
+        proposedWobj,
+        appName,
+      })
+      .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      })
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
+        this.setState({ loadingAssign: false });
+      });
+  };
+
+  getNewPropositions = propositions => {
+    const { user } = this.props;
+    const newPropositions = [];
+    map(propositions, proposition => {
+      const currentUser = filter(
+        proposition.users,
+        usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
+      );
+      if (!isEmpty(currentUser) && !proposition.assigned) {
+        newPropositions.push(proposition);
+      }
+    });
+    return newPropositions;
+  };
+
   render() {
     const {
       intl,
@@ -175,7 +249,10 @@ class StoryFull extends React.Component {
       onShareClick,
       onEditClick,
       isOriginalPost,
+      match,
+      history,
     } = this.props;
+    const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName =
@@ -381,8 +458,45 @@ class StoryFull extends React.Component {
               key="1"
             >
               {map(linkedObjects, obj => {
-                const wobj = obj;
-                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+                if (obj.campaigns) {
+                  const minReward = get(obj, ['campaigns', 'min_reward']);
+                  const rewardPricePassed = minReward ? `${minReward.toFixed(2)} USD` : '';
+                  const maxReward = get(obj, ['campaigns', 'max_reward']);
+                  const rewardMaxPassed =
+                    maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
+                  return (
+                    <Campaign
+                      proposition={obj}
+                      filterKey={'all'}
+                      key={obj.id}
+                      passedParent={obj.parent}
+                      userName={user.name}
+                      rewardPricePassed={!rewardMaxPassed ? rewardPricePassed : null}
+                      rewardMaxPassed={rewardMaxPassed || null}
+                    />
+                  );
+                }
+                const newPropositions = this.getNewPropositions(obj.propositions);
+                if (size(newPropositions)) {
+                  return !isEmpty(newPropositions)
+                    ? newPropositions.map(proposition => (
+                        <Proposition
+                          guide={proposition.guide}
+                          proposition={proposition}
+                          wobj={obj}
+                          assignCommentPermlink={obj.permlink}
+                          assignProposition={this.assignPropositionHandler}
+                          authorizedUserName={user.name}
+                          loading={loadingAssign}
+                          key={obj.author_permlink}
+                          match={match}
+                          user={user}
+                          history={history}
+                        />
+                      ))
+                    : null;
+                }
+                return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
               })}
             </Collapse.Panel>
           )}

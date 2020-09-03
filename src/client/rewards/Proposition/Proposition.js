@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
-import { GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
+import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
@@ -47,7 +47,9 @@ const Proposition = ({
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = get(proposition, ['required_object'], {});
   const requiredObjectName = getObjectName(proposition.required_object);
-  const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
+  const isMessages = !isEmpty(match)
+    ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
+    : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
@@ -64,10 +66,16 @@ const Proposition = ({
   const discardPr = obj => {
     const permlinks = filter(proposition.objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
+
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+    );
+
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
-      reservation_permlink: reservationPermlink || get(proposition, ['users', '0', 'permlink'], ''),
+      reservation_permlink: reservationPermlink || get(currentUser, ['0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>
@@ -129,12 +137,12 @@ const Proposition = ({
             currencyId,
           }),
         )
-        .then(({ isAssign }) => {
-          if (isAssign) {
-            setModalDetailsOpen(!isModalDetailsOpen);
-            setReservation(true);
+        .then(() => {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          setReservation(true);
+          setTimeout(() => {
             history.push('/rewards/reserved');
-          }
+          }, 5000);
         })
         .catch(e => {
           if (e.error_description || e.message) {
