@@ -88,7 +88,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${get(parent, 'author_permlink', '')}`}
+                  to={get(parent, 'defaultShowLink')}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -98,7 +98,7 @@ const ObjectCardView = ({
               <div className="ObjectCardView__name">
                 <Link
                   key={wObject.author_permlink}
-                  to={`/object/${wObject.author_permlink}`}
+                  to={pathName}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
                 >
