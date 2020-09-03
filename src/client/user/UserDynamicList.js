@@ -90,7 +90,7 @@ class UserDynamicList extends React.Component {
             })),
           )
           .catch(err => {
-            err.message;
+            message.error(err.message);
           });
       },
     );
