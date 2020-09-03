@@ -22,7 +22,7 @@ const NotificationMyPost = ({ notification, read, onClick }) => (
           id="my_post_notify"
           defaultMessage="You created post {post}"
           values={{
-            post: <span className="username">{notification.title}</span>,
+            post: <span>{notification.title}</span>,
           }}
         />
       </div>

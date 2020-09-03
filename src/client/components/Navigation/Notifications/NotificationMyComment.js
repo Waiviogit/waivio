@@ -22,7 +22,7 @@ const NotificationMyComment = ({ notification, read, onClick }) => (
           id="my_comment_notify"
           defaultMessage="You commented post {post}"
           values={{
-            post: <span className="username">{notification.title}</span>,
+            post: <span>{notification.title}</span>,
           }}
         />
       </div>

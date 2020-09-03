@@ -22,7 +22,7 @@ const NotificationMyLike = ({ notification, read, onClick }) => (
           id="my_like_notify"
           defaultMessage="You liked {post}"
           values={{
-            post: <span className="username">{notification.title}</span>,
+            post: <span>{notification.title}</span>,
           }}
         />
       </div>
