@@ -291,7 +291,7 @@ export const testImage = (url, callback, timeout = 3000) => {
  * @param sortOrder - array of strings (object permlinks)
  * @returns {*}
  */
-export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
+export const sortListItemsBy = (items, sortBy = 'recency', sortOrder = null) => {
   if (!items || !items.length) return [];
   if (!sortBy) return items;
   let comparator;

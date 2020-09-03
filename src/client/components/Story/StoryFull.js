@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { forEach, get, isEmpty, map, size } from 'lodash';
+import { withRouter } from 'react-router';
+import { forEach, get, isEmpty, map, size, filter } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -31,15 +32,15 @@ import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
 import Campaign from '../../rewards/Campaign/Campaign';
 import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../user/userActions';
-
+import { assignProposition } from '../../user/userActions';
+import { UNASSIGNED } from '../../../common/constants/rewards';
 import './StoryFull.less';
 
 @injectIntl
+@withRouter
 @withAuthActions
 @connect(null, {
   assignProposition,
-  declineProposition,
 })
 class StoryFull extends React.Component {
   static propTypes = {
@@ -66,8 +67,8 @@ class StoryFull extends React.Component {
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     match: PropTypes.shape(),
-    assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
+    assignProposition: PropTypes.func,
+    history: PropTypes.shape(),
     /* from context */
     isOriginalPost: PropTypes.string,
   };
@@ -88,10 +89,13 @@ class StoryFull extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onEditClick: () => {},
+    assignProposition: () => {},
+    declineProposition: () => {},
     postState: {},
     isOriginalPost: '',
     defaultVotePercent: 0,
     match: {},
+    history: {},
   };
 
   constructor(props) {
@@ -168,11 +172,28 @@ class StoryFull extends React.Component {
     }
   }
 
-  assignPropositionHandler = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => {
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+    proposition,
+    proposedWobj,
+  }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssign: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        resPermlink,
+        objPermlink,
+        companyId,
+        proposition,
+        proposedWobj,
+        appName,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
@@ -193,42 +214,19 @@ class StoryFull extends React.Component {
       });
   };
 
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssign: true });
-    this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
+  getNewPropositions = propositions => {
+    const { user } = this.props;
+    const newPropositions = [];
+    map(propositions, proposition => {
+      const currentUser = filter(
+        proposition.users,
+        usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
+      );
+      if (!isEmpty(currentUser) && !proposition.assigned) {
+        newPropositions.push(proposition);
+      }
+    });
+    return newPropositions;
   };
 
   render() {
@@ -253,6 +251,7 @@ class StoryFull extends React.Component {
       onEditClick,
       isOriginalPost,
       match,
+      history,
     } = this.props;
     const { loadingAssign } = this.state;
     const taggedObjects = [];
@@ -478,22 +477,25 @@ class StoryFull extends React.Component {
                     />
                   );
                 }
-                if (size(obj.propositions)) {
-                  return obj.propositions.map(proposition => (
-                    <Proposition
-                      guide={proposition.guide}
-                      proposition={proposition}
-                      wobj={obj}
-                      assignCommentPermlink={obj.permlink}
-                      assignProposition={this.assignPropositionHandler}
-                      discardProposition={this.discardProposition}
-                      authorizedUserName={user.name}
-                      loading={loadingAssign}
-                      key={obj.author_permlink}
-                      assigned={proposition.assigned}
-                      match={match}
-                    />
-                  ));
+                const newPropositions = this.getNewPropositions(obj.propositions);
+                if (size(newPropositions)) {
+                  return !isEmpty(newPropositions)
+                    ? newPropositions.map(proposition => (
+                        <Proposition
+                          guide={proposition.guide}
+                          proposition={proposition}
+                          wobj={obj}
+                          assignCommentPermlink={obj.permlink}
+                          assignProposition={this.assignPropositionHandler}
+                          authorizedUserName={user.name}
+                          loading={loadingAssign}
+                          key={obj.author_permlink}
+                          match={match}
+                          user={user}
+                          history={history}
+                        />
+                      ))
+                    : null;
                 }
                 return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
               })}

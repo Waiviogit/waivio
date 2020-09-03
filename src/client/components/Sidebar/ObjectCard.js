@@ -18,11 +18,11 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow })
       <div key={wobject.author_permlink} className="ObjectCard">
         <div className="ObjectCard__top">
           <div className="ObjectCard__links">
-            <Link to={{ pathname }} title={name} target={isNewWindow ? '_blank' : null}>
+            <Link to={pathname} title={name} target={isNewWindow ? '_blank' : null}>
               <ObjectAvatar item={wobject} size={34} />
             </Link>
             <Link
-              to={{ pathname }}
+              to={pathname}
               title={name}
               className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
             >

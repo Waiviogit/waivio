@@ -50,15 +50,17 @@ import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import { getField, getObjectName, hasType } from '../helpers/wObjectHelper';
+import {
+  getField,
+  getMenuItems,
+  getObjectName,
+  hasType,
+  parseButtonsField,
+} from '../helpers/wObjectHelper';
 import { appendObject } from './appendActions';
 import withEditor from '../components/Editor/withEditor';
 import { getVoteValue } from '../helpers/user';
-import {
-  getExposedFieldsByObjType,
-  getInnerFieldWithMaxWeight,
-  getListItems,
-} from './wObjectHelper';
+import { getExposedFieldsByObjType, getListItems } from './wObjectHelper';
 import { rateObject } from './wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
@@ -1350,16 +1352,21 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
+        const buttons = parseButtonsField(wObject);
+        const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
+        const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const listItems =
-          getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(item => ({
-            id: item.id,
-            content: <DnDListItem name={item.name} type={item.type} />,
+          [...menuLinks, ...menuPages].map(item => ({
+            id: item.body || item.author_permlink,
+            content: <DnDListItem name={item.alias || getObjectName(item)} type={item.type} />,
           })) || [];
-        const button = getInnerFieldWithMaxWeight(wObject, objectFields.button);
-        if (button) {
-          listItems.push({
-            id: TYPES_OF_MENU_ITEM.BUTTON,
-            content: <DnDListItem name={button.title} type={objectFields.button} />,
+
+        if (!isEmpty(buttons)) {
+          buttons.forEach(btn => {
+            listItems.push({
+              id: btn.permlink,
+              content: <DnDListItem name={btn.body.title} type={objectFields.button} />,
+            });
           });
         }
         if (!isEmpty(wObject.newsFilter)) {
@@ -1373,6 +1380,7 @@ export default class AppendForm extends Component {
             ),
           });
         }
+
         return (
           <React.Fragment>
             <Form.Item>

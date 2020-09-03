@@ -2,7 +2,20 @@ import { Breadcrumb, message } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq, filter, max, min, some } from 'lodash';
+import {
+  get,
+  has,
+  isEmpty,
+  isEqual,
+  map,
+  forEach,
+  uniq,
+  filter,
+  max,
+  min,
+  some,
+  size,
+} from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -87,7 +100,7 @@ class CatalogWrap extends React.Component {
   state = {
     loadingAssignDiscard: false,
     propositions: [],
-    sort: 'reward',
+    sort: 'recency',
     isAssign: false,
     loadingPropositions: false,
     needUpdate: true,
@@ -96,6 +109,7 @@ class CatalogWrap extends React.Component {
   componentDidMount() {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
+    console.log('component mount');
     if (!isEmpty(wobject)) {
       this.getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
     } else {
@@ -179,15 +193,17 @@ class CatalogWrap extends React.Component {
     let sortedItems = [];
     const breadcrumb = [];
     const items = getListItems(wobject);
-    if (items && items.length) {
+
+    if (size(items)) {
       sorting = getListSorting(wobject);
       if (wobject.object_type === OBJ_TYPE.LIST) {
         breadcrumb.push({
           id: wobject.author_permlink,
-          name: getFieldWithMaxWeight(wobject, objectFields.name),
+          name: getObjectName(wobject),
           path: '',
         });
       }
+
       if (location.hash) {
         if (!isInitialState) this.setState({ loading: true });
         const permlinks = location.hash.slice(1).split('/');
@@ -538,7 +554,7 @@ class CatalogWrap extends React.Component {
                         <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                         <Link
                           className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `/object/${crumb.author_permlink}` }}
+                          to={{ pathname: `${crumb.defaultShowLink}` }}
                         >
                           <i className="iconfont icon-send PostModal__icon" />
                         </Link>
@@ -546,7 +562,7 @@ class CatalogWrap extends React.Component {
                     ) : (
                       <Link
                         className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.author_permlink }}
+                        to={{ pathname: location.pathname, hash: crumb.defaultShowLink }}
                         title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                           crumb.name
                         }`}
