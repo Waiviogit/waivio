@@ -102,12 +102,8 @@ export const getRewardsGeneralCounts = ({ userName, sort }) => (dispatch, getSta
 
 export const GET_FOLLOWING_SPONSORS_REWARDS = '@rewards/GET_FOLLOWING_SPONSORS_REWARDS';
 
-export const getFollowingSponsorsRewards = () => (dispatch, getState) => {
-  const state = getState();
-  const userName = getAuthenticatedUserName(state);
-
-  return dispatch({
+export const getFollowingSponsorsRewards = userName => dispatch =>
+  dispatch({
     type: GET_FOLLOWING_SPONSORS_REWARDS,
     payload: ApiClient.getFollowingSponsorsRewards({ userName }),
   });
-};

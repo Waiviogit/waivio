@@ -6,6 +6,8 @@ import { map, isEmpty } from 'lodash';
 import { getFollowingSponsorsRewards } from '../rewardsActions';
 import Campaign from '../Campaign/Campaign';
 import { getAuthenticatedUserName } from '../../reducers';
+import Loading from '../../components/Icon/Loading';
+import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import './RewardsList.less';
 
 const RewardsList = ({ intl }) => {
@@ -13,26 +15,49 @@ const RewardsList = ({ intl }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const [followingRewards, setFollowingRewards] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hasMoreFollowingRewards, setHasMorehasMoreFollowingRewards] = useState(false);
   useEffect(() => {
     setLoading(true);
-    dispatch(getFollowingSponsorsRewards()).then(data => {
-      const { campaigns } = data.value;
-      setFollowingRewards(campaigns);
-      setLoading(false);
-    });
-  }, []);
+    if (userName)
+      dispatch(getFollowingSponsorsRewards(userName)).then(data => {
+        const { campaigns, hasMore } = data.value;
+        setFollowingRewards(campaigns);
+        setHasMorehasMoreFollowingRewards(hasMore);
+        setLoading(false);
+      });
+  }, [userName]);
+
+  const handleLoadMore = () => {
+    if (hasMoreFollowingRewards) {
+      setLoading(true);
+      dispatch(getFollowingSponsorsRewards()).then(data => {
+        const { newhasMoreFollowingRewards, hasMore } = data.value;
+        setFollowingRewards(followingRewards.concat(newhasMoreFollowingRewards));
+        setHasMorehasMoreFollowingRewards(hasMore);
+        setLoading(false);
+      });
+    }
+  };
   const content = useMemo(() => {
     if (!isEmpty(followingRewards)) {
       return (
         <React.Fragment>
-          {map(followingRewards, reward => (
-            <Campaign
-              proposition={reward}
-              key={`${reward.required_object.author_permlink}${reward.required_object.createdAt}`}
-              filterKey={'all'}
-              userName={userName}
-            />
-          ))}
+          <ReduxInfiniteScroll
+            elementIsScrollable={false}
+            hasMore={hasMoreFollowingRewards}
+            loadMore={handleLoadMore}
+            loadingMore={loading}
+            loader={<Loading />}
+          >
+            {map(followingRewards, reward => (
+              <Campaign
+                proposition={reward}
+                key={`${reward.required_object.author_permlink}${reward.required_object.createdAt}`}
+                filterKey={'all'}
+                userName={userName}
+              />
+            ))}
+          </ReduxInfiniteScroll>
         </React.Fragment>
       );
     } else if (isEmpty(followingRewards) && !loading) {
@@ -45,7 +70,7 @@ const RewardsList = ({ intl }) => {
         </div>
       );
     }
-    return null;
+    return <Loading />;
   }, [followingRewards, loading]);
   return (
     <React.Fragment>
