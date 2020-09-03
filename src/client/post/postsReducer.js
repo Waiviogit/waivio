@@ -3,7 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST } from './postActions';
+import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -249,6 +249,52 @@ const posts = (state = initialState, action) => {
           [action.payload.postId]: {
             ...rebloggedPost,
             reblogged_users: [...rebloggedPost.reblogged_users, action.payload.userName],
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.START: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: true,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.SUCCESS: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            youFollows: !post.youFollows,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.ERROR: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: false,
           },
         },
       };
