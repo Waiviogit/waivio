@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, message } from 'antd';
 import { isEmpty, uniq, map, get, filter } from 'lodash';
-
+import withAuthActions from '../../auth/withAuthActions';
 import Feed from '../../feed/Feed';
 import {
   getFeed,
@@ -29,6 +29,7 @@ import Loading from '../../components/Icon/Loading';
 import './ObjectFeed.less';
 
 @injectIntl
+@withAuthActions
 @connect(
   state => ({
     feed: getFeed(state),
@@ -46,16 +47,13 @@ import './ObjectFeed.less';
 )
 export default class ObjectFeed extends React.Component {
   static propTypes = {
-    /* from connect */
     feed: PropTypes.shape().isRequired,
     getObjectPosts: PropTypes.func,
     usedLocale: PropTypes.string,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
     readLocales: PropTypes.arrayOf(PropTypes.string),
-    /* passed */
     match: PropTypes.shape().isRequired,
-    /* default props */
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
     intl: PropTypes.shape().isRequired,
@@ -65,6 +63,7 @@ export default class ObjectFeed extends React.Component {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
+    onActionInitiated: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -305,10 +304,14 @@ export default class ObjectFeed extends React.Component {
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
   };
+
+  createFirtsReview = () => {
+    this.props.onActionInitiated(this.props.handleCreatePost);
+  };
   // END Propositions
 
   render() {
-    const { feed, limit, handleCreatePost, wobject, intl } = this.props;
+    const { feed, limit, wobject, intl } = this.props;
     const { loadingPropositions, allPropositions, currentProposition } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
@@ -390,7 +393,7 @@ export default class ObjectFeed extends React.Component {
         <div
           role="presentation"
           className="object-feed__row justify-center"
-          onClick={handleCreatePost}
+          onClick={this.createFirtsReview}
         >
           <FormattedMessage
             id="empty_object_profile"
