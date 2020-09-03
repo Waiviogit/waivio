@@ -23,6 +23,9 @@ export const BELL_REBLOG = 'bellReblog'; // +
 export const BELL_FOLLOW = 'bellFollow'; // +
 export const CUSTOMER_SUPPORT = 'campaignMessage'; // +
 export const LIKE = 'like';
+export const MY_LIKE = 'myLike';
+export const MY_COMMENT = 'myComment';
+export const MY_POST = 'myPost';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -46,6 +49,9 @@ export const PARSED_NOTIFICATIONS = [
   CLAIM_REWARD,
   CUSTOMER_SUPPORT,
   LIKE,
+  MY_LIKE,
+  MY_COMMENT,
+  MY_POST,
 ];
 
 export const BUSY_API_TYPES = {

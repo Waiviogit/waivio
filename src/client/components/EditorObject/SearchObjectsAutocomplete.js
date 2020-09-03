@@ -143,7 +143,7 @@ class SearchObjectsAutocomplete extends Component {
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => (
             <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
-              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
+              <ObjectSearchCard object={obj} name={obj.name || obj.default_name} type={obj.type} />
             </AutoComplete.Option>
           ))
       : [];

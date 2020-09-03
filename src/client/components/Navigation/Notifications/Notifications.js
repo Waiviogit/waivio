@@ -30,6 +30,9 @@ import NotificationReblogBell from './NotificationReblogBell';
 import NotificationFollowBell from './NotificationFollowBell';
 import NotificationCustomerSupport from './NotificationCustomerSupport';
 import NotificationLikes from './NotificationLikes';
+import NotificationMyLike from './NotificationMyLike';
+import NotificationMyComment from './NotificationMyComment';
+import NotificationMyPost from './NotificationMyPost';
 
 import './Notification.less';
 import './Notifications.less';
@@ -379,6 +382,33 @@ class Notifications extends React.Component {
               case notificationConstants.LIKE:
                 return (
                   <NotificationLikes
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_LIKE:
+                return (
+                  <NotificationMyLike
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_COMMENT:
+                return (
+                  <NotificationMyComment
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_POST:
+                return (
+                  <NotificationMyPost
                     key={key}
                     notification={notification}
                     read={read}

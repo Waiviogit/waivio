@@ -1346,5 +1346,8 @@
   "imageSetter_invalid_link": "The link is invalid",
   "restaurant": "restaurant",
   "like_post_notify_priority": "{voter} liked your post '{postTitle}'",
-  "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'"
+  "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'",
+  "my_like_notify": "You liked {post}",
+  "my_comment_notify": "You commented post {post}",
+  "my_post_notify": "You created post {post}"
 }

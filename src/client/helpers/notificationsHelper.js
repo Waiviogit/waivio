@@ -292,6 +292,12 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.author}/${notification.permlink}`;
     case notificationConstants.LIKE:
       return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_LIKE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_COMMENT:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_POST:
+      return `/@${notification.author}/${notification.permlink}`;
     default:
       return '/notifications-list';
   }
@@ -340,6 +346,12 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.author;
     case notificationConstants.LIKE:
       return notification.voter;
+    case notificationConstants.MY_LIKE:
+      return notification.author;
+    case notificationConstants.MY_COMMENT:
+      return notification.author;
+    case notificationConstants.MY_POST:
+      return notification.author;
     default:
       return currentAuthUsername;
   }

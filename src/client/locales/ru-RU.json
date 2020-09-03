@@ -1348,5 +1348,8 @@
   "restaurant": "Ресторан",
   "object_field_authority": "Авторитет",
   "like_post_notify_priority": "{voter} понравился пост '{postTitle}'",
-  "like_post_notify_other": "{voter} и {likesCount} остальным понравился пост '{postTitle}'"
+  "like_post_notify_other": "{voter} и {likesCount} остальным понравился пост '{postTitle}'",
+  "my_like_notify": "Вам понравился {post}",
+  "my_comment_notify": "Вы оставили комментарий в {post}",
+  "my_post_notify": "Вы создали пост {post}"
 }
