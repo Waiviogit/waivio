@@ -35,7 +35,7 @@ const ObjectCardView = ({
     } else setTags([wObject.object_type]);
   }, []);
 
-  const pathName = wObject.defaultShowLink;
+  const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;
@@ -88,7 +88,10 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={get(parent, 'defaultShowLink')}
+                  to={
+                    get(parent, 'defaultShowLink') ||
+                    `/object/${get(parent, 'author_permlink', '')}`
+                  }
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
