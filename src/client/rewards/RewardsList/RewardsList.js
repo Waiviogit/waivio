@@ -37,12 +37,12 @@ const RewardsList = ({ intl }) => {
       );
     } else if (isEmpty(followingRewards) && !loading) {
       return (
-        <React.Fragment>
+        <div className="RewardsList__message">
           {intl.formatMessage({
             id: 'no_rewards_posted_by_sponsors_you_are_following',
             defaultMessage: 'No rewards posted by the sponsors you are following',
           })}
-        </React.Fragment>
+        </div>
       );
     }
     return null;
