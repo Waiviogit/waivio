@@ -185,7 +185,6 @@ class CampaignFooter extends React.Component {
   };
 
   getReservedComments = () => {
-    console.log('getReservedComments');
     const { proposition, isGuest } = this.props;
     const currentUser = this.getCurrentUser();
     const author = isGuest ? get(currentUser, ['0', 'rootName']) : get(currentUser, ['0', 'name']);
