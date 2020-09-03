@@ -45,6 +45,8 @@ import {
   getSuitableLanguage,
   getVotePercent,
   getVotingPower,
+  getObjectTagCategory,
+  getObjectAlbums,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -71,6 +73,9 @@ import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 
 import './AppendForm.less';
+import { getObjectsByIds } from '../../waivioApi/ApiClient';
+import { getClientWObj } from '../adapters';
+import { objectNameValidationRegExp } from '../../common/constants/validation';
 
 @connect(
   state => ({
@@ -82,6 +87,8 @@ import './AppendForm.less';
     followingList: getFollowingObjectsList(state),
     usedLocale: getSuitableLanguage(state),
     ratingFields: getRatingFields(state),
+    categories: getObjectTagCategory(state),
+    albums: getObjectAlbums(state),
   }),
   { appendObject, rateObject },
 )
@@ -108,6 +115,9 @@ export default class AppendForm extends Component {
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
     ratingFields: PropTypes.arrayOf(PropTypes.shape({})),
+    categories: PropTypes.arrayOf(PropTypes.shape()),
+    selectedAlbum: PropTypes.shape(),
+    albums: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -130,6 +140,9 @@ export default class AppendForm extends Component {
     followingList: [],
     rateObject: () => {},
     ratingFields: [],
+    categories: [],
+    selectedAlbum: null,
+    albums: [],
   };
 
   state = {
@@ -143,6 +156,10 @@ export default class AppendForm extends Component {
     selectedObject: null,
     allowList: [[]],
     ignoreList: [],
+    categoryItem: null,
+    selectedCategory: [],
+    currentTags: [],
+    fileList: [],
   };
 
   componentDidMount = () => {
@@ -258,7 +275,7 @@ export default class AppendForm extends Component {
       case objectFields.avatar:
       case objectFields.background:
       case objectFields.price:
-      case objectFields.tagCloud:
+      case objectFields.tag:
       case objectFields.parent:
       case objectFields.workTime:
       case objectFields.email:
@@ -483,12 +500,12 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
 
+    console.log(event);
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
           return field.locale === values.currentLocale ? [...acc, field] : acc;
         }
-
         return acc;
       }, []);
 
@@ -518,7 +535,11 @@ export default class AppendForm extends Component {
               defaultMessage: 'The value is already exist',
             }),
           );
-        } else {
+        }
+        // else if(objectFields.categoryItem === currentField){
+        //
+        // }
+        else {
           this.onSubmit(values);
         }
       } else {
@@ -766,6 +787,29 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleSelectObjectTag = obj => {
+    if (obj && obj.id) {
+      const clientObj = getClientWObj(obj);
+      this.props.form.setFieldsValue({
+        categoryItem: clientObj,
+      });
+      this.setState({ categoryItem: clientObj });
+    }
+  };
+
+  handleSelectCategory = async value => {
+    const category = this.props.categories.find(item => item.body === value);
+    if (!isEmpty(category.categoryItems)) {
+      let currentTags = await getObjectsByIds({
+        authorPermlinks: category.categoryItems.map(tag => tag.name),
+      });
+      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      this.setState({ selectedCategory: category, currentTags });
+    } else {
+      this.setState({ selectedCategory: category, currentTags: [] });
+    }
+  };
+
   getFieldRules = fieldName => {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
@@ -785,10 +829,13 @@ export default class AppendForm extends Component {
   };
 
   renderContentValue = currentField => {
-    const { loading, selectedObject } = this.state;
-    const { intl, wObject } = this.props;
+    const { loading, selectedObject, selectedCategory, fileList } = this.state;
+    const { intl, wObject, categories, selectedAlbum, albums } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const statusTitle = this.props.form.getFieldValue(statusFields.title);
+    const albumInitialValue = selectedAlbum
+      ? selectedAlbum.id || selectedAlbum.body
+      : 'Choose an album';
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -825,7 +872,7 @@ export default class AppendForm extends Component {
                 <SearchObjectsAutocomplete
                   className="menu-item-search"
                   itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                  handleSelect={this.handleSelectObject}
+                  handleSelect={this.handleSelectObjectTag}
                   objectType={objectType}
                 />,
               )}
@@ -869,6 +916,43 @@ export default class AppendForm extends Component {
             })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
+        );
+      }
+      case objectFields.categoryItem: {
+        return (
+          <React.Fragment>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="suggest4" defaultMessage="I suggest to add field" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator('tagCategory', {
+                initialValue: selectedCategory ? selectedCategory.body : 'Select a category',
+                rules: this.getFieldRules(objectFields.tagCategory),
+              })(
+                <Select disabled={loading} onChange={this.handleSelectCategory}>
+                  {map(categories, category => (
+                    <Select.Option key={`${category.id}`} value={category.body}>
+                      {category.body}
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="suggest5" defaultMessage="I suggest to add field" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator(objectFields.categoryItem, {
+                rules: this.getFieldRules(objectFields.categoryItem),
+              })(
+                <SearchObjectsAutocomplete
+                  handleSelect={this.handleSelectObject}
+                  objectType="hashtag"
+                />,
+              )}
+              {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+            </Form.Item>
+          </React.Fragment>
         );
       }
       case objectFields.background:
@@ -1453,6 +1537,115 @@ export default class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.galleryAlbum: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(objectFields.galleryAlbum, {
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'album_field_error',
+                      defaultMessage: 'Album name is required',
+                    }),
+                  },
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    pattern: objectNameValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'validation_special_symbols',
+                      defaultMessage: 'Please dont use special simbols like "/", "?", "%", "&"',
+                    }),
+                  },
+                ],
+              })(
+                <Input
+                  className="CreateAlbum__input"
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'add_new_album_placeholder',
+                    defaultMessage: 'Add value',
+                  })}
+                />,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.galleryItem: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator('id', {
+                initialValue: albumInitialValue,
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Album' },
+                    ),
+                  },
+                ],
+              })(
+                <Select disabled={loading}>
+                  {map(albums, album => (
+                    <Select.Option
+                      key={`${album.id || album.weight}${album.body}`}
+                      value={album.id || album.body}
+                    >
+                      {album.body}
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('upload', {
+                rules: [
+                  {
+                    required: !fileList.length,
+                    message: intl.formatMessage({
+                      id: 'upload_photo_error',
+                      defaultMessage: 'You need to upload at least one image',
+                    }),
+                  },
+                ],
+              })(
+                <div className="clearfix">
+                  <ImageSetter
+                    onImageLoaded={this.getImages}
+                    onLoadingImage={this.onLoadingImage}
+                    isMultiple
+                    isRequired
+                  />
+                  {/* TODO: Possible will use */}
+                  {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}
+                  {/*  <img */}
+                  {/*    alt="example" */}
+                  {/*    style={{ width: '100%', 'max-height': '90vh' }} */}
+                  {/*    src={previewImage} */}
+                  {/*  /> */}
+                  {/* </Modal> */}
+                </div>,
+              )}
+            </Form.Item>
+          </React.Fragment>
         );
       }
       default:

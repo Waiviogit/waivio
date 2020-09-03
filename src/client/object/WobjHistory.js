@@ -91,7 +91,7 @@ class WobjHistory extends React.Component {
   handleFieldChange = field => {
     const { object, history } = this.props;
     history.push(`/object/${object.author_permlink}/${field ? `updates/${field}` : 'updates'}`);
-    this.setState({ field });
+    this.setState({ field }, () => console.log(field));
   };
 
   handleLocaleChange = locale => this.setState({ locale });

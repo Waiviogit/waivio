@@ -26,6 +26,7 @@ export const objectFields = {
   menuItems: 'menuItems',
   categoryItem: 'categoryItem',
   pageLink: 'pageLink',
+  tag: 'tag',
 };
 
 export const TYPES_OF_MENU_ITEM = {
