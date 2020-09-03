@@ -150,3 +150,23 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
     return res;
   });
 };
+
+export const FOLLOWING_POST_AUTHOR = createAsyncActionType('FOLLOWING_POST_AUTHOR');
+
+export const followingPostAuthor = postId => dispatch =>
+  dispatch({
+    type: FOLLOWING_POST_AUTHOR.SUCCESS,
+    payload: postId,
+  });
+
+export const pendingFollowingPostAuthor = postId => dispatch =>
+  dispatch({
+    type: FOLLOWING_POST_AUTHOR.START,
+    payload: postId,
+  });
+
+export const errorFollowingPostAuthor = postId => dispatch =>
+  dispatch({
+    type: FOLLOWING_POST_AUTHOR.ERROR,
+    payload: postId,
+  });
