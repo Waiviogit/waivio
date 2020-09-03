@@ -178,7 +178,7 @@ class CampaignFooter extends React.Component {
         usersItem => usersItem.name === userName && usersItem.status === ASSIGNED,
       );
     } else {
-      currentUser = get(proposition, ['users', '0']);
+      currentUser = get(proposition, ['users']);
     }
 
     return currentUser;
@@ -330,11 +330,7 @@ class CampaignFooter extends React.Component {
 
   onCommentSend = () => {
     const { match, getMessageHistory, isGuest } = this.props;
-    const { category, parentAuthor, parentPermlink } = this.state.currentPost;
-
-    return isGuest || !match.params[0]
-      ? this.getReservedComments({ category, author: parentAuthor, permlink: parentPermlink })
-      : getMessageHistory();
+    return isGuest || !match.params[0] ? this.getReservedComments() : getMessageHistory();
   };
 
   handleSubmitComment = (parentP, commentValue) => {

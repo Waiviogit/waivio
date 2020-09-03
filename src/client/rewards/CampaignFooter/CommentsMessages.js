@@ -81,9 +81,15 @@ const CommentsMessages = memo(
     const userVote = find(activeVotes, { voter: user.name });
 
     const onSendComment = useCallback(
-      (parentPost, commentBody, isUpdating, originalPost) =>
+      (parentPost, commentBody, isUpdating, originalPost, parentAuthorIfGuest) =>
         dispatch(
-          commentsActions.sendCommentMessages(parentPost, commentBody, isUpdating, originalPost),
+          commentsActions.sendCommentMessages(
+            parentPost,
+            commentBody,
+            isUpdating,
+            originalPost,
+            parentAuthorIfGuest,
+          ),
         ),
       [dispatch],
     );
@@ -160,8 +166,9 @@ const CommentsMessages = memo(
       (parentP, commentValue) => {
         const parentComment = parentP;
         if (parentComment.author_original) parentComment.author = parentComment.author_original;
+        const parentAuthorIfGuest = isGuest ? parentComment.author : '';
         setLoading(true);
-        return onSendComment(parentComment, commentValue, false, commentObj)
+        return onSendComment(parentComment, commentValue, false, commentObj, parentAuthorIfGuest)
           .then(() => {
             setTimeout(() => {
               onCommentSend().then(() => {
@@ -364,6 +371,7 @@ const CommentsMessages = memo(
                         getReservedComments,
                         matchPath,
                         isGuest,
+                        proposition,
                       }}
                     />
                   ))}
