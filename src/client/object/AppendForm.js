@@ -50,7 +50,13 @@ import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import { getField, getObjectName, hasType, parseButtonsField } from '../helpers/wObjectHelper';
+import {
+  getField,
+  getMenuItems,
+  getObjectName,
+  hasType,
+  parseButtonsField,
+} from '../helpers/wObjectHelper';
 import { appendObject } from './appendActions';
 import withEditor from '../components/Editor/withEditor';
 import { getVoteValue } from '../helpers/user';
@@ -1347,10 +1353,12 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const buttons = parseButtonsField(wObject);
+        const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
+        const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const listItems =
-          get(wObject, 'listItem', []).map(item => ({
-            id: item.body,
-            content: <DnDListItem name={item.alias} type={item.type} />,
+          [...menuLinks, ...menuPages].map(item => ({
+            id: item.body || item.author_permlink,
+            content: <DnDListItem name={item.alias || getObjectName(item)} type={item.type} />,
           })) || [];
 
         if (!isEmpty(buttons)) {
@@ -1372,6 +1380,7 @@ export default class AppendForm extends Component {
             ),
           });
         }
+
         return (
           <React.Fragment>
             <Form.Item>

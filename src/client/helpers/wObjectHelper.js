@@ -247,3 +247,8 @@ export const parseAddress = wobject => {
 };
 
 export const getObjectName = wobj => wobj.name || wobj.default_name;
+
+export const getMenuItems = (wobject, menuType, objType) =>
+  isEmpty(wobject.menuItems)
+    ? get(wobject, 'listItem', []).filter(item => item.type === menuType)
+    : get(wobject, 'menuItems', []).filter(item => item.object_type === objType);
