@@ -16,7 +16,6 @@ import requiresLogin from '../auth/requiresLogin';
 import NotificationReply from '../components/Navigation/Notifications/NotificationReply';
 import NotificationMention from '../components/Navigation/Notifications/NotificationMention';
 import NotificationFollowing from '../components/Navigation/Notifications/NotificationFollowing';
-import NotificationVote from '../components/Navigation/Notifications/NotificationVote';
 import NotificationReblog from '../components/Navigation/Notifications/NotificationReblog';
 import NotificationTransfer from '../components/Navigation/Notifications/NotificationTransfer';
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
@@ -35,6 +34,7 @@ import NotificationChangeRecoveryAccount from '../components/Navigation/Notifica
 import NotificationTransferFromSavings from '../components/Navigation/Notifications/NotificationTransferFromSavings';
 import NotificationClaimReward from '../components/Navigation/Notifications/NotificationClaimReward';
 import NotificationCustomerSupport from '../components/Navigation/Notifications/NotificationCustomerSupport';
+import NotificationLikes from '../components/Navigation/Notifications/NotificationLikes';
 
 import './Notifications.less';
 
@@ -130,15 +130,6 @@ class Notifications extends React.Component {
                 return <NotificationFollowing key={key} notification={notification} read={read} />;
               case notificationConstants.MENTION:
                 return <NotificationMention key={key} notification={notification} read={read} />;
-              case notificationConstants.VOTE:
-                return (
-                  <NotificationVote
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    currentAuthUsername={currentAuthUsername}
-                  />
-                );
               case notificationConstants.REBLOG:
                 return (
                   <NotificationReblog
@@ -269,6 +260,15 @@ class Notifications extends React.Component {
               case notificationConstants.CUSTOMER_SUPPORT:
                 return (
                   <NotificationCustomerSupport
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.LIKE:
+                return (
+                  <NotificationLikes
                     key={key}
                     notification={notification}
                     read={read}
