@@ -249,7 +249,7 @@ class CreateImage extends React.Component {
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
-    console.log(selectedAlbum);
+
     return (
       <Modal
         title={intl.formatMessage({

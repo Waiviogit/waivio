@@ -24,11 +24,11 @@ import Payout from '../components/StoryFooter/Payout';
 import Confirmation from '../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
 import { calculateVotePowerForSlider, isPostCashout } from '../vendor/steemitHelpers';
+import { objectFields } from '../../common/constants/listOfFields';
 
 import '../components/Story/Story.less';
 import '../components/StoryFooter/StoryFooter.less';
 import '../components/StoryFooter/Buttons.less';
-import { objectFields } from '../../common/constants/listOfFields';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
