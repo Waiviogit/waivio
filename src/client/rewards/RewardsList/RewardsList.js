@@ -33,28 +33,11 @@ const RewardsList = ({
     }
   };
   const content = useMemo(() => {
-    if (!isEmpty(followingRewards)) {
-      return (
-        <React.Fragment>
-          <ReduxInfiniteScroll
-            elementIsScrollable={false}
-            hasMore={hasMoreFollowingRewards}
-            loadMore={handleLoadMore}
-            loadingMore={loading}
-            loader={<Loading />}
-          >
-            {map(followingRewards, reward => (
-              <Campaign
-                proposition={reward}
-                key={`${reward.required_object.author_permlink}${reward.required_object.createdAt}`}
-                filterKey={'all'}
-                userName={userName}
-              />
-            ))}
-          </ReduxInfiniteScroll>
-        </React.Fragment>
-      );
-    } else if (isEmpty(followingRewards) && !loading) {
+    if (!userName && loading) {
+      return <Loading />;
+    }
+
+    if (!loading && isEmpty(followingRewards)) {
       return (
         <div className="RewardsList__message">
           {intl.formatMessage({
@@ -64,8 +47,29 @@ const RewardsList = ({
         </div>
       );
     }
-    return <Loading />;
+
+    return (
+      <React.Fragment>
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMoreFollowingRewards}
+          loadMore={handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {map(followingRewards, reward => (
+            <Campaign
+              proposition={reward}
+              key={`${reward.required_object.author_permlink}${reward.required_object.createdAt}`}
+              filterKey={'all'}
+              userName={userName}
+            />
+          ))}
+        </ReduxInfiniteScroll>
+      </React.Fragment>
+    );
   }, [followingRewards, loading]);
+
   return (
     <React.Fragment>
       <div className="RewardsList">
