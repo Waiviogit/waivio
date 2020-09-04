@@ -9,46 +9,46 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
-  getIsUserFailed,
-  getIsUserLoaded,
   getObject as getObjectState,
-  getObjectAlbums,
   getScreenSize,
   getObjectFetchingState,
   getLocale,
+  getWobjectIsFailed,
+  getWobjectIsFatching,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
-import { resetGallery } from './ObjectGallery/galleryActions';
+import { clearObjectFromStore, getObject } from './wobjectsActions';
+import { getAlbums, resetGallery } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 import NotFound from '../statics/NotFound';
+import { getObjectName } from '../helpers/wObjectHelper';
+import DEFAULTS from '../object/const/defaultValues';
 
 @withRouter
 @connect(
-  (state, ownProps) => ({
+  state => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
-    loaded: getIsUserLoaded(state, ownProps.match.params.name),
-    failed: getIsUserFailed(state, ownProps.match.params.name),
+    loaded: getWobjectIsFatching(state),
+    failed: getWobjectIsFailed(state),
     locale: getLocale(state),
     wobject: getObjectState(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
-    albums: getObjectAlbums(state),
   }),
   {
     clearObjectFromStore,
-    getObjectInfo,
+    getObject,
     resetGallery,
+    getAlbums,
   },
 )
 export default class Wobj extends React.Component {
@@ -60,23 +60,22 @@ export default class Wobj extends React.Component {
     history: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
-    getObjectInfo: PropTypes.func.isRequired,
+    getObject: PropTypes.func.isRequired,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
-    screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
     locale: PropTypes.string,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    getAlbums: PropTypes.func,
   };
 
   static defaultProps = {
+    getAlbums: () => {},
     authenticatedUserName: '',
     locale: '',
     loaded: false,
     failed: false,
     isFetching: false,
     wobject: {},
-    screenSize: 'large',
     clearObjectFromStore: () => {},
   };
 
@@ -100,29 +99,14 @@ export default class Wobj extends React.Component {
     const { match, wobject, authenticatedUserName } = this.props;
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+      this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getAlbums(match.params.name);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { authenticated, history, screenSize, wobject } = this.props;
-
-    if (nextProps.wobject.id !== wobject.id && !nextProps.match.params[0]) {
-      const nextUrl = getInitialUrl(nextProps.wobject, screenSize, history.location);
-      if (nextUrl !== history.location.pathname) history.replace(nextUrl);
-    }
-
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
-      const nextState = { hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE };
-
-      if (
-        nextProps.wobject.type === OBJECT_TYPE.PAGE &&
-        authenticated &&
-        !nextProps.wobject[objectFields.pageContent]
-      ) {
-        nextState.isEditMode = true;
-      }
-      this.setState(nextState);
+      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
     }
   }
 
@@ -131,21 +115,15 @@ export default class Wobj extends React.Component {
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
-      this.props.getObjectInfo(match.params.name, authenticatedUserName, [
-        'tagCategory',
-        'categoryItem',
-        'galleryItem',
-      ]);
+      this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
 
-  toggleViewEditMode = isEditMode => {
-    if (typeof isEditMode === 'boolean') {
-      this.setState({ isEditMode });
-    } else {
-      this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
-    }
-  };
+  componentWillUnmount() {
+    this.props.clearObjectFromStore();
+  }
+
+  toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
@@ -155,12 +133,11 @@ export default class Wobj extends React.Component {
       authenticatedUserName: userName,
       match,
       wobject,
-      albums,
       isFetching,
     } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = wobject.name || wobject.default_name || '';
+    const objectName = getObjectName(wobject);
     if (!objectName && !isFetching) {
       return (
         <div className="main-panel">
@@ -173,20 +150,12 @@ export default class Wobj extends React.Component {
       );
     }
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const desc = `${wobject.description || objectName || ''}`;
-
-    const image =
-      wobject.avatar ||
-      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+    const desc = wobject.description || objectName;
+    const image = wobject.avatar || DEFAULTS.AVATAR;
     const canonicalUrl = `https://www.waivio.com/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
-    const displayedObjectName = objectName || '';
-    let albumsAndImagesCount;
-    if (!isEmpty(albums)) {
-      albumsAndImagesCount =
-        albums.length - 1 + albums.reduce((acc, curr) => acc + curr.items.length, 0);
-    }
-
+    const displayedObjectName = objectName;
+    const albumsAndImagesCount = wobject.albums_count;
     const { history } = this.props;
 
     return (
@@ -250,14 +219,12 @@ export default class Wobj extends React.Component {
               </Affix>
             )}
             <Affix className="rightContainer" stickPosition={72}>
-              <React.Fragment>
-                <div className="right">
-                  {wobject.author_permlink && (
-                    <ObjectExpertise username={userName} wobject={wobject} />
-                  )}
-                </div>
-                <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
-              </React.Fragment>
+              <div className="right">
+                {wobject.author_permlink && (
+                  <ObjectExpertise username={userName} wobject={wobject} />
+                )}
+              </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {

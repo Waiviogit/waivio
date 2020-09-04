@@ -37,6 +37,7 @@ import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../helpers/parser';
 import WeightTag from '../WeightTag';
 import { pendingSearch } from '../../search/Search';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './Topnav.less';
 
@@ -332,14 +333,14 @@ class Topnav extends React.Component {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="my-profile">
-                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
-                  </PopoverMenuItem>
                   <PopoverMenuItem key="feed">
-                    <FormattedMessage id="feed" defaultMessage="Feed" />
+                    <FormattedMessage id="feed" defaultMessage=" My Feed" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="rewards">
                     <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="my-profile">
+                    <FormattedMessage id="my_profile" defaultMessage="Profile" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="news" fullScreenHidden>
                     <FormattedMessage id="news" defaultMessage="News" />
@@ -496,14 +497,14 @@ class Topnav extends React.Component {
         return;
       }
     }
-    let redirectUrl = '';
 
+    let redirectUrl = '';
     switch (data.props.marker) {
       case Topnav.markers.USER:
         redirectUrl = `/@${value.replace('user', '')}`;
         break;
       case Topnav.markers.WOBJ:
-        redirectUrl = `/object/${value.replace('wobj', '')}`;
+        redirectUrl = value.replace('wobj', '');
         break;
       default:
         redirectUrl = `/discover-objects/${value.replace('type', '')}`;
@@ -605,14 +606,14 @@ class Topnav extends React.Component {
         )}
       >
         {map(wobjects, option => {
-          const wobjName = option.name || option.default_name;
+          const wobjName = getObjectName(option);
           const parent = option.parent;
 
           return wobjName ? (
             <AutoComplete.Option
               marker={Topnav.markers.WOBJ}
               key={`wobj${wobjName}`}
-              value={`wobj${option.author_permlink}`}
+              value={`wobj${option.defaultShowLink}`}
               className="Topnav__search-autocomplete"
             >
               <div className="Topnav__search-content-wrap">
@@ -620,9 +621,7 @@ class Topnav extends React.Component {
                 <div>
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
-                    <div className="Topnav__search-content-small">
-                      {parent.name || parent.default_name}
-                    </div>
+                    <div className="Topnav__search-content-small">{getObjectName(parent)}</div>
                   )}
                 </div>
               </div>

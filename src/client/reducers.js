@@ -226,6 +226,7 @@ export const getIsStartSearchAutoComplete = state =>
   fromSearch.getIsStartSearchAutoComplete(state.search);
 export const getIsStartSearchUser = state => fromSearch.getIsStartSearchUser(state.search);
 export const getIsStartSearchObject = state => fromSearch.getIsStartSearchObject(state.search);
+export const getIsClearSearchObjects = state => fromSearch.getIsClearSearchObjects(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
@@ -235,6 +236,8 @@ export const getObjectModerators = state => fromObject.getObjectModerators(state
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectTagCategory = state => fromObject.getObjectTagCategory(state.object);
+export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.object);
+export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
@@ -275,6 +278,10 @@ export const getCountTookPartCampaigns = state =>
 export const getCreatedCampaignsCount = state =>
   fromRewards.getCreatedCampaignsCount(state.rewards);
 export const getCommentsFromReserved = state => fromRewards.getCommentsFromReserved(state.rewards);
+export const getSponsorsRewards = state => fromRewards.getSponsorsRewards(state.rewards);
+export const getHasMoreFollowingRewards = state =>
+  fromRewards.getHasMoreFollowingRewards(state.rewards);
+export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
 
 // common selectors
 

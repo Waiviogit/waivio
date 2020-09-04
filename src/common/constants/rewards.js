@@ -38,12 +38,16 @@ export const MESSAGES = 'messages';
 export const HISTORY = 'history';
 
 export const ASSIGNED = 'assigned';
+export const UNASSIGNED = 'unassigned';
 
 export const IS_RESERVED = 'reserved';
+export const IS_ALL = 'all';
+export const IS_ACTIVE = 'active';
 export const CAMPAIGNS = 'campaigns';
 
 export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
 export const PATH_NAME_MESSAGES = '/rewards/messages';
+export const PATH_NAME_HISTORY = '/rewards/history';
 export const PATH_NAME_ACTIVE = '/rewards/active';
 export const PATH_NAME_RECEIVABLES = '/rewards/receivables';
 export const PATH_NAME_DISCOVER = '/discover';

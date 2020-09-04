@@ -22,16 +22,18 @@
   .object-search-input {
     background-color: @white;
     border-radius: 4px;
-    width: calc(100vw - @margin * 4.2);
+    width: calc(100vw - @margin * 2.8);
 
     @media @small {
-      width: calc(100vw - @margin * 1.5 - @right-width);
+      width: calc(100vw - @margin * 16.6);
     }
+
     @media @medium {
-      max-width: 710px;
+      max-width: 675px;
     }
+
     @media @large {
-      max-width: 740px;
+      max-width: 705px;
     }
 
     input.ant-input {
@@ -162,12 +164,7 @@
 }
 
 .md-add-button {
-  margin-right: 2px;
-  margin-left: -26px;
-
-  @media @small, @medium {
-    margin-left: -46px;
-  }
+  margin: 10px 2px 0 -26px;
 
   &.md-open-button {
     transform: rotate(45deg);

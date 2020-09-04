@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { get, head, isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
-import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
   getAllUsers,
   getAuthenticatedUser,
@@ -30,6 +29,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import NotFound from '../statics/NotFound';
 import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import DEFAULTS from '../object/const/defaultValues';
 
 @connect(
   (state, ownProps) => ({
@@ -76,18 +76,8 @@ export default class User extends React.Component {
     openTransfer: () => {},
   };
 
-  static fetchData({ store, match }) {
-    return store.dispatch(getUserAccount(match.params.name));
-  }
-
-  state = {
-    isFollowing: false,
-  };
-
   componentDidMount() {
     const {
-      authenticated,
-      authenticatedUserName,
       usersAccountHistory,
       // eslint-disable-next-line no-shadow
       getUserAccountHistory,
@@ -96,36 +86,7 @@ export default class User extends React.Component {
 
     this.props.getUserAccount(match.params.name);
 
-    if (authenticated) {
-      currentUserFollowersUser(authenticatedUserName, match.params.name).then(resp => {
-        const result = head(resp);
-        const followingUsername = get(result, 'following', null);
-        const isFollowing = authenticatedUserName === followingUsername;
-        this.setState({
-          isFollowing,
-        });
-      });
-    }
-    if (isEmpty(usersAccountHistory[match.params.name])) {
-      getUserAccountHistory(match.params.name);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const diffUsername = this.props.match.params.name !== nextProps.match.params.name;
-    const diffAuthUsername = this.props.authenticatedUserName !== nextProps.authenticatedUserName;
-    if (diffUsername || diffAuthUsername) {
-      currentUserFollowersUser(nextProps.authenticatedUserName, nextProps.match.params.name).then(
-        resp => {
-          const result = head(resp);
-          const followingUsername = get(result, 'following', null);
-          const isFollowing = nextProps.authenticatedUserName === followingUsername;
-          this.setState({
-            isFollowing,
-          });
-        },
-      );
-    }
+    if (isEmpty(usersAccountHistory[match.params.name])) getUserAccountHistory(match.params.name);
   }
 
   componentDidUpdate(prevProps) {
@@ -152,7 +113,6 @@ export default class User extends React.Component {
       rate,
       user,
     } = this.props;
-    const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     if (!isEmpty(user) && !user.id && !user.fetching)
@@ -179,16 +139,12 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const waivioHost = global.postOrigin || 'https://www.waivio.com';
-    const image =
-      getAvatarURL(username) ||
-      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+    const image = getAvatarURL(username) || DEFAULTS.AVATAR;
     const canonicalUrl = `https://www.waivio.com/@${username}`;
     const url = `${waivioHost}/@${username}`;
     const title = `${displayedUsername} - Waivio`;
     const isSameUser = authenticated && authenticatedUser.name === username;
-
     const isAboutPage = match.params['0'] === 'about';
-
     const isGuest =
       match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
 
@@ -231,7 +187,6 @@ export default class User extends React.Component {
             username={displayedUsername}
             isSameUser={isSameUser}
             coverImage={coverImage}
-            isFollowing={isFollowing}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
             onTransferClick={this.handleTransferClick}

@@ -41,6 +41,7 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import Transfer from '../wallet/Transfer';
 import Withdraw from '../wallet/WithDraw';
+import PowerUpOrDown from '../wallet/PowerUpOrDown';
 
 @withRouter
 @connect(
@@ -221,6 +222,7 @@ class Wallet extends Component {
         operationNum={operationNum}
         isloadingMoreTransactions={isloadingMoreTransactions}
         isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
+        isMobile={isMobile}
       />
     );
 
@@ -240,6 +242,7 @@ class Wallet extends Component {
         {isMobile && <WalletSidebar />}
         {walletTransactions}
         <Transfer history={this.props.history} />
+        <PowerUpOrDown />
         {this.props.isWithdrawOpen && <Withdraw />}
       </div>
     );

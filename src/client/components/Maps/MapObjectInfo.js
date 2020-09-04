@@ -6,16 +6,13 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
-import { getRadius } from './mapHelper';
+import { getRadius, getParsedMap } from './mapHelper';
 import CustomMarker from './CustomMarker';
 import Loading from '../Icon/Loading';
-import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
+import { getIsMapModalOpen } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
 import mapProvider from '../../helpers/mapProvider';
 import { setMapFullscreenMode } from './mapActions';
-import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { mapFields, objectFields } from '../../../common/constants/listOfFields';
-import { getClientWObj } from '../../adapters';
 import './Map.less';
 
 export const defaultCoords = [37.0902, 95.0235];
@@ -23,7 +20,6 @@ export const defaultCoords = [37.0902, 95.0235];
 @connect(
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
-    usedLocale: getSuitableLanguage(state),
   }),
   {
     getCoordinates,
@@ -62,9 +58,12 @@ class MapObjectInfo extends React.Component {
 
   getMarkers = () => {
     const { wobject } = this.props;
-    const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-    const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-    const isMarked = Boolean(wobject && wobject.campaigns);
+    const parsedMap = getParsedMap(wobject);
+    const lat = parsedMap.latitude;
+    const lng = parsedMap.longitude;
+    const isMarked = Boolean(
+      (wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions)),
+    );
     return lat && lng ? (
       <CustomMarker
         key={`obj${wobject.author_permlink}`}
@@ -85,8 +84,7 @@ class MapObjectInfo extends React.Component {
 
   getOverlayLayout = () => {
     const { infoboxData } = this.state;
-    const { usedLocale } = this.props;
-    const wobj = getClientWObj(infoboxData.wobject, usedLocale);
+    const wobj = infoboxData.wobject;
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
         <div
@@ -223,7 +221,6 @@ MapObjectInfo.defaultProps = {
   setCoordinates: () => {},
   setArea: () => {},
   isFullscreenMode: false,
-  usedLocale: 'en-US',
   setMapFullscreenMode: () => {},
   width: 0,
 };
@@ -232,7 +229,6 @@ MapObjectInfo.propTypes = {
   mapHeigth: PropTypes.number,
   center: PropTypes.arrayOf(PropTypes.number),
   isFullscreenMode: PropTypes.bool,
-  usedLocale: PropTypes.string,
   setMapFullscreenMode: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   wobject: PropTypes.object.isRequired,

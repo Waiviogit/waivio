@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy, truncate, get } from 'lodash';
+import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { getObjectName, parseAddress } from '../helpers/wObjectHelper';
+import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
-  options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
+  options: { mobileView = 'compact', ownRatesOnly = false },
+  passedParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = get(wObject, 'parent', {});
+  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
+  const address = parseAddress(wObject);
 
   useEffect(() => {
     if (wObject.tagCategories && wObject.tagCategories.length) {
@@ -31,24 +34,14 @@ const ObjectCardView = ({
       setTags(currentTags);
     } else setTags([wObject.object_type]);
   }, []);
-  const getObjectRatings = () => {
-    const ratingFields = filter(wObject.fields, ['name', 'rating']);
-    return ownRatesOnly
-      ? ratingFields.map(rating => ({
-          ...rating,
-          rating_votes:
-            (rating.rating_votes && rating.rating_votes.filter(vote => vote.voter === username)) ||
-            [],
-        }))
-      : ratingFields;
-  };
-  const pathName = pathNameAvatar || `/object/${wObject.id}`;
-  const ratings = getObjectRatings();
+
+  const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
     let url = wObject.avatar || parent.avatar;
 
-    if (!url) url = DEFAULTS.AVATAR;
+    if (url) url = getProxyImageURL(url, 'preview');
+    else url = DEFAULTS.AVATAR;
 
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
@@ -63,8 +56,8 @@ const ObjectCardView = ({
       />
     );
   };
-  const objName = wObject.name || wObject.default_name;
-  const parentName = parent.name || parent.default_name;
+  const objName = getObjectName(wObject);
+  const parentName = getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -79,18 +72,26 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
+  const parentLink =
+    get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink', '')}`;
+
   return (
-    <React.Fragment>
+    <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
+            <Link
+              to={pathName}
+              title={goToObjTitle(objName)}
+              className="ObjectCardView__avatar"
+              key={wObject.author_permlink}
+            >
               {avatarLayout()}
             </Link>
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${get(parent, 'author_permlink', '')}`}
+                  to={parentLink}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -99,7 +100,8 @@ const ObjectCardView = ({
               )}
               <div className="ObjectCardView__name">
                 <Link
-                  to={`/object/${wObject.author_permlink}`}
+                  key={wObject.author_permlink}
+                  to={pathName}
                   className="ObjectCardView__name-truncated"
                   title={goToObjTitle(objName)}
                 >
@@ -107,11 +109,11 @@ const ObjectCardView = ({
                 </Link>
                 {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
               </div>
-              {ratings && (
+              {wObject.rating && (
                 <RatingsWrap
                   mobileView={mobileView}
                   ownRatesOnly={ownRatesOnly}
-                  ratings={ratings}
+                  ratings={wObject.rating}
                   screenSize={screenSize}
                   username={username}
                   wobjId={wObject.id || wObject.author_permlink}
@@ -130,18 +132,7 @@ const ObjectCardView = ({
                   </span>
                 ))}
               </span>
-              {wObject.address && (
-                <div className="ObjectCardView__tag-text">
-                  {(wObject.address.street || wObject.address.address) && (
-                    <span>
-                      {`${
-                        wObject.address.street ? wObject.address.street : wObject.address.address
-                      }, `}
-                    </span>
-                  )}
-                  {wObject.address.city && <span>{wObject.address.city}</span>}
-                </div>
-              )}
+              {address && <div className="ObjectCardView__tag-text">{address}</div>}
               {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {truncate(wObject.title, {
@@ -156,13 +147,14 @@ const ObjectCardView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape().isRequired,
+  passedParent: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -172,5 +164,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
+  passedParent: {},
 };
 export default injectIntl(ObjectCardView);

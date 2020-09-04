@@ -45,7 +45,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
-      locale: 'en-US',
+      locale: locale,
       limit: 6,
       exclude_object_types: ['hashtag'],
       sample: true,
@@ -107,13 +107,14 @@ export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 // region Feed requests
-export const getFeedContentByObject = (name, limit = 10, user_languages, locale) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages, locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
         locale,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
@@ -173,6 +174,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
+        follower: userName,
       },
       method: 'POST',
       body: JSON.stringify({
@@ -194,6 +196,7 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages, loc
         ...headers,
         locale,
         app: config.appName,
+        follower: feedUserName,
       },
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
@@ -241,10 +244,10 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getContent = (author, permlink) =>
+export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers,
+      headers: { ...headers, locale, follower },
       method: 'GET',
     })
       .then(res => res.json())
@@ -252,12 +255,12 @@ export const getContent = (author, permlink) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
+export const searchObjects = (searchString, objType = '', forParent, limit = 15, locale) => {
   const requestBody = { search_string: searchString, limit };
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
-    headers,
+    headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
   })
@@ -338,9 +341,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => 
   });
 };
 
-export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser) => {
+export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser, locale) => {
   const actualHeaders = authUser
-    ? { ...headers, following: authUser, follower: authUser }
+    ? { ...headers, following: authUser, follower: authUser, locale }
     : headers;
 
   return new Promise((resolve, reject) => {
@@ -423,11 +426,13 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
   });
 // endregion
 
-export const getWobjectGallery = wobject =>
+export const getWobjectGallery = (wobject, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`, {
       headers: {
+        ...headers,
         app: config.appName,
+        locale,
       },
     })
       .then(handleErrors)
@@ -466,6 +471,7 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
+
 export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) => {
   const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
 
@@ -536,10 +542,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
       .catch(error => reject(error));
   });
 
-export const getObjectType = (typeName, requestData) =>
-  new Promise((resolve, reject) => {
+export const getObjectType = (typeName, requestData) => {
+  const { locale = 'en-US' } = requestData;
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(requestData),
     })
@@ -547,6 +554,7 @@ export const getObjectType = (typeName, requestData) =>
       .then(data => resolve(data))
       .catch(error => reject(error));
   });
+};
 
 export const getSearchResult = (
   string,
@@ -639,6 +647,7 @@ export const getPropositions = ({
   firstMapLoad,
   isMap,
   primaryObject,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -670,7 +679,7 @@ export const getPropositions = ({
     const url = getUrl(match);
 
     fetch(url, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -690,6 +699,8 @@ export const getHistory = ({
   rewards,
   status,
   guideNames,
+  campaignNames,
+  locale = 'en-US',
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -710,8 +721,9 @@ export const getHistory = ({
     if (!isEmpty(status)) reqData.status = status;
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
+    if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
     })
@@ -825,10 +837,16 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getRewardsGeneralCounts = ({ userName, sort, limit = 30, skip = 0 } = {}) =>
+export const getRewardsGeneralCounts = ({
+  userName,
+  sort,
+  limit = 10,
+  skip = 0,
+  locale = 'en-US',
+} = {}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
-      headers,
+      headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify({
         userName: userName,
@@ -1222,7 +1240,7 @@ export const getPostCommentsFromApi = ({ category, author, permlink }) =>
 
 export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
+    headers: { ...headers, locale },
     method: 'POST',
     body: JSON.stringify({
       limit,
@@ -1233,9 +1251,9 @@ export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHa
     }),
   }).then(res => res.json());
 
-export const getUsers = ({ listUsers, userName, skip = 0, limit = 20 }) => {
+export const getUsers = ({ listUsers, userName, skip = 0, limit = 20, locale }) => {
   const actualHeaders = userName
-    ? { ...headers, following: userName, follower: userName }
+    ? { ...headers, following: userName, follower: userName, locale }
     : headers;
 
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
@@ -1399,6 +1417,17 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
   )
     .then(res => res.json())
     .catch(error => error);
+
+export const getFollowingSponsorsRewards = ({ userName }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

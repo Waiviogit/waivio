@@ -21,10 +21,10 @@ import PropTypes from 'prop-types';
 import {
   getFieldWithMaxWeight,
   getListItems,
-  getListItemLink,
   sortListItemsBy,
+  getListSorting,
 } from '../wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
+import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
@@ -39,7 +39,7 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { hasType } from '../../helpers/wObjectHelper';
+import { getObjectName, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -53,13 +53,6 @@ import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
 
 import './CatalogWrap.less';
-
-const getListSorting = wobj => {
-  const type = size(wobj[objectFields.sorting]) ? 'custom' : 'recency';
-  const order = type === 'custom' ? wobj[objectFields.sorting] : null;
-
-  return { type, order };
-};
 
 @withRouter
 @injectIntl
@@ -80,14 +73,11 @@ const getListSorting = wobj => {
 )
 class CatalogWrap extends React.Component {
   static propTypes = {
-    /* from decorators */
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    /* from connect */
     locale: PropTypes.string,
     addItemToWobjStore: PropTypes.func.isRequired,
-    /* passed props */
     wobject: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
@@ -109,7 +99,7 @@ class CatalogWrap extends React.Component {
   state = {
     loadingAssignDiscard: false,
     propositions: [],
-    sort: 'reward',
+    sort: 'recency',
     isAssign: false,
     loadingPropositions: false,
     needUpdate: true,
@@ -118,14 +108,12 @@ class CatalogWrap extends React.Component {
   componentDidMount() {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
+
     if (!isEmpty(wobject)) {
-      const requiredObject = this.getRequiredObject(wobject, match);
-      if (requiredObject) {
-        this.getPropositions({ userName, match, requiredObject, sort });
-      }
+      this.getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
     } else {
       getObject(match.params.name, userName, locale).then(wObject => {
-        const requiredObject = this.getRequiredObject(wObject, match);
+        const requiredObject = wObject.author_permlink;
         if (requiredObject) {
           this.getPropositions({ userName, match, requiredObject, sort });
         }
@@ -180,7 +168,7 @@ class CatalogWrap extends React.Component {
               ...prevState.breadcrumb,
               {
                 id: res.author_permlink,
-                name: res.name || res.default_name,
+                name: getObjectName(res),
                 path,
               },
             ];
@@ -204,15 +192,17 @@ class CatalogWrap extends React.Component {
     let sortedItems = [];
     const breadcrumb = [];
     const items = getListItems(wobject);
-    if (items && items.length) {
+
+    if (size(items)) {
       sorting = getListSorting(wobject);
       if (wobject.object_type === OBJ_TYPE.LIST) {
         breadcrumb.push({
           id: wobject.author_permlink,
-          name: getFieldWithMaxWeight(wobject, objectFields.name),
+          name: getObjectName(wobject),
           path: '',
         });
       }
+
       if (location.hash) {
         if (!isInitialState) this.setState({ loading: true });
         const permlinks = location.hash.slice(1).split('/');
@@ -240,17 +230,13 @@ class CatalogWrap extends React.Component {
   };
 
   handleAddItem = listItem => {
-    const { breadcrumb, listItems, sort } = this.state;
+    const { breadcrumb, listItems } = this.state;
     const { wobject } = this.props;
 
     this.setState({
-      listItems: sortListItemsBy(
-        [...listItems, listItem],
-        sort,
-        sort === 'custom' ? wobject[objectFields.sorting] : null,
-      ),
+      listItems: sortListItemsBy([...listItems, listItem], 'recency'),
     });
-    if (wobject.object_type === OBJ_TYPE.LIST && breadcrumb.length === 1) {
+    if (wobject.object_type === OBJ_TYPE.LIST && !isEmpty(breadcrumb)) {
       this.props.addItemToWobjStore(listItem);
     }
   };
@@ -268,6 +254,7 @@ class CatalogWrap extends React.Component {
       match,
       requiredObject,
       sort: 'reward',
+      locale: this.props.locale,
     }).then(data => {
       this.setState({
         propositions: data.campaigns,
@@ -324,8 +311,8 @@ class CatalogWrap extends React.Component {
       <Campaign
         proposition={propositions[0]}
         filterKey="all"
-        rewardPriceCatalogWrap={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
-        rewardMaxCatalogWrap={rewardMaxCatalogWrap || null}
+        rewardPricePassed={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
+        rewardMaxPassed={rewardMaxCatalogWrap || null}
         key={`${propositions[0].required_object.author_permlink}${propositions[0].required_object.createdAt}`}
         userName={userName}
       />
@@ -334,24 +321,23 @@ class CatalogWrap extends React.Component {
 
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
-    const linkTo = getListItemLink(listItem, this.props.location);
-    const isList = listItem.type === OBJ_TYPE.LIST;
+    const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
+    const status = get(parseWobjectField(listItem, 'status'), 'title');
+
+    if (statusNoVisibleItem.includes(status)) return null;
+
     let item;
+
     if (isList) {
-      item = <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />;
+      item = <CategoryItemView wObject={listItem} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = this.renderProposition(propositions, listItem);
     } else {
-      item = (
-        <ObjectCardView
-          wObject={listItem}
-          options={{ pathNameAvatar: linkTo }}
-          passedParent={this.props.wobject}
-        />
-      );
+      item = <ObjectCardView wObject={listItem} passedParent={this.props.wobject} />;
     }
-    return <div key={`category-${listItem.id}`}>{item}</div>;
+
+    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
   getMenuList = () => {
@@ -377,7 +363,6 @@ class CatalogWrap extends React.Component {
     return listRow;
   };
 
-  // Propositions
   assignPropositionHandler = ({
     companyAuthor,
     companyPermlink,
@@ -388,7 +373,9 @@ class CatalogWrap extends React.Component {
     proposedWobj,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
     this.setState({ loadingAssignDiscard: true });
+
     return this.props
       .assignProposition({
         companyAuthor,
@@ -406,13 +393,14 @@ class CatalogWrap extends React.Component {
             defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
           }),
         );
-        // eslint-disable-next-line no-unreachable
+
         const updatedPropositions = this.updateProposition(
           companyId,
           true,
           objPermlink,
           companyAuthor,
         );
+
         this.setState({
           propositions: updatedPropositions,
           loadingAssignDiscard: false,
@@ -429,8 +417,9 @@ class CatalogWrap extends React.Component {
   updateProposition = (propsId, isAssign, objPermlink, companyAuthor) =>
     this.state.propositions.map(proposition => {
       const updatedProposition = proposition;
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition._id === propsId) {
+      const propositionId = get(updatedProposition, '_id');
+
+      if (propositionId === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
             updatedProposition.objects[index].assigned = isAssign;
@@ -439,8 +428,8 @@ class CatalogWrap extends React.Component {
           }
         });
       }
-      // eslint-disable-next-line no-underscore-dangle
-      if (updatedProposition.guide.name === companyAuthor && updatedProposition._id !== propsId) {
+
+      if (updatedProposition.guide.name === companyAuthor && propositionId !== propsId) {
         updatedProposition.isReservedSiblingObj = true;
       }
       return updatedProposition;
@@ -478,7 +467,6 @@ class CatalogWrap extends React.Component {
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
   };
-  // END Propositions
 
   render() {
     const {
@@ -504,6 +492,9 @@ class CatalogWrap extends React.Component {
       currWobject[objectFields.sorting] &&
       currWobject[objectFields.sorting].length ? (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="recency">
+            <FormattedMessage id="recency" defaultMessage="Recency" />
+          </SortSelector.Item>
           <SortSelector.Item key="custom">
             <FormattedMessage id="custom" defaultMessage="Custom" />
           </SortSelector.Item>
@@ -523,6 +514,9 @@ class CatalogWrap extends React.Component {
         </SortSelector>
       ) : (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="recency">
+            <FormattedMessage id="recency" defaultMessage="Recency" />
+          </SortSelector.Item>
           <SortSelector.Item key="rank">
             <FormattedMessage id="rank" defaultMessage="Rank" />
           </SortSelector.Item>
@@ -539,6 +533,8 @@ class CatalogWrap extends React.Component {
         </SortSelector>
       );
 
+    const menuItem = wobject.menuItems;
+
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (
@@ -546,15 +542,14 @@ class CatalogWrap extends React.Component {
             {!isEmpty(propositions) && this.renderCampaign(propositions)}
             <div className="CatalogWrap__breadcrumb">
               <Breadcrumb separator={'>'}>
-                {map(breadcrumb, (crumb, index, crumbsArr) => (
+                {map(menuItem, crumb => (
                   <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                    {(index || !hasType(wobject, OBJ_TYPE.LIST)) &&
-                    index === crumbsArr.length - 1 ? (
+                    {!hasType(wobject, OBJ_TYPE.LIST) ? (
                       <React.Fragment>
                         <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                         <Link
                           className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `/object/${crumb.id}` }}
+                          to={{ pathname: `${crumb.defaultShowLink}` }}
                         >
                           <i className="iconfont icon-send PostModal__icon" />
                         </Link>
@@ -562,7 +557,7 @@ class CatalogWrap extends React.Component {
                     ) : (
                       <Link
                         className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.path }}
+                        to={{ pathname: location.pathname, hash: crumb.defaultShowLink }}
                         title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                           crumb.name
                         }`}

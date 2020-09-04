@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { some, find } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-  FormattedDate,
-  FormattedMessage,
-  FormattedRelative,
-  FormattedTime,
-  injectIntl,
-} from 'react-intl';
+import { FormattedDate, FormattedRelative, FormattedTime, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import WeightTag from '../components/WeightTag';
 import BTooltip from '../components/BTooltip';
@@ -30,6 +24,7 @@ import Payout from '../components/StoryFooter/Payout';
 import Confirmation from '../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
 import { calculateVotePowerForSlider, isPostCashout } from '../vendor/steemitHelpers';
+import { objectFields } from '../../common/constants/listOfFields';
 
 import '../components/Story/Story.less';
 import '../components/StoryFooter/StoryFooter.less';
@@ -38,10 +33,9 @@ import '../components/StoryFooter/Buttons.less';
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
   const [reactionsModalVisible, showReactionModal] = useState(false);
-  const [commentsVisible, setCommentsVisible] = useState(props.post.child);
+  const [commentsVisible, setCommentsVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
-  const postId = `${props.post.author}/${props.post.permlink}`;
 
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
@@ -61,15 +55,15 @@ const AppendCard = props => {
   const upVotes = props.post.active_votes && getAppendUpvotes(props.post.active_votes);
   const isLiked = props.post.isLiked || some(upVotes, { voter: props.user.name });
 
-  function handleLikeClick(post, weight = 10000, type) {
+  function handleLikeClick(post, weight = 10000) {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(postId, props.post.author, props.post.permlink, 0, type);
+      props.voteAppends(props.post.author, props.post.permlink, 0);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(postId, props.post.author, props.post.permlink, weight, type);
+      props.voteAppends(props.post.author, props.post.permlink, weight);
     }
   }
 
@@ -83,15 +77,15 @@ const AppendCard = props => {
     setSliderValue(value);
   }
 
-  function handleReportClick(post, myWeight, type) {
+  function handleReportClick(post, myWeight) {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
 
     if (isReject) {
-      props.voteAppends(postId, post.author, post.permlink, 0, type);
+      props.voteAppends(post.author, post.permlink, 0);
     } else {
-      props.voteAppends(postId, post.author, post.permlink, myWeight, type);
+      props.voteAppends(post.author, post.permlink, myWeight);
     }
   }
 
@@ -99,7 +93,7 @@ const AppendCard = props => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!commentsVisible) {
+    if (!commentsVisible && props.post.children) {
       setCommentsVisible(true);
     } else {
       setCommentsVisible(false);
@@ -108,14 +102,19 @@ const AppendCard = props => {
 
   function handleLikeConfirm() {
     showSlider(false);
-    props.voteAppends(
-      postId,
-      props.post.author,
-      props.post.permlink,
-      sliderValue * 100,
-      'approved',
-    );
+    props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
   }
+
+  const fieldName =
+    props.post.name === objectFields.listItem
+      ? {
+          id: `object_field_${props.post.name}_${props.post.type}`,
+          defaultMessage: `Menu item-${props.post.type}`,
+        }
+      : {
+          id: `object_field_${props.post.name}`,
+          defaultMessage: props.post.name,
+        };
 
   return (
     <div className="Story">
@@ -156,12 +155,7 @@ const AppendCard = props => {
           rel="noopener noreferrer"
           className="Story__content__title"
         >
-          <h2>
-            <FormattedMessage
-              id={`object_field_${props.post.name}`}
-              defaultMessage={props.post.name}
-            />
-          </h2>
+          <h2>{props.intl.formatMessage(fieldName)}</h2>
         </a>
         <a
           href={`/@${props.post.author}/${props.post.permlink}`}
@@ -169,7 +163,7 @@ const AppendCard = props => {
           target="_blank"
           className="Story__content__preview"
         >
-          <StoryPreview post={props.post} />
+          <StoryPreview post={props.post} isUpdates />
         </a>
         <ApprovingCard post={props.post} />
       </div>
@@ -213,6 +207,9 @@ AppendCard.propTypes = {
   user: PropTypes.shape().isRequired,
   sliderMode: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool.isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({

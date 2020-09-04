@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { upperFirst } from 'lodash';
+import { upperFirst, size } from 'lodash';
 import moment from 'moment';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -34,6 +34,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
+    isMobile: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -47,6 +48,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: -1,
     isloadingMoreTransactions: false,
     isloadingMoreDemoTransactions: false,
+    isMobile: false,
   };
 
   state = {
@@ -74,7 +76,7 @@ class UserWalletTransactions extends React.Component {
     } = this.props;
     let skip = 0;
     const limit = 10;
-    const actionLength = this.props.actions.length;
+    const actionLength = size(this.props.actions);
     if (this.isGuestPage()) {
       if (actionLength >= limit) {
         skip = actionLength;
@@ -113,6 +115,7 @@ class UserWalletTransactions extends React.Component {
       demoTransactions,
       intl,
       isErrorLoading,
+      isMobile,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
     return (
@@ -142,6 +145,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))
               : transactions.map(transaction => (
@@ -153,6 +157,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))}
           </ReduxInfiniteScroll>

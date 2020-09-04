@@ -1,7 +1,4 @@
-import { isEmpty } from 'lodash';
-
 import * as actions from './wobjectsActions';
-import * as appendAction from './appendActions';
 import {
   FOLLOW_OBJECT,
   RATE_WOBJECT_SUCCESS,
@@ -11,10 +8,12 @@ import {
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
 } from './wobjActions';
+import { objectFields } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
   isFetching: false,
+  isFailed: false,
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -28,6 +27,7 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         isFetching: false,
+        isFailed: true,
       };
     case actions.CLEAR_OBJECT:
       return {
@@ -41,6 +41,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...action.payload,
         },
         isFetching: false,
+        isFailed: false,
       };
 
     case actions.ADD_ITEM_TO_LIST:
@@ -80,53 +81,49 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
-    case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
-      if (isEmpty(action.payload)) return state;
-      const { toDisplay, field } = action.payload;
-      return {
-        ...state,
-        wobject: {
-          [field.name]: toDisplay || '',
-          ...state.wobject,
-          fields: [...state.wobject.fields, field],
-        },
-      };
-    }
-
     case VOTE_APPEND_START: {
       const matchPostIndex = state.wobject.fields.findIndex(
         field => field.permlink === action.payload.permlink,
       );
-      state.wobject.fields.splice(matchPostIndex, 1, {
-        ...action.payload.post,
-        loading: true,
-      });
+      if (action.payload.post) {
+        state.wobject.fields.splice(matchPostIndex, 1, {
+          ...action.payload.post,
+          loading: true,
+        });
 
-      return {
-        ...state,
-        wobject: {
-          ...state.wobject,
-          fields: [...state.wobject.fields],
-        },
-      };
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields],
+          },
+        };
+      }
+
+      return state;
     }
 
     case VOTE_APPEND_ERROR: {
       const matchPostIndex = state.wobject.fields.findIndex(
         field => field.permlink === action.payload.permlink,
       );
-      state.wobject.fields.splice(matchPostIndex, 1, {
-        ...action.payload.post,
-        loading: false,
-      });
 
-      return {
-        ...state,
-        wobject: {
-          ...state.wobject,
-          fields: [...state.wobject.fields],
-        },
-      };
+      if (action.payload.post) {
+        state.wobject.fields.splice(matchPostIndex, 1, {
+          ...action.payload.post,
+          loading: false,
+        });
+
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields],
+          },
+        };
+      }
+
+      return state;
     }
 
     case SEND_COMMENT_APPEND: {
@@ -236,6 +233,25 @@ export default function wobjectReducer(state = initialState, action) {
     case GET_CHANGED_WOBJECT_FIELD.SUCCESS: {
       const { toDisplay, field } = action.payload;
       const fields = [...state.wobject.fields];
+      const isArraysFields = [objectFields.categoryItem, objectFields.listItem].includes(
+        field.name,
+      );
+      let key = field.name;
+
+      if (isArraysFields)
+        key = key === objectFields.categoryItem ? objectFields.tagCategory : objectFields.menuItems;
+
+      if (action.meta.isNew) {
+        return {
+          ...state,
+          wobject: {
+            [key]: toDisplay || '',
+            ...state.wobject,
+            fields: [...fields, field],
+          },
+        };
+      }
+
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);
 
       fields.splice(findIndex, 1, { ...fields[findIndex], ...field, loading: false });
@@ -245,7 +261,7 @@ export default function wobjectReducer(state = initialState, action) {
         wobject: {
           ...state.wobject,
           fields,
-          [field.name]: toDisplay || '',
+          [key]: toDisplay || '',
           pending: false,
         },
       };
@@ -265,3 +281,5 @@ export const getObjectAdmins = state => state.wobject.admins || [];
 export const getObjectModerators = state => state.wobject.moderators || [];
 export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;
+export const getWobjectIsFailed = state => state.wobject.isFailed;
+export const getWobjectIsFatching = state => state.wobject.isFetching;

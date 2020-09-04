@@ -1,5 +1,3 @@
-import OBJECT_TYPE from '../../client/object/const/objectTypes';
-
 export const objectFields = {
   name: 'name',
   title: 'title',
@@ -25,7 +23,9 @@ export const objectFields = {
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
   tagCategory: 'tagCategory',
+  menuItems: 'menuItems',
   categoryItem: 'categoryItem',
+  authority: 'authority',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -38,9 +38,8 @@ export const TYPES_OF_MENU_ITEM = {
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
 export const sortingMenuName = {
-  menuList: objectFields.listItem,
-  menuPage: objectFields.pageContent,
-  menuButton: objectFields.button,
+  menuList: TYPES_OF_MENU_ITEM.LIST,
+  menuPage: TYPES_OF_MENU_ITEM.PAGE,
 };
 
 export const objectFieldsWithInnerData = [
@@ -57,6 +56,7 @@ export const objectFieldsWithInnerData = [
 ];
 
 export const addressFields = {
+  accommodation: 'accommodation',
   address: 'address',
   street: 'street',
   city: 'city',
@@ -117,55 +117,6 @@ export const supportedObjectFields = Object.values(objectFields);
 
 export const objectImageFields = ['avatar', 'background'];
 
-export const getAllowedFieldsByObjType = objectType => {
-  switch (objectType) {
-    case OBJECT_TYPE.PAGE:
-      return [
-        objectFields.name,
-        objectFields.pageContent,
-        objectFields.title,
-        objectFields.avatar,
-        objectFields.background,
-        objectFields.parent,
-        objectFields.galleryItem,
-        objectFields.galleryAlbum,
-        objectFields.tagCategory,
-        objectFields.workTime,
-        TYPES_OF_MENU_ITEM.PAGE,
-      ];
-    case OBJECT_TYPE.LIST:
-      return [
-        objectFields.name,
-        objectFields.title,
-        objectFields.avatar,
-        objectFields.background,
-        objectFields.listItem,
-        objectFields.sorting,
-        objectFields.parent,
-        objectFields.galleryItem,
-        objectFields.galleryAlbum,
-        objectFields.tagCategory,
-        objectFields.categoryItem,
-        objectFields.status,
-        objectFields.workTime,
-        TYPES_OF_MENU_ITEM.LIST,
-        TYPES_OF_MENU_ITEM.BUTTON,
-      ];
-    case OBJECT_TYPE.HASHTAG:
-      return [
-        objectFields.avatar,
-        objectFields.background,
-        objectFields.galleryItem,
-        objectFields.status,
-      ];
-    default: {
-      const excludeFields = [objectFields.listItem, objectFields.pageContent];
-      const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];
-      return [...supportedObjectFields, ...includeFields].filter(
-        field => !excludeFields.includes(field),
-      );
-    }
-  }
-};
+export const statusNoVisibleItem = ['unavailable', 'relisted'];
 
 export default null;

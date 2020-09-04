@@ -3,7 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST } from './postActions';
+import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -254,6 +254,52 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case FOLLOWING_POST_AUTHOR.START: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: true,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.SUCCESS: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            youFollows: !post.youFollows,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.ERROR: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
@@ -263,11 +309,7 @@ export default posts;
 
 export const getPosts = state => state.list;
 export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(post =>
-    post.guestInfo
-      ? post.permlink === permlink && post.guestInfo.userId === author
-      : post.permlink === permlink && post.author === author,
-  );
+  Object.values(state.list).find(post => post.permlink === permlink && post.author === author);
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);

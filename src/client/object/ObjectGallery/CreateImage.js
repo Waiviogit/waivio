@@ -1,5 +1,5 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -51,6 +51,7 @@ class CreateImage extends React.Component {
     isValidLink: false,
     votePercent: this.props.defaultVotePercent / 100,
     voteWorth: 0,
+    currentAlbum: null,
   };
 
   getWobjectData = () => {
@@ -92,6 +93,7 @@ class CreateImage extends React.Component {
 
   getWobjectBody = image => {
     const { selectedAlbum, currentUsername, intl } = this.props;
+
     return intl.formatMessage(
       {
         id: 'append_new_image',
@@ -99,7 +101,7 @@ class CreateImage extends React.Component {
       },
       {
         user: currentUsername,
-        album: selectedAlbum.body,
+        album: get(selectedAlbum, 'body') || this.state.currentAlbum,
         url: image.src,
       },
     );
@@ -214,13 +216,13 @@ class CreateImage extends React.Component {
       const response = await this.props.appendObject(postData);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (response.value.transactionId) {
+      if (response.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
           await addImageToAlbumStore({
             ...img,
-            author: response.value.author,
+            author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
           });
         });
@@ -242,7 +244,11 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
-    const isLoading = !uploadingList.length ? loading : Boolean(uploadingList.length);
+    const uploadingListLength = uploadingList.length;
+    const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
+    const albumInitialValue = selectedAlbum
+      ? selectedAlbum.id || selectedAlbum.body
+      : 'Choose an album';
 
     return (
       <Modal
@@ -259,7 +265,7 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
+              initialValue: albumInitialValue,
               rules: [
                 {
                   required: true,
@@ -273,9 +279,15 @@ class CreateImage extends React.Component {
                 },
               ],
             })(
-              <Select disabled={loading}>
+              <Select
+                disabled={loading || selectedAlbum}
+                onSelect={value => this.setState(() => ({ currentAlbum: value }))}
+              >
                 {map(albums, album => (
-                  <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
+                  <Select.Option
+                    key={`${album.id || album.weight}${album.body}`}
+                    value={album.id || album.body}
+                  >
                     {album.body}
                   </Select.Option>
                 ))}
@@ -341,7 +353,7 @@ CreateImage.propTypes = {
   addImageToAlbumStore: PropTypes.func,
   rewardFund: PropTypes.shape(),
   rate: PropTypes.number,
-  defaultVotePercent: PropTypes.number.isRequired,
+  defaultVotePercent: PropTypes.number,
 };
 
 CreateImage.defaultProps = {
@@ -353,6 +365,7 @@ CreateImage.defaultProps = {
   addImageToAlbumStore: () => {},
   rewardFund: {},
   rate: 0,
+  defaultVotePercent: 100,
 };
 
 export default injectIntl(Form.create()(CreateImage));

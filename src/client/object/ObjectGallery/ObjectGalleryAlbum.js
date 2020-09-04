@@ -1,9 +1,9 @@
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { has, setWith } from 'lodash';
+import { has, setWith, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
@@ -19,19 +19,24 @@ import {
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import { getAlbums } from './galleryActions';
 
 import './ObjectGallery.less';
 
 @withEditor
-@connect(state => ({
-  currentUsername: getAuthenticatedUserName(state),
-  wObject: getObject(state),
-  loading: getIsObjectAlbumsLoading(state),
-  albums: getObjectAlbums(state),
-  isAuthenticated: getIsAuthenticated(state),
-  moderatorsList: getObjectAdmins(state),
-  adminsList: getObjectModerators(state),
-}))
+@withRouter
+@connect(
+  state => ({
+    currentUsername: getAuthenticatedUserName(state),
+    wObject: getObject(state),
+    loading: getIsObjectAlbumsLoading(state),
+    albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
+    moderatorsList: getObjectAdmins(state),
+    adminsList: getObjectModerators(state),
+  }),
+  { getAlbums },
+)
 export default class ObjectGalleryAlbum extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
@@ -40,14 +45,24 @@ export default class ObjectGalleryAlbum extends Component {
     isAuthenticated: PropTypes.bool.isRequired,
     onImageUpload: PropTypes.func.isRequired,
     onImageInvalid: PropTypes.func.isRequired,
-    admins: PropTypes.arrayOf(PropTypes.string).isRequired,
-    moderators: PropTypes.arrayOf(PropTypes.string).isRequired,
+    admins: PropTypes.arrayOf(PropTypes.string),
+    moderators: PropTypes.arrayOf(PropTypes.string),
+    getAlbums: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    admins: [],
+    moderators: [],
   };
 
   state = {
     photoIndex: 0,
     showModal: false,
   };
+
+  componentDidMount() {
+    if (isEmpty(this.props.albums)) this.props.getAlbums(this.props.match.params.name);
+  }
 
   handleToggleModal = () =>
     this.setState(prevState => ({
@@ -94,7 +109,7 @@ export default class ObjectGalleryAlbum extends Component {
                 </a>
                 <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
                 <CreateImage
-                  albums={albums}
+                  albums={album}
                   selectedAlbum={album[0]}
                   showModal={showModal}
                   hideModal={this.handleToggleModal}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, size } from 'lodash';
 
 import {
   getPosts,
@@ -13,12 +13,9 @@ import {
   getObjectAlbums,
   getRewardFund,
   getRate,
+  getIsAppendLoading,
 } from '../reducers';
-import {
-  objectFields,
-  getAllowedFieldsByObjType,
-  sortingMenuName,
-} from '../../common/constants/listOfFields';
+import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
@@ -31,6 +28,8 @@ import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
 import AppendCard from './AppendCard';
 import Loading from '../components/Icon/Loading';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getExposedFieldsByObjType } from './wObjectHelper';
 
 import './WobjHistory.less';
 
@@ -42,6 +41,7 @@ import './WobjHistory.less';
   albums: getObjectAlbums(state),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
+  appendLoading: getIsAppendLoading(state),
 }))
 class WobjHistory extends React.Component {
   static propTypes = {
@@ -56,11 +56,13 @@ class WobjHistory extends React.Component {
       reward_balance: PropTypes.string,
     }).isRequired,
     rate: PropTypes.number.isRequired,
+    appendLoading: PropTypes.bool,
   };
 
   static defaultProps = {
     readLanguages: ['en-US'],
     isAuthenticated: false,
+    appendLoading: false,
     comments: {},
     object: {},
   };
@@ -118,6 +120,18 @@ class WobjHistory extends React.Component {
 
   handleSortChange = sort => this.setState({ sort });
 
+  sortedList = (wobj, voteValue, sort) => {
+    switch (sort) {
+      case 'vote':
+        return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
+
+      case 'approval':
+        return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
+      default:
+        return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
+    }
+  };
+
   render() {
     const {
       field,
@@ -127,7 +141,7 @@ class WobjHistory extends React.Component {
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { object, readLanguages, isAuthenticated, rewardFund, rate } = this.props;
+    const { object, readLanguages, isAuthenticated, rewardFund, rate, appendLoading } = this.props;
     const { params } = this.props.match;
     const isFullParams =
       rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
@@ -139,18 +153,7 @@ class WobjHistory extends React.Component {
           1000000
         : 0;
 
-    const sortedList = wobj => {
-      switch (sort) {
-        case 'vote':
-          return wobj.fields.sort((before, after) => voteValue(after) - voteValue(before));
-
-        case 'approval':
-          return wobj.fields.sort((before, after) => after.approvePercent - before.approvePercent);
-        default:
-          return wobj.fields.sort((before, after) => after.createdAt - before.createdAt);
-      }
-    };
-    let content = object && object.fields && sortedList(object);
+    let content = object && object.fields && this.sortedList(object, voteValue, sort);
     const isFetched = !isEmpty(content) && content[0].name;
     const usedByUserLanguages = [];
     const filteredLanguages = LANGUAGES.filter(lang => {
@@ -162,14 +165,18 @@ class WobjHistory extends React.Component {
     });
 
     if (params[1] && isFetched) {
-      content = content.filter(f => sortingMenuName[params[1]] === f.name || f.name === params[1]);
+      if (sortingMenuName[params[1]]) {
+        content = content.filter(f => f.name === objectFields.listItem && f.type === params[1]);
+      } else {
+        content = content.filter(f => f.name === params[1]);
+      }
     }
 
-    const objName = object.name || object.default_name;
+    const objName = getObjectName(object);
 
     const renderFields = () => {
-      if (content) {
-        return content.length ? (
+      if (!appendLoading) {
+        return size(content) ? (
           content.map(post => <AppendCard key={post.permlink} post={post} />)
         ) : (
           <div className="object-feed__row justify-center">
@@ -194,7 +201,7 @@ class WobjHistory extends React.Component {
             value={field}
             onChange={this.handleFieldChange}
           >
-            {getAllowedFieldsByObjType(this.props.object.object_type).map(f => (
+            {getExposedFieldsByObjType(this.props.object).map(f => (
               <Select.Option key={f}>
                 <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
               </Select.Option>

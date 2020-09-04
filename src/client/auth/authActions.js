@@ -52,6 +52,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
+
   if (isGuest) {
     return dispatch({
       type: UPDATE_GUEST_BALANCE.ACTION,

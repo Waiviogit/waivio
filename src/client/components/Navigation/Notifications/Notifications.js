@@ -8,7 +8,6 @@ import { saveNotificationsLastTimestamp } from '../../../helpers/metadata';
 import NotificationFollowing from './NotificationFollowing';
 import NotificationReply from './NotificationReply';
 import NotificationMention from './NotificationMention';
-import NotificationVote from './NotificationVote';
 import NotificationReblog from './NotificationReblog';
 import NotificationTransfer from './NotificationTransfer';
 import NotificationVoteWitness from './NotificationVoteWitness';
@@ -30,6 +29,10 @@ import NotificationPostBell from './NotificationPostBell';
 import NotificationReblogBell from './NotificationReblogBell';
 import NotificationFollowBell from './NotificationFollowBell';
 import NotificationCustomerSupport from './NotificationCustomerSupport';
+import NotificationLikes from './NotificationLikes';
+import NotificationMyLike from './NotificationMyLike';
+import NotificationMyComment from './NotificationMyComment';
+import NotificationMyPost from './NotificationMyPost';
 
 import './Notification.less';
 import './Notifications.less';
@@ -191,16 +194,6 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
-                    onClick={this.handleNotificationsClick}
-                  />
-                );
-              case notificationConstants.VOTE:
-                return (
-                  <NotificationVote
-                    key={key}
-                    notification={notification}
-                    read={read}
-                    currentAuthUsername={currentAuthUsername}
                     onClick={this.handleNotificationsClick}
                   />
                 );
@@ -384,7 +377,42 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
-                    currentAuthUsername={currentAuthUsername}
+                  />
+                );
+              case notificationConstants.LIKE:
+                return (
+                  <NotificationLikes
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_LIKE:
+                return (
+                  <NotificationMyLike
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_COMMENT:
+                return (
+                  <NotificationMyComment
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.MY_POST:
+                return (
+                  <NotificationMyPost
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               default:

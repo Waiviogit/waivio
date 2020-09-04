@@ -1,5 +1,9 @@
 import { get, some, find, filter, isEmpty, compact } from 'lodash';
-import { addressFields, objectFields } from '../../common/constants/listOfFields';
+import {
+  addressFields,
+  objectFields,
+  TYPES_OF_MENU_ITEM,
+} from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getAppendDownvotes, getAppendUpvotes } from './voteHelpers';
 import { mainerName } from '../object/wObjectHelper';
@@ -217,10 +221,42 @@ export const parseWobjectField = (wobject, fieldName) => {
   }
 };
 
+export const parseButtonsField = wobject =>
+  get(wobject, 'button', []).map(btn => {
+    if (btn) {
+      try {
+        return {
+          ...btn,
+          id: TYPES_OF_MENU_ITEM.BUTTON,
+          body: JSON.parse(btn.body),
+        };
+      } catch (err) {
+        return null;
+      }
+    }
+
+    return null;
+  });
+
 export const parseAddress = wobject => {
   if (isEmpty(wobject) || !wobject.address) return null;
 
   return compact(
     Object.values(addressFields).map(fieldName => parseWobjectField(wobject, 'address')[fieldName]),
   ).join(', ');
+};
+
+export const getObjectName = wobj => wobj.name || wobj.default_name;
+
+export const getMenuItems = (wobject, menuType, objType) => {
+  const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
+  if (isEmpty(wobject.menuItems)) return listItems;
+
+  return get(wobject, 'menuItems', [])
+    .filter(item => item.object_type === objType)
+    .map(item => {
+      const matchItem = listItems.find(f => f.body === item.author_permlink) || {};
+
+      return { ...item, alias: matchItem.alias };
+    });
 };

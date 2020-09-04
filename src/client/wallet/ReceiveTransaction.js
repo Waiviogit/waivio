@@ -10,7 +10,7 @@ import Avatar from '../components/Avatar';
 import { getAuthenticatedUserName } from '../reducers';
 import { epochToUTC } from '../helpers/formatter';
 
-const validateTitle = (details, username) => {
+const validateTitle = (details, username, isMobile) => {
   const postPermlink = details && details.post_permlink;
   const postParentAuthor = details && details.post_parent_author;
   const postParentPermlink = details && details.post_parent_permlink;
@@ -28,7 +28,9 @@ const validateTitle = (details, username) => {
         values={{
           title: (
             <Link to={urlPost}>
-              <span className="username">{truncate(title, { length: 30 })}</span>
+              <span className="username">
+                {truncate(title, isMobile ? { length: 22 } : { length: 30 })}
+              </span>
             </Link>
           ),
         }}
@@ -59,6 +61,7 @@ const ReceiveTransaction = ({
   details,
   type,
   username,
+  isMobile,
 }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const demoPost = type === 'demo_post';
@@ -71,7 +74,7 @@ const ReceiveTransaction = ({
         <div className="UserWalletTransactions__content-recipient">
           <div>
             {demoPost ? (
-              validateTitle(details, username)
+              validateTitle(details, username, isMobile)
             ) : (
               <FormattedMessage
                 id="received_from"
@@ -138,6 +141,7 @@ ReceiveTransaction.propTypes = {
   details: PropTypes.shape(),
   type: PropTypes.string,
   username: PropTypes.string,
+  isMobile: PropTypes.bool,
 };
 
 ReceiveTransaction.defaultProps = {
@@ -146,9 +150,10 @@ ReceiveTransaction.defaultProps = {
   amount: <span />,
   timestamp: 0,
   isGuestPage: false,
-  details: null,
+  details: {},
   type: '',
   username: '',
+  isMobile: false,
 };
 
 export default ReceiveTransaction;

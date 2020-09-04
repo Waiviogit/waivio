@@ -10,6 +10,10 @@ import {
   PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
   PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
+  IS_ACTIVE,
+  IS_ALL,
+  IS_RESERVED,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
@@ -25,6 +29,7 @@ export const preparePropositionReqData = ({
   limit = 10,
   sort,
   isRequestWithoutRequiredObject,
+  locale,
   ...args
 }) => {
   const reqData = {
@@ -32,6 +37,7 @@ export const preparePropositionReqData = ({
     userName: username,
     match,
     sort,
+    locale,
   };
   if (!isRequestWithoutRequiredObject)
     reqData.requiredObject = match.params.campaignParent || match.params.name;
@@ -244,7 +250,7 @@ export const getMinExpertise = ({
       2,
     );
   }
-  return '';
+  return 0;
 };
 
 export const getMinExpertisePrepared = ({ minExpertise, rewardFund, rate }) =>
@@ -778,7 +784,7 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
       id: MESSAGES,
       defaultMessage: 'Messages',
     });
-  } else if (location === '/rewards/history') {
+  } else if (location === PATH_NAME_HISTORY) {
     return intl.formatMessage({
       id: 'history_and_sponsor_communications',
       defaultMessage: 'History and sponsor communications',
@@ -810,7 +816,15 @@ export const getActiveFilters = ({
   }
 };
 
-export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHistory }) => {
+export const getSortChanged = ({
+  path,
+  sortHistory,
+  sortMessages,
+  sortGuideHistory,
+  sortAll,
+  sortEligible,
+  sortReserved,
+}) => {
   switch (path) {
     case HISTORY:
       return sortHistory;
@@ -818,6 +832,12 @@ export const getSortChanged = ({ path, sortHistory, sortMessages, sortGuideHisto
       return sortMessages;
     case GUIDE_HISTORY:
       return sortGuideHistory;
+    case IS_ACTIVE:
+      return sortEligible;
+    case IS_ALL:
+      return sortAll;
+    case IS_RESERVED:
+      return sortReserved;
     default:
       return '';
   }

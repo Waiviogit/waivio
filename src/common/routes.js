@@ -12,6 +12,7 @@ import {
   PATH_NAME_MATCH_BOT,
   PATH_NAME_MANAGE,
   PATH_NAME_PAYABLES,
+  PATH_NAME_HISTORY,
 } from './constants/rewards';
 
 const Bookmarks = Loadable({
@@ -112,6 +113,10 @@ const Search = Loadable({
 });
 const Notifications = Loadable({
   loader: () => import('../client/notifications/Notifications'),
+  loading: Loading,
+});
+const RewardsList = Loadable({
+  loader: () => import('../client/rewards/RewardsList/RewardsList'),
   loading: Loading,
 });
 const Error404 = Loadable({
@@ -292,7 +297,7 @@ const routes = [
             component: MatchBotCampaign,
           },
           {
-            path: '/rewards/history',
+            path: PATH_NAME_HISTORY,
             exact: true,
             component: HistoryCampaign,
           },
@@ -532,6 +537,10 @@ const routes = [
           {
             path: '/notifications-list',
             component: Notifications,
+          },
+          {
+            path: '/rewards-list',
+            component: RewardsList,
           },
           {
             path: '/feed/:name',

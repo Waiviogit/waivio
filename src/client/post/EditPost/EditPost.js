@@ -43,6 +43,7 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './EditPost.less';
 
@@ -148,27 +149,14 @@ class EditPost extends Component {
     const isReview = !isEmpty(campaignId);
     if (isReview)
       getCampaignById(campaignId)
-        .then(campaignData => {
-          const requiredObj = get(campaignData.requiredObject, 'name', '');
-          const secondObj = get(campaignData.objects, '[0].name', '');
-
-          const requiredObjPermlink = get(campaignData, 'requiredObject', '');
-          const secondObjPermlink = get(campaignData, 'objects[0]', '');
-          const topics = [];
-          if (
-            requiredObjPermlink.object_type === 'hashtag' ||
-            secondObjPermlink.object_type === 'hashtag'
-          ) {
-            topics.push(requiredObjPermlink.author_permlink || secondObjPermlink.author_permlink);
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .then(() => {
+          const delay = 350;
+          if (this.state.linkedObjects.length === 2) {
+            setTimeout(() => this.getReviewTitle(), delay);
+          } else {
+            setTimeout(() => this.getReviewTitle(), delay * 2);
           }
-          const reviewTitle = `Review: ${requiredObj}, ${secondObj}`;
-          return this.setState({
-            campaign: { ...campaignData, fetched: true },
-            draftContent: {
-              title: reviewTitle,
-            },
-            topics,
-          });
         })
         .catch(error => {
           message.error(
@@ -194,6 +182,25 @@ class EditPost extends Component {
         .catch(error => console.log('Failed to get campaign data:', error));
     }
   }
+
+  getReviewTitle = () => {
+    const { linkedObjects } = this.state;
+    const requiredObj = get(linkedObjects, '[0]', '');
+    const secondObj = get(linkedObjects, '[1]', '');
+    const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(secondObj)}`;
+
+    const topics = [];
+    if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
+      topics.push(requiredObj.author_permlink || secondObj.author_permlink);
+    }
+    return this.setState({
+      draftContent: {
+        title: reviewTitle,
+        body: this.state.draftContent.body,
+      },
+      topics,
+    });
+  };
 
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
@@ -234,25 +241,28 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const { history } = this.props;
+    const { history, intl } = this.props;
+    const { campaign } = this.state;
     const postData = this.buildPost();
     const isReview =
       !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
-    this.props.createPost(postData, this.props.beneficiaries, isReview);
+    this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
   handleToggleLinkedObject(objId, isLinked, uniqId) {
     const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
-    const switchableObjName = switchableObj.name || switchableObj.default_name;
-
-    linkedObjects.splice(switchableObj, 1);
+    const switchableObjPermlink = currentObj.author_permlink;
+    const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
+    if (!isLinked) {
+      linkedObjects.splice(switchableObj, 1);
+      topics.splice(indexSwitchableHashtag, 1);
+    }
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
-    topics.splice(switchableObjName, 1);
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
       topics,
@@ -261,16 +271,17 @@ class EditPost extends Component {
 
   handleObjectSelect(object) {
     this.setState(prevState => {
-      const objName = object.author_permlink;
+      const objName = object.name || object.default_name;
+      const objPermlink = object.author_permlink;
       const separator = this.state.content.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
           title: this.state.titleValue,
           body: `${this.state.content}${separator}[${objName}](${getObjectUrl(
-            object.id || object.author_permlink,
+            object.id || objPermlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objName], isEqual),
+        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objPermlink], isEqual),
       };
     });
   }
@@ -308,13 +319,6 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
-
-    if (campaign && campaign.alias) {
-      postData.body += `\n***\n${this.props.intl.formatMessage({
-        id: `check_review_post_add_text`,
-        defaultMessage: 'This review was sponsored in part by',
-      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
-    }
 
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
@@ -442,7 +446,6 @@ class EditPost extends Component {
               handleSelect={this.handleObjectSelect}
             />
             <CreateObject onCreateObject={this.handleCreateObject} />
-
             {linkedObjects.map(wObj => (
               <PostObjectCard
                 isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}

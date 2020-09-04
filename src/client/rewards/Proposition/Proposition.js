@@ -1,25 +1,22 @@
 /* eslint-disable */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { isEmpty, get, includes, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Icon } from 'antd';
 import classNames from 'classnames';
-import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
-import { GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
+import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import {
   rejectReservationCampaign,
   reserveActivatedCampaign,
   getCurrentHivePrice,
 } from '../../../waivioApi/ApiClient';
-import { generatePermlink } from '../../helpers/wObjectHelper';
-import { AppSharedContext } from '../../Wrapper';
+import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
@@ -45,17 +42,20 @@ const Proposition = ({
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
   const isEligible = getEligibility(proposition);
-  const { usedLocale } = useContext(AppSharedContext);
-  const proposedWobj = getClientWObj(wobj, usedLocale);
+  const proposedWobj = wobj;
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = getClientWObj(proposition.required_object, usedLocale);
-  const requiredObjectName = getFieldWithMaxWeight(proposition.required_object, 'name');
-  const isMessages = match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY;
+  const parentObject = get(proposition, ['required_object'], {});
+  const requiredObjectName = getObjectName(proposition.required_object);
+  const isMessages = !isEmpty(match)
+    ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
+    : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const parenAuthor = isMessages ? propositionUserName : proposition.guide.name;
+  const parenAuthor = isMessages
+    ? get(proposition, ['users', '0', 'rootName'])
+    : proposition.guide.name;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
@@ -66,11 +66,21 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const reservationPermlink = filter(proposition.objects, object => object.permlink)[0].permlink;
+    const permlinks = filter(proposition.objects, object => object.permlink);
+    const reservationPermlink = get(permlinks, ['0', 'permlink']);
+
+    const currentUser =
+      isMessages || match.params[0] === HISTORY
+        ? proposition.users
+        : filter(
+            proposition.users,
+            usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+          );
+
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
       user_name: userName,
-      reservation_permlink: reservationPermlink || get(proposition, ['users', '0', 'permlink'], ''),
+      reservation_permlink: reservationPermlink || get(currentUser, ['0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
     };
     return rejectReservationCampaign(rejectData).then(() =>
@@ -132,12 +142,12 @@ const Proposition = ({
             currencyId,
           }),
         )
-        .then(({ isAssign }) => {
-          if (isAssign) {
-            setModalDetailsOpen(!isModalDetailsOpen);
-            setReservation(true);
+        .then(() => {
+          setModalDetailsOpen(!isModalDetailsOpen);
+          setReservation(true);
+          setTimeout(() => {
             history.push('/rewards/reserved');
-          }
+          }, 5000);
         })
         .catch(e => {
           if (e.error_description || e.message) {
@@ -259,6 +269,7 @@ Proposition.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
   users: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -267,6 +278,7 @@ Proposition.defaultProps = {
   assigned: null,
   loading: false,
   users: {},
+  match: {},
 };
 
 export default connect(
