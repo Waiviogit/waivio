@@ -258,7 +258,7 @@ export const sendCommentMessages = (
   let parentAuthor;
   if (isUpdating) {
     parentAuthor = originalComment.parent_author;
-  } else if (parentPost.root_author && parentPost.guestInfo) {
+  } else if (parentPost.guestInfo) {
     parentAuthor = parentAuthorIfGuest;
   } else {
     parentAuthor = parentPost.author;
@@ -300,6 +300,8 @@ export const sendCommentMessages = (
     rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
 
+  const rootAuthor = parentPost.guestInfo ? get(parentPost, ['author']) : parentPost.root_author;
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
@@ -312,7 +314,7 @@ export const sendCommentMessages = (
           '',
           newBody,
           jsonMetadata,
-          parentPost.root_author,
+          rootAuthor,
         )
         .catch(err => {
           dispatch(notify(err.error.message || err.error_description, 'error'));

@@ -295,7 +295,8 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
   }).then(res => res.json());
 };
 
-export const postAppendWaivioObject = postData =>
+export const postAppendWaivioObject = postData => {
+  console.log(postData);
   fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
     headers,
     method: 'POST',
@@ -303,6 +304,7 @@ export const postAppendWaivioObject = postData =>
   })
     .then(res => res.json())
     .catch(error => error);
+};
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {

@@ -25,6 +25,7 @@ export const objectFields = {
   tagCategory: 'tagCategory',
   menuItems: 'menuItems',
   categoryItem: 'categoryItem',
+  authority: 'authority',
   pageLink: 'pageLink',
   tag: 'tag',
 };
@@ -117,5 +118,7 @@ export const socialObjectFields = [
 export const supportedObjectFields = Object.values(objectFields);
 
 export const objectImageFields = ['avatar', 'background'];
+
+export const statusNoVisibleItem = ['unavailable', 'relisted'];
 
 export default null;

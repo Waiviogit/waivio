@@ -13,6 +13,7 @@ import { getIsStartSearchObject, getSearchObjectsResults } from '../../reducers'
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 import { pendingSearch } from '../../search/Search';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './SearchObjectsAutocomplete.less';
 
@@ -143,7 +144,7 @@ class SearchObjectsAutocomplete extends Component {
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => (
             <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
-              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
+              <ObjectSearchCard object={obj} name={getObjectName(obj)} type={obj.type} />
             </AutoComplete.Option>
           ))
       : [];

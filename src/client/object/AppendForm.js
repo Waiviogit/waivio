@@ -175,6 +175,7 @@ export default class AppendForm extends Component {
   };
 
   onSubmit = formValues => {
+    console.log(formValues);
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
     const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
@@ -277,7 +278,7 @@ export default class AppendForm extends Component {
       case objectFields.avatar:
       case objectFields.background:
       case objectFields.price:
-      case objectFields.tag:
+      case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.workTime:
       case objectFields.email:
@@ -339,6 +340,13 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
             alias ? ` as "${alias}"` : ''
           }`;
+        }
+        // case objectFields.galleryAlbum : {
+        //   return console.log(this.state.selectedObject)
+        //   // `@${author} created a new album: ${this.state.selectedObject.name}. `
+        // }
+        case objectFields.categoryItem: {
+          return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
@@ -502,7 +510,6 @@ export default class AppendForm extends Component {
   handleSubmit = event => {
     if (event) event.preventDefault();
 
-    console.log(event);
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
         if (field.body === values.rating) {
@@ -537,11 +544,7 @@ export default class AppendForm extends Component {
               defaultMessage: 'The value is already exist',
             }),
           );
-        }
-        // else if(objectFields.categoryItem === currentField){
-        //
-        // }
-        else {
+        } else {
           this.onSubmit(values);
         }
       } else {
@@ -799,10 +802,10 @@ export default class AppendForm extends Component {
     }
   };
 
-  handleSelectCategory = async value => {
+  handleSelectCategory = value => {
     const category = this.props.categories.find(item => item.body === value);
     if (!isEmpty(category.categoryItems)) {
-      let currentTags = await getObjectsByIds({
+      let currentTags = getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
       currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
@@ -1680,6 +1683,7 @@ export default class AppendForm extends Component {
     });
 
     const fieldOptions = [];
+    const disabledSelect = currentField !== 'auto';
     if (currentField === 'auto') {
       fieldOptions.push(
         <Select.Option disabled key="auto" value="auto">
@@ -1707,7 +1711,7 @@ export default class AppendForm extends Component {
             initialValue: currentField,
           })(
             <Select
-              disabled={loading}
+              disabled={disabledSelect}
               style={{ width: '100%' }}
               dropdownClassName="AppendForm__drop-down"
             >
