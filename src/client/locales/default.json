@@ -1344,6 +1344,8 @@
   "alphabet": "A..Z",
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
+  "object_field_listItem_menuList": "Menu item-list",
+  "object_field_listItem_menuPage": "Menu item-page",
   "restaurant": "restaurant",
   "like_post_notify_priority": "{voter} liked your post '{postTitle}'",
   "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'",

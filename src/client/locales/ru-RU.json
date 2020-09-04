@@ -1346,6 +1346,8 @@
   "my-profile": "Профиль",
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
+  "object_field_listItem_menuList": "Элемент меню-список",
+  "object_field_listItem_menuPage": "Элемент меню-страница",
   "object_field_authority": "Авторитет",
   "like_post_notify_priority": "{voter} понравился пост '{postTitle}'",
   "like_post_notify_other": "{voter} и {likesCount} остальным понравился пост '{postTitle}'",
