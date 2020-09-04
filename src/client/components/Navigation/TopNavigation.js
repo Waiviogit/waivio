@@ -71,7 +71,8 @@ const TopNavigation = ({ location: { pathname } }) => {
               <Link
                 to={`${LINKS.REWARDS}/all`}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
+                  'TopNavigation__link--active':
+                    pathname.includes(LINKS.REWARDS) && !pathname.includes('list'),
                 })}
               >
                 <FormattedMessage id="rewards" defaultMessage="Rewards" />
