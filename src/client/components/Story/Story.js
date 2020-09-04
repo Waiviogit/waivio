@@ -169,7 +169,7 @@ class Story extends React.Component {
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
-    const author = post.guestInfo && !post.depth ? post.root_author : post.author;
+    const author = post.root_author;
 
     if (sliderMode && !postState.isLiked) {
       votePost(post.id, author, post.permlink, weight);
@@ -186,7 +186,7 @@ class Story extends React.Component {
       weight = postState.isReported ? 0 : 9999;
     }
 
-    const author = post.author_original || post.author;
+    const author = post.root_author;
     this.props.votePost(post.id, author, post.permlink, weight);
   }
 
