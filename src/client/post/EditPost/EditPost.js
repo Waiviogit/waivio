@@ -151,26 +151,12 @@ class EditPost extends Component {
       getCampaignById(campaignId)
         .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .then(() => {
-          setTimeout(() => {
-            const { linkedObjects } = this.state;
-            const requiredObj = get(linkedObjects, '[0]', '');
-            const secondObj = get(linkedObjects, '[1]', '');
-            const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(
-              secondObj,
-            )}`;
-
-            const topics = [];
-            if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
-              topics.push(requiredObj.author_permlink || secondObj.author_permlink);
-            }
-            return this.setState({
-              draftContent: {
-                title: reviewTitle,
-                body: this.state.draftContent.body,
-              },
-              topics,
-            });
-          }, 300);
+          const delay = 350;
+          if (this.state.linkedObjects.length === 2) {
+            setTimeout(() => this.getReviewTitle(), delay);
+          } else {
+            setTimeout(() => this.getReviewTitle(), delay * 2);
+          }
         })
         .catch(error => {
           message.error(
@@ -196,6 +182,25 @@ class EditPost extends Component {
         .catch(error => console.log('Failed to get campaign data:', error));
     }
   }
+
+  getReviewTitle = () => {
+    const { linkedObjects } = this.state;
+    const requiredObj = get(linkedObjects, '[0]', '');
+    const secondObj = get(linkedObjects, '[1]', '');
+    const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(secondObj)}`;
+
+    const topics = [];
+    if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
+      topics.push(requiredObj.author_permlink || secondObj.author_permlink);
+    }
+    return this.setState({
+      draftContent: {
+        title: reviewTitle,
+        body: this.state.draftContent.body,
+      },
+      topics,
+    });
+  };
 
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };

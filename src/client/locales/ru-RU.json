@@ -1311,7 +1311,7 @@
   "editor_search_object_by_name": "Искать по имени",
   "my_actions": "Мои действия",
   "decrease_reward": "Уменьшить вознаграждение",
-  "notification_bell_post": "{username} опубликовал новый пост: {title}",
+  "notification_bell_post": "Новый пост от {username}: {title}",
   "notification_bell_reblog": "{account} поделился постом {author}: {title}",
   "notification_bell_follow": "{follower} подписался {following}",
   "send_to": "Отправить",
@@ -1346,5 +1346,12 @@
   "my-profile": "Профиль",
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
-  "object_field_authority": "Авторитет"
+  "object_field_listItem_menuList": "Элемент меню-список",
+  "object_field_listItem_menuPage": "Элемент меню-страница",
+  "object_field_authority": "Авторитет",
+  "like_post_notify_priority": "{voter} понравился пост '{postTitle}'",
+  "like_post_notify_other": "{voter} и {likesCount} остальным понравился пост '{postTitle}'",
+  "my_like_notify": "Вам понравился {post}",
+  "my_comment_notify": "Вы оставили комментарий в {post}",
+  "my_post_notify": "Вы создали пост {post}"
 }
