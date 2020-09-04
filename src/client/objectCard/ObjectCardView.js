@@ -72,6 +72,9 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
+  const parentLink =
+    get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink', '')}`;
+
   return (
     <div key={wObject.author_permlink}>
       <div className="ObjectCardView">
@@ -88,10 +91,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={
-                    get(parent, 'defaultShowLink') ||
-                    `/object/${get(parent, 'author_permlink', '')}`
-                  }
+                  to={parentLink}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
