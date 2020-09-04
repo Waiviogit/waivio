@@ -487,9 +487,9 @@ class CampaignFooter extends React.Component {
                 getReservedComments={this.getReservedComments}
                 parent={rootComment}
                 matchPath={match.params[0]}
+                match={match}
                 isGuest={isGuest}
                 proposition={proposition}
-                match={match}
               />
             </div>
           ))}
