@@ -300,6 +300,18 @@ export default class SidenavRewards extends React.Component {
                   </li>
                   <li>
                     <NavLink
+                      to={'/rewards/fraud-detection'}
+                      className="sidenav-discover-objects__item"
+                      activeClassName="Sidenav__item--active"
+                    >
+                      {intl.formatMessage({
+                        id: 'fraud_detection',
+                        defaultMessage: 'Fraud detection',
+                      })}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
                       to={`/rewards/blacklist`}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"

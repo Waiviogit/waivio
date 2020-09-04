@@ -231,6 +231,10 @@ const HistoryCampaign = Loadable({
   loader: () => import('../client/rewards/History/History'),
   loading: Loading,
 });
+const FraudDetection = Loadable({
+  loader: () => import('../client/rewards/FraudDetection/FraudDetection'),
+  loading: Loading,
+});
 
 const routes = [
   {
@@ -247,6 +251,7 @@ const routes = [
           '/rewards/(history|guideHistory|messages)',
           PATH_NAME_PAYABLES,
           '/rewards/reports',
+          '/rewards/fraud-detection',
           '/rewards/blacklist/:listType?',
           PATH_NAME_RECEIVABLES,
           '/rewards/payables/@:userName/:reservationPermlink?',
@@ -310,6 +315,11 @@ const routes = [
             path: PATH_NAME_MESSAGES,
             exact: true,
             component: HistoryCampaign,
+          },
+          {
+            path: '/rewards/fraud-detection',
+            exact: true,
+            component: FraudDetection,
           },
           {
             path: '/rewards/blacklist/:listType?',
