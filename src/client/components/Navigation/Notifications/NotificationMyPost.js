@@ -7,7 +7,7 @@ import Avatar from '../../Avatar';
 import { epochToUTC } from '../../../helpers/formatter';
 import './Notification.less';
 
-const NotificationPostBell = ({ notification, read, onClick }) => (
+const NotificationMyPost = ({ notification, read, onClick }) => (
   <Link
     to={`/@${notification.author}/${notification.permlink}`}
     className={classNames('Notification', {
@@ -19,11 +19,10 @@ const NotificationPostBell = ({ notification, read, onClick }) => (
     <div className="Notification__text">
       <div className="Notification__text__message">
         <FormattedMessage
-          id="notification_bell_post"
-          defaultMessage="New post by {username}: {title}"
+          id="my_post_notify"
+          defaultMessage="You created post {post}"
           values={{
-            username: <span className="username">{notification.author}</span>,
-            title: <span className="username">{notification.title}</span>,
+            post: <span>{notification.title}</span>,
           }}
         />
       </div>
@@ -34,21 +33,23 @@ const NotificationPostBell = ({ notification, read, onClick }) => (
   </Link>
 );
 
-NotificationPostBell.propTypes = {
+NotificationMyPost.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
-    author: PropTypes.string,
-    permlink: PropTypes.string,
-    title: PropTypes.string,
     timestamp: PropTypes.number,
+    type: PropTypes.string,
+    permlink: PropTypes.string,
+    author: PropTypes.string,
+    title: PropTypes.string,
+    voter: PropTypes.string,
   }),
   onClick: PropTypes.func,
 };
 
-NotificationPostBell.defaultProps = {
+NotificationMyPost.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
 };
 
-export default NotificationPostBell;
+export default NotificationMyPost;
