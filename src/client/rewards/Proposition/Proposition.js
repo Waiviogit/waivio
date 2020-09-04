@@ -53,7 +53,9 @@ const Proposition = ({
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const parenAuthor = isMessages ? propositionUserName : proposition.guide.name;
+  const parenAuthor = isMessages
+    ? get(proposition, ['users', '0', 'rootName'])
+    : proposition.guide.name;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
