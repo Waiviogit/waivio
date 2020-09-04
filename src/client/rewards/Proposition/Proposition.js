@@ -267,6 +267,7 @@ Proposition.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
   users: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -275,6 +276,7 @@ Proposition.defaultProps = {
   assigned: null,
   loading: false,
   users: {},
+  match: {},
 };
 
 export default connect(
