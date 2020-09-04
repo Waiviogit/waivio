@@ -248,14 +248,14 @@ class EditPost extends Component {
     const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
-    const switchableObjName = switchableObj.name || switchableObj.default_name;
-
+    const switchableObjPermlink = switchableObj.author_permlink;
+    console.log('switchableObj: ', switchableObj);
     linkedObjects.splice(switchableObj, 1);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
-    topics.splice(switchableObjName, 1);
+    topics.splice(switchableObjPermlink, 1);
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
       topics,
@@ -376,6 +376,7 @@ class EditPost extends Component {
       titleValue,
     } = this.state;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
+    console.log('linkedObjects: ', linkedObjects, topics);
     return (
       <div className="shifted">
         <div className="post-layout container">
