@@ -324,7 +324,7 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-    console.log(post);
+
     return (
       <div className="StoryFull">
         {replyUI}
