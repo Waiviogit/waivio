@@ -439,7 +439,7 @@ export const getListSorting = wobj => {
 };
 
 export const getExposedFieldsByObjType = wobj => {
-  const exposedFields = get(wobj, 'exposedFields', []);
+  const exposedFields = get(wobj, 'exposedFields', []).filter(f => f !== objectFields.authority);
   const renderedFields = exposedFields.includes('listItem')
     ? [
         ...exposedFields.filter(f => f !== objectFields.listItem),
