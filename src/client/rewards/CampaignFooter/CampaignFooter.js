@@ -369,7 +369,7 @@ class CampaignFooter extends React.Component {
             );
             this.setState({ loadingComments: false, commentFromText: '', commentSubmitted: true });
           });
-        }, 10000);
+        }, 12000);
       })
       .catch(() => {
         this.setState({ commentFromText: commentValue, loadingComments: false });

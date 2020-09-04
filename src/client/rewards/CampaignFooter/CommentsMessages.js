@@ -186,7 +186,7 @@ const CommentsMessages = memo(
                 setCommentSubmitted(true);
                 setReplyOpen(false);
               });
-            }, 10000);
+            }, 12000);
           })
           .catch(() => {
             setCommentFormText(commentValue);
@@ -224,7 +224,7 @@ const CommentsMessages = memo(
                 setLoading(false);
                 setEditOpen(false);
               }),
-            10000,
+            12000,
           );
         });
       },
