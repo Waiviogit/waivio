@@ -1,41 +1,35 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { map, isEmpty } from 'lodash';
 import { getFollowingSponsorsRewards } from '../rewardsActions';
 import Campaign from '../Campaign/Campaign';
-import { getAuthenticatedUserName } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getSponsorsRewards,
+  getHasMoreFollowingRewards,
+  getIsLoading,
+} from '../../reducers';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import './RewardsList.less';
 
-const RewardsList = ({ intl }) => {
-  const dispatch = useDispatch();
-  const userName = useSelector(getAuthenticatedUserName);
-  const [followingRewards, setFollowingRewards] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [hasMoreFollowingRewards, setHasMorehasMoreFollowingRewards] = useState(false);
+const RewardsList = ({
+  intl,
+  userName,
+  getFollowingRewards,
+  followingRewards,
+  hasMoreFollowingRewards,
+  loading,
+}) => {
   useEffect(() => {
-    setLoading(true);
-    if (userName)
-      dispatch(getFollowingSponsorsRewards(userName)).then(data => {
-        const { campaigns, hasMore } = data.value;
-        setFollowingRewards(campaigns);
-        setHasMorehasMoreFollowingRewards(hasMore);
-        setLoading(false);
-      });
+    if (userName) getFollowingRewards(userName);
   }, [userName]);
 
   const handleLoadMore = () => {
     if (hasMoreFollowingRewards) {
-      setLoading(true);
-      dispatch(getFollowingSponsorsRewards()).then(data => {
-        const { newhasMoreFollowingRewards, hasMore } = data.value;
-        setFollowingRewards(followingRewards.concat(newhasMoreFollowingRewards));
-        setHasMorehasMoreFollowingRewards(hasMore);
-        setLoading(false);
-      });
+      getFollowingRewards(userName);
     }
   };
   const content = useMemo(() => {
@@ -89,6 +83,29 @@ const RewardsList = ({ intl }) => {
 
 RewardsList.propTypes = {
   intl: PropTypes.shape().isRequired,
+  userName: PropTypes.string,
+  getFollowingRewards: PropTypes.func,
+  hasMoreFollowingRewards: PropTypes.bool,
+  loading: PropTypes.bool,
+  followingRewards: PropTypes.arrayOf(PropTypes.shape()),
 };
 
-export default injectIntl(RewardsList);
+RewardsList.defaultProps = {
+  userName: '',
+  followingRewards: [],
+  hasMoreFollowingRewards: false,
+  loading: false,
+  getFollowingRewards: () => {},
+};
+
+export default connect(
+  state => ({
+    userName: getAuthenticatedUserName(state),
+    followingRewards: getSponsorsRewards(state),
+    hasMoreFollowingRewards: getHasMoreFollowingRewards(state),
+    loading: getIsLoading(state),
+  }),
+  {
+    getFollowingRewards: getFollowingSponsorsRewards,
+  },
+)(injectIntl(RewardsList));
