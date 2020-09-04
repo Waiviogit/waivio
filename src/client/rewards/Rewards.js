@@ -648,7 +648,7 @@ class Rewards extends React.Component {
         const sortChanged = getSortChanged({ path, sortHistory, sortMessages, sortGuideHistory });
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
-        console.log(error);
+        messages.error(error);
       }
     };
     const { intl, user, users } = this.props;

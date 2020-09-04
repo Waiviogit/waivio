@@ -53,7 +53,9 @@ const Proposition = ({
   const propositionUserName = get(proposition, ['users', '0', 'name']);
   const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const parenAuthor = isMessages ? propositionUserName : proposition.guide.name;
+  const parenAuthor = isMessages
+    ? get(proposition, ['users', '0', 'rootName'])
+    : proposition.guide.name;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
@@ -67,10 +69,13 @@ const Proposition = ({
     const permlinks = filter(proposition.objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
-    const currentUser = filter(
-      proposition.users,
-      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
-    );
+    const currentUser =
+      isMessages || match.params[0] === HISTORY
+        ? proposition.users
+        : filter(
+            proposition.users,
+            usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+          );
 
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
@@ -264,6 +269,7 @@ Proposition.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
   users: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
@@ -272,6 +278,7 @@ Proposition.defaultProps = {
   assigned: null,
   loading: false,
   users: {},
+  match: {},
 };
 
 export default connect(

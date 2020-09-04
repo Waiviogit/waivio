@@ -1312,7 +1312,7 @@
   "editor_search_object_by_name": "Search by name",
   "minimum_expertise_cannot_have_more_then_two_decimals": "The Waivio reputation cannot have more then two digits after the decimal point",
   "decrease_reward": "Decrease reward",
-  "notification_bell_post": "{username} published a new post: {title}",
+  "notification_bell_post": "New post by {username}: {title}",
   "notification_bell_reblog": "{account} re-blogged {author}'s post: {title}",
   "notification_bell_follow": "{follower} followed {following}",
   "send_to": "Send to",
@@ -1344,5 +1344,14 @@
   "alphabet": "A..Z",
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
-  "restaurant": "restaurant"
+  "object_field_listItem_menuList": "Menu item-list",
+  "object_field_listItem_menuPage": "Menu item-page",
+  "restaurant": "restaurant",
+  "like_post_notify_priority": "{voter} liked your post '{postTitle}'",
+  "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'",
+  "my_like_notify": "You liked {post}",
+  "my_comment_notify": "You commented post {post}",
+  "my_post_notify": "You created post {post}",
+  "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:",
+  "no_rewards_posted_by_sponsors_you_are_following": "No rewards posted by the sponsors you are following"
 }

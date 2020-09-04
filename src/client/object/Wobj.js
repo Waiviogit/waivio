@@ -18,7 +18,7 @@ import {
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject } from './wobjectsActions';
-import { resetGallery } from './ObjectGallery/galleryActions';
+import { getAlbums, resetGallery } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
@@ -48,6 +48,7 @@ import DEFAULTS from '../object/const/defaultValues';
     clearObjectFromStore,
     getObject,
     resetGallery,
+    getAlbums,
   },
 )
 export default class Wobj extends React.Component {
@@ -64,9 +65,11 @@ export default class Wobj extends React.Component {
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
     locale: PropTypes.string,
+    getAlbums: PropTypes.func,
   };
 
   static defaultProps = {
+    getAlbums: () => {},
     authenticatedUserName: '',
     locale: '',
     loaded: false,
@@ -97,6 +100,7 @@ export default class Wobj extends React.Component {
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getAlbums(match.params.name);
     }
   }
 
