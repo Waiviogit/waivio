@@ -60,6 +60,7 @@ import {
   GUIDE_HISTORY,
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
+  IS_RESERVED,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -615,6 +616,8 @@ class Rewards extends React.Component {
       fetched,
       propositionsReserved,
     } = this.state;
+    const isReserved = match.params.filterKey === IS_RESERVED;
+
     let propositionsUniq;
     if (!isEmpty(propositionsReserved)) {
       propositionsUniq = propositionsReserved;
@@ -650,7 +653,7 @@ class Rewards extends React.Component {
     };
     const { intl, user, users } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !isReserved && !pendingUpdate) {
         return map(
           actualPropositions,
           proposition =>
@@ -781,9 +784,8 @@ class Rewards extends React.Component {
       match.params.filterKey === 'reserved'
         ? map(newPropositions, proposition => {
             const propositionObject = get(proposition, ['objects', '0', 'object']);
-            return !isEmpty(propositionObject.map)
-              ? propositionObject
-              : proposition.required_object;
+            const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
+            return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
           })
         : [primaryObjectForMap, ...secondaryObjectsWithWeight];
 
@@ -911,7 +913,7 @@ class Rewards extends React.Component {
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const isReserved = match.params.filterKey === 'reserved';
+    const isReserved = match.params.filterKey === IS_RESERVED;
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
