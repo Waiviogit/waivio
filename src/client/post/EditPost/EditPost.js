@@ -253,14 +253,16 @@ class EditPost extends Component {
     const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
-    const switchableObjName = switchableObj.name || switchableObj.default_name;
-
-    linkedObjects.splice(switchableObj, 1);
+    const switchableObjPermlink = currentObj.author_permlink;
+    const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
+    if (!isLinked) {
+      linkedObjects.splice(switchableObj, 1);
+      topics.splice(indexSwitchableHashtag, 1);
+    }
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
-    topics.splice(switchableObjName, 1);
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
       topics,
