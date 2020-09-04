@@ -1,4 +1,4 @@
-import { filter, maxBy, map, isEmpty, get, toLower } from 'lodash';
+import { map, isEmpty, get, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -27,6 +27,7 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
+import { getObjectName } from '../../helpers/wObjectHelper';
 
 import './Story.less';
 
@@ -62,6 +63,9 @@ class Story extends React.Component {
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,
+    followingPostAuthor: PropTypes.func.isRequired,
+    pendingFollowingPostAuthor: PropTypes.func.isRequired,
+    errorFollowingPostAuthor: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -120,18 +124,7 @@ class Story extends React.Component {
 
   getObjectLayout = wobj => {
     const pathName = wobj.defaultShowLink;
-    let name = '';
-
-    if (wobj.objectName) {
-      name = wobj.objectName;
-    } else {
-      const nameFields = filter(wobj.fields, o => o.name === 'name');
-      const nameField = maxBy(nameFields, 'weight') || {
-        body: wobj.default_name,
-      };
-
-      if (nameField) name = nameField.body;
-    }
+    const name = getObjectName(wobj);
 
     return (
       <Link
@@ -174,16 +167,6 @@ class Story extends React.Component {
     return returnData;
   };
 
-  getWeighForUpdates = weight => {
-    if (this.props.post.append_field_name) {
-      if (weight > 9998) return weight - 1;
-
-      return weight + 1;
-    }
-
-    return weight;
-  };
-
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent, votePost } = this.props;
     const author = post.guestInfo && !post.depth ? post.root_author : post.author;
@@ -212,13 +195,20 @@ class Story extends React.Component {
   }
 
   handleFollowClick(post) {
-    const { userFollowed } = this.props.postState;
+    const postId = `${post.author}/${post.permlink}`;
+    this.props.pendingFollowingPostAuthor(postId);
 
-    if (userFollowed) {
-      this.props.unfollowUser(post.author);
-    } else {
-      this.props.followUser(post.author);
+    if (post.youFollows) {
+      return this.props
+        .unfollowUser(post.author)
+        .then(() => this.props.followingPostAuthor(postId))
+        .catch(() => this.props.errorFollowingPostAuthor(postId));
     }
+
+    return this.props
+      .followUser(post.author)
+      .then(() => this.props.followingPostAuthor(postId))
+      .catch(() => this.props.errorFollowingPostAuthor(postId));
   }
 
   handleEditClick(post) {

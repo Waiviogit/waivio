@@ -69,7 +69,6 @@ class StoryFull extends React.Component {
     match: PropTypes.shape(),
     assignProposition: PropTypes.func,
     history: PropTypes.shape(),
-    /* from context */
     isOriginalPost: PropTypes.string,
   };
 

@@ -79,7 +79,6 @@ export const unfollowUser = (username, top = false) => (
     },
     meta: {
       username,
-      changeCount: authUser === username,
       top,
     },
   });
@@ -94,9 +93,7 @@ export const followUser = (username, top = false) => (dispatch, getState, { stee
   }
 
   const authUser = getAuthenticatedUserName(state);
-  console.log(authUser === username);
-  console.log(authUser);
-  console.log(username);
+
   return dispatch({
     type: FOLLOW_USER.ACTION,
     payload: {
@@ -105,7 +102,6 @@ export const followUser = (username, top = false) => (dispatch, getState, { stee
     meta: {
       username,
       top,
-      changeCount: authUser === username,
     },
   });
 };
@@ -129,9 +125,13 @@ export const CHANGE_COUNTER = '@users/CHANGE_COUNTER';
 
 export const changeCounterFollow = (username, type, follow = false) => (dispatch, getState) => {
   const state = getState();
-  const userName = getUser(state, username);
+  const user = getUser(state, username);
+  const authUserName = getAuthenticatedUserName(state);
+
+  if (authUserName !== username) return null;
+
   const key = type === 'user' ? 'users_following_count' : 'objects_following_count';
-  const counter = follow ? userName[key] + 1 : userName[key] - 1;
+  const counter = follow ? user[key] + 1 : user[key] - 1;
 
   return dispatch({
     type: CHANGE_COUNTER,
