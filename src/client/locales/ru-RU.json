@@ -1346,5 +1346,7 @@
   "my-profile": "Профиль",
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
-  "object_field_authority": "Авторитет"
+  "object_field_authority": "Авторитет",
+  "object_field_listItem_menuList": "Элемент меню-список",
+  "object_field_listItem_menuPage": "Элемент меню-страница"
 }

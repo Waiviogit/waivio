@@ -1344,5 +1344,7 @@
   "alphabet": "A..Z",
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
-  "restaurant": "restaurant"
+  "restaurant": "restaurant",
+  "object_field_listItem_menuList": "Menu item-list",
+  "object_field_listItem_menuPage": "Menu item-page"
 }

@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { some, find } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-  FormattedDate,
-  FormattedMessage,
-  FormattedRelative,
-  FormattedTime,
-  injectIntl,
-} from 'react-intl';
+import { FormattedDate, FormattedRelative, FormattedTime, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import WeightTag from '../components/WeightTag';
 import BTooltip from '../components/BTooltip';
@@ -30,6 +24,7 @@ import Payout from '../components/StoryFooter/Payout';
 import Confirmation from '../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
 import { calculateVotePowerForSlider, isPostCashout } from '../vendor/steemitHelpers';
+import { objectFields } from '../../common/constants/listOfFields';
 
 import '../components/Story/Story.less';
 import '../components/StoryFooter/StoryFooter.less';
@@ -110,6 +105,17 @@ const AppendCard = props => {
     props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
   }
 
+  const fieldName =
+    props.post.name === objectFields.listItem
+      ? {
+          id: `object_field_${props.post.name}_${props.post.type}`,
+          defaultMessage: `Menu item-${props.post.type}`,
+        }
+      : {
+          id: `object_field_${props.post.name}`,
+          defaultMessage: props.post.name,
+        };
+
   return (
     <div className="Story">
       <div className="Story__content">
@@ -149,12 +155,7 @@ const AppendCard = props => {
           rel="noopener noreferrer"
           className="Story__content__title"
         >
-          <h2>
-            <FormattedMessage
-              id={`object_field_${props.post.name}`}
-              defaultMessage={props.post.name}
-            />
-          </h2>
+          <h2>{props.intl.formatMessage(fieldName)}</h2>
         </a>
         <a
           href={`/@${props.post.author}/${props.post.permlink}`}
@@ -206,6 +207,9 @@ AppendCard.propTypes = {
   user: PropTypes.shape().isRequired,
   sliderMode: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool.isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({
