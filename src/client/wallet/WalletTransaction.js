@@ -48,6 +48,7 @@ const WalletTransaction = ({
   totalVestingFundSteem,
   isGuestPage,
   handleDetailsClick,
+  isMobile,
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
   const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
@@ -87,6 +88,7 @@ const WalletTransaction = ({
             details={transactionDetails.details}
             type={transactionDetails.typeTransfer}
             username={transactionDetails.username}
+            isMobile={isMobile}
           />
         );
       }
@@ -181,11 +183,13 @@ WalletTransaction.propTypes = {
   totalVestingFundSteem: PropTypes.string.isRequired,
   isGuestPage: PropTypes.bool,
   handleDetailsClick: PropTypes.func,
+  isMobile: PropTypes.bool,
 };
 
 WalletTransaction.defaultProps = {
   isGuestPage: false,
   handleDetailsClick: () => {},
+  isMobile: false,
 };
 
 export default WalletTransaction;
