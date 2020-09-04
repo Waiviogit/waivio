@@ -6,7 +6,8 @@ import { injectIntl } from 'react-intl';
 import './CategoryItemView.less';
 
 const CategoryItemView = ({ wObject, intl }) => {
-  const pathName = `/object/${wObject.author_permlink}`;
+  const pathName = wObject.defaultShowLink;
+
   return (
     <Link
       key={wObject.author_permlink}

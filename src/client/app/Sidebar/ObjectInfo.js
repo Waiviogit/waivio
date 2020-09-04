@@ -13,6 +13,8 @@ import {
   parseWobjectField,
   parseAddress,
   getObjectName,
+  parseButtonsField,
+  getMenuItems,
 } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -190,7 +192,8 @@ class ObjectInfo extends React.Component {
         className={classNames('menu-btn', {
           active: location.hash.slice(1).split('/')[0] === item.body,
         })}
-        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body}`}
+        to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.body ||
+          item.author_permlink}`}
       >
         {item.alias || getObjectName(item)}
       </LinkButton>
@@ -267,7 +270,6 @@ class ObjectInfo extends React.Component {
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
-    const listItems = get(wobject, 'listItem', []);
     const customSort = get(wobject, 'sortCustom', []);
     const profile = linkField
       ? {
@@ -283,37 +285,23 @@ class ObjectInfo extends React.Component {
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const allAlbums = this.validatedAlbums(albums);
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
-    const menuLinks = isEmpty(wobject.menuItems)
-      ? listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.LIST)
-      : wobject.menuItems;
-    const menuPages = listItems.filter(item => item.type === TYPES_OF_MENU_ITEM.PAGE);
-    const button = get(wobject, 'button', []).map(btn => {
-      if (btn) {
-        try {
-          return {
-            ...btn,
-            id: TYPES_OF_MENU_ITEM.BUTTON,
-            body: JSON.parse(btn.body),
-          };
-        } catch (err) {
-          return null;
-        }
-      }
-
-      return null;
-    });
+    const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
+    const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+    const button = parseButtonsField(wobject);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
-        const buttonArray = [
-          ...menuLinks,
-          ...menuPages,
-          ...button,
-          { id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter },
-        ];
+        const buttonArray = [...menuLinks, ...menuPages, ...button];
+
+        if (newsFilter) buttonArray.push({ id: TYPES_OF_MENU_ITEM.NEWS, ...newsFilter });
+
         const sortButtons = customSort.reduce((acc, curr) => {
           const currentLink = buttonArray.find(
-            btn => btn.body === curr || btn.author_permlink === curr,
+            btn =>
+              btn.body === curr ||
+              btn.author_permlink === curr ||
+              btn.permlink === curr ||
+              btn.id === curr,
           );
 
           return currentLink ? [...acc, currentLink] : acc;
