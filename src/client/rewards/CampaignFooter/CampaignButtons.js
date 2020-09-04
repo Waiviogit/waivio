@@ -21,7 +21,7 @@ import {
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
-import { rejectReview, changeReward } from '../../user/userActions';
+import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
@@ -36,6 +36,7 @@ import '../../components/StoryFooter/Buttons.less';
   setDataForSingleReport,
   getBlacklist,
   changeReward,
+  reinstateReward,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -58,6 +59,7 @@ export default class CampaignButtons extends React.Component {
     toggleModal: PropTypes.func,
     rejectReview: PropTypes.func.isRequired,
     changeReward: PropTypes.func.isRequired,
+    reinstateReward: PropTypes.func.isRequired,
     changeBlackAndWhiteLists: PropTypes.func.isRequired,
     numberOfComments: PropTypes.number,
     getMessageHistory: PropTypes.func,
@@ -188,6 +190,34 @@ export default class CampaignButtons extends React.Component {
       })
       .then(() => {
         setTimeout(() => this.props.getMessageHistory(), 8000);
+      })
+      .catch(e => message.error(e.message));
+  };
+
+  handleReinstateReward = () => {
+    const { proposition } = this.props;
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+    const companyAuthor = get(proposition, ['guide', 'name']);
+    const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
+    const userName = get(proposition, ['users', '0', 'rootName']);
+    return this.props
+      .reinstateReward({
+        companyAuthor,
+        username: userName,
+        reservationPermlink,
+        appName,
+      })
+      .then(() => {
+        setTimeout(() => {
+          this.props.getMessageHistory().then(() => {
+            message.success(
+              this.props.intl.formatMessage({
+                id: 'review_reinstated',
+                defaultMessage: 'Review reinstated',
+              }),
+            );
+          });
+        }, 8000);
       })
       .catch(e => message.error(e.message));
   };
@@ -464,6 +494,17 @@ export default class CampaignButtons extends React.Component {
                       return (
                         <PopoverMenuItem key={item.key}>
                           <div role="presentation" onClick={this.handleRejectClick}>
+                            {intl.formatMessage({
+                              id: item.id,
+                              defaultMessage: item.defaultMessage,
+                            })}
+                          </div>
+                        </PopoverMenuItem>
+                      );
+                    case 'reinstate_reward':
+                      return (
+                        <PopoverMenuItem key={item.key}>
+                          <div role="presentation" onClick={this.handleReinstateReward}>
                             {intl.formatMessage({
                               id: item.id,
                               defaultMessage: item.defaultMessage,

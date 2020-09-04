@@ -1346,5 +1346,6 @@
   "my-profile": "Профиль",
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
-  "object_field_authority": "Авторитет"
+  "object_field_authority": "Авторитет",
+  "review_reinstated": "Отзыв восстановлен"
 }
