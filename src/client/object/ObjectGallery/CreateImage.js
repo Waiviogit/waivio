@@ -1,5 +1,5 @@
 import React from 'react';
-import { map } from 'lodash';
+import { map, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -51,6 +51,7 @@ class CreateImage extends React.Component {
     isValidLink: false,
     votePercent: this.props.defaultVotePercent / 100,
     voteWorth: 0,
+    currentAlbum: null,
   };
 
   getWobjectData = () => {
@@ -92,6 +93,7 @@ class CreateImage extends React.Component {
 
   getWobjectBody = image => {
     const { selectedAlbum, currentUsername, intl } = this.props;
+
     return intl.formatMessage(
       {
         id: 'append_new_image',
@@ -99,7 +101,7 @@ class CreateImage extends React.Component {
       },
       {
         user: currentUsername,
-        album: selectedAlbum.body,
+        album: get(selectedAlbum, 'body') || this.state.currentAlbum,
         url: image.src,
       },
     );
@@ -220,7 +222,7 @@ class CreateImage extends React.Component {
           const img = prepareImageToStore(postData);
           await addImageToAlbumStore({
             ...img,
-            author: response.value.author,
+            author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
           });
         });
@@ -247,7 +249,7 @@ class CreateImage extends React.Component {
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
-
+    console.log(selectedAlbum);
     return (
       <Modal
         title={intl.formatMessage({
@@ -277,7 +279,10 @@ class CreateImage extends React.Component {
                 },
               ],
             })(
-              <Select disabled={loading}>
+              <Select
+                disabled={loading || selectedAlbum}
+                onSelect={value => this.setState(() => ({ currentAlbum: value }))}
+              >
                 {map(albums, album => (
                   <Select.Option
                     key={`${album.id || album.weight}${album.body}`}

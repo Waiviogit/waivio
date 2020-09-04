@@ -186,7 +186,6 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
-
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
@@ -407,7 +406,6 @@ class ObjectInfo extends React.Component {
                 {showModal && (
                   <CreateImage
                     albums={allAlbums}
-                    selectedAlbum={allAlbums[0]}
                     showModal={showModal}
                     hideModal={this.handleToggleModal}
                   />
