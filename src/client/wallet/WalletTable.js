@@ -32,13 +32,21 @@ const getCurrentTransactions = (props, isGuestPage) => {
 const filterPanel = intl => (
   <Form layout="vertical">
     <Form.Item>
+      {intl.formatMessage({
+        id: 'table_date_from',
+        defaultMessage: 'From:',
+      })}
       <DatePicker
-        allowClear={false}
         placeholder={intl.formatMessage({
-          id: 'date_picker_placeholder',
-          defaultMessage: 'Select date',
+          id: 'table_date_picker',
+          defaultMessage: 'Select date and time',
         })}
       />
+      {intl.formatMessage({
+        id: 'table_date_till',
+        defaultMessage: 'Till:',
+      })}
+      <DatePicker placeholder="End" />
     </Form.Item>
   </Form>
 );
