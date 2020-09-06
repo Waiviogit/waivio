@@ -3,7 +3,7 @@
 
 .UserMenu {
   height: 46px;
-  background-color: white;
+  background-color: @white;
   border-top: solid 1px #e9e7e7;
   border-bottom: solid 1px #e9e7e7;
 
@@ -11,7 +11,11 @@
     height: 46px;
     line-height: 46px;
     white-space: nowrap;
-    overflow-x: auto;
+    overflow-x: scroll;
+
+    @media @large {
+      overflow-x: visible;
+    }
   }
 
   &__item {
@@ -27,7 +31,6 @@
     &--active,
     &:hover {
       color: @primary-color;
-
       border-bottom: 2px @border-style-base @primary-color;
     }
   }
