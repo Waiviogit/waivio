@@ -145,7 +145,6 @@ class CreateTag extends React.Component {
 
     const { hideModal, intl, currentUsername } = this.props;
     const { categoryItem, selectedCategory } = this.state;
-    console.log(categoryItem);
     const currentLocale = this.props.form.getFieldValue('currentLocale');
     const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
     this.props.form.validateFields(err => {

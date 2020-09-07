@@ -20,6 +20,7 @@ export default (state = defaultState, action) => {
         albumsLoading: false,
       };
     case galleryActions.GET_ALBUMS.SUCCESS:
+      console.log(action.payload);
       return {
         ...state,
         albums: action.payload,

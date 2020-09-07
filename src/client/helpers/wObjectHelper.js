@@ -37,6 +37,7 @@ export const getField = (item, field) => {
 };
 
 export const prepareAlbumData = (form, currentUsername, wObject) => {
+  console.log(form);
   const data = {};
   data.author = currentUsername;
   data.parentAuthor = wObject.author;

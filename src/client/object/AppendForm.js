@@ -53,11 +53,15 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
 import {
+  generatePermlink,
   getField,
   getMenuItems,
   getObjectName,
   hasType,
   parseButtonsField,
+  prepareAlbumData,
+  prepareAlbumToStore,
+  prepareImageToStore,
 } from '../helpers/wObjectHelper';
 import { appendObject } from './appendActions';
 import withEditor from '../components/Editor/withEditor';
@@ -78,6 +82,7 @@ import './AppendForm.less';
 import { getObjectsByIds } from '../../waivioApi/ApiClient';
 import { getClientWObj } from '../adapters';
 import { objectNameValidationRegExp } from '../../common/constants/validation';
+import { addAlbumToStore, addImageToAlbumStore } from './ObjectGallery/galleryActions';
 
 @connect(
   state => ({
@@ -92,7 +97,7 @@ import { objectNameValidationRegExp } from '../../common/constants/validation';
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
   }),
-  { appendObject, rateObject },
+  { appendObject, rateObject, addImageToAlbumStore },
 )
 @Form.create()
 @withEditor
@@ -162,6 +167,8 @@ export default class AppendForm extends Component {
     selectedCategory: [],
     currentTags: [],
     fileList: [],
+    currentAlbum: [],
+    currentImages: [],
   };
 
   componentDidMount = () => {
@@ -175,7 +182,6 @@ export default class AppendForm extends Component {
   };
 
   onSubmit = formValues => {
-    console.log(formValues);
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
     const listItem = getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(
@@ -341,10 +347,6 @@ export default class AppendForm extends Component {
             alias ? ` as "${alias}"` : ''
           }`;
         }
-        // case objectFields.galleryAlbum : {
-        //   return console.log(this.state.selectedObject)
-        //   // `@${author} created a new album: ${this.state.selectedObject.name}. `
-        // }
         case objectFields.categoryItem: {
           return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
         }
@@ -406,6 +408,13 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: uuidv4(),
+        };
+      }
+
+      if (currentField === objectFields.categoryItem) {
+        fieldsObject = {
+          ...fieldsObject,
+          tagCategory: this.state.selectedCategory,
         };
       }
 
@@ -507,8 +516,153 @@ export default class AppendForm extends Component {
     this.setState({ votePercent: value, voteWorth });
   };
 
+  handleCreateAlbum = async formData => {
+    const { user, wObject, hideModal } = this.props;
+    const data = prepareAlbumData(formData, user.name, wObject);
+    const album = prepareAlbumToStore(data);
+
+    try {
+      const { author } = await this.props.appendObject(data);
+      await addAlbumToStore({ ...album, author });
+      hideModal();
+      message.success(
+        this.props.intl.formatMessage(
+          {
+            id: 'gallery_add_album_success',
+            defaultMessage: 'You successfully have created the {albumName} album',
+          },
+          {
+            albumName: formData.galleryAlbum,
+          },
+        ),
+      );
+    } catch (err) {
+      message.error(
+        this.props.intl.formatMessage({
+          id: 'gallery_add_album_failure',
+          defaultMessage: "Couldn't create the album.",
+        }),
+      );
+    }
+  };
+
+  handleAddPhotoToAlbum = () => {
+    const { intl, hideModal } = this.props;
+    const { currentAlbum } = this.state;
+
+    this.setState({ loading: true });
+
+    this.appendImages()
+      .then(() => {
+        hideModal();
+        this.setState({ fileList: [], uploadingList: [], loading: false });
+        message.success(
+          intl.formatMessage(
+            {
+              id: 'added_image_to_album',
+              defaultMessage: `@{user} added a new image to album <br />`,
+            },
+            {
+              album: currentAlbum,
+            },
+          ),
+        );
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'couldnt_upload_image',
+            defaultMessage: "Couldn't add the image to album.",
+          }),
+        );
+        this.setState({ loading: false });
+      });
+  };
+
+  appendImages = async () => {
+    const { form } = this.props;
+    const { currentImages } = this.state;
+
+    const data = this.getWobjectData();
+    /* eslint-disable no-restricted-syntax */
+    for (const image of currentImages) {
+      const postData = {
+        ...data,
+        permlink: `${data.author}-${generatePermlink()}`,
+        field: this.getWobjectField(image),
+        body: this.getWobjectBody(image),
+      };
+
+      /* eslint-disable no-await-in-loop */
+      const response = await this.props.appendObject(postData);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      if (response.transactionId) {
+        const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
+        this.setState({ fileList: filteredFileList }, async () => {
+          const img = prepareImageToStore(postData);
+          await addImageToAlbumStore({
+            ...img,
+            author: get(response, ['value', 'author']),
+            id: form.getFieldValue('id'),
+          });
+        });
+      }
+    }
+  };
+
+  getImage = image => {
+    this.setState({ currentImages: image });
+  };
+
+  getWobjectData = () => {
+    const { user, wObject } = this.props;
+    const data = {};
+    data.author = user.name;
+    data.parentAuthor = wObject.author;
+    data.parentPermlink = wObject.author_permlink;
+    data.title = '';
+    data.lastUpdated = Date.now();
+    data.wobjectName = getField(wObject, objectFields.name);
+    data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
+
+    return data;
+  };
+
+  getWobjectField = image => {
+    const { form } = this.props;
+    return {
+      name: 'galleryItem',
+      body: image.src,
+      locale: 'en-US',
+      id: form.getFieldValue('id'),
+    };
+  };
+
+  getWobjectBody = image => {
+    const { user, intl } = this.props;
+    const { currentAlbum } = this.state;
+
+    return intl.formatMessage(
+      {
+        id: 'append_new_image',
+        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
+      },
+      {
+        user: user.name,
+        album: get(currentAlbum, 'body'),
+        url: image.src,
+      },
+    );
+  };
+
   handleSubmit = event => {
     if (event) event.preventDefault();
+    const currentField = this.props.form.getFieldValue('currentField');
+
+    if (objectFields.galleryItem === currentField) {
+      this.handleAddPhotoToAlbum();
+    }
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
@@ -520,9 +674,10 @@ export default class AppendForm extends Component {
 
       if (!identicalNameFields.length) {
         const { form, intl } = this.props;
-        const currentField = form.getFieldValue('currentField');
 
-        if (objectFields.newsFilter === currentField) {
+        if (objectFields.galleryAlbum === currentField) {
+          this.handleCreateAlbum(values);
+        } else if (objectFields.newsFilter === currentField) {
           const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
             sub => sub.length,
           );
@@ -1614,7 +1769,10 @@ export default class AppendForm extends Component {
                   },
                 ],
               })(
-                <Select disabled={loading}>
+                <Select
+                  disabled={loading || selectedAlbum}
+                  onSelect={value => this.setState(() => ({ currentAlbum: value }))}
+                >
                   {map(albums, album => (
                     <Select.Option
                       key={`${album.id || album.weight}${album.body}`}
@@ -1640,7 +1798,7 @@ export default class AppendForm extends Component {
               })(
                 <div className="clearfix">
                   <ImageSetter
-                    onImageLoaded={this.getImages}
+                    onImageLoaded={this.getImage}
                     onLoadingImage={this.onLoadingImage}
                     isMultiple
                     isRequired
