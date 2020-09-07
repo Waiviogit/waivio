@@ -5,18 +5,11 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import {
-  getAuthenticatedUserName,
-  getObjectAdmins,
-  getObjectModerators,
-  getRate,
-  getRewardFund,
-} from '../reducers';
-import { mainerName } from './wObjectHelper';
+import { getAuthenticatedUserName, getRate, getRewardFund } from '../reducers';
 
 import './AppendCard.less';
 
-const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, moderatorsList }) => {
+const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const voteValue = isFullParams
     ? (post.weight / rewardFund.recent_claims) *
@@ -25,7 +18,6 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
       1000000
     : 0;
   const calcVoteValue = voteValue.toFixed(4) > 0 ? voteValue.toFixed(4) : voteValue.toFixed(2);
-  const appendState = mainerName(post.active_votes, moderatorsList, adminsList);
 
   const classListApproveTag = classNames({
     AppendCard__green: post.approvePercent >= 70,
@@ -60,7 +52,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal, adminsList, modera
             <span className={classListApproveTag}>{post.approvePercent.toFixed(2)}%</span>
           </span>
         </Tag>
-        {!appendState && !modal && (
+        {!post.adminVote && !modal && (
           <span className="MinPercent">
             {intl.formatMessage({
               id: 'min_70_is_required',
@@ -113,8 +105,6 @@ ApprovingCard.propTypes = {
   }).isRequired,
   rate: PropTypes.number.isRequired,
   modal: PropTypes.bool,
-  adminsList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  moderatorsList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 ApprovingCard.defaultProps = {
@@ -125,6 +115,4 @@ export default connect(state => ({
   userName: getAuthenticatedUserName(state),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
-  moderatorsList: getObjectModerators(state),
-  adminsList: getObjectAdmins(state),
 }))(injectIntl(ApprovingCard));

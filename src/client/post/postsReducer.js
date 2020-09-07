@@ -157,9 +157,7 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+      const lastId = get(action.payload, [action.payload.length - 1, '_id']);
 
       return {
         ...state,
@@ -197,13 +195,13 @@ const posts = (state = initialState, action) => {
           },
         },
       };
-    case postsActions.LIKE_POST_START:
+    case postsActions.LIKE_POST.START:
       return {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
 
-    case postsActions.LIKE_POST_ERROR:
+    case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),

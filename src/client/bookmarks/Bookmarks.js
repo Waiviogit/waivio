@@ -61,7 +61,6 @@ export default class Bookmarks extends React.Component {
 
   render() {
     const { intl, reloading, feed } = this.props;
-
     const content = getFeedFromState('bookmarks', 'all', feed);
     const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || reloading;
     const hasMore = getFeedHasMoreFromState('bookmarks', 'all', feed);
