@@ -207,7 +207,7 @@ class CreateRewardForm extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const { rate, rewardFund } = this.props;
-    const objects = map(data.secondaryObject, o => o.id);
+    const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
