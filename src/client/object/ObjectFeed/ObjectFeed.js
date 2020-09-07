@@ -416,7 +416,7 @@ export default class ObjectFeed extends React.Component {
             {getFeedContent()}
           </React.Fragment>
         )}
-        {<PostModal />}
+        <PostModal />
       </div>
     );
   }

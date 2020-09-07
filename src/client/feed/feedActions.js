@@ -320,16 +320,14 @@ export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
   const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
-  if (loaded.length && loaded.length === bookmarks.length) {
-    return;
-  }
+  if (loaded.length && loaded.length === bookmarks.length) return;
+
   dispatch({
     type: GET_BOOKMARKS.ACTION,
     payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',
-      once: true,
     },
   });
 };
