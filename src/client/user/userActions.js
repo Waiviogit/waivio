@@ -332,12 +332,12 @@ export const reinstateReward = ({ companyAuthor, username, reservationPermlink, 
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .then(() =>
-        dispatch({
+      .then(() => {
+        resolve('SUCCESS');
+        return dispatch({
           type: SET_PENDING_UPDATE.START,
-        }),
-      )
+        });
+      })
       .catch(error => reject(error));
   });
 };

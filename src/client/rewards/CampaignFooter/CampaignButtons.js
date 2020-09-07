@@ -199,11 +199,11 @@ export default class CampaignButtons extends React.Component {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const companyAuthor = get(proposition, ['guide', 'name']);
     const reservationPermlink = get(proposition, ['users', '0', 'permlink']);
-    const userName = get(proposition, ['users', '0', 'rootName']);
+    const username = get(proposition, ['users', '0', 'rootName']);
     return this.props
       .reinstateReward({
         companyAuthor,
-        username: userName,
+        username,
         reservationPermlink,
         appName,
       })
