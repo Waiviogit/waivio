@@ -1446,7 +1446,7 @@ export const getTransferHistoryTableView = (
   tableView = true,
   startDate,
   endDate,
-  types,
+  types = [],
 ) =>
   new Promise((resolve, reject) => {
     fetch(

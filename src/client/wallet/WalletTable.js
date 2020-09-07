@@ -35,10 +35,11 @@ const getCurrentTransactions = (props, isGuestPage) => {
 };
 
 const handleSubmit = (props, startDate, endDate, currentUsername) => {
-  const { getTransactionsByInterval } = props;
+  const { getTransactionsByInterval, operationNum } = props;
+  const limit = 10;
+  const tableView = true;
   console.log('handle OK button');
-
-  getTransactionsByInterval(currentUsername);
+  getTransactionsByInterval(currentUsername, limit, operationNum, tableView, startDate, endDate);
 };
 
 const filterPanel = (props, currentUsername) => {
