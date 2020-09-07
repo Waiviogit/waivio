@@ -13,12 +13,14 @@ import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import Proposition from '../Proposition/Proposition';
 import './FraudDetection.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
+import Loading from '../../components/Icon/Loading';
+import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 
 const FraudDetection = ({
   intl,
   userName,
   getFraudSuspicionData,
-  // hasMoreFraudSuspicionData,
+  hasMoreFraudSuspicionData,
   fraudSuspicionData,
   match,
   user,
@@ -29,7 +31,7 @@ const FraudDetection = ({
 }) => {
   const [blacklistUsers, setBlacklistUsers] = useState([]);
   // const [loadingCampaigns, setLoadingCampaigns] = useState(false);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const sort = useMemo(
     () => [
       {
@@ -62,23 +64,23 @@ const FraudDetection = ({
       // setLoadingCampaigns(true);
       getFraudSuspicionData(requestData).then(() => {
         // setLoadingCampaigns(false);
-        // setLoading(false);
+        setLoading(false);
       });
     }
   }, [userName, getFraudSuspicionData, sortFraudDetection, getBlacklistUsers, sort]);
 
-  // const handleLoadMore = () => {
-  //   if (hasMoreFraudSuspicionData) {
-  //     // setLoading(true);
-  //     const requestData = {
-  //       guideName: userName,
-  //       fraudSuspicion: true,
-  //       sort: sortFraudDetection,
-  //       skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
-  //     };
-  //     getFraudSuspicionData(requestData);
-  //   }
-  // };
+  const handleLoadMore = () => {
+    if (hasMoreFraudSuspicionData) {
+      setLoading(true);
+      const requestData = {
+        guideName: userName,
+        fraudSuspicion: true,
+        sort: sortFraudDetection,
+        skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
+      };
+      getFraudSuspicionData(requestData);
+    }
+  };
 
   const handleSortChange = useCallback(
     sortChanged => {
@@ -121,28 +123,36 @@ const FraudDetection = ({
         ))}
       </SortSelector>
       <div className="FraudDetection__data">
-        {map(fraudSuspicionData, proposition =>
-          map(
-            proposition.objects,
-            wobj =>
-              wobj.object &&
-              wobj.object.author_permlink && (
-                <Proposition
-                  guide={proposition.guide}
-                  proposition={proposition}
-                  wobj={wobj.object}
-                  assignCommentPermlink={wobj.permlink}
-                  authorizedUserName={userName}
-                  key={`${wobj.object.author_permlink}`}
-                  assigned={wobj.assigned}
-                  history={history}
-                  user={user}
-                  match={match}
-                  blacklistUsers={blacklistUsers}
-                />
-              ),
-          ),
-        )}
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMoreFraudSuspicionData}
+          loadMore={handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {map(fraudSuspicionData, proposition =>
+            map(
+              proposition.objects,
+              wobj =>
+                wobj.object &&
+                wobj.object.author_permlink && (
+                  <Proposition
+                    guide={proposition.guide}
+                    proposition={proposition}
+                    wobj={wobj.object}
+                    assignCommentPermlink={wobj.permlink}
+                    authorizedUserName={userName}
+                    key={`${wobj.object.author_permlink}`}
+                    assigned={wobj.assigned}
+                    history={history}
+                    user={user}
+                    match={match}
+                    blacklistUsers={blacklistUsers}
+                  />
+                ),
+            ),
+          )}
+        </ReduxInfiniteScroll>
       </div>
     </div>
   );
@@ -155,7 +165,7 @@ FraudDetection.propTypes = {
   fraudSuspicionData: PropTypes.arrayOf(PropTypes.shape()),
   getFraudSuspicionData: PropTypes.func,
   getBlacklistUsers: PropTypes.func,
-  // hasMoreFraudSuspicionData: PropTypes.bool,
+  hasMoreFraudSuspicionData: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   setSortValue: PropTypes.func,
   sortFraudDetection: PropTypes.string,
