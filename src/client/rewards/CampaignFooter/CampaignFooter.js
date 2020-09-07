@@ -130,7 +130,8 @@ class CampaignFooter extends React.Component {
 
     this.isReserved = !isEmpty(this.props.match)
       ? this.props.match.params.filterKey === IS_RESERVED ||
-        this.props.match.params.filterKey === IS_ALL
+        this.props.match.params.filterKey === IS_ALL ||
+        includes(this.props.match.path, 'object')
       : '';
   }
 
@@ -487,9 +488,9 @@ class CampaignFooter extends React.Component {
                 getReservedComments={this.getReservedComments}
                 parent={rootComment}
                 matchPath={match.params[0]}
+                match={match}
                 isGuest={isGuest}
                 proposition={proposition}
-                match={match}
               />
             </div>
           ))}

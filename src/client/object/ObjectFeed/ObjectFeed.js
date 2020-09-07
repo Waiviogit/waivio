@@ -11,6 +11,7 @@ import {
   getReadLanguages,
   getCryptosPriceHistory,
   getSuitableLanguage,
+  getAuthenticatedUser,
 } from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
 import {
@@ -32,6 +33,7 @@ import './ObjectFeed.less';
 @connect(
   state => ({
     feed: getFeed(state),
+    user: getAuthenticatedUser(state),
     readLocales: getReadLanguages(state),
     usedLocale: getSuitableLanguage(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -65,6 +67,7 @@ export default class ObjectFeed extends React.Component {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
+    user: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -75,6 +78,7 @@ export default class ObjectFeed extends React.Component {
     handleCreatePost: () => {},
     wobject: {},
     usedLocale: 'en-US',
+    user: {},
   };
 
   state = {
@@ -124,7 +128,8 @@ export default class ObjectFeed extends React.Component {
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+      const requiredObject =
+        get(nextProps.wobject, ['parent', 'author_permlink']) || get(nextProps.wobject, ['parent']);
       const primaryObject = get(nextProps.wobject, ['author_permlink']);
       const reqData = {
         userName: nextProps.userName,
@@ -199,6 +204,7 @@ export default class ObjectFeed extends React.Component {
               history={this.props.history}
               isAssign={this.state.isAssign}
               match={this.props.match}
+              user={this.props.user}
             />
           ),
       ),
@@ -410,7 +416,7 @@ export default class ObjectFeed extends React.Component {
             {getFeedContent()}
           </React.Fragment>
         )}
-        {<PostModal />}
+        <PostModal />
       </div>
     );
   }

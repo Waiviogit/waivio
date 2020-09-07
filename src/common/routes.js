@@ -115,6 +115,10 @@ const Notifications = Loadable({
   loader: () => import('../client/notifications/Notifications'),
   loading: Loading,
 });
+const RewardsList = Loadable({
+  loader: () => import('../client/rewards/RewardsList/RewardsList'),
+  loading: Loading,
+});
 const Error404 = Loadable({
   loader: () => import('../client/statics/Error404'),
   loading: Loading,
@@ -533,6 +537,10 @@ const routes = [
           {
             path: '/notifications-list',
             component: Notifications,
+          },
+          {
+            path: '/rewards-list',
+            component: RewardsList,
           },
           {
             path: '/feed/:name',

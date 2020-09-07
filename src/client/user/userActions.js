@@ -307,6 +307,41 @@ export const rejectReview = ({
   });
 };
 
+export const reinstateReward = ({ companyAuthor, username, reservationPermlink, appName }) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: reservationPermlink,
+      author: companyAuthor,
+      permlink: createCommentPermlink(username, reservationPermlink),
+      title: 'Reinstate reward',
+      body: `Sponsor ${companyAuthor} (@${companyAuthor}) has reinstated the reward `,
+      json_metadata: JSON.stringify({
+        app: appName,
+        waivioRewards: {
+          type: 'restore_reservation_by_guide',
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => {
+        resolve('SUCCESS');
+        return dispatch({
+          type: SET_PENDING_UPDATE.START,
+        });
+      })
+      .catch(error => reject(error));
+  });
+};
+
 export const changeReward = ({
   companyAuthor,
   companyPermlink,
