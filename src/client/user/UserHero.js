@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import UserHeader from '../components/UserHeader';
-import UserHeaderLoading from '../components/UserHeaderLoading';
+import Loading from '../components/Icon/Loading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
@@ -81,7 +81,7 @@ const UserHero = ({
           render={() => (
             <div>
               {user.fetching ? (
-                <UserHeaderLoading />
+                <Loading style={{ marginTop: '20px', marginBottom: '20px' }} />
               ) : (
                 <UserHeader
                   user={user}
