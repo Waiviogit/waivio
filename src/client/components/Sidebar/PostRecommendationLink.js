@@ -11,7 +11,6 @@ import { getContentImages } from '../../helpers/postHelpers';
 
 const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }) => {
   const images = getFromMetadata(post.json_metadata, 'image');
-
   const firstImage = head(images);
   let imagePath = '';
 
