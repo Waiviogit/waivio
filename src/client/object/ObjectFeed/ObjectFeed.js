@@ -128,7 +128,8 @@ export default class ObjectFeed extends React.Component {
     }
 
     if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+      const requiredObject =
+        get(nextProps.wobject, ['parent', 'author_permlink']) || get(nextProps.wobject, ['parent']);
       const primaryObject = get(nextProps.wobject, ['author_permlink']);
       const reqData = {
         userName: nextProps.userName,
@@ -415,7 +416,7 @@ export default class ObjectFeed extends React.Component {
             {getFeedContent()}
           </React.Fragment>
         )}
-        {<PostModal />}
+        <PostModal />
       </div>
     );
   }
