@@ -183,6 +183,7 @@ export default class AppendForm extends Component {
             ),
           );
       }
+      const field = form.getFieldValue('currentField');
 
       if (data.field.name !== objectFields.sorting || !wObject.sortCustom.length || !equalBody) {
         this.setState({ loading: true });
@@ -209,7 +210,7 @@ export default class AppendForm extends Component {
               message.success(
                 this.props.intl.formatMessage(
                   {
-                    id: 'added_field_to_wobject',
+                    id: `added_field_to_wobject_${field}`,
                     defaultMessage: `You successfully have added the {field} field to {wobject} object`,
                   },
                   {
