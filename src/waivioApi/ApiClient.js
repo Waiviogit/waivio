@@ -1442,15 +1442,16 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
 export const getTransferHistoryTableView = (
   username,
   limit = 10,
-  operationNum = -1,
   tableView = true,
   startDate,
   endDate,
-  types = [],
-) =>
-  new Promise((resolve, reject) => {
+  types,
+  operationNum = -1,
+) => {
+  console.log('getTransferHistoryTableView: ', operationNum);
+  return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&types=${types}`,
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${types}&operationNum=${operationNum}`,
       {
         headers,
         method: 'GET',
@@ -1458,8 +1459,12 @@ export const getTransferHistoryTableView = (
     )
       .then(handleErrors)
       .then(res => res.json())
-      .then(result => resolve(result))
+      .then(result => {
+        console.log('result: ', result);
+        return resolve(result);
+      })
       .catch(error => reject(error));
   });
+};
 
 export default null;

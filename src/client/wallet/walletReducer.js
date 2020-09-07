@@ -22,6 +22,7 @@ const initialState = {
   transactionsHistory: {},
   tableTransactionsHistory: {},
   loadingMoreTransactions: false,
+  loadingMoreTableTransactions: false,
   hasMore: false,
   hasMoreTable: false,
   hasMoreGuestActions: false,
@@ -29,6 +30,7 @@ const initialState = {
   tableTransactionsHistoryLoading: false,
   withdrawOpen: false,
   isErrorLoading: false,
+  isErrorLoadingTableTransactions: false,
   operationNum: -1,
   operationNumTable: -1,
   isOpenWalletTable: false,
@@ -139,8 +141,8 @@ export default function walletReducer(state = initialState, action) {
           ...state.tableTransactionsHistory,
           [usernameKey]: action.payload.tableTransactionsHistory,
         },
-        hasMoreTable: action.payload.hasMore,
-        operationNumTable: action.payload.operationNum,
+        hasMoreTable: action.payload.hasMoreTable,
+        operationNumTable: action.payload.operationNumTable,
         transactionsHistoryLoading: false,
       };
     }
@@ -164,12 +166,40 @@ export default function walletReducer(state = initialState, action) {
         hasMore: action.payload.hasMore,
         operationNum: action.payload.operationNum,
         loadingMoreTransactions: false,
-        getIsErrorLoading: false,
+        isErrorLoading: false,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.ERROR:
       return {
         loadingMoreTransactions: false,
+      };
+
+    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.START:
+      return {
+        ...state,
+        loadingMoreTableTransactions: true,
+      };
+    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
+      const usernameKey = action.payload.username;
+      const userCurrentTransactions = get(state.tableTransactionsHistory, usernameKey, []);
+      return {
+        ...state,
+        tableTransactionsHistory: {
+          ...state.tableTransactionsHistory,
+          [usernameKey]: uniqWith(
+            userCurrentTransactions.concat(action.payload.tableTransactionsHistory),
+            isEqual,
+          ),
+        },
+        hasMore: action.payload.hasMore,
+        operationNumTable: action.payload.operationNum,
+        loadingMoreTableTransactions: false,
+        isErrorLoadingTableTransactions: false,
+      };
+    }
+    case walletActions.GET_MORE_TABLE_TRANSACTIONS_HISTORY.ERROR:
+      return {
+        loadingMoreTableTransactions: false,
       };
     case walletActions.GET_TRANSACTIONS_HISTORY.ERROR:
       return {
@@ -216,6 +246,13 @@ export default function walletReducer(state = initialState, action) {
         hasMore: false,
         operationNum: -1,
         transactionsHistory: {},
+      };
+    case walletActions.CLEAR_TABLE_TRANSACTIONS_HISTORY:
+      return {
+        ...state,
+        hasMoreTable: false,
+        operationNum: -1,
+        tableTransactionsHistory: {},
       };
     case walletActions.OPEN_WALLET_TABLE:
       return {
@@ -302,6 +339,11 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         isErrorLoading: true,
       };
+    case walletActions.GET_ERROR_LOADING_TABLE_TRANSACTIONS:
+      return {
+        ...state,
+        isErrorLoadingTableTransactions: true,
+      };
     default:
       return state;
   }
@@ -338,7 +380,9 @@ export const getCurrentFilteredActions = state => state.currentFilteredActions;
 export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
 export const getIsErrorLoading = state => state.isErrorLoading;
+export const getIsErrorLoadingTable = state => state.isErrorLoadingTableTransactions;
 export const getOperationNum = state => state.operationNum;
 export const getTableOperationNum = state => state.operationNumTable;
 export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;
+export const getIsloadingMoreTableTransactions = state => state.loadingMoreTableTransactions;
 export const getIsOpenWalletTable = state => state.isOpenWalletTable;

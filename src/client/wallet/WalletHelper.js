@@ -7,6 +7,22 @@ import { epochToUTC } from '../helpers/formatter';
 import formatter from '../helpers/steemitFormatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
+export const TRANSACTION_TYPES = [
+  'internal_operations',
+  'transfer',
+  'transfer_to_vesting',
+  'claim_reward_balance',
+  'transfer_to_savings',
+  'transfer_from_savings',
+  'limit_order_cancel',
+  'limit_order_create',
+  'fill_order',
+  'proposal_pay',
+  'user_to_guest_transfer',
+  'demo_post',
+  'demo_debt',
+  'demo_user_transfer',
+];
 // eslint-disable-next-line import/prefer-default-export
 export const handleLoadMoreTransactions = ({
   username,

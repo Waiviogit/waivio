@@ -16,9 +16,23 @@ import {
   getUser,
   getUserHasMoreTable,
   getUsersTransactions,
+  getIsloadingMoreTableTransactions,
+  getLoadingMoreUsersAccountHistory,
+  getUsersAccountHistory,
 } from '../reducers';
-import { openWalletTable, closeWalletTable, getUserTableTransactionHistory } from './walletActions';
-import { getDataDemoTransactions } from './WalletHelper';
+import {
+  openWalletTable,
+  closeWalletTable,
+  getUserTableTransactionHistory,
+  clearTransactionsTableHistory,
+  getMoreTableUserTransactionHistory,
+  getMoreUserAccountHistory,
+} from './walletActions';
+import {
+  getDataDemoTransactions,
+  handleLoadMoreTransactions,
+  TRANSACTION_TYPES,
+} from './WalletHelper';
 import WalletTableBodyRow from './WalletTableBodyRow';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import * as store from '../reducers';
@@ -29,23 +43,36 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 const getCurrentTransactions = (props, isGuestPage) => {
   const { user, transactionsHistory, demoTransactionsHistory } = props;
   const username = user.name;
-  const transactions = get(transactionsHistory, username, []);
+  const transactions = get(transactionsHistory, username, []); // Todo: Сюда вставить транзакции по кнопке Submit
   const demoTransactions = getDataDemoTransactions(username, demoTransactionsHistory);
   return isGuestPage ? demoTransactions : transactions;
 };
 
-const handleSubmit = (props, startDate, endDate, currentUsername) => {
-  const { getTransactionsByInterval, operationNum } = props;
+const handleSubmit = (
+  currentUsername,
+  getTransactionsByInterval,
+  startDate,
+  endDate,
+  clearTable,
+) => {
   const limit = 10;
   const tableView = true;
-  console.log('handle OK button');
-  getTransactionsByInterval(currentUsername, limit, operationNum, tableView, startDate, endDate);
+  clearTable();
+  console.log('handle OK button: ', currentUsername);
+  getTransactionsByInterval(
+    currentUsername,
+    limit,
+    tableView,
+    startDate,
+    endDate,
+    TRANSACTION_TYPES,
+  );
 };
 
-const filterPanel = (props, currentUsername) => {
-  const { intl } = props;
-  const [startDate, setStartDate] = useState(0);
-  const [endDate, setEndDate] = useState(0);
+const filterPanel = (intl, currentUsername, getTransactionsByInterval, clearTable) => {
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  // clearTable()
   return (
     <Form layout="vertical">
       <Form.Item>
@@ -66,7 +93,9 @@ const filterPanel = (props, currentUsername) => {
         })}
         <DatePicker placeholder="End" onChange={value => setEndDate(moment(value).unix())} />
         <Button
-          onClick={() => handleSubmit(props, startDate, endDate, currentUsername)}
+          onClick={() =>
+            handleSubmit(currentUsername, getTransactionsByInterval, startDate, endDate, clearTable)
+          }
           type="primary"
           htmlType="submit"
         >
@@ -90,20 +119,44 @@ const WalletTable = props => {
     history,
     openTable,
     closeTable,
+    operationNum,
+    getTransactionsByInterval,
+    clearTable,
+    hasMore,
+    isloadingMoreTableTransactions,
+    isloadingMoreDemoTransactions,
+    getMoreTableTransactions,
+    getMoreDemoTransactions,
+    usersAccountHistory,
   } = props;
   useEffect(() => {
     openTable();
     return () => {
       closeTable();
+      // clearTable()
     };
   }, [history.location.pathname]);
 
   const isGuestPage = guestUserRegex.test(user && user.name);
   const transactions = getCurrentTransactions(props, isGuestPage);
   const currentUsername = user.name;
+  const actions = get(usersAccountHistory, currentUsername, []);
+
+  const values = {
+    username: currentUsername,
+    operationNumber: operationNum,
+    isLoadingMore: isloadingMoreTableTransactions,
+    demoIsLoadingMore: isloadingMoreDemoTransactions,
+    getMoreFunction: getMoreTableTransactions,
+    getMoreDemoFunction: getMoreDemoTransactions,
+    transferActions: actions,
+    isGuest: isGuestPage,
+  };
+
+  // clearTable()
   return (
     <React.Fragment>
-      {filterPanel(props, currentUsername)}
+      {filterPanel(intl, currentUsername, getTransactionsByInterval, clearTable)}
       <table className="WalletTable">
         <thead>
           <tr>
@@ -147,8 +200,8 @@ const WalletTable = props => {
         </thead>
         <tbody>
           <ReduxInfiniteScroll
-            // loadMore={}
-            // hasMore={}
+            loadMore={() => handleLoadMoreTransactions(values)}
+            hasMore={hasMore}
             elementIsScrollable={false}
             threshold={500}
           >
@@ -178,15 +231,21 @@ WalletTable.propTypes = {
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   history: PropTypes.shape().isRequired,
-  // operationNum: PropTypes.func.isRequired,
+  operationNum: PropTypes.number.isRequired,
   user: PropTypes.shape({
     name: PropTypes.string,
   }).isRequired,
   authUserName: PropTypes.string,
   openTable: PropTypes.func,
   closeTable: PropTypes.func,
-  // getTransactionsByInterval: PropTypes.func,
-  // hasMore: PropTypes.bool,
+  getTransactionsByInterval: PropTypes.func,
+  hasMore: PropTypes.bool,
+  clearTable: PropTypes.func,
+  getMoreTableTransactions: PropTypes.func,
+  getMoreDemoTransactions: PropTypes.func,
+  isloadingMoreTableTransactions: PropTypes.bool,
+  isloadingMoreDemoTransactions: PropTypes.bool,
+  usersAccountHistory: PropTypes.shape(),
 };
 
 WalletTable.defaultProps = {
@@ -196,7 +255,13 @@ WalletTable.defaultProps = {
   openTable: () => {},
   closeTable: () => {},
   getTransactionsByInterval: () => {},
+  clearTable: () => {},
   hasMore: false,
+  getMoreTableTransactions: () => {},
+  getMoreDemoTransactions: () => {},
+  isloadingMoreTableTransactions: false,
+  isloadingMoreDemoTransactions: false,
+  usersAccountHistory: {},
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -212,9 +277,16 @@ const mapStateToProps = (state, ownProps) => ({
   tableTransactionsHistory: getTableTransactions(state),
   hasMore: getUserHasMoreTable(state),
   operationNum: getTableOperationNum(state),
+  isloadingMoreTableTransactions: getIsloadingMoreTableTransactions,
+  isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
+  usersAccountHistory: getUsersAccountHistory(state),
 });
+
 export default connect(mapStateToProps, {
   openTable: openWalletTable,
   closeTable: closeWalletTable,
   getTransactionsByInterval: getUserTableTransactionHistory,
+  clearTable: clearTransactionsTableHistory,
+  getMoreTableTransactions: getMoreTableUserTransactionHistory,
+  getMoreDemoTransactions: getMoreUserAccountHistory,
 })(injectIntl(WalletTable));

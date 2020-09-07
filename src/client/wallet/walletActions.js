@@ -30,6 +30,9 @@ export const GET_TABLE_TRANSACTIONS_HISTORY = createAsyncActionType(
 export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
   '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
 );
+export const GET_MORE_TABLE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_MORE_TABLE_TRANSACTIONS_HISTORY',
+);
 
 export const GET_USER_EST_ACCOUNT_VALUE = createAsyncActionType(
   '@users/GET_USER_EST_ACCOUNT_VALUE',
@@ -259,11 +262,11 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
 export const getUserTableTransactionHistory = (
   username,
   limit,
-  operationNum,
   tableView,
   startDate,
   endDate,
   types,
+  operationNum,
 ) => dispatch =>
   dispatch({
     type: GET_TABLE_TRANSACTIONS_HISTORY.ACTION,
@@ -271,18 +274,21 @@ export const getUserTableTransactionHistory = (
       promise: getTransferHistoryTableView(
         username,
         limit,
-        operationNum,
         tableView,
         startDate,
         endDate,
         types,
+        operationNum,
       )
-        .then(data => ({
-          username,
-          tableTransactionsHistory: data.wallet,
-          operationNum: data.operationNum,
-          hasMore: data.hasMore,
-        }))
+        .then(data => {
+          console.log('data: ', data);
+          return {
+            username,
+            tableTransactionsHistory: data.wallet,
+            operationNumTable: data.operationNum,
+            hasMoreTable: data.hasMore,
+          };
+        })
         .catch(error => console.log(error)),
     },
   });
@@ -309,6 +315,44 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
     },
   });
 
+export const GET_ERROR_LOADING_TABLE_TRANSACTIONS = '@wallet/GET_ERROR_LOADING_TRANSACTIONS';
+
+export const getMoreTableUserTransactionHistory = (
+  username,
+  limit,
+  tableView,
+  startDate,
+  endDate,
+  types,
+  operationNum,
+) => dispatch =>
+  dispatch({
+    type: GET_MORE_TABLE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistoryTableView(
+        username,
+        limit,
+        tableView,
+        startDate,
+        endDate,
+        types,
+        operationNum,
+      )
+        .then(data => ({
+          username,
+          transactionsHistory: data.wallet,
+          operationNum: data.operationNum,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => {
+          console.log(error);
+          return dispatch({
+            type: GET_ERROR_LOADING_TABLE_TRANSACTIONS,
+          });
+        }),
+    },
+  });
+
 export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
 
 // eslint-disable-next-line consistent-return
@@ -319,6 +363,13 @@ export const clearTransactionsHistory = (location, username) => dispatch => {
     });
   }
 };
+
+export const CLEAR_TABLE_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TABLE_TRANSACTIONS_HISTORY';
+
+export const clearTransactionsTableHistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TABLE_TRANSACTIONS_HISTORY,
+  });
 
 export const OPEN_WALLET_TABLE = '@wallet/OPEN_WALLET_TABLE';
 
