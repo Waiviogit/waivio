@@ -63,10 +63,13 @@ const objectType = (state = initialState, action) => {
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
       const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
-      const filteredObjects = relatedWobjects.filter(
-        wObj =>
-          !wObj.status || (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-      );
+      const filteredObjects =
+        relatedWobjects &&
+        relatedWobjects.filter(
+          wObj =>
+            !wObj.status ||
+            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+        );
       return {
         ...state,
         data,

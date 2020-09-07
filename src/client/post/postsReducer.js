@@ -157,9 +157,7 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+      const lastId = get(action.payload, [action.payload.length - 1, '_id']);
 
       return {
         ...state,
@@ -197,13 +195,13 @@ const posts = (state = initialState, action) => {
           },
         },
       };
-    case postsActions.LIKE_POST_START:
+    case postsActions.LIKE_POST.START:
       return {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
 
-    case postsActions.LIKE_POST_ERROR:
+    case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
@@ -212,32 +210,6 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         list: getPostsList(state.list, action),
-      };
-    case postsActions.FAKE_LIKE_POST_START:
-      return {
-        ...state,
-        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
-      };
-    case postsActions.FAKE_LIKE_POST_SUCCESS: {
-      if (action.payload.isFakeLikeOk) {
-        const updatedPost = { ...state.list[action.meta.postPermlink] };
-
-        updatedPost.active_votes = updatedPost.active_votes.filter(
-          vote => vote.voter !== action.meta.voter,
-        );
-        updatedPost.active_votes.push(action.meta);
-        return {
-          ...state,
-          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
-          pendingLikes: {},
-        };
-      }
-      return state;
-    }
-    case postsActions.FAKE_LIKE_POST_ERROR:
-      return {
-        ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
 
     case FAKE_REBLOG_POST: {
@@ -309,7 +281,11 @@ export default posts;
 
 export const getPosts = state => state.list;
 export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(post => post.permlink === permlink && post.author === author);
+  Object.values(state.list).find(
+    post =>
+      post.permlink === permlink &&
+      (post.author === author || get(post, ['guestInfo', 'userId']) === author),
+  );
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);
