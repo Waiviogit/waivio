@@ -97,7 +97,7 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
-  const userData = !isEmpty(users) ? get(users, [user.name, 'alias']) : null;
+  const userData = !isEmpty(users) ? get(users, ['user', 'name', 'alias'], '') : null;
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
@@ -114,7 +114,8 @@ const Proposition = ({
         }
       }
     };
-    const userName = userData || get(getJsonData(), ['profile', 'name']) || user.name;
+    const userName =
+      userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
