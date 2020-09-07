@@ -248,10 +248,9 @@ const routes = [
       {
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
-          '/rewards/(history|guideHistory|messages)',
+          '/rewards/(history|guideHistory|messages|fraud-detection)',
           PATH_NAME_PAYABLES,
           '/rewards/reports',
-          '/rewards/fraud-detection',
           '/rewards/blacklist/:listType?',
           PATH_NAME_RECEIVABLES,
           '/rewards/payables/@:userName/:reservationPermlink?',

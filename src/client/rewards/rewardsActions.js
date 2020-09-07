@@ -109,3 +109,11 @@ export const getFollowingSponsorsRewards = userName => dispatch =>
     type: GET_FOLLOWING_SPONSORS_REWARDS.ACTION,
     payload: ApiClient.getFollowingSponsorsRewards({ userName }),
   });
+
+export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUSPICION');
+
+export const getFraudSuspicion = ({ guideName, fraudSuspicion, sort }) => dispatch =>
+  dispatch({
+    type: GET_FRAUD_SUSPICION.ACTION,
+    payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort }),
+  });

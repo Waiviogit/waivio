@@ -145,6 +145,7 @@ class Rewards extends React.Component {
     sponsors: [],
     sortHistory: 'reservation',
     sortGuideHistory: 'reservation',
+    sortFraudDetection: 'reservation',
     sortMessages: 'inquiryDate',
     sortAll: 'proximity',
     sortEligible: 'proximity',
@@ -266,6 +267,8 @@ class Rewards extends React.Component {
         return this.setState({ sortMessages: sort });
       case GUIDE_HISTORY:
         return this.setState({ sortGuideHistory: sort });
+      case 'fraud-detection':
+        return this.setState({ sortFraudDetection: sort });
       default:
         return this.setState({ sortAll: sort });
     }
@@ -845,6 +848,7 @@ class Rewards extends React.Component {
       sortGuideHistory,
       activeGuideHistoryFilters,
       url,
+      sortFraudDetection,
     } = this.state;
     const mapWobjects = map(wobjects, wobj => wobj.required_object);
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -905,6 +909,7 @@ class Rewards extends React.Component {
       messagesCampaigns,
       sortHistory,
       sortMessages,
+      sortFraudDetection,
       sortGuideHistory,
       setActiveMessagesFilters: this.setActiveMessagesFilters,
       propositionsReserved,
