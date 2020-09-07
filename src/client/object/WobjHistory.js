@@ -22,9 +22,6 @@ import AppendModal from './AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
 import OBJECT_TYPE from './const/objectTypes';
-import CreateImage from './ObjectGallery/CreateImage';
-import CreateAlbum from './ObjectGallery/CreateAlbum';
-import CreateTag from './TagCategory/CreateTag';
 import { AppSharedContext } from '../Wrapper';
 import AppendCard from './AppendCard';
 import Loading from '../components/Icon/Loading';
@@ -107,15 +104,7 @@ class WobjHistory extends React.Component {
   };
 
   handleToggleModal = () => {
-    if (this.state.field === objectFields.galleryItem) {
-      this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
-    } else if (this.state.field === objectFields.galleryAlbum) {
-      this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
-    } else if (this.state.field === objectFields.categoryItem) {
-      this.setState(prevState => ({ showModalCategoryItem: !prevState.showModalCategoryItem }));
-    } else {
-      this.setState({ showModal: !this.state.showModal });
-    }
+    this.setState({ showModal: !this.state.showModal });
   };
 
   handleSortChange = sort => this.setState({ sort });
@@ -133,14 +122,7 @@ class WobjHistory extends React.Component {
   };
 
   render() {
-    const {
-      field,
-      showModal,
-      showModalGalleryItem,
-      showModalGalleryAlbum,
-      showModalCategoryItem,
-      sort,
-    } = this.state;
+    const { field, showModal, sort } = this.state;
     const { object, readLanguages, isAuthenticated, rewardFund, rate, appendLoading } = this.props;
     const { params } = this.props.match;
     const isFullParams =
@@ -230,9 +212,6 @@ class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
-              <CreateImage showModal={showModalGalleryItem} hideModal={this.handleToggleModal} />
-              <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
-              <CreateTag showModal={showModalCategoryItem} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}

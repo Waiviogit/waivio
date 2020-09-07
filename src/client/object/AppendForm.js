@@ -77,12 +77,11 @@ import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
-
-import './AppendForm.less';
 import { getObjectsByIds } from '../../waivioApi/ApiClient';
-import { getClientWObj } from '../adapters';
 import { objectNameValidationRegExp } from '../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from './ObjectGallery/galleryActions';
+
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -657,11 +656,72 @@ export default class AppendForm extends Component {
     );
   };
 
+  handleCreateTag = () => {
+    const { hideModal, intl, user } = this.props;
+    const { categoryItem, selectedCategory } = this.state;
+    const currentLocale = this.props.form.getFieldValue('currentLocale');
+    const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+    this.props.form.validateFields(err => {
+      if (!err) {
+        this.setState({ loading: true });
+        this.appendTag(categoryItem)
+          .then(() => {
+            hideModal();
+            this.setState({ categoryItem: null, loading: false });
+            message.success(
+              intl.formatMessage(
+                {
+                  id: 'added_tags_to_category',
+                  defaultMessage: `@{user} added a new #tag ({language}) to {category} category`,
+                },
+                {
+                  user: user.name,
+                  language: langReadable,
+                  category: selectedCategory.body,
+                },
+              ),
+            );
+          })
+          .catch(error => {
+            console.error(error.message);
+            message.error(
+              intl.formatMessage({
+                id: 'couldnt_upload_image',
+                defaultMessage: "Couldn't add item to the category.",
+              }),
+            );
+            this.setState({ loading: false });
+          });
+      } else {
+        console.error(err);
+      }
+    });
+  };
+
+  appendTag = async categoryItem => {
+    const data = this.getWobjectData();
+
+    /* eslint-disable no-restricted-syntax */
+    const postData = {
+      ...data,
+      permlink: `${data.author}-${generatePermlink()}`,
+      field: {
+        ...this.getWobjectField(categoryItem),
+        tagCategory: this.state.selectedCategory.body,
+      },
+      body: this.getWobjectBody(),
+    };
+
+    await this.props.appendObject(postData, { votePower: postData.votePower });
+  };
+
   handleSubmit = event => {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
 
-    if (objectFields.galleryItem === currentField) {
+    if (objectFields.categoryItem === currentField) {
+      this.handleCreateTag();
+    } else if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     }
 
@@ -950,11 +1010,10 @@ export default class AppendForm extends Component {
 
   handleSelectObjectTag = obj => {
     if (obj && obj.id) {
-      const clientObj = getClientWObj(obj);
       this.props.form.setFieldsValue({
-        categoryItem: clientObj,
+        categoryItem: obj,
       });
-      this.setState({ categoryItem: clientObj });
+      this.setState({ categoryItem: obj });
     }
   };
 
@@ -964,7 +1023,7 @@ export default class AppendForm extends Component {
       let currentTags = getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
-      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      currentTags = currentTags.wobjects;
       this.setState({ selectedCategory: category, currentTags });
     } else {
       this.setState({ selectedCategory: category, currentTags: [] });
