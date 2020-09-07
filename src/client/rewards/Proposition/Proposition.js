@@ -97,7 +97,7 @@ const Proposition = ({
   };
 
   const [isReserved, setReservation] = useState(false);
-  const userData = !isEmpty(users) ? get(users, ['user', 'name', 'alias'], '') : null;
+  const userData = get(users, ['user', 'name', 'alias'], '');
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
