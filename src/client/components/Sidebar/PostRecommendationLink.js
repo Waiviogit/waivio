@@ -7,21 +7,13 @@ import { FormattedMessage, FormattedNumber, FormattedRelative } from 'react-intl
 
 import { getFromMetadata } from '../../helpers/parser';
 import { getProxyImageURL } from '../../helpers/image';
-import { getContentImages } from '../../helpers/postHelpers';
 
 const PostRecommendationLink = ({ post, navigateToPost, navigateToPostComments }) => {
   const images = getFromMetadata(post.json_metadata, 'image');
   const firstImage = head(images);
   let imagePath = '';
 
-  if (images && firstImage) {
-    imagePath = getProxyImageURL(firstImage, 'preview');
-  } else {
-    const contentImages = getContentImages(post.body);
-    if (contentImages.length) {
-      imagePath = getProxyImageURL(contentImages[0], 'preview');
-    }
-  }
+  if (images && firstImage) imagePath = getProxyImageURL(firstImage, 'preview');
 
   const containerClassList = classNames('PostRecommendation__link__post-title', {
     'PostRecommendation__link__post-title--no-image': !imagePath,
