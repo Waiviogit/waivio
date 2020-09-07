@@ -156,8 +156,8 @@ class CreateRewardForm extends React.Component {
               : campaign.name
           }`,
           campaignType: campaign.type,
-          budget: campaign.budget,
-          reward: campaign.reward,
+          budget: campaign.budget.toString(),
+          reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
