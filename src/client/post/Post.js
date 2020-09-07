@@ -61,7 +61,7 @@ export default class Post extends React.Component {
   static defaultProps = {
     user: {},
     edited: false,
-    content: undefined,
+    content: null,
     fetching: false,
     loaded: false,
     failed: false,
