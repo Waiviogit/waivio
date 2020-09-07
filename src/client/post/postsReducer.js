@@ -281,7 +281,11 @@ export default posts;
 
 export const getPosts = state => state.list;
 export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(post => post.permlink === permlink && post.author === author);
+  Object.values(state.list).find(
+    post =>
+      post.permlink === permlink &&
+      (post.author === author || get(post, ['guestInfo', 'userId']) === author),
+  );
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>
   get(state, ['postsStates', `${author}/${permlink}`, 'fetching']);
