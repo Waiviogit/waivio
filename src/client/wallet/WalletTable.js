@@ -1,25 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { DatePicker, Form } from 'antd';
+import { Button, DatePicker, Form } from 'antd';
 import { injectIntl } from 'react-intl';
 import { get, map } from 'lodash';
+import moment from 'moment';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getTableOperationNum,
+  getTableTransactions,
   getTotalVestingFundSteem,
   getTotalVestingShares,
   getTransactions,
   getUser,
+  getUserHasMoreTable,
   getUsersTransactions,
 } from '../reducers';
-import { openWalletTable, closeWalletTable } from './walletActions';
+import { openWalletTable, closeWalletTable, getUserTableTransactionHistory } from './walletActions';
 import { getDataDemoTransactions } from './WalletHelper';
 import WalletTableBodyRow from './WalletTableBodyRow';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import * as store from '../reducers';
 
 import './WalletTable.less';
+import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 
 const getCurrentTransactions = (props, isGuestPage) => {
   const { user, transactionsHistory, demoTransactionsHistory } = props;
@@ -29,27 +34,50 @@ const getCurrentTransactions = (props, isGuestPage) => {
   return isGuestPage ? demoTransactions : transactions;
 };
 
-const filterPanel = intl => (
-  <Form layout="vertical">
-    <Form.Item>
-      {intl.formatMessage({
-        id: 'table_date_from',
-        defaultMessage: 'From:',
-      })}
-      <DatePicker
-        placeholder={intl.formatMessage({
-          id: 'table_date_picker',
-          defaultMessage: 'Select date and time',
+const handleSubmit = (props, startDate, endDate, currentUsername) => {
+  const { getTransactionsByInterval } = props;
+  console.log('handle OK button');
+
+  getTransactionsByInterval(currentUsername);
+};
+
+const filterPanel = (props, currentUsername) => {
+  const { intl } = props;
+  const [startDate, setStartDate] = useState(0);
+  const [endDate, setEndDate] = useState(0);
+  return (
+    <Form layout="vertical">
+      <Form.Item>
+        {intl.formatMessage({
+          id: 'table_date_from',
+          defaultMessage: 'From:',
         })}
-      />
-      {intl.formatMessage({
-        id: 'table_date_till',
-        defaultMessage: 'Till:',
-      })}
-      <DatePicker placeholder="End" />
-    </Form.Item>
-  </Form>
-);
+        <DatePicker
+          placeholder={intl.formatMessage({
+            id: 'table_date_picker',
+            defaultMessage: 'Select date and time',
+          })}
+          onChange={value => setStartDate(moment(value).unix())}
+        />
+        {intl.formatMessage({
+          id: 'table_date_till',
+          defaultMessage: 'Till:',
+        })}
+        <DatePicker placeholder="End" onChange={value => setEndDate(moment(value).unix())} />
+        <Button
+          onClick={() => handleSubmit(props, startDate, endDate, currentUsername)}
+          type="primary"
+          htmlType="submit"
+        >
+          {intl.formatMessage({
+            id: 'append_send',
+            defaultMessage: 'Submit',
+          })}
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+};
 
 const WalletTable = props => {
   const {
@@ -74,7 +102,7 @@ const WalletTable = props => {
   const currentUsername = user.name;
   return (
     <React.Fragment>
-      {filterPanel(intl)}
+      {filterPanel(props, currentUsername)}
       <table className="WalletTable">
         <thead>
           <tr>
@@ -117,18 +145,25 @@ const WalletTable = props => {
           </tr>
         </thead>
         <tbody>
-          {transactions &&
-            map(transactions, transaction => (
-              <WalletTableBodyRow
-                key={transaction.timestamp}
-                transaction={transaction}
-                isGuestPage={isGuestPage}
-                currentUsername={currentUsername}
-                authUserName={authUserName}
-                totalVestingShares={totalVestingShares}
-                totalVestingFundSteem={totalVestingFundSteem}
-              />
-            ))}
+          <ReduxInfiniteScroll
+            // loadMore={}
+            // hasMore={}
+            elementIsScrollable={false}
+            threshold={500}
+          >
+            {transactions &&
+              map(transactions, transaction => (
+                <WalletTableBodyRow
+                  key={transaction.timestamp}
+                  transaction={transaction}
+                  isGuestPage={isGuestPage}
+                  currentUsername={currentUsername}
+                  authUserName={authUserName}
+                  totalVestingShares={totalVestingShares}
+                  totalVestingFundSteem={totalVestingFundSteem}
+                />
+              ))}
+          </ReduxInfiniteScroll>
         </tbody>
       </table>
     </React.Fragment>
@@ -139,15 +174,18 @@ WalletTable.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
+  totalVestingShares: PropTypes.string.isRequired,
+  totalVestingFundSteem: PropTypes.string.isRequired,
+  history: PropTypes.shape().isRequired,
+  // operationNum: PropTypes.func.isRequired,
   user: PropTypes.shape({
     name: PropTypes.string,
   }).isRequired,
   authUserName: PropTypes.string,
-  totalVestingShares: PropTypes.string.isRequired,
-  totalVestingFundSteem: PropTypes.string.isRequired,
   openTable: PropTypes.func,
   closeTable: PropTypes.func,
-  history: PropTypes.shape().isRequired,
+  // getTransactionsByInterval: PropTypes.func,
+  // hasMore: PropTypes.bool,
 };
 
 WalletTable.defaultProps = {
@@ -156,6 +194,8 @@ WalletTable.defaultProps = {
   demoTransactionsHistory: {},
   openTable: () => {},
   closeTable: () => {},
+  getTransactionsByInterval: () => {},
+  hasMore: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -168,8 +208,12 @@ const mapStateToProps = (state, ownProps) => ({
   demoTransactionsHistory: getUsersTransactions(state),
   totalVestingShares: getTotalVestingShares(state),
   totalVestingFundSteem: getTotalVestingFundSteem(state),
+  tableTransactionsHistory: getTableTransactions(state),
+  hasMore: getUserHasMoreTable(state),
+  operationNum: getTableOperationNum(state),
 });
 export default connect(mapStateToProps, {
   openTable: openWalletTable,
   closeTable: closeWalletTable,
+  getTransactionsByInterval: getUserTableTransactionHistory,
 })(injectIntl(WalletTable));

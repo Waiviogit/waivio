@@ -1439,4 +1439,27 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
       .catch(error => reject(error));
   });
 
+export const getTransferHistoryTableView = (
+  username,
+  limit = 10,
+  operationNum = -1,
+  tableView = true,
+  startDate,
+  endDate,
+  types,
+) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&types=${types}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;

@@ -20,13 +20,17 @@ const initialState = {
   currentDisplayedActions: [],
   currentFilteredActions: [],
   transactionsHistory: {},
+  tableTransactionsHistory: {},
   loadingMoreTransactions: false,
   hasMore: false,
+  hasMoreTable: false,
   hasMoreGuestActions: false,
   transactionsHistoryLoading: false,
+  tableTransactionsHistoryLoading: false,
   withdrawOpen: false,
   isErrorLoading: false,
   operationNum: -1,
+  operationNumTable: -1,
   isOpenWalletTable: false,
 };
 
@@ -119,6 +123,24 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMore: action.payload.hasMore,
         operationNum: action.payload.operationNum,
+        transactionsHistoryLoading: false,
+      };
+    }
+    case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.START:
+      return {
+        ...state,
+        tableTransactionsHistoryLoading: true,
+      };
+    case walletActions.GET_TABLE_TRANSACTIONS_HISTORY.SUCCESS: {
+      const usernameKey = action.payload.username;
+      return {
+        ...state,
+        tableTransactionsHistory: {
+          ...state.tableTransactionsHistory,
+          [usernameKey]: action.payload.tableTransactionsHistory,
+        },
+        hasMoreTable: action.payload.hasMore,
+        operationNumTable: action.payload.operationNum,
         transactionsHistoryLoading: false,
       };
     }
@@ -297,7 +319,9 @@ export const getTotalVestingShares = state => state.totalVestingShares;
 export const getTotalVestingFundSteem = state => state.totalVestingFundSteem;
 export const getUsersTransactions = state => state.usersTransactions;
 export const getTransactions = state => state.transactionsHistory;
+export const getTableTransactions = state => state.tableTransactionsHistory;
 export const getUserHasMore = state => state.hasMore;
+export const getUserHasMoreTable = state => state.hasMoreTable;
 export const getUsersEstAccountsValues = state => state.usersEstAccountsValues;
 export const getUsersAccountHistoryLoading = state => state.usersAccountHistoryLoading;
 export const getLoadingEstAccountValue = state => state.loadingEstAccountValue;
@@ -315,5 +339,6 @@ export const getStatusWithdraw = state => state.withdrawOpen;
 export const hasMoreGuestActions = state => state.hasMoreGuestActions;
 export const getIsErrorLoading = state => state.isErrorLoading;
 export const getOperationNum = state => state.operationNum;
+export const getTableOperationNum = state => state.operationNumTable;
 export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;
 export const getIsOpenWalletTable = state => state.isOpenWalletTable;

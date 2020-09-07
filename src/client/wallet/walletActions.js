@@ -10,7 +10,7 @@ import {
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
-import { getTransferHistory } from '../../waivioApi/ApiClient';
+import { getTransferHistory, getTransferHistoryTableView } from '../../waivioApi/ApiClient';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -24,6 +24,9 @@ export const GET_MORE_USER_ACCOUNT_HISTORY = createAsyncActionType(
   '@users/GET_MORE_USER_ACCOUNT_HISTORY',
 );
 export const GET_TRANSACTIONS_HISTORY = createAsyncActionType('@wallet/GET_TRANSACTIONS_HISTORY');
+export const GET_TABLE_TRANSACTIONS_HISTORY = createAsyncActionType(
+  '@wallet/GET_TABLE_TRANSACTIONS_HISTORY',
+);
 export const GET_MORE_TRANSACTIONS_HISTORY = createAsyncActionType(
   '@wallet/GET_MORE_TRANSACTIONS_HISTORY',
 );
@@ -246,6 +249,37 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
         .then(data => ({
           username,
           transactionsHistory: data.wallet,
+          operationNum: data.operationNum,
+          hasMore: data.hasMore,
+        }))
+        .catch(error => console.log(error)),
+    },
+  });
+
+export const getUserTableTransactionHistory = (
+  username,
+  limit,
+  operationNum,
+  tableView,
+  startDate,
+  endDate,
+  types,
+) => dispatch =>
+  dispatch({
+    type: GET_TABLE_TRANSACTIONS_HISTORY.ACTION,
+    payload: {
+      promise: getTransferHistoryTableView(
+        username,
+        limit,
+        operationNum,
+        tableView,
+        startDate,
+        endDate,
+        types,
+      )
+        .then(data => ({
+          username,
+          tableTransactionsHistory: data.wallet,
           operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
