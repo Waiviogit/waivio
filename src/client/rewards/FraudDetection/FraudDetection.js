@@ -11,10 +11,10 @@ import {
 } from '../../reducers';
 import { getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import Proposition from '../Proposition/Proposition';
-import './FraudDetection.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import './FraudDetection.less';
 
 const FraudDetection = ({
   intl,
