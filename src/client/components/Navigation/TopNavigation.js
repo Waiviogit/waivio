@@ -92,7 +92,7 @@ const TopNavigation = ({ location: { pathname } }) => {
             {!isEmpty(authenticatedUser) && (
               <li className="TopNavigation__item">
                 <Link
-                  to={`${LINKS.TOOLS_SETTINGS_NOTIFICATIONS}`}
+                  to={`${LINKS.TOOLS_DRAFTS}`}
                   className={classNames('TopNavigation__link', {
                     'TopNavigation__link--active': TOOLS_URLS.some(feedUrl =>
                       pathname.includes(feedUrl),

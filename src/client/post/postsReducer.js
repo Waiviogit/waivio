@@ -211,32 +211,6 @@ const posts = (state = initialState, action) => {
         ...state,
         list: getPostsList(state.list, action),
       };
-    case postsActions.FAKE_LIKE_POST_START:
-      return {
-        ...state,
-        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
-      };
-    case postsActions.FAKE_LIKE_POST_SUCCESS: {
-      if (action.payload.isFakeLikeOk) {
-        const updatedPost = { ...state.list[action.meta.postPermlink] };
-
-        updatedPost.active_votes = updatedPost.active_votes.filter(
-          vote => vote.voter !== action.meta.voter,
-        );
-        updatedPost.active_votes.push(action.meta);
-        return {
-          ...state,
-          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
-          pendingLikes: {},
-        };
-      }
-      return state;
-    }
-    case postsActions.FAKE_LIKE_POST_ERROR:
-      return {
-        ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
-      };
 
     case FAKE_REBLOG_POST: {
       const rebloggedPost = state.list[action.payload.postId];
