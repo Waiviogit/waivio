@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { size } from 'lodash';
+import { size, ceil } from 'lodash';
 import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
@@ -25,7 +25,9 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
     const index = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name));
 
     if (index > typesLimit) {
-      setTypesCount(index + 1);
+      const count = ceil((index + 1) / 5) * 5;
+
+      setTypesCount(count);
     } else {
       setTypesCount(typesLimit);
     }
