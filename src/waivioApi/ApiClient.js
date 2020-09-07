@@ -296,13 +296,16 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(postData),
-  })
-    .then(res => res.json())
-    .catch(error => error);
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
