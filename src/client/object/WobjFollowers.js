@@ -22,16 +22,18 @@ class WobjFollowers extends React.Component {
 
   static limit = 50;
 
-  fetcher = async skip => {
+  fetcher = async () => {
     const { match } = this.props;
+    const skip = 0;
     const response = await getWobjectFollowers(
       match.params.name,
-      skip.length,
+      skip,
       WobjFollowers.limit,
-      this.props.user,
       this.props.sort,
+      this.props.user,
     );
-    return { users: response, hasMore: response.length === WobjFollowers.limit };
+    console.log(skip);
+    return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
   };
 
   render() {
