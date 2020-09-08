@@ -24,7 +24,12 @@ import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist, getFraudSuspicion } from '../rewardsActions';
+import {
+  changeBlackAndWhiteLists,
+  setDataForSingleReport,
+  getBlacklist,
+  getFraudSuspicion,
+} from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';
@@ -183,7 +188,7 @@ export default class CampaignButtons extends React.Component {
     }
 
     return this.props.getMessageHistory();
-  }
+  };
 
   handleRejectClick = () => {
     const { proposition } = this.props;
@@ -202,14 +207,6 @@ export default class CampaignButtons extends React.Component {
         objPermlink,
         appName,
       })
-      // .then(() => {
-      //   message.success(
-      //     this.props.intl.formatMessage({
-      //       id: 'review_rejected',
-      //       defaultMessage: 'Review rejected',
-      //     }),
-      //   );
-      // })
       .then(() => {
         setTimeout(() => {
           this.updatePage();
@@ -366,7 +363,11 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY || this.matchParams === FRAUD_DETECTION) {
+    if (
+      this.matchParams === MESSAGES ||
+      this.matchParams === GUIDE_HISTORY ||
+      this.matchParams === FRAUD_DETECTION
+    ) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];

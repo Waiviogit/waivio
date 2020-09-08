@@ -9,7 +9,13 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
-import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES, FRAUD_DETECTION } from '../../../common/constants/rewards';
+import {
+  ASSIGNED,
+  GUIDE_HISTORY,
+  HISTORY,
+  MESSAGES,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
@@ -38,7 +44,7 @@ const Proposition = ({
   blacklistUsers,
   users,
   wobjPrice,
-                       sortFraudDetection,
+  sortFraudDetection,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -274,7 +280,7 @@ Proposition.propTypes = {
   post: PropTypes.shape(),
   users: PropTypes.shape(),
   match: PropTypes.shape(),
-  sortFraudDetection:PropTypes.string,
+  sortFraudDetection: PropTypes.string,
 };
 
 Proposition.defaultProps = {
@@ -284,7 +290,7 @@ Proposition.defaultProps = {
   loading: false,
   users: {},
   match: {},
-  sortFraudDetection: 'reservation'
+  sortFraudDetection: 'reservation',
 };
 
 export default connect(

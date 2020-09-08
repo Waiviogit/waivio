@@ -11,7 +11,12 @@ import {
   getCountTookPartCampaigns,
   getCreatedCampaignsCount,
 } from '../../reducers';
-import { MESSAGES, HISTORY, PATH_NAME_HISTORY, FRAUD_DETECTION } from '../../../common/constants/rewards';
+import {
+  MESSAGES,
+  HISTORY,
+  PATH_NAME_HISTORY,
+  FRAUD_DETECTION,
+} from '../../../common/constants/rewards';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
 import './Sidenav.less';
 
