@@ -164,7 +164,6 @@ class UserDynamicList extends React.Component {
       .catch(err => {
         message.error(err.message);
       });
-    console.log();
   };
 
   handleSorting(sorting) {
@@ -177,7 +176,6 @@ class UserDynamicList extends React.Component {
         sort: sorting,
       },
       () => {
-        console.log(sorting);
         fetcher(users, sorting)
           .then(newUsers =>
             this.setState({
