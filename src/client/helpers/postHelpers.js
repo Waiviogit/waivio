@@ -18,8 +18,6 @@ const appVersion = require('../../../package.json').version;
 
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
-export const isPostUnLoad = post => post.depth === 'undefined';
-
 export const isPostTaggedNSFW = post => {
   if (post.parent_permlink === 'nsfw') return true;
 
