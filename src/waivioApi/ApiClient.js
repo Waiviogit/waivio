@@ -988,18 +988,30 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 } = {}) => {
+export const getGuestPaymentsHistory = async (
+  userName,
+  { skip = 0, limit = 10 } = {},
+  tableView = false,
+  startDate,
+  endDate,
+) => {
   const token = await getValidTokenData();
+  let url = '';
+  if (tableView) {
+    url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}`;
+  } else {
+    url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`;
+  }
   return new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
-      {
-        headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
-        method: 'GET',
-      },
-    )
+    fetch(url, {
+      headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
+      method: 'GET',
+    })
       .then(res => res.json())
-      .then(result => resolve(result))
+      .then(result => {
+        console.log('result: ', result);
+        return resolve(result);
+      })
       .catch(error => reject(error));
   });
 };

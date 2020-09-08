@@ -19,6 +19,7 @@ import {
   getIsloadingMoreTableTransactions,
   getLoadingMoreUsersAccountHistory,
   getUsersAccountHistory,
+  hasMoreGuestActions,
 } from '../reducers';
 import {
   openWalletTable,
@@ -28,6 +29,7 @@ import {
   getMoreTableUserTransactionHistory,
   getMoreUserAccountHistory,
   clearTransactionsHistory,
+  getUserAccountHistory,
 } from './walletActions';
 import {
   getDataDemoTransactions,
@@ -47,7 +49,7 @@ const getCurrentTransactions = (
   tableTransactionsHistory,
 ) => {
   const username = user.name;
-  if (!size(transactionsHistory)) {
+  if (!isGuestPage && !size(transactionsHistory)) {
     return get(tableTransactionsHistory, username, []);
   }
   if (isGuestPage) {
@@ -59,29 +61,36 @@ const getCurrentTransactions = (
 const handleSubmit = (
   currentUsername,
   getTransactionsByInterval,
+  getDemoTransactionsByInterval,
   startDate,
   endDate,
   clearTable,
   tableView,
-  operationNum,
+  isGuestPage,
+  // operationNum, // Todo отправлять после фиксов с бэка. Неправильная фильтрация
 ) => {
   const limit = 10;
-  clearTable();
-  getTransactionsByInterval(
-    currentUsername,
-    limit,
-    tableView,
-    startDate,
-    endDate,
-    TRANSACTION_TYPES,
-    operationNum,
-  );
+  if (isGuestPage) {
+    getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate);
+  } else {
+    console.log('here'); // Todo: тут не отрабатывает
+    clearTable();
+    getTransactionsByInterval(
+      currentUsername,
+      limit,
+      tableView,
+      startDate,
+      endDate,
+      TRANSACTION_TYPES,
+    );
+  }
 };
 
 const filterPanel = (
   intl,
   currentUsername,
   getTransactionsByInterval,
+  getDemoTransactionsByInterval,
   clearTable,
   startDate,
   setStartDate,
@@ -90,6 +99,7 @@ const filterPanel = (
   tableView,
   clearWalletHistory,
   operationNum,
+  isGuestPage,
 ) => (
   <Form layout="vertical">
     <Form.Item>
@@ -115,12 +125,14 @@ const filterPanel = (
           return handleSubmit(
             currentUsername,
             getTransactionsByInterval,
+            getDemoTransactionsByInterval,
             startDate,
             endDate,
             clearTable,
             tableView,
             clearWalletHistory,
             operationNum,
+            isGuestPage,
           );
         }}
         type="primary"
@@ -146,8 +158,10 @@ const WalletTable = props => {
     closeTable,
     operationNum,
     getTransactionsByInterval,
+    getDemoTransactionsByInterval,
     clearTable,
     hasMore,
+    demoHasMoreActions,
     isloadingMoreTableTransactions,
     isloadingMoreDemoTransactions,
     getMoreTableTransactions,
@@ -194,6 +208,7 @@ const WalletTable = props => {
         intl,
         currentUsername,
         getTransactionsByInterval,
+        getDemoTransactionsByInterval,
         clearTable,
         startDate,
         setStartDate,
@@ -202,6 +217,7 @@ const WalletTable = props => {
         tableView,
         clearWalletHistory,
         operationNum,
+        isGuestPage,
       )}
       <table className="WalletTable">
         <thead>
@@ -248,7 +264,7 @@ const WalletTable = props => {
           <ReduxInfiniteScroll
             className="WalletTable__main-content"
             loadMore={handleLoadMore}
-            hasMore={hasMore}
+            hasMore={isGuestPage ? demoHasMoreActions : hasMore}
             elementIsScrollable={false}
             threshold={500}
           >
@@ -286,7 +302,9 @@ WalletTable.propTypes = {
   openTable: PropTypes.func,
   closeTable: PropTypes.func,
   getTransactionsByInterval: PropTypes.func,
+  getDemoTransactionsByInterval: PropTypes.func,
   hasMore: PropTypes.bool,
+  demoHasMoreActions: PropTypes.bool,
   clearTable: PropTypes.func,
   getMoreTableTransactions: PropTypes.func,
   getMoreDemoTransactions: PropTypes.func,
@@ -301,6 +319,7 @@ WalletTable.defaultProps = {
   openTable: () => {},
   closeTable: () => {},
   getTransactionsByInterval: () => {},
+  getDemoTransactionsByInterval: () => {},
   clearTable: () => {},
   getMoreTableTransactions: () => {},
   getMoreDemoTransactions: () => {},
@@ -309,11 +328,13 @@ WalletTable.defaultProps = {
   transactionsHistory: {},
   demoTransactionsHistory: {},
   hasMore: false,
+  demoHasMoreActions: false,
   isloadingMoreTableTransactions: false,
   isloadingMoreDemoTransactions: false,
   usersAccountHistory: {},
   tableTransactionsHistory: {},
   isSubmitLoading: false,
+  operationNum: -1,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -332,12 +353,14 @@ const mapStateToProps = (state, ownProps) => ({
   isloadingMoreTableTransactions: getIsloadingMoreTableTransactions(state),
   isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
   usersAccountHistory: getUsersAccountHistory(state),
+  demoHasMoreActions: hasMoreGuestActions(state),
 });
 
 export default connect(mapStateToProps, {
   openTable: openWalletTable,
   closeTable: closeWalletTable,
   getTransactionsByInterval: getUserTableTransactionHistory,
+  getDemoTransactionsByInterval: getUserAccountHistory,
   clearTable: clearTransactionsTableHistory,
   clearWalletHistory: clearTransactionsHistory,
   getMoreTableTransactions: getMoreTableUserTransactionHistory,

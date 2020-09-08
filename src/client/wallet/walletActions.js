@@ -142,12 +142,25 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
+export const getMoreUserAccountHistory = (
+  username,
+  start,
+  limit,
+  tableView,
+  startDate,
+  endDate,
+) => dispatch => {
   const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, { from: start, limit, isGuest }).then(userActions => {
+      promise: getAccountHistory(
+        username,
+        { from: start, limit, isGuest },
+        tableView,
+        startDate,
+        endDate,
+      ).then(userActions => {
         const parsedUserActions = getParsedUserActions(userActions, isGuest);
         return {
           username,
@@ -224,22 +237,24 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   }
 };
 
-export const getUserAccountHistory = username => dispatch => {
+export const getUserAccountHistory = (username, tableView, startDate, endDate) => dispatch => {
   const isGuest = guestUserRegex.test(username);
   return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, { isGuest }).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions, isGuest);
+      promise: getAccountHistory(username, { isGuest }, tableView, startDate, endDate).then(
+        userActions => {
+          const parsedUserActions = getParsedUserActions(userActions, isGuest);
 
-        return {
-          username,
-          userWalletTransactions: parsedUserActions.userWalletTransactions,
-          userAccountHistory: parsedUserActions.userAccountHistory,
-          balance: get(userActions, ['payable'], null),
-          hasMoreGuestActions: get(userActions, ['hasMore'], false),
-        };
-      }),
+          return {
+            username,
+            userWalletTransactions: parsedUserActions.userWalletTransactions,
+            userAccountHistory: parsedUserActions.userAccountHistory,
+            balance: get(userActions, ['payable'], null),
+            hasMoreGuestActions: get(userActions, ['hasMore'], false),
+          };
+        },
+      ),
     },
   });
 };
