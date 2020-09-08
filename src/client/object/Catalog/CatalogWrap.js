@@ -479,7 +479,7 @@ class CatalogWrap extends React.Component {
       propositions,
     } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
-    const currWobject = wobjNested || wobject;
+    const currWobject = wobject;
     const itemsIdsToOmit = uniq([
       ...listItems.map(item => item.id),
       ...breadcrumb.map(crumb => crumb.id),
@@ -595,7 +595,7 @@ class CatalogWrap extends React.Component {
             )}
           </React.Fragment>
         )}
-        {hasType(currWobject, OBJ_TYPE.PAGE) && !isEmpty(wobjNested) && (
+        {!isEmpty(wobjNested) && hasType(wobjNested, OBJ_TYPE.PAGE) && (
           <BodyContainer full body={getFieldWithMaxWeight(currWobject, objectFields.pageContent)} />
         )}
       </div>
