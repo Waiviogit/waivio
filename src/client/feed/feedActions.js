@@ -310,8 +310,10 @@ async function getBookmarksData(bookmarks) {
   const bookmarksData = [];
   for (let idx = 0; idx < bookmarks.length; idx += 1) {
     const [author, permlink] = bookmarks[idx].split('/');
-    const postData = ApiClient.getContent(author, permlink);
-    bookmarksData.push(postData);
+    if (author !== 'undefined' && permlink !== 'undefined') {
+      const postData = ApiClient.getContent(author, permlink);
+      bookmarksData.push(postData);
+    }
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }

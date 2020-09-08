@@ -22,10 +22,10 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
   });
 
   useEffect(() => {
-    const index = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name));
+    const typesCount = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name)) + 1;
 
-    if (index > typesLimit) {
-      const count = ceil((index + 1) / 5) * 5;
+    if (typesCount > typesLimit) {
+      const count = ceil(typesCount / 5) * 5;
 
       setTypesCount(count);
     } else {
