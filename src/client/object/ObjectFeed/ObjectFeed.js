@@ -126,7 +126,10 @@ export default class ObjectFeed extends React.Component {
       window.scrollTo(0, 0);
     }
 
-    if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
+    if (
+      (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) ||
+      nextPropswobjectId === this.mountedId
+    ) {
       const requiredObject =
         get(nextProps.wobject, ['parent', 'author_permlink']) || get(nextProps.wobject, ['parent']);
       const primaryObject = get(nextProps.wobject, ['author_permlink']);
@@ -141,17 +144,6 @@ export default class ObjectFeed extends React.Component {
         reqData.primaryObject = primaryObject;
       }
       this.getPropositions(reqData);
-    }
-
-    if (nextPropswobjectId === this.mountedId) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
-
-      this.getPropositions({
-        userName: nextProps.userName,
-        requiredObject,
-        match: nextProps.match,
-        locale: usedLocale,
-      });
     }
 
     this.mountedId = null;

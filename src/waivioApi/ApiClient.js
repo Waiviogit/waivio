@@ -296,13 +296,16 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(postData),
-  })
-    .then(res => res.json())
-    .catch(error => error);
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
@@ -323,7 +326,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   });
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort = 'recency', authUser) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
@@ -332,7 +335,7 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => 
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
       headers: actualHeaders,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, sort }),
     })
       .then(handleErrors)
       .then(res => res.json())
