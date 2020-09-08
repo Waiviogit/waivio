@@ -353,13 +353,10 @@ export const getMoreTableUserTransactionHistory = (
 export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
 
 // eslint-disable-next-line consistent-return
-export const clearTransactionsHistory = (location, username) => dispatch => {
-  if (location.pathname !== `/@${username}/transfers/table`) {
-    return dispatch({
-      type: CLEAR_TRANSACTIONS_HISTORY,
-    });
-  }
-};
+export const clearTransactionsHistory = () => dispatch =>
+  dispatch({
+    type: CLEAR_TRANSACTIONS_HISTORY,
+  });
 
 export const CLEAR_TABLE_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TABLE_TRANSACTIONS_HISTORY';
 

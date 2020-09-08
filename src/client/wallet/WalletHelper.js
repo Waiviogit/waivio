@@ -114,12 +114,12 @@ export const getCurrentRows = data => {
   return (
     <React.Fragment>
       <tr>
-        <td className="">{timestamp}</td>
-        <td className="">{fieldHIVE}</td>
-        <td className="">{fieldHP}</td>
-        <td className="">{fieldHBD}</td>
-        <td className="">{fieldDescription}</td>
-        <td className="">{fieldMemo}</td>
+        <td>{timestamp}</td>
+        <td>{fieldHIVE}</td>
+        <td>{fieldHP}</td>
+        <td>{fieldHBD}</td>
+        <td>{fieldDescription}</td>
+        <td>{fieldMemo}</td>
       </tr>
     </React.Fragment>
   );

@@ -172,7 +172,9 @@ class Wallet extends Component {
     const username = isCurrentUser
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
-    this.props.clearTransactionsHistory(history.location, username);
+    if (history.location.pathname !== `/@${username}/transfers/table`) {
+      this.props.clearTransactionsHistory();
+    }
   }
 
   render() {
