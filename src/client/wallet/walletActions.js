@@ -280,15 +280,12 @@ export const getUserTableTransactionHistory = (
         types,
         operationNum,
       )
-        .then(data => {
-          console.log('data: ', data);
-          return {
-            username,
-            tableTransactionsHistory: data.wallet,
-            operationNumTable: data.operationNum,
-            hasMoreTable: data.hasMore,
-          };
-        })
+        .then(data => ({
+          username,
+          tableTransactionsHistory: data.wallet,
+          operationNumTable: data.operationNum,
+          hasMoreTable: data.hasMore,
+        }))
         .catch(error => console.log(error)),
     },
   });
@@ -340,9 +337,9 @@ export const getMoreTableUserTransactionHistory = (
       )
         .then(data => ({
           username,
-          transactionsHistory: data.wallet,
-          operationNum: data.operationNum,
-          hasMore: data.hasMore,
+          tableTransactionsHistory: data.wallet,
+          operationNumTable: data.operationNum,
+          hasMoreTable: data.hasMore,
         }))
         .catch(error => {
           console.log(error);

@@ -33,6 +33,10 @@ export const handleLoadMoreTransactions = ({
   getMoreDemoFunction,
   transferActions,
   isGuest,
+  table,
+  fromDate,
+  tillDate,
+  types,
 }) => {
   let skip = 0;
   const limit = 10;
@@ -43,7 +47,11 @@ export const handleLoadMoreTransactions = ({
     }
     if (!demoIsLoadingMore) getMoreDemoFunction(username, skip, limit);
   }
-  if (!isLoadingMore) getMoreFunction(username, limit, operationNumber);
+  if (table) {
+    if (!isLoadingMore) {
+      getMoreFunction(username, limit, table, fromDate, tillDate, types, operationNumber);
+    }
+  } else if (!isLoadingMore) getMoreFunction(username, limit, operationNumber);
 };
 
 export const getDataDemoTransactions = (username, demoTransactionsHistory) => {

@@ -1447,9 +1447,8 @@ export const getTransferHistoryTableView = (
   endDate,
   types,
   operationNum = -1,
-) => {
-  console.log('getTransferHistoryTableView: ', operationNum);
-  return new Promise((resolve, reject) => {
+) =>
+  new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${types}&operationNum=${operationNum}`,
       {
@@ -1459,12 +1458,8 @@ export const getTransferHistoryTableView = (
     )
       .then(handleErrors)
       .then(res => res.json())
-      .then(result => {
-        console.log('result: ', result);
-        return resolve(result);
-      })
+      .then(result => resolve(result))
       .catch(error => reject(error));
   });
-};
 
 export default null;

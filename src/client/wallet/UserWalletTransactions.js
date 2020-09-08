@@ -98,6 +98,7 @@ class UserWalletTransactions extends React.Component {
       getMoreDemoFunction: getMoreUserAccountHistory,
       transferActions: actions,
       isGuest: this.isGuestPage(),
+      table: false,
     };
     return handleLoadMoreTransactions(values);
   };

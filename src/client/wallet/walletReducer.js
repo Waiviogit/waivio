@@ -143,7 +143,7 @@ export default function walletReducer(state = initialState, action) {
         },
         hasMoreTable: action.payload.hasMoreTable,
         operationNumTable: action.payload.operationNumTable,
-        transactionsHistoryLoading: false,
+        tableTransactionsHistoryLoading: false,
       };
     }
     case walletActions.GET_MORE_TRANSACTIONS_HISTORY.START:
@@ -191,8 +191,8 @@ export default function walletReducer(state = initialState, action) {
             isEqual,
           ),
         },
-        hasMore: action.payload.hasMore,
-        operationNumTable: action.payload.operationNum,
+        hasMoreTable: action.payload.hasMoreTable,
+        operationNumTable: action.payload.operationNumTable,
         loadingMoreTableTransactions: false,
         isErrorLoadingTableTransactions: false,
       };
@@ -385,4 +385,5 @@ export const getOperationNum = state => state.operationNum;
 export const getTableOperationNum = state => state.operationNumTable;
 export const getIsloadingMoreTransactions = state => state.loadingMoreTransactions;
 export const getIsloadingMoreTableTransactions = state => state.loadingMoreTableTransactions;
+export const getIsloadingTableTransactions = state => state.tableTransactionsHistoryLoading;
 export const getIsOpenWalletTable = state => state.isOpenWalletTable;
