@@ -1070,7 +1070,7 @@ export default class AppendForm extends Component {
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST: {
         const objectType =
-          this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
+          currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
         return (
           <React.Fragment>
             <Form.Item>
@@ -1923,7 +1923,6 @@ export default class AppendForm extends Component {
         <div className="ant-form-item-label label AppendForm__appendTitles">
           <FormattedMessage id="suggest1" defaultMessage="I suggest to add field" />
         </div>
-
         <Form.Item>
           {getFieldDecorator('currentField', {
             initialValue: currentField,
