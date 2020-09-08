@@ -32,7 +32,6 @@ class WobjFollowers extends React.Component {
       this.props.sort,
       this.props.user,
     );
-    console.log(skip);
     return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
   };
 
