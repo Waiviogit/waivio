@@ -22,18 +22,25 @@ class WobjFollowers extends React.Component {
 
   static limit = 50;
 
-  fetcher = async () => {
-    const { match } = this.props;
-    const skip = 0;
+  constructor(props) {
+    super(props);
+
+    this.fetcher = this.fetcher.bind(this);
+  }
+  skip = 0;
+  limit = 100;
+
+  async fetcher() {
     const response = await getWobjectFollowers(
-      match.params.name,
-      skip,
+      this.props.match.params.name,
+      this.skip,
       WobjFollowers.limit,
       this.props.sort,
       this.props.user,
     );
+    WobjFollowers.skip += WobjFollowers.limit;
     return { users: response.wobjectFollowers, hasMore: response.length === WobjFollowers.limit };
-  };
+  }
 
   render() {
     return <UserDynamicList limit={WobjFollowers.limit} fetcher={this.fetcher} />;
