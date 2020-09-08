@@ -112,8 +112,8 @@ export const getFollowingSponsorsRewards = userName => dispatch =>
 
 export const GET_FRAUD_SUSPICION = createAsyncActionType('@rewards/GET_FRAUD_SUSPICION');
 
-export const getFraudSuspicion = ({ guideName, fraudSuspicion, sort }) => dispatch =>
+export const getFraudSuspicion = ({ guideName, fraudSuspicion, sort, skip }) => dispatch =>
   dispatch({
     type: GET_FRAUD_SUSPICION.ACTION,
-    payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort }),
+    payload: ApiClient.getHistory({ guideName, fraudSuspicion, sort, skip }),
   });

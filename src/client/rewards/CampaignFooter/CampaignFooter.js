@@ -78,6 +78,7 @@ class CampaignFooter extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     sendCommentMessages: PropTypes.func,
+    sortFraudDetection: PropTypes.string,
   };
 
   static defaultProps = {
@@ -106,6 +107,7 @@ class CampaignFooter extends React.Component {
     isGuest: false,
     sendCommentMessages: () => {},
     proposition: {},
+    sortFraudDetection: 'reservation',
   };
 
   constructor(props) {
@@ -413,6 +415,7 @@ class CampaignFooter extends React.Component {
       blacklistUsers,
       reservedComments,
       isGuest,
+      sortFraudDetection,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -466,6 +469,7 @@ class CampaignFooter extends React.Component {
               numberOfComments={numberOfComments}
               getMessageHistory={getMessageHistory}
               blacklistUsers={blacklistUsers}
+              sortFraudDetection={sortFraudDetection}
             />
           )}
         </div>

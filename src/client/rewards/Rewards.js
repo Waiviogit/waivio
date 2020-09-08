@@ -61,6 +61,7 @@ import {
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
   IS_RESERVED,
+  FRAUD_DETECTION,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -267,7 +268,7 @@ class Rewards extends React.Component {
         return this.setState({ sortMessages: sort });
       case GUIDE_HISTORY:
         return this.setState({ sortGuideHistory: sort });
-      case 'fraud-detection':
+      case FRAUD_DETECTION:
         return this.setState({ sortFraudDetection: sort });
       default:
         return this.setState({ sortAll: sort });
@@ -660,6 +661,7 @@ class Rewards extends React.Component {
         return map(
           actualPropositions,
           proposition =>
+            proposition &&
             proposition &&
             proposition.required_object && (
               <Campaign

@@ -55,7 +55,6 @@ const FraudDetection = ({
         fraudSuspicion: true,
         sort: sortFraudDetection,
       };
-      console.log('requestData', requestData);
       getBlacklistUsers(userName).then(data => {
         const blacklist = get(data, ['value', 'blackList', 'blackList']);
         const blacklistNames = map(blacklist, blacklistUser => blacklistUser.name);
@@ -71,14 +70,16 @@ const FraudDetection = ({
 
   const handleLoadMore = () => {
     if (hasMoreFraudSuspicionData) {
-      setLoading(true);
+      // setLoading(true);
       const requestData = {
         guideName: userName,
         fraudSuspicion: true,
         sort: sortFraudDetection,
         skip: fraudSuspicionData ? fraudSuspicionData.length : 0,
       };
-      getFraudSuspicionData(requestData);
+      getFraudSuspicionData(requestData).then(() => {
+        setLoading(false);
+      });
     }
   };
 
@@ -148,6 +149,7 @@ const FraudDetection = ({
                     user={user}
                     match={match}
                     blacklistUsers={blacklistUsers}
+                    sortFraudDetection={sortFraudDetection}
                   />
                 ),
             ),

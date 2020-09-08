@@ -18,12 +18,13 @@ import {
   HISTORY,
   IS_RESERVED,
   IS_ALL,
+  FRAUD_DETECTION,
 } from '../../../common/constants/rewards';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 import { rejectReview, changeReward, reinstateReward } from '../../user/userActions';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist } from '../rewardsActions';
+import { changeBlackAndWhiteLists, setDataForSingleReport, getBlacklist, getFraudSuspicion } from '../rewardsActions';
 import { getReport } from '../../../waivioApi/ApiClient';
 import Report from '../Report/Report';
 import '../../components/StoryFooter/Buttons.less';
@@ -37,6 +38,7 @@ import '../../components/StoryFooter/Buttons.less';
   getBlacklist,
   changeReward,
   reinstateReward,
+  getFraudSuspicion,
 })
 export default class CampaignButtons extends React.Component {
   static propTypes = {
@@ -66,6 +68,8 @@ export default class CampaignButtons extends React.Component {
     setDataForSingleReport: PropTypes.func.isRequired,
     getBlacklist: PropTypes.func.isRequired,
     blacklistUsers: PropTypes.arrayOf(PropTypes.string),
+    sortFraudDetection: PropTypes.string,
+    getFraudSuspicion: PropTypes.func,
   };
 
   static defaultProps = {
@@ -84,7 +88,9 @@ export default class CampaignButtons extends React.Component {
     numberOfComments: null,
     getMessageHistory: () => {},
     onActionInitiated: () => {},
+    getFraudSuspicion: () => {},
     blacklistUsers: [],
+    sortFraudDetection: 'reservation',
   };
 
   constructor(props) {
@@ -163,6 +169,22 @@ export default class CampaignButtons extends React.Component {
     });
   }
 
+  updatePage = () => {
+    const { user, sortFraudDetection } = this.props;
+
+    if (this.matchParams === FRAUD_DETECTION) {
+      const requestData = {
+        guideName: user.name,
+        fraudSuspicion: true,
+        sort: sortFraudDetection,
+      };
+
+      return this.props.getFraudSuspicion(requestData);
+    }
+
+    return this.props.getMessageHistory();
+  }
+
   handleRejectClick = () => {
     const { proposition } = this.props;
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
@@ -180,16 +202,24 @@ export default class CampaignButtons extends React.Component {
         objPermlink,
         appName,
       })
+      // .then(() => {
+      //   message.success(
+      //     this.props.intl.formatMessage({
+      //       id: 'review_rejected',
+      //       defaultMessage: 'Review rejected',
+      //     }),
+      //   );
+      // })
       .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'review_rejected',
-            defaultMessage: 'Review rejected',
-          }),
-        );
-      })
-      .then(() => {
-        setTimeout(() => this.props.getMessageHistory(), 8000);
+        setTimeout(() => {
+          this.updatePage();
+          message.success(
+            this.props.intl.formatMessage({
+              id: 'review_rejected',
+              defaultMessage: 'Review rejected',
+            }),
+          );
+        }, 8000);
       })
       .catch(e => message.error(e.message));
   };
@@ -336,7 +366,7 @@ export default class CampaignButtons extends React.Component {
   getPopoverMenu = () => {
     const { propositionStatus } = this.props;
     const { isUserInBlacklist } = this.state;
-    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) {
+    if (this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY || this.matchParams === FRAUD_DETECTION) {
       return getPopoverDataMessages({ propositionStatus, isUserInBlacklist }) || [];
     }
     return popoverDataHistory[propositionStatus] || [];
@@ -433,7 +463,7 @@ export default class CampaignButtons extends React.Component {
     };
 
     const closeModalReport = () => this.setState({ isModalReportOpen: false });
-    const isHistory = match.path === '/rewards/(history|guideHistory|messages)';
+    const isHistory = match.path === '/rewards/(history|guideHistory|messages|fraud-detection)';
 
     return (
       <Popover

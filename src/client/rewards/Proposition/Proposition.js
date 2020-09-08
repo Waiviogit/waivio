@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
-import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
+import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES, FRAUD_DETECTION } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
   rejectReservationCampaign,
@@ -38,6 +38,7 @@ const Proposition = ({
   blacklistUsers,
   users,
   wobjPrice,
+                       sortFraudDetection,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -188,7 +189,8 @@ const Proposition = ({
         {assigned ||
         includes(match.url, HISTORY) ||
         includes(match.url, GUIDE_HISTORY) ||
-        includes(match.url, MESSAGES) ? (
+        includes(match.url, MESSAGES) ||
+        includes(match.url, FRAUD_DETECTION) ? (
           <CampaignFooter
             post={post}
             loading={loading}
@@ -202,6 +204,7 @@ const Proposition = ({
             match={match}
             getMessageHistory={getMessageHistory}
             blacklistUsers={blacklistUsers}
+            sortFraudDetection={sortFraudDetection}
           />
         ) : (
           <React.Fragment>
@@ -271,6 +274,7 @@ Proposition.propTypes = {
   post: PropTypes.shape(),
   users: PropTypes.shape(),
   match: PropTypes.shape(),
+  sortFraudDetection:PropTypes.string,
 };
 
 Proposition.defaultProps = {
@@ -280,6 +284,7 @@ Proposition.defaultProps = {
   loading: false,
   users: {},
   match: {},
+  sortFraudDetection: 'reservation'
 };
 
 export default connect(
