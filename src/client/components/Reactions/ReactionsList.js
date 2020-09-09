@@ -157,8 +157,12 @@ export default class UserList extends React.Component {
                 showFollow={false}
                 alt={
                   <span>
-                    <USDDisplay value={voteValue(vote)} />
-                    <span className="ReactionsList__bullet" />
+                    {Boolean(ratio) && (
+                      <React.Fragment>
+                        <USDDisplay value={voteValue(vote)} />
+                        <span className="ReactionsList__bullet" />
+                      </React.Fragment>
+                    )}
                     <FormattedNumber
                       style="percent" // eslint-disable-line react/style-prop-object
                       value={vote.percent / 10000}

@@ -247,7 +247,7 @@ export const postCreateWaivioObject = requestBody =>
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers: { ...headers, locale, follower },
+      headers: { ...headers, app: config.appName, locale, follower },
       method: 'GET',
     })
       .then(res => res.json())
@@ -296,13 +296,16 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(postData),
-  })
-    .then(res => res.json())
-    .catch(error => error);
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
@@ -323,7 +326,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   });
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort, authUser) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
@@ -332,7 +335,7 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => 
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
       headers: actualHeaders,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, sort }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -1089,14 +1092,14 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency') =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency', follower) =>
   fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: {
         ...headers,
-        following: username,
-        follower: username,
+        following: follower,
+        follower: follower,
       },
     },
   )
@@ -1230,9 +1233,16 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPerm
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, author, permlink }) =>
+export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =>
   fetch(
     `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      }
+    }
   )
     .then(res => res.json())
     .then(data => data)
@@ -1417,6 +1427,17 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
   )
     .then(res => res.json())
     .catch(error => error);
+
+export const getFollowingSponsorsRewards = ({ userName }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

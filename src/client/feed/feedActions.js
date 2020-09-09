@@ -310,8 +310,10 @@ async function getBookmarksData(bookmarks) {
   const bookmarksData = [];
   for (let idx = 0; idx < bookmarks.length; idx += 1) {
     const [author, permlink] = bookmarks[idx].split('/');
-    const postData = ApiClient.getContent(author, permlink);
-    bookmarksData.push(postData);
+    if (author !== 'undefined' && permlink !== 'undefined') {
+      const postData = ApiClient.getContent(author, permlink);
+      bookmarksData.push(postData);
+    }
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }
@@ -320,16 +322,14 @@ export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
   const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
-  if (loaded.length && loaded.length === bookmarks.length) {
-    return;
-  }
+  if (loaded.length && loaded.length === bookmarks.length) return;
+
   dispatch({
     type: GET_BOOKMARKS.ACTION,
     payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',
-      once: true,
     },
   });
 };
