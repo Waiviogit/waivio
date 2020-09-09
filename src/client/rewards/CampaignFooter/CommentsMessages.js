@@ -81,7 +81,7 @@ const CommentsMessages = memo(
       if (commentObj.guestInfo) {
         return get(commentObj, ['guestInfo', 'userId'], '');
       } else if (includes(commentObj.author, 'guest')) {
-        return get(currentUser, ['0', 'name']);
+        return get(currentUser, ['0', 'name']) || get(proposition, ['users', '0', 'name']);
       }
 
       return get(commentObj, ['author']);
