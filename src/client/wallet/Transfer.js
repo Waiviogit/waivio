@@ -96,6 +96,7 @@ export default class Transfer extends React.Component {
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
+    getPayables: PropTypes.func,
   };
 
   static defaultProps = {
@@ -111,6 +112,7 @@ export default class Transfer extends React.Component {
     notify: () => {},
     searchByUser: [],
     hiveBeneficiaryAccount: '',
+    getPayables: () => {},
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -259,6 +261,7 @@ export default class Transfer extends React.Component {
       to,
       user,
       history,
+      getPayables,
     } = this.props;
     const sponsor = user.name;
     const transactionId = uuidv4();
@@ -318,8 +321,10 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        if (includes(history.location.pathname, 'payables'))
+        if (includes(history.location.pathname, 'payables')) {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
+          setTimeout(() => getPayables(), 500);
+        }
         this.props.closeTransfer();
       }
     });
