@@ -31,6 +31,7 @@ import NotFound from '../statics/NotFound';
 import { getMetadata } from '../helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
@@ -185,7 +186,9 @@ export default class User extends React.Component {
           />
         </Helmet>
         <ScrollToTopOnMount />
-        {user && (
+        {user.fetching ? (
+          <Loading style={{ marginTop: '130px' }} />
+        ) : (
           <UserHero
             authenticated={authenticated}
             user={user}

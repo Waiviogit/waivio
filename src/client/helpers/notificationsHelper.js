@@ -34,37 +34,6 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
             },
             { username: displayUsername ? notification.author : '' },
           );
-    case notificationConstants.VOTE: {
-      let message = intl.formatMessage(
-        {
-          id: 'notification_unvoted_username_post',
-          defaultMessage: '{username} unvoted your post',
-        },
-        {
-          username: displayUsername ? notification.voter : '',
-        },
-      );
-
-      if (notification.weight > 0) {
-        message = intl.formatMessage(
-          {
-            id: 'notification_upvoted_username_post',
-            defaultMessage: '{username} upvoted your post',
-          },
-          { username: displayUsername ? notification.voter : '' },
-        );
-      } else if (notification.weight < 0) {
-        message = intl.formatMessage(
-          {
-            id: 'notification_downvoted_username_post',
-            defaultMessage: '{username} downvoted your post',
-          },
-          { username: displayUsername ? notification.voter : '' },
-        );
-      }
-
-      return message;
-    }
     case notificationConstants.REBLOG:
       return intl.formatMessage(
         {
@@ -260,6 +229,17 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           campaignName: notification.campaignName,
         },
       );
+    case notificationConstants.LIKE:
+      return intl.formatMessage(
+        {
+          id: 'like_post_notify_priority',
+          defaultMessage: "{voter} liked your post '{postTitle}'",
+        },
+        {
+          voter: notification.voter,
+          postTitle: notification.postTitle,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
@@ -276,7 +256,6 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.follower}`;
     case notificationConstants.MENTION:
       return `/@${notification.author}/${notification.permlink}`;
-    case notificationConstants.VOTE:
     case notificationConstants.REBLOG:
       return `/@${currentAuthUsername}/${notification.permlink}`;
     case notificationConstants.TRANSFER:
@@ -311,6 +290,14 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
       return `/@${notification.account}`;
     case notificationConstants.CUSTOMER_SUPPORT:
       return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.LIKE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_LIKE:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_COMMENT:
+      return `/@${notification.author}/${notification.permlink}`;
+    case notificationConstants.MY_POST:
+      return `/@${notification.author}/${notification.permlink}`;
     default:
       return '/notifications-list';
   }
@@ -324,8 +311,6 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
       return notification.follower;
     case notificationConstants.MENTION:
       return notification.author;
-    case notificationConstants.VOTE:
-      return notification.voter;
     case notificationConstants.TRANSFER:
       return notification.from;
     case notificationConstants.REBLOG:
@@ -358,6 +343,14 @@ export const getNotificationsAvatar = (notification, currentAuthUsername) => {
     case notificationConstants.CLAIM_REWARD:
       return notification.account;
     case notificationConstants.CUSTOMER_SUPPORT:
+      return notification.author;
+    case notificationConstants.LIKE:
+      return notification.voter;
+    case notificationConstants.MY_LIKE:
+      return notification.author;
+    case notificationConstants.MY_COMMENT:
+      return notification.author;
+    case notificationConstants.MY_POST:
       return notification.author;
     default:
       return currentAuthUsername;

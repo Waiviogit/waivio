@@ -270,7 +270,7 @@ export const getUserTransactionHistory = (username, limit, operationNum) => disp
           operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
-        .catch(error => console.log(error)),
+        .catch(error => error),
     },
   });
 
@@ -318,12 +318,11 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
           operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
-        .catch(error => {
-          console.log(error);
-          return dispatch({
+        .catch(() =>
+          dispatch({
             type: GET_ERROR_LOADING_TRANSACTIONS,
-          });
-        }),
+          }),
+        ),
     },
   });
 

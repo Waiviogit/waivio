@@ -2,7 +2,7 @@ import React, { memo, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { find, get, pick, isEmpty, times, compact, orderBy, map } from 'lodash';
+import { find, get, pick, isEmpty, times, compact, orderBy, map, filter } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
@@ -13,6 +13,7 @@ import {
   FormattedTime,
   injectIntl,
 } from 'react-intl';
+import { ASSIGNED } from '../../../common/constants/rewards';
 import { voteHistoryPost } from '../../post/postActions';
 import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
@@ -35,6 +36,7 @@ const CommentsMessages = memo(
     matchPath,
     isGuest,
     proposition,
+    match,
   }) => {
     const [replying, setReplyOpen] = useState(false);
     const [editing, setEditOpen] = useState(false);
@@ -74,16 +76,36 @@ const CommentsMessages = memo(
       [commentObj],
     );
 
-    const propositionUserName = get(proposition, ['users', '0', 'name']);
+    const currentUser = filter(
+      proposition.users,
+      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
+    );
+
+    const commentAuthor = useMemo(() => {
+      if (commentObj.guestInfo) {
+        return get(commentObj, ['guestInfo', 'userId'], '');
+      }
+      if (match.params.filterKey) {
+        return get(currentUser, ['0', 'name']);
+      }
+
+      return get(proposition, ['users', '0', 'name']);
+    }, [commentObj, match.params.filterKey, currentUser, proposition]);
 
     const time = moment.parseZone(commentCreated).valueOf();
 
     const userVote = find(activeVotes, { voter: user.name });
 
     const onSendComment = useCallback(
-      (parentPost, commentBody, isUpdating, originalPost) =>
+      (parentPost, commentBody, isUpdating, originalPost, parentAuthorIfGuest) =>
         dispatch(
-          commentsActions.sendCommentMessages(parentPost, commentBody, isUpdating, originalPost),
+          commentsActions.sendCommentMessages(
+            parentPost,
+            commentBody,
+            isUpdating,
+            originalPost,
+            parentAuthorIfGuest,
+          ),
         ),
       [dispatch],
     );
@@ -160,8 +182,9 @@ const CommentsMessages = memo(
       (parentP, commentValue) => {
         const parentComment = parentP;
         if (parentComment.author_original) parentComment.author = parentComment.author_original;
+        const parentAuthorIfGuest = parentComment.guestInfo ? parentComment.author : '';
         setLoading(true);
-        return onSendComment(parentComment, commentValue, false, commentObj)
+        return onSendComment(parentComment, commentValue, false, commentObj, parentAuthorIfGuest)
           .then(() => {
             setTimeout(() => {
               onCommentSend().then(() => {
@@ -176,7 +199,7 @@ const CommentsMessages = memo(
                 setCommentSubmitted(true);
                 setReplyOpen(false);
               });
-            }, 10000);
+            }, 12000);
           })
           .catch(() => {
             setCommentFormText(commentValue);
@@ -214,7 +237,7 @@ const CommentsMessages = memo(
                 setLoading(false);
                 setEditOpen(false);
               }),
-            10000,
+            12000,
           );
         });
       },
@@ -237,12 +260,12 @@ const CommentsMessages = memo(
       <React.Fragment>
         {show && (
           <div className="Comment">
-            <Link to={`/@${propositionUserName}`} style={{ height: 32 }}>
-              <Avatar username={propositionUserName} size={32} />
+            <Link to={`/@${commentAuthor}`} style={{ height: 32 }}>
+              <Avatar username={commentAuthor} size={32} />
             </Link>
             <div className="Comment__text">
-              <Link to={`/@${propositionUserName}`}>
-                <span className="username">{propositionUserName}</span>
+              <Link to={`/@${commentAuthor}`}>
+                <span className="username">{commentAuthor}</span>
               </Link>
               <span className="Comment__date">
                 <BTooltip
@@ -364,6 +387,8 @@ const CommentsMessages = memo(
                         getReservedComments,
                         matchPath,
                         isGuest,
+                        proposition,
+                        match,
                       }}
                     />
                   ))}
@@ -390,6 +415,7 @@ CommentsMessages.propTypes = {
   matchPath: PropTypes.string,
   isGuest: PropTypes.bool,
   proposition: PropTypes.shape(),
+  match: PropTypes.shape(),
 };
 
 CommentsMessages.defaultProps = {
@@ -398,6 +424,7 @@ CommentsMessages.defaultProps = {
   matchPath: '',
   isGuest: false,
   proposition: {},
+  match: {},
   onActionInitiated: () => {},
   getReservedComments: () => {},
   getMessageHistory: () => {},

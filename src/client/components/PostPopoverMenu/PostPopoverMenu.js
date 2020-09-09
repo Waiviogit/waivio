@@ -12,7 +12,6 @@ import './PostPopoverMenu.less';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
-  pendingFollow: PropTypes.bool,
   pendingBookmark: PropTypes.bool,
   saving: PropTypes.bool,
   postState: PropTypes.shape({
@@ -29,6 +28,8 @@ const propTypes = {
     url: PropTypes.string,
     title: PropTypes.string,
     author_original: PropTypes.string,
+    youFollows: PropTypes.bool,
+    loading: PropTypes.bool,
   }).isRequired,
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
@@ -37,7 +38,6 @@ const propTypes = {
 
 const defaultProps = {
   pendingFlag: false,
-  pendingFollow: false,
   pendingBookmark: false,
   saving: false,
   ownPost: false,
@@ -46,7 +46,6 @@ const defaultProps = {
 
 const PostPopoverMenu = ({
   pendingFlag,
-  pendingFollow,
   pendingBookmark,
   saving,
   postState,
@@ -56,8 +55,16 @@ const PostPopoverMenu = ({
   ownPost,
   children,
 }) => {
-  const { isReported, userFollowed, isSaved } = postState;
-  const { guestInfo, author, url, title, author_original: authorOriginal } = post;
+  const { isReported, isSaved } = postState;
+  const {
+    guestInfo,
+    author,
+    url,
+    title,
+    author_original: authorOriginal,
+    youFollows: userFollowed,
+    loading,
+  } = post;
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = window ? window.location.origin : 'https://waivio.com';
@@ -66,22 +73,12 @@ const PostPopoverMenu = ({
   const twitterShareURL = getTwitterShareURL(twitterText, postURL);
   const facebookShareURL = getFacebookShareURL(postURL);
 
-  if (userFollowed && !pendingFollow) {
+  if (userFollowed) {
     followText = intl.formatMessage(
       { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
       { username: postAuthor },
     );
-  } else if (userFollowed && pendingFollow) {
-    followText = intl.formatMessage(
-      { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-      { username: postAuthor },
-    );
-  } else if (!userFollowed && !pendingFollow) {
-    followText = intl.formatMessage(
-      { id: 'follow_username', defaultMessage: 'Follow {username}' },
-      { username: postAuthor },
-    );
-  } else if (!userFollowed && pendingFollow) {
+  } else {
     followText = intl.formatMessage(
       { id: 'follow_username', defaultMessage: 'Follow {username}' },
       { username: postAuthor },
@@ -103,8 +100,8 @@ const PostPopoverMenu = ({
   if (!ownPost) {
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key="follow" disabled={pendingFollow}>
-        {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
+      <PopoverMenuItem key="follow" disabled={loading}>
+        {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
     ];

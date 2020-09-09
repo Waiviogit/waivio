@@ -156,8 +156,8 @@ class CreateRewardForm extends React.Component {
               : campaign.name
           }`,
           campaignType: campaign.type,
-          budget: campaign.budget,
-          reward: campaign.reward,
+          budget: campaign.budget.toString(),
+          reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
@@ -207,7 +207,7 @@ class CreateRewardForm extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
     const { rate, rewardFund } = this.props;
-    const objects = map(data.secondaryObject, o => o.id);
+    const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
@@ -350,10 +350,10 @@ class CreateRewardForm extends React.Component {
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
-        objectsToOmit.push(this.state.primaryObject.id);
+        objectsToOmit.push(this.state.primaryObject.author_permlink);
       }
       if (!isEmpty(this.state.secondaryObjectsList)) {
-        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
+        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.author_permlink));
       }
       return objectsToOmit;
     },

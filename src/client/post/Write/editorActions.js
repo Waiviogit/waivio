@@ -186,7 +186,7 @@ const broadcastComment = (
     ]);
   }
 
-  return steemConnectAPI.broadcast(operations, '', isReview);
+  return steemConnectAPI.broadcast(operations, isReview);
 };
 
 export function createPost(postData, beneficiaries, isReview, campaign, intl) {

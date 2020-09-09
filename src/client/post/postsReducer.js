@@ -3,7 +3,7 @@ import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
 import { getPostKey } from '../helpers/stateHelpers';
-import { FAKE_REBLOG_POST } from './postActions';
+import { FAKE_REBLOG_POST, FOLLOWING_POST_AUTHOR } from './postActions';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -157,9 +157,7 @@ const posts = (state = initialState, action) => {
           ? state.list[key].reblogged_by
           : action.payload.reblogged_by;
       }
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+      const lastId = get(action.payload, [action.payload.length - 1, '_id']);
 
       return {
         ...state,
@@ -197,13 +195,13 @@ const posts = (state = initialState, action) => {
           },
         },
       };
-    case postsActions.LIKE_POST_START:
+    case postsActions.LIKE_POST.START:
       return {
         ...state,
         pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
 
-    case postsActions.LIKE_POST_ERROR:
+    case postsActions.LIKE_POST.ERROR:
       return {
         ...state,
         pendingLikes: omit(state.pendingLikes, action.meta.postId),
@@ -212,32 +210,6 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         list: getPostsList(state.list, action),
-      };
-    case postsActions.FAKE_LIKE_POST_START:
-      return {
-        ...state,
-        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
-      };
-    case postsActions.FAKE_LIKE_POST_SUCCESS: {
-      if (action.payload.isFakeLikeOk) {
-        const updatedPost = { ...state.list[action.meta.postPermlink] };
-
-        updatedPost.active_votes = updatedPost.active_votes.filter(
-          vote => vote.voter !== action.meta.voter,
-        );
-        updatedPost.active_votes.push(action.meta);
-        return {
-          ...state,
-          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
-          pendingLikes: {},
-        };
-      }
-      return state;
-    }
-    case postsActions.FAKE_LIKE_POST_ERROR:
-      return {
-        ...state,
-        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
 
     case FAKE_REBLOG_POST: {
@@ -254,6 +226,52 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case FOLLOWING_POST_AUTHOR.START: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: true,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.SUCCESS: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            youFollows: !post.youFollows,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    case FOLLOWING_POST_AUTHOR.ERROR: {
+      const post = state.list[action.payload];
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.payload]: {
+            ...post,
+            loading: false,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
@@ -263,10 +281,10 @@ export default posts;
 
 export const getPosts = state => state.list;
 export const getPostContent = (state, permlink, author) =>
-  Object.values(state.list).find(post =>
-    post.guestInfo
-      ? post.permlink === permlink && post.guestInfo.userId === author
-      : post.permlink === permlink && post.author === author,
+  Object.values(state.list).find(
+    post =>
+      post.permlink === permlink &&
+      (post.author === author || get(post, ['guestInfo', 'userId']) === author),
   );
 export const getPendingLikes = state => state.pendingLikes;
 export const getIsPostFetching = (state, author, permlink) =>

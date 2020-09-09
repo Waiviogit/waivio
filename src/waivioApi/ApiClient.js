@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isEmpty, omit, ceil } from 'lodash';
+import { isEmpty, omit, ceil, includes } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
@@ -296,13 +296,16 @@ export const searchObjectTypes = (searchString, limit = 15, skip) => {
 };
 
 export const postAppendWaivioObject = postData =>
-  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(postData),
-  })
-    .then(res => res.json())
-    .catch(error => error);
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
@@ -323,7 +326,7 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   });
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => {
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort, authUser) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
@@ -332,7 +335,7 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50, authUser) => 
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
       headers: actualHeaders,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, sort }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -1070,8 +1073,9 @@ export const isUserRegistered = (id, socialNetwork) =>
     .then(data => data.json())
     .then(data => data.result);
 
-export const broadcastGuestOperation = async (operationId, isReview, data) => {
+export const broadcastGuestOperation = async (operationId, data) => {
   const userData = await getValidTokenData();
+  const isReview = includes(data[0][1].title, 'Review');
   if (userData.token) {
     let body;
     if (isReview) {
@@ -1426,6 +1430,17 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
   )
     .then(res => res.json())
     .catch(error => error);
+
+export const getFollowingSponsorsRewards = ({ userName }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

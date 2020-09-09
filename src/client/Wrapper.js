@@ -83,7 +83,7 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
-    isNewUser: PropTypes.bool.isRequired,
+    isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
   };
 
@@ -102,6 +102,7 @@ class Wrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isGuest: false,
+    isNewUser: false,
   };
 
   static fetchData({ store, req }) {

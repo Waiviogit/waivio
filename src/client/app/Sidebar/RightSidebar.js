@@ -24,8 +24,8 @@ import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar
 }))
 export default class RightSidebar extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    isAuthFetching: PropTypes.bool.isRequired,
+    authenticated: PropTypes.bool,
+    isAuthFetching: PropTypes.bool,
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
@@ -37,6 +37,8 @@ export default class RightSidebar extends React.Component {
     match: {},
     authUserName: '',
     locale: 'en-US',
+    authenticated: false,
+    isAuthFetching: false,
   };
 
   render() {
