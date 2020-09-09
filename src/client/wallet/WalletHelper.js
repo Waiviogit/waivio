@@ -131,7 +131,7 @@ export const getCurrentRows = data => {
   );
 };
 
-export const validateGuestTransferTitle = (details, username) => {
+export const validateGuestTransferTitle = (details, username, isMobile) => {
   const postPermlink = details && details.post_permlink;
   const postParentAuthor = details && details.post_parent_author;
   const postParentPermlink = details && details.post_parent_permlink;
@@ -149,7 +149,9 @@ export const validateGuestTransferTitle = (details, username) => {
         values={{
           title: (
             <Link to={urlPost}>
-              <span className="username">{truncate(title, { length: 30 })}</span>
+              <span className="username">
+                {truncate(title, isMobile ? { length: 22 } : { length: 30 })}
+              </span>
             </Link>
           ),
         }}

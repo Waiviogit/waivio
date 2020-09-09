@@ -234,6 +234,7 @@ class Wallet extends Component {
         operationNum={operationNum}
         isloadingMoreTransactions={isloadingMoreTransactions}
         isloadingMoreDemoTransactions={isloadingMoreDemoTransactions}
+        isMobile={isMobile}
       />
     );
 

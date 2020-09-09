@@ -34,6 +34,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
+    isMobile: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -47,6 +48,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: -1,
     isloadingMoreTransactions: false,
     isloadingMoreDemoTransactions: false,
+    isMobile: false,
   };
 
   state = {
@@ -114,6 +116,7 @@ class UserWalletTransactions extends React.Component {
       demoTransactions,
       intl,
       isErrorLoading,
+      isMobile,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
 
@@ -144,6 +147,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))
               : transactions.map(transaction => (
@@ -155,6 +159,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))}
           </ReduxInfiniteScroll>

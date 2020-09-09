@@ -19,6 +19,7 @@ const ReceiveTransaction = ({
   details,
   type,
   username,
+  isMobile,
 }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const demoPost = type === 'demo_post';
@@ -31,7 +32,7 @@ const ReceiveTransaction = ({
         <div className="UserWalletTransactions__content-recipient">
           <div>
             {demoPost ? (
-              validateGuestTransferTitle(details, username)
+              validateGuestTransferTitle(details, username, isMobile)
             ) : (
               <FormattedMessage
                 id="received_from"
@@ -98,6 +99,7 @@ ReceiveTransaction.propTypes = {
   details: PropTypes.shape(),
   type: PropTypes.string,
   username: PropTypes.string,
+  isMobile: PropTypes.bool,
 };
 
 ReceiveTransaction.defaultProps = {
@@ -109,6 +111,7 @@ ReceiveTransaction.defaultProps = {
   details: {},
   type: '',
   username: '',
+  isMobile: false,
 };
 
 export default ReceiveTransaction;
