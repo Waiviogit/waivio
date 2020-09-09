@@ -38,7 +38,6 @@ export const handleLoadMoreTransactions = ({
   tillDate,
   types,
 }) => {
-  // Todo: переписать!
   let skip = 0;
   const limit = 10;
   const transferActionsLength = size(transferActions);
