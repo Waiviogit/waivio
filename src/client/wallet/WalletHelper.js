@@ -46,13 +46,18 @@ export const handleLoadMoreTransactions = ({
     if (transferActionsLength >= limit) {
       skip = transferActionsLength;
     }
-    if (!demoIsLoadingMore) getMoreDemoFunction(username, skip, limit);
-  } else if (!isGuest && table && !isLoadingMore) {
+    if (!demoIsLoadingMore) {
+      getMoreDemoFunction(username, skip, limit);
+    }
+  }
+
+  if (!isGuest && table && !isLoadingMore) {
     getMoreFunction(username, limit, table, fromDate, tillDate, types, operationNumber);
-  } else if (!isLoadingMore) {
+  }
+
+  if (!isGuest && !table && !isLoadingMore) {
     getMoreFunction(username, limit, operationNumber);
   }
-  // else if (!isLoadingMore) getMoreFunction(username, limit, operationNumber);
 };
 
 export const getDataDemoTransactions = (username, demoTransactionsHistory) => {
