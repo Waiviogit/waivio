@@ -1344,5 +1344,13 @@
   "alphabet": "A..Z",
   "page": "Page",
   "imageSetter_invalid_link": "The link is invalid",
-  "restaurant": "restaurant"
+  "restaurant": "restaurant",
+  "table_date_from": "From",
+  "table_date_till": "Till",
+  "table_date_picker": "Select date and time",
+  "table_description": "Description",
+  "table_date": "Date",
+  "table_HIVE": "HIVE",
+  "table_HP": "HP",
+  "table_HBD": "HBD"
 }

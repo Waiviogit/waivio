@@ -307,7 +307,7 @@ class WalletTable extends React.Component {
               </th>
               <th className="WalletTable__memo">
                 {intl.formatMessage({
-                  id: 'table_memo',
+                  id: 'memo',
                   defaultMessage: `Memo`,
                 })}
               </th>
