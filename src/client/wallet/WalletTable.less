@@ -9,6 +9,7 @@
   table-layout: fixed;
   width: 100%;
   margin-top: 20px;
+  position: relative;
 
   &__title-wrap {
     display: flex;
@@ -50,6 +51,12 @@
     }
   }
 
+  &__loader {
+    width: 100%;
+    margin: 5px auto;
+    position: absolute;
+  }
+
   & th {
     border: 1px solid @black;
     vertical-align: top;
@@ -61,6 +68,21 @@
     font-size: 15px;
     border: 1px solid @black;
     color: @black;
+  }
+
+  & td:nth-child(2) {
+    text-align: end;
+    padding-right: 5px;
+  }
+
+  & td:nth-child(3) {
+    text-align: end;
+    padding-right: 5px;
+  }
+
+  & td:nth-child(4) {
+    text-align: end;
+    padding-right: 5px;
   }
 
   &__date {

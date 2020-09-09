@@ -20,6 +20,8 @@ import {
   getLoadingMoreUsersAccountHistory,
   getUsersAccountHistory,
   hasMoreGuestActions,
+  getIsErrorLoadingTable,
+  getIsloadingTableTransactions,
 } from '../reducers';
 import {
   openWalletTable,
@@ -37,10 +39,12 @@ import {
   getDataDemoTransactions,
   handleLoadMoreTransactions,
   TRANSACTION_TYPES,
+  validateDate,
 } from './WalletHelper';
 import { guestUserRegex } from '../helpers/regexHelpers';
 
 import './WalletTable.less';
+import Loading from '../components/Icon/Loading';
 
 @Form.create()
 @injectIntl
@@ -61,6 +65,8 @@ import './WalletTable.less';
     isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
     usersAccountHistory: getUsersAccountHistory(state),
     demoHasMoreActions: hasMoreGuestActions(state),
+    isErrorLoading: getIsErrorLoadingTable(state),
+    isloadingTableTransactions: getIsloadingTableTransactions(state),
   }),
   {
     openTable: openWalletTable,
@@ -101,6 +107,8 @@ class WalletTable extends React.Component {
     transactionsHistory: PropTypes.shape(),
     demoTransactionsHistory: PropTypes.shape(),
     form: PropTypes.shape().isRequired,
+    isErrorLoading: PropTypes.bool,
+    isloadingTableTransactions: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -122,6 +130,8 @@ class WalletTable extends React.Component {
     tableTransactionsHistory: {},
     isSubmitLoading: false,
     operationNum: -1,
+    isErrorLoading: false,
+    isloadingTableTransactions: false,
   };
 
   state = {
@@ -188,8 +198,9 @@ class WalletTable extends React.Component {
   };
 
   filterPanel = () => {
-    const { intl } = this.props;
+    const { intl, isloadingTableTransactions } = this.props;
     const { getFieldDecorator } = this.props.form;
+    const formatDate = 'MM-DD-YYYY';
     return (
       <Form layout="inline">
         <Form.Item>
@@ -215,6 +226,7 @@ class WalletTable extends React.Component {
               ],
             })(
               <DatePicker
+                format={formatDate}
                 placeholder={intl.formatMessage({
                   id: 'table_start_date_picker',
                   defaultMessage: 'Select start date',
@@ -243,9 +255,18 @@ class WalletTable extends React.Component {
                   defaultMessage: 'Field "till" is required',
                 }),
               },
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'table_after_till_validation',
+                  defaultMessage: 'The selected date must be before or equal the current date',
+                }),
+                validator: validateDate,
+              },
             ],
           })(
             <DatePicker
+              format={formatDate}
               placeholder={intl.formatMessage({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
@@ -259,6 +280,7 @@ class WalletTable extends React.Component {
           onClick={this.handleOnClick}
           type="primary"
           htmlType="submit"
+          loading={isloadingTableTransactions}
         >
           {intl.formatMessage({
             id: 'append_send',
@@ -310,16 +332,16 @@ class WalletTable extends React.Component {
       hasMore,
       demoHasMoreActions,
       tableTransactionsHistory,
+      isErrorLoading,
     } = this.props;
 
     const isGuestPage = guestUserRegex.test(user && user.name);
     const transactions = this.getCurrentTransactions(isGuestPage, tableTransactionsHistory);
     const currentUsername = user.name;
-    const tableView = true;
 
     return (
       <React.Fragment>
-        {this.filterPanel(currentUsername, tableView, isGuestPage)}
+        {this.filterPanel()}
         <table className="WalletTable">
           <thead>
             <tr>
@@ -368,6 +390,13 @@ class WalletTable extends React.Component {
               hasMore={isGuestPage ? demoHasMoreActions : hasMore}
               elementIsScrollable={false}
               threshold={500}
+              loader={
+                !isErrorLoading && (
+                  <div className="WalletTable__loader">
+                    <Loading />
+                  </div>
+                )
+              }
             >
               {transactions &&
                 map(transactions, transaction => (

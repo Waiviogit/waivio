@@ -160,8 +160,8 @@ const WalletTableBodyRow = props => {
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: get(claimRewardAmounts, 'HIVE'),
-        fieldHP: get(claimRewardAmounts, 'HBD'),
-        fieldHBD: get(claimRewardAmounts, 'HP'),
+        fieldHP: get(claimRewardAmounts, 'HP'),
+        fieldHBD: get(claimRewardAmounts, 'HBD'),
         fieldDescription: description,
       };
       return getCurrentRows(data);

@@ -1391,5 +1391,6 @@
   "table_HP": "HP",
   "table_HBD": "HBD",
   "table_from_validation": "Поле \"начало\" обязательно для заполнения",
-  "table_till_validation": "Поле \"до\" обязательно для заполнения"
+  "table_till_validation": "Поле \"до\" обязательно для заполнения",
+  "table_after_till_validation": "Выбранная дата должна быть раньше или равна текущей дате"
 }

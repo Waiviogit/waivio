@@ -109,6 +109,14 @@ export const getTransactionCurrency = (amount, currency, type) => {
   };
 };
 
+export const validateDate = (rule, value, callback) => {
+  if (value && value.unix() * 1000 > Date.now()) {
+    callback(rule.message);
+  } else {
+    callback();
+  }
+};
+
 export const getCurrentRows = data => {
   const timestamp = get(data, 'time', null);
   const fieldHIVE = get(data, 'fieldHIVE', null);
@@ -116,16 +124,17 @@ export const getCurrentRows = data => {
   const fieldHBD = get(data, 'fieldHBD', null);
   const fieldDescription = get(data, 'fieldDescription', null);
   const fieldMemo = get(data, 'fieldMemo', null);
+  const fieldClassName = get(data, 'fieldClass', null);
 
   return (
     <React.Fragment>
       <tr>
-        <td>{timestamp}</td>
-        <td>{fieldHIVE}</td>
-        <td>{fieldHP}</td>
-        <td>{fieldHBD}</td>
-        <td>{fieldDescription}</td>
-        <td>{fieldMemo}</td>
+        <td className={fieldClassName}>{timestamp}</td>
+        <td className={fieldClassName}>{fieldHIVE}</td>
+        <td className={fieldClassName}>{fieldHP}</td>
+        <td className={fieldClassName}>{fieldHBD}</td>
+        <td className={fieldClassName}>{fieldDescription}</td>
+        <td className={fieldClassName}>{fieldMemo}</td>
       </tr>
     </React.Fragment>
   );
