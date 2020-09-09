@@ -72,22 +72,20 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             zoomMap={DEFAULT_ZOOM}
           />
         )}
-        {console.log(filters) || console.log(tagsFilters)}
-        {!isEmpty(filters) ||
-          (!isEmpty(tagsFilters) && (
+        {(!isEmpty(filters) ||
+          !isEmpty(tagsFilters)) && (
             <div className="SidebarContentBlock">
               <div className="SidebarContentBlock__title">
                 <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
                 {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
               </div>
               <FiltersContainer
-                intl={intl}
                 filters={filters}
                 tagsFilters={tagsFilters}
-                filterPath={match.params.filter}
+                filterPath={match.params.categories}
               />
             </div>
-          ))}
+          )}
       </div>
     )
   );

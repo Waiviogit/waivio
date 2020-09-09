@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { map, isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getActiveFilters } from '../../reducers';
-import { updateActiveFilters } from '../helper';
+import {parseUrl, updateActiveFilters} from '../helper';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 import FilterItem from './FilterItem';
 
-const FiltersContainer = ({ filters, tagsFilters }) => {
+const FiltersContainer = ({ filters, tagsFilters, filterPath }) => {
   const dispatch = useDispatch();
   const activeFilters = useSelector(getActiveFilters);
   const [collapsedFilters, setCollapsed] = useState([]);
+  const [activeTagsFilters, setActiveTagsFilters] = useState({});
+
+  useEffect(() => {
+    if(filterPath) setActiveTagsFilters(parseUrl(filterPath));
+  }, [])
 
   const handleDisplayFilter = filterName => () => {
     if (collapsedFilters.includes(filterName)) {
@@ -20,14 +25,18 @@ const FiltersContainer = ({ filters, tagsFilters }) => {
     }
   };
 
-  const handleOnChangeCheckbox = (e, tag = false) => {
+  const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter, checked } = e.target;
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
-    if (tag) {
-      console.log('bla');
-    } else {
+
       dispatch(setFiltersAndLoad(updatedFilters));
-    }
+  };
+
+  const handleOnChangeTagsCheckbox = e => {
+    const { name: filterValue, value: filter, checked } = e.target;
+    console.log(filterValue);
+    console.log(filter);
+    // dispatch(setFiltersAndLoad(updatedFilters));
   };
 
   const isCollapsed = name => collapsedFilters.includes(name);
@@ -53,7 +62,7 @@ const FiltersContainer = ({ filters, tagsFilters }) => {
               isCollapsed={isCollapsed(filterValues.tagCategory)}
               filterName={filterValues.tagCategory}
               handleDisplayFilter={handleDisplayFilter}
-              handleOnChangeCheckbox={e => handleOnChangeCheckbox(e, true)}
+              handleOnChangeCheckbox={handleOnChangeTagsCheckbox}
               activeFilters={activeFilters}
               filterValues={filterValues.tags}
             />
@@ -66,10 +75,12 @@ const FiltersContainer = ({ filters, tagsFilters }) => {
 FiltersContainer.propTypes = {
   filters: PropTypes.shape().isRequired,
   tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
+  filterPath: PropTypes.string,
 };
 
 FiltersContainer.defaultProps = {
   tagsFilters: [],
+  filterPath: '',
 };
 
 export default FiltersContainer;

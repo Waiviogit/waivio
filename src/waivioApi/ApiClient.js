@@ -247,7 +247,7 @@ export const postCreateWaivioObject = requestBody =>
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers: { ...headers, locale, follower },
+      headers: { ...headers, app: config.appName, locale, follower },
       method: 'GET',
     })
       .then(res => res.json())
@@ -1230,9 +1230,16 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPerm
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, author, permlink }) =>
+export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =>
   fetch(
     `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      }
+    }
   )
     .then(res => res.json())
     .then(data => data)
