@@ -172,27 +172,23 @@ class WalletTable extends React.Component {
   filterPanel = (currentUsername, tableView, isGuestPage) => {
     const { intl, clearWalletHistory } = this.props;
     return (
-      <Form layout="vertical">
+      <Form layout="inline">
         <Form.Item>
-          {intl.formatMessage({
-            id: 'table_date_from',
-            defaultMessage: 'From:',
-          })}
-          <DatePicker
-            placeholder={intl.formatMessage({
-              id: 'table_date_picker',
-              defaultMessage: 'Select date and time',
-            })}
-            onChange={value => this.setState({ startDate: moment(value).unix() })}
-          />
-          {intl.formatMessage({
-            id: 'table_date_till',
-            defaultMessage: 'Till:',
-          })}
-          <DatePicker
-            placeholder="End"
-            onChange={value => this.setState({ endDate: moment(value).unix() })}
-          />
+          <div>
+            <div className="WalletTable__from">
+              {intl.formatMessage({
+                id: 'table_date_from',
+                defaultMessage: 'From:',
+              })}
+            </div>
+            <DatePicker
+              placeholder={intl.formatMessage({
+                id: 'table_date_picker',
+                defaultMessage: 'Select date and time',
+              })}
+              onChange={value => this.setState({ startDate: moment(value).unix() })}
+            />
+          </div>
           <Button
             onClick={() => {
               clearWalletHistory();
@@ -206,6 +202,20 @@ class WalletTable extends React.Component {
               defaultMessage: 'Submit',
             })}
           </Button>
+        </Form.Item>
+        <Form.Item>
+          <div>
+            <div className="WalletTable__till">
+              {intl.formatMessage({
+                id: 'table_date_till',
+                defaultMessage: 'Till:',
+              })}
+            </div>
+            <DatePicker
+              placeholder="End"
+              onChange={value => this.setState({ endDate: moment(value).unix() })}
+            />
+          </div>
         </Form.Item>
       </Form>
     );
