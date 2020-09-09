@@ -10,12 +10,32 @@
   width: 100%;
   margin-top: 20px;
 
+  &__title-wrap {
+    display: flex;
+    align-items: baseline;
+  }
+
+  &__star-flag {
+    color: @red-danger;
+    font-size: 25px;
+    line-height: 5px;
+  }
+
   &__from {
+    color: @black;
+    font-weight: 500;
     margin-bottom: -10px !important;
   }
 
   &__till {
+    color: @black;
+    font-weight: 500;
     margin-bottom: -10px !important;
+  }
+
+  &__submit {
+    display: block;
+    margin-top: 15px;
   }
 
   &__main-content {
@@ -62,6 +82,10 @@
   &__description {
     //width: 450px;
   }
+}
+
+.ant-form-explain {
+  margin-bottom: -30px;
 }
 
 @import 'WalletTable-nightmode';

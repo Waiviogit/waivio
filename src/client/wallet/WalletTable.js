@@ -42,6 +42,7 @@ import { guestUserRegex } from '../helpers/regexHelpers';
 
 import './WalletTable.less';
 
+@Form.create()
 @injectIntl
 @connect(
   (state, ownProps) => ({
@@ -99,6 +100,7 @@ class WalletTable extends React.Component {
     clearWalletHistory: PropTypes.func,
     transactionsHistory: PropTypes.shape(),
     demoTransactionsHistory: PropTypes.shape(),
+    form: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -148,11 +150,22 @@ class WalletTable extends React.Component {
     return get(transactionsHistory, username, []);
   };
 
-  handleSubmit = (currentUsername, isGuestPage, tableView) => {
+  handleSubmit = () => {
     // operationNum, // Todo отправлять после фиксов с бэка. Неправильная фильтрация
-    const { getTransactionsByInterval, getDemoTransactionsByInterval, clearTable } = this.props;
+    const {
+      getTransactionsByInterval,
+      getDemoTransactionsByInterval,
+      clearTable,
+      clearWalletHistory,
+      user,
+    } = this.props;
     const { startDate, endDate } = this.state;
+    const currentUsername = user.name;
+    const isGuestPage = guestUserRegex.test(user && user.name);
+    const tableView = true;
     const limit = 10;
+
+    clearWalletHistory();
 
     if (isGuestPage) {
       getDemoTransactionsByInterval(currentUsername, tableView, startDate, endDate);
@@ -169,54 +182,89 @@ class WalletTable extends React.Component {
     }
   };
 
-  filterPanel = (currentUsername, tableView, isGuestPage) => {
-    const { intl, clearWalletHistory } = this.props;
+  handleOnClick = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll(err => !err && this.handleSubmit());
+  };
+
+  filterPanel = () => {
+    const { intl } = this.props;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form layout="inline">
         <Form.Item>
-          <div>
+          <div className="WalletTable__title-wrap">
+            <div className="WalletTable__star-flag">*</div>
             <div className="WalletTable__from">
               {intl.formatMessage({
                 id: 'table_date_from',
                 defaultMessage: 'From:',
               })}
             </div>
-            <DatePicker
-              placeholder={intl.formatMessage({
-                id: 'table_date_picker',
-                defaultMessage: 'Select date and time',
-              })}
-              onChange={value => this.setState({ startDate: moment(value).unix() })}
-            />
           </div>
-          <Button
-            onClick={() => {
-              clearWalletHistory();
-              return this.handleSubmit(currentUsername, isGuestPage, tableView);
-            }}
-            type="primary"
-            htmlType="submit"
-          >
-            {intl.formatMessage({
-              id: 'append_send',
-              defaultMessage: 'Submit',
-            })}
-          </Button>
+          <div>
+            {getFieldDecorator('from', {
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'table_from_validation',
+                    defaultMessage: 'Field "start" is required',
+                  }),
+                },
+              ],
+            })(
+              <DatePicker
+                placeholder={intl.formatMessage({
+                  id: 'table_start_date_picker',
+                  defaultMessage: 'Select start date',
+                })}
+                onChange={value => this.setState({ startDate: moment(value).unix() })}
+              />,
+            )}
+          </div>
         </Form.Item>
         <Form.Item>
-          <div>
+          <div className="WalletTable__title-wrap">
+            <div className="WalletTable__star-flag">*</div>
             <div className="WalletTable__till">
               {intl.formatMessage({
                 id: 'table_date_till',
                 defaultMessage: 'Till:',
               })}
             </div>
-            <DatePicker
-              placeholder="End"
-              onChange={value => this.setState({ endDate: moment(value).unix() })}
-            />
           </div>
+          {getFieldDecorator('end', {
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'table_till_validation',
+                  defaultMessage: 'Field "till" is required',
+                }),
+              },
+            ],
+          })(
+            <DatePicker
+              placeholder={intl.formatMessage({
+                id: 'table_end_date_picker',
+                defaultMessage: 'Select end date',
+              })}
+              onChange={value => this.setState({ endDate: moment(value).unix() })}
+            />,
+          )}
         </Form.Item>
+        <Button
+          className="WalletTable__submit"
+          onClick={this.handleOnClick}
+          type="primary"
+          htmlType="submit"
+        >
+          {intl.formatMessage({
+            id: 'append_send',
+            defaultMessage: 'Submit',
+          })}
+        </Button>
       </Form>
     );
   };

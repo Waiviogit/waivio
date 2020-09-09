@@ -1347,12 +1347,14 @@
   "imageSetter_invalid_link": "Неправильная ссылка",
   "restaurant": "Ресторан",
   "object_field_authority": "Авторитет",
-  "table_date_from": "От",
-  "table_date_till": "До",
+  "table_date_from": "От:",
+  "table_date_till": "До:",
   "table_date_picker": "Выберите дату и время",
   "table_description": "Описание",
   "table_date": "Дата",
   "table_HIVE": "HIVE",
   "table_HP": "HP",
-  "table_HBD": "HBD"
+  "table_HBD": "HBD",
+  "table_from_validation": "Поле \"начало\" обязательно для заполнения",
+  "table_till_validation": "Поле \"до\" обязательно для заполнения"
 }
