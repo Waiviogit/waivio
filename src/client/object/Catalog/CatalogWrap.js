@@ -533,8 +533,6 @@ class CatalogWrap extends React.Component {
         </SortSelector>
       );
 
-    const menuItem = wobject.menuItems;
-
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (
@@ -542,14 +540,14 @@ class CatalogWrap extends React.Component {
             {!isEmpty(propositions) && this.renderCampaign(propositions)}
             <div className="CatalogWrap__breadcrumb">
               <Breadcrumb separator={'>'}>
-                {map(menuItem, crumb => (
+                {map(breadcrumb, (crumb, index, crumbsArr) => (
                   <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                    {!hasType(wobject, OBJ_TYPE.LIST) ? (
+                    {index && index === crumbsArr.length - 1 ? (
                       <React.Fragment>
                         <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                         <Link
                           className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `${crumb.defaultShowLink}` }}
+                          to={{ pathname: `/object/${crumb.path.slice(1, -9)}/list` }}
                         >
                           <i className="iconfont icon-send PostModal__icon" />
                         </Link>
@@ -557,7 +555,7 @@ class CatalogWrap extends React.Component {
                     ) : (
                       <Link
                         className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.defaultShowLink }}
+                        to={{ pathname: location.pathname, hash: crumb.path }}
                         title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                           crumb.name
                         }`}
