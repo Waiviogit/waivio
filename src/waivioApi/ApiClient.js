@@ -1089,14 +1089,14 @@ export const broadcastGuestOperation = async (operationId, isReview, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency') =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency', follower) =>
   fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: {
         ...headers,
-        following: username,
-        follower: username,
+        following: follower,
+        follower: follower,
       },
     },
   )

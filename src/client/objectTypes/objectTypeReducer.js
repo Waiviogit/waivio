@@ -12,6 +12,7 @@ const initialState = {
   hasMoreRelatedObjects: true,
   mapWobjects: [],
   updated: false,
+  tagsForFilter: [],
 };
 const objectType = (state = initialState, action) => {
   switch (action.type) {
@@ -25,6 +26,7 @@ const objectType = (state = initialState, action) => {
         related_wobjects: relatedWobjects,
         hasMoreWobjects,
         filters,
+        tagsForFilter,
         ...data
       } = action.payload;
       const filteredObjects = [
@@ -54,6 +56,7 @@ const objectType = (state = initialState, action) => {
         ...state,
         data,
         filtersList,
+        tagsForFilter,
         activeFilters,
         map: Boolean((filters && !isEmpty(filters.map)) || hasMap),
         filteredObjects,
@@ -116,3 +119,4 @@ export const getActiveFilters = state => state.activeFilters;
 export const getTypeName = state => get(state, ['data', 'name'], '');
 export const getHasMap = state => state.map;
 export const getSorting = state => state.sort;
+export const getFiltersTags = state => state.tagsForFilter;

@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { get, map } from 'lodash';
-import { Checkbox } from 'antd';
+import { map, isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { getActiveFilters } from '../../reducers';
 import { updateActiveFilters } from '../helper';
-import { sortStrings } from '../../helpers/sortHelpers';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
+import FilterItem from './FilterItem';
 
-const FiltersContainer = ({ intl, filters }) => {
-  // redux-store
+const FiltersContainer = ({ filters, tagsFilters }) => {
   const dispatch = useDispatch();
   const activeFilters = useSelector(getActiveFilters);
-
-  // state
   const [collapsedFilters, setCollapsed] = useState([]);
+
   const handleDisplayFilter = filterName => () => {
     if (collapsedFilters.includes(filterName)) {
       setCollapsed(collapsedFilters.filter(f => f !== filterName));
@@ -23,69 +20,56 @@ const FiltersContainer = ({ intl, filters }) => {
     }
   };
 
-  const handleOnChangeCheckbox = e => {
+  const handleOnChangeCheckbox = (e, tag = false) => {
     const { name: filterValue, value: filter, checked } = e.target;
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
-    dispatch(setFiltersAndLoad(updatedFilters));
+    if (tag) {
+      console.log('bla');
+    } else {
+      dispatch(setFiltersAndLoad(updatedFilters));
+    }
   };
+
+  const isCollapsed = name => collapsedFilters.includes(name);
 
   return (
     <div className="SidebarContentBlock__content">
       <div className="collapsible-block">
-        {map(filters, (filterValues, filterName) => {
-          const isCollapsed = collapsedFilters.includes(filterName);
-          return (
-            <div key={filterName} className="collapsible-block__container">
-              <div
-                className="collapsible-block__title"
-                role="presentation"
-                onClick={handleDisplayFilter(filterName)}
-              >
-                <span className="collapsible-block__title-text">
-                  {intl.formatMessage({ id: `filter-${filterName}`, defaultMessage: filterName })}
-                </span>
-                <span className="collapsible-block__title-icon">
-                  {isCollapsed ? (
-                    <i className="iconfont icon-addition" />
-                  ) : (
-                    <i className="iconfont icon-offline" />
-                  )}
-                </span>
-              </div>
-              {!isCollapsed ? (
-                <div className="collapsible-block__content">
-                  {sortStrings(filterValues).map(value => {
-                    const isChecked = get(activeFilters, [filterName], []).some(
-                      active => active === value,
-                    );
-                    return (
-                      <div key={filterName + value} className="collapsible-block__item">
-                        <Checkbox
-                          name={value}
-                          value={filterName}
-                          onChange={handleOnChangeCheckbox}
-                          checked={isChecked}
-                        >
-                          <span className="collapsible-block__item__label ttc">
-                            {intl.formatMessage({ id: value, defaultMessage: value })}
-                          </span>
-                        </Checkbox>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
-          );
-        })}
+        {!isEmpty(filters) &&
+          map(filters, (filterValues, filterName) => (
+            <FilterItem
+              isCollapsed={isCollapsed(filterName)}
+              filterName={filterName}
+              handleDisplayFilter={handleDisplayFilter}
+              handleOnChangeCheckbox={handleOnChangeCheckbox}
+              activeFilters={activeFilters}
+              filterValues={filterValues}
+            />
+          ))}
+        {!isEmpty(tagsFilters) &&
+          tagsFilters.map(filterValues => (
+            <FilterItem
+              key={filterValues.tagCategory}
+              isCollapsed={isCollapsed(filterValues.tagCategory)}
+              filterName={filterValues.tagCategory}
+              handleDisplayFilter={handleDisplayFilter}
+              handleOnChangeCheckbox={e => handleOnChangeCheckbox(e, true)}
+              activeFilters={activeFilters}
+              filterValues={filterValues.tags}
+            />
+          ))}
       </div>
     </div>
   );
 };
 
 FiltersContainer.propTypes = {
-  intl: PropTypes.shape().isRequired,
   filters: PropTypes.shape().isRequired,
+  tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
+};
+
+FiltersContainer.defaultProps = {
+  tagsFilters: [],
 };
 
 export default FiltersContainer;

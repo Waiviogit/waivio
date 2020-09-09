@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, omit, get, size, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
-import { isNeedFilters, updateActiveFilters } from './helper';
+import { createFilterBody, isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypeSorting,
@@ -15,6 +15,7 @@ import {
   getHasMap,
   getAuthenticatedUserName,
   getIsMapModalOpen,
+  getFiltersTags,
 } from '../reducers';
 import {
   getObjectTypeByStateFilters,
@@ -34,8 +35,7 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
 import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
-// eslint-disable-next-line import/extensions
-import * as apiConfig from '../../waivioApi/config';
+import * as apiConfig from '../../waivioApi/config.json';
 import { RADIUS, ZOOM } from '../../common/constants/map';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -52,6 +52,7 @@ const SORT_OPTIONS = {
 @connect(
   (state, props) => ({
     availableFilters: getAvailableFilters(state),
+    tagsFilters: getFiltersTags(state),
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
     theType: getObjectTypeState(state),
@@ -73,7 +74,7 @@ const SORT_OPTIONS = {
     declineProposition,
     getObjectTypeMap,
     getCoordinates,
-    getCryptoPriceHistory,
+    getCryptoPriceHistoryAction: getCryptoPriceHistory,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -101,14 +102,17 @@ class DiscoverObjectsContent extends Component {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
-    getCryptoPriceHistory: PropTypes.func.isRequired,
+    getCryptoPriceHistoryAction: PropTypes.func.isRequired,
+    tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     searchString: '',
     typeName: '',
     userLocation: {},
+    match: {},
     userName: '',
+    tagsFilters: [],
   };
 
   constructor(props) {
@@ -124,16 +128,15 @@ class DiscoverObjectsContent extends Component {
       center: [],
       isInitial: true,
       radius: RADIUS,
+      match: {},
     };
   }
 
   componentDidMount() {
-    const {
-      dispatchGetObjectType,
-      typeName,
-      getCryptoPriceHistory: getCryptoPriceHistoryAction,
-    } = this.props;
-    dispatchGetObjectType(typeName, { skip: 0 });
+    const { dispatchGetObjectType, typeName, getCryptoPriceHistoryAction, match } = this.props;
+    const parseSearchParams = createFilterBody(match.params.categories);
+
+    dispatchGetObjectType(typeName, { skip: 0 }, parseSearchParams);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
@@ -276,6 +279,7 @@ class DiscoverObjectsContent extends Component {
       isFetching,
       hasMap,
       availableFilters,
+      tagsFilters,
       activeFilters: { map: mapFilters, ...chosenFilters },
       sort,
       filteredObjects,
@@ -430,7 +434,11 @@ class DiscoverObjectsContent extends Component {
             onCancel={this.closeModal}
           >
             {modalTitle === modalName.FILTERS && (
-              <DiscoverObjectsFilters intl={intl} filters={availableFilters} />
+              <DiscoverObjectsFilters
+                intl={intl}
+                filters={availableFilters}
+                tagsFilters={tagsFilters}
+              />
             )}
             {modalTitle === modalName.OBJECTS && <SidenavDiscoverObjects withTitle={false} />}
           </Modal>

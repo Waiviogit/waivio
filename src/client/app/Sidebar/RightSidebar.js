@@ -67,7 +67,7 @@ export default class RightSidebar extends React.Component {
           <Route path="/hot/:tag" component={FeedSidebar} />
           <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
-            path="/discover-objects/:typeName"
+            path="/discover-objects/:typeName/:categories?"
             render={() => (
               <React.Fragment>
                 <DiscoverFiltersSidebar />

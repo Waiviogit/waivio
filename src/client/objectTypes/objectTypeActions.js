@@ -32,6 +32,7 @@ export const getObjectType = (
   actionType,
   filters,
   { limit = 30, skip = 0, simplified = false } = {},
+  filterBody,
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
@@ -42,7 +43,10 @@ export const getObjectType = (
     wobjects_count: limit,
     simplified,
     wobjects_skip: skip,
-    filter: filters,
+    filter: {
+      ...filters,
+      tagCategory: filterBody,
+    },
     sort,
     locale,
   };
@@ -76,6 +80,7 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
 export const getObjectTypeByStateFilters = (
   typeName,
   { skip = 0, limit = 15, simplified = false } = {},
+  filterBody,
 ) => (dispatch, getState) => {
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
@@ -85,6 +90,7 @@ export const getObjectTypeByStateFilters = (
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
+    console.log(userLocation);
     activeFilters.map = {
       coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
       radius: 50000000,
@@ -94,7 +100,9 @@ export const getObjectTypeByStateFilters = (
     activeFilters.searchString = searchString;
   }
   const actionType = GET_OBJECT_TYPE.ACTION;
-  return dispatch(getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }));
+  return dispatch(
+    getObjectType(typeName, actionType, activeFilters, { limit, skip, simplified }, filterBody),
+  );
 };
 
 export const clearType = () => dispatch => {

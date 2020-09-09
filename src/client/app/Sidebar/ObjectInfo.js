@@ -145,6 +145,7 @@ class ObjectInfo extends React.Component {
   };
 
   renderCategoryItems = (categoryItems = [], category) => {
+    const { object_type: type } = this.props.wobject;
     const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
     const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
@@ -152,7 +153,7 @@ class ObjectInfo extends React.Component {
       <div>
         {tagArray.map(item => (
           <Tag key={`${category}/${item.body}`} color="orange">
-            <Link to={`/object/${item.body}`}>{item.body}</Link>
+            <Link to={`/discover-objects/${type}/${category}=${item.body}`}>{item.body}</Link>
           </Tag>
         ))}
         {categoryItems.length > 5 && !this.state.showMore[category] && (
@@ -180,7 +181,7 @@ class ObjectInfo extends React.Component {
       <div key={item.id}>
         {`${item.body}:`}
         <br />
-        {item.items && this.renderCategoryItems(item.items, item.id)}
+        {item.items && this.renderCategoryItems(item.items, item.body)}
       </div>
     ));
 
