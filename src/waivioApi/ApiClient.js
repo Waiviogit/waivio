@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isEmpty, omit, ceil } from 'lodash';
+import { isEmpty, omit, ceil, includes } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
@@ -1064,8 +1064,9 @@ export const isUserRegistered = (id, socialNetwork) =>
     .then(data => data.json())
     .then(data => data.result);
 
-export const broadcastGuestOperation = async (operationId, isReview, data) => {
+export const broadcastGuestOperation = async (operationId, data) => {
   const userData = await getValidTokenData();
+  const isReview = includes(data[0][1].title, 'Review');
   if (userData.token) {
     let body;
     if (isReview) {

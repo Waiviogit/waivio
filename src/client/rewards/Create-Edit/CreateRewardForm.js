@@ -350,10 +350,10 @@ class CreateRewardForm extends React.Component {
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
-        objectsToOmit.push(this.state.primaryObject.id);
+        objectsToOmit.push(this.state.primaryObject.author_permlink);
       }
       if (!isEmpty(this.state.secondaryObjectsList)) {
-        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
+        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.author_permlink));
       }
       return objectsToOmit;
     },

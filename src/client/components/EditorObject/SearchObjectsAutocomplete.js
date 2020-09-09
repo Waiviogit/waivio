@@ -107,7 +107,9 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   handleSelect(objId) {
-    const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
+    const selectedObject = this.props.searchObjectsResults.find(
+      obj => obj.author_permlink === objId,
+    );
     this.props.handleSelect(
       selectedObject || {
         author_permlink: objId,
@@ -141,9 +143,13 @@ class SearchObjectsAutocomplete extends Component {
     } = this.props;
     const searchObjectsOptions = searchString
       ? searchObjectsResults
-          .filter(obj => !itemsIdsToOmit.includes(obj.id))
+          .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
           .map(obj => (
-            <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
+            <AutoComplete.Option
+              key={obj.author_permlink}
+              label={obj.author_permlink}
+              className="obj-search-option item"
+            >
               <ObjectSearchCard object={obj} name={getObjectName(obj)} type={obj.type} />
             </AutoComplete.Option>
           ))
