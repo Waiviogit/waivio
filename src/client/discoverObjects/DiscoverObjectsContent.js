@@ -206,11 +206,36 @@ class DiscoverObjectsContent extends Component {
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
-  assignPropositionHandler = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => {
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    proposition,
+    proposedWobj,
+    userName,
+    currencyId,
+  }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssign: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
+      .assignProposition({
+        companyAuthor,
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
+        proposition,
+        proposedWobj,
+        userName,
+        currencyId,
+      })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({
