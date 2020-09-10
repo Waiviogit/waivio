@@ -504,7 +504,11 @@ class StoryFull extends React.Component {
                       ))
                     : null;
                 }
-                return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
+                return (
+                  <div className="CardView">
+                    <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
+                  </div>
+                );
               })}
             </Collapse.Panel>
           )}
