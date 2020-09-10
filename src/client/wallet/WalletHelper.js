@@ -24,6 +24,13 @@ export const TRANSACTION_TYPES = [
   'demo_user_transfer',
 ];
 
+export const selectFormatDate = locale => {
+  if (locale === 'en-US') {
+    return 'MM/DD/YYYY';
+  }
+  return 'DD/MM/YYYY';
+};
+
 export const getTransactionDescription = (type, options) => {
   switch (type) {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
@@ -67,7 +74,6 @@ export const getTransactionDescription = (type, options) => {
       const tableView = get(options, 'tableView', false);
       const from = get(options, 'from', '');
       const to = get(options, 'to', '');
-      console.log('from: ', from);
       return {
         reviewAuthorRewards: (
           <FormattedMessage
@@ -300,7 +306,7 @@ export const getTransactionCurrency = (amount, currency, type, tableView) => {
 
   if (tableView) {
     return {
-      amount: transactionAmount,
+      amount: transactionAmount.toFixed(3),
       currency: transactionCurrency,
     };
   }

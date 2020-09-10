@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 import { get, isEmpty, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -45,6 +46,7 @@ import PowerUpOrDown from '../wallet/PowerUpOrDown';
 
 import './UserWallet.less';
 
+@injectIntl
 @withRouter
 @connect(
   (state, ownProps) => ({
@@ -83,6 +85,9 @@ import './UserWallet.less';
 )
 class Wallet extends Component {
   static propTypes = {
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }).isRequired,
     location: PropTypes.shape().isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
@@ -196,6 +201,7 @@ class Wallet extends Component {
       operationNum,
       isloadingMoreTransactions,
       isloadingMoreDemoTransactions,
+      intl,
     } = this.props;
     const userKey = user.name;
     const demoTransactions = get(usersTransactions, userKey, []);
@@ -257,7 +263,10 @@ class Wallet extends Component {
           onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
           onChange={() => this.setState({ isTable: true })}
         >
-          Table view
+          {intl.formatMessage({
+            id: 'table_view',
+            defaultMessage: 'Table view',
+          })}
         </span>
         {isMobile && <WalletSidebar />}
         {walletTransactions}

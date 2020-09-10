@@ -1384,7 +1384,8 @@
   "object_field_authority": "Авторитет",
   "table_date_from": "От:",
   "table_date_till": "До:",
-  "table_date_picker": "Выберите дату и время",
+  "table_start_date_picker": "Начальная дата",
+  "table_end_date_picker": "Конечная дата",
   "table_description": "Описание",
   "table_date": "Дата",
   "table_HIVE": "HIVE",
@@ -1392,5 +1393,7 @@
   "table_HBD": "HBD",
   "table_from_validation": "Поле \"начало\" обязательно для заполнения",
   "table_till_validation": "Поле \"до\" обязательно для заполнения",
-  "table_after_till_validation": "Выбранная дата должна быть раньше или равна текущей дате"
+  "table_after_till_validation": "Выбранная дата должна быть раньше или равна текущей дате",
+  "table_view": "Просмотр таблицы",
+  "empty_table": "Пожалуйста, выберите начальную и конечную дату"
 }

@@ -22,6 +22,7 @@ import {
   hasMoreGuestActions,
   getIsErrorLoadingTable,
   getIsloadingTableTransactions,
+  getLocale,
 } from '../reducers';
 import {
   openWalletTable,
@@ -38,6 +39,7 @@ import WalletTableBodyRow from './WalletTableBodyRow';
 import {
   getDataDemoTransactions,
   handleLoadMoreTransactions,
+  selectFormatDate,
   TRANSACTION_TYPES,
   validateDate,
 } from './WalletHelper';
@@ -67,6 +69,7 @@ import Loading from '../components/Icon/Loading';
     demoHasMoreActions: hasMoreGuestActions(state),
     isErrorLoading: getIsErrorLoadingTable(state),
     isloadingTableTransactions: getIsloadingTableTransactions(state),
+    locale: getLocale(state),
   }),
   {
     openTable: openWalletTable,
@@ -109,6 +112,7 @@ class WalletTable extends React.Component {
     form: PropTypes.shape().isRequired,
     isErrorLoading: PropTypes.bool,
     isloadingTableTransactions: PropTypes.bool,
+    locale: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -161,7 +165,6 @@ class WalletTable extends React.Component {
   };
 
   handleSubmit = () => {
-    // operationNum, // Todo отправлять после фиксов с бэка. Неправильная фильтрация
     const {
       getTransactionsByInterval,
       getDemoTransactionsByInterval,
@@ -194,13 +197,15 @@ class WalletTable extends React.Component {
 
   handleOnClick = e => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll(err => !err && this.handleSubmit());
+    this.props.form.validateFieldsAndScroll(
+      err => !err && setTimeout(() => this.handleSubmit(), 500),
+    );
   };
 
   filterPanel = () => {
-    const { intl, isloadingTableTransactions } = this.props;
+    const { intl, isloadingTableTransactions, locale } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const formatDate = 'MM-DD-YYYY';
+    const formatDate = selectFormatDate(locale);
     return (
       <Form layout="inline">
         <Form.Item>
@@ -342,76 +347,85 @@ class WalletTable extends React.Component {
     return (
       <React.Fragment>
         {this.filterPanel()}
-        <table className="WalletTable">
-          <thead>
-            <tr>
-              <th className="WalletTable__date">
-                {intl.formatMessage({
-                  id: 'table_date',
-                  defaultMessage: `Date`,
-                })}
-              </th>
-              <th className="WalletTable__HIVE">
-                {intl.formatMessage({
-                  id: 'table_HIVE',
-                  defaultMessage: `HIVE`,
-                })}
-              </th>
-              <th className="WalletTable__HP">
-                {intl.formatMessage({
-                  id: 'table_HP',
-                  defaultMessage: `HP`,
-                })}
-              </th>
-              <th className="WalletTable__HBD">
-                {intl.formatMessage({
-                  id: 'table_HBD',
-                  defaultMessage: `HBD`,
-                })}
-              </th>
-              <th className="WalletTable__description">
-                {intl.formatMessage({
-                  id: 'table_description',
-                  defaultMessage: `Description`,
-                })}
-              </th>
-              <th className="WalletTable__memo">
-                {intl.formatMessage({
-                  id: 'memo',
-                  defaultMessage: `Memo`,
-                })}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <ReduxInfiniteScroll
-              className="WalletTable__main-content"
-              loadMore={this.handleLoadMore}
-              hasMore={isGuestPage ? demoHasMoreActions : hasMore}
-              elementIsScrollable={false}
-              threshold={500}
-              loader={
-                !isErrorLoading && (
-                  <div className="WalletTable__loader">
-                    <Loading />
-                  </div>
-                )
-              }
-            >
-              {transactions &&
-                map(transactions, transaction => (
-                  <WalletTableBodyRow
-                    key={transaction.timestamp}
-                    transaction={transaction}
-                    isGuestPage={isGuestPage}
-                    currentUsername={currentUsername}
-                    totalVestingShares={totalVestingShares}
-                    totalVestingFundSteem={totalVestingFundSteem}
-                  />
-                ))}
-            </ReduxInfiniteScroll>
-          </tbody>
-        </table>
+        {size(transactions) ? (
+          <table className="WalletTable">
+            <thead>
+              <tr>
+                <th className="WalletTable__date">
+                  {intl.formatMessage({
+                    id: 'table_date',
+                    defaultMessage: `Date`,
+                  })}
+                </th>
+                <th className="WalletTable__HIVE">
+                  {intl.formatMessage({
+                    id: 'table_HIVE',
+                    defaultMessage: `HIVE`,
+                  })}
+                </th>
+                <th className="WalletTable__HP">
+                  {intl.formatMessage({
+                    id: 'table_HP',
+                    defaultMessage: `HP`,
+                  })}
+                </th>
+                <th className="WalletTable__HBD">
+                  {intl.formatMessage({
+                    id: 'table_HBD',
+                    defaultMessage: `HBD`,
+                  })}
+                </th>
+                <th className="WalletTable__description">
+                  {intl.formatMessage({
+                    id: 'table_description',
+                    defaultMessage: `Description`,
+                  })}
+                </th>
+                <th className="WalletTable__memo">
+                  {intl.formatMessage({
+                    id: 'memo',
+                    defaultMessage: `Memo`,
+                  })}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ReduxInfiniteScroll
+                className="WalletTable__main-content"
+                loadMore={this.handleLoadMore}
+                hasMore={isGuestPage ? demoHasMoreActions : hasMore}
+                elementIsScrollable={false}
+                threshold={500}
+                loader={
+                  !isErrorLoading && (
+                    <div className="WalletTable__loader">
+                      <Loading />
+                    </div>
+                  )
+                }
+              >
+                {transactions &&
+                  map(transactions, transaction => (
+                    <WalletTableBodyRow
+                      key={transaction.timestamp}
+                      transaction={transaction}
+                      isGuestPage={isGuestPage}
+                      currentUsername={currentUsername}
+                      totalVestingShares={totalVestingShares}
+                      totalVestingFundSteem={totalVestingFundSteem}
+                    />
+                  ))}
+              </ReduxInfiniteScroll>
+            </tbody>
+          </table>
+        ) : (
+          <div className="WalletTable__empty-table">
+            {intl.formatMessage({
+              id: 'empty_table',
+              defaultMessage: `Please, select start and end date`,
+            })}
+          </div>
+        )}
       </React.Fragment>
     );
   }
