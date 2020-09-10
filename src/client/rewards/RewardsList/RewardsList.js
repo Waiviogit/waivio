@@ -24,12 +24,13 @@ const RewardsList = ({
   loading,
 }) => {
   useEffect(() => {
-    if (userName) getFollowingRewards(userName);
-  }, [userName]);
+    getFollowingRewards();
+  }, []);
 
   const handleLoadMore = () => {
     if (hasMoreFollowingRewards) {
-      getFollowingRewards(userName);
+      const skip = followingRewards.length;
+      getFollowingRewards(skip);
     }
   };
   const content = useMemo(() => {
