@@ -44,6 +44,30 @@
   }
 }
 
+.wallet-table-btn {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: -15px;
+  cursor: pointer;
+  color: @orange-hot;
+  transition: all 0.3s ease;
+  margin-right: 20px;
+  padding: 10px 0 35px;
+
+  &:hover {
+    color: @neon-carrot;
+  }
+
+  &:active {
+    color: @active-orange-btn;
+  }
+
+  @media @small {
+    padding: 0;
+  }
+}
+
 .view-as-link(@color: @orange-hot, @color-hover: #ff9130) {
   color: @color;
   text-decoration: none;

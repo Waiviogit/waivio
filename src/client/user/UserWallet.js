@@ -136,11 +136,6 @@ class Wallet extends Component {
     history: {},
   };
 
-  state = {
-    isTable: false,
-    savedTransactions: [],
-  };
-
   componentDidMount() {
     const {
       totalVestingShares,
@@ -261,7 +256,6 @@ class Wallet extends Component {
           className="UserWallet__view-btn"
           role="presentation"
           onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
-          onChange={() => this.setState({ isTable: true })}
         >
           {intl.formatMessage({
             id: 'table_view',

@@ -1393,5 +1393,6 @@
   "table_till_validation": "Field \"till\" is required",
   "table_after_till_validation": "The selected date must be before or equal the current date",
   "table_view": "Table view",
-  "empty_table": "Please, select start and end date"
+  "empty_table": "Please, select start and end date",
+  "table_back": "Back"
 }

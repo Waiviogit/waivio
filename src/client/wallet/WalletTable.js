@@ -113,6 +113,7 @@ class WalletTable extends React.Component {
     isErrorLoading: PropTypes.bool,
     isloadingTableTransactions: PropTypes.bool,
     locale: PropTypes.string.isRequired,
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -136,6 +137,7 @@ class WalletTable extends React.Component {
     operationNum: -1,
     isErrorLoading: false,
     isloadingTableTransactions: false,
+    history: {},
   };
 
   state = {
@@ -203,96 +205,108 @@ class WalletTable extends React.Component {
   };
 
   filterPanel = () => {
-    const { intl, isloadingTableTransactions, locale } = this.props;
+    const { intl, isloadingTableTransactions, locale, history, user } = this.props;
     const { getFieldDecorator } = this.props.form;
     const formatDate = selectFormatDate(locale);
     return (
-      <Form layout="inline">
-        <Form.Item>
-          <div className="WalletTable__title-wrap">
-            <div className="WalletTable__star-flag">*</div>
-            <div className="WalletTable__from">
-              {intl.formatMessage({
-                id: 'table_date_from',
-                defaultMessage: 'From:',
-              })}
+      <React.Fragment>
+        <span
+          className="WalletTable__back-btn"
+          role="presentation"
+          onClick={() => history.push(`/@${user.name}/transfers`)}
+        >
+          {intl.formatMessage({
+            id: 'table_back',
+            defaultMessage: 'Back',
+          })}
+        </span>
+        <Form layout="inline">
+          <Form.Item>
+            <div className="WalletTable__title-wrap">
+              <div className="WalletTable__star-flag">*</div>
+              <div className="WalletTable__from">
+                {intl.formatMessage({
+                  id: 'table_date_from',
+                  defaultMessage: 'From:',
+                })}
+              </div>
             </div>
-          </div>
-          <div>
-            {getFieldDecorator('from', {
+            <div>
+              {getFieldDecorator('from', {
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'table_from_validation',
+                      defaultMessage: 'Field "start" is required',
+                    }),
+                  },
+                ],
+              })(
+                <DatePicker
+                  format={formatDate}
+                  placeholder={intl.formatMessage({
+                    id: 'table_start_date_picker',
+                    defaultMessage: 'Select start date',
+                  })}
+                  onChange={value => this.setState({ startDate: moment(value).unix() })}
+                />,
+              )}
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <div className="WalletTable__title-wrap">
+              <div className="WalletTable__star-flag">*</div>
+              <div className="WalletTable__till">
+                {intl.formatMessage({
+                  id: 'table_date_till',
+                  defaultMessage: 'Till:',
+                })}
+              </div>
+            </div>
+            {getFieldDecorator('end', {
               rules: [
                 {
                   required: true,
                   message: intl.formatMessage({
-                    id: 'table_from_validation',
-                    defaultMessage: 'Field "start" is required',
+                    id: 'table_till_validation',
+                    defaultMessage: 'Field "till" is required',
                   }),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'table_after_till_validation',
+                    defaultMessage: 'The selected date must be before or equal the current date',
+                  }),
+                  validator: validateDate,
                 },
               ],
             })(
               <DatePicker
                 format={formatDate}
                 placeholder={intl.formatMessage({
-                  id: 'table_start_date_picker',
-                  defaultMessage: 'Select start date',
+                  id: 'table_end_date_picker',
+                  defaultMessage: 'Select end date',
                 })}
-                onChange={value => this.setState({ startDate: moment(value).unix() })}
+                onChange={value => this.setState({ endDate: moment(value).unix() })}
               />,
             )}
-          </div>
-        </Form.Item>
-        <Form.Item>
-          <div className="WalletTable__title-wrap">
-            <div className="WalletTable__star-flag">*</div>
-            <div className="WalletTable__till">
-              {intl.formatMessage({
-                id: 'table_date_till',
-                defaultMessage: 'Till:',
-              })}
-            </div>
-          </div>
-          {getFieldDecorator('end', {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_till_validation',
-                  defaultMessage: 'Field "till" is required',
-                }),
-              },
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_after_till_validation',
-                  defaultMessage: 'The selected date must be before or equal the current date',
-                }),
-                validator: validateDate,
-              },
-            ],
-          })(
-            <DatePicker
-              format={formatDate}
-              placeholder={intl.formatMessage({
-                id: 'table_end_date_picker',
-                defaultMessage: 'Select end date',
-              })}
-              onChange={value => this.setState({ endDate: moment(value).unix() })}
-            />,
-          )}
-        </Form.Item>
-        <Button
-          className="WalletTable__submit"
-          onClick={this.handleOnClick}
-          type="primary"
-          htmlType="submit"
-          loading={isloadingTableTransactions}
-        >
-          {intl.formatMessage({
-            id: 'append_send',
-            defaultMessage: 'Submit',
-          })}
-        </Button>
-      </Form>
+          </Form.Item>
+          <Button
+            className="WalletTable__submit"
+            onClick={this.handleOnClick}
+            type="primary"
+            htmlType="submit"
+            loading={isloadingTableTransactions}
+          >
+            {intl.formatMessage({
+              id: 'append_send',
+              defaultMessage: 'Submit',
+            })}
+          </Button>
+        </Form>
+      </React.Fragment>
     );
   };
 
@@ -348,76 +362,78 @@ class WalletTable extends React.Component {
       <React.Fragment>
         {this.filterPanel()}
         {size(transactions) ? (
-          <table className="WalletTable">
-            <thead>
-              <tr>
-                <th className="WalletTable__date">
-                  {intl.formatMessage({
-                    id: 'table_date',
-                    defaultMessage: `Date`,
-                  })}
-                </th>
-                <th className="WalletTable__HIVE">
-                  {intl.formatMessage({
-                    id: 'table_HIVE',
-                    defaultMessage: `HIVE`,
-                  })}
-                </th>
-                <th className="WalletTable__HP">
-                  {intl.formatMessage({
-                    id: 'table_HP',
-                    defaultMessage: `HP`,
-                  })}
-                </th>
-                <th className="WalletTable__HBD">
-                  {intl.formatMessage({
-                    id: 'table_HBD',
-                    defaultMessage: `HBD`,
-                  })}
-                </th>
-                <th className="WalletTable__description">
-                  {intl.formatMessage({
-                    id: 'table_description',
-                    defaultMessage: `Description`,
-                  })}
-                </th>
-                <th className="WalletTable__memo">
-                  {intl.formatMessage({
-                    id: 'memo',
-                    defaultMessage: `Memo`,
-                  })}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <ReduxInfiniteScroll
-                className="WalletTable__main-content"
-                loadMore={this.handleLoadMore}
-                hasMore={isGuestPage ? demoHasMoreActions : hasMore}
-                elementIsScrollable={false}
-                threshold={500}
-                loader={
-                  !isErrorLoading && (
-                    <div className="WalletTable__loader">
-                      <Loading />
-                    </div>
-                  )
-                }
-              >
-                {transactions &&
-                  map(transactions, transaction => (
-                    <WalletTableBodyRow
-                      key={transaction.timestamp}
-                      transaction={transaction}
-                      isGuestPage={isGuestPage}
-                      currentUsername={currentUsername}
-                      totalVestingShares={totalVestingShares}
-                      totalVestingFundSteem={totalVestingFundSteem}
-                    />
-                  ))}
-              </ReduxInfiniteScroll>
-            </tbody>
-          </table>
+          <div className="WalletTable">
+            <table style={{ width: '100%' }}>
+              <thead>
+                <tr>
+                  <th className="WalletTable__date">
+                    {intl.formatMessage({
+                      id: 'table_date',
+                      defaultMessage: `Date`,
+                    })}
+                  </th>
+                  <th className="WalletTable__HIVE">
+                    {intl.formatMessage({
+                      id: 'table_HIVE',
+                      defaultMessage: `HIVE`,
+                    })}
+                  </th>
+                  <th className="WalletTable__HP">
+                    {intl.formatMessage({
+                      id: 'table_HP',
+                      defaultMessage: `HP`,
+                    })}
+                  </th>
+                  <th className="WalletTable__HBD">
+                    {intl.formatMessage({
+                      id: 'table_HBD',
+                      defaultMessage: `HBD`,
+                    })}
+                  </th>
+                  <th className="WalletTable__description">
+                    {intl.formatMessage({
+                      id: 'table_description',
+                      defaultMessage: `Description`,
+                    })}
+                  </th>
+                  <th className="WalletTable__memo">
+                    {intl.formatMessage({
+                      id: 'memo',
+                      defaultMessage: `Memo`,
+                    })}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ReduxInfiniteScroll
+                  className="WalletTable__main-content"
+                  loadMore={this.handleLoadMore}
+                  hasMore={isGuestPage ? demoHasMoreActions : hasMore}
+                  elementIsScrollable={false}
+                  threshold={500}
+                  loader={
+                    !isErrorLoading && (
+                      <div className="WalletTable__loader">
+                        <Loading />
+                      </div>
+                    )
+                  }
+                >
+                  {transactions &&
+                    map(transactions, transaction => (
+                      <WalletTableBodyRow
+                        key={transaction.timestamp}
+                        transaction={transaction}
+                        isGuestPage={isGuestPage}
+                        currentUsername={currentUsername}
+                        totalVestingShares={totalVestingShares}
+                        totalVestingFundSteem={totalVestingFundSteem}
+                      />
+                    ))}
+                </ReduxInfiniteScroll>
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="WalletTable__empty-table">
             {intl.formatMessage({
