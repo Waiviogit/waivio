@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import Avatar from '../components/Avatar';
 import { epochToUTC } from '../helpers/formatter';
-import { selectCurrectFillOrderValue } from './WalletHelper';
+import { getTransactionDescription, selectCurrectFillOrderValue } from './WalletHelper';
 
 const WalletFillOrderTransferred = ({
   transactionDetails,
@@ -14,6 +13,7 @@ const WalletFillOrderTransferred = ({
   openPays,
   exchanger,
   currentUsername,
+  transactionType,
 }) => {
   const url = `/@${exchanger}`;
   const currentOrderValue = selectCurrectFillOrderValue(
@@ -22,6 +22,8 @@ const WalletFillOrderTransferred = ({
     openPays,
     currentUsername,
   );
+  const options = { url, exchanger };
+  const description = getTransactionDescription(transactionType, options);
   return (
     <React.Fragment>
       <div className="UserWalletTransactions__transaction">
@@ -30,19 +32,7 @@ const WalletFillOrderTransferred = ({
         </div>
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient">
-            <div>
-              <FormattedMessage
-                id="exchange_with"
-                defaultMessage="Exchange with {exchanger}"
-                values={{
-                  exchanger: (
-                    <Link to={url}>
-                      <span className="username">{exchanger}</span>
-                    </Link>
-                  ),
-                }}
-              />
-            </div>
+            <div>{description.fillOrder}</div>
             <span className="UserWalletTransactions__transfer">
               {'- '}
               {currentOrderValue.transfer}
@@ -74,6 +64,7 @@ const WalletFillOrderTransferred = ({
 
 WalletFillOrderTransferred.propTypes = {
   transactionDetails: PropTypes.shape().isRequired,
+  transactionType: PropTypes.string.isRequired,
   timestamp: PropTypes.number,
   currentPays: PropTypes.element,
   openPays: PropTypes.element,

@@ -1,14 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import {
   dateTableField,
+  fillOrderExchanger,
   getCurrentRows,
   getFormattedClaimRewardPayout,
   getSavingsTransactionMessage,
   getTransactionCurrency,
+  getTransactionDescription,
   selectCurrectFillOrderValue,
   validateGuestTransferTitle,
 } from './WalletHelper';
@@ -21,12 +21,12 @@ const WalletTableBodyRow = props => {
     currentUsername,
     transaction,
     isGuestPage,
-    // authUserName,
     totalVestingShares,
     totalVestingFundSteem,
   } = props;
   const transactionType = transaction.type;
   let description = '';
+  const tableView = true;
 
   let data = {
     time: '',
@@ -39,84 +39,71 @@ const WalletTableBodyRow = props => {
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
-      const toVestingAmount = getTransactionCurrency(transaction.amount, 'HP');
-
+      const toVestingAmount = getTransactionCurrency(
+        transaction.amount,
+        'HP',
+        transactionType,
+        tableView,
+      );
+      const from = transaction.from;
+      const to = transaction.to;
+      const options = { from, to };
       if (transaction.to === currentUsername) {
         if (transaction.to === transaction.from) {
           const amountHIVE = `- ${toVestingAmount.amount}`;
           const amountHP = toVestingAmount.amount;
-          description = <FormattedMessage id="powered_up" defaultMessage="Powered up " />;
+          description = getTransactionDescription(transactionType);
+
           data = {
             time: dateTableField(transaction.timestamp, isGuestPage),
             fieldHIVE: amountHIVE,
             fieldHP: amountHP,
-            fieldDescription: description,
+            fieldDescription: description.powerUpTransaction,
           };
           return getCurrentRows(data);
         }
-
-        description = (
-          <FormattedMessage
-            id="powered_up_from"
-            defaultMessage="Powered up from {from} "
-            values={{
-              from: (
-                <Link to={`/@${transaction.from}`}>
-                  <span className="username">{transaction.from}</span>
-                </Link>
-              ),
-            }}
-          />
-        );
+        description = getTransactionDescription(transactionType, options);
 
         data = {
           time: dateTableField(transaction.timestamp, isGuestPage),
           fieldHP: toVestingAmount.amount,
-          fieldDescription: description,
+          fieldDescription: description.powerUpTransactionFrom,
         };
 
         return getCurrentRows(data);
       }
-      description = (
-        <FormattedMessage
-          id="powered_up_to"
-          defaultMessage="Powered up to {to} "
-          values={{
-            to: (
-              <Link to={`/@${transaction.to}`}>
-                <span className="username">{transaction.to}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
+      description = getTransactionDescription(transactionType, options);
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: `- ${toVestingAmount.amount}`,
         fieldHP: toVestingAmount.amount,
-        fieldDescription: description,
+        fieldDescription: description.powerUpTransactionTo,
       };
       return getCurrentRows(data);
     }
     case accountHistoryConstants.TRANSFER: {
-      const transferAmount = getTransactionCurrency(transaction.amount);
-      const demoPost = transaction.type === 'demo_post';
+      const transferAmount = getTransactionCurrency(
+        transaction.amount,
+        undefined,
+        transactionType,
+        tableView,
+      );
+      const demoPost = transaction.typeTransfer === 'demo_post';
+      const from = transaction.from;
+      const to = transaction.to;
+      const options = { from, to };
+      const receiveDescription = getTransactionDescription(transactionType, options);
+
       if (transaction.to === currentUsername) {
-        description = demoPost ? (
-          validateGuestTransferTitle(transaction.details, transaction.username)
-        ) : (
-          <FormattedMessage
-            id="received_from"
-            defaultMessage="Received from {username}"
-            values={{
-              username: (
-                <Link to={`/@${transaction.from}`}>
-                  <span className="username">{transaction.from}</span>
-                </Link>
-              ),
-            }}
-          />
-        );
+        description = demoPost
+          ? validateGuestTransferTitle(
+              transaction.details,
+              transaction.username,
+              undefined,
+              transactionType,
+              tableView,
+            )
+          : receiveDescription.receivedFrom;
         data = {
           time: dateTableField(transaction.timestamp, isGuestPage),
           fieldHIVE: transferAmount.currency === 'HIVE' && `${transferAmount.amount}`,
@@ -126,19 +113,7 @@ const WalletTableBodyRow = props => {
         };
         return getCurrentRows(data);
       }
-      description = (
-        <FormattedMessage
-          id="transferred_to"
-          defaultMessage="Transferred to {username}"
-          values={{
-            username: (
-              <Link to={`/@${transaction.to}`}>
-                <span className="username">{transaction.to}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
+      description = receiveDescription.transferredTo;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: transferAmount.currency === 'HIVE' && `- ${transferAmount.amount}`,
@@ -156,7 +131,8 @@ const WalletTableBodyRow = props => {
         totalVestingShares,
         totalVestingFundSteem,
       );
-      description = <FormattedMessage id="claim_rewards" defaultMessage="Claim rewards" />;
+      const claimRewardsDescription = getTransactionDescription(transactionType);
+      description = claimRewardsDescription.claimRewards;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: get(claimRewardAmounts, 'HIVE'),
@@ -169,7 +145,12 @@ const WalletTableBodyRow = props => {
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
     case accountHistoryConstants.TRANSFER_FROM_SAVINGS:
     case accountHistoryConstants.CANCEL_TRANSFER_FROM_SAVINGS: {
-      const transferToSavingAmount = getTransactionCurrency(transaction.amount);
+      const transferToSavingAmount = getTransactionCurrency(
+        transaction.amount,
+        undefined,
+        transactionType,
+        tableView,
+      );
       description = getSavingsTransactionMessage(transaction.type, transaction, transaction.amount);
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
@@ -181,17 +162,17 @@ const WalletTableBodyRow = props => {
       return getCurrentRows(data);
     }
     case accountHistoryConstants.LIMIT_ORDER: {
-      const currentPaysAmount = getTransactionCurrency(transaction.current_pays);
-      description = (
-        <FormattedMessage
-          id="table_limit_order"
-          defaultMessage="Limit order to buy {open_pays} for {current_pays}"
-          values={{
-            open_pays: <span>{transaction.open_pays}</span>,
-            current_pays: <span>{transaction.current_pays}</span>,
-          }}
-        />
+      const currentPaysAmount = getTransactionCurrency(
+        transaction.current_pays,
+        undefined,
+        transactionType,
+        tableView,
       );
+      const openPays = transaction.open_pays;
+      const currentPays = transaction.current_pays;
+      const options = { openPays, currentPays };
+      const limitOrderDescription = getTransactionDescription(transactionType, options);
+      description = limitOrderDescription.limitOrder;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
@@ -207,26 +188,23 @@ const WalletTableBodyRow = props => {
         transaction.open_pays,
         currentUsername,
       );
-      const paysAmountReceived = getTransactionCurrency(fillOrderAmount.received);
-      const paysAmountTransfer = getTransactionCurrency(fillOrderAmount.transfer);
-      const fillOrderExchanger =
-        currentUsername === transaction.open_owner
-          ? transaction.current_owner
-          : transaction.open_owner;
-
-      description = (
-        <FormattedMessage
-          id="exchange_with"
-          defaultMessage="Exchange with {exchanger}"
-          values={{
-            exchanger: (
-              <Link to={`/@${fillOrderExchanger}`}>
-                <span className="username">{fillOrderExchanger}</span>
-              </Link>
-            ),
-          }}
-        />
+      const paysAmountReceived = getTransactionCurrency(
+        fillOrderAmount.received,
+        undefined,
+        transactionType,
+        tableView,
       );
+      const paysAmountTransfer = getTransactionCurrency(
+        fillOrderAmount.transfer,
+        undefined,
+        transactionType,
+        tableView,
+      );
+      const exchanger = fillOrderExchanger(currentUsername, transaction);
+      const url = `/@${exchanger}`;
+      const options = { url, exchanger };
+      const fillOrderDescription = getTransactionDescription(transactionType, options);
+      description = fillOrderDescription.fillOrder;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldDescription: description,
@@ -245,23 +223,20 @@ const WalletTableBodyRow = props => {
         transaction.open_pays,
         undefined,
         transactionType,
+        tableView,
       );
       const currentPaysAmount = getTransactionCurrency(
         transaction.current_pays,
         undefined,
         transactionType,
+        tableView,
       );
-      description = openPaysAmount ? (
-        <FormattedMessage
-          id="cancel_order"
-          defaultMessage="Cancel order to buy {open_pays}"
-          values={{
-            open_pays: <span className="cancel-order-open-pays">{transaction.open_pays}</span>,
-          }}
-        />
-      ) : (
-        <FormattedMessage id="cancel_limit_order" defaultMessage="Cancel limit order" />
-      );
+      const openPays = transaction.open_pays;
+      const options = { openPays };
+      const cancelOrderDescription = getTransactionDescription(transactionType, options);
+      description = openPaysAmount
+        ? cancelOrderDescription.cancelOrder
+        : cancelOrderDescription.cancelLimitOrder;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE:
@@ -278,34 +253,19 @@ const WalletTableBodyRow = props => {
     }
     case accountHistoryConstants.PROPOSAL_PAY: {
       const receiver = transaction.receiver;
-      const proposalAmount = getTransactionCurrency(transaction.payment);
+      const proposalAmount = getTransactionCurrency(
+        transaction.payment,
+        undefined,
+        transactionType,
+        tableView,
+      );
       const termsOperation = receiver === currentUsername && receiver !== 'steem.dao' ? '' : '- ';
+      const options = { receiver };
+      const proposalDescription = getTransactionDescription(transactionType, options);
       description =
-        receiver === currentUsername && receiver !== 'steem.dao' ? (
-          <FormattedMessage
-            id="proposal_payment_from"
-            defaultMessage="Proposal payment from {steem_dao}"
-            values={{
-              steem_dao: (
-                <Link to={`/@steem.dao`}>
-                  <span className="username">steem.dao</span>
-                </Link>
-              ),
-            }}
-          />
-        ) : (
-          <FormattedMessage
-            id="proposal_payment_to"
-            defaultMessage="Proposal payment to {receiver}"
-            values={{
-              receiver: (
-                <Link to={`/@${receiver}`}>
-                  <span className="username">{receiver}</span>
-                </Link>
-              ),
-            }}
-          />
-        );
+        receiver === currentUsername && receiver !== 'steem.dao'
+          ? proposalDescription.proposalPaymentFrom
+          : proposalDescription.proposalPaymentTo;
       data = {
         time: dateTableField(transaction.timestamp, isGuestPage),
         fieldHIVE:

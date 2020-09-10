@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { FormattedRelative } from 'react-intl';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../helpers/formatter';
-import { getFormattedClaimRewardPayout } from './WalletHelper';
+import { getFormattedClaimRewardPayout, getTransactionDescription } from './WalletHelper';
 
 const ClaimReward = ({
   timestamp,
@@ -13,6 +13,7 @@ const ClaimReward = ({
   rewardVests,
   totalVestingShares,
   totalVestingFundSteem,
+  transactionType,
 }) => {
   const formattedClaimReward = getFormattedClaimRewardPayout(
     rewardSteem,
@@ -22,6 +23,7 @@ const ClaimReward = ({
     totalVestingFundSteem,
     'UserWalletTransactions__payout-rewards',
   );
+  const description = getTransactionDescription(transactionType);
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">
@@ -29,9 +31,7 @@ const ClaimReward = ({
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
-          <div>
-            <FormattedMessage id="claim_rewards" defaultMessage="Claim rewards" />
-          </div>
+          <div>{description.claimRewards}</div>
           <div className="UserWalletTransactions__payout">
             {get(formattedClaimReward, 'payouts')}
           </div>
@@ -61,6 +61,7 @@ ClaimReward.propTypes = {
   rewardVests: PropTypes.string.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
+  transactionType: PropTypes.string.isRequired,
 };
 
 export default ClaimReward;

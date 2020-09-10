@@ -23,6 +23,202 @@ export const TRANSACTION_TYPES = [
   'demo_debt',
   'demo_user_transfer',
 ];
+
+export const getTransactionDescription = (type, options) => {
+  switch (type) {
+    case accountHistoryConstants.TRANSFER_TO_VESTING: {
+      const from = get(options, 'from', 'user');
+      const to = get(options, 'to', 'user');
+      return {
+        powerUpTransaction: <FormattedMessage id="powered_up" defaultMessage="Powered up " />,
+        powerUpTransactionFrom: (
+          <FormattedMessage
+            id="powered_up_from"
+            defaultMessage="Powered up from {from} "
+            values={{
+              from: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        powerUpTransactionTo: (
+          <FormattedMessage
+            id="powered_up_to"
+            defaultMessage="Powered up to {to} "
+            values={{
+              to: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+    case accountHistoryConstants.TRANSFER: {
+      const urlPost = get(options, 'urlPost', '');
+      const urlComment = get(options, 'urlComment', '');
+      const title = get(options, 'title', '');
+      const isMobile = get(options, 'isMobile', false);
+      const tableView = get(options, 'tableView', false);
+      const from = get(options, 'from', '');
+      const to = get(options, 'to', '');
+      console.log('from: ', from);
+      return {
+        reviewAuthorRewards: (
+          <FormattedMessage
+            id="review_author_rewards"
+            defaultMessage="Author rewards: {title}"
+            values={{
+              title: (
+                <Link to={urlPost}>
+                  <span className="username">
+                    {tableView
+                      ? title
+                      : truncate(title, isMobile ? { length: 22 } : { length: 30 })}
+                  </span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        commentsAuthorRewards: (
+          <FormattedMessage
+            id="comments_author_rewards"
+            defaultMessage="Author rewards for comments: {title}"
+            values={{
+              title: (
+                <Link to={urlComment}>
+                  <span className="username">{truncate(title, { length: 15 })}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        receivedFrom: (
+          <FormattedMessage
+            id="received_from"
+            defaultMessage="Received from {username}"
+            values={{
+              username: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        transferredTo: (
+          <FormattedMessage
+            id="transferred_to"
+            defaultMessage="Transferred to {username}"
+            values={{
+              username: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+    case accountHistoryConstants.CLAIM_REWARD_BALANCE:
+      return {
+        claimRewards: <FormattedMessage id="claim_rewards" defaultMessage="Claim rewards" />,
+      };
+    case accountHistoryConstants.LIMIT_ORDER: {
+      const openPays = get(options, 'openPays', null);
+      const currentPays = get(options, 'currentPays', null);
+      return {
+        limitOrder: (
+          <FormattedMessage
+            id="limit_order"
+            defaultMessage="Limit order to buy {open_pays} for {current_pays}"
+            values={{
+              open_pays: <span>{openPays}</span>,
+              current_pays: <span>{currentPays}</span>,
+            }}
+          />
+        ),
+      };
+    }
+    case accountHistoryConstants.FILL_ORDER: {
+      const url = get(options, 'url', '');
+      const exchanger = get(options, 'exchanger', '');
+      return {
+        fillOrder: (
+          <FormattedMessage
+            id="exchange_with"
+            defaultMessage="Exchange with {exchanger}"
+            values={{
+              exchanger: (
+                <Link to={url}>
+                  <span className="username">{exchanger}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+    case accountHistoryConstants.CANCEL_ORDER: {
+      const openPays = get(options, 'openPays', '');
+      return {
+        cancelOrder: (
+          <FormattedMessage
+            id="cancel_order"
+            defaultMessage="Cancel order to buy {open_pays}"
+            values={{
+              open_pays: <span className="cancel-order-open-pays">{openPays}</span>,
+            }}
+          />
+        ),
+        cancelLimitOrder: (
+          <FormattedMessage id="cancel_limit_order" defaultMessage="Cancel limit order" />
+        ),
+      };
+    }
+    case accountHistoryConstants.PROPOSAL_PAY: {
+      const receiver = get(options, 'receiver', '');
+      return {
+        proposalPaymentFrom: (
+          <FormattedMessage
+            id="proposal_payment_from"
+            defaultMessage="Proposal payment from {steem_dao}"
+            values={{
+              steem_dao: (
+                <Link to={`/@steem.dao`}>
+                  <span className="username">steem.dao</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        proposalPaymentTo: (
+          <FormattedMessage
+            id="proposal_payment_to"
+            defaultMessage="Proposal payment to {receiver}"
+            values={{
+              receiver: (
+                <Link to={`/@${receiver}`}>
+                  <span className="username">{receiver}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+    default:
+      return null;
+  }
+};
+
 // eslint-disable-next-line import/prefer-default-export
 export const handleLoadMoreTransactions = ({
   username,
@@ -88,7 +284,7 @@ export const dateTableField = (timestamp, isGuestPage) => (
   </BTooltip>
 );
 
-export const getTransactionCurrency = (amount, currency, type) => {
+export const getTransactionCurrency = (amount, currency, type, tableView) => {
   if (!amount) {
     return null;
   }
@@ -102,10 +298,23 @@ export const getTransactionCurrency = (amount, currency, type) => {
     }
   }
 
-  return {
-    amount: transactionAmount,
-    currency: transactionCurrency,
-  };
+  if (tableView) {
+    return {
+      amount: transactionAmount,
+      currency: transactionCurrency,
+    };
+  }
+
+  return (
+    <span>
+      <FormattedNumber
+        value={transactionAmount}
+        minimumFractionDigits={3}
+        maximumFractionDigits={3}
+      />
+      {` ${transactionCurrency}`}
+    </span>
+  );
 };
 
 export const validateDate = (rule, value, callback) => {
@@ -139,7 +348,13 @@ export const getCurrentRows = data => {
   );
 };
 
-export const validateGuestTransferTitle = (details, username, isMobile) => {
+export const validateGuestTransferTitle = (
+  details,
+  username,
+  isMobile,
+  transactionType,
+  tableView,
+) => {
   const postPermlink = details && details.post_permlink;
   const postParentAuthor = details && details.post_parent_author;
   const postParentPermlink = details && details.post_parent_permlink;
@@ -147,38 +362,13 @@ export const validateGuestTransferTitle = (details, username, isMobile) => {
   const post = details && postParentAuthor === '';
 
   const urlComment = `/@${postParentAuthor}/${postParentPermlink}#@${username}/${postPermlink}`;
-
+  const urlPost = `/@${username}/${postPermlink}`;
+  const options = { urlComment, urlPost, title, isMobile, tableView };
+  const description = getTransactionDescription(transactionType, options);
   if (post) {
-    const urlPost = `/@${username}/${postPermlink}`;
-    return (
-      <FormattedMessage
-        id="review_author_rewards"
-        defaultMessage="Author rewards: {title}"
-        values={{
-          title: (
-            <Link to={urlPost}>
-              <span className="username">
-                {truncate(title, isMobile ? { length: 22 } : { length: 30 })}
-              </span>
-            </Link>
-          ),
-        }}
-      />
-    );
+    return description.reviewAuthorRewards;
   }
-  return (
-    <FormattedMessage
-      id="comments_author_rewards"
-      defaultMessage="Author rewards for comments: {title}"
-      values={{
-        title: (
-          <Link to={urlComment}>
-            <span className="username">{truncate(title, { length: 15 })}</span>
-          </Link>
-        ),
-      }}
-    />
-  );
+  return description.commentsAuthorRewards;
 };
 
 export const getFormattedClaimRewardPayout = (
@@ -304,3 +494,6 @@ export const selectCurrectFillOrderValue = (
         transfer: openPays,
         received: currentPays,
       };
+
+export const fillOrderExchanger = (currentUsername, transaction) =>
+  currentUsername === transaction.open_owner ? transaction.current_owner : transaction.open_owner;
