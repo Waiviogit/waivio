@@ -8,8 +8,8 @@ import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 
 import enUS from 'antd/es/locale/en_US';
-import ruRU from 'antd/lib/locale/ru_RU';
-import ukUA from 'antd/lib/locale/uk_UA';
+import ruRU from 'antd/es/locale/ru_RU';
+import ukUA from 'antd/es/locale/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
