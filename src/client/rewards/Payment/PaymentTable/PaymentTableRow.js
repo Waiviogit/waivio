@@ -136,6 +136,10 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
   }, [sponsor]);
 
   const reviewPermlink = get(sponsor, ['details', 'review_permlink'], '');
+  const review = intl.formatMessage({
+    id: 'paymentTable_review',
+    defaultMessage: `Review`,
+  });
 
   return (
     <tr>
@@ -150,16 +154,10 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
               <div>
                 {reviewPermlink ? (
                   <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
-                    {intl.formatMessage({
-                      id: 'paymentTable_review',
-                      defaultMessage: `Review`,
-                    })}
+                    {review}
                   </Link>
                 ) : (
-                  intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: `Review`,
-                  })
+                  review
                 )}
                 :{' '}
                 <Link to={`/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`}>

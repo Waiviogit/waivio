@@ -250,7 +250,6 @@ const CommentsMessages = memo(
 
       return orderBy(currentChildren, ['post_id'], ['desc']);
     }, [children, commentObj, getChildren, post]);
-    console.log('childrenArr', childrenArr);
 
     return (
       <React.Fragment>
