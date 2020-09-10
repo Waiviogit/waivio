@@ -53,14 +53,17 @@ const Payment = ({
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const app = WAIVIO_PARENT_PERMLINK;
   const currency = HIVE.symbol;
-
-  useEffect(() => {
+  const getPayables = () => {
     getLenders(getRequestParams())
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
       })
       .catch(e => console.log(e));
+  };
+
+  useEffect(() => {
+    getPayables();
   }, []);
 
   let titleName;
@@ -143,7 +146,7 @@ const Payment = ({
           match={match}
         />
       )}
-      <Transfer history={history} />
+      <Transfer history={history} getPayables={getPayables} />
     </div>
   );
 };
