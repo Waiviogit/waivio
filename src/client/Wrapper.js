@@ -7,9 +7,9 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 
-import enUS from 'antd/lib/locale-provider/en_US';
-import ruRU from 'antd/lib/locale-provider/ru_RU';
-import ukUA from 'antd/lib/locale-provider/uk_UA';
+import enUS from 'antd/es/locale/en_US';
+import ruRU from 'antd/lib/locale/ru_RU';
+import ukUA from 'antd/lib/locale/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
