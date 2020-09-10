@@ -176,9 +176,13 @@ class StoryFull extends React.Component {
     companyPermlink,
     resPermlink,
     objPermlink,
-    companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
     proposition,
     proposedWobj,
+    userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssign: true });
@@ -186,12 +190,16 @@ class StoryFull extends React.Component {
       .assignProposition({
         companyAuthor,
         companyPermlink,
-        resPermlink,
         objPermlink,
-        companyId,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
         proposition,
         proposedWobj,
-        appName,
+        userName,
+        currencyId,
       })
       .then(() => {
         message.success(
