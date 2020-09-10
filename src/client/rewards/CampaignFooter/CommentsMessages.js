@@ -2,7 +2,7 @@ import React, { memo, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { find, get, pick, isEmpty, times, compact, orderBy, map, filter } from 'lodash';
+import { find, get, pick, isEmpty, times, compact, orderBy, map, filter, includes } from 'lodash';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 import { Icon, message } from 'antd';
@@ -13,7 +13,6 @@ import {
   FormattedTime,
   injectIntl,
 } from 'react-intl';
-import { ASSIGNED } from '../../../common/constants/rewards';
 import { voteHistoryPost } from '../../post/postActions';
 import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
@@ -76,20 +75,16 @@ const CommentsMessages = memo(
       [commentObj],
     );
 
-    const currentUser = filter(
-      proposition.users,
-      usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
-    );
+    const currentUser = filter(proposition.users, usersItem => usersItem.name === user.name);
 
     const commentAuthor = useMemo(() => {
       if (commentObj.guestInfo) {
         return get(commentObj, ['guestInfo', 'userId'], '');
-      }
-      if (match.params.filterKey) {
-        return get(currentUser, ['0', 'name']);
+      } else if (includes(commentObj.author, 'guest')) {
+        return get(currentUser, ['0', 'name']) || get(proposition, ['users', '0', 'name']);
       }
 
-      return get(proposition, ['users', '0', 'name']);
+      return get(commentObj, ['author']);
     }, [commentObj, match.params.filterKey, currentUser, proposition]);
 
     const time = moment.parseZone(commentCreated).valueOf();
