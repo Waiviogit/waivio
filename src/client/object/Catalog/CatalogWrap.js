@@ -1,5 +1,5 @@
-import { Breadcrumb, message } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
+import { message } from 'antd';
+import { withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
@@ -51,6 +51,7 @@ import {
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
+import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 
 import './CatalogWrap.less';
 
@@ -208,11 +209,13 @@ class CatalogWrap extends React.Component {
         const permlinks = location.hash.slice(1).split('/');
         const { locale } = this.props;
         getObjectsByIds({ authorPermlinks: permlinks, locale }).then(res => {
+          console.log(res);
           const crumbs = res.wobjects.map(obj => ({
-            id: obj.id,
+            id: obj.author_permlink,
             name: obj.name,
-            path: `${location.hash.split(obj.id)[0]}${obj.id}`,
+            path: `${location.hash.split(obj.id)[0]}${obj.author_permlink}`,
           }));
+          console.log(crumbs);
           if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
           this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
         });
@@ -532,40 +535,14 @@ class CatalogWrap extends React.Component {
           </SortSelector.Item>
         </SortSelector>
       );
-
+    console.log(breadcrumb);
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (
           <React.Fragment>
             {!isEmpty(propositions) && this.renderCampaign(propositions)}
             <div className="CatalogWrap__breadcrumb">
-              <Breadcrumb separator={'>'}>
-                {map(breadcrumb, (crumb, index, crumbsArr) => (
-                  <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                    {index && index === crumbsArr.length - 1 ? (
-                      <React.Fragment>
-                        <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
-                        <Link
-                          className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `/object/${crumb.path.slice(1, -9)}/list` }}
-                        >
-                          <i className="iconfont icon-send PostModal__icon" />
-                        </Link>
-                      </React.Fragment>
-                    ) : (
-                      <Link
-                        className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.path }}
-                        title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                          crumb.name
-                        }`}
-                      >
-                        {crumb.name}
-                      </Link>
-                    )}
-                  </Breadcrumb.Item>
-                ))}
-              </Breadcrumb>
+              <CatalogBreadcrumb breadcrumb={breadcrumb} location={location} intl={intl} />
               {get(wobjNested, [objectFields.title], undefined) && (
                 <div className="fw5 pt3">{wobjNested.title}</div>
               )}

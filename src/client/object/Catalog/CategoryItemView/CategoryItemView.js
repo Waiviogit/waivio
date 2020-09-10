@@ -6,12 +6,12 @@ import { injectIntl } from 'react-intl';
 import './CategoryItemView.less';
 
 const CategoryItemView = ({ wObject, intl }) => {
-  const pathName = wObject.defaultShowLink.slice(1).split('/');
+  const pathName = wObject.author_permlink;
 
   return (
     <Link
       key={wObject.author_permlink}
-      to={`#${pathName[1]}`}
+      to={`#${pathName}`}
       title={`${intl.formatMessage({
         id: 'GoTo',
         defaultMessage: 'Go to',
