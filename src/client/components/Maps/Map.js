@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, get, map, isEqual, debounce } from 'lodash';
+import { isEmpty, get, map, isEqual, debounce, has } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
-import { getRadius, getParsedMap } from './mapHelper';
+import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
 import {
   getFilteredObjectsMap,
   getIsMapModalOpen,
@@ -70,8 +70,22 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { primaryObjectCoordinates, zoomMap, match } = this.props;
-    const { zoom } = this.state;
+    const { primaryObjectCoordinates, zoomMap, match, wobjects } = this.props;
+    const { zoom, center } = this.state;
+    let newZoom;
+    if (
+      (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
+        !isEmpty(nextProps.wobjects) &&
+        !isEqual(nextProps.wobjects, wobjects)) ||
+      match.params.filterKey === 'reserved'
+    ) {
+      const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
+      const distance = this.getDistance(coordinates, center);
+      newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 1 : zoom;
+    } else {
+      newZoom = zoom;
+    }
+    this.setState({ zoom: newZoom });
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
       !isEmpty(nextProps.primaryObjectCoordinates)
@@ -160,8 +174,24 @@ class MapOS extends React.Component {
     return radius;
   };
 
+  getWobjectsCoordinates = wobjects => {
+    const coordinates = [];
+    let parsedMap;
+    if (!isEmpty(wobjects)) {
+      map(wobjects, wobject => {
+        if (!isEmpty(wobject.map)) {
+          parsedMap = getParsedMap(wobject);
+          coordinates.push(parsedMap);
+        }
+      });
+    }
+
+    return coordinates;
+  };
+
   getMarkers = () => {
     const { wobjects, match } = this.props;
+
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
@@ -290,9 +320,24 @@ class MapOS extends React.Component {
     this.getMapArea();
   };
 
+  getDistance = (coordinates, center) => {
+    if (!isEmpty(coordinates)) {
+      const distance = map(coordinates, obj =>
+        getDistanceBetweenTwoPoints({
+          lat1: obj.latitude,
+          long1: obj.longitude,
+          lat2: center[0],
+          long2: center[1],
+        }),
+      );
+      return distance;
+    }
+    return null;
+  };
+
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
-    const { infoboxData, zoom, center } = this.state;
+    const { infoboxData, center, zoom } = this.state;
     const markersLayout = this.getMarkers(wobjects);
     return center && zoom > 0 ? (
       <div className="MapOS">
