@@ -179,7 +179,8 @@ class MapOS extends React.Component {
     let parsedMap;
     if (!isEmpty(wobjects)) {
       map(wobjects, wobject => {
-        if (!isEmpty(wobject.map)) {
+        const parent = wobject.parent || {};
+        if (!isEmpty(wobject.map) || !isEmpty(parent.map)) {
           parsedMap = getParsedMap(wobject);
           coordinates.push(parsedMap);
         }
@@ -330,7 +331,8 @@ class MapOS extends React.Component {
           long2: center[1],
         }),
       );
-      return distance;
+
+      return Math.max(...distance);
     }
     return null;
   };
