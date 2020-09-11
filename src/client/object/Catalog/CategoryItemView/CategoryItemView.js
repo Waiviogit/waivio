@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './CategoryItemView.less';
 
-const CategoryItemView = ({ wObject, intl }) => {
-  const pathName = wObject.defaultShowLink;
+const CategoryItemView = ({ wObject, intl, location }) => {
+  const pathName = wObject.author_permlink;
+  const linkTo = location.hash === '' ? `#${pathName}` : `${location.hash}/${pathName}`;
 
   return (
     <Link
       key={wObject.author_permlink}
-      to={pathName}
+      to={linkTo}
       title={`${intl.formatMessage({
         id: 'GoTo',
         defaultMessage: 'Go to',
@@ -34,8 +35,11 @@ const CategoryItemView = ({ wObject, intl }) => {
 CategoryItemView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  location: PropTypes.string,
 };
 
-CategoryItemView.defaultProps = {};
+CategoryItemView.defaultProps = {
+  location: '',
+};
 
 export default injectIntl(CategoryItemView);
