@@ -10,6 +10,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
+import { IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
@@ -677,11 +678,11 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
-    if (!isMap && match.params.filterKey === 'reserved') reqData.update = true;
+    if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
 
     const url = getUrl(match);
 
-    if (isMap && match.params.filterKey === 'reserved') return;
+    if (isMap && match.params.filterKey === IS_RESERVED) return;
 
     fetch(url, {
       headers: { ...headers, app: config.appName, locale },
