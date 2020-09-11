@@ -117,6 +117,7 @@ class Wallet extends Component {
     clearTransactionsHistory: PropTypes.func,
     isWithdrawOpen: PropTypes.bool,
     history: PropTypes.shape(),
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -148,9 +149,7 @@ class Wallet extends Component {
 
     const isGuest = guestUserRegex.test(user && user.name);
 
-    const username = isCurrentUser
-      ? authenticatedUserName
-      : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();

@@ -153,6 +153,9 @@ export default class User extends React.Component {
     const isAboutPage = match.params['0'] === 'about';
     const isGuest =
       match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
+    const currentClassName = isOpenWalletTable
+      ? 'display-table'
+      : classNames('center', { pa3: isAboutPage });
 
     return (
       <div className="main-panel">
@@ -218,13 +221,7 @@ export default class User extends React.Component {
               </React.Fragment>
             )}
             {loaded && (
-              <div
-                className={
-                  isOpenWalletTable ? 'display-table' : classNames('center', { pa3: isAboutPage })
-                }
-              >
-                {renderRoutes(this.props.route.routes)}
-              </div>
+              <div className={currentClassName}>{renderRoutes(this.props.route.routes)}</div>
             )}
           </div>
         </div>

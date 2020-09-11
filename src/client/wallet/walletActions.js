@@ -355,18 +355,16 @@ export const getMoreTableUserTransactionHistory = (
           operationNumTable: data.operationNum,
           hasMoreTable: data.hasMore,
         }))
-        .catch(error => {
-          console.log(error);
-          return dispatch({
+        .catch(() =>
+          dispatch({
             type: GET_ERROR_LOADING_TABLE_TRANSACTIONS,
-          });
-        }),
+          }),
+        ),
     },
   });
 
 export const CLEAR_TRANSACTIONS_HISTORY = '@wallet/CLEAR_TRANSACTIONS_HISTORY';
 
-// eslint-disable-next-line consistent-return
 export const clearTransactionsHistory = () => dispatch =>
   dispatch({
     type: CLEAR_TRANSACTIONS_HISTORY,

@@ -1002,11 +1002,9 @@ export const getGuestPaymentsHistory = async (
   endDate,
 ) => {
   const token = await getValidTokenData();
-  let url = '';
+  let url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`;
   if (tableView) {
-    url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}`;
-  } else {
-    url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`;
+    url += `&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}`;
   }
   return new Promise((resolve, reject) => {
     fetch(url, {
