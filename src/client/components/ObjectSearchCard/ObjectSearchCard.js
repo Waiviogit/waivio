@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import {getProxyImageURL} from '../../helpers/image';
+import { getProxyImageURL } from '../../helpers/image';
 
 import './ObjectSearchCard.less';
 

@@ -1,4 +1,4 @@
-import { get, isEmpty, omit, reduce, filter } from 'lodash';
+import { get, isEmpty, omit, reduce, filter, uniq } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 
 const initialState = {
@@ -29,25 +29,16 @@ const objectType = (state = initialState, action) => {
         tagsForFilter,
         ...data
       } = action.payload;
-      const filteredObjects = [
-        ...state.filteredObjects,
-        ...relatedWobjects.filter(wObj => {
-          const wobjStatus = wObj.status;
-          return (
-            !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
-          );
-        }),
-      ];
+      const filteredRelatedWobjects = relatedWobjects.filter(wObj => {
+        const wobjStatus = wObj.status;
+        return (
+          !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
+        );
+      });
+      const filteredObjects = [...state.filteredObjects, ...filteredRelatedWobjects];
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
-        ? reduce(
-            filtersList,
-            (result, value, key) => {
-              result[key] = []; // eslint-disable-line
-              return result;
-            },
-            {},
-          )
+        ? reduce(filtersList, (result, value, key) => ({ ...result, [key]: [] }), {})
         : { ...state.activeFilters };
       const hasMap = !isEmpty(
         filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
@@ -66,13 +57,11 @@ const objectType = (state = initialState, action) => {
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
       const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
-      const filteredObjects =
-        relatedWobjects &&
-        relatedWobjects.filter(
-          wObj =>
-            !wObj.status ||
-            (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
-        );
+      const filteredObjects = relatedWobjects.filter(
+        wObj =>
+          !wObj.status || (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+      );
+
       return {
         ...state,
         data,
@@ -94,13 +83,36 @@ const objectType = (state = initialState, action) => {
         sort: action.payload,
       };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
-      return initialState;
+      return {
+        ...initialState,
+        tagsForFilter: [...state.tagsForFilter],
+      };
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
     case wobjTypeActions.RESET_UPDATED_STATE:
       return {
         ...state,
         updated: false,
       };
+    // case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.START:
+    case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.SUCCESS: {
+      const { tags, hasMore } = action.payload;
+      const tagsFilter = [...state.tagsForFilter];
+      const matchIndex = tagsFilter.findIndex(category => category.tagCategory === action.meta);
+      const matchItem = tagsFilter[matchIndex];
+
+      tagsFilter.splice(matchIndex, 1, {
+        ...matchItem,
+        tags: uniq([...matchItem.tags, ...tags]),
+        hasMore,
+      });
+
+      return {
+        ...state,
+        tagsForFilter: [...tagsFilter],
+      };
+    }
+    // case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.ERROR:
+
     default:
       return state;
   }

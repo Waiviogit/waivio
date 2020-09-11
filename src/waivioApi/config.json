@@ -96,5 +96,6 @@
   "getWithdrawData": "/get-withdraw-data",
   "setPendingStatus": "/set-pending-transfer",
   "reservationCurrency": "/reservationCurrency",
-  "getField": "/getField"
+  "getField": "/getField",
+  "showMoreTags": "/showMoreTags"
 }

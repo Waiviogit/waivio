@@ -86,11 +86,10 @@ export const getObjectTypeByStateFilters = (
   const activeFilters = { ...getActiveFilters(state) };
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
-
   // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
-    console.log(userLocation);
+
     activeFilters.map = {
       coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
       radius: 50000000,
@@ -145,3 +144,14 @@ export const resetUpdatedFlag = () => dispatch => {
     type: RESET_UPDATED_STATE,
   });
 };
+
+export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
+  '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
+);
+
+export const showMoreTags = (category, skip, limit) => dispatch =>
+  dispatch({
+    type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
+    payload: ApiClient.showMoreTagsForFilters(category, skip, limit),
+    meta: category,
+  });

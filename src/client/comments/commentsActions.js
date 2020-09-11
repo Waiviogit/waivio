@@ -129,11 +129,13 @@ export const getComments = postId => (dispatch, getState) => {
     dispatch({
       type: GET_COMMENTS,
       payload: {
-        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+          apiRes => ({
+            rootCommentsList: getRootCommentsList(apiRes),
+            commentsChildrenList: getCommentsChildrenLists(apiRes),
+            content: apiRes.content,
+          }),
+        ),
       },
       meta: {
         id: postId,
@@ -371,11 +373,13 @@ export const getReservedComments = ({ category, author, permlink }) => (dispatch
   return dispatch({
     type: GET_RESERVED_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({category, author, permlink, locale}).then(apiRes => ({
-        rootCommentsList: getRootCommentsList(apiRes),
-        commentsChildrenList: getCommentsChildrenLists(apiRes),
-        content: apiRes.content,
-      })),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+        apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        }),
+      ),
     },
-  })
+  });
 };

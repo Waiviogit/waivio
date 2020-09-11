@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, omit, get, size, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
-import { createFilterBody, isNeedFilters, updateActiveFilters } from './helper';
+import { createFilterBody, isNeedFilters, parseUrl, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypeSorting,
@@ -23,6 +23,8 @@ import {
   setFiltersAndLoad,
   changeSortingAndLoad,
   getObjectTypeMap,
+  filteredDiscoveryContent,
+  setActiveFilters,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -75,6 +77,8 @@ const SORT_OPTIONS = {
     getObjectTypeMap,
     getCoordinates,
     getCryptoPriceHistoryAction: getCryptoPriceHistory,
+    filteredDiscoveryContent,
+    setActiveFilters,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -103,7 +107,11 @@ class DiscoverObjectsContent extends Component {
     declineProposition: PropTypes.func.isRequired,
     match: PropTypes.shape().isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
+    setActiveFilters: PropTypes.func.isRequired,
     tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
+    location: PropTypes.shape({
+      search: PropTypes.string,
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -133,8 +141,12 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, typeName, getCryptoPriceHistoryAction, match } = this.props;
-    const parseSearchParams = createFilterBody(match.params.categories);
+    const { dispatchGetObjectType, typeName, getCryptoPriceHistoryAction, location } = this.props;
+    const activeFilters = parseUrl(location.search);
+    const parseSearchParams = createFilterBody(activeFilters);
+
+    if (activeFilters.rating)
+      this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
 
     dispatchGetObjectType(typeName, { skip: 0 }, parseSearchParams);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
@@ -170,10 +182,17 @@ class DiscoverObjectsContent extends Component {
   );
 
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectType, theType, filteredObjects } = this.props;
-    dispatchGetObjectType(theType.name, {
-      skip: filteredObjects.length || 0,
-    });
+    const { dispatchGetObjectType, theType, filteredObjects, location } = this.props;
+    const activeFilters = parseUrl(location.search);
+    const parseSearchParams = createFilterBody(activeFilters);
+
+    dispatchGetObjectType(
+      theType.name,
+      {
+        skip: filteredObjects.length || 0,
+      },
+      parseSearchParams,
+    );
   };
 
   showFiltersModal = () =>
@@ -303,6 +322,7 @@ class DiscoverObjectsContent extends Component {
         </SortSelector.Item>
       </SortSelector>
     );
+
     return (
       <React.Fragment>
         <div className="discover-objects-header__selection-block">

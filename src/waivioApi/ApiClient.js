@@ -1238,8 +1238,8 @@ export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =
         ...headers,
         app: config.appName,
         locale,
-      }
-    }
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -1431,6 +1431,20 @@ export const getFollowingSponsorsRewards = ({ userName }) =>
       headers,
       method: 'GET',
     })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.objectType}${config.showMoreTags}?skip=${skip}&limit=${limit}&tagCategory=${category}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

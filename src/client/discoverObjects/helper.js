@@ -21,19 +21,56 @@ export const parseUrl = url => {
 
   const parseSearchParams = url
     .split('&')
-    .map(search => search.replace('=', '": "').replace('?', '"'))
+    .map(search => search.replace('=', '": "').replace('?', ''))
     .join('", "');
 
   return JSON.parse(`{"${parseSearchParams}"}`);
 };
 
-export const createFilterBody = url => {
-  const parseSearchParams = parseUrl(url);
+export const createFilterBody = parseObject => {
+  const parseSearchParams = { ...parseObject };
+
+  delete parseSearchParams.rating;
 
   return Object.keys(parseSearchParams).map(category => ({
-    categoryName: category,
-    tags: parseSearchParams[category].split(','),
+    categoryName: category.replace('%20', ' '),
+    tags:
+      typeof parseSearchParams[category] === 'string'
+        ? parseSearchParams[category].split(',')
+        : parseSearchParams[category],
   }));
+};
+
+export const updateActiveTagsFilters = (e, activeTagsFilters) => {
+  const { name: filterValue, value, checked } = e.target;
+  const filter = value.replace(' ', '%20');
+
+  if (!activeTagsFilters[filter])
+    return {
+      ...activeTagsFilters,
+      [filter]: [filterValue],
+    };
+
+  return {
+    ...activeTagsFilters,
+    [filter]: checked
+      ? [...activeTagsFilters[filter], filterValue]
+      : activeTagsFilters[filter].filter(tag => tag !== filterValue),
+  };
+};
+
+export const parseTagsFilters = url => {
+  const parseSearchParams = parseUrl(url);
+
+  delete parseSearchParams.rating;
+
+  return Object.keys(parseSearchParams).reduce(
+    (acc, category) => ({
+      ...acc,
+      [category]: parseSearchParams[category].split(','),
+    }),
+    {},
+  );
 };
 
 export default {

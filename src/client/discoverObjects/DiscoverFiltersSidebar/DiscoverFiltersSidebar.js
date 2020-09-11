@@ -72,20 +72,15 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             zoomMap={DEFAULT_ZOOM}
           />
         )}
-        {(!isEmpty(filters) ||
-          !isEmpty(tagsFilters)) && (
-            <div className="SidebarContentBlock">
-              <div className="SidebarContentBlock__title">
-                <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
-                {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
-              </div>
-              <FiltersContainer
-                filters={filters}
-                tagsFilters={tagsFilters}
-                filterPath={match.params.categories}
-              />
+        {(!isEmpty(filters) || !isEmpty(tagsFilters)) && (
+          <div className="SidebarContentBlock">
+            <div className="SidebarContentBlock__title">
+              <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
+              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
             </div>
-          )}
+            <FiltersContainer filters={filters} tagsFilters={tagsFilters} />
+          </div>
+        )}
       </div>
     )
   );

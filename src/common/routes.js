@@ -394,7 +394,7 @@ const routes = [
         component: NotificationSettings,
       },
       {
-        path: '/discover-objects/:typeName?/:categories?',
+        path: '/discover-objects/:typeName?',
         exact: true,
         component: DiscoverObjects,
       },

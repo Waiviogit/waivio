@@ -153,7 +153,7 @@ class ObjectInfo extends React.Component {
       <div>
         {tagArray.map(item => (
           <Tag key={`${category}/${item.body}`} color="orange">
-            <Link to={`/discover-objects/${type}/${category}=${item.body}`}>{item.body}</Link>
+            <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
           </Tag>
         ))}
         {categoryItems.length > 5 && !this.state.showMore[category] && (
