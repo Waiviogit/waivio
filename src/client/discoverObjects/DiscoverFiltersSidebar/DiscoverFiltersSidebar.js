@@ -13,6 +13,7 @@ import {
   getUserLocation,
   getHasMap,
   getIsMapModalOpen,
+  getFiltersTags,
 } from '../../reducers';
 import { setFiltersAndLoad, getObjectTypeMap } from '../../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../../components/Maps/mapActions';
@@ -32,6 +33,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const activeFilters = useSelector(getActiveFilters);
   const hasMap = useSelector(getHasMap);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
+  const tagsFilters = useSelector(getFiltersTags);
 
   if (isEmpty(userLocation)) {
     dispatch(getCoordinates());
@@ -52,34 +54,36 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   };
 
   const wobjectsForMap = useMemo(() => getWobjectsForMap(wobjects), [wobjects]);
-
   const isTypeHasFilters = memoize(isNeedFilters);
-  return isTypeHasFilters(objectType) ? (
-    <div className="discover-objects-filters">
-      {hasMap ? (
-        <MapWrap
-          wobjects={wobjectsForMap}
-          onMarkerClick={handleMapMarkerClick}
-          getAreaSearchData={setSearchArea}
-          setMapArea={setMapArea}
-          userLocation={userLocation}
-          customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
-          onCustomControlClick={handleMapSearchClick}
-          match={match}
-          zoomMap={DEFAULT_ZOOM}
-        />
-      ) : null}
-      {!isEmpty(filters) ? (
-        <div className="SidebarContentBlock">
-          <div className="SidebarContentBlock__title">
-            <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
-            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
+
+  return (
+    isTypeHasFilters(objectType) && (
+      <div className="discover-objects-filters">
+        {hasMap && (
+          <MapWrap
+            wobjects={wobjectsForMap}
+            onMarkerClick={handleMapMarkerClick}
+            getAreaSearchData={setSearchArea}
+            setMapArea={setMapArea}
+            userLocation={userLocation}
+            customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
+            onCustomControlClick={handleMapSearchClick}
+            match={match}
+            zoomMap={DEFAULT_ZOOM}
+          />
+        )}
+        {(!isEmpty(filters) || !isEmpty(tagsFilters)) && (
+          <div className="SidebarContentBlock">
+            <div className="SidebarContentBlock__title">
+              <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
+              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
+            </div>
+            <FiltersContainer filters={filters} tagsFilters={tagsFilters} />
           </div>
-          <FiltersContainer intl={intl} filters={filters} />
-        </div>
-      ) : null}
-    </div>
-  ) : null;
+        )}
+      </div>
+    )
+  );
 };
 
 DiscoverFiltersSidebar.propTypes = {
