@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { getProxyImageURL } from '../../helpers/image';
 
 import './ObjectSearchCard.less';
 
@@ -13,7 +14,8 @@ const ObjectSearchCard = props => {
   const parentString = getObjectName(parent);
   const titleSrting = get(object, objectFields.title, '');
   const description = get(object, objectFields.description, '');
-  const avatar = get(object, ['avatar']) || get(parent, 'avatar');
+  let avatar = get(object, ['avatar']) || get(parent, 'avatar');
+  if (avatar) avatar = getProxyImageURL(avatar, 'preview');
 
   return (
     <div className="object-search-card">

@@ -248,7 +248,7 @@ export const postCreateWaivioObject = requestBody =>
 export const getContent = (author, permlink = '', locale, follower) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers: { ...headers, locale, follower },
+      headers: { ...headers, app: config.appName, locale, follower },
       method: 'GET',
     })
       .then(res => res.json())
@@ -1105,14 +1105,14 @@ export const broadcastGuestOperation = async (operationId, data) => {
 };
 // endregion
 
-export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency') =>
+export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'recency', follower) =>
   fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}&sort=${sort}`,
     {
       headers: {
         ...headers,
-        following: username,
-        follower: username,
+        following: follower,
+        follower: follower,
       },
     },
   )
@@ -1246,9 +1246,16 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPerm
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({ category, author, permlink }) =>
+export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =>
   fetch(
     `${config.apiPrefix}${config.postComments}?author=${author}&permlink=${permlink}&category=${category}`,
+    {
+      headers: {
+        ...headers,
+        app: config.appName,
+        locale,
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
@@ -1440,6 +1447,20 @@ export const getFollowingSponsorsRewards = ({ userName }) =>
       headers,
       method: 'GET',
     })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.objectType}${config.showMoreTags}?skip=${skip}&limit=${limit}&tagCategory=${category}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
