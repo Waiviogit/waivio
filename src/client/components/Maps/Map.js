@@ -184,8 +184,11 @@ class MapOS extends React.Component {
     if (!isEmpty(wobjects)) {
       map(wobjects, wobject => {
         const parent = wobject.parent || {};
-        if (!isEmpty(wobject.map) || !isEmpty(parent.map)) {
+        if (!isEmpty(wobject.map)) {
           parsedMap = getParsedMap(wobject);
+          coordinates.push(parsedMap);
+        } else if (!isEmpty(parent.map)) {
+          parsedMap = getParsedMap(parent);
           coordinates.push(parsedMap);
         }
       });
