@@ -115,6 +115,7 @@ export const getComments = postId => (dispatch, getState) => {
   const listFields = get(object, ['wobject', 'fields'], null);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
+  const locale = getLocale(getState());
   if (content) {
     // eslint-disable-next-line camelcase
     const { category, permlink } = content;
@@ -128,11 +129,13 @@ export const getComments = postId => (dispatch, getState) => {
     dispatch({
       type: GET_COMMENTS,
       payload: {
-        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+          apiRes => ({
+            rootCommentsList: getRootCommentsList(apiRes),
+            commentsChildrenList: getCommentsChildrenLists(apiRes),
+            content: apiRes.content,
+          }),
+        ),
       },
       meta: {
         id: postId,
@@ -364,14 +367,19 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
   });
 };
 
-export const getReservedComments = ({ category, author, permlink }) => dispatch =>
-  dispatch({
+export const getReservedComments = ({ category, author, permlink }) => (dispatch, getState) => {
+  const locale = getLocale(getState());
+
+  return dispatch({
     type: GET_RESERVED_COMMENTS,
     payload: {
-      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink }).then(apiRes => ({
-        rootCommentsList: getRootCommentsList(apiRes),
-        commentsChildrenList: getCommentsChildrenLists(apiRes),
-        content: apiRes.content,
-      })),
+      promise: ApiClient.getPostCommentsFromApi({ category, author, permlink, locale }).then(
+        apiRes => ({
+          rootCommentsList: getRootCommentsList(apiRes),
+          commentsChildrenList: getCommentsChildrenLists(apiRes),
+          content: apiRes.content,
+        }),
+      ),
     },
   });
+};
