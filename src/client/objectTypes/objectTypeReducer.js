@@ -1,11 +1,13 @@
 import { get, isEmpty, omit, reduce, filter, uniq } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
+import { parseWobjectField } from '../helpers/wObjectHelper';
 
 const initialState = {
   data: {},
   filteredObjects: [],
   filtersList: {},
   activeFilters: {},
+  activeTagsFilters: {},
   sort: 'weight',
   map: false,
   fetching: false,
@@ -30,7 +32,7 @@ const objectType = (state = initialState, action) => {
         ...data
       } = action.payload;
       const filteredRelatedWobjects = relatedWobjects.filter(wObj => {
-        const wobjStatus = wObj.status;
+        const wobjStatus = parseWobjectField(wObj, 'status');
         return (
           !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
         );
@@ -40,6 +42,10 @@ const objectType = (state = initialState, action) => {
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(filtersList, (result, value, key) => ({ ...result, [key]: [] }), {})
         : { ...state.activeFilters };
+      const tagsForFilterList = isEmpty(state.tagsForFilter)
+        ? tagsForFilter
+        : [...state.tagsForFilter];
+
       const hasMap = !isEmpty(
         filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
       );
@@ -47,7 +53,7 @@ const objectType = (state = initialState, action) => {
         ...state,
         data,
         filtersList,
-        tagsForFilter,
+        tagsForFilter: tagsForFilterList,
         activeFilters,
         map: Boolean((filters && !isEmpty(filters.map)) || hasMap),
         filteredObjects,
@@ -56,8 +62,8 @@ const objectType = (state = initialState, action) => {
       };
     }
     case wobjTypeActions.GET_OBJECT_TYPE_MAP.SUCCESS: {
-      const { related_wobjects: relatedWobjects, filters, ...data } = action.payload;
-      const filteredObjects = relatedWobjects.filter(
+      const { filters, ...data } = action.payload;
+      const filteredObjects = get(action.payload, 'related_wobjects', []).filter(
         wObj =>
           !wObj.status || (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
       );
@@ -83,17 +89,15 @@ const objectType = (state = initialState, action) => {
         sort: action.payload,
       };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
-      return {
-        ...initialState,
-        tagsForFilter: [...state.tagsForFilter],
-      };
+      return initialState;
+
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
     case wobjTypeActions.RESET_UPDATED_STATE:
       return {
         ...state,
         updated: false,
       };
-    // case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.START:
+
     case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.SUCCESS: {
       const { tags, hasMore } = action.payload;
       const tagsFilter = [...state.tagsForFilter];
@@ -111,7 +115,13 @@ const objectType = (state = initialState, action) => {
         tagsForFilter: [...tagsFilter],
       };
     }
-    // case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.ERROR:
+
+    case wobjTypeActions.SET_ACTIVE_TAGS_FILTERS:
+      return {
+        ...state,
+        activeTagsFilters: action.payload,
+        filteredObjects: [],
+      };
 
     default:
       return state;
@@ -132,3 +142,4 @@ export const getTypeName = state => get(state, ['data', 'name'], '');
 export const getHasMap = state => state.map;
 export const getSorting = state => state.sort;
 export const getFiltersTags = state => state.tagsForFilter;
+export const getActiveFiltersTags = state => state.activeTagsFilters;

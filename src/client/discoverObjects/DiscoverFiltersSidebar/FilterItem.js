@@ -45,9 +45,7 @@ const FilterItem = ({
                 onChange={handleOnChangeCheckbox}
                 checked={isChecked}
               >
-                <span className="collapsible-block__item__label ttc">
-                  {intl.formatMessage({ id: value, defaultMessage: value })}
-                </span>
+                <span className="collapsible-block__item__label ttc">{value}</span>
               </Checkbox>
             </div>
           );
@@ -82,7 +80,7 @@ FilterItem.defaultProps = {
   showMoreTags: () => {},
   activeFilters: [],
   filterValues: [],
-  hasMore: true,
+  hasMore: false,
 };
 
 export default injectIntl(FilterItem);

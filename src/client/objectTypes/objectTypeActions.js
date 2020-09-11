@@ -7,8 +7,10 @@ import {
   getQueryString,
   getLocale,
   getAuthenticatedUserName,
+  getActiveFiltersTags,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { createFilterBody } from '../discoverObjects/helper';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
 export const GET_OBJECT_TYPE_MAP = createAsyncActionType('@objectType/GET_OBJECT_TYPE_MAP');
@@ -80,10 +82,10 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
 export const getObjectTypeByStateFilters = (
   typeName,
   { skip = 0, limit = 15, simplified = false } = {},
-  filterBody,
 ) => (dispatch, getState) => {
   const state = getState();
-  const activeFilters = { ...getActiveFilters(state) };
+  const activeFilters = getActiveFilters(state);
+  const filterBody = createFilterBody(getActiveFiltersTags(state));
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
   // if use sort by proximity, require to use map filter
@@ -155,3 +157,21 @@ export const showMoreTags = (category, skip, limit) => dispatch =>
     payload: ApiClient.showMoreTagsForFilters(category, skip, limit),
     meta: category,
   });
+
+export const SET_ACTIVE_TAGS_FILTERS = '@objectType/SET_ACTIVE_TAGS_FILTERS';
+
+export const setActiveTagsFilters = filters => dispatch => {
+  dispatch({
+    type: SET_ACTIVE_TAGS_FILTERS,
+    payload: filters,
+  });
+
+  return Promise.resolve();
+};
+
+export const setTagsFiltersAndLoad = filters => (dispatch, getState) => {
+  dispatch(setActiveTagsFilters(filters)).then(() => {
+    const typeName = getTypeName(getState());
+    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+  });
+};

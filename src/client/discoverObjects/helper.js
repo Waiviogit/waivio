@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { isEmpty, uniq } from 'lodash';
 import OBJ_TYPES from '../object/const/objectTypes';
 
 export function updateActiveFilters(activeFilters, filter, value, isActive) {
@@ -32,17 +32,18 @@ export const createFilterBody = parseObject => {
 
   delete parseSearchParams.rating;
 
-  return Object.keys(parseSearchParams).map(category => ({
+  const mappedFilter = Object.keys(parseSearchParams).map(category => ({
     categoryName: category.replace('%20', ' '),
     tags:
       typeof parseSearchParams[category] === 'string'
         ? parseSearchParams[category].split(',')
         : parseSearchParams[category],
   }));
+
+  return mappedFilter.filter(filter => !isEmpty(filter.tags));
 };
 
-export const updateActiveTagsFilters = (e, activeTagsFilters) => {
-  const { name: filterValue, value, checked } = e.target;
+export const updateActiveTagsFilters = (activeTagsFilters, filterValue, value, checked) => {
   const filter = value.replace(' ', '%20');
 
   if (!activeTagsFilters[filter])
@@ -71,6 +72,21 @@ export const parseTagsFilters = url => {
     }),
     {},
   );
+};
+
+export const changeUrl = (activeTags, history, location) => {
+  const newUrl = Object.keys(activeTags).reduce((acc, category) => {
+    if (isEmpty(activeTags[category])) return acc;
+
+    return acc
+      ? `${acc}&${category}=${activeTags[category].join(',')}`
+      : `?${category}=${activeTags[category].join(',')}`;
+  }, '');
+
+  if (newUrl !== location.search) {
+    if (newUrl) history.push(newUrl);
+    else history.push(location.pathname);
+  }
 };
 
 export default {

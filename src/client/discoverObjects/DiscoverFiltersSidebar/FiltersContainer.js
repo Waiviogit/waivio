@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { map, isEmpty, size } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import { getActiveFilters } from '../../reducers';
+import { getActiveFilters, getActiveFiltersTags } from '../../reducers';
 import {
-  createFilterBody,
+  changeUrl,
   parseTagsFilters,
   updateActiveFilters,
   updateActiveTagsFilters,
@@ -14,20 +14,26 @@ import {
 import {
   setFiltersAndLoad,
   showMoreTags,
-  getObjectTypeByStateFilters,
+  setTagsFiltersAndLoad,
 } from '../../objectTypes/objectTypeActions';
 import FilterItem from './FilterItem';
 
-const FiltersContainer = ({ filters, tagsFilters, history, location, match }) => {
-  const dispatch = useDispatch();
-  const activeFilters = useSelector(getActiveFilters);
+const FiltersContainer = ({
+  filters,
+  tagsFilters,
+  history,
+  location,
+  activeFilters,
+  activeTagsFilters,
+  dispatchSetActiveTagsFilters,
+  dispatchShowMoreTags,
+  dispatchSetFiltersAndLoad,
+}) => {
   const [collapsedFilters, setCollapsed] = useState([]);
-  const [activeTagsFilters, setActiveTagsFilters] = useState({});
-  const { search: filterPath, pathname } = location;
-  const { typeName } = match.params;
+  const { search: filterPath } = location;
 
   useEffect(() => {
-    if (filterPath) setActiveTagsFilters(parseTagsFilters(filterPath));
+    if (filterPath) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
   }, []);
 
   const handleDisplayFilter = filterName => () => {
@@ -38,42 +44,25 @@ const FiltersContainer = ({ filters, tagsFilters, history, location, match }) =>
     }
   };
 
-  const changeUrl = activeTags => {
-    const newUrl = Object.keys(activeTags).reduce((acc, category) => {
-      if (isEmpty(activeTags[category])) return acc;
-
-      return acc
-        ? `${acc}&${category}=${activeTags[category].join(',')}`
-        : `?${category}=${activeTags[category].join(',')}`;
-    }, '');
-
-    if (newUrl !== filterPath) {
-      if (newUrl) history.push(newUrl);
-      else history.push(pathname);
-    }
-  };
-
   const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter, checked } = e.target;
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
 
-    dispatch(setFiltersAndLoad(updatedFilters));
-    changeUrl({ ...updatedFilters, ...activeTagsFilters });
+    dispatchSetFiltersAndLoad(updatedFilters);
+    changeUrl({ ...updatedFilters, ...activeTagsFilters }, history, location);
   };
 
   const handleOnChangeTagsCheckbox = e => {
-    const updateTagsFilters = updateActiveTagsFilters(e, activeTagsFilters);
-
-    setActiveTagsFilters(updateTagsFilters);
-    console.log(updateTagsFilters);
-    dispatch(
-      getObjectTypeByStateFilters(
-        typeName,
-        { skip: 0, limit: 10 },
-        createFilterBody(updateTagsFilters),
-      ),
+    const { name: filterValue, value, checked } = e.target;
+    const updateTagsFilters = updateActiveTagsFilters(
+      activeTagsFilters,
+      filterValue,
+      value,
+      checked,
     );
-    changeUrl({ ...activeFilters, ...updateTagsFilters });
+
+    dispatchSetActiveTagsFilters(updateTagsFilters);
+    changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };
 
   const isCollapsed = name => collapsedFilters.includes(name);
@@ -104,7 +93,7 @@ const FiltersContainer = ({ filters, tagsFilters, history, location, match }) =>
               filterValues={filterValues.tags}
               hasMore={filterValues.hasMore}
               showMoreTags={() =>
-                dispatch(showMoreTags(filterValues.tagCategory, size(filterValues.tags)))
+                dispatchShowMoreTags(filterValues.tagCategory, size(filterValues.tags))
               }
             />
           ))}
@@ -126,13 +115,30 @@ FiltersContainer.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       typeName: PropTypes.string,
-    })
-  }).isRequired
+    }),
+  }).isRequired,
+  activeTagsFilters: PropTypes.shape({}).isRequired,
+  dispatchSetActiveTagsFilters: PropTypes.func.isRequired,
+  dispatchShowMoreTags: PropTypes.func.isRequired,
+  dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
+  activeFilters: PropTypes.shape({}),
 };
 
 FiltersContainer.defaultProps = {
   tagsFilters: [],
   filterPath: '',
+  activeFilters: {},
 };
 
-export default withRouter(FiltersContainer);
+export default connect(
+  state => ({
+    activeTagsFilters: getActiveFiltersTags(state),
+    activeFilters: getActiveFilters(state),
+  }),
+  {
+    dispatchSetActiveTagsFilters: setTagsFiltersAndLoad,
+    dispatchGetActiveFilters: getActiveFilters,
+    dispatchShowMoreTags: showMoreTags,
+    dispatchSetFiltersAndLoad: setFiltersAndLoad,
+  },
+)(withRouter(FiltersContainer));

@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import { isEmpty, omit, get, size, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, message, Modal, Tag } from 'antd';
-import { createFilterBody, isNeedFilters, parseUrl, updateActiveFilters } from './helper';
+import {
+  changeUrl,
+  isNeedFilters,
+  parseTagsFilters,
+  parseUrl,
+  updateActiveFilters,
+  updateActiveTagsFilters,
+} from './helper';
 import {
   getActiveFilters,
   getObjectTypeSorting,
@@ -16,6 +23,7 @@ import {
   getAuthenticatedUserName,
   getIsMapModalOpen,
   getFiltersTags,
+  getActiveFiltersTags,
 } from '../reducers';
 import {
   getObjectTypeByStateFilters,
@@ -25,6 +33,8 @@ import {
   getObjectTypeMap,
   filteredDiscoveryContent,
   setActiveFilters,
+  setTagsFiltersAndLoad,
+  setActiveTagsFilters,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -65,6 +75,7 @@ const SORT_OPTIONS = {
     searchString: new URLSearchParams(props.history.location.search).get('search'),
     userName: getAuthenticatedUserName(state),
     isFullscreenMode: getIsMapModalOpen(state),
+    activeTagsFilters: getActiveFiltersTags(state),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -79,6 +90,8 @@ const SORT_OPTIONS = {
     getCryptoPriceHistoryAction: getCryptoPriceHistory,
     filteredDiscoveryContent,
     setActiveFilters,
+    setActiveTagsFilters,
+    setTagsFiltersAndLoad,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -108,6 +121,9 @@ class DiscoverObjectsContent extends Component {
     match: PropTypes.shape().isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
+    setActiveTagsFilters: PropTypes.func.isRequired,
+    setTagsFiltersAndLoad: PropTypes.func.isRequired,
+    activeTagsFilters: PropTypes.shape({}),
     tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
     location: PropTypes.shape({
       search: PropTypes.string,
@@ -121,6 +137,7 @@ class DiscoverObjectsContent extends Component {
     match: {},
     userName: '',
     tagsFilters: [],
+    activeTagsFilters: {},
   };
 
   constructor(props) {
@@ -143,12 +160,12 @@ class DiscoverObjectsContent extends Component {
   componentDidMount() {
     const { dispatchGetObjectType, typeName, getCryptoPriceHistoryAction, location } = this.props;
     const activeFilters = parseUrl(location.search);
-    const parseSearchParams = createFilterBody(activeFilters);
+    const activeTagsFilter = parseTagsFilters(location.search);
 
     if (activeFilters.rating)
       this.props.setActiveFilters({ rating: activeFilters.rating.split(',') });
-
-    dispatchGetObjectType(typeName, { skip: 0 }, parseSearchParams);
+    if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
+    dispatchGetObjectType(typeName, { skip: 0 });
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
@@ -182,17 +199,9 @@ class DiscoverObjectsContent extends Component {
   );
 
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectType, theType, filteredObjects, location } = this.props;
-    const activeFilters = parseUrl(location.search);
-    const parseSearchParams = createFilterBody(activeFilters);
+    const { dispatchGetObjectType, theType, filteredObjects } = this.props;
 
-    dispatchGetObjectType(
-      theType.name,
-      {
-        skip: filteredObjects.length || 0,
-      },
-      parseSearchParams,
-    );
+    dispatchGetObjectType(theType.name, { skip: filteredObjects.length || 0 });
   };
 
   showFiltersModal = () =>
@@ -212,10 +221,29 @@ class DiscoverObjectsContent extends Component {
   handleChangeSorting = sorting => this.props.dispatchChangeSorting(sorting);
 
   handleRemoveTag = (filter, filterValue) => e => {
-    const { activeFilters, dispatchSetActiveFilters } = this.props;
+    const {
+      activeFilters,
+      dispatchSetActiveFilters,
+      activeTagsFilters,
+      history,
+      location,
+    } = this.props;
     e.preventDefault();
-    const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, false);
-    dispatchSetActiveFilters(updatedFilters);
+    if (filter === 'rating') {
+      const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, false);
+      dispatchSetActiveFilters(updatedFilters);
+
+      changeUrl({ ...activeTagsFilters, ...updatedFilters }, history, location);
+    } else {
+      const updateTagsFilter = updateActiveTagsFilters(
+        activeTagsFilters,
+        filterValue,
+        filter,
+        false,
+      );
+      this.props.setTagsFiltersAndLoad(updateTagsFilter);
+      changeUrl({ ...activeFilters, ...updateTagsFilter }, history, location);
+    }
   };
 
   resetMapFilter = () => {
@@ -305,7 +333,9 @@ class DiscoverObjectsContent extends Component {
       hasMoreObjects,
       userName,
       match,
+      activeTagsFilters,
     } = this.props;
+    const allActiveFilters = { ...chosenFilters, ...activeTagsFilters };
     const sortSelector = hasMap ? (
       <SortSelector sort={sort} onChange={this.handleChangeSorting}>
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
@@ -340,7 +370,7 @@ class DiscoverObjectsContent extends Component {
                   {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                 </span>
                 {this.getCommonFiltersLayout()}
-                {map(chosenFilters, (filterValues, filterName) =>
+                {map(allActiveFilters, (filterValues, filterName) =>
                   filterValues.map(filterValue => (
                     <Tag
                       className="ttc"
