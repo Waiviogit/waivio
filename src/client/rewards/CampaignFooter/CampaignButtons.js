@@ -444,7 +444,9 @@ export default class CampaignButtons extends React.Component {
     const propositionUserName = get(proposition, ['users', '0', 'name']);
     const reviewPermlink = get(proposition, ['users', '0', 'review_permlink']);
     const userName =
-      this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY
+      this.matchParams === MESSAGES ||
+      this.matchParams === GUIDE_HISTORY ||
+      this.matchParams === FRAUD_DETECTION
         ? propositionUserName
         : user.name;
     const toggleModalReport = e => {
@@ -678,7 +680,8 @@ export default class CampaignButtons extends React.Component {
         </div>
         {(isAssigned || status === ASSIGNED) &&
           this.matchParams !== GUIDE_HISTORY &&
-          this.matchParams !== MESSAGES && (
+          this.matchParams !== MESSAGES &&
+          this.matchParams !== FRAUD_DETECTION && (
             <React.Fragment>
               <Button type="primary" onClick={this.openModalDetails}>
                 {intl.formatMessage({
@@ -688,7 +691,9 @@ export default class CampaignButtons extends React.Component {
               </Button>
             </React.Fragment>
           )}
-        {(this.matchParams === MESSAGES || this.matchParams === GUIDE_HISTORY) && (
+        {(this.matchParams === MESSAGES ||
+          this.matchParams === GUIDE_HISTORY ||
+          this.matchParams === FRAUD_DETECTION) && (
           <div className="Buttons__avatar">
             <Avatar username={propositionUserName} size={30} />{' '}
             <div role="presentation" className="userName">

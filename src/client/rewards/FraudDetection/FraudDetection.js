@@ -30,7 +30,7 @@ const FraudDetection = ({
   history,
 }) => {
   const [blacklistUsers, setBlacklistUsers] = useState([]);
-  // const [loadingCampaigns, setLoadingCampaigns] = useState(false);
+  const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [loading, setLoading] = useState(false);
   const sort = useMemo(
     () => [
@@ -51,7 +51,6 @@ const FraudDetection = ({
   useEffect(() => {
     if (userName && sortFraudDetection) {
       const requestData = {
-        guideName: userName,
         fraudSuspicion: true,
         sort: sortFraudDetection,
       };
@@ -60,9 +59,9 @@ const FraudDetection = ({
         const blacklistNames = map(blacklist, blacklistUser => blacklistUser.name);
         setBlacklistUsers(blacklistNames);
       });
-      // setLoadingCampaigns(true);
+      setLoadingCampaigns(true);
       getFraudSuspicionData(requestData).then(() => {
-        // setLoadingCampaigns(false);
+        setLoadingCampaigns(false);
         setLoading(false);
       });
     }
@@ -70,7 +69,6 @@ const FraudDetection = ({
 
   const handleLoadMore = () => {
     if (hasMoreFraudSuspicionData) {
-      // setLoading(true);
       const requestData = {
         guideName: userName,
         fraudSuspicion: true,
@@ -85,7 +83,6 @@ const FraudDetection = ({
 
   const handleSortChange = useCallback(
     sortChanged => {
-      // setLoadingCampaigns(true);
       setSortValue(sortChanged);
       getFraudSuspicionData({ userName, sortChanged });
     },
@@ -114,48 +111,54 @@ const FraudDetection = ({
             'It is an experimental service with a limited scope and is provided "as is" with no guarantee of applicability for the detection of probable fraud attempts. All submissions must always be manually verified and confirmed by the campaign sponsor.',
         })}
       </div>
-      <SortSelector sort={sortFraudDetection} onChange={handleSortChange}>
-        {map(sort, item => (
-          <SortSelector.Item key={item.key}>
-            <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-        ))}
-      </SortSelector>
-      <div className="FraudDetection__data">
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          hasMore={hasMoreFraudSuspicionData}
-          loadMore={handleLoadMore}
-          loadingMore={loading}
-          loader={<Loading />}
-        >
-          {map(fraudSuspicionData, proposition =>
-            map(
-              proposition.objects,
-              wobj =>
-                wobj.object &&
-                wobj.object.author_permlink && (
-                  <Proposition
-                    guide={proposition.guide}
-                    proposition={proposition}
-                    wobj={wobj.object}
-                    assignCommentPermlink={wobj.permlink}
-                    authorizedUserName={userName}
-                    key={`${wobj.object.author_permlink}`}
-                    assigned={wobj.assigned}
-                    history={history}
-                    user={user}
-                    match={match}
-                    blacklistUsers={blacklistUsers}
-                    sortFraudDetection={sortFraudDetection}
-                  />
+      {loadingCampaigns ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          <SortSelector sort={sortFraudDetection} onChange={handleSortChange}>
+            {map(sort, item => (
+              <SortSelector.Item key={item.key}>
+                <FormattedMessage id={item.id} defaultMessage={item.defaultMessage}>
+                  {msg => msg}
+                </FormattedMessage>
+              </SortSelector.Item>
+            ))}
+          </SortSelector>
+          <div className="FraudDetection__data">
+            <ReduxInfiniteScroll
+              elementIsScrollable={false}
+              hasMore={hasMoreFraudSuspicionData}
+              loadMore={handleLoadMore}
+              loadingMore={loading}
+              loader={<Loading />}
+            >
+              {map(fraudSuspicionData, proposition =>
+                map(
+                  proposition.objects,
+                  wobj =>
+                    wobj.object &&
+                    wobj.object.author_permlink && (
+                      <Proposition
+                        guide={proposition.guide}
+                        proposition={proposition}
+                        wobj={wobj.object}
+                        assignCommentPermlink={wobj.permlink}
+                        authorizedUserName={userName}
+                        key={`${wobj.object.author_permlink}`}
+                        assigned={wobj.assigned}
+                        history={history}
+                        user={user}
+                        match={match}
+                        blacklistUsers={blacklistUsers}
+                        sortFraudDetection={sortFraudDetection}
+                      />
+                    ),
                 ),
-            ),
-          )}
-        </ReduxInfiniteScroll>
-      </div>
+              )}
+            </ReduxInfiniteScroll>
+          </div>
+        </React.Fragment>
+      )}
     </div>
   );
 };
@@ -163,7 +166,6 @@ const FraudDetection = ({
 FraudDetection.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
-  // loading: PropTypes.bool,
   fraudSuspicionData: PropTypes.arrayOf(PropTypes.shape()),
   getFraudSuspicionData: PropTypes.func,
   getBlacklistUsers: PropTypes.func,
