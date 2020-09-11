@@ -77,7 +77,7 @@ class MapOS extends React.Component {
       (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
         !isEmpty(nextProps.wobjects) &&
         !isEqual(nextProps.wobjects, wobjects)) ||
-      match.params.filterKey === 'reserved'
+      (match.params.filterKey === IS_RESERVED && +nextProps.userLocation.lat === center[0])
     ) {
       const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
       const distance = this.getDistance(coordinates, center);
