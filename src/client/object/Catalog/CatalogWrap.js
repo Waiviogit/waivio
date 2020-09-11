@@ -209,13 +209,11 @@ class CatalogWrap extends React.Component {
         const permlinks = location.hash.slice(1).split('/');
         const { locale } = this.props;
         getObjectsByIds({ authorPermlinks: permlinks, locale }).then(res => {
-          console.log(res);
           const crumbs = res.wobjects.map(obj => ({
             id: obj.author_permlink,
             name: obj.name,
-            path: `${location.hash.split(obj.id)[0]}${obj.author_permlink}`,
+            path: `${obj.author_permlink}`,
           }));
-          console.log(crumbs);
           if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
           this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
         });
@@ -333,7 +331,7 @@ class CatalogWrap extends React.Component {
     let item;
 
     if (isList) {
-      item = <CategoryItemView wObject={listItem} />;
+      item = <CategoryItemView wObject={listItem} location={location} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = this.renderProposition(propositions, listItem);
     } else {
@@ -535,7 +533,7 @@ class CatalogWrap extends React.Component {
           </SortSelector.Item>
         </SortSelector>
       );
-    console.log(breadcrumb);
+
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (

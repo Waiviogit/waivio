@@ -11,10 +11,7 @@ const CatalogBreadcrumb = ({ location, breadcrumb, intl }) => (
         {index && index === crumbsArr.length - 1 ? (
           <React.Fragment>
             <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
-            <Link
-              className="CatalogWrap__breadcrumb__obj-page-link"
-              to={{ pathname: `/object/${crumb.path}` }}
-            >
+            <Link className="CatalogWrap__breadcrumb__obj-page-link" to={`/object/${crumb.id}`}>
               <i className="iconfont icon-send PostModal__icon" />
             </Link>
           </React.Fragment>
