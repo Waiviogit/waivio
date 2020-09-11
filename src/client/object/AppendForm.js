@@ -560,7 +560,7 @@ export default class AppendForm extends Component {
           intl.formatMessage(
             {
               id: 'added_image_to_album',
-              defaultMessage: `@{user} added a new image to album ${currentAlbum}<br />`,
+              defaultMessage: `@{user} added a new image to album <br />`,
             },
             {
               album: currentAlbum,
