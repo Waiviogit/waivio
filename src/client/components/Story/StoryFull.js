@@ -229,7 +229,7 @@ class StoryFull extends React.Component {
         proposition.users,
         usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
       );
-      if (!isEmpty(currentUser) && !proposition.assigned) {
+      if (isEmpty(proposition.users) || (!isEmpty(currentUser) && !proposition.assigned)) {
         newPropositions.push(proposition);
       }
     });
