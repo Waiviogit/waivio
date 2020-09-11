@@ -168,9 +168,7 @@ class Wallet extends Component {
 
   componentWillUnmount() {
     const { isCurrentUser, authenticatedUserName, history } = this.props;
-    const username = isCurrentUser
-      ? authenticatedUserName
-      : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
     if (history.location.pathname !== `/@${username}/transfers/table`) {
       this.props.clearTransactionsHistory();
     }
