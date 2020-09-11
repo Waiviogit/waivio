@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, get, map, isEqual, debounce, has } from 'lodash';
+import { isEmpty, get, map, isEqual, debounce, has, size } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -80,6 +80,9 @@ class MapOS extends React.Component {
       (match.params.filterKey === IS_RESERVED && +nextProps.userLocation.lat === center[0])
     ) {
       const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
+      if (size(coordinates) === 1) {
+        this.setState({ center: [coordinates[0].latitude, coordinates[0].longitude] });
+      }
       const distance = this.getDistance(coordinates, center);
       newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 1 : zoom;
     } else {
