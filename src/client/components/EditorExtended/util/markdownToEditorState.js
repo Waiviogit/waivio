@@ -1,4 +1,4 @@
-import mdToAst from '@textlint/markdown-to-ast';
+import { parse } from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 import { isYoutube, isVimeo, isDTube, isThreeSpeak, getSrc } from './videoHelper';
@@ -88,7 +88,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const inlineStyles = { ...defaultInlineStyles, ...extraStyles.inlineStyles };
   const blockStyles = { ...defaultBlockStyles, ...extraStyles.blockStyles };
 
-  const astString = mdToAst.parse(line);
+  const astString = parse(line);
   let text = '';
   const inlineStyleRanges = [];
   const entityRanges = [];

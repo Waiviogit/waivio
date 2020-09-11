@@ -3,7 +3,7 @@ import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
-function broadcast(operations, actionAuthor, isReview = false) {
+function broadcast(operations, isReview, actionAuthor) {
   let operation;
   if (operations[0][0] === 'custom_json') {
     if (operations[0][1].json.includes('reblog')) {
@@ -26,7 +26,7 @@ function broadcast(operations, actionAuthor, isReview = false) {
   } else {
     operation = `waivio_guest_${operations[0][0]}`;
   }
-  return waivioAPI.broadcastGuestOperation(operation, isReview, operations);
+  return waivioAPI.broadcastGuestOperation(operation, operations);
 }
 
 async function getUserAccount() {

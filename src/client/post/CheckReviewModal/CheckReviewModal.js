@@ -2,18 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get, memoize } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import { ASSIGNED } from '../../../common/constants/rewards';
 import './CheckReviewModal.less';
 
-const getReviewRequirements = memoize((campaign, authorName) => ({
+const getReviewRequirements = memoize(campaign => ({
   postRequirements: {
     minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
-    secondaryObject: campaign.requiredObject,
-    primaryObject: get(
-      campaign.users.find(user => user.status === ASSIGNED && user.name === authorName),
-      'object_permlink',
-      '',
-    ),
+    secondaryObject: get(campaign, ['users', '0', 'object_permlink'], ''),
+    primaryObject: get(campaign, ['requiredObject', 'author_permlink'], ''),
   },
   authorRequirements: {
     minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key
@@ -40,8 +35,9 @@ const CheckReviewModal = ({
   onSubmit,
 }) => {
   const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
+
   const secondaryObject = linkedObjects.find(
-    obj => obj.id === get(postRequirements, ['secondaryObject', 'author_permlink']),
+    obj => obj.id === get(postRequirements, ['secondaryObject']),
   );
   const primaryObject = linkedObjects
     ? linkedObjects.find(obj => obj.id === postRequirements.primaryObject)

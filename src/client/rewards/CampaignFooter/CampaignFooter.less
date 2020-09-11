@@ -34,6 +34,10 @@
       .userName {
         margin-left: 10px;
         margin-right: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
       }
     }
 
@@ -74,5 +78,21 @@
   &.ant-input-number-focused {
     border-color: @orange;
     box-shadow: none;
+  }
+}
+
+@media @medium-max {
+  .CampaignFooter {
+    .Buttons {
+      &__wrap-text {
+        max-width: 100px;
+      }
+
+      &__avatar {
+        .userName {
+          max-width: 100px;
+        }
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 import { get, isEmpty, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -43,6 +44,9 @@ import Transfer from '../wallet/Transfer';
 import Withdraw from '../wallet/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
 
+import './UserWallet.less';
+
+@injectIntl
 @withRouter
 @connect(
   (state, ownProps) => ({
@@ -81,6 +85,9 @@ import PowerUpOrDown from '../wallet/PowerUpOrDown';
 )
 class Wallet extends Component {
   static propTypes = {
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }).isRequired,
     location: PropTypes.shape().isRequired,
     totalVestingShares: PropTypes.string.isRequired,
     totalVestingFundSteem: PropTypes.string.isRequired,
@@ -110,6 +117,7 @@ class Wallet extends Component {
     clearTransactionsHistory: PropTypes.func,
     isWithdrawOpen: PropTypes.bool,
     history: PropTypes.shape(),
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -141,9 +149,7 @@ class Wallet extends Component {
 
     const isGuest = guestUserRegex.test(user && user.name);
 
-    const username = isCurrentUser
-      ? authenticatedUserName
-      : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
@@ -161,7 +167,11 @@ class Wallet extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearTransactionsHistory();
+    const { isCurrentUser, authenticatedUserName, history } = this.props;
+    const username = isCurrentUser ? authenticatedUserName : this.props.match.params.name;
+    if (history.location.pathname !== `/@${username}/transfers/table`) {
+      this.props.clearTransactionsHistory();
+    }
   }
 
   render() {
@@ -183,8 +193,8 @@ class Wallet extends Component {
       operationNum,
       isloadingMoreTransactions,
       isloadingMoreDemoTransactions,
+      intl,
     } = this.props;
-
     const userKey = user.name;
     const demoTransactions = get(usersTransactions, userKey, []);
     const actions = get(usersAccountHistory, userKey, []);
@@ -239,6 +249,16 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
+        <span
+          className="UserWallet__view-btn"
+          role="presentation"
+          onClick={() => this.props.history.push(`/@${user.name}/transfers/table`)}
+        >
+          {intl.formatMessage({
+            id: 'table_view',
+            defaultMessage: 'Table view',
+          })}
+        </span>
         {isMobile && <WalletSidebar />}
         {walletTransactions}
         <Transfer history={this.props.history} />
