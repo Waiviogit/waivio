@@ -53,7 +53,6 @@ const rewardsReducer = (state = initialState, action) => {
       };
     }
     case GET_FOLLOWING_SPONSORS_REWARDS.SUCCESS: {
-      console.log('action.payload', action.payload);
       const { campaigns, hasMore } = action.payload;
       return {
         ...state,
