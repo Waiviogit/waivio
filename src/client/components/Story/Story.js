@@ -400,7 +400,7 @@ class Story extends React.Component {
                     }
                   >
                     <span className="Story__date">
-                      <FormattedRelative value={post.createdAt} />
+                      <FormattedRelative value={post.createdAt || post.created} />
                     </span>
                   </BTooltip>
                   <PostedFrom post={post} />
