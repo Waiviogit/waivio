@@ -618,7 +618,7 @@ class Rewards extends React.Component {
     const isReserved = match.params.filterKey === IS_RESERVED;
 
     let propositionsUniq;
-    if (!isEmpty(propositionsReserved)) {
+    if (isReserved) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
       propositionsUniq = uniqBy(propositions, '_id');
