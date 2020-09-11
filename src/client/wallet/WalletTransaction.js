@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedNumber } from 'react-intl';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import ReceiveTransaction from './ReceiveTransaction';
 import TransferTransaction from './TransferTransaction';
@@ -12,35 +11,10 @@ import WalletLimitOrder from './WalletLimitOrder';
 import WalletCancelOrder from './WalletCancelOrder';
 import PowerUpTransactionTo from './PowerUpTransactionTo';
 import WalletProposalPay from './WalletProposalPay';
+import { fillOrderExchanger, getTransactionCurrency } from './WalletHelper';
 
 import './UserWalletTransactions.less';
 
-const getFormattedTransactionAmount = (amount, currency, type) => {
-  if (!amount) {
-    return null;
-  }
-
-  const transaction = amount.split(' ');
-  const transactionAmount = parseFloat(transaction[0]);
-  const transactionCurrency = currency || transaction[1];
-
-  if (type === accountHistoryConstants.CANCEL_ORDER) {
-    if (!transactionAmount) {
-      return null;
-    }
-  }
-
-  return (
-    <span>
-      <FormattedNumber
-        value={transactionAmount}
-        minimumFractionDigits={3}
-        maximumFractionDigits={3}
-      />
-      {` ${transactionCurrency}`}
-    </span>
-  );
-};
 const WalletTransaction = ({
   transaction,
   currentUsername,
@@ -52,28 +26,27 @@ const WalletTransaction = ({
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
   const transactionDetails = isGuestPage ? transaction.op[1] : transaction;
-  const fillOrderExchanger =
-    currentUsername === transactionDetails.open_owner
-      ? transactionDetails.current_owner
-      : transactionDetails.open_owner;
+  const exchanger = fillOrderExchanger(currentUsername, transaction);
 
   switch (transactionType) {
     case accountHistoryConstants.TRANSFER_TO_VESTING:
       if (transactionDetails.to === currentUsername) {
         return (
           <PowerUpTransactionFrom
-            amount={getFormattedTransactionAmount(transactionDetails.amount, 'HP')}
+            amount={getTransactionCurrency(transactionDetails.amount, 'HP')}
             timestamp={transaction.timestamp}
             to={transactionDetails.to}
             from={transactionDetails.from}
+            transactionType={transactionType}
           />
         );
       }
       return (
         <PowerUpTransactionTo
-          amount={getFormattedTransactionAmount(transactionDetails.amount, 'HIVE')}
+          amount={getTransactionCurrency(transactionDetails.amount, 'HIVE')}
           timestamp={transaction.timestamp}
           to={transactionDetails.to}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.TRANSFER:
@@ -83,12 +56,13 @@ const WalletTransaction = ({
             isGuestPage={isGuestPage}
             from={transactionDetails.from}
             memo={transactionDetails.memo}
-            amount={getFormattedTransactionAmount(transactionDetails.amount)}
+            amount={getTransactionCurrency(transactionDetails.amount)}
             timestamp={transaction.timestamp}
             details={transactionDetails.details}
             type={transactionDetails.typeTransfer}
             username={transactionDetails.username}
             isMobile={isMobile}
+            transactionType={transactionType}
           />
         );
       }
@@ -97,10 +71,11 @@ const WalletTransaction = ({
           isGuestPage={isGuestPage}
           to={transactionDetails.to}
           memo={transactionDetails.memo}
-          amount={getFormattedTransactionAmount(transactionDetails.amount)}
+          amount={getTransactionCurrency(transactionDetails.amount)}
           timestamp={transaction.timestamp}
           withdraw={transaction.withdraw}
           getDetails={handleDetailsClick}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
@@ -112,6 +87,7 @@ const WalletTransaction = ({
           rewardVests={transactionDetails.reward_vests}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
@@ -121,54 +97,58 @@ const WalletTransaction = ({
         <SavingsTransaction
           transactionDetails={transactionDetails}
           transactionType={transactionType}
-          amount={getFormattedTransactionAmount(transactionDetails.amount)}
+          amount={getTransactionCurrency(transactionDetails.amount)}
           timestamp={transaction.timestamp}
         />
       );
     case accountHistoryConstants.LIMIT_ORDER:
       return (
         <WalletLimitOrder
-          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
-          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
+          openPays={getTransactionCurrency(transactionDetails.open_pays)}
+          currentPays={getTransactionCurrency(transactionDetails.current_pays)}
           timestamp={transaction.timestamp}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.FILL_ORDER:
       return (
         <WalletFillOrderTransferred
           transactionDetails={transactionDetails}
-          currentPays={getFormattedTransactionAmount(transactionDetails.current_pays)}
-          openPays={getFormattedTransactionAmount(transactionDetails.open_pays)}
+          currentPays={getTransactionCurrency(transactionDetails.current_pays)}
+          openPays={getTransactionCurrency(transactionDetails.open_pays)}
           timestamp={transaction.timestamp}
-          exchanger={fillOrderExchanger}
+          exchanger={exchanger}
           currentUsername={currentUsername}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.CANCEL_ORDER:
       return (
         <WalletCancelOrder
           timestamp={transaction.timestamp}
-          openPays={getFormattedTransactionAmount(
+          openPays={getTransactionCurrency(
             transactionDetails.open_pays,
             undefined,
             transactionType,
           )}
-          currentPays={getFormattedTransactionAmount(
+          currentPays={getTransactionCurrency(
             transactionDetails.current_pays,
             undefined,
             transactionType,
           )}
+          transactionType={transactionType}
         />
       );
     case accountHistoryConstants.PROPOSAL_PAY:
       return (
         <WalletProposalPay
           receiver={transactionDetails.receiver}
-          payment={getFormattedTransactionAmount(transactionDetails.payment)}
+          payment={getTransactionCurrency(transactionDetails.payment)}
           timestamp={transaction.timestamp}
           withdraw={transaction.withdraw}
           getDetails={handleDetailsClick}
           currentUsername={currentUsername}
+          transactionType={transactionType}
         />
       );
     default:

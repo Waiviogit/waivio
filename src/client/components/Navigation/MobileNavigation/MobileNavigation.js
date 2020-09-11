@@ -36,7 +36,7 @@ const MobileNavigation = ({ location, match }) => {
     },
     personal: {
       myFeed: 'my_feed',
-      regExp: /(^\/)(notifications-list|updates)$/,
+      regExp: /(^\/)(notifications-list|updates|rewards-list)$/,
       id: 'personal',
     },
     people: {
