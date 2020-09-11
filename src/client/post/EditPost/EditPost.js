@@ -394,6 +394,7 @@ class EditPost extends Component {
               onChange={this.handleChangeContent}
               intl={intl}
               handleHashtag={this.handleHashtag}
+              displayTitle
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
