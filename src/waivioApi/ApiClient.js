@@ -644,7 +644,6 @@ export const getPropositions = ({
   currentUserName,
   radius,
   area,
-  coordinates,
   sort,
   match,
   simplified,
@@ -663,8 +662,8 @@ export const getPropositions = ({
       sort,
     };
 
-    if (!isEmpty(coordinates)) {
-      reqData.coordinates = coordinates;
+    if (!isEmpty(area)) {
+      reqData.area = area;
       reqData.radius = radius;
     }
     if (!isEmpty(area) && isEmpty(requiredObject)) {

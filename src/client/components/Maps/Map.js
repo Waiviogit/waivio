@@ -81,10 +81,11 @@ class MapOS extends React.Component {
     ) {
       const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
       if (size(coordinates) === 1) {
-        this.setState({ center: [coordinates[0].latitude, coordinates[0].longitude] });
+        this.setState({ center: [coordinates[0].latitude, coordinates[0].longitude], zoom: 11 });
+        return;
       }
       const distance = this.getDistance(coordinates, center);
-      newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 1 : zoom;
+      newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
     } else {
       newZoom = zoom;
     }
@@ -118,7 +119,6 @@ class MapOS extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
     }
-
     if (
       (propsMatch !== prevPropsMatch &&
         !isEqual(prevProps.match, this.props.match) &&
@@ -147,13 +147,14 @@ class MapOS extends React.Component {
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({
+    const reqParams = {
       radius: newRadius,
       coordinates: center,
       isMap: true,
       isSecondaryObjectsCards,
       firstMapLoad,
-    });
+    };
+    setMapArea(reqParams);
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
