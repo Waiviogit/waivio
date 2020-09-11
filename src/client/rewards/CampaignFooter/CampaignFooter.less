@@ -37,7 +37,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        width: 100px;
+        max-width: 100px;
       }
     }
 
@@ -78,5 +78,21 @@
   &.ant-input-number-focused {
     border-color: @orange;
     box-shadow: none;
+  }
+}
+
+@media @medium-max {
+  .CampaignFooter {
+    .Buttons {
+      &__wrap-text {
+        max-width: 100px;
+      }
+
+      &__avatar {
+        .userName {
+          max-width: 100px;
+        }
+      }
+    }
   }
 }
