@@ -557,7 +557,7 @@
   "upload_photo_error": "Вам нужно загрузить хотя бы одно изображение",
   "couldnt_upload_image": "Не удалось добавить изображение в альбом.",
   "append_new_image": "@{user} добавил новое изображение в альбом {album} <br /> {url}",
-  "added_image_to_album": "Вы успешно добавили изображение(я) в альбом",
+  "added_image_to_album": "Вы успешно добавили изображение(я) в альбом {album}",
   "file_format_allowed": "Вы можете только загрузить файлы форматов {formats}!",
   "invalid_image_size": "Изображение должно быть меньше чем {size}MB!",
   "upload_photos": "Загрузить фотогрфии",
