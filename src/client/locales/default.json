@@ -1379,5 +1379,6 @@
   "added_field_to_wobject_tagCategory": "You successfully have added the tag field to {wobject} object.",
   "added_field_to_wobject_title": "You successfully have added the title field to {wobject} object.",
   "added_field_to_wobject_website": "You successfully have added the website field to {wobject} object.",
-  "added_field_to_wobject_workTime": "You successfully have added the hours of work field to {wobject} object."
+  "added_field_to_wobject_workTime": "You successfully have added the hours of work field to {wobject} object.",
+  "mobnav_rewards-list": "Rewards"
 }

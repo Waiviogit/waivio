@@ -36,7 +36,7 @@ const MobileNavigation = ({ location, match }) => {
     },
     personal: {
       myFeed: 'my_feed',
-      regExp: /(^\/)(notifications-list|updates)$/,
+      regExp: /(^\/)(notifications-list|updates|rewards-list)$/,
       id: 'personal',
     },
     people: {
@@ -73,6 +73,7 @@ const MobileNavigation = ({ location, match }) => {
     case (url.match(pages.personal.regExp) || {}).input:
       pageName = pages.personal.id;
       filterName = url.match(pages.personal.regExp)[2] || pages.personal.myFeed;
+      console.log('filterName: ', filterName);
       break;
     case (url.match(pages.people.regExp) || {}).input:
       pageName = pages.people.id;
