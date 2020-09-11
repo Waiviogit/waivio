@@ -1380,7 +1380,6 @@
   "added_field_to_wobject_title": "Вы успешно добавили заглавление в объект {wobject}.",
   "added_field_to_wobject_website": "Вы успешно добавили Веб-сайт в объект {wobject}.",
   "added_field_to_wobject_workTime": "Вы успешно добавили часы работы в объект {wobject}.",
-  "review_reinstated": "Отзыв восстановлен",
   "object_field_authority": "Авторитет",
   "table_date_from": "От:",
   "table_date_till": "До:",
@@ -1396,5 +1395,7 @@
   "table_after_till_validation": "Выбранная дата должна быть раньше или равна текущей дате",
   "table_view": "Просмотр таблицы",
   "empty_table": "Пожалуйста, выберите начальную и конечную дату",
-  "table_back": "Назад"
+  "table_back": "Назад",
+  "review_reinstated": "Отзыв восстановлен",
+  "mobnav_rewards-list": "Вознаграждения"
 }
