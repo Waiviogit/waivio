@@ -20,9 +20,9 @@ const NotificationMyComment = ({ notification, read, onClick }) => (
       <div className="Notification__text__message">
         <FormattedMessage
           id="my_comment_notify"
-          defaultMessage="You commented post {post}"
+          defaultMessage="You replied to {parentAuthor}"
           values={{
-            post: <span>{notification.title}</span>,
+            parentAuthor: <span>{notification.parentAuthor}</span>,
           }}
         />
       </div>
@@ -40,7 +40,7 @@ NotificationMyComment.propTypes = {
     type: PropTypes.string,
     permlink: PropTypes.string,
     author: PropTypes.string,
-    title: PropTypes.string,
+    parentAuthor: PropTypes.string,
     voter: PropTypes.string,
   }),
   onClick: PropTypes.func,

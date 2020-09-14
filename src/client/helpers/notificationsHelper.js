@@ -240,6 +240,36 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           postTitle: notification.postTitle,
         },
       );
+    case notificationConstants.MY_LIKE:
+      return intl.formatMessage(
+        {
+          id: 'my_like_notify',
+          defaultMessage: 'You liked {post}',
+        },
+        {
+          post: notification.title,
+        },
+      );
+    case notificationConstants.MY_COMMENT:
+      return intl.formatMessage(
+        {
+          id: 'my_comment_notify',
+          defaultMessage: 'You replied to {parentAuthor}',
+        },
+        {
+          parentAuthor: notification.parentAuthor,
+        },
+      );
+    case notificationConstants.MY_POST:
+      return intl.formatMessage(
+        {
+          id: 'my_post_notify',
+          defaultMessage: 'You created post {post}',
+        },
+        {
+          post: notification.title,
+        },
+      );
     default:
       return intl.formatMessage({
         id: 'notification_generic_default_message',
