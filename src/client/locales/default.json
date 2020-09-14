@@ -1350,7 +1350,7 @@
   "like_post_notify_priority": "{voter} liked your post '{postTitle}'",
   "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'",
   "my_like_notify": "You liked {post}",
-  "my_comment_notify": "You commented post {post}",
+  "my_comment_notify": "You replied to {to}",
   "my_post_notify": "You created post {post}",
   "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:",
   "no_rewards_posted_by_sponsors_you_are_following": "No rewards posted by the sponsors you are following",
@@ -1394,6 +1394,7 @@
   "table_after_till_validation": "The selected date must be before or equal the current date",
   "table_view": "Table view",
   "empty_table": "Please, select start and end date",
+  "mobnav_rewards-list": "Rewards",
   "table_back": "Back",
-  "mobnav_rewards-list": "Rewards"
+  "empty_page_content": "The page is not full yet"
 }
