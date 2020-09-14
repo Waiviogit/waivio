@@ -246,18 +246,88 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: [
-          '/rewards/(create|manage|match-bot|edit)/:campaignId?',
-          '/rewards/(history|guideHistory|messages)',
-          PATH_NAME_PAYABLES,
-          '/rewards/reports',
-          '/rewards/blacklist/:listType?',
-          PATH_NAME_RECEIVABLES,
-          '/rewards/payables/@:userName/:reservationPermlink?',
-          '/rewards/receivables/@:userName/:reservationPermlink?',
-          '/rewards/:filterKey/:campaignParent?',
-        ],
+        path: '/drafts',
         exact: true,
+        component: Drafts,
+      },
+      {
+        path: '/replies',
+        exact: true,
+        component: Replies,
+      },
+      {
+        path: '/activity',
+        exact: true,
+        component: Activity,
+      },
+      {
+        path: '/wallet',
+        exact: true,
+        component: Wallet,
+      },
+      {
+        path: '/editor',
+        component: Editor,
+        exact: true,
+      },
+      {
+        path: '/edit',
+        component: BusyEditor,
+        exact: true,
+      },
+      {
+        path: '/settings',
+        exact: true,
+        component: Settings,
+      },
+      {
+        path: '/edit-profile',
+        exact: true,
+        component: ProfileSettings,
+      },
+      {
+        path: '/invite',
+        exact: true,
+        component: Invite,
+      },
+      {
+        path: '/guests-settings',
+        exact: true,
+        component: GuestsSettings,
+      },
+      {
+        path: '/notification-settings',
+        exact: true,
+        component: NotificationSettings,
+      },
+      {
+        path: '/discover-objects/:typeName?',
+        exact: true,
+        component: DiscoverObjects,
+      },
+      {
+        path: '/discover/:search?',
+        exact: true,
+        component: Discover,
+      },
+      {
+        path: '/objects',
+        component: Objects,
+      },
+      {
+        path: '/:category?/@:author/:permlink/:original?',
+        component: Post,
+      },
+      {
+        path: '/search',
+        component: Search,
+      },
+      {
+        path: '/exit',
+        component: ExitPage,
+      },
+      {
+        path: '/rewards',
         component: Rewards,
         routes: [
           {
@@ -342,66 +412,7 @@ const routes = [
           },
         ],
       },
-      {
-        path: '/drafts',
-        exact: true,
-        component: Drafts,
-      },
-      {
-        path: '/replies',
-        exact: true,
-        component: Replies,
-      },
-      {
-        path: '/activity',
-        exact: true,
-        component: Activity,
-      },
-      {
-        path: '/wallet',
-        exact: true,
-        component: Wallet,
-      },
-      {
-        path: '/editor',
-        component: Editor,
-        exact: true,
-      },
-      {
-        path: '/edit',
-        component: BusyEditor,
-        exact: true,
-      },
-      {
-        path: '/settings',
-        exact: true,
-        component: Settings,
-      },
-      {
-        path: '/edit-profile',
-        exact: true,
-        component: ProfileSettings,
-      },
-      {
-        path: '/invite',
-        exact: true,
-        component: Invite,
-      },
-      {
-        path: '/guests-settings',
-        exact: true,
-        component: GuestsSettings,
-      },
-      {
-        path: '/notification-settings',
-        exact: true,
-        component: NotificationSettings,
-      },
-      {
-        path: '/discover-objects/:typeName?',
-        exact: true,
-        component: DiscoverObjects,
-      },
+
       {
         path: [
           '/@:name/(comments|followers|following|reblogs|activity|transfers|expertise|about)?',
@@ -516,27 +527,6 @@ const routes = [
         ],
       },
 
-      {
-        path: '/discover/:search?',
-        exact: true,
-        component: Discover,
-      },
-      {
-        path: '/objects',
-        component: Objects,
-      },
-      {
-        path: '/:category?/@:author/:permlink/:original?',
-        component: Post,
-      },
-      {
-        path: '/search',
-        component: Search,
-      },
-      {
-        path: '/exit',
-        component: ExitPage,
-      },
       {
         path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications-list)?/:category?',
         component: Page,
