@@ -1,6 +1,7 @@
 import { compact, concat, get, isEmpty, map, sortBy, remove, findIndex } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   loading: true,
@@ -83,10 +84,12 @@ export default (state = initialState, action) => {
         isStartSearchObject: true,
       };
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
-      const { result, search } = action.payload;
+      const { result, search, locale } = action.payload;
       return {
         ...state,
-        searchObjectsResults: isEmpty(search) ? [] : result,
+        searchObjectsResults: isEmpty(search)
+          ? []
+          : result.map(serverWObj => getClientWObj(serverWObj, locale)),
         isStartSearchObject: false,
       };
     }
