@@ -229,6 +229,20 @@ export default class AppendForm extends Component {
                   );
                 }
               }
+              if (data.field.name === objectFields.button) {
+                message.success(
+                  this.props.intl.formatMessage(
+                    {
+                      id: 'added_field_to_wobject_button',
+                      defaultMessage: `You successfully have added the button field to {wobject} object <br /> {url}`,
+                    },
+                    {
+                      wobject: getObjectName(wObject),
+                      url: formValues.link,
+                    },
+                  ),
+                );
+              }
 
               message.success(
                 this.props.intl.formatMessage(
