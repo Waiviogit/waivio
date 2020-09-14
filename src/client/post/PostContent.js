@@ -257,7 +257,7 @@ class PostContent extends React.Component {
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${truncate(bodyText, { length: 143 })} by ${authorName}`;
+    const desc = `${truncate(bodyText, { length: 143 })}`;
     const image =
       postMetaImage ||
       getAvatarURL(authorName) ||
