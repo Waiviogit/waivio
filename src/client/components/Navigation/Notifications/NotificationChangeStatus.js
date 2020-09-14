@@ -9,15 +9,12 @@ import './Notification.less';
 
 const NotificationChangeStatus = ({ notification, read, onClick }) => {
   const statusUrl = `/object/${notification.author_permlink}/updates/status`;
+  const currentClass = classNames('Notification', {
+    'Notification--unread': !read,
+  });
   return (
     notification.newStatus && (
-      <Link
-        to={statusUrl}
-        onClick={onClick}
-        className={classNames('Notification', {
-          'Notification--unread': !read,
-        })}
-      >
+      <Link to={statusUrl} onClick={onClick} className={currentClass}>
         <Avatar username={notification.author} size={40} />
         <div className="Notification__text">
           <div className="Notification__text__message">
