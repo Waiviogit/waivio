@@ -1351,7 +1351,7 @@
   "like_post_notify_priority": "{voter} понравился пост '{postTitle}'",
   "like_post_notify_other": "{voter} и {likesCount} остальным понравился пост '{postTitle}'",
   "my_like_notify": "Вам понравился {post}",
-  "my_comment_notify": "Вы оставили комментарий в {post}",
+  "my_comment_notify": "Вы ответили {parentAuthor}",
   "my_post_notify": "Вы создали пост {post}",
   "rewards_from_sponsors_you_are_following:": "Награды от спонсоров, за которыми вы следите:",
   "no_rewards_posted_by_sponsors_you_are_following": "Нет наград от спонсоров, на которых вы подписаны",

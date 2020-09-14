@@ -1350,7 +1350,7 @@
   "like_post_notify_priority": "{voter} liked your post '{postTitle}'",
   "like_post_notify_other": "{voter} and {likesCount} others liked your post '{postTitle}'",
   "my_like_notify": "You liked {post}",
-  "my_comment_notify": "You commented post {post}",
+  "my_comment_notify": "You replied to {parentAuthor}",
   "my_post_notify": "You created post {post}",
   "rewards_from_sponsors_you_are_following": "Rewards from the sponsors you are following:",
   "no_rewards_posted_by_sponsors_you_are_following": "No rewards posted by the sponsors you are following",
