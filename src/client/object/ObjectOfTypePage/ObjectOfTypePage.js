@@ -12,7 +12,6 @@ import FollowObjectForm from '../FollowObjectForm';
 import { getFieldWithMaxWeight } from '../wObjectHelper';
 import { getAppendData } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { splitPostContent } from '../../helpers/postHelpers';
 import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import IconButton from '../../components/IconButton';
@@ -88,13 +87,12 @@ class ObjectOfTypePage extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { appendPageContent, locale, wobject, userName, intl, toggleViewEditMode } = this.props;
-      const { votePercent } = this.state;
+      const { votePercent, content } = this.state;
       const { follow } = values;
       if (!err) {
-        const { postTitle, postBody } = splitPostContent(this.state.content);
         const pageContentField = {
           name: objectFields.pageContent,
-          body: `${postTitle}\n${postBody}`,
+          body: content,
           locale,
         };
         const postData = getAppendData(userName, wobject, '', pageContentField);
@@ -186,6 +184,7 @@ class ObjectOfTypePage extends Component {
                     initialContent={{ body: editorInitContent }}
                     locale={locale === 'auto' ? 'en-US' : locale}
                     onChange={this.handleChangeContent}
+                    displayTitle={false}
                   />
                 </div>
               )}
@@ -198,8 +197,8 @@ class ObjectOfTypePage extends Component {
                 <div className="object-of-type-page__empty-placeholder">
                   <span>
                     {intl.formatMessage({
-                      id: 'empty_object_profile',
-                      defaultMessage: 'Be the first to write a review',
+                      id: 'empty_page_content',
+                      defaultMessage: 'The page is not full yet',
                     })}
                   </span>
                 </div>

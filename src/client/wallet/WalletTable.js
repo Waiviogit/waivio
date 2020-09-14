@@ -238,8 +238,16 @@ class WalletTable extends React.Component {
                     required: true,
                     message: intl.formatMessage({
                       id: 'table_from_validation',
-                      defaultMessage: 'Field "start" is required',
+                      defaultMessage: 'Field "from" is required',
                     }),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'table_after_till_validation',
+                      defaultMessage: 'The selected date must be before or equal the current date',
+                    }),
+                    validator: validateDate,
                   },
                 ],
               })(

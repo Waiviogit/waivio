@@ -12,7 +12,7 @@ const SocialButtons = ({ responseSocial, className }) => (
       onSuccess={response => responseSocial(response, 'google')}
       onFailure={() => {}}
       cookiePolicy={'single_host_origin'}
-      className="ModalSignUp__social-btn"
+      className="ModalSignIn__social-btn"
     />
     <FacebookLogin
       appId="754038848413420"
@@ -21,8 +21,8 @@ const SocialButtons = ({ responseSocial, className }) => (
       callback={response => responseSocial(response, 'facebook')}
       onFailure={() => {}}
       textButton="Facebook"
-      cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
-      icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
+      cssClass="ModalSignIn__social-btn ModalSignIn__social-btn--fb"
+      icon={<Icon type="facebook" className="ModalSignIn__icon-fb" />}
       disableMobileRedirect
     />
   </div>
