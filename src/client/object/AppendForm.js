@@ -1023,9 +1023,9 @@ export default class AppendForm extends Component {
           defaultMessage: 'You cannot use the current object as a parent',
         }),
       );
-    } else if (obj.id) {
+    } else if (obj.author_permlink) {
       this.props.form.setFieldsValue({
-        [currentField]: obj.id,
+        [currentField]: obj.author_permlink,
       });
       this.setState({ selectedObject: obj });
     }

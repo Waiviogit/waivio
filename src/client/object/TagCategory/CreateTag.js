@@ -221,12 +221,11 @@ class CreateTag extends React.Component {
   };
 
   handleSelectObject = obj => {
-    if (obj && obj.id) {
-      const clientObj = getClientWObj(obj);
+    if (obj) {
       this.props.form.setFieldsValue({
-        categoryItem: clientObj,
+        categoryItem: obj,
       });
-      this.setState({ categoryItem: clientObj });
+      this.setState({ categoryItem: obj });
     }
   };
 
