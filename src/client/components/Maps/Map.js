@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, get, map, isEqual, debounce } from 'lodash';
+import { isEmpty, get, map, isEqual, debounce, has, size } from 'lodash';
 import React, { createRef } from 'react';
 import Map from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
-import { getRadius, getParsedMap } from './mapHelper';
+import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
 import {
   getFilteredObjectsMap,
   getIsMapModalOpen,
@@ -70,8 +70,26 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { primaryObjectCoordinates, zoomMap, match } = this.props;
-    const { zoom } = this.state;
+    const { primaryObjectCoordinates, zoomMap, match, wobjects } = this.props;
+    const { zoom, center } = this.state;
+    let newZoom;
+    if (
+      (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
+        !isEmpty(nextProps.wobjects) &&
+        !isEqual(nextProps.wobjects, wobjects)) ||
+      (match.params.filterKey === IS_RESERVED && +nextProps.userLocation.lat === center[0])
+    ) {
+      const coordinates = this.getWobjectsCoordinates(nextProps.wobjects);
+      if (size(coordinates) === 1) {
+        this.setState({ center: [coordinates[0].latitude, coordinates[0].longitude], zoom: 11 });
+        return;
+      }
+      const distance = this.getDistance(coordinates, center);
+      newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
+    } else {
+      newZoom = zoom;
+    }
+    this.setState({ zoom: newZoom });
     if (
       !isEqual(nextProps.primaryObjectCoordinates, primaryObjectCoordinates) &&
       !isEmpty(nextProps.primaryObjectCoordinates)
@@ -101,7 +119,6 @@ class MapOS extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ zoom: 0 });
     }
-
     if (
       (propsMatch !== prevPropsMatch &&
         !isEqual(prevProps.match, this.props.match) &&
@@ -130,13 +147,14 @@ class MapOS extends React.Component {
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
-    setMapArea({
+    const reqParams = {
       radius: newRadius,
       coordinates: center,
       isMap: true,
       isSecondaryObjectsCards,
       firstMapLoad,
-    });
+    };
+    setMapArea(reqParams);
   };
 
   onBoundsChanged = debounce(({ center, zoom }) => {
@@ -160,8 +178,28 @@ class MapOS extends React.Component {
     return radius;
   };
 
+  getWobjectsCoordinates = wobjects => {
+    const coordinates = [];
+    let parsedMap;
+    if (!isEmpty(wobjects)) {
+      map(wobjects, wobject => {
+        const parent = wobject.parent || {};
+        if (!isEmpty(wobject.map)) {
+          parsedMap = getParsedMap(wobject);
+          coordinates.push(parsedMap);
+        } else if (!isEmpty(parent.map)) {
+          parsedMap = getParsedMap(parent);
+          coordinates.push(parsedMap);
+        }
+      });
+    }
+
+    return coordinates;
+  };
+
   getMarkers = () => {
     const { wobjects, match } = this.props;
+
     return (
       !isEmpty(wobjects) &&
       map(wobjects, wobject => {
@@ -290,9 +328,25 @@ class MapOS extends React.Component {
     this.getMapArea();
   };
 
+  getDistance = (coordinates, center) => {
+    if (!isEmpty(coordinates)) {
+      const distance = map(coordinates, obj =>
+        getDistanceBetweenTwoPoints({
+          lat1: obj.latitude,
+          long1: obj.longitude,
+          lat2: center[0],
+          long2: center[1],
+        }),
+      );
+
+      return Math.max(...distance);
+    }
+    return null;
+  };
+
   render() {
     const { heigth, isFullscreenMode, customControl, onCustomControlClick, wobjects } = this.props;
-    const { infoboxData, zoom, center } = this.state;
+    const { infoboxData, center, zoom } = this.state;
     const markersLayout = this.getMarkers(wobjects);
     return center && zoom > 0 ? (
       <div className="MapOS">
