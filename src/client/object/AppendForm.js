@@ -644,7 +644,7 @@ export default class AppendForm extends Component {
     const { albums } = this.props;
     let albumName = '';
     const album = albums.find(item => item.id === currentAlbum);
-    albumName = album.body;
+    albumName = get(album, 'body');
     return albumName;
   };
 
