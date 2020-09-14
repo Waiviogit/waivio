@@ -1389,7 +1389,7 @@
   "table_HIVE": "HIVE",
   "table_HP": "HP",
   "table_HBD": "HBD",
-  "table_from_validation": "Field \"start\" is required",
+  "table_from_validation": "Field \"from\" is required",
   "table_till_validation": "Field \"till\" is required",
   "table_after_till_validation": "The selected date must be before or equal the current date",
   "table_view": "Table view",
