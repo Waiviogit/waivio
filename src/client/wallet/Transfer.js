@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
@@ -42,6 +43,7 @@ import './Transfer.less';
 
 const InputGroup = Input.Group;
 
+@withRouter
 @injectIntl
 @connect(
   state => ({
@@ -97,6 +99,7 @@ export default class Transfer extends React.Component {
     sendPendingTransfer: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
     getPayables: PropTypes.func,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -415,9 +418,10 @@ export default class Transfer extends React.Component {
   };
 
   showSelectedUser = () => {
-    const { to, hiveBeneficiaryAccount, isGuest, form, amount } = this.props;
+    const { user, to, hiveBeneficiaryAccount, isGuest, form, amount, match } = this.props;
     const { searchName } = this.state;
     const userName = isEmpty(searchName) ? to : searchName;
+    const isCurrentUser = user.name === match.params.name;
     const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
     if (isGuest && hiveBeneficiaryAccount && !form.getFieldValue('to')) {
       this.props.form.setFieldsValue({
@@ -431,7 +435,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!(isGuest && hiveBeneficiaryAccount) && !amount && (
+        {!(isGuest && hiveBeneficiaryAccount) && !amount && isCurrentUser && (
           <span
             role="presentation"
             onClick={() =>
