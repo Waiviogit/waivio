@@ -236,7 +236,7 @@ const HistoryCampaign = Loadable({
   loading: Loading,
 });
 
-const routes = [
+const routes1 =
   {
     component: Wrapper,
     routes: [
@@ -477,6 +477,7 @@ const routes = [
       {
         path: `/object/:name/(${URL.WOBJ.params[0]})?/(${URL.WOBJ.params[1]})?/:itemId?`,
         component: Wobj,
+        pathScope: 'objects/:name',
         exact: true,
         routes: [
           {
@@ -564,7 +565,39 @@ const routes = [
         component: Error404,
       },
     ],
-  },
-];
+  };
 
-export default routes;
+const routes = {
+  component: null,
+  routes: [
+    {path: '/my-route', component: null, routes: [{path: '/some', component: null}]}
+  ]
+}
+
+/**
+ *
+ * @param pathScope
+ * @param route
+ * @param path
+ * @returns {{path}}
+ */
+const mappedRoutes = ({pathScope, ...route}, path = '') => {
+  const mappedRoute = {
+    ...route,
+    ...(route.path ? {path: path + route.path} : {}),
+
+  }
+  if (pathScope) {
+    mappedRoute.path = route.path
+  } else if (route.path) {
+    mappedRoute.path = path + route.path
+  }
+  if (route.routes) {
+    mappedRoute.routes = route.routes.map(a => mappedRoutes(a, pathScope || mappedRoute.path))
+  }
+  return mappedRoute
+}
+export default [mappedRoutes(routes)]
+
+
+// export default routes;
