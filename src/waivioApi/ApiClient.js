@@ -644,7 +644,6 @@ export const getPropositions = ({
   currentUserName,
   radius,
   area,
-  coordinates,
   sort,
   match,
   simplified,
@@ -659,13 +658,12 @@ export const getPropositions = ({
       skip,
       status,
       approved,
-      requiredObject,
       primaryObject,
       sort,
     };
 
-    if (!isEmpty(coordinates)) {
-      reqData.coordinates = coordinates;
+    if (!isEmpty(area)) {
+      reqData.area = area;
       reqData.radius = radius;
     }
     if (!isEmpty(area) && isEmpty(requiredObject)) {
@@ -679,6 +677,7 @@ export const getPropositions = ({
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
+    if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
 
     const url = getUrl(match);
 
@@ -1439,9 +1438,10 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
-export const getFollowingSponsorsRewards = ({ userName }) =>
+export const getFollowingSponsorsRewards = ({ userName, skip }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+    let query = skip ? `/?skip=${skip}` : '';
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}${query}`, {
       headers,
       method: 'GET',
     })
