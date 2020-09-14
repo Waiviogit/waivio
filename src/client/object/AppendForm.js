@@ -220,6 +220,7 @@ export default class AppendForm extends Component {
             } else {
               if (data.votePower !== null) {
                 if (objectFields.rating === formValues.currentField && formValues.rate) {
+                  console.log(formValues);
                   const { author, permlink } = res;
                   this.props.rateObject(
                     author,
@@ -228,6 +229,20 @@ export default class AppendForm extends Component {
                     ratePercent[formValues.rate - 1],
                   );
                 }
+              }
+              if (data.field.name === objectFields.button) {
+                message.success(
+                  this.props.intl.formatMessage(
+                    {
+                      id: 'added_field_to_wobject_button',
+                      defaultMessage: `You successfully have added the button field to {wobject} object <br /> {url}`,
+                    },
+                    {
+                      wobject: wObject.name || wObject.default_name,
+                      url: formValues.link,
+                    },
+                  ),
+                );
               }
 
               message.success(

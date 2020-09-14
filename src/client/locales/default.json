@@ -1358,7 +1358,7 @@
   "added_field_to_wobject_avatar": "You successfully have added the avatar field to {wobject} object.",
   "added_field_to_wobject_address": "You successfully have added the address field to {wobject} object.",
   "added_field_to_wobject_background": "You successfully have added the background field to {wobject} object.",
-  "added_field_to_wobject_button": "You successfully have added the button field to {wobject} object.",
+  "added_field_to_wobject_button": "You successfully have added the button field to {wobject} object <br /> {url}.",
   "added_field_to_wobject_categoryItem": "You successfully have added the categoryItem field to {wobject} object.",
   "added_field_to_wobject_description": "You successfully have added the description field to {wobject} object.",
   "added_field_to_wobject_email": "You successfully have added the email field to {wobject} object.",
