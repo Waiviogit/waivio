@@ -548,7 +548,7 @@ export default class AppendForm extends Component {
 
   handleAddPhotoToAlbum = () => {
     const { intl, hideModal } = this.props;
-    const { currentAlbum } = this.state;
+    const album = this.getImageAlbum();
 
     this.setState({ loading: true });
 
@@ -560,10 +560,10 @@ export default class AppendForm extends Component {
           intl.formatMessage(
             {
               id: 'added_image_to_album',
-              defaultMessage: `@{user} added a new image to album <br />`,
+              defaultMessage: `@{user} added a new image to album {album}<br />`,
             },
             {
-              album: currentAlbum,
+              album,
             },
           ),
         );
@@ -639,9 +639,18 @@ export default class AppendForm extends Component {
     };
   };
 
+  getImageAlbum = () => {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
+    let albumName = '';
+    const album = albums.find(item => item.id === currentAlbum);
+    albumName = get(album, 'body');
+    return albumName;
+  };
+
   getWobjectBody = image => {
     const { user, intl } = this.props;
-    const { currentAlbum } = this.state;
+    const album = this.getImageAlbum();
 
     return intl.formatMessage(
       {
@@ -650,7 +659,7 @@ export default class AppendForm extends Component {
       },
       {
         user: user.name,
-        album: get(currentAlbum, 'body'),
+        album,
         url: image.src,
       },
     );
