@@ -7,7 +7,6 @@ import { getObjectName } from '../../helpers/wObjectHelper';
 import { getProxyImageURL } from '../../helpers/image';
 
 import './ObjectSearchCard.less';
-import {getProxyImageURL} from "../../helpers/image";
 
 const ObjectSearchCard = props => {
   const { object, type, parentElement } = props;
