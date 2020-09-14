@@ -1438,9 +1438,10 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
-export const getFollowingSponsorsRewards = ({ userName }) =>
+export const getFollowingSponsorsRewards = ({ userName, skip }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+    let query = skip ? `/?skip=${skip}` : '';
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}${query}`, {
       headers,
       method: 'GET',
     })
