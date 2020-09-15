@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { Input } from 'antd';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
@@ -237,7 +238,6 @@ export default class Toolbar extends React.Component {
     if (showURLInput) {
       let className = `md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`;
       className += ' md-editor-toolbar--linkinput';
-      console.log('className: ', className);
       return (
         <div className={className} style={{ left: 0, width: '97%' }}>
           <div
@@ -247,11 +247,10 @@ export default class Toolbar extends React.Component {
             <span className="md-url-input-close" role="presentation" onClick={this.hideLinkInput}>
               &times;
             </span>
-            <input
+            <Input
               ref={node => {
                 this.urlinput = node;
               }}
-              type="text"
               className="md-url-input"
               onKeyDown={this.onKeyDown}
               onChange={this.onChange}

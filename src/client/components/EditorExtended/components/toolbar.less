@@ -59,6 +59,7 @@
   transition: all 0.1s ease;
   visibility: hidden;
   box-shadow: 0 1px 3px 0 #747171;
+  -webkit-box-shadow: none;
 
   &.md-editor-toolbar--isopen {
     visibility: visible;
@@ -67,7 +68,7 @@
   &.md-editor-toolbar--linkinput {
     animation: pop-downwards 200ms forwards linear;
     background: @white;
-    width: 96% !important;
+    width: 96.5% !important;
     margin-left: 12px;
     height: 36px;
   }
@@ -78,11 +79,12 @@
     display: block;
     width: 100%;
     padding: 5px 11px 5px 5px;
-    border: none;
+    border: 1px solid @orange-hot;
     background: @white;
     color: @black;
     font-size: 0.9em;
     font-weight: 100;
+    height: 36px;
 
     &:focus {
       outline: none;
@@ -90,6 +92,7 @@
   }
 
   .md-url-input-close {
+    z-index: 5;
     color: @toolbar-color;
     position: absolute;
     right: 8px;
@@ -140,9 +143,9 @@
   border-right: 1px solid #555;
   position: relative;
 
-  &.md-RichEditor-show-link-input {
-    padding: 6px 10px;
-  }
+  //&.md-RichEditor-show-link-input {
+  //  padding: 6px 10px;
+  //}
 
   &:last-child {
     border-right: none;
