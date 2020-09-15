@@ -37,7 +37,6 @@ const History = ({
   const dispatch = useDispatch();
   const isHistory = location.pathname === PATH_NAME_HISTORY;
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
-  console.log('lllll');
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
