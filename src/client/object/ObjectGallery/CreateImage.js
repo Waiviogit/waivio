@@ -107,10 +107,20 @@ class CreateImage extends React.Component {
     );
   };
 
+  getImageAlbum = () => {
+    const { currentAlbum } = this.state;
+    const { albums } = this.props;
+    let albumName = '';
+    const album = albums.find(item => item.id === currentAlbum);
+    albumName = get(album, 'body');
+    return albumName;
+  };
+
   handleSubmit = e => {
     e.preventDefault();
 
-    const { selectedAlbum, hideModal, intl } = this.props;
+    const { hideModal, intl } = this.props;
+    const album = this.getImageAlbum();
 
     this.props.form.validateFields(err => {
       if (!err) {
@@ -127,12 +137,13 @@ class CreateImage extends React.Component {
                   defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
                 },
                 {
-                  album: selectedAlbum.body,
+                  album,
                 },
               ),
             );
           })
-          .catch(() => {
+          .catch(error => {
+            console.log(error);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_upload_image',
