@@ -94,14 +94,21 @@ const routes = {
       component: Views.ExitPage,
     },
     {
-      path: '/rewards',
+      path: [
+        '/rewards/(create|manage|match-bot|edit)/:campaignId?',
+        '/rewards/(history|guideHistory|messages)',
+        '/rewards/payables',
+        '/rewards/reports',
+        '/rewards/blacklist/:listType?',
+        '/rewards/receivables',
+        '/rewards/payables/@:userName/:reservationPermlink?',
+        '/rewards/receivables/@:userName/:reservationPermlink?',
+        '/rewards/:filterKey/:campaignParent?',
+      ],
+      pathScope: '/rewards',
+      exact: true,
       component: Views.Rewards,
       routes: [
-        {
-          path: '/create',
-          exact: true,
-          component: Views.CreateRewardForm,
-        },
         {
           path: '/manage',
           exact: true,
@@ -140,31 +147,16 @@ const routes = {
           exact: true,
           component: Views.HistoryCampaign,
         },
-        // {
-        //   path: '/guideHistory',
-        //   exact: true,
-        //   component: Views.HistoryCampaign,
-        // },
-        // {
-        //   path: ,
-        //   exact: true,
-        //   component: Views.HistoryCampaign,
-        // },
         {
           path: '/blacklist/:listType?',
           exact: true,
           component: Views.BlacklistCampaign,
         },
         {
-          path: ['/details/:campaignId', '/createDuplicate/:campaignId'],
+          path: ['/details/:campaignId', '/createDuplicate/:campaignId', '/create'],
           exact: true,
           component: Views.CreateRewardForm,
         },
-        // {
-        //   path: '/createDuplicate/:campaignId',
-        //   exact: true,
-        //   component: Views.CreateRewardForm,
-        // },
         {
           path: '/:filterKey/:campaignParent?',
           exact: true,
@@ -235,7 +227,7 @@ const routes = {
       ],
     },
     {
-      path: `/object/:name/(${URL.WOBJ.params[0]})?/(${URL.WOBJ.params[1]})?/:itemId?`,
+      path: `/object/:name/(${URL.WOBJ.params.type})?/(${URL.WOBJ.params.appends})?/:itemId?`,
       component: Views.Wobj,
       pathScope: '/objects/:name',
       exact: true,
@@ -246,48 +238,47 @@ const routes = {
           component: Views.ObjectPageFeed,
         },
         {
-          path: `/${URL.SEGMENT.ABOUT}`,
+          path: '/about',
           exact: true,
           component: Views.ObjectAbout,
         },
         {
-          path: `/${URL.SEGMENT.FOLLOWERS}`,
+          path: '/followers',
           exact: true,
           component: Views.WobjFollowers,
         },
         {
-          path: `/${URL.SEGMENT.GALLERY}`,
+          path: '/gallery',
           exact: true,
           component: Views.ObjectGallery,
         },
         {
-          path: `/${URL.SEGMENT.EXPERTISE}`,
+          path: '/expertise',
           exact: true,
           component: Views.WobjExpertise,
         },
         {
-          path: `/${URL.SEGMENT.GALLERY}/${URL.SEGMENT.ALBUM}/:itemId`,
+          path: '/gallery/album/:itemId',
           exact: true,
           component: Views.ObjectGalleryAlbum,
         },
         {
-          path: `/${URL.SEGMENT.UPDATES}/(${URL.WOBJ.params[1]})?`,
+          path: `/updates/(${URL.WOBJ.params.appends})?`,
           exact: true,
           component: Views.WobjHistory,
         },
         {
-          path: `/(${URL.SEGMENT.LIST}|${URL.SEGMENT.MENU})`,
+          path: '/(list|menu)',
           exact: true,
           component: Views.CatalogWrap,
         },
         {
-          path: `/(${URL.SEGMENT.PAGE})`,
+          path: '/page',
           exact: true,
           component: Views.ObjectOfTypePage,
         },
       ],
     },
-
     {
       path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications-list)?/:category?',
       component: Page,
@@ -326,5 +317,5 @@ const routes = {
     },
   ],
 };
-console.log(createNestedRouts(routes));
+
 export default [createNestedRouts(routes)];
