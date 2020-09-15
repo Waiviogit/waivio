@@ -237,8 +237,9 @@ export default class Toolbar extends React.Component {
     if (showURLInput) {
       let className = `md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`;
       className += ' md-editor-toolbar--linkinput';
+      console.log('className: ', className);
       return (
-        <div className={className}>
+        <div className={className} style={{ left: 0, width: '97%' }}>
           <div
             className="md-RichEditor-controls md-RichEditor-show-link-input"
             style={{ display: 'block' }}
