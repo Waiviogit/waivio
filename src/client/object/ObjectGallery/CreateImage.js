@@ -142,8 +142,7 @@ class CreateImage extends React.Component {
               ),
             );
           })
-          .catch(error => {
-            console.log(error);
+          .catch(() => {
             message.error(
               intl.formatMessage({
                 id: 'couldnt_upload_image',
