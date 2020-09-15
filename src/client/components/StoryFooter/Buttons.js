@@ -25,7 +25,6 @@ export default class Buttons extends React.Component {
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
-    onReportClick: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
@@ -75,7 +74,6 @@ export default class Buttons extends React.Component {
     this.handleShareCancel = this.handleShareCancel.bind(this);
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
-    this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
   }
 
@@ -94,15 +92,8 @@ export default class Buttons extends React.Component {
     });
   }
 
-  onFlagClick() {
-    if (this.props.post.append_field_name) {
-      this.props.onReportClick(this.props.post, this.props.postState, true);
-    } else {
-      this.props.handlePostPopoverMenuClick('report');
-    }
-  }
-
-  handleReject = () => this.props.onActionInitiated(() => this.onFlagClick());
+  handleReject = () =>
+    this.props.onActionInitiated(() => this.props.handlePostPopoverMenuClick('report'));
 
   handleLikeClick() {
     this.props.onActionInitiated(() => this.props.onLikeClick());

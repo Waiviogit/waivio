@@ -69,7 +69,6 @@ class StoryFull extends React.Component {
     match: PropTypes.shape(),
     assignProposition: PropTypes.func,
     history: PropTypes.shape(),
-    /* from context */
     isOriginalPost: PropTypes.string,
   };
 
@@ -177,9 +176,13 @@ class StoryFull extends React.Component {
     companyPermlink,
     resPermlink,
     objPermlink,
-    companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
     proposition,
     proposedWobj,
+    userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssign: true });
@@ -187,12 +190,16 @@ class StoryFull extends React.Component {
       .assignProposition({
         companyAuthor,
         companyPermlink,
-        resPermlink,
         objPermlink,
-        companyId,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
         proposition,
         proposedWobj,
-        appName,
+        userName,
+        currencyId,
       })
       .then(() => {
         message.success(
@@ -222,7 +229,7 @@ class StoryFull extends React.Component {
         proposition.users,
         usersItem => usersItem.name === user.name && usersItem.status === UNASSIGNED,
       );
-      if (!isEmpty(currentUser) && !proposition.assigned) {
+      if (isEmpty(proposition.users) || (!isEmpty(currentUser) && !proposition.assigned)) {
         newPropositions.push(proposition);
       }
     });
@@ -497,7 +504,11 @@ class StoryFull extends React.Component {
                       ))
                     : null;
                 }
-                return <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />;
+                return (
+                  <div className="CardView">
+                    <ObjectCardView key={obj.id} wObject={obj} passedParent={obj.parent} />
+                  </div>
+                );
               })}
             </Collapse.Panel>
           )}

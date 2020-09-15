@@ -20,7 +20,7 @@ const NotificationPostBell = ({ notification, read, onClick }) => (
       <div className="Notification__text__message">
         <FormattedMessage
           id="notification_bell_post"
-          defaultMessage="{username} published a new post: {title}"
+          defaultMessage="New post by {username}: {title}"
           values={{
             username: <span className="username">{notification.author}</span>,
             title: <span className="username">{notification.title}</span>,

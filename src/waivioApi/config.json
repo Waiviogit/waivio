@@ -67,6 +67,7 @@
   "rejectReservation": "/validate_reject_reservation",
   "reservation": "/validate_reservation",
   "reserved": "/reserved",
+  "rewards": "/rewards",
   "search": "/search",
   "searchObjects": "/wobjectSearch",
   "suitableUsers": "/suitable_users",
@@ -95,5 +96,6 @@
   "getWithdrawData": "/get-withdraw-data",
   "setPendingStatus": "/set-pending-transfer",
   "reservationCurrency": "/reservationCurrency",
-  "getField": "/getField"
+  "getField": "/getField",
+  "showMoreTags": "/showMoreTags"
 }

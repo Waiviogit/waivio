@@ -1,18 +1,30 @@
-import { Breadcrumb, message } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
+import { message } from 'antd';
+import { withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, has, isEmpty, isEqual, map, forEach, uniq, filter, max, min, some } from 'lodash';
+import {
+  get,
+  has,
+  isEmpty,
+  isEqual,
+  map,
+  forEach,
+  uniq,
+  filter,
+  max,
+  min,
+  some,
+  size,
+} from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
   getFieldWithMaxWeight,
   getListItems,
-  getListItemLink,
   sortListItemsBy,
   getListSorting,
 } from '../wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
+import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
@@ -27,7 +39,7 @@ import {
 } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { getObjectName, hasType } from '../../helpers/wObjectHelper';
+import { getObjectName, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -39,6 +51,7 @@ import {
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
+import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 
 import './CatalogWrap.less';
 
@@ -87,7 +100,7 @@ class CatalogWrap extends React.Component {
   state = {
     loadingAssignDiscard: false,
     propositions: [],
-    sort: 'reward',
+    sort: 'recency',
     isAssign: false,
     loadingPropositions: false,
     needUpdate: true,
@@ -96,6 +109,7 @@ class CatalogWrap extends React.Component {
   componentDidMount() {
     const { userName, match, wobject, locale } = this.props;
     const { sort } = this.state;
+
     if (!isEmpty(wobject)) {
       this.getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
     } else {
@@ -179,24 +193,26 @@ class CatalogWrap extends React.Component {
     let sortedItems = [];
     const breadcrumb = [];
     const items = getListItems(wobject);
-    if (items && items.length) {
+
+    if (size(items)) {
       sorting = getListSorting(wobject);
       if (wobject.object_type === OBJ_TYPE.LIST) {
         breadcrumb.push({
           id: wobject.author_permlink,
-          name: getFieldWithMaxWeight(wobject, objectFields.name),
+          name: getObjectName(wobject),
           path: '',
         });
       }
+
       if (location.hash) {
         if (!isInitialState) this.setState({ loading: true });
         const permlinks = location.hash.slice(1).split('/');
         const { locale } = this.props;
         getObjectsByIds({ authorPermlinks: permlinks, locale }).then(res => {
           const crumbs = res.wobjects.map(obj => ({
-            id: obj.id,
+            id: obj.author_permlink,
             name: obj.name,
-            path: `${location.hash.split(obj.id)[0]}${obj.id}`,
+            path: `${obj.author_permlink}`,
           }));
           if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
           this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
@@ -306,24 +322,20 @@ class CatalogWrap extends React.Component {
 
   getListRow = (listItem, objects) => {
     const { propositions } = this.state;
-    const linkTo = getListItemLink(listItem, this.props.location);
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const isMatchedPermlinks = some(objects, object => object.includes(listItem.author_permlink));
+    const status = get(parseWobjectField(listItem, 'status'), 'title');
+
+    if (statusNoVisibleItem.includes(status)) return null;
 
     let item;
 
     if (isList) {
-      item = <CategoryItemView wObject={listItem} />;
+      item = <CategoryItemView wObject={listItem} location={location} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = this.renderProposition(propositions, listItem);
     } else {
-      item = (
-        <ObjectCardView
-          wObject={listItem}
-          options={{ pathNameAvatar: linkTo }}
-          passedParent={this.props.wobject}
-        />
-      );
+      item = <ObjectCardView wObject={listItem} passedParent={this.props.wobject} />;
     }
 
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
@@ -358,8 +370,13 @@ class CatalogWrap extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
     proposition,
     proposedWobj,
+    userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
 
@@ -372,8 +389,13 @@ class CatalogWrap extends React.Component {
         objPermlink,
         resPermlink,
         appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
         proposition,
         proposedWobj,
+        userName,
+        currencyId,
       })
       .then(() => {
         message.success(
@@ -468,7 +490,7 @@ class CatalogWrap extends React.Component {
       propositions,
     } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
-    const currWobject = wobjNested || wobject;
+    const currWobject = wobject;
     const itemsIdsToOmit = uniq([
       ...listItems.map(item => item.id),
       ...breadcrumb.map(crumb => crumb.id),
@@ -522,41 +544,13 @@ class CatalogWrap extends React.Component {
         </SortSelector>
       );
 
-    const menuItem = wobject.menuItems;
-
     return (
       <div>
         {!hasType(currWobject, OBJ_TYPE.PAGE) && (
           <React.Fragment>
             {!isEmpty(propositions) && this.renderCampaign(propositions)}
             <div className="CatalogWrap__breadcrumb">
-              <Breadcrumb separator={'>'}>
-                {map(menuItem, crumb => (
-                  <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                    {!hasType(wobject, OBJ_TYPE.LIST) ? (
-                      <React.Fragment>
-                        <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
-                        <Link
-                          className="CatalogWrap__breadcrumb__obj-page-link"
-                          to={{ pathname: `${crumb.defaultShowLink}` }}
-                        >
-                          <i className="iconfont icon-send PostModal__icon" />
-                        </Link>
-                      </React.Fragment>
-                    ) : (
-                      <Link
-                        className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: location.pathname, hash: crumb.defaultShowLink }}
-                        title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                          crumb.name
-                        }`}
-                      >
-                        {crumb.name}
-                      </Link>
-                    )}
-                  </Breadcrumb.Item>
-                ))}
-              </Breadcrumb>
+              <CatalogBreadcrumb breadcrumb={breadcrumb} location={location} intl={intl} />
               {get(wobjNested, [objectFields.title], undefined) && (
                 <div className="fw5 pt3">{wobjNested.title}</div>
               )}
@@ -584,7 +578,7 @@ class CatalogWrap extends React.Component {
             )}
           </React.Fragment>
         )}
-        {hasType(currWobject, OBJ_TYPE.PAGE) && !isEmpty(wobjNested) && (
+        {!isEmpty(wobjNested) && hasType(wobjNested, OBJ_TYPE.PAGE) && (
           <BodyContainer full body={getFieldWithMaxWeight(currWobject, objectFields.pageContent)} />
         )}
       </div>

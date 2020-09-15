@@ -60,6 +60,7 @@ import {
   GUIDE_HISTORY,
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
+  IS_RESERVED,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -70,8 +71,7 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
-import { getZoom } from '../components/Maps/mapHelper';
+import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 
 @withRouter
 @injectIntl
@@ -592,7 +592,6 @@ class Rewards extends React.Component {
         return { isAssign: false };
       })
       .catch(e => {
-        console.log(e.toString());
         message.error(e.error_description);
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
@@ -616,8 +615,10 @@ class Rewards extends React.Component {
       fetched,
       propositionsReserved,
     } = this.state;
+    const isReserved = match.params.filterKey === IS_RESERVED;
+
     let propositionsUniq;
-    if (!isEmpty(propositionsReserved)) {
+    if (isReserved) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
       propositionsUniq = uniqBy(propositions, '_id');
@@ -646,12 +647,12 @@ class Rewards extends React.Component {
         const sortChanged = getSortChanged({ path, sortHistory, sortMessages, sortGuideHistory });
         await getHistory(userName, sortChanged, activeFilters, false);
       } catch (error) {
-        console.log(error);
+        messages.error(error);
       }
     };
     const { intl, user, users } = this.props;
     if (size(actualPropositions) !== 0) {
-      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !pendingUpdate) {
+      if (IsRequiredObjectWrap && isEmpty(propositionsReserved) && !isReserved && !pendingUpdate) {
         return map(
           actualPropositions,
           proposition =>
@@ -768,25 +769,26 @@ class Rewards extends React.Component {
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
-    const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
-      ? get(newPropositions, ['0', 'required_object'])
-      : {};
-    const secondaryObjectsWithUniqueCoordinates = filter(
-      secondaryObjectsForMap,
-      object => object.map && !isEqual(object.map, primaryObjectForMap.map),
-    );
-    const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
-      secondaryObjectsWithUniqueCoordinates,
-    );
+    const primaryObjectForMap =
+      !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
+        ? get(newPropositions, ['0', 'required_object'])
+        : {};
+
+    const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
+      const objMap = getParsedMap(object.parent);
+      const primaryObjectMap = getParsedMap(primaryObjectForMap);
+
+      return object.parent && !isEqual(objMap, primaryObjectMap);
+    });
+
     const campaignsObjectsForMap =
       match.params.filterKey === 'reserved'
         ? map(newPropositions, proposition => {
             const propositionObject = get(proposition, ['objects', '0', 'object']);
-            return !isEmpty(propositionObject.map)
-              ? propositionObject
-              : proposition.required_object;
+            const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
+            return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
           })
-        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
+        : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
 
     return campaignsObjectsForMap;
   };
@@ -912,7 +914,7 @@ class Rewards extends React.Component {
     });
 
     const campaignParent = get(match, ['params', 'campaignParent']);
-    const isReserved = match.params.filterKey === 'reserved';
+    const isReserved = match.params.filterKey === IS_RESERVED;
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);

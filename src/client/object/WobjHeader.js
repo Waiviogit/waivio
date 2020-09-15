@@ -64,7 +64,7 @@ const WobjHeader = ({
         <div className="ObjectHeader__user">
           {parentName && (
             <Link
-              to={wobject.defaultShowLink}
+              to={parent.defaultShowLink}
               title={`${intl.formatMessage({
                 id: 'GoTo',
                 defaultMessage: 'Go to',
@@ -118,7 +118,7 @@ const WobjHeader = ({
               )}
             </div>
           </div>
-          {canEdit && !wobject[objectFields.background] && (
+          {canEdit && !wobject[objectFields.background] && !isHashtag && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}

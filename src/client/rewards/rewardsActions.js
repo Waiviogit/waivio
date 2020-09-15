@@ -99,3 +99,16 @@ export const getRewardsGeneralCounts = ({ userName, sort }) => (dispatch, getSta
     },
   });
 };
+
+export const GET_FOLLOWING_SPONSORS_REWARDS = createAsyncActionType(
+  '@rewards/GET_FOLLOWING_SPONSORS_REWARDS',
+);
+
+export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_FOLLOWING_SPONSORS_REWARDS.ACTION,
+    payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
+  });
+};

@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, message } from 'antd';
 import { isEmpty, uniq, map, get, filter } from 'lodash';
-
+import withAuthActions from '../../auth/withAuthActions';
 import Feed from '../../feed/Feed';
 import {
   getFeed,
   getReadLanguages,
   getCryptosPriceHistory,
   getSuitableLanguage,
+  getAuthenticatedUser,
 } from '../../reducers';
 import { assignProposition, declineProposition } from '../../user/userActions';
 import {
@@ -29,9 +30,11 @@ import Loading from '../../components/Icon/Loading';
 import './ObjectFeed.less';
 
 @injectIntl
+@withAuthActions
 @connect(
   state => ({
     feed: getFeed(state),
+    user: getAuthenticatedUser(state),
     readLocales: getReadLanguages(state),
     usedLocale: getSuitableLanguage(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -46,16 +49,13 @@ import './ObjectFeed.less';
 )
 export default class ObjectFeed extends React.Component {
   static propTypes = {
-    /* from connect */
     feed: PropTypes.shape().isRequired,
     getObjectPosts: PropTypes.func,
     usedLocale: PropTypes.string,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
     readLocales: PropTypes.arrayOf(PropTypes.string),
-    /* passed */
     match: PropTypes.shape().isRequired,
-    /* default props */
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
     intl: PropTypes.shape().isRequired,
@@ -65,6 +65,8 @@ export default class ObjectFeed extends React.Component {
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
+    onActionInitiated: PropTypes.func.isRequired,
+    user: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -75,6 +77,7 @@ export default class ObjectFeed extends React.Component {
     handleCreatePost: () => {},
     wobject: {},
     usedLocale: 'en-US',
+    user: {},
   };
 
   state = {
@@ -123,8 +126,12 @@ export default class ObjectFeed extends React.Component {
       window.scrollTo(0, 0);
     }
 
-    if (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
+    if (
+      (thisPropsWobjectId !== nextPropswobjectId && !isEmpty(nextProps.wobject)) ||
+      nextPropswobjectId === this.mountedId
+    ) {
+      const requiredObject =
+        get(nextProps.wobject, ['parent', 'author_permlink']) || get(nextProps.wobject, ['parent']);
       const primaryObject = get(nextProps.wobject, ['author_permlink']);
       const reqData = {
         userName: nextProps.userName,
@@ -137,17 +144,6 @@ export default class ObjectFeed extends React.Component {
         reqData.primaryObject = primaryObject;
       }
       this.getPropositions(reqData);
-    }
-
-    if (nextPropswobjectId === this.mountedId) {
-      const requiredObject = get(nextProps.wobject, ['parent', 'author_permlink']);
-
-      this.getPropositions({
-        userName: nextProps.userName,
-        requiredObject,
-        match: nextProps.match,
-        locale: usedLocale,
-      });
     }
 
     this.mountedId = null;
@@ -199,6 +195,7 @@ export default class ObjectFeed extends React.Component {
               history={this.props.history}
               isAssign={this.state.isAssign}
               match={this.props.match}
+              user={this.props.user}
             />
           ),
       ),
@@ -211,8 +208,13 @@ export default class ObjectFeed extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
     proposition,
     proposedWobj,
+    userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
@@ -223,8 +225,13 @@ export default class ObjectFeed extends React.Component {
         objPermlink,
         resPermlink,
         appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
         proposition,
         proposedWobj,
+        userName,
+        currencyId,
       })
       .then(() => {
         message.success(
@@ -305,10 +312,14 @@ export default class ObjectFeed extends React.Component {
         this.setState({ loadingAssignDiscard: false, isAssign: true });
       });
   };
+
+  createFirtsReview = () => {
+    this.props.onActionInitiated(this.props.handleCreatePost);
+  };
   // END Propositions
 
   render() {
-    const { feed, limit, handleCreatePost, wobject, intl } = this.props;
+    const { feed, limit, wobject, intl } = this.props;
     const { loadingPropositions, allPropositions, currentProposition } = this.state;
     const wObjectName = this.props.match.params.name;
     const objectFeed = getFeedFromState('objectPosts', wObjectName, feed);
@@ -390,7 +401,7 @@ export default class ObjectFeed extends React.Component {
         <div
           role="presentation"
           className="object-feed__row justify-center"
-          onClick={handleCreatePost}
+          onClick={this.createFirtsReview}
         >
           <FormattedMessage
             id="empty_object_profile"
@@ -410,7 +421,7 @@ export default class ObjectFeed extends React.Component {
             {getFeedContent()}
           </React.Fragment>
         )}
-        {<PostModal />}
+        <PostModal />
       </div>
     );
   }

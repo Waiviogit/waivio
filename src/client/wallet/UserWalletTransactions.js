@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { upperFirst, size } from 'lodash';
+import { upperFirst } from 'lodash';
 import moment from 'moment';
-
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import WalletTransaction from './WalletTransaction';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import { getTransferDetails } from '../../waivioApi/ApiClient';
+import { handleLoadMoreTransactions } from './WalletHelper';
 
 import './UserWalletTransactions.less';
 
@@ -34,6 +34,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: PropTypes.number,
     isloadingMoreTransactions: PropTypes.bool,
     isloadingMoreDemoTransactions: PropTypes.bool,
+    isMobile: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -47,6 +48,7 @@ class UserWalletTransactions extends React.Component {
     operationNum: -1,
     isloadingMoreTransactions: false,
     isloadingMoreDemoTransactions: false,
+    isMobile: false,
   };
 
   state = {
@@ -65,30 +67,6 @@ class UserWalletTransactions extends React.Component {
 
   isGuestPage = () => guestUserRegex.test(this.props.user && this.props.user.name);
 
-  handleLoadMore = () => {
-    const {
-      currentUsername,
-      operationNum,
-      isloadingMoreTransactions,
-      isloadingMoreDemoTransactions,
-    } = this.props;
-    let skip = 0;
-    const limit = 10;
-    const actionLength = size(this.props.actions);
-    if (this.isGuestPage()) {
-      if (actionLength >= limit) {
-        skip = actionLength;
-      }
-      // eslint-disable-next-line no-unused-expressions
-      !isloadingMoreDemoTransactions &&
-        this.props.getMoreUserAccountHistory(currentUsername, skip, limit);
-    } else {
-      // eslint-disable-next-line no-unused-expressions
-      !isloadingMoreTransactions &&
-        this.props.getMoreUserTransactionHistory(currentUsername, limit, operationNum);
-    }
-  };
-
   toggleDetailsModal = () =>
     this.setState(prevState => ({ isOpenDetailsModal: !prevState.isOpenDetailsModal }));
 
@@ -102,6 +80,31 @@ class UserWalletTransactions extends React.Component {
     return transferDetails.status;
   };
 
+  handleLoadMore = () => {
+    const {
+      currentUsername,
+      operationNum,
+      isloadingMoreTransactions,
+      isloadingMoreDemoTransactions,
+      getMoreUserAccountHistory,
+      getMoreUserTransactionHistory,
+      actions,
+    } = this.props;
+
+    const values = {
+      username: currentUsername,
+      operationNumber: operationNum,
+      isLoadingMore: isloadingMoreTransactions,
+      demoIsLoadingMore: isloadingMoreDemoTransactions,
+      getMoreFunction: getMoreUserTransactionHistory,
+      getMoreDemoFunction: getMoreUserAccountHistory,
+      transferActions: actions,
+      isGuest: this.isGuestPage(),
+      table: false,
+    };
+    return handleLoadMoreTransactions(values);
+  };
+
   render() {
     const {
       currentUsername,
@@ -113,8 +116,10 @@ class UserWalletTransactions extends React.Component {
       demoTransactions,
       intl,
       isErrorLoading,
+      isMobile,
     } = this.props;
     const { isOpenDetailsModal, transferDetails } = this.state;
+
     return (
       <React.Fragment>
         <div className="UserWalletTransactions">
@@ -142,6 +147,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))
               : transactions.map(transaction => (
@@ -153,6 +159,7 @@ class UserWalletTransactions extends React.Component {
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
                     handleDetailsClick={this.getWithDrawDetails}
+                    isMobile={isMobile}
                   />
                 ))}
           </ReduxInfiniteScroll>

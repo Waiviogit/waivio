@@ -17,7 +17,6 @@ const propTypes = {
 };
 
 const ObjectFeedContainer = ({ history, match, wobject, userName }) => {
-  /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
 
   const handleCreatePost = () => {

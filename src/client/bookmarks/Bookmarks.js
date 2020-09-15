@@ -61,13 +61,9 @@ export default class Bookmarks extends React.Component {
 
   render() {
     const { intl, reloading, feed } = this.props;
-
     const content = getFeedFromState('bookmarks', 'all', feed);
     const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || reloading;
     const hasMore = getFeedHasMoreFromState('bookmarks', 'all', feed);
-    const loadContentAction = () => null;
-    const loadMoreContentAction = () => null;
-
     const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
@@ -90,15 +86,7 @@ export default class Bookmarks extends React.Component {
           </Affix>
           <div className="center">
             <MobileNavigation />
-            <Feed
-              content={content}
-              isFetching={isFetching}
-              hasMore={hasMore}
-              loadContent={loadContentAction}
-              loadMoreContent={loadMoreContentAction}
-              showPostModal={this.props.showPostModal}
-            />
-            {noBookmarks && (
+            {noBookmarks ? (
               <div className="container">
                 <h3 className="text-center">
                   <FormattedMessage
@@ -107,6 +95,13 @@ export default class Bookmarks extends React.Component {
                   />
                 </h3>
               </div>
+            ) : (
+              <Feed
+                content={content}
+                isFetching={isFetching}
+                hasMore={hasMore}
+                showPostModal={this.props.showPostModal}
+              />
             )}
           </div>
         </div>

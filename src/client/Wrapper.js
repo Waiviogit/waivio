@@ -7,9 +7,9 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
 
-import enUS from 'antd/lib/locale-provider/en_US';
-import ruRU from 'antd/lib/locale-provider/ru_RU';
-import ukUA from 'antd/lib/locale-provider/uk_UA';
+import enUS from 'antd/es/locale/en_US';
+import ruRU from 'antd/es/locale/ru_RU';
+import ukUA from 'antd/es/locale/uk_UA';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
 import {
@@ -21,6 +21,7 @@ import {
   getTranslations,
   getNightmode,
   isGuestUser,
+  getIsOpenWalletTable,
 } from './reducers';
 import {
   login,
@@ -53,6 +54,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
     isGuest: isGuestUser(state),
+    isOpenWalletTable: getIsOpenWalletTable(state),
   }),
   {
     login,
@@ -83,8 +85,9 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
-    isNewUser: PropTypes.bool.isRequired,
+    isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
+    isOpenWalletTable: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -102,6 +105,8 @@ class Wrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isGuest: false,
+    isNewUser: false,
+    isOpenWalletTable: false,
   };
 
   static fetchData({ store, req }) {
@@ -232,6 +237,7 @@ class Wrapper extends React.PureComponent {
       history,
       username,
       isNewUser,
+      isOpenWalletTable,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -257,7 +263,7 @@ class Wrapper extends React.PureComponent {
                 />
                 {renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
-                <BBackTop className="primary-modal" />
+                <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
                 {isNewUser && <WelcomeModal location={history.location.pathname} />}
               </div>
             </Layout>
