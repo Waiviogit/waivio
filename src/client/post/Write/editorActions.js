@@ -284,7 +284,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, intl) {
             }
             if (result.status === 200) {
               dispatch(notify(publicMessage, 'success'));
-              dispatch(push('/'));
+              dispatch(push(`/@${author}`));
             }
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
