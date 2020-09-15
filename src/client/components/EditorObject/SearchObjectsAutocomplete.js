@@ -150,7 +150,11 @@ class SearchObjectsAutocomplete extends Component {
               label={obj.author_permlink}
               className="obj-search-option item"
             >
-              <ObjectSearchCard object={obj} name={getObjectName(obj)} type={obj.type} />
+              <ObjectSearchCard
+                object={obj}
+                name={getObjectName(obj)}
+                type={obj.type || obj.object_type}
+              />
             </AutoComplete.Option>
           ))
       : [];
