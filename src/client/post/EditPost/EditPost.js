@@ -49,11 +49,13 @@ import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
-    entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
+    entity =>
+      (entity.type === Entity.OBJECT && has(entity, 'data.object.type')) ||
+      has(entity, 'data.object.object_type'),
   );
-  return uniqBy(
+  return uniqWith(
     objEntities.map(entity => entity.data.object),
-    'id',
+    isEqual,
   );
 };
 
@@ -206,7 +208,7 @@ class EditPost extends Component {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
-      'id',
+      '_id',
     );
 
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
@@ -281,7 +283,11 @@ class EditPost extends Component {
             object.id || objPermlink,
           )})&nbsp;\n`,
         },
-        topics: uniqWith(object.type === 'hashtag' && [...prevState.topics, objPermlink], isEqual),
+        topics: uniqWith(
+          object.type === 'hashtag' ||
+            (object.object_type === 'hashtag' && [...prevState.topics, objPermlink]),
+          isEqual,
+        ),
       };
     });
   }
@@ -307,7 +313,7 @@ class EditPost extends Component {
     } = this.state;
     const currentObject = get(linkedObjects, '[0]', {});
     const objName = currentObject.author_permlink;
-    if (currentObject.type === 'hashtag' && objName) {
+    if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
       this.setState(prevState => ({ topics: uniqWith([...prevState.topics, objName], isEqual) }));
     }
     const campaignId = get(campaign, '_id', null);
@@ -394,6 +400,7 @@ class EditPost extends Component {
               onChange={this.handleChangeContent}
               intl={intl}
               handleHashtag={this.handleHashtag}
+              displayTitle
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">

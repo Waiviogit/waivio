@@ -373,85 +373,87 @@ class Story extends React.Component {
       );
     }
     return (
-      <div className="Story" id={`${author}-${post.permlink}`}>
-        {rebloggedUI}
-        <div className="Story__content">
-          <div className="Story__header">
-            <Link to={`/@${author}`}>
-              <Avatar username={author} size={40} />
-            </Link>
-            <div className="Story__header__text">
-              <span className="Story__header__flex">
-                <h4>
-                  <Link to={`/@${author}`}>
-                    <span className="username">{author}</span>
-                  </Link>
-                </h4>
-                <WeightTag weight={post.author_wobjects_weight} />
-              </span>
-              <span>
-                <BTooltip
-                  title={
-                    <span>
-                      <FormattedDate value={post.createdAt} />{' '}
-                      <FormattedTime value={post.createdAt} />
+      post.depth >= 0 && (
+        <div className="Story" id={`${author}-${post.permlink}`}>
+          {rebloggedUI}
+          <div className="Story__content">
+            <div className="Story__header">
+              <Link to={`/@${author}`}>
+                <Avatar username={author} size={40} />
+              </Link>
+              <div className="Story__header__text">
+                <span className="Story__header__flex">
+                  <h4>
+                    <Link to={`/@${author}`}>
+                      <span className="username">{author}</span>
+                    </Link>
+                  </h4>
+                  <WeightTag weight={post.author_wobjects_weight} />
+                </span>
+                <span>
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedDate value={post.createdAt} />{' '}
+                        <FormattedTime value={post.createdAt} />
+                      </span>
+                    }
+                  >
+                    <span className="Story__date">
+                      <FormattedRelative value={post.createdAt || post.created} />
                     </span>
-                  }
-                >
-                  <span className="Story__date">
-                    <FormattedRelative value={post.createdAt} />
-                  </span>
-                </BTooltip>
-                <PostedFrom post={post} />
-              </span>
-            </div>
-            <div className="Story__topics">
-              <div className="Story__published">
-                <div className="PostWobject__wrap">
-                  {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                  </BTooltip>
+                  <PostedFrom post={post} />
+                </span>
+              </div>
+              <div className="Story__topics">
+                <div className="Story__published">
+                  <div className="PostWobject__wrap">
+                    {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="Story__content">
-            <a
-              href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
-              rel="noopener noreferrer"
-              target="_blank"
-              onClick={this.handlePostModalDisplay}
-              className="Story__content__title"
-            >
-              <h2>
-                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                {post.title || post.root_title}
-              </h2>
-            </a>
-            {this.renderStoryPreview()}
-          </div>
-          <div className="Story__footer">
-            <StoryFooter
-              user={user}
-              post={post}
-              postState={postState}
-              pendingLike={pendingLike}
-              pendingFlag={pendingFlag}
-              rewardFund={rewardFund}
-              ownPost={ownPost}
-              singlePostVew={singlePostVew}
-              sliderMode={sliderMode}
-              defaultVotePercent={defaultVotePercent}
-              onLikeClick={this.handleLikeClick}
-              onReportClick={this.handleReportClick}
-              onShareClick={this.handleShareClick}
-              onEditClick={this.handleEditClick}
-              pendingFollow={pendingFollow}
-              pendingBookmark={pendingBookmark}
-              saving={saving}
-              handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
-            />
+            <div className="Story__content">
+              <a
+                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+                rel="noopener noreferrer"
+                target="_blank"
+                onClick={this.handlePostModalDisplay}
+                className="Story__content__title"
+              >
+                <h2>
+                  {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                  {post.title || post.root_title}
+                </h2>
+              </a>
+              {this.renderStoryPreview()}
+            </div>
+            <div className="Story__footer">
+              <StoryFooter
+                user={user}
+                post={post}
+                postState={postState}
+                pendingLike={pendingLike}
+                pendingFlag={pendingFlag}
+                rewardFund={rewardFund}
+                ownPost={ownPost}
+                singlePostVew={singlePostVew}
+                sliderMode={sliderMode}
+                defaultVotePercent={defaultVotePercent}
+                onLikeClick={this.handleLikeClick}
+                onReportClick={this.handleReportClick}
+                onShareClick={this.handleShareClick}
+                onEditClick={this.handleEditClick}
+                pendingFollow={pendingFollow}
+                pendingBookmark={pendingBookmark}
+                saving={saving}
+                handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )
     );
   }
 }

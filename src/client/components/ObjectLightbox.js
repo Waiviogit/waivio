@@ -8,7 +8,7 @@ import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
-import {getProxyImageURL} from "../helpers/image";
+import { getProxyImageURL } from '../helpers/image';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -37,7 +37,6 @@ export default class ObjectLightbox extends Component {
     let currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']);
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
     else currentImage = DEFAULTS.AVATAR;
-
 
     return (
       <React.Fragment>

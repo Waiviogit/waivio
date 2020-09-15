@@ -71,8 +71,7 @@ import * as apiConfig from '../../waivioApi/config';
 import { getRewardsGeneralCounts } from '../rewards/rewardsActions';
 import { setUpdatedFlag, getPropositionsForMap } from '../components/Maps/mapActions';
 import { RADIUS } from '../../common/constants/map';
-import { getWobjectsWithMaxWeight } from '../object/wObjectHelper';
-import { getZoom } from '../components/Maps/mapHelper';
+import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
 
 @withRouter
 @injectIntl
@@ -619,7 +618,7 @@ class Rewards extends React.Component {
     const isReserved = match.params.filterKey === IS_RESERVED;
 
     let propositionsUniq;
-    if (!isEmpty(propositionsReserved)) {
+    if (isReserved) {
       propositionsUniq = propositionsReserved;
     } else if (match.params.campaignParent) {
       propositionsUniq = uniqBy(propositions, '_id');
@@ -770,16 +769,18 @@ class Rewards extends React.Component {
       map(newPropositions, proposition => map(proposition.objects, object => object.object)),
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
-    const primaryObjectForMap = !isEmpty(secondaryObjectsForMap)
-      ? get(newPropositions, ['0', 'required_object'])
-      : {};
-    const secondaryObjectsWithUniqueCoordinates = filter(
-      secondaryObjectsForMap,
-      object => object.map && !isEqual(object.map, primaryObjectForMap.map),
-    );
-    const secondaryObjectsWithWeight = getWobjectsWithMaxWeight(
-      secondaryObjectsWithUniqueCoordinates,
-    );
+    const primaryObjectForMap =
+      !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
+        ? get(newPropositions, ['0', 'required_object'])
+        : {};
+
+    const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
+      const objMap = getParsedMap(object.parent);
+      const primaryObjectMap = getParsedMap(primaryObjectForMap);
+
+      return object.parent && !isEqual(objMap, primaryObjectMap);
+    });
+
     const campaignsObjectsForMap =
       match.params.filterKey === 'reserved'
         ? map(newPropositions, proposition => {
@@ -787,7 +788,7 @@ class Rewards extends React.Component {
             const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
             return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
           })
-        : [primaryObjectForMap, ...secondaryObjectsWithWeight];
+        : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
 
     return campaignsObjectsForMap;
   };

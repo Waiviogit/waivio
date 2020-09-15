@@ -95,6 +95,10 @@ const UserWallet = Loadable({
   loader: () => import('../client/user/UserWallet'),
   loading: Loading,
 });
+const WalletTable = Loadable({
+  loader: () => import('../client/wallet/WalletTable'),
+  loading: Loading,
+});
 const UserActivity = Loadable({
   loader: () => import('../client/activity/UserActivity'),
   loading: Loading,
@@ -399,7 +403,10 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|following|reblogs|transfers|activity|expertise|about)?',
+        path: [
+          '/@:name/(comments|followers|following|reblogs|activity|transfers|expertise|about)?',
+          '/@:name/transfers/table',
+        ],
         component: User,
         exact: true,
         routes: [
@@ -433,6 +440,12 @@ const routes = [
             exact: true,
             component: UserWallet,
           },
+          {
+            path: '/@:name/transfers/table',
+            exact: true,
+            component: WalletTable,
+          },
+
           {
             path: '/@:name/activity',
             exact: true,

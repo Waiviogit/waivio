@@ -45,7 +45,9 @@ const Proposition = ({
   const proposedWobj = wobj;
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = get(proposition, ['required_object'], {});
+  const parentObject = isEmpty(proposedWobj.parent)
+    ? get(proposition, ['required_object'], {})
+    : {};
   const requiredObjectName = getObjectName(proposition.required_object);
   const isMessages = !isEmpty(match)
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY

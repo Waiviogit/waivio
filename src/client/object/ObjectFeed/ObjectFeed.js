@@ -208,8 +208,13 @@ export default class ObjectFeed extends React.Component {
     resPermlink,
     objPermlink,
     companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
     proposition,
     proposedWobj,
+    userName,
+    currencyId,
   }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
@@ -220,8 +225,13 @@ export default class ObjectFeed extends React.Component {
         objPermlink,
         resPermlink,
         appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
         proposition,
         proposedWobj,
+        userName,
+        currencyId,
       })
       .then(() => {
         message.success(

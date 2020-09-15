@@ -6,6 +6,43 @@
   flex-direction: column;
   padding: 0 65px 25px;
 
+  &__social-btn {
+    width: 100%;
+    margin: 0 0 20px;
+
+    &:last-child {
+      margin: 0;
+    }
+
+    &--fb {
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      background-color: @blue-sanMarino;
+      color: @white;
+      transition: background-color 0.3s, border-color 0.3s;
+      height: 46px;
+      border-radius: 2px;
+      border: 1px solid transparent;
+      box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
+      font-family: Roboto, sans-serif;
+      text-align: left;
+    }
+  }
+
+  &__icon-fb {
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 2px;
+
+    & > svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   &__social {
     display: flex;
     flex-direction: column;
@@ -20,7 +57,9 @@
 
   &__title {
     color: @primary-color;
-    font-size: 21px;
+    font-size: 20px;
+    width: 265px;
+    text-align: center;
 
     @media @xsmall {
       font-size: 25px;

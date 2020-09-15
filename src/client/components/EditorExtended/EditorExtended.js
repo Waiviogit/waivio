@@ -62,11 +62,13 @@ class Editor extends React.Component {
     onChange: PropTypes.func,
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
+    displayTitle: PropTypes.bool,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
     handleHashtag: () => {},
+    displayTitle: true,
   };
 
   static MAX_LENGTH = 255;
@@ -169,14 +171,16 @@ class Editor extends React.Component {
     const { editorState, isMounted, editorEnabled, titleValue } = this.state;
     return (
       <div className="waiv-editor-wrap">
-        <Input.TextArea
-          maxLength={Editor.MAX_LENGTH}
-          autoSize
-          className="md-RichEditor-title"
-          value={titleValue}
-          placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
-          onChange={event => this.validateLength(event)}
-        />
+        {this.props.displayTitle && (
+          <Input.TextArea
+            maxLength={Editor.MAX_LENGTH}
+            autoSize
+            className="md-RichEditor-title"
+            value={titleValue}
+            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
+            onChange={event => this.validateLength(event)}
+          />
+        )}
         <div className="waiv-editor">
           {isMounted && (
             <MediumDraftEditor

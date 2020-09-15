@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isEmpty, omit, ceil } from 'lodash';
+import { isEmpty, omit, ceil, includes } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
@@ -10,6 +10,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
+import { IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
@@ -643,7 +644,6 @@ export const getPropositions = ({
   currentUserName,
   radius,
   area,
-  coordinates,
   sort,
   match,
   simplified,
@@ -658,13 +658,12 @@ export const getPropositions = ({
       skip,
       status,
       approved,
-      requiredObject,
       primaryObject,
       sort,
     };
 
-    if (!isEmpty(coordinates)) {
-      reqData.coordinates = coordinates;
+    if (!isEmpty(area)) {
+      reqData.area = area;
       reqData.radius = radius;
     }
     if (!isEmpty(area) && isEmpty(requiredObject)) {
@@ -677,9 +676,12 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
-    if (!isMap && match.params.filterKey === 'reserved') reqData.update = true;
+    if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
+    if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
 
     const url = getUrl(match);
+
+    if (isMap && match.params.filterKey === IS_RESERVED) return;
 
     fetch(url, {
       headers: { ...headers, app: config.appName, locale },
@@ -991,16 +993,23 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = async (userName, { skip = 0, limit = 10 } = {}) => {
+export const getGuestPaymentsHistory = async (
+  userName,
+  { skip = 0, limit = 10 } = {},
+  tableView = false,
+  startDate,
+  endDate,
+) => {
   const token = await getValidTokenData();
+  let url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`;
+  if (tableView) {
+    url += `&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}`;
+  }
   return new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
-      {
-        headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
-        method: 'GET',
-      },
-    )
+    fetch(url, {
+      headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
+      method: 'GET',
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -1064,8 +1073,9 @@ export const isUserRegistered = (id, socialNetwork) =>
     .then(data => data.json())
     .then(data => data.result);
 
-export const broadcastGuestOperation = async (operationId, isReview, data) => {
+export const broadcastGuestOperation = async (operationId, data) => {
   const userData = await getValidTokenData();
+  const isReview = includes(data[0][1].title, 'Review');
   if (userData.token) {
     let body;
     if (isReview) {
@@ -1428,12 +1438,27 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
-export const getFollowingSponsorsRewards = ({ userName }) =>
+export const getFollowingSponsorsRewards = ({ userName, skip }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}`, {
+    let query = skip ? `/?skip=${skip}` : '';
+    fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}${query}`, {
       headers,
       method: 'GET',
     })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const showMoreTagsForFilters = (category, skip = 0, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.objectType}${config.showMoreTags}?skip=${skip}&limit=${limit}&tagCategory=${category}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -1449,6 +1474,29 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&operationNum=${operationNum}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getTransferHistoryTableView = (
+  username,
+  limit = 10,
+  tableView = true,
+  startDate,
+  endDate,
+  types,
+  operationNum = -1,
+) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.transfers_history}?userName=${username}&limit=${limit}&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}&${types}&operationNum=${operationNum}`,
       {
         headers,
         method: 'GET',
