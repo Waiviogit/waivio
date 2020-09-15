@@ -22,7 +22,7 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
+  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : get(passedParent, 'parent');
   const address = parseAddress(wObject);
 
   useEffect(() => {

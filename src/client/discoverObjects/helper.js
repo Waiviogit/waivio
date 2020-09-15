@@ -68,7 +68,7 @@ export const parseTagsFilters = url => {
   return Object.keys(parseSearchParams).reduce(
     (acc, category) => ({
       ...acc,
-      [category]: parseSearchParams[category].split(','),
+      [category.replace(' ', '%20')]: parseSearchParams[category].split(','),
     }),
     {},
   );

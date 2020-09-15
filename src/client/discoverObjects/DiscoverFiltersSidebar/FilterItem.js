@@ -2,7 +2,6 @@ import { get } from 'lodash';
 import { Checkbox } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 
 import './FilterItem.less';
 
@@ -10,7 +9,6 @@ const FilterItem = ({
   filterName,
   handleDisplayFilter,
   isCollapsed,
-  intl,
   handleOnChangeCheckbox,
   activeFilters,
   filterValues,
@@ -23,9 +21,7 @@ const FilterItem = ({
       role="presentation"
       onClick={handleDisplayFilter(filterName)}
     >
-      <span className="collapsible-block__title-text">
-        {intl.formatMessage({ id: `filter-${filterName}`, defaultMessage: filterName })}
-      </span>
+      <span className="collapsible-block__title-text">{filterName}</span>
       <span className="collapsible-block__title-icon">
         <i className={`iconfont icon-${isCollapsed ? 'addition' : 'offline'}`} />
       </span>
@@ -61,7 +57,6 @@ const FilterItem = ({
 );
 
 FilterItem.propTypes = {
-  intl: PropTypes.shape().isRequired,
   filterName: PropTypes.string,
   handleDisplayFilter: PropTypes.func,
   isCollapsed: PropTypes.bool,
@@ -83,4 +78,4 @@ FilterItem.defaultProps = {
   hasMore: false,
 };
 
-export default injectIntl(FilterItem);
+export default FilterItem;
