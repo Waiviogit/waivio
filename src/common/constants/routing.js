@@ -16,11 +16,21 @@ const routeParts = {
 };
 
 export default {
+  SEGMENT: routeParts,
   WOBJ: {
-    params: {
-      type: Object.values(routeParts).join('|'),
-      appends: [...supportedObjectFields, ...objMenuTypes, routeParts.ALBUM].join('|'),
-    },
+    params: [
+      `${[
+        routeParts.ABOUT,
+        routeParts.GALLERY,
+        routeParts.UPDATES,
+        routeParts.REVIEWS,
+        routeParts.FOLLOWERS,
+        routeParts.EXPERTISE,
+        routeParts.MENU,
+        routeParts.PAGE,
+        routeParts.LIST,
+      ].join('|')}`,
+      `${[...supportedObjectFields, ...objMenuTypes, routeParts.ALBUM].join('|')}`,
+    ],
   },
-  USER: {},
 };

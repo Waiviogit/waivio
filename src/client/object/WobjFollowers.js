@@ -24,7 +24,6 @@ class WobjFollowers extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.fetcher = this.fetcher.bind(this);
   }
   skip = 0;
