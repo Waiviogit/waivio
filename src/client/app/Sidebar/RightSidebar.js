@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import { size } from 'lodash';
 import * as store from '../../reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
@@ -12,11 +11,11 @@ import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import { getFeed, isGuestUser } from '../../reducers';
 import { getFeedFromState } from '../../helpers/stateHelpers';
+import UserSidebar from './UserSidebar';
 
 @withRouter
 @connect(state => ({
@@ -79,25 +78,16 @@ export default class RightSidebar extends React.Component {
           <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
             path="/@:name"
-            render={() => {
-              if (authenticated && isGuest && !size(content)) {
-                return (
-                  <React.Fragment>
-                    <InterestingObjects />
-                    <InterestingPeople />
-                  </React.Fragment>
-                );
-              }
-              return (
-                authenticated && (
-                  <ObjectWeightBlock
-                    username={match.params.name}
-                    authUser={authUserName}
-                    locale={locale}
-                  />
-                )
-              );
-            }}
+            render={() => (
+              <UserSidebar
+                authenticated={authenticated}
+                isGuest={isGuest}
+                content={content}
+                match={match}
+                authUserName={authUserName}
+                locale={locale}
+              />
+            )}
           />
           <Route
             path="/discover-objects/:typeName"
