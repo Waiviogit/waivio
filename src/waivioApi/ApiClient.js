@@ -680,7 +680,6 @@ export const getPropositions = ({
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
 
     const url = getUrl(match);
-    console.log('url: ', url);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
 
