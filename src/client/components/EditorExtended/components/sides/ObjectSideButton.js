@@ -15,7 +15,7 @@ const objectSearchInput = props => {
     const selectionState = editorState.getSelection();
     const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE', {
       object: selectedObject,
-      url: `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedObject.id}`,
+      url: `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objectName}`,
     });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     contentState = Modifier.insertText(
@@ -31,7 +31,8 @@ const objectSearchInput = props => {
       anchorOffset: selectedObject.name.length,
       focusOffset: selectedObject.name.length,
     });
-    if (selectedObject.type === 'hashtag') props.handleHashtag(objectName);
+    if (selectedObject.type === 'hashtag' || selectedObject.object_type === 'hashtag')
+      props.handleHashtag(objectName);
     props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
   };
 

@@ -636,7 +636,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status,
+  status = ['active', 'onHold'],
   approved,
   guideNames,
   types,
