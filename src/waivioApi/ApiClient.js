@@ -636,7 +636,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status,
+  status = ['active', 'onHold'],
   approved,
   guideNames,
   types,
@@ -680,6 +680,7 @@ export const getPropositions = ({
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
 
     const url = getUrl(match);
+    console.log('url: ', url);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
 
