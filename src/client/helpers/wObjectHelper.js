@@ -246,7 +246,7 @@ export const parseAddress = wobject => {
   ).join(', ');
 };
 
-export const getObjectName = wobj => wobj.name || wobj.default_name;
+export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
 
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
