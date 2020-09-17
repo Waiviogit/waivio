@@ -148,13 +148,14 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale) =>
+export const getFeedContent = (follower, sortBy, queryData, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
         locale,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -166,6 +167,7 @@ export const getFeedContent = (sortBy, queryData, locale) =>
 
 export const getUserProfileBlog = (
   userName,
+  followerName,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
   locale,
 ) =>
@@ -175,7 +177,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower: userName,
+        follower: followerName,
       },
       method: 'POST',
       body: JSON.stringify({

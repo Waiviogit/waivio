@@ -65,16 +65,16 @@ export default class UserProfile extends React.Component {
   };
 
   componentDidMount() {
-    const { match, limit, usersAccountHistory } = this.props;
+    const { match, limit, usersAccountHistory, authenticatedUser } = this.props;
     const { name } = match.params;
-    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    this.props.getUserProfileBlogPosts(name, authenticatedUser.name, { limit, initialLoad: true });
     if (isEmpty(usersAccountHistory[name])) {
       this.props.getUserAccountHistory(name);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
+    const { match, limit, authenticatedUser } = this.props;
     const { name } = match.params;
 
     if (name !== nextProps.match.params.name) {
@@ -83,7 +83,7 @@ export default class UserProfile extends React.Component {
         nextProps.feed.blog &&
         !nextProps.feed.blog[nextProps.match.params.name]
       ) {
-        this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name, authenticatedUser.namr, {
           limit,
           initialLoad: true,
         });
@@ -101,7 +101,10 @@ export default class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+      this.props.getUserProfileBlogPosts(username, authenticatedUser.name, {
+        limit,
+        initialLoad: false,
+      });
 
     return (
       <div className="profile">

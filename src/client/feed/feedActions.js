@@ -45,7 +45,7 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
+export const getFeedContent = ({ follower, sortBy = 'trending', category, limit = 20 }) => (
   dispatch,
   getState,
 ) => {
@@ -62,6 +62,7 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       limit,
       user_languages,
       locale,
+      follower,
     }),
     meta: {
       sortBy,
@@ -100,10 +101,11 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
-  dispatch,
-  getState,
-) => {
+export const getUserProfileBlogPosts = (
+  userName,
+  followerName,
+  { limit = 10, initialLoad = true },
+) => (dispatch, getState) => {
   let startAuthor = '';
   let startPermlink = '';
   let userBlogPosts = [];
@@ -126,6 +128,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlog(
       userName,
+      followerName,
       {
         startAuthor,
         startPermlink,
