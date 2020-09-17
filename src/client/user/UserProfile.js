@@ -101,7 +101,10 @@ export default class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+      this.props.getUserProfileBlogPosts(username, {
+        limit,
+        initialLoad: false,
+      });
 
     return (
       <div className="profile">
