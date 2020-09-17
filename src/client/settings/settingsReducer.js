@@ -4,7 +4,7 @@ import { GET_USER_METADATA } from '../user/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
-  locale: 'auto',
+  locale: 'en-US',
   votingPower: true,
   votePercent: 10000,
   showNSFWPosts: false,
