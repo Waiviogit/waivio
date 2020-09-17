@@ -104,6 +104,7 @@ class CatalogWrap extends React.Component {
     isAssign: false,
     loadingPropositions: false,
     needUpdate: true,
+    wobjNested: {},
   };
 
   componentDidMount() {
@@ -559,7 +560,7 @@ class CatalogWrap extends React.Component {
             {isEditMode && (
               <div className="CatalogWrap__add-item">
                 <AddItemModal
-                  wobject={currWobject}
+                  wobject={wobjNested || currWobject}
                   itemsIdsToOmit={itemsIdsToOmit}
                   onAddItem={this.handleAddItem}
                 />
