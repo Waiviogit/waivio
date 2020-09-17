@@ -167,7 +167,7 @@ export const getFeedContent = (follower, sortBy, queryData, locale) =>
 
 export const getUserProfileBlog = (
   userName,
-  followerName,
+  follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
   locale,
 ) =>
@@ -177,7 +177,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower: followerName,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify({
