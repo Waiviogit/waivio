@@ -83,7 +83,7 @@ export default class UserProfile extends React.Component {
         nextProps.feed.blog &&
         !nextProps.feed.blog[nextProps.match.params.name]
       ) {
-        this.props.getUserProfileBlogPosts(nextProps.match.params.name, authenticatedUser.namr, {
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name, authenticatedUser.name, {
           limit,
           initialLoad: true,
         });
