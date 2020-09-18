@@ -96,7 +96,7 @@ const UserWallet = Loadable({
   loading: Loading,
 });
 const WalletTable = Loadable({
-  loader: () => import('../client/wallet/WalletTable'),
+  loader: () => import('../client/wallet/WalletTable/WalletTableContainer'),
   loading: Loading,
 });
 const UserActivity = Loadable({
