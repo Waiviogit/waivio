@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  isFetching: false,
+  isFetching: true,
   isReloading: false,
   loaded: false,
   user: {},
@@ -84,7 +84,7 @@ export default (state = initialState, action) => {
       };
 
     case types.LOGOUT:
-      return initialState;
+      return { ...initialState, isFetching: false };
 
     case GET_USER_METADATA.SUCCESS:
       return {

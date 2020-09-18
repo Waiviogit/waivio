@@ -10,8 +10,7 @@ import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
-import Cookie from 'js-cookie';
-import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
+import { findLanguage, getRequestLocale, loadLanguage } from './translations';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -22,6 +21,7 @@ import {
   getNightmode,
   isGuestUser,
   getIsOpenWalletTable,
+  getIsAuthFetching,
 } from './reducers';
 import {
   login,
@@ -39,6 +39,7 @@ import { guestUserRegex } from './helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import { PATH_NAME_ACTIVE } from '../common/constants/rewards';
 import ErrorBoundary from './widgets/ErrorBoundary';
+import Loading from './components/Icon/Loading';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -55,6 +56,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isNewUser: state.settings.newUser,
     isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
+    loadingFetching: getIsAuthFetching(state),
   }),
   {
     login,
@@ -88,6 +90,7 @@ class Wrapper extends React.PureComponent {
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
+    loadingFetching: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -107,6 +110,7 @@ class Wrapper extends React.PureComponent {
     isGuest: false,
     isNewUser: false,
     isOpenWalletTable: false,
+    loadingFetching: true,
   };
 
   static fetchData({ store, req }) {
@@ -121,11 +125,9 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    return Promise.all([
-      store.dispatch(login()),
-      store.dispatch(setAppUrl(appUrl)),
-      store.dispatch(setUsedLocale(lang)),
-    ]);
+    store.dispatch(login());
+
+    return Promise.all([store.dispatch(setAppUrl(appUrl)), store.dispatch(setUsedLocale(lang))]);
   }
 
   constructor(props) {
@@ -164,12 +166,7 @@ class Wrapper extends React.PureComponent {
   }
 
   async loadLocale(locale) {
-    let activeLocale = locale;
-    if (activeLocale === 'auto') {
-      activeLocale = Cookie.get('language') || getBrowserLocale();
-    }
-
-    const lang = await loadLanguage(activeLocale);
+    const lang = await loadLanguage(locale);
 
     this.props.setUsedLocale(lang);
   }
@@ -238,6 +235,7 @@ class Wrapper extends React.PureComponent {
       username,
       isNewUser,
       isOpenWalletTable,
+      loadingFetching,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -261,7 +259,7 @@ class Wrapper extends React.PureComponent {
                   userName={username}
                   location={history.location}
                 />
-                {renderRoutes(this.props.route.routes)}
+                {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
                 {isNewUser && <WelcomeModal location={history.location.pathname} />}
