@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -75,8 +75,12 @@ const UserHeader = ({
       ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
       : 0;
 
-  const guestPrefix = ' (guest)';
+  const isMobile = useSelector(state => state.app.screenSize);
 
+  const guestPrefix = ' (guest)';
+  const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
+  const headerUserName = isMobile !== 'large' ? mobileUserName : username;
+  console.log(headerUserName);
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
@@ -84,7 +88,7 @@ const UserHeader = ({
         <div className="UserHeader__user">
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
-              {username}
+              <span className="headerUsername">{headerUserName}</span>
               <WeightTag weight={user.wobjects_weight} />
             </h2>
             <div className="UserHeader__user__buttons">
