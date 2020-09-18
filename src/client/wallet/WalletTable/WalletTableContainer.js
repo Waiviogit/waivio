@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
 import { get, size } from 'lodash';
+import moment from 'moment';
+
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -252,6 +254,8 @@ class WalletTableContainer extends React.Component {
           user={user}
           getFieldDecorator={form.getFieldDecorator}
           handleOnClick={this.handleOnClick}
+          changeEndDate={value => this.setState({ endDate: moment(value).unix() })}
+          changeStartDate={value => this.setState({ startDate: moment(value).unix() })}
         />
         {size(transactions) ? (
           <WalletTable

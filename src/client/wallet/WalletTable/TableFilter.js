@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, DatePicker, Form } from 'antd';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 
 import { selectFormatDate, validateDate } from '../WalletHelper';
@@ -13,6 +12,8 @@ const TableFilter = ({
   user,
   getFieldDecorator,
   handleOnClick,
+  changeStartDate,
+  changeEndDate,
 }) => {
   const formatDate = selectFormatDate(locale);
   return (
@@ -64,7 +65,7 @@ const TableFilter = ({
                   id: 'table_start_date_picker',
                   defaultMessage: 'Select start date',
                 })}
-                onChange={value => this.setState({ startDate: moment(value).unix() })}
+                onChange={changeStartDate}
               />,
             )}
           </div>
@@ -104,7 +105,7 @@ const TableFilter = ({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
               })}
-              onChange={value => this.setState({ endDate: moment(value).unix() })}
+              onChange={changeEndDate}
             />,
           )}
         </Form.Item>
@@ -139,6 +140,8 @@ TableFilter.propTypes = {
   }).isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   handleOnClick: PropTypes.func.isRequired,
+  changeStartDate: PropTypes.func.isRequired,
+  changeEndDate: PropTypes.func.isRequired,
 };
 
 export default TableFilter;
