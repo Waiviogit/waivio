@@ -156,7 +156,7 @@ export default class User extends React.Component {
     const currentClassName = isOpenWalletTable
       ? 'display-table'
       : classNames('center', { pa3: isAboutPage });
-    console.log(this.props.route);
+
     return (
       <div className="main-panel">
         <Helmet>
