@@ -11,7 +11,8 @@ const socialTransformers = {
 
 export const transform = (socialId, id) => socialTransformers[socialId](id);
 
-export const getFacebookShareURL = url => `https://facebook.com/sharer/sharer.php?u=${url}`;
+export const getFacebookShareURL = (text, url) =>
+  `https://www.facebook.com/sharer.php?s=100&p[title]=${text}&p[url]=${url}`;
 export const getTwitterShareURL = (text, url) =>
   `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
 
