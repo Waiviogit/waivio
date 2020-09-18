@@ -114,7 +114,6 @@ class AdvanceSettings extends Component {
                 </div>
               </div>
               <div className="upvote-settings">
-                comment_options
                 <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
                   {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
                 </Checkbox>
