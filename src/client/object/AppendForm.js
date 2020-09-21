@@ -260,6 +260,9 @@ export default class AppendForm extends Component {
             }
 
             this.setState({ loading: false });
+            if (res) {
+              setTimeout(() => window.location.reload(), 0);
+            }
           })
           .catch(() => {
             message.error(
