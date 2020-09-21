@@ -362,6 +362,7 @@ class CatalogWrap extends React.Component {
       );
       listRow = map(listItems, listItem => this.getListRow(listItem, campaignObjects));
     }
+
     return listRow;
   };
 
