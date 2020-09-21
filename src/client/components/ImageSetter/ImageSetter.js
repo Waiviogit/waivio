@@ -191,7 +191,7 @@ const ImageSetter = ({
       // eslint-disable-next-line no-underscore-dangle
       const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
       if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const blockBefore = contentState.getBlockBefore(index).getKey();
         const removeImage = contentState.getBlockMap().delete(index);
         const contentAfterRemove = removeImage.delete(blockBefore);
         const filtered = contentAfterRemove.filter(element => !isNil(element));
