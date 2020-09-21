@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -14,6 +14,7 @@ import Action from './Button/Action';
 import WeightTag from './WeightTag';
 import USDDisplay from './Utils/USDDisplay';
 import { unfollowUser, followUser } from '../user/usersActions';
+import { getIsMobile } from '../reducers';
 import BellButton from '../widgets/BellButton';
 
 import './UserHeader.less';
@@ -33,6 +34,7 @@ const UserHeader = ({
   unfollow,
   follow,
   isGuest,
+  isMobile,
 }) => {
   const style = hasCover ? { backgroundImage: `url("${coverImage}")` } : {};
   let metadata = {};
@@ -75,12 +77,10 @@ const UserHeader = ({
       ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
       : 0;
 
-  const isMobile = useSelector(state => state.app.screenSize);
-
   const guestPrefix = ' (guest)';
   const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
   const headerUserName = isMobile !== 'large' ? mobileUserName : username;
-  console.log(headerUserName);
+
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
@@ -201,6 +201,7 @@ UserHeader.propTypes = {
   unfollow: PropTypes.func.isRequired,
   follow: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
+  isMobile: PropTypes.bool.isRequired,
 };
 
 UserHeader.defaultProps = {
@@ -217,8 +218,13 @@ UserHeader.defaultProps = {
 };
 
 export default injectIntl(
-  connect(null, {
-    unfollow: unfollowUser,
-    follow: followUser,
-  })(UserHeader),
+  connect(
+    state => ({
+      isMobile: getIsMobile(state),
+    }),
+    {
+      unfollow: unfollowUser,
+      follow: followUser,
+    },
+  )(UserHeader),
 );
