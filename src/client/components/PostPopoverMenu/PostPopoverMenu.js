@@ -138,7 +138,7 @@ const PostPopoverMenu = ({
   return (
     <Popover
       placement="bottomRight"
-      trigger="click"
+      trigger="hover"
       content={
         <React.Fragment>
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
