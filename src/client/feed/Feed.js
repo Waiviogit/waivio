@@ -17,9 +17,10 @@ const Feed = ({
   isGuest,
   history,
 }) => {
-  if (isGuest && !size(content)) {
+  if (isGuest && !size(content) && !isFetching && !history.location.pathname.includes('blog')) {
     return <QuickPostEditor history={history} />;
   }
+
   return (
     <ReduxInfiniteScroll
       className="Feed"

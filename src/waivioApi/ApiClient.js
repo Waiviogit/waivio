@@ -1416,15 +1416,11 @@ export const getPrivateEmail = userName => {
     .then(res => res.privateEmail);
 };
 
-export const getTransferDetails = withdrawId => {
-  return fetch(
-    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  ).then(res => res.json());
-};
+export const getTransferDetails = withdrawId =>
+  fetch(`${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 
 export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
   fetch(
