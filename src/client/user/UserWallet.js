@@ -40,7 +40,7 @@ import {
 import { getUserAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 import { guestUserRegex } from '../helpers/regexHelpers';
-import Transfer from '../wallet/Transfer';
+import Transfer from '../wallet/Transfer/Transfer';
 import Withdraw from '../wallet/WithDraw';
 import PowerUpOrDown from '../wallet/PowerUpOrDown';
 

@@ -6,11 +6,11 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isNull, isEmpty, isNaN, includes } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { HBD, HIVE } from '../../common/constants/cryptos';
-import SteemConnect from '../steemConnectAPI';
-import { getCryptoPriceHistory } from '../app/appActions';
-import { closeTransfer, sendPendingTransfer } from './walletActions';
-import { notify } from '../app/Notification/notificationActions';
+import { HBD, HIVE } from '../../../common/constants/cryptos';
+import SteemConnect from '../../steemConnectAPI';
+import { getCryptoPriceHistory } from '../../app/appActions';
+import { closeTransfer, sendPendingTransfer } from '../walletActions';
+import { notify } from '../../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
   getCryptosPriceHistory,
@@ -28,16 +28,16 @@ import {
   getTotalVestingFundSteem,
   getHiveBeneficiaryAccount,
   isOpenLinkModal,
-} from '../reducers';
-import { sendGuestTransfer } from '../../waivioApi/ApiClient';
-import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
-import { BANK_ACCOUNT } from '../../common/constants/waivio';
-import { guestUserRegex } from '../helpers/regexHelpers';
-import Avatar from '../components/Avatar';
-import USDDisplay from '../components/Utils/USDDisplay';
-import { REWARD } from '../../common/constants/rewards';
-import LinkHiveAccountModal from '../settings/LinkHiveAccountModal';
-import { saveSettings, openLinkHiveAccountModal } from '../settings/settingsActions';
+} from '../../reducers';
+import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import { BANK_ACCOUNT } from '../../../common/constants/waivio';
+import { guestUserRegex } from '../../helpers/regexHelpers';
+import Avatar from '../../components/Avatar';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { REWARD } from '../../../common/constants/rewards';
+import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
+import { saveSettings, openLinkHiveAccountModal } from '../../settings/settingsActions';
 
 import './Transfer.less';
 
@@ -277,26 +277,15 @@ export default class Transfer extends React.Component {
 
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
-          transferQuery.memo = memo
-            ? { id: memo, to: values.to }
-            : { id: REWARD.guestTransfer, to: values.to };
-          if (app) {
-            transferQuery.memo.app = app;
-          }
-          if (values.memo) transferQuery.memo.message = values.memo;
-          transferQuery.memo = JSON.stringify(transferQuery.memo);
+          transferQuery.memo = { id: memo || REWARD.guestTransfer, to: values.to };
         } else {
           transferQuery.to = values.to;
-          if (memo) {
-            transferQuery.memo = { id: memo };
-            if (app) {
-              transferQuery.memo.app = app;
-            }
-            if (values.memo) transferQuery.memo.message = values.memo;
-            transferQuery.memo = JSON.stringify(transferQuery.memo);
-          }
+          if (memo) transferQuery.memo = { id: memo };
           if (values.memo) transferQuery.memo = values.memo;
         }
+
+        if (app) transferQuery.memo.app = app;
+        if (values.memo) transferQuery.memo.message = values.memo;
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
@@ -309,7 +298,6 @@ export default class Transfer extends React.Component {
                 'success',
               );
             } else {
-              this.props.notify('Transaction failed', 'error');
               this.props.notify(
                 this.props.intl.formatMessage({
                   id: 'transaction_error_message_for_user',
@@ -422,8 +410,9 @@ export default class Transfer extends React.Component {
     const { searchName } = this.state;
     const userName = isEmpty(searchName) ? to : searchName;
     const isCurrentUser = user.name === match.params.name;
-    const account = isGuest && hiveBeneficiaryAccount ? hiveBeneficiaryAccount : userName;
-    if (isGuest && hiveBeneficiaryAccount && !form.getFieldValue('to')) {
+    const guestWithBeneficiary = isGuest && hiveBeneficiaryAccount;
+    const account = guestWithBeneficiary ? hiveBeneficiaryAccount : userName;
+    if (guestWithBeneficiary && !form.getFieldValue('to')) {
       this.props.form.setFieldsValue({
         to: hiveBeneficiaryAccount,
       });
@@ -435,7 +424,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!(isGuest && hiveBeneficiaryAccount) && !amount && isCurrentUser && (
+        {!guestWithBeneficiary && !amount && isCurrentUser && (
           <span
             role="presentation"
             onClick={() =>
@@ -504,7 +493,6 @@ export default class Transfer extends React.Component {
       hiveBeneficiaryAccount,
       showModal,
     } = this.props;
-
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
