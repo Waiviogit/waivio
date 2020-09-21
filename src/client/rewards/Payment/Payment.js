@@ -14,7 +14,7 @@ import { getHiveBeneficiaryAccount, isGuestUser } from '../../reducers';
 import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import { guestUserRegex } from '../../helpers/regexHelpers';
-import Transfer from '../../wallet/Transfer';
+import Transfer from '../../wallet/Transfer/Transfer';
 import './Payment.less';
 
 // eslint-disable-next-line no-shadow
