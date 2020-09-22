@@ -1,9 +1,9 @@
-import URL from '../../src/common/constants/routing';
-import Wrapper from '../client/Wrapper';
-import Page from '../client/feed/Page';
-import Post from '../client/post/Post';
 import Views from '../routes/components';
 import createNestedRouts from '../routes/helper';
+import Page from '../../client/feed/Page';
+import Post from '../../client/post/Post';
+import Wrapper from '../../client/Wrapper';
+import URL from './constants';
 
 const routes = {
   component: Wrapper,
