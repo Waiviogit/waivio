@@ -250,6 +250,7 @@ export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
 
 export const getPermLink = (hashUrl) => hashUrl.split('/').pop().replace('#', '');
 
+
 export const getMenuItems = (wobject, menuType, objType) => {
     const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
     if (isEmpty(wobject.menuItems)) return listItems;

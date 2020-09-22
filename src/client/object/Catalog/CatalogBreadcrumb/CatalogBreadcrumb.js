@@ -6,8 +6,9 @@ import { map } from 'lodash';
 
 const CatalogBreadcrumb = ({ location, breadcrumb, intl }) => (
   <Breadcrumb separator={'>'}>
-    {map(breadcrumb, (crumb, index, crumbsArr) => (
-      <Breadcrumb.Item key={`crumb-${crumb.name}`}>
+    {
+      map(breadcrumb, (crumb, index, crumbsArr) => (
+      <Breadcrumb.Item key={`crumb-${crumb.id}`}>
         {index && index === crumbsArr.length - 1 ? (
           <React.Fragment>
             <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>

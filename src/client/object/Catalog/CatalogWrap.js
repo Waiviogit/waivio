@@ -3,14 +3,12 @@ import {withRouter} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
 import {compose} from "redux";
-import {get, isEmpty, map, uniq, filter, max, min, some, size} from 'lodash';
+import {get, isEmpty, map, uniq, filter, max, min, some} from 'lodash';
 import {injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
 import {
   getFieldWithMaxWeight,
-  getListItems,
   sortListItemsBy,
-  getListSorting,
 } from '../wObjectHelper';
 
 import {objectFields, statusNoVisibleItem} from '../../../common/constants/listOfFields';
@@ -25,7 +23,7 @@ import {
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import {getPermLink, hasType, parseWobjectField} from '../../helpers/wObjectHelper';
+import {getObjectName, getPermLink, hasType, parseWobjectField} from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -41,6 +39,7 @@ import Campaign from '../../rewards/Campaign/Campaign';
 
 import './CatalogWrap.less';
 import CatalogSorting from "./CatalogSorting/CatalogSorting";
+import CatalogBreadcrumb from "./CatalogBreadcrumb/CatalogBreadcrumb";
 
 const CatalogWrap = (props) => {
   const dispatch = useDispatch();
@@ -54,6 +53,7 @@ const CatalogWrap = (props) => {
   const [sort, setSorting] = useState('recency');
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
+  const [breadcrumb, setBreadcrumb] = useState([]);
 
   const getPropositions = ({userName, match, requiredObject, sort}) => {
     setLoadingPropositions(true);
@@ -70,37 +70,42 @@ const CatalogWrap = (props) => {
     });
   };
 
-  // const sortingWobject = (wobject) => {
-  //   let sorting = {};
-  //   let sortedItems = [];
-  //   const items = getListItems(wobject);
-  //
-  //   if (size(items)) {
-  //     sorting = getListSorting(wobject);
-  //     sortedItems = sortListItemsBy(items, sorting.type, sorting.order);
-  //   }
-  //   setListItems(sortedItems);
-  //   setSorting(sorting.type)
-  // }
 
+  const handleChangeBreadCrumbs = (wObject) => {
+    let currentBreadCrumbs = [...breadcrumb];
+    const findWobj = crumb => crumb.id === wObject.author_permlink
+    const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
+    if (findBreadCrumbs) {
+      const findIndex = currentBreadCrumbs.findIndex(findWobj);
+      currentBreadCrumbs.splice(findIndex + 1);
+    } else {
+      currentBreadCrumbs = [
+        ...currentBreadCrumbs, {
+          id: wObject.author_permlink,
+          name: wObject.default_name,
+          path: wObject.author_permlink,
+        }];
+    }
+    setBreadcrumb(currentBreadCrumbs);
+  }
 
   useEffect(() => {
-    const {wobject, match, location: hash} = props;
-    const currentHash = getPermLink(hash);
+    const {wobject, match, location: {hash}} = props;
 
-    if (currentHash) {
-      getObject(currentHash, userName, locale).then(wObject => {
+    if (hash) {
+      const pathUrl = getPermLink(hash);
+      getObject(pathUrl, userName, locale).then(wObject => {
         const requiredObject = wObject.author_permlink;
         if (requiredObject) {
           getPropositions({userName, match, requiredObject, sort});
         }
         setListItems(wObject.listItems);
+        handleChangeBreadCrumbs(wObject);
       });
+    } else {
+      setListItems(wobject.listItems)
     }
-    if (wobject.object_type === OBJ_TYPE.LIST) {
-      setListItems(wobject.listItems);
-    }
-  }, [props.location.hash]);
+  }, [props.location.hash, props.wobject]);
 
 
   const handleAddItem = listItem => {
@@ -111,12 +116,6 @@ const CatalogWrap = (props) => {
     }
   };
 
-  const handleSortChange = sort => {
-    const {wobject} = props;
-    const sortOrder = wobject && wobject[objectFields.sorting];
-    setSorting(sort);
-    setListItems(sortListItemsBy(listItems, sort, sortOrder));
-  };
 
   const updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
     propositions.map(proposition => {
@@ -317,11 +316,17 @@ const CatalogWrap = (props) => {
     return listRow;
   };
 
-  const {isEditMode, wobject} = props;
+  const {isEditMode, wobject, intl} = props;
 
-  // const itemsIdsToOmit = uniq([
-  //   ...listItems.map(item => item.id)
-  // ]);
+  const itemsIdsToOmit = uniq([
+    ...listItems.map(item => item.id)
+  ]);
+
+  const handleSortChange = sort => {
+    const sortOrder = wobject && wobject[objectFields.sorting];
+    setSorting(sort);
+    setListItems(sortListItemsBy(listItems, sort, sortOrder));
+  };
 
   return (
     <div>
@@ -336,21 +341,26 @@ const CatalogWrap = (props) => {
                 <AddItemModal
                   wobject={wobject}
                   onAddItem={handleAddItem}
+                  itemsIdsToOmit={itemsIdsToOmit}
                 />
               </div>
             )}
-            {loadingPropositions ? (
-              <Loading/>
-            ) : (
-              <React.Fragment>
-                <div className="CatalogWrap__sort">
-                  <CatalogSorting sort={sort} currWobject={wobject} handleSortChange={handleSortChange}/>
-                </div>
-                <div className="CatalogWrap">
-                  <div>{getMenuList()}</div>
-                </div>
-              </React.Fragment>
-            )}
+            {
+              loadingPropositions || isEmpty(wobject) ? (
+                <Loading/>
+              ) : (
+                <React.Fragment>
+                  <div className="CatalogWrap__breadcrumb">
+                    <CatalogBreadcrumb breadcrumb={breadcrumb} location={location} intl={intl}/>
+                  </div>
+                  <div className="CatalogWrap__sort">
+                    <CatalogSorting sort={sort} currWobject={wobject} handleSortChange={handleSortChange}/>
+                  </div>
+                  <div className="CatalogWrap">
+                    <div>{getMenuList()}</div>
+                  </div>
+                </React.Fragment>
+              )}
           </React.Fragment>
         )}
       <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)}/>
@@ -368,8 +378,8 @@ CatalogWrap.propTypes = {
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string,
-  assignProposition: PropTypes.func.isRequired,
-  declineProposition: PropTypes.func.isRequired,
+  assignProposition: PropTypes.func,
+  declineProposition: PropTypes.func,
 };
 
 CatalogWrap.defaultProps = {
