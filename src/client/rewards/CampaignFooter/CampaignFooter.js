@@ -7,7 +7,13 @@ import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
-import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
+import {
+  ASSIGNED,
+  IS_RESERVED,
+  PATH_NAME_ACTIVE,
+  IS_ALL,
+  PATH_NAME_MESSAGES,
+} from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {
@@ -312,6 +318,7 @@ class CampaignFooter extends React.Component {
   handleCommentClick = () => {
     const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
+    console.log('here: ', this.props.reservedComments);
     if (!commentsVisible) {
       this.props
         .getReservedComments({ category, author, permlink })
@@ -434,6 +441,9 @@ class CampaignFooter extends React.Component {
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
 
+    const isNotifyComment = `${PATH_NAME_MESSAGES}/${this.props.match.params.campaignId}`;
+    console.log('isNotifyComment: ', isNotifyComment);
+    console.log('commentsArr', commentsArr);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">

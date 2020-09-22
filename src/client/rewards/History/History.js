@@ -53,6 +53,8 @@ const History = ({
     return sortMessages;
   }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
 
+  const reservationPermlink = match.params.campaignId;
+
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
       const rewards = map(activeFilters.rewards, item =>
@@ -78,6 +80,7 @@ const History = ({
         if (!isHistory) {
           requestData.caseStatus = caseStatus;
           requestData.guideName = username;
+          requestData.reservationPermlink = reservationPermlink;
         }
         if (isGuideHistory) {
           requestData.guideName = username;
@@ -108,6 +111,7 @@ const History = ({
       messagesSponsors,
       hasMore,
       messagesSponsors,
+      reservationPermlink,
     ],
   );
 

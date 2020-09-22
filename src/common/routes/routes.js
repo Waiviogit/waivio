@@ -50,7 +50,7 @@ const routes = {
           component: Views.MatchBotCampaign,
         },
         {
-          path: '/(history|guideHistory|messages)',
+          path: '/(history|guideHistory|messages)/:campaignId?',
           exact: true,
           component: Views.HistoryCampaign,
         },

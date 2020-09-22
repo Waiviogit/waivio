@@ -709,6 +709,7 @@ export const getHistory = ({
   guideNames,
   campaignNames,
   locale = 'en-US',
+  reservationPermlink,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -730,6 +731,7 @@ export const getHistory = ({
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
+    if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',

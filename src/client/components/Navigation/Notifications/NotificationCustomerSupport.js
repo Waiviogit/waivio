@@ -9,7 +9,8 @@ import './Notification.less';
 
 const NotificationCustomerSupport = ({ notification, read, onClick }) => (
   <Link
-    to={`/@${notification.author}/${notification.permlink}`}
+    // to={`/@${notification.author}/${notification.permlink}`}
+    to={`/rewards/messages/${notification.parent_permlink}`}
     onClick={onClick}
     className={classNames('Notification', {
       'Notification--unread': !read,
@@ -46,6 +47,7 @@ NotificationCustomerSupport.propTypes = {
     author: PropTypes.string,
     campaignName: PropTypes.string,
     permlink: PropTypes.string,
+    parent_permlink: PropTypes.string,
     timestamp: PropTypes.number,
   }),
   onClick: PropTypes.func,
