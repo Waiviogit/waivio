@@ -3,7 +3,6 @@ import Wrapper from '../client/Wrapper';
 import Page from '../client/feed/Page';
 import Post from '../client/post/Post';
 import Views from '../routes/components';
-import Path from '../routes/paths';
 import createNestedRouts from '../routes/helper';
 
 const routes = {
@@ -16,11 +15,12 @@ const routes = {
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         '/rewards/:filterKey/:campaignParent?',
       ],
+      pathScope: '/rewards',
       exact: true,
       component: Views.Rewards,
       routes: [
         {
-          path: Path.ManageCampaign,
+          path: '/manage',
           exact: true,
           component: Views.ManageCampaign,
         },
@@ -45,7 +45,7 @@ const routes = {
           component: Views.PaymentCampaign,
         },
         {
-          path: Path.MatchBotCampaign,
+          path: '/match-bot',
           exact: true,
           component: Views.MatchBotCampaign,
         },
@@ -72,10 +72,7 @@ const routes = {
       ],
     },
     {
-      path: [
-        '/@:name/(comments|followers|following|reblogs|transfers|activity|expertise|about)?',
-        '/@:name/transfers/table',
-      ],
+      path: `/@:name/(${URL.USER.tabs})?/(table)?`,
       component: Views.User,
       exact: true,
       pathScope: '/@:name',
@@ -133,7 +130,7 @@ const routes = {
       ],
     },
     {
-      path: `/object/:name/(${URL.WOBJ.params[0]})?/(${URL.WOBJ.params[1]})?/:itemId?`,
+      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
       component: Views.Wobj,
       exact: true,
       pathScope: '/object/:name',
@@ -144,49 +141,49 @@ const routes = {
           component: Views.ObjectPageFeed,
         },
         {
-          path: `/${URL.SEGMENT.ABOUT}`,
+          path: '/about',
           exact: true,
           component: Views.ObjectAbout,
         },
         {
-          path: `/${URL.SEGMENT.FOLLOWERS}`,
+          path: '/followers',
           exact: true,
           component: Views.WobjFollowers,
         },
         {
-          path: `/${URL.SEGMENT.GALLERY}`,
+          path: '/gallery',
           exact: true,
           component: Views.ObjectGallery,
         },
         {
-          path: `/${URL.SEGMENT.EXPERTISE}`,
+          path: '/expertise',
           exact: true,
           component: Views.WobjExpertise,
         },
         {
-          path: `/${URL.SEGMENT.GALLERY}/${URL.SEGMENT.ALBUM}/:itemId`,
+          path: '/gallery/album/:itemId',
           exact: true,
           component: Views.ObjectGalleryAlbum,
         },
         {
-          path: `/${URL.SEGMENT.UPDATES}/(${URL.WOBJ.params[1]})?`,
+          path: `/updates/(${URL.WOBJ.filters})?`,
           exact: true,
           component: Views.WobjHistory,
         },
         {
-          path: `/(${URL.SEGMENT.LIST}|${URL.SEGMENT.MENU})`,
+          path: '/(list|menu)',
           exact: true,
           component: Views.CatalogWrap,
         },
         {
-          path: `/(${URL.SEGMENT.PAGE})`,
+          path: '/(page)',
           exact: true,
           component: Views.ObjectOfTypePage,
         },
       ],
     },
     {
-      path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications-list)?/:category?',
+      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
       component: Page,
       exact: true,
       routes: [
@@ -296,7 +293,7 @@ const routes = {
       component: Views.Search,
     },
     {
-      path: Path.Exit,
+      path: '/exit',
       component: Views.ExitPage,
     },
     {
