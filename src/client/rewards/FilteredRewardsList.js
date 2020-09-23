@@ -165,6 +165,7 @@ const FilteredRewardsList = props => {
             ? propositions[0].required_object
             : null
         }
+        match={match}
         location={location}
       />
       {isSearchAreaFilter && (

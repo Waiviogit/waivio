@@ -399,7 +399,7 @@ class CampaignFooter extends React.Component {
     );
     const currentFilteredComment = get(filteredComments, '[0]', []);
     if (hasComments) {
-      if (isNotifyComment) {
+      if (!this.state.commentsVisible && isNotifyComment) {
         return (
           <div key={currentFilteredComment.post_id}>
             <CommentsMessages
