@@ -639,7 +639,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status = ['active', 'onHold'],
+  status = ['active'],
   approved,
   guideNames,
   types,
@@ -680,6 +680,7 @@ export const getPropositions = ({
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
 
     const url = getUrl(match);
