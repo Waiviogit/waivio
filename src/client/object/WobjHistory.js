@@ -18,12 +18,12 @@ import {
 import { objectFields, sortingMenuName } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import AppendModal from './AppendModal';
+import AppendModal from './AppendModal/AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
 import OBJECT_TYPE from './const/objectTypes';
 import { AppSharedContext } from '../Wrapper';
-import AppendCard from './AppendCard';
+import AppendCard from './AppendCard/AppendCard';
 import Loading from '../components/Icon/Loading';
 import { getObjectName } from '../helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from './wObjectHelper';

@@ -4,31 +4,31 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedDate, FormattedRelative, FormattedTime, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import WeightTag from '../components/WeightTag';
-import BTooltip from '../components/BTooltip';
-import Avatar from '../components/Avatar';
-import StoryPreview from '../components/Story/StoryPreview';
-import Comments from '../comments/Comments';
-import Slider from '../components/Slider/Slider';
-import AppendObjButtons from '../components/StoryFooter/AppendObjButtons';
+import WeightTag from '../../components/WeightTag';
+import BTooltip from '../../components/BTooltip';
+import Avatar from '../../components/Avatar';
+import StoryPreview from '../../components/Story/StoryPreview';
+import Comments from '../../comments/Comments';
+import Slider from '../../components/Slider/Slider';
+import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
 import {
   getAuthenticatedUser,
   getShowNSFWPosts,
   getVotePercent,
   getVotingPower,
   isGuestUser,
-} from '../reducers';
-import { getAppendDownvotes, getAppendUpvotes } from '../helpers/voteHelpers';
-import { voteAppends } from './wobjActions';
-import Payout from '../components/StoryFooter/Payout';
-import Confirmation from '../components/StoryFooter/Confirmation';
+} from '../../reducers';
+import { getAppendDownvotes, getAppendUpvotes } from '../../helpers/voteHelpers';
+import { voteAppends } from '../wobjActions';
+import Payout from '../../components/StoryFooter/Payout';
+import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
-import { calculateVotePowerForSlider, isPostCashout } from '../vendor/steemitHelpers';
-import { objectFields } from '../../common/constants/listOfFields';
+import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
+import { objectFields } from '../../../common/constants/listOfFields';
 
-import '../components/Story/Story.less';
-import '../components/StoryFooter/StoryFooter.less';
-import '../components/StoryFooter/Buttons.less';
+import '../../components/Story/Story.less';
+import '../../components/StoryFooter/StoryFooter.less';
+import '../../components/StoryFooter/Buttons.less';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
