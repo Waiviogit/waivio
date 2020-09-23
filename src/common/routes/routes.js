@@ -9,6 +9,11 @@ const routes = {
   component: Wrapper,
   routes: [
     {
+      path: '/bookmarks',
+      exact: true,
+      component: Views.Bookmarks,
+    },
+    {
       path: [
         '/rewards/(create|manage|match-bot|edit|history|guideHistory|messages|payables|reports|receivables)/:campaignId?/:permlink?',
         '/rewards/blacklist/:listType?',
@@ -60,7 +65,7 @@ const routes = {
           component: Views.BlacklistCampaign,
         },
         {
-          path: '/(details|createDuplicate|create)/:campaignId',
+          path: '/(details|createDuplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewardForm,
         },
@@ -70,6 +75,61 @@ const routes = {
           component: Views.RewardsComponent,
         },
       ],
+    },
+    {
+      path: '/drafts',
+      exact: true,
+      component: Views.Drafts,
+    },
+    {
+      path: '/replies',
+      exact: true,
+      component: Views.Replies,
+    },
+    {
+      path: '/activity',
+      exact: true,
+      component: Views.Activity,
+    },
+    {
+      path: '/wallet',
+      exact: true,
+      component: Views.Wallet,
+    },
+    {
+      path: '/editor',
+      component: Views.Editor,
+      exact: true,
+    },
+    {
+      path: '/edit',
+      component: Views.BusyEditor,
+      exact: true,
+    },
+    {
+      path: '/settings',
+      exact: true,
+      component: Views.Settings,
+    },
+    {
+      path: '/edit-profile',
+      exact: true,
+      component: Views.ProfileSettings,
+    },
+    {
+      path: '/invite',
+      exact: true,
+      component: Views.Invite,
+    },
+    {
+      path: '/guests-settings',
+      exact: true,
+      component: Views.GuestsSettings,
+    },
+    {
+      path: '/notification-settings',
+      exact: true,
+      component: Views.NotificationSettings,
     },
     {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
@@ -183,32 +243,22 @@ const routes = {
       ],
     },
     {
-      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-      component: Page,
+      path: '/discover-objects/:typeName?',
       exact: true,
-      routes: [
-        {
-          path: '/confirmation',
-          exact: true,
-          component: Views.ConfirmationModal,
-        },
-        {
-          path: '/notifications-list',
-          component: Views.Notifications,
-        },
-        {
-          path: '/feed/:name',
-          component: Views.ObjectFeed,
-        },
-        {
-          path: '/blog/@:name',
-          component: Views.UserProfile,
-        },
-        {
-          path: '/:sortBy(trending|created|hot)?/:category?',
-          component: Views.SubFeed,
-        },
-      ],
+      component: Views.DiscoverObjects,
+    },
+    {
+      path: '/discover/:search?',
+      exact: true,
+      component: Views.Discover,
+    },
+    {
+      path: '/objects',
+      component: Views.Objects,
+    },
+    {
+      path: '/:category?/@:author/:permlink/:original?',
+      component: Post,
     },
     {
       path: '/bookmarks',
@@ -271,30 +321,44 @@ const routes = {
       component: Views.NotificationSettings,
     },
     {
-      path: '/discover-objects/:typeName?',
-      exact: true,
-      component: Views.DiscoverObjects,
-    },
-    {
-      path: '/discover/:search?',
-      exact: true,
-      component: Views.Discover,
-    },
-    {
-      path: '/objects',
-      component: Views.Objects,
-    },
-    {
-      path: '/:category?/@:author/:permlink/:original?',
-      component: Post,
-    },
-    {
       path: '/search',
       component: Views.Search,
     },
     {
       path: '/exit',
       component: Views.ExitPage,
+    },
+    {
+      path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
+      component: Page,
+      exact: true,
+      routes: [
+        {
+          path: '/confirmation',
+          exact: true,
+          component: Views.ConfirmationModal,
+        },
+        {
+          path: '/notifications-list',
+          component: Views.Notifications,
+        },
+        {
+          path: '/rewards-list',
+          component: Views.RewardsList,
+        },
+        {
+          path: '/feed/:name',
+          component: Views.ObjectFeed,
+        },
+        {
+          path: '/blog/@:name',
+          component: Views.UserProfile,
+        },
+        {
+          path: '/:sortBy(trending|created|hot)?/:category?',
+          component: Views.SubFeed,
+        },
+      ],
     },
     {
       path: '*',
