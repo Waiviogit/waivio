@@ -382,65 +382,45 @@ class CampaignFooter extends React.Component {
 
   handleNotificationComments = (
     commentsArr,
-    match,
     hasComments,
-    commentsVisible,
-    user,
     postAll,
-    getMessageHistory,
     rootComment,
-    isGuest,
-    proposition,
     isNotifyComment,
-    // eslint-disable-next-line consistent-return
   ) => {
-    const filteredComments = filter(commentsArr, comment =>
-      isEqual(match.params.permlink, comment.permlink),
-    );
-    const currentFilteredComment = get(filteredComments, '[0]', []);
-    if (hasComments) {
-      if (!this.state.commentsVisible && isNotifyComment) {
-        return (
-          <div key={currentFilteredComment.post_id}>
-            <CommentsMessages
-              show
-              user={user}
-              post={postAll}
-              getMessageHistory={getMessageHistory}
-              currentComment={currentFilteredComment}
-              getReservedComments={this.getReservedComments}
-              parent={rootComment}
-              matchPath={match.params[0]}
-              match={match}
-              isGuest={isGuest}
-              proposition={proposition}
-            />
-          </div>
-        );
+    const { match, user, getMessageHistory, isGuest, proposition } = this.props;
+    const { commentsVisible } = this.state;
+
+    // eslint-disable-next-line consistent-return
+    const currentFilteredComments = filter(commentsArr, comment => {
+      if (hasComments) {
+        if (!commentsVisible && isNotifyComment) {
+          return isEqual(match.params.permlink, comment.permlink) && comment;
+        }
+        return commentsArr;
       }
-      return map(commentsArr, currentComment => (
-        <div key={currentComment.post_id}>
-          <CommentsMessages
-            show={commentsVisible}
-            user={user}
-            post={postAll}
-            getMessageHistory={getMessageHistory}
-            currentComment={currentComment}
-            getReservedComments={this.getReservedComments}
-            parent={rootComment}
-            matchPath={match.params[0]}
-            match={match}
-            isGuest={isGuest}
-            proposition={proposition}
-          />
-        </div>
-      ));
-    }
+    });
+
+    return map(currentFilteredComments, currentComment => (
+      <div key={currentComment.post_id}>
+        <CommentsMessages
+          show={(!commentsVisible && isNotifyComment) || commentsVisible}
+          user={user}
+          post={postAll}
+          getMessageHistory={getMessageHistory}
+          currentComment={currentComment}
+          getReservedComments={this.getReservedComments}
+          parent={rootComment}
+          matchPath={match.params[0]}
+          match={match}
+          isGuest={isGuest}
+          proposition={proposition}
+        />
+      </div>
+    ));
   };
 
   render() {
     const {
-      commentsVisible,
       modalVisible,
       daysLeft,
       sliderVisible,
@@ -470,7 +450,6 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
-      isGuest,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -536,15 +515,9 @@ class CampaignFooter extends React.Component {
         )}
         {this.handleNotificationComments(
           commentsArr,
-          match,
           hasComments,
-          commentsVisible,
-          user,
           postAll,
-          getMessageHistory,
           rootComment,
-          isGuest,
-          proposition,
           isNotifyComment,
         )}
         {!singlePostVew && (
