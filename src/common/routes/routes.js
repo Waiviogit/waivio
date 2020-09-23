@@ -65,7 +65,7 @@ const routes = {
           component: Views.BlacklistCampaign,
         },
         {
-          path: '/(details|createDuplicate|create)/:campaignId',
+          path: '/(details|createDuplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewardForm,
         },
