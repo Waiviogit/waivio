@@ -778,16 +778,13 @@ class Rewards extends React.Component {
       return object.parent && !isEqual(objMap, primaryObjectMap);
     });
 
-    const campaignsObjectsForMap =
-      match.params.filterKey === 'reserved'
-        ? map(newPropositions, proposition => {
-            const propositionObject = get(proposition, ['objects', '0', 'object']);
-            const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
-            return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
-          })
-        : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
-
-    return campaignsObjectsForMap;
+    return match.params.filterKey === 'reserved'
+      ? map(newPropositions, proposition => {
+          const propositionObject = get(proposition, ['objects', '0', 'object']);
+          const propositionObjectMap = get(proposition, ['objects', '0', 'object', 'map']);
+          return !isEmpty(propositionObjectMap) ? propositionObject : proposition.required_object;
+        })
+      : [primaryObjectForMap, ...secondaryObjectsWithUniqueCoordinates];
   };
 
   moveToCoordinates = objects => {

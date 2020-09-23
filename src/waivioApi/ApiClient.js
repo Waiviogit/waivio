@@ -10,7 +10,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_RESERVED } from '../common/constants/rewards';
+import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
@@ -639,7 +639,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status = ['active', 'onHold'],
+  status = ['active'],
   approved,
   guideNames,
   types,
@@ -681,7 +681,7 @@ export const getPropositions = ({
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
