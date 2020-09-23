@@ -10,7 +10,7 @@ const routes = {
   routes: [
     {
       path: [
-        '/rewards/(create|manage|match-bot|edit|history|guideHistory|messages|payables|reports|receivables)/:campaignId?',
+        '/rewards/(create|manage|match-bot|edit|history|guideHistory|messages|payables|reports|receivables)/:campaignId?/:permlink?',
         '/rewards/blacklist/:listType?',
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         '/rewards/:filterKey/:campaignParent?',
@@ -50,7 +50,7 @@ const routes = {
           component: Views.MatchBotCampaign,
         },
         {
-          path: '/(history|guideHistory|messages)/:campaignId?',
+          path: '/(history|guideHistory|messages)/:campaignId?/:permlink?',
           exact: true,
           component: Views.HistoryCampaign,
         },

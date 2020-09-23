@@ -3,17 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter, size, isEqual } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
-import {
-  ASSIGNED,
-  IS_RESERVED,
-  PATH_NAME_ACTIVE,
-  IS_ALL,
-  PATH_NAME_MESSAGES,
-} from '../../../common/constants/rewards';
+import { ASSIGNED, IS_RESERVED, PATH_NAME_ACTIVE, IS_ALL } from '../../../common/constants/rewards';
 import { getVoteValue } from '../../helpers/user';
 import { getDaysLeft } from '../rewardsHelper';
 import {
@@ -318,7 +312,6 @@ class CampaignFooter extends React.Component {
   handleCommentClick = () => {
     const { currentPost, commentsVisible } = this.state;
     const { category, author, permlink } = currentPost;
-    console.log('here: ', this.props.reservedComments);
     if (!commentsVisible) {
       this.props
         .getReservedComments({ category, author, permlink })
@@ -387,6 +380,64 @@ class CampaignFooter extends React.Component {
       });
   };
 
+  handleNotificationComments = (
+    commentsArr,
+    match,
+    hasComments,
+    commentsVisible,
+    user,
+    postAll,
+    getMessageHistory,
+    rootComment,
+    isGuest,
+    proposition,
+    isNotifyComment,
+    // eslint-disable-next-line consistent-return
+  ) => {
+    const filteredComments = filter(commentsArr, comment =>
+      isEqual(match.params.permlink, comment.permlink),
+    );
+    const currentFilteredComment = get(filteredComments, '[0]', []);
+    if (hasComments) {
+      if (isNotifyComment) {
+        return (
+          <div key={currentFilteredComment.post_id}>
+            <CommentsMessages
+              show
+              user={user}
+              post={postAll}
+              getMessageHistory={getMessageHistory}
+              currentComment={currentFilteredComment}
+              getReservedComments={this.getReservedComments}
+              parent={rootComment}
+              matchPath={match.params[0]}
+              match={match}
+              isGuest={isGuest}
+              proposition={proposition}
+            />
+          </div>
+        );
+      }
+      return map(commentsArr, currentComment => (
+        <div key={currentComment.post_id}>
+          <CommentsMessages
+            show={commentsVisible}
+            user={user}
+            post={postAll}
+            getMessageHistory={getMessageHistory}
+            currentComment={currentComment}
+            getReservedComments={this.getReservedComments}
+            parent={rootComment}
+            matchPath={match.params[0]}
+            match={match}
+            isGuest={isGuest}
+            proposition={proposition}
+          />
+        </div>
+      ));
+    }
+  };
+
   render() {
     const {
       commentsVisible,
@@ -440,10 +491,7 @@ class CampaignFooter extends React.Component {
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-
-    const isNotifyComment = `${PATH_NAME_MESSAGES}/${this.props.match.params.campaignId}`;
-    console.log('isNotifyComment: ', isNotifyComment);
-    console.log('commentsArr', commentsArr);
+    const isNotifyComment = Boolean(this.props.match.params.campaignId);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -486,24 +534,19 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {hasComments &&
-          map(commentsArr, currentComment => (
-            <div key={currentComment.post_id}>
-              <CommentsMessages
-                show={commentsVisible}
-                user={user}
-                post={postAll}
-                getMessageHistory={getMessageHistory}
-                currentComment={currentComment}
-                getReservedComments={this.getReservedComments}
-                parent={rootComment}
-                matchPath={match.params[0]}
-                match={match}
-                isGuest={isGuest}
-                proposition={proposition}
-              />
-            </div>
-          ))}
+        {this.handleNotificationComments(
+          commentsArr,
+          match,
+          hasComments,
+          commentsVisible,
+          user,
+          postAll,
+          getMessageHistory,
+          rootComment,
+          isGuest,
+          proposition,
+          isNotifyComment,
+        )}
         {!singlePostVew && (
           <QuickCommentEditor
             parentPost={currentPost}

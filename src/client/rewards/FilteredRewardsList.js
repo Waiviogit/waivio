@@ -78,7 +78,7 @@ const FilteredRewardsList = props => {
     !match.params.campaignParent &&
     location !== historyLocation &&
     location !== messagesLocation &&
-    location !== `${messagesLocation}/${match.params.campaignId}` &&
+    location !== `${messagesLocation}/${match.params.campaignId}/${match.params.permlink}` &&
     location !== guideHistoryLocation;
 
   const getFiltersForTags = useMemo(() => {
