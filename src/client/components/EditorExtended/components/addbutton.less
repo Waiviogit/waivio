@@ -24,6 +24,7 @@
     background-color: @white;
     border-radius: 4px;
     width: calc(100vw - @margin * 2.8);
+    margin-top: 10px;
 
     @media @small {
       width: calc(100vw - @margin * 16.6);
@@ -63,6 +64,10 @@
       width: 100%;
       &__rendered {
         width: 100%;
+        .ant-select-selection__placeholder,
+        .ant-select-search__field__placeholder {
+          margin-top: -8px;
+        }
         ul {
           width: 100%;
           li {

@@ -20,7 +20,6 @@ import {
   parseWobjectField,
 } from '../helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from './wobjActions';
-import { getLinkEdit } from './wObjectHelper';
 
 import '../components/ObjectHeader.less';
 
@@ -31,7 +30,6 @@ const WobjHeader = ({
   intl,
   toggleViewEditMode,
   authenticated,
-  isMobile,
   followWobj,
   unfollowWobj,
 }) => {
@@ -88,13 +86,13 @@ const WobjHeader = ({
                   followingType="wobject"
                 />
                 {accessExtend && authenticated && (
-                  <Link to={getLinkEdit(wobject, isEditMode, isMobile)}>
+                  <React.Fragment>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
                         ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
                         : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
                     </Button>
-                  </Link>
+                  </React.Fragment>
                 )}
               </div>
             </div>
@@ -140,7 +138,6 @@ WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
-  isMobile: PropTypes.bool,
   followWobj: PropTypes.func,
   unfollowWobj: PropTypes.func,
 };

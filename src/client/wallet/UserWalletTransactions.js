@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, message } from 'antd';
+import { message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { upperFirst } from 'lodash';
-import moment from 'moment';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import WalletTransaction from './WalletTransaction';
 import { guestUserRegex } from '../helpers/regexHelpers';
 import { getTransferDetails } from '../../waivioApi/ApiClient';
 import { handleLoadMoreTransactions } from './WalletHelper';
+import BlocktraidsTransactionModal from './BlocktraidsTransactionModal';
 
 import './UserWalletTransactions.less';
 
@@ -57,12 +56,14 @@ class UserWalletTransactions extends React.Component {
   };
 
   getWithDrawDetails = key => {
-    getTransferDetails(key).then(data => {
-      this.setState(() => ({
-        transferDetails: data,
-        isOpenDetailsModal: true,
-      })).catch(e => message.error(e.message));
-    });
+    getTransferDetails(key)
+      .then(data => {
+        this.setState(() => ({
+          transferDetails: data,
+          isOpenDetailsModal: true,
+        }));
+      })
+      .catch(e => message.error(e.message));
   };
 
   isGuestPage = () => guestUserRegex.test(this.props.user && this.props.user.name);
@@ -165,111 +166,13 @@ class UserWalletTransactions extends React.Component {
           </ReduxInfiniteScroll>
         </div>
         {transferDetails && (
-          <Modal
-            visible={isOpenDetailsModal}
-            title={intl.formatMessage({
-              id: 'transaction_details',
-              defaultMessage: 'Transaction details',
-            })}
-            onCancel={this.toggleDetailsModal}
-            footer={null}
-          >
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'transaction_state',
-                  defaultMessage: 'Transaction State',
-                })}
-              </div>
-              <div>{upperFirst(this.getTransactionStatus())}</div>
-            </div>
-            {transferDetails.confirmed && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'time_local',
-                    defaultMessage: 'Time (local)',
-                  })}
-                </div>
-                <div>{moment(transferDetails.confirmed).format('MMMM Do YYYY, h:mm:ss a')}</div>
-              </div>
-            )}
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'send_amount',
-                  defaultMessage: 'Send Amount',
-                })}
-              </div>
-              <div>{transferDetails.amount || transferDetails.sendAmount} HIVE</div>
-            </div>
-            {transferDetails.outputAmount && transferDetails.outputCoinType && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'receive_amount',
-                    defaultMessage: 'Receive Amount',
-                  })}
-                </div>
-                <div>{`${
-                  transferDetails.outputAmount
-                } ${transferDetails.outputCoinType.toUpperCase()}`}</div>
-              </div>
-            )}
-            <div className="UserWalletTransactions__modal-row">
-              <div className="UserWalletTransactions__modal-subtitle">
-                {intl.formatMessage({
-                  id: 'receive_address',
-                  defaultMessage: 'Receive Address',
-                })}
-              </div>
-              <div>{transferDetails.address || transferDetails.receiveAddress}</div>
-            </div>
-            {transferDetails.account && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'deposit_account',
-                    defaultMessage: 'Deposit account',
-                  })}
-                </div>
-                <div>{transferDetails.account}</div>
-              </div>
-            )}
-            {transferDetails.transactionHash && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'deposit_transaction_hash',
-                    defaultMessage: 'Deposit Transaction Hash',
-                  })}
-                </div>
-                <div>{transferDetails.transactionHash}</div>
-              </div>
-            )}
-            {transferDetails.usdValue && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'deposit_usd_value',
-                    defaultMessage: 'Deposit USD Value',
-                  })}
-                </div>
-                <div>{transferDetails.usdValue}</div>
-              </div>
-            )}
-            {transferDetails.memo && (
-              <div className="UserWalletTransactions__modal-row">
-                <div className="UserWalletTransactions__modal-subtitle">
-                  {intl.formatMessage({
-                    id: 'memo',
-                    defaultMessage: 'Memo',
-                  })}
-                </div>
-                <div>{transferDetails.memo}</div>
-              </div>
-            )}
-          </Modal>
+          <BlocktraidsTransactionModal
+            isOpenDetailsModal={isOpenDetailsModal}
+            transferDetails={transferDetails}
+            intl={intl}
+            toggleDetailsModal={this.toggleDetailsModal}
+            status={this.getTransactionStatus()}
+          />
         )}
       </React.Fragment>
     );

@@ -148,13 +148,14 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale) =>
-  new Promise((resolve, reject) => {
+export const getFeedContent = (sortBy, queryData, locale, follower) => {
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
         locale,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -163,9 +164,11 @@ export const getFeedContent = (sortBy, queryData, locale) =>
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+};
 
 export const getUserProfileBlog = (
   userName,
+  follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
   locale,
 ) =>
@@ -175,7 +178,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower: userName,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify({
@@ -636,7 +639,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status,
+  status = ['active', 'onHold'],
   approved,
   guideNames,
   types,
@@ -1413,15 +1416,11 @@ export const getPrivateEmail = userName => {
     .then(res => res.privateEmail);
 };
 
-export const getTransferDetails = withdrawId => {
-  return fetch(
-    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  ).then(res => res.json());
-};
+export const getTransferDetails = withdrawId =>
+  fetch(`${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 
 export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
   fetch(

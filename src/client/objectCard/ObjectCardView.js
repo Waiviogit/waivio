@@ -22,7 +22,9 @@ const ObjectCardView = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
+  const parent = isEmpty(passedParent)
+    ? get(wObject, 'parent', {})
+    : get(passedParent, 'parent', {});
   const address = parseAddress(wObject);
 
   useEffect(() => {
@@ -153,7 +155,7 @@ const ObjectCardView = ({
 
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
-  wObject: PropTypes.shape().isRequired,
+  wObject: PropTypes.shape(),
   passedParent: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
@@ -165,5 +167,6 @@ ObjectCardView.propTypes = {
 ObjectCardView.defaultProps = {
   options: {},
   passedParent: {},
+  wObject: {},
 };
 export default injectIntl(ObjectCardView);

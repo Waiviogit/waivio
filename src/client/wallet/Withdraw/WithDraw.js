@@ -12,14 +12,17 @@ import {
   getCryptosPriceHistory,
   getStatusWithdraw,
   isGuestUser,
-} from '../reducers';
-import { closeWithdraw } from './walletActions';
-import QrModal from '../widgets/QrModal';
-import { estimateAmount, validaveCryptoWallet } from '../../waivioApi/ApiClient';
-import EmailConfirmation from '../widgets/EmailConfirmation';
-import { CRYPTO_FOR_VALIDATE_WALLET, CRYPTO_LIST_FOR_WALLET } from '../../common/constants/waivio';
-import { HIVE } from '../../common/constants/cryptos';
-import { getUserPrivateEmail } from '../user/usersActions';
+} from '../../reducers';
+import { closeWithdraw } from '../walletActions';
+import QrModal from '../../widgets/QrModal';
+import { estimateAmount, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
+import EmailConfirmation from '../../widgets/EmailConfirmation';
+import {
+  CRYPTO_FOR_VALIDATE_WALLET,
+  CRYPTO_LIST_FOR_WALLET,
+} from '../../../common/constants/waivio';
+import { HIVE } from '../../../common/constants/cryptos';
+import { getUserPrivateEmail } from '../../user/usersActions';
 
 import './Withdraw.less';
 
