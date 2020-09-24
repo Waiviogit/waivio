@@ -35,13 +35,13 @@ const CheckReviewModal = ({
   onSubmit,
 }) => {
   const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
-
   const secondaryObject = linkedObjects.find(
     obj => obj.id === get(postRequirements, ['secondaryObject']),
   );
-  const primaryObject = linkedObjects
-    ? linkedObjects.find(obj => obj.id === postRequirements.primaryObject)
-    : null;
+  const primaryObject = linkedObjects.find(
+    obj => obj.id === get(postRequirements, ['primaryObject']),
+  );
+
   const hasMinPhotos =
     (postBody.match(/(?:!\[(.*?)\]\((.*?)\))/gi) || []).length >= postRequirements.minPhotos;
   const secondaryObjectAuthorPermlink = secondaryObject
