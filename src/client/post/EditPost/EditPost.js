@@ -205,7 +205,6 @@ class EditPost extends Component {
   };
 
   setCurrentDraftContent = debounce(nextState => {
-    console.log('nextState: ', nextState);
     this.setState({
       draftContent: {
         body: nextState.content,

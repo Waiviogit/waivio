@@ -112,7 +112,20 @@ class Editor extends React.Component {
 
   restoreObjects = async rawContent => {
     const objectIds = Object.values(rawContent.entityMap)
-      .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .filter(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return entity.type === Entity.OBJECT && has(entity, 'data.object.id');
+        } else if (entity.type === Entity.LINK) {
+          // for localhost:3000
+          const data = get(entity, 'data.url', '');
+          const a = data.split(':');
+          const b = get(a, '[2]', []);
+          const c = b.split('/');
+
+          return get(c, '[2]', '');
+        }
+      })
       .map(entity => get(entity, 'data.object.id', ''));
 
     if (objectIds.length) {
@@ -122,6 +135,7 @@ class Editor extends React.Component {
         requiredFields: ['rating'],
       });
 
+      console.log('response: ', response);
       const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
