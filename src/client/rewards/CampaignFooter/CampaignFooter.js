@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { message, Modal } from 'antd';
-import { findKey, find, get, isEmpty, map, includes, filter, size } from 'lodash';
+import { findKey, find, get, isEmpty, map, includes, filter, size, isEqual } from 'lodash';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import CommentsMessages from './CommentsMessages';
@@ -380,9 +380,47 @@ class CampaignFooter extends React.Component {
       });
   };
 
+  handleNotificationComments = (
+    commentsArr,
+    hasComments,
+    postAll,
+    rootComment,
+    isNotifyComment,
+  ) => {
+    const { match, user, getMessageHistory, isGuest, proposition } = this.props;
+    const { commentsVisible } = this.state;
+
+    const currentFilteredComments =
+      hasComments && !commentsVisible && isNotifyComment
+        ? filter(
+            commentsArr,
+            comment => isEqual(match.params.permlink, comment.permlink) && comment,
+          )
+        : commentsArr;
+
+    const isShow = (!commentsVisible && isNotifyComment) || commentsVisible;
+
+    return map(currentFilteredComments, currentComment => (
+      <div key={currentComment.post_id}>
+        <CommentsMessages
+          show={isShow}
+          user={user}
+          post={postAll}
+          getMessageHistory={getMessageHistory}
+          currentComment={currentComment}
+          getReservedComments={this.getReservedComments}
+          parent={rootComment}
+          matchPath={match.params[0]}
+          match={match}
+          isGuest={isGuest}
+          proposition={proposition}
+        />
+      </div>
+    ));
+  };
+
   render() {
     const {
-      commentsVisible,
       modalVisible,
       daysLeft,
       sliderVisible,
@@ -412,7 +450,6 @@ class CampaignFooter extends React.Component {
       getMessageHistory,
       blacklistUsers,
       reservedComments,
-      isGuest,
     } = this.props;
     const isRewards = !isEmpty(match)
       ? match.params.filterKey === 'reserved' ||
@@ -433,7 +470,7 @@ class CampaignFooter extends React.Component {
     const numberOfComments = postCurrent
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
-
+    const isNotifyComment = Boolean(this.props.match.params.campaignId);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -476,24 +513,13 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {hasComments &&
-          map(commentsArr, currentComment => (
-            <div key={currentComment.post_id}>
-              <CommentsMessages
-                show={commentsVisible}
-                user={user}
-                post={postAll}
-                getMessageHistory={getMessageHistory}
-                currentComment={currentComment}
-                getReservedComments={this.getReservedComments}
-                parent={rootComment}
-                matchPath={match.params[0]}
-                match={match}
-                isGuest={isGuest}
-                proposition={proposition}
-              />
-            </div>
-          ))}
+        {this.handleNotificationComments(
+          commentsArr,
+          hasComments,
+          postAll,
+          rootComment,
+          isNotifyComment,
+        )}
         {!singlePostVew && (
           <QuickCommentEditor
             parentPost={currentPost}
