@@ -534,6 +534,7 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {this.listItem(objectFields.authority, null)}
       </React.Fragment>
     );
 

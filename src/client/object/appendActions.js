@@ -19,6 +19,7 @@ export const appendObject = (postData, { follow, isLike = true } = {}) => dispat
         }
         if (follow) dispatch(followObject(postData.parentPermlink));
       }
+      dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 
       return res;
     })
