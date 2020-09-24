@@ -16,6 +16,7 @@ import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import IconButton from '../../components/IconButton';
 import './ObjectOfTypePage.less';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 
 @injectIntl
 @Form.create()
@@ -157,6 +158,7 @@ class ObjectOfTypePage extends Component {
                       onClick={this.handleReadyPublishClick}
                     />
                   </div>
+                  <CatalogBreadcrumb wobject={wobject} intl={intl} />
                   <BodyContainer full body={content} />
                   <div className="object-page-preview__options">
                     <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />

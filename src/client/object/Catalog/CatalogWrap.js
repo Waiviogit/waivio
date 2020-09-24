@@ -1,51 +1,42 @@
-import {message} from 'antd';
-import {withRouter} from 'react-router-dom';
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux'
-import {compose} from "redux";
-import {get, isEmpty, map, uniq, filter, max, min, some} from 'lodash';
-import {injectIntl} from 'react-intl';
+import { message } from 'antd';
+import { withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { compose } from 'redux';
+import { get, isEmpty, map, filter, max, min, some } from 'lodash';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import {
-  getFieldWithMaxWeight,
-  sortListItemsBy,
-} from '../wObjectHelper';
+import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
 
-import {objectFields, statusNoVisibleItem} from '../../../common/constants/listOfFields';
+import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
-import {getObject} from '../../../waivioApi/ApiClient';
+import { getObject } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import {
-  getSuitableLanguage,
-  getAuthenticatedUserName
-} from '../../reducers';
+import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import {getObjectName, getPermLink, hasType, parseWobjectField} from '../../helpers/wObjectHelper';
+import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
 
-import {
-  assignProposition,
-  declineProposition
-} from '../../user/userActions';
+import { assignProposition, declineProposition } from '../../user/userActions';
 
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
-
+import CatalogSorting from './CatalogSorting/CatalogSorting';
+import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
+import { setWobjectForBreadCrumbs } from '../wobjActions';
 import './CatalogWrap.less';
-import CatalogSorting from "./CatalogSorting/CatalogSorting";
-import CatalogBreadcrumb from "./CatalogBreadcrumb/CatalogBreadcrumb";
 
-const CatalogWrap = (props) => {
+const CatalogWrap = props => {
   const dispatch = useDispatch();
 
-  const locale = useSelector((state) => getSuitableLanguage(state));
-  const userName = useSelector((state) => getAuthenticatedUserName(state));
+  const locale = useSelector(getSuitableLanguage);
+  const userName = useSelector(getAuthenticatedUserName);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(false);
@@ -53,71 +44,55 @@ const CatalogWrap = (props) => {
   const [sort, setSorting] = useState('recency');
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
-  const [breadcrumb, setBreadcrumb] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const getPropositions = ({userName, match, requiredObject, sort}) => {
+  const getPropositions = ({ username, match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      userName,
+      username,
       match,
       requiredObject,
       sort: 'reward',
       locale,
     }).then(data => {
       setPropositions(data.campaigns);
-      setSorting(sort);
+      setSorting(sorting);
       setLoadingPropositions(false);
     });
   };
 
-
-  const handleChangeBreadCrumbs = (wObject) => {
-    let currentBreadCrumbs = [...breadcrumb];
-    const findWobj = crumb => crumb.id === wObject.author_permlink
-    const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
-    if (findBreadCrumbs) {
-      const findIndex = currentBreadCrumbs.findIndex(findWobj);
-      currentBreadCrumbs.splice(findIndex + 1);
-    } else {
-      currentBreadCrumbs = [
-        ...currentBreadCrumbs, {
-          id: wObject.author_permlink,
-          name: wObject.default_name,
-          path: wObject.author_permlink,
-        }];
-    }
-    setBreadcrumb(currentBreadCrumbs);
-  }
-
   useEffect(() => {
-    const {wobject, match, location: {hash}} = props;
-
+    const {
+      wobject,
+      match,
+      location: { hash },
+    } = props;
     if (hash) {
       const pathUrl = getPermLink(hash);
+      setLoading(true);
       getObject(pathUrl, userName, locale).then(wObject => {
         const requiredObject = wObject.author_permlink;
         if (requiredObject) {
-          getPropositions({userName, match, requiredObject, sort});
+          getPropositions({ userName, match, requiredObject, sort });
         }
         setListItems(wObject.listItems);
-        handleChangeBreadCrumbs(wObject);
+        dispatch(setWobjectForBreadCrumbs(wObject));
+        setLoading(false);
       });
     } else {
-      setListItems(wobject.listItems)
+      setListItems(wobject.listItems);
     }
   }, [props.location.hash, props.wobject]);
 
-
   const handleAddItem = listItem => {
-    const {wobject} = props;
+    const { wobject } = props;
     setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
     if (wobject.object_type === OBJ_TYPE.LIST) {
-      dispatch(wobjectActions.addListItem(listItem))
+      dispatch(wobjectActions.addListItem(listItem));
     }
   };
 
-
-  const updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
+  const updateProposition = (propsId, isassign, objPermlink, companyAuthor) => {
     propositions.map(proposition => {
       const updatedProposition = proposition;
       const propositionId = get(updatedProposition, '_id');
@@ -125,7 +100,7 @@ const CatalogWrap = (props) => {
       if (propositionId === propsId) {
         updatedProposition.objects.forEach((object, index) => {
           if (object.object.author_permlink === objPermlink) {
-            updatedProposition.objects[index].assigned = isAssign;
+            updatedProposition.objects[index].assigned = isassign;
           } else {
             updatedProposition.objects[index].assigned = null;
           }
@@ -139,57 +114,53 @@ const CatalogWrap = (props) => {
     });
   };
 
-
   const assignPropositionHandler = ({
-                                      companyAuthor,
-                                      companyPermlink,
-                                      resPermlink,
-                                      objPermlink,
-                                      companyId,
-                                      primaryObjectName,
-                                      secondaryObjectName,
-                                      amount,
-                                      proposition,
-                                      proposedWobj,
-                                      userName,
-                                      currencyId,
-                                    }) => {
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+    primaryObjectName,
+    secondaryObjectName,
+    amount,
+    proposition,
+    proposedWobj,
+    username,
+    currencyId,
+  }) => {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
 
     setLoadingAssignDiscard(true);
 
-    return dispatch(assignProposition({
-      companyAuthor,
-      companyPermlink,
-      objPermlink,
-      resPermlink,
-      appName,
-      primaryObjectName,
-      secondaryObjectName,
-      amount,
-      proposition,
-      proposedWobj,
-      userName,
-      currencyId,
-    })).then(() => {
-      message.success(
-        props.intl.formatMessage({
-          id: 'assigned_successfully_update',
-          defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
-        }),
-      );
-
-      const updatedPropositions = updateProposition(
-        companyId,
-        true,
-        objPermlink,
+    return dispatch(
+      assignProposition({
         companyAuthor,
-      );
+        companyPermlink,
+        objPermlink,
+        resPermlink,
+        appName,
+        primaryObjectName,
+        secondaryObjectName,
+        amount,
+        proposition,
+        proposedWobj,
+        username,
+        currencyId,
+      }),
+    )
+      .then(() => {
+        message.success(
+          props.intl.formatMessage({
+            id: 'assigned_successfully_update',
+            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
+          }),
+        );
 
-      setPropositions(updatedPropositions);
-      setLoadingAssignDiscard(false);
-      setIsAssign(true);
-    })
+        setPropositions(updateProposition(companyId, true, objPermlink, companyAuthor));
+
+        setLoadingAssignDiscard(false);
+        setIsAssign(true);
+      })
       .catch(e => {
         setLoadingAssignDiscard(false);
         setIsAssign(false);
@@ -198,37 +169,40 @@ const CatalogWrap = (props) => {
   };
 
   const discardProposition = ({
-                                companyAuthor,
-                                companyPermlink,
-                                companyId,
-                                objPermlink,
-                                unreservationPermlink,
-                                reservationPermlink,
-                              }) => {
-
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
     setLoadingAssignDiscard(true);
 
-    return dispatch(declineProposition({
-      companyAuthor,
-      companyPermlink,
-      companyId,
-      objPermlink,
-      unreservationPermlink,
-      reservationPermlink,
-    })).then(() => {
-      const updatedPropositions = updateProposition(companyId, false, objPermlink);
-      setPropositions(updatedPropositions);
-      setLoadingAssignDiscard(false);
-      setIsAssign(false);
-    }).catch(e => {
-      message.error(e.error_description);
-      setLoadingAssignDiscard(false);
-      setIsAssign(true);
-    });
+    return dispatch(
+      declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      }),
+    )
+      .then(() => {
+        const updatedPropositions = updateProposition(companyId, false, objPermlink);
+        setPropositions(updatedPropositions);
+        setLoadingAssignDiscard(false);
+        setIsAssign(false);
+      })
+      .catch(e => {
+        message.error(e.error_description);
+        setLoadingAssignDiscard(false);
+        setIsAssign(true);
+      });
   };
 
-  const renderProposition = (propositions, listItem) =>
-    map(propositions, proposition =>
+  const renderProposition = (propositionsObject, listItem) =>
+    map(propositionsObject, proposition =>
       map(
         filter(
           proposition.objects,
@@ -238,7 +212,7 @@ const CatalogWrap = (props) => {
           wobj.object &&
           wobj.object.author_permlink && (
             <Proposition
-              proposition={proposition}
+              proposition={propositionsObject}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
@@ -256,23 +230,23 @@ const CatalogWrap = (props) => {
       ),
     );
 
-  const renderCampaign = propositions => {
-    const minReward = propositions
-      ? min(map(propositions, proposition => proposition.reward))
+  const renderCampaign = propositionsObject => {
+    const minReward = propositionsObject
+      ? min(map(propositionsObject, proposition => proposition.reward))
       : null;
     const rewardPriceCatalogWrap = minReward ? `${minReward.toFixed(2)} USD` : '';
-    const maxReward = propositions
-      ? max(map(propositions, proposition => proposition.reward))
+    const maxReward = propositionsObject
+      ? max(map(propositionsObject, proposition => proposition.reward))
       : null;
     const rewardMaxCatalogWrap = maxReward !== minReward ? `${maxReward.toFixed(2)} USD` : '';
 
     return (
       <Campaign
-        proposition={propositions[0]}
+        proposition={propositionsObject[0]}
         filterKey="all"
         rewardPricePassed={!rewardMaxCatalogWrap ? rewardPriceCatalogWrap : null}
         rewardMaxPassed={rewardMaxCatalogWrap || null}
-        key={`${propositions[0].required_object.author_permlink}${propositions[0].required_object.createdAt}`}
+        key={`${propositionsObject[0].required_object.author_permlink}${propositionsObject[0].required_object.createdAt}`}
         userName={userName}
       />
     );
@@ -287,11 +261,11 @@ const CatalogWrap = (props) => {
 
     let item;
     if (isList) {
-      item = <CategoryItemView wObject={listItem} location={location}/>;
+      item = <CategoryItemView wObject={listItem} location={location} />;
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} passedParent={props.wobject}/>;
+      item = <ObjectCardView wObject={listItem} passedParent={props.wobject} />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
@@ -310,60 +284,58 @@ const CatalogWrap = (props) => {
         );
       }
 
-      const campaignObjects = map(propositions, item => map(item.objects, obj => get(obj, ['object', 'author_permlink'])));
+      const campaignObjects = map(propositions, item =>
+        map(item.objects, obj => get(obj, ['object', 'author_permlink'])),
+      );
       listRow = map(listItems, listItem => getListRow(listItem, campaignObjects));
     }
     return listRow;
   };
 
-  const {isEditMode, wobject, intl} = props;
+  const { isEditMode, wobject, intl } = props;
 
-  const itemsIdsToOmit = uniq([
-    ...listItems.map(item => item.id)
-  ]);
+  // const itemsIdsToOmit = uniq([
+  //   ...listItems.map(item => item.id)
+  // ]);
 
-  const handleSortChange = sort => {
+  const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
-    setSorting(sort);
+    setSorting(sortType);
     setListItems(sortListItemsBy(listItems, sort, sortOrder));
   };
 
   return (
     <div>
-      {
-        !hasType(wobject, OBJ_TYPE.PAGE) && (
-          <React.Fragment>
-            {
-              !isEmpty(propositions) && renderCampaign(propositions)
-            }
-            {isEditMode && (
-              <div className="CatalogWrap__add-item">
-                <AddItemModal
-                  wobject={wobject}
-                  onAddItem={handleAddItem}
-                  itemsIdsToOmit={itemsIdsToOmit}
+      {!hasType(wobject, OBJ_TYPE.PAGE) && (
+        <React.Fragment>
+          {!isEmpty(propositions) && renderCampaign(propositions)}
+          {isEditMode && (
+            <div className="CatalogWrap__add-item">
+              <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
+            </div>
+          )}
+          {loading || loadingPropositions || isEmpty(wobject) ? (
+            <Loading />
+          ) : (
+            <React.Fragment>
+              <div className="CatalogWrap__breadcrumb">
+                <CatalogBreadcrumb intl={intl} wobject={wobject} />
+              </div>
+              <div className="CatalogWrap__sort">
+                <CatalogSorting
+                  sort={sort}
+                  currWobject={wobject}
+                  handleSortChange={handleSortChange}
                 />
               </div>
-            )}
-            {
-              loadingPropositions || isEmpty(wobject) ? (
-                <Loading/>
-              ) : (
-                <React.Fragment>
-                  <div className="CatalogWrap__breadcrumb">
-                    <CatalogBreadcrumb breadcrumb={breadcrumb} location={location} intl={intl}/>
-                  </div>
-                  <div className="CatalogWrap__sort">
-                    <CatalogSorting sort={sort} currWobject={wobject} handleSortChange={handleSortChange}/>
-                  </div>
-                  <div className="CatalogWrap">
-                    <div>{getMenuList()}</div>
-                  </div>
-                </React.Fragment>
-              )}
-          </React.Fragment>
-        )}
-      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)}/>
+              <div className="CatalogWrap">
+                <div>{getMenuList()}</div>
+              </div>
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      )}
+      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)} />
     </div>
   );
 };
@@ -372,14 +344,9 @@ CatalogWrap.propTypes = {
   intl: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
-  locale: PropTypes.string,
-  addItemToWobjStore: PropTypes.func.isRequired,
   wobject: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  userName: PropTypes.string,
-  assignProposition: PropTypes.func,
-  declineProposition: PropTypes.func,
 };
 
 CatalogWrap.defaultProps = {
@@ -388,7 +355,4 @@ CatalogWrap.defaultProps = {
   userName: '',
 };
 
-export default compose(
-  injectIntl,
-  withRouter
-)(CatalogWrap);
+export default compose(injectIntl, withRouter)(CatalogWrap);

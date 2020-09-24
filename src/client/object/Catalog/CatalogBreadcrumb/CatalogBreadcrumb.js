@@ -1,42 +1,110 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Breadcrumb } from 'antd';
-import { Link } from 'react-router-dom';
-import { map } from 'lodash';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { isEmpty, map } from 'lodash';
+import { getObjectName, getObjectTitle } from '../../../helpers/wObjectHelper';
+import { setCatalogBreadCrumbs } from '../../wobjActions';
+import { getBreadCrumbs, getWobjectBreadCrumbs } from '../../../reducers';
+import './CatalogBreadcrumb.less';
 
-const CatalogBreadcrumb = ({ location, breadcrumb, intl }) => (
-  <Breadcrumb separator={'>'}>
-    {
-      map(breadcrumb, (crumb, index, crumbsArr) => (
-      <Breadcrumb.Item key={`crumb-${crumb.id}`}>
-        {index && index === crumbsArr.length - 1 ? (
-          <React.Fragment>
-            <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
-            <Link
-              className="CatalogWrap__breadcrumb__obj-page-link"
-              to={`/object/${crumb.id}/list`}
-            >
-              <i className="iconfont icon-send PostModal__icon" />
-            </Link>
-          </React.Fragment>
-        ) : (
-          <Link
-            className="CatalogWrap__breadcrumb__link"
-            to={{ pathname: location.pathname, hash: crumb.path }}
-            title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${crumb.name}`}
-          >
-            {crumb.name}
-          </Link>
-        )}
-      </Breadcrumb.Item>
-    ))}
-  </Breadcrumb>
-);
+const CatalogBreadcrumb = props => {
+  const dispatch = useDispatch();
+  const wobjectBreadCrumbs = useSelector(getWobjectBreadCrumbs);
+  const breadcrumb = useSelector(getBreadCrumbs);
+  let titleLists = '';
+
+  const handleChangeBreadCrumbs = wObject => {
+    if (isEmpty(wObject)) return;
+    let currentBreadCrumbs = [...breadcrumb];
+    const findWobj = crumb => crumb.id === wObject.author_permlink;
+    const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
+    if (findBreadCrumbs) {
+      const findIndex = currentBreadCrumbs.findIndex(findWobj);
+      currentBreadCrumbs.splice(findIndex + 1);
+    } else {
+      currentBreadCrumbs = [
+        ...currentBreadCrumbs,
+        {
+          id: wObject.author_permlink,
+          name: getObjectName(wObject),
+          title: getObjectTitle(wObject),
+          path: wObject.author_permlink,
+        },
+      ];
+    }
+    dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
+  };
+
+  useEffect(() => {
+    const {
+      wobject,
+      location: { hash },
+    } = props;
+    if (hash) {
+      // get our wobject with store for breadCrumbs
+      handleChangeBreadCrumbs(wobjectBreadCrumbs);
+    } else {
+      handleChangeBreadCrumbs(wobject);
+    }
+  }, []);
+
+  return (
+    <div className="CustomBreadCrumbs">
+      <Breadcrumb separator={'>'}>
+        {map(breadcrumb, (crumb, index, crumbsArr) => {
+          titleLists = crumb.title;
+          return (
+            <Breadcrumb.Item key={`crumb-${crumb.id}`}>
+              {index && index === crumbsArr.length - 1 ? (
+                <React.Fragment>
+                  <span className="CustomBreadCrumbs__link">{crumb.name}</span>
+                  <Link
+                    className="CustomBreadCrumbs__obj-page-link"
+                    to={`/object/${crumb.id}/list`}
+                    target={'_blank'}
+                  >
+                    <i className="iconfont icon-send PostModal__icon" />
+                  </Link>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Link
+                    className="CustomBreadCrumbs__link"
+                    to={{ pathname: props.location.pathname, hash: crumb.path }}
+                    title={`${props.intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                      crumb.name
+                    }`}
+                  >
+                    {crumb.name}
+                  </Link>
+
+                  {crumbsArr.length === 1 && (
+                    <Link
+                      to={`/object/${crumb.id}/list`}
+                      className="CustomBreadCrumbs__obj-page-link"
+                      target={'_blank'}
+                    >
+                      <i className="iconfont icon-send PostModal__icon" />
+                    </Link>
+                  )}
+                </React.Fragment>
+              )}
+            </Breadcrumb.Item>
+          );
+        })}
+      </Breadcrumb>
+      <div className="CustomBreadCrumbs__title">{titleLists}</div>
+    </div>
+  );
+};
 
 CatalogBreadcrumb.propTypes = {
   location: PropTypes.string,
   intl: PropTypes.shape().isRequired,
-  breadcrumb: PropTypes.arrayOf(PropTypes.shape({})),
+  wobject: PropTypes.shape(),
 };
 
 CatalogBreadcrumb.defaultProps = {
@@ -45,4 +113,4 @@ CatalogBreadcrumb.defaultProps = {
   breadcrumb: [],
 };
 
-export default CatalogBreadcrumb;
+export default compose(withRouter)(CatalogBreadcrumb);

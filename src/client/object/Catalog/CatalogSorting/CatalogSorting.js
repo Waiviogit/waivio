@@ -1,23 +1,21 @@
 import React from 'react';
-import {FormattedMessage} from "react-intl";
-import PropTypes from "prop-types";
-import {objectFields} from "../../../../common/constants/listOfFields";
-import SortSelector from "../../../components/SortSelector/SortSelector";
-import CatalogBreadcrumb from "../CatalogBreadcrumb/CatalogBreadcrumb";
+import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
+import { objectFields } from '../../../../common/constants/listOfFields';
+import SortSelector from '../../../components/SortSelector/SortSelector';
+import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
-const CatalogSorting = ({currWobject, sort, handleSortChange}) => (
-  currWobject &&
-  currWobject[objectFields.sorting] &&
-  currWobject[objectFields.sorting].length ? (
+const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
+  currWobject && currWobject[objectFields.sorting] && currWobject[objectFields.sorting].length ? (
     <SortSelector sort={sort} onChange={() => handleSortChange}>
       <SortSelector.Item key="recency">
-        <FormattedMessage id="recency" defaultMessage="Recency"/>
+        <FormattedMessage id="recency" defaultMessage="Recency" />
       </SortSelector.Item>
       <SortSelector.Item key="custom">
-        <FormattedMessage id="custom" defaultMessage="Custom"/>
+        <FormattedMessage id="custom" defaultMessage="Custom" />
       </SortSelector.Item>
       <SortSelector.Item key="rank">
-        <FormattedMessage id="rank" defaultMessage="Rank"/>
+        <FormattedMessage id="rank" defaultMessage="Rank" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-asc">
         <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
@@ -33,10 +31,10 @@ const CatalogSorting = ({currWobject, sort, handleSortChange}) => (
   ) : (
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
-        <FormattedMessage id="recency" defaultMessage="Recency"/>
+        <FormattedMessage id="recency" defaultMessage="Recency" />
       </SortSelector.Item>
       <SortSelector.Item key="rank">
-        <FormattedMessage id="rank" defaultMessage="Rank"/>
+        <FormattedMessage id="rank" defaultMessage="Rank" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-asc">
         <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
@@ -49,19 +47,17 @@ const CatalogSorting = ({currWobject, sort, handleSortChange}) => (
         </FormattedMessage>
       </SortSelector.Item>
     </SortSelector>
-  )
-);
+  );
 
 CatalogSorting.propTypes = {
-  sort: PropTypes.array.isRequired,
-  currWobject: PropTypes.currWobject,
-  handleSortChange: PropTypes.func.isRequired
+  sort: PropTypes.isRequired,
+  currWobject: PropTypes.isRequired,
+  handleSortChange: PropTypes.func.isRequired,
 };
 
 CatalogBreadcrumb.defaultProps = {
   sort: [],
   currWobject: {},
 };
-
 
 export default CatalogSorting;
