@@ -204,8 +204,18 @@ class EditPost extends Component {
     });
   };
 
+  setCurrentDraftContent = debounce(nextState => {
+    console.log('nextState: ', nextState);
+    this.setState({
+      draftContent: {
+        body: nextState.content,
+      },
+    });
+  }, 500);
+
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
+
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
@@ -223,6 +233,7 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
+      this.setCurrentDraftContent(nextState);
     }
   }
 
