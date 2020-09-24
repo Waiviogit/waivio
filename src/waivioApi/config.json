@@ -25,6 +25,7 @@
   "campaignApiPrefix": "/campaigns-api",
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",
+  "telegramApiPrefix": "/telegram-api",
   "objectsBot": {
     "appendObject": "/append-object",
     "createObject": "/create-object"
@@ -97,5 +98,7 @@
   "setPendingStatus": "/set-pending-transfer",
   "reservationCurrency": "/reservationCurrency",
   "getField": "/getField",
-  "showMoreTags": "/showMoreTags"
+  "showMoreTags": "/showMoreTags",
+  "setSentryNotify": "/sentry",
+  "sentryAppName": "waivio"
 }
