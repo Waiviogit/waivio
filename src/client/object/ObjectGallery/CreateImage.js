@@ -18,7 +18,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
-import AppendFormFooter from '../AppendFormFooter';
+import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
 import { getVoteValue } from '../../helpers/user';
