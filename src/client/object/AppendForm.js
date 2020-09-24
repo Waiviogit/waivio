@@ -1015,11 +1015,10 @@ export default class AppendForm extends Component {
   handleSelectObject = (obj = {}) => {
     const { wObject, intl } = this.props;
     const currentField = this.props.form.getFieldValue('currentField');
-
     if (obj.author_permlink === wObject.author_permlink && currentField === 'parent') {
       message.error(
         intl.formatMessage({
-          id: 'dont_use_current_object_for_parent',
+          id: 'currentFielddont_use_current_object_for_parent',
           defaultMessage: 'You cannot use the current object as a parent',
         }),
       );
@@ -1028,15 +1027,6 @@ export default class AppendForm extends Component {
         [currentField]: obj.author_permlink,
       });
       this.setState({ selectedObject: obj });
-    }
-  };
-
-  handleSelectObjectTag = obj => {
-    if (obj && obj.id) {
-      this.props.form.setFieldsValue({
-        categoryItem: obj,
-      });
-      this.setState({ categoryItem: obj });
     }
   };
 
@@ -1079,7 +1069,6 @@ export default class AppendForm extends Component {
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
-
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
         {intl.formatMessage({
@@ -1115,11 +1104,11 @@ export default class AppendForm extends Component {
                 <SearchObjectsAutocomplete
                   className="menu-item-search"
                   itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                  handleSelect={this.handleSelectObjectTag}
+                  handleSelect={this.handleSelectObject}
                   objectType={objectType}
                 />,
               )}
-              {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+              {selectedObject && <ObjectCardView wObject={selectedObject} />}
             </Form.Item>
             <CreateObject
               isSingleType
@@ -1909,7 +1898,6 @@ export default class AppendForm extends Component {
     const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
-
     const isCustomSortingList =
       hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;
