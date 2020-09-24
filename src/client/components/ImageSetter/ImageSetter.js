@@ -61,25 +61,27 @@ const ImageSetter = ({
     if (isValidLink && urlValidation) {
       if (!isMultiple) {
         setCurrentImages([image]);
-      } else setCurrentImages([...currentImages, image]);
+      } else {
+        setCurrentImages([...currentImages, image]);
+
+        if (selection && image) {
+          const selectionBlock = getEditorState().getSelection();
+          const key = selectionBlock.getAnchorKey();
+
+          setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+          setEditorState(
+            addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+              src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
+              alt: image.name,
+            }),
+          );
+        }
+      }
     } else {
       message.error(
         intl.formatMessage({
           id: 'imageSetter_invalid_link',
           defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-
-    if (selection && image) {
-      const selectionBlock = getEditorState().getSelection();
-      const key = selectionBlock.getAnchorKey();
-
-      setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-      setEditorState(
-        addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-          src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-          alt: image.name,
         }),
       );
     }
