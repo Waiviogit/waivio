@@ -51,11 +51,13 @@ export default class ImageSideButton extends React.Component {
     const contentState = getEditorState().getCurrentContent();
     const allBlocks = contentState.getBlockMap();
     console.log('allBlocks: ', allBlocks);
+
     allBlocks.forEach((block, index) => {
       console.log('block: ', block);
       // eslint-disable-next-line no-underscore-dangle
       const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
-      currentImages.forEach(image => {
+      currentImages.forEach((image, imgIndex) => {
+        console.log('currentImages: ', currentImages);
         if (!isNil(currentImageSrc) && isEqual(image.src, currentImageSrc)) {
           const blockBefore = contentState.getBlockBefore(index).getKey();
           const removeImage = contentState.getBlockMap().delete(index);
@@ -64,7 +66,9 @@ export default class ImageSideButton extends React.Component {
           const newContent = contentState.merge({
             blockMap: filtered,
           });
+          console.log('removeImage: ', removeImage);
           setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
+          currentImages.splice(imgIndex, 1);
         }
       });
     });
