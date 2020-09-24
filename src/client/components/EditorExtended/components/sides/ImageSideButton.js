@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { EditorState } from 'draft-js';
-import { get, isEqual, isNil } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Icon, Modal } from 'antd';
 import { addNewBlockAt } from '../../model';
@@ -26,7 +24,8 @@ export default class ImageSideButton extends React.Component {
       isModal: false,
       isLoadingImage: false,
       isLoading: false,
-      currentImages: [],
+      currentImage: [],
+      isOkayBtn: false,
     };
     this.onChange = editorState => {
       this.props.setEditorState(editorState);
@@ -38,49 +37,16 @@ export default class ImageSideButton extends React.Component {
     this.setState({ isModal: true });
   }
 
-  handleOnOk = () => this.props.close();
+  handleOnOk = () => this.setState({ isOkayBtn: true }, () => this.props.close());
 
-  handleOpenModal = () => {
-    this.setState({ isModal: !this.state.isModal });
-    return this.handleCancelModal();
-  };
-
-  handleCancelModal = () => {
-    const { getEditorState, setEditorState } = this.props;
-    const { currentImages } = this.state;
-    const contentState = getEditorState().getCurrentContent();
-    const allBlocks = contentState.getBlockMap();
-    console.log('allBlocks: ', allBlocks);
-
-    allBlocks.forEach((block, index) => {
-      console.log('block: ', block);
-      // eslint-disable-next-line no-underscore-dangle
-      const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
-      currentImages.forEach((image, imgIndex) => {
-        console.log('currentImages: ', currentImages);
-        if (!isNil(currentImageSrc) && isEqual(image.src, currentImageSrc)) {
-          const blockBefore = contentState.getBlockBefore(index).getKey();
-          const removeImage = contentState.getBlockMap().delete(index);
-          const contentAfterRemove = removeImage.delete(blockBefore);
-          const filtered = contentAfterRemove.filter(element => !isNil(element));
-          const newContent = contentState.merge({
-            blockMap: filtered,
-          });
-          console.log('removeImage: ', removeImage);
-          setEditorState(EditorState.push(getEditorState(), newContent, 'split-block'));
-          currentImages.splice(imgIndex, 1);
-        }
-      });
-    });
-  };
+  handleOpenModal = () => this.setState({ isModal: !this.state.isModal, isOkayBtn: false });
 
   onLoadingImage = value => this.setState({ isLoading: value });
 
-  getImages = image => this.setState({ currentImages: image });
+  getImages = image => this.setState({ currentImage: image });
 
   render() {
-    console.log('state: ', this.state.currentImages);
-    const { isLoading, isModal } = this.state;
+    const { isLoading, isModal, isOkayBtn } = this.state;
     return (
       <React.Fragment>
         <button
@@ -120,6 +86,8 @@ export default class ImageSideButton extends React.Component {
             setEditorState={this.onChange}
             getEditorState={this.props.getEditorState}
             selection={this.props.getEditorState().getSelection()}
+            isOkayBtn={isOkayBtn}
+            isModal={isModal}
           />
         </Modal>
       </React.Fragment>
