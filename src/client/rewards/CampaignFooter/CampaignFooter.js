@@ -398,10 +398,12 @@ class CampaignFooter extends React.Component {
           )
         : commentsArr;
 
+    const isShow = (!commentsVisible && isNotifyComment) || commentsVisible;
+
     return map(currentFilteredComments, currentComment => (
       <div key={currentComment.post_id}>
         <CommentsMessages
-          show={(!commentsVisible && isNotifyComment) || commentsVisible}
+          show={isShow}
           user={user}
           post={postAll}
           getMessageHistory={getMessageHistory}
