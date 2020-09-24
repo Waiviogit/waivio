@@ -390,15 +390,13 @@ class CampaignFooter extends React.Component {
     const { match, user, getMessageHistory, isGuest, proposition } = this.props;
     const { commentsVisible } = this.state;
 
-    // eslint-disable-next-line consistent-return
-    const currentFilteredComments = filter(commentsArr, comment => {
-      if (hasComments) {
-        if (!commentsVisible && isNotifyComment) {
-          return isEqual(match.params.permlink, comment.permlink) && comment;
-        }
-        return commentsArr;
-      }
-    });
+    const currentFilteredComments =
+      hasComments && !commentsVisible && isNotifyComment
+        ? filter(
+            commentsArr,
+            comment => isEqual(match.params.permlink, comment.permlink) && comment,
+          )
+        : commentsArr;
 
     return map(currentFilteredComments, currentComment => (
       <div key={currentComment.post_id}>
