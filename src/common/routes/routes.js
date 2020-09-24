@@ -15,7 +15,7 @@ const routes = {
     },
     {
       path: [
-        '/rewards/(create|manage|match-bot|edit|history|guideHistory|messages|payables|reports|receivables)/:campaignId?/:permlink?',
+        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?'`,
         '/rewards/blacklist/:listType?',
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         '/rewards/:filterKey/:campaignParent?',

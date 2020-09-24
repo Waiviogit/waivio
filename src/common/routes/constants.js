@@ -32,4 +32,18 @@ export default {
       '|',
     ),
   },
+  REWARDS: {
+    tabs: [
+      'create',
+      'manage',
+      'match-bot',
+      'edit',
+      'history',
+      'guideHistory',
+      'messages',
+      'payables',
+      'reports',
+      'receivables',
+    ].join('|'),
+  },
 };

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import { get } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
-import AppendModal from '../object/AppendModal';
+import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../helpers/image';
