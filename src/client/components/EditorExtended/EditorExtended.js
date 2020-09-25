@@ -168,7 +168,13 @@ class Editor extends React.Component {
         entityMap,
       };
 
-      this.handleContentChange(createEditorState(rawContentUpdated));
+      setTimeout(
+        () =>
+          this.handleContentChange(
+            EditorState.moveFocusToEnd(createEditorState(rawContentUpdated)),
+          ),
+        0,
+      );
     }
     // eslint-disable-next-line no-unused-expressions
     !isEmpty(rawContent.blocks) &&
