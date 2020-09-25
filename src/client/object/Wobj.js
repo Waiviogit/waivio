@@ -30,6 +30,7 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
 import NotFound from '../statics/NotFound';
 import { getObjectName } from '../helpers/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
+import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from './wobjActions';
 
 @withRouter
 @connect(
@@ -46,6 +47,8 @@ import DEFAULTS from '../object/const/defaultValues';
   }),
   {
     clearObjectFromStore,
+    setCatalogBreadCrumbs,
+    setWobjectForBreadCrumbs,
     getObject,
     resetGallery,
     getAlbums,
@@ -64,6 +67,8 @@ export default class Wobj extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
+    setWobjectForBreadCrumbs: PropTypes.func,
+    setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
     getAlbums: PropTypes.func,
   };
@@ -77,6 +82,8 @@ export default class Wobj extends React.Component {
     isFetching: false,
     wobject: {},
     clearObjectFromStore: () => {},
+    setCatalogBreadCrumbs: () => {},
+    setWobjectForBreadCrumbs: () => {},
   };
 
   static fetchData({ store, match }) {
@@ -115,12 +122,16 @@ export default class Wobj extends React.Component {
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
       this.props.resetGallery();
       this.props.clearObjectFromStore();
+      this.props.setCatalogBreadCrumbs([]);
+      this.props.setWobjectForBreadCrumbs({});
       this.props.getObject(match.params.name, authenticatedUserName);
     }
   }
 
   componentWillUnmount() {
     this.props.clearObjectFromStore();
+    this.props.setCatalogBreadCrumbs([]);
+    this.props.setWobjectForBreadCrumbs({});
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
