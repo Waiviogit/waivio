@@ -1509,4 +1509,13 @@ export const getTransferHistoryTableView = (
       .catch(error => reject(error));
   });
 
+export const sendSentryNotification = async () => {
+  try {
+    if (!['staging', 'production'].includes(process.env.NODE_ENV)) return;
+    await fetch(`${config.telegramApiPrefix}${config.setSentryNotify}?app=${config.sentryAppName}`);
+  } catch (error) {
+    return { error };
+  }
+};
+
 export default null;
