@@ -1,21 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, memoize } from 'lodash';
+import { get, size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
-import './CheckReviewModal.less';
+import { photosInPostRegex } from '../../helpers/regexHelpers';
+import { getReviewRequirements } from '../../rewards/rewardsHelper';
 
-const getReviewRequirements = memoize(campaign => ({
-  postRequirements: {
-    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
-    secondaryObject: get(campaign, ['users', '0', 'object_permlink'], ''),
-    primaryObject: get(campaign, ['requiredObject', 'author_permlink'], ''),
-  },
-  authorRequirements: {
-    minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key
-    minFollowers: get(campaign, ['userRequirements', 'minFollowers'], 0),
-    minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
-  },
-}));
+import './CheckReviewModal.less';
 
 const getIcon = isValidOption =>
   isValidOption ? (
@@ -28,36 +18,22 @@ const CheckReviewModal = ({
   intl,
   postBody,
   isCheckReviewModalOpen,
-  reviewData: { campaign, reviewer },
+  reviewData,
   linkedObjects,
   onCancel,
   onEdit,
   onSubmit,
 }) => {
-  const { postRequirements } = getReviewRequirements(campaign, reviewer.name);
-
-  const secondaryObject = linkedObjects.find(
-    obj => obj.id === get(postRequirements, ['secondaryObject']),
-  );
-  const primaryObject = linkedObjects
-    ? linkedObjects.find(obj => obj.id === postRequirements.primaryObject)
-    : null;
-  const hasMinPhotos =
-    (postBody.match(/(?:!\[(.*?)\]\((.*?)\))/gi) || []).length >= postRequirements.minPhotos;
-  const secondaryObjectAuthorPermlink = secondaryObject
-    ? secondaryObject.author_permlink
-    : get(campaign, ['objects', '0', 'author_permlink']);
-  const secondaryObjectName = secondaryObject
-    ? secondaryObject.name
-    : get(campaign, ['objects', '0', 'name']);
-  const primaryObjectAuthorPermlink = primaryObject
-    ? primaryObject.author_permlink
-    : get(campaign, ['requiredObject', 'author_permlink']);
-  const primaryObjectName = primaryObject
-    ? primaryObject.name
-    : get(campaign, ['requiredObject', 'name']);
+  const { postRequirements } = getReviewRequirements(reviewData);
+  const primaryObject = postRequirements.requiredObject;
+  const secondaryObject = postRequirements.secondaryObject;
+  const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
+  const hasObject = object =>
+    linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
+  console.log(postRequirements);
+  console.log(reviewData);
   const modalBody =
-    hasMinPhotos && secondaryObject && primaryObject ? (
+    hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>
         <div className="check-review-modal__paragraph">
           <span>
@@ -68,8 +44,8 @@ const CheckReviewModal = ({
           </span>
           &nbsp;
           <a
-            href={`/rewards/reserved/${campaign.requiredObject}`}
-            title={campaign.name}
+            href={`/rewards/reserved/${primaryObject.author_permlink}`}
+            title={reviewData.name}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -105,15 +81,15 @@ const CheckReviewModal = ({
             })}
           </span>
           &nbsp;
-          {campaign.alias}
+          {reviewData.alias}
           &nbsp; (
           <a
-            href={`/@${campaign.guideName}`}
-            title={campaign.guideName}
+            href={`/@${reviewData.guideName}`}
+            title={reviewData.guideName}
             target="_blank"
             rel="noopener noreferrer"
           >
-            @{campaign.guideName}
+            @{reviewData.guideName}
           </a>
           ).
         </div>
@@ -151,25 +127,25 @@ const CheckReviewModal = ({
               },
               {
                 minPhotos: postRequirements.minPhotos,
-                secondaryObjectName: secondaryObject ? secondaryObject.name : '',
+                secondaryObjectName: secondaryObject.name,
               },
             )}
           </div>
           <div className="check-review-modal__list-item">
-            {getIcon(Boolean(secondaryObject && secondaryObject.id))}
+            {getIcon(hasObject(primaryObject))}
             {intl.formatMessage({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${secondaryObjectAuthorPermlink}`}>{secondaryObjectName}</a>}
+            {<a href={`/object/${secondaryObject.author_permlink}`}>{secondaryObject.name}</a>}
           </div>
           <div className="check-review-modal__list-item">
-            {getIcon(Boolean(primaryObject && primaryObject.id))}
+            {getIcon(hasObject(secondaryObject))}
             {intl.formatMessage({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${primaryObjectAuthorPermlink}`}>{primaryObjectName}</a>}
+            {<a href={`/object/${primaryObject.author_permlink}`}>{primaryObject.name}</a>}
           </div>
         </div>
         <div className="check-review-modal__buttons">
@@ -203,8 +179,9 @@ CheckReviewModal.propTypes = {
   postBody: PropTypes.string.isRequired,
   isCheckReviewModalOpen: PropTypes.bool,
   reviewData: PropTypes.shape({
-    reviewer: PropTypes.shape(),
-    campaign: PropTypes.shape(),
+    name: PropTypes.string,
+    alias: PropTypes.string,
+    guideName: PropTypes.string,
   }),
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,
