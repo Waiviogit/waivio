@@ -26,6 +26,7 @@ import Campaign from '../../rewards/Campaign/Campaign';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 import { setWobjectForBreadCrumbs } from '../wobjActions';
+
 import './CatalogWrap.less';
 
 const CatalogWrap = props => {
@@ -305,10 +306,6 @@ const CatalogWrap = props => {
   };
 
   const { isEditMode, wobject, intl } = props;
-
-  // const itemsIdsToOmit = uniq([
-  //   ...listItems.map(item => item.id)
-  // ]);
 
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
