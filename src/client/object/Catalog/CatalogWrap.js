@@ -7,23 +7,19 @@ import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
-
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
 import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
-
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import * as apiConfig from '../../../waivioApi/config.json';
-
 import { assignProposition, declineProposition } from '../../user/userActions';
-
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Proposition from '../../rewards/Proposition/Proposition';
 import Campaign from '../../rewards/Campaign/Campaign';
@@ -39,12 +35,11 @@ const CatalogWrap = props => {
   const userName = useSelector(getAuthenticatedUserName);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
-  const [loadingPropositions, setLoadingPropositions] = useState(false);
+  const [loadingPropositions, setLoadingPropositions] = useState(true);
   const [propositions, setPropositions] = useState([]);
   const [sort, setSorting] = useState('recency');
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const getPropositions = ({ username, match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
@@ -67,20 +62,22 @@ const CatalogWrap = props => {
       match,
       location: { hash },
     } = props;
-    if (hash) {
-      const pathUrl = getPermLink(hash);
-      setLoading(true);
-      getObject(pathUrl, userName, locale).then(wObject => {
-        const requiredObject = wObject.author_permlink;
-        if (requiredObject) {
-          getPropositions({ userName, match, requiredObject, sort });
-        }
-        setListItems(wObject.listItems);
-        dispatch(setWobjectForBreadCrumbs(wObject));
-        setLoading(false);
-      });
-    } else {
-      setListItems(wobject.listItems);
+
+    if (!isEmpty(wobject)) {
+      if (hash) {
+        const pathUrl = getPermLink(hash);
+        getObject(pathUrl, userName, locale).then(wObject => {
+          const requiredObject = wObject.author_permlink;
+          if (requiredObject) {
+            getPropositions({ userName, match, requiredObject, sort });
+          }
+          setListItems(wObject.listItems);
+          dispatch(setWobjectForBreadCrumbs(wObject));
+        });
+      } else {
+        setListItems(wobject.listItems);
+        getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
+      }
     }
   }, [props.location.hash, props.wobject]);
 
@@ -132,7 +129,7 @@ const CatalogWrap = props => {
 
     setLoadingAssignDiscard(true);
 
-    return dispatch(
+    dispatch(
       assignProposition({
         companyAuthor,
         companyPermlink,
@@ -178,7 +175,7 @@ const CatalogWrap = props => {
   }) => {
     setLoadingAssignDiscard(true);
 
-    return dispatch(
+    dispatch(
       declineProposition({
         companyAuthor,
         companyPermlink,
@@ -314,7 +311,7 @@ const CatalogWrap = props => {
               <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
             </div>
           )}
-          {loading || loadingPropositions || isEmpty(wobject) ? (
+          {loadingPropositions || isEmpty(wobject) ? (
             <Loading />
           ) : (
             <React.Fragment>
