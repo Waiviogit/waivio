@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, size, get } from 'lodash';
 import { getObjectName, getObjectTitle } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
 import { getBreadCrumbs, getWobjectBreadCrumbs } from '../../../reducers';
@@ -15,8 +15,8 @@ const CatalogBreadcrumb = props => {
   const wobjectBreadCrumbs = useSelector(getWobjectBreadCrumbs);
   const breadcrumb = useSelector(getBreadCrumbs);
 
-  const BreadCrumbSize = breadcrumb.length;
-  const currentTitle = breadcrumb[BreadCrumbSize - 1].title;
+  const BreadCrumbSize = size(breadcrumb);
+  const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
 
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
