@@ -163,7 +163,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       const stylesStartAtChar = sortedInlineStyleRanges
         .filter(range => range.offset === index)
         .filter(range => markdownDict[range.style]); // disregard styles not defined in the md dict
-      // debugger
+
       // add the symbol to the md string and push the style in the applied styles stack
       stylesStartAtChar.forEach(currentStyle => {
         const symbolLength = markdownDict[currentStyle.style].length;
