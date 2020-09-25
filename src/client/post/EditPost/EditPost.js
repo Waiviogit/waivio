@@ -159,14 +159,17 @@ class EditPost extends Component {
             user => user.name === userName && user.status === 'assigned',
           );
           const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink);
+            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
+          );
 
           setReviewPropositionInState({
             ...campaignData,
             objects: [{ object: secondaryObject }],
             required_object: campaignData.requiredObject,
           });
-        }).catch(error => {
+        })
+        .then(() => setTimeout(() => this.getReviewTitle(), 400))
+        .catch(error => {
           message.error(
             this.props.intl.formatMessage(
               {

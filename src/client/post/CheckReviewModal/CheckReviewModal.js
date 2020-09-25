@@ -7,7 +7,9 @@ import { getReviewRequirements } from '../../rewards/rewardsHelper';
 
 import './CheckReviewModal.less';
 
-const getIcon = isValidOption => (<Icon type="check-square" style={{ color: isValidOption ? '#30b580' : '#d9534f' }} />);
+const getIcon = isValidOption => (
+  <Icon type="check-square" style={{ color: isValidOption ? '#30b580' : '#d9534f' }} />
+);
 
 const CheckReviewModal = ({
   intl,
@@ -23,8 +25,9 @@ const CheckReviewModal = ({
   const primaryObject = postRequirements.requiredObject;
   const secondaryObject = postRequirements.secondaryObject;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
-  const hasObject = object => linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
-
+  const hasObject = object =>
+    linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
+  console.log(reviewData);
   const modalBody =
     hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>
@@ -185,7 +188,7 @@ CheckReviewModal.propTypes = {
 CheckReviewModal.defaultProps = {
   isCheckReviewModalOpen: false,
   isReviewValid: false,
-  reviewData: null,
+  reviewData: {},
   linkedObjects: [],
 };
 

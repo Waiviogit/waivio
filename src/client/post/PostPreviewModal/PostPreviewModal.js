@@ -235,7 +235,7 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {reviewData && (
+        {reviewData && this.state.isCheckReviewModalOpen && (
           <CheckReviewModal
             intl={intl}
             isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}
