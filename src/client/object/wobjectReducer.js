@@ -301,5 +301,5 @@ export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;
 export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
-export const getBreadCrumbs = state => state.breadcrumb;
+export const getBreadCrumbs = state => state.breadcrumb || [];
 export const getWobjectBreadCrumbs = state => state.wobjectBreadCrumbs;
