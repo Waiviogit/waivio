@@ -203,8 +203,26 @@ class EditPost extends Component {
     });
   };
 
+  setCurrentDraftContent = debounce((nextState, rawContent) => {
+    const prevValue = get(this.state.currentRawContent, 'entityMap', []);
+    const nextValue = get(rawContent, 'entityMap', []);
+
+    const prevEntityMap = Object.values(prevValue);
+    const nextEntityMap = Object.values(nextValue);
+
+    if (!isEqual(prevEntityMap, nextEntityMap)) {
+      this.setState({
+        draftContent: {
+          body: nextState.content,
+        },
+        currentRawContent: rawContent,
+      });
+    }
+  }, 500);
+
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
+
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
@@ -222,6 +240,7 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
+      this.setCurrentDraftContent(nextState, rawContent);
     }
   }
 
