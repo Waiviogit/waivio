@@ -128,7 +128,7 @@ const CheckReviewModal = ({
             )}
           </div>
           <div className="check-review-modal__list-item">
-            {getIcon(hasObject(primaryObject))}
+            {getIcon(hasObject(secondaryObject))}
             {intl.formatMessage({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
@@ -136,7 +136,7 @@ const CheckReviewModal = ({
             {<a href={`/object/${secondaryObject.author_permlink}`}>{secondaryObject.name}</a>}
           </div>
           <div className="check-review-modal__list-item">
-            {getIcon(hasObject(secondaryObject))}
+            {getIcon(hasObject(primaryObject))}
             {intl.formatMessage({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',

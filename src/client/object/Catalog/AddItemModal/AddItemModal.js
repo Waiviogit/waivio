@@ -88,11 +88,11 @@ class AddItemModal extends Component {
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
         const langReadable = filter(LANGUAGES, { id: objectValues.locale })[0].name;
-        const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.id}`;
-        const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${selectedItem.name} (type: ${selectedItem.type})](${objectUrl})`;
+        const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.author_permlink}`;
+        const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${selectedItem.name} (type: ${selectedItem.object_type})](${objectUrl})`;
         const fieldContent = {
           name: 'listItem',
-          body: selectedItem.id,
+          body: selectedItem.author_permlink,
           locale: objectValues.locale,
         };
 
