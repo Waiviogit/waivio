@@ -14,7 +14,9 @@ const CatalogBreadcrumb = props => {
   const dispatch = useDispatch();
   const wobjectBreadCrumbs = useSelector(getWobjectBreadCrumbs);
   const breadcrumb = useSelector(getBreadCrumbs);
-  let titleLists = '';
+
+  const BreadCrumbSize = breadcrumb.length;
+  const currentTitle = breadcrumb[BreadCrumbSize - 1].title;
 
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
@@ -43,60 +45,53 @@ const CatalogBreadcrumb = props => {
       wobject,
       location: { hash },
     } = props;
-    if (hash) {
-      // get our wobject with store for breadCrumbs
-      handleChangeBreadCrumbs(wobjectBreadCrumbs);
-    } else {
-      handleChangeBreadCrumbs(wobject);
-    }
+    const usedObj = hash ? wobjectBreadCrumbs : wobject;
+    handleChangeBreadCrumbs(usedObj);
   }, []);
 
   return (
     <div className="CustomBreadCrumbs">
       <Breadcrumb separator={'>'}>
-        {map(breadcrumb, (crumb, index, crumbsArr) => {
-          titleLists = crumb.title;
-          return (
-            <Breadcrumb.Item key={`crumb-${crumb.id}`}>
-              {index && index === crumbsArr.length - 1 ? (
-                <React.Fragment>
-                  <span className="CustomBreadCrumbs__link">{crumb.name}</span>
+        {map(breadcrumb, (crumb, index) => (
+          <Breadcrumb.Item key={`crumb-${crumb.id}`}>
+            {index === BreadCrumbSize - 1 ? (
+              <React.Fragment>
+                <span className="CustomBreadCrumbs__link">{crumb.name}</span>
+                <Link
+                  className="CustomBreadCrumbs__obj-page-link"
+                  to={`/object/${crumb.id}/list`}
+                  target={'_blank'}
+                >
+                  <i className="iconfont icon-send PostModal__icon" />
+                </Link>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Link
+                  className="CustomBreadCrumbs__link"
+                  to={{ pathname: props.location.pathname, hash: crumb.path }}
+                  title={`${props.intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                    crumb.name
+                  }`}
+                >
+                  {crumb.name}
+                </Link>
+
+                {BreadCrumbSize === 1 && (
                   <Link
-                    className="CustomBreadCrumbs__obj-page-link"
                     to={`/object/${crumb.id}/list`}
+                    className="CustomBreadCrumbs__obj-page-link"
                     target={'_blank'}
                   >
                     <i className="iconfont icon-send PostModal__icon" />
                   </Link>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <Link
-                    className="CustomBreadCrumbs__link"
-                    to={{ pathname: props.location.pathname, hash: crumb.path }}
-                    title={`${props.intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                      crumb.name
-                    }`}
-                  >
-                    {crumb.name}
-                  </Link>
-
-                  {crumbsArr.length === 1 && (
-                    <Link
-                      to={`/object/${crumb.id}/list`}
-                      className="CustomBreadCrumbs__obj-page-link"
-                      target={'_blank'}
-                    >
-                      <i className="iconfont icon-send PostModal__icon" />
-                    </Link>
-                  )}
-                </React.Fragment>
-              )}
-            </Breadcrumb.Item>
-          );
-        })}
+                )}
+              </React.Fragment>
+            )}
+          </Breadcrumb.Item>
+        ))}
       </Breadcrumb>
-      <div className="CustomBreadCrumbs__title">{titleLists}</div>
+      <div className="CustomBreadCrumbs__title">{currentTitle}</div>
     </div>
   );
 };
