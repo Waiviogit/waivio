@@ -62,6 +62,38 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
 };
 
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
+  const state = getState();
+  let accessToken = Cookie.get('access_token');
+
+  if (state.auth.isGuestUser) {
+    accessToken = getGuestAccessToken();
+    clearGuestAuthData();
+    if (window) {
+      if (window.FB) {
+        window.FB.getLoginStatus(res => {
+          if (res.status === 'connected') window.FB.logout();
+        });
+      }
+
+      if (window.gapi && window.gapi.auth2) {
+        const authInstance = window.gapi.auth2.getAuthInstance();
+
+        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
+      }
+    }
+  } else {
+    steemConnectAPI.revokeToken();
+    Cookie.remove('access_token');
+  }
+  busyAPI.sendAsync('unsubscribe', [accessToken]);
+  history.push('/');
+
+  dispatch({
+    type: LOGOUT,
+  });
+};
+
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
@@ -69,10 +101,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 ) => {
   const state = getState();
   let promise = Promise.resolve(null);
-  let isGuest = null;
-
   const guestAccessToken = getGuestAccessToken();
-  isGuest = Boolean(guestAccessToken);
+  const isGuest = Boolean(guestAccessToken);
 
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
@@ -141,38 +171,6 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
       promise: steemConnectAPI.me(getAuthenticatedUserName(getState())),
     },
   });
-
-export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
-  const state = getState();
-  let accessToken = Cookie.get('access_token');
-
-  if (state.auth.isGuestUser) {
-    accessToken = getGuestAccessToken();
-    clearGuestAuthData();
-    if (window) {
-      if (window.FB) {
-        window.FB.getLoginStatus(res => {
-          if (res.status === 'connected') window.FB.logout();
-        });
-      }
-
-      if (window.gapi && window.gapi.auth2) {
-        const authInstance = window.gapi.auth2.getAuthInstance();
-
-        if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
-      }
-    }
-  } else {
-    steemConnectAPI.revokeToken();
-    Cookie.remove('access_token');
-  }
-  busyAPI.sendAsync('unsubscribe', [accessToken]);
-  history.push('/');
-
-  dispatch({
-    type: LOGOUT,
-  });
-};
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   let accessToken = Cookie.get('access_token');

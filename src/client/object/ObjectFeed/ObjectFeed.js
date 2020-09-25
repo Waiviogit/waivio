@@ -114,15 +114,13 @@ export default class ObjectFeed extends React.Component {
     const nextName = get(nextProps, ['match', 'params', 'name']);
     const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
 
-    if (match.params.name !== nextName) {
-      if (objectPosts) {
-        this.props.getObjectPosts({
-          object: nextName,
-          username: nextName,
-          readLanguages: nextProps.readLocales,
-          limit,
-        });
-      }
+    if (match.params.name !== nextName && isEmpty(objectPosts)) {
+      this.props.getObjectPosts({
+        object: nextName,
+        username: nextName,
+        readLanguages: nextProps.readLocales,
+        limit,
+      });
 
       window.scrollTo(0, 0);
     }

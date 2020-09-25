@@ -32,6 +32,8 @@ const ImageSetter = ({
   addNewBlockAt,
   Block,
   selection,
+  isOkayBtn,
+  isModal,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -42,6 +44,38 @@ const ImageSetter = ({
       onImageLoaded(currentImages);
     }
   }, [currentImages]);
+
+  const clearImageState = () => {
+    setCurrentImages([]);
+  };
+
+  const addImage = () => {
+    if (isModal && isOkayBtn) {
+      currentImages.forEach(newImage => {
+        if (selection && newImage) {
+          setTimeout(() => {
+            const selectionBlock = getEditorState().getSelection();
+            const key = selectionBlock.getAnchorKey();
+
+            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
+            setEditorState(
+              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
+                src: `${
+                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                }`,
+                alt: newImage.name,
+              }),
+            );
+          }, 1000);
+        }
+      });
+    }
+    return clearImageState();
+  };
+
+  useEffect(() => {
+    addImage();
+  }, [isOkayBtn, isModal]);
 
   // For image pasted for link
   const checkIsImage = (isValidLink, image) => {
@@ -61,25 +95,14 @@ const ImageSetter = ({
     if (isValidLink && urlValidation) {
       if (!isMultiple) {
         setCurrentImages([image]);
-      } else setCurrentImages([...currentImages, image]);
+      } else {
+        setCurrentImages([...currentImages, image]);
+      }
     } else {
       message.error(
         intl.formatMessage({
           id: 'imageSetter_invalid_link',
           defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-
-    if (selection && image) {
-      const selectionBlock = getEditorState().getSelection();
-      const key = selectionBlock.getAnchorKey();
-
-      setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-      setEditorState(
-        addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-          src: `${image.src.startsWith('http') ? image.src : `https://${image.src}`}`,
-          alt: image.name,
         }),
       );
     }
@@ -138,22 +161,6 @@ const ImageSetter = ({
           name: imageName,
           id: uuidv4(),
         };
-        if (selection && newImage) {
-          setTimeout(() => {
-            const selectionBlock = getEditorState().getSelection();
-            const key = selectionBlock.getAnchorKey();
-
-            setEditorState(addNewBlockAt(getEditorState(), key, Block.UNSTYLED, {}));
-            setEditorState(
-              addNewBlockAt(getEditorState(), key, Block.IMAGE, {
-                src: `${
-                  newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
-                }`,
-                alt: newImage.name,
-              }),
-            );
-          }, 1000);
-        }
 
         uploadedImages.push(newImage);
       };
@@ -191,7 +198,7 @@ const ImageSetter = ({
       // eslint-disable-next-line no-underscore-dangle
       const currentImageSrc = get(block.data._root, 'entries[0][1]', '');
       if (!isNil(currentImageSrc) && isEqual(imageDetail.src, currentImageSrc)) {
-        const blockBefore = contentState.getBlockAfter(index).getKey();
+        const blockBefore = contentState.getBlockBefore(index).getKey();
         const removeImage = contentState.getBlockMap().delete(index);
         const contentAfterRemove = removeImage.delete(blockBefore);
         const filtered = contentAfterRemove.filter(element => !isNil(element));
@@ -330,6 +337,8 @@ ImageSetter.propTypes = {
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
   Block: PropTypes.shape(),
+  isOkayBtn: PropTypes.bool,
+  isModal: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
@@ -342,6 +351,8 @@ ImageSetter.defaultProps = {
   addNewBlockAt: () => {},
   selection: undefined,
   Block: {},
+  isOkayBtn: false,
+  isModal: false,
 };
 
 export default withEditor(injectIntl(ImageSetter));

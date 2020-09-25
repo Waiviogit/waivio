@@ -10,7 +10,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_RESERVED } from '../common/constants/rewards';
+import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
@@ -148,13 +148,14 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
-export const getFeedContent = (sortBy, queryData, locale) =>
-  new Promise((resolve, reject) => {
+export const getFeedContent = (sortBy, queryData, locale, follower) => {
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
       headers: {
         ...headers,
         app: config.appName,
         locale,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify(queryData),
@@ -163,9 +164,11 @@ export const getFeedContent = (sortBy, queryData, locale) =>
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+};
 
 export const getUserProfileBlog = (
   userName,
+  follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
   locale,
 ) =>
@@ -175,7 +178,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower: userName,
+        follower,
       },
       method: 'POST',
       body: JSON.stringify({
@@ -636,7 +639,7 @@ export const getPropositions = ({
   limit = 30,
   skip = 0,
   userName = '',
-  status = ['active', 'onHold'],
+  status = ['active'],
   approved,
   guideNames,
   types,
@@ -678,7 +681,7 @@ export const getPropositions = ({
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
@@ -706,6 +709,7 @@ export const getHistory = ({
   guideNames,
   campaignNames,
   locale = 'en-US',
+  reservationPermlink,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -727,6 +731,7 @@ export const getHistory = ({
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
+    if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -1413,15 +1418,11 @@ export const getPrivateEmail = userName => {
     .then(res => res.privateEmail);
 };
 
-export const getTransferDetails = withdrawId => {
-  return fetch(
-    `${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  ).then(res => res.json());
-};
+export const getTransferDetails = withdrawId =>
+  fetch(`${config.campaignApiPrefix}${config.withdraw}${config.getWithdrawData}?id=${withdrawId}`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
 
 export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
   fetch(
@@ -1507,5 +1508,14 @@ export const getTransferHistoryTableView = (
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const sendSentryNotification = async () => {
+  try {
+    if (!['staging', 'production'].includes(process.env.NODE_ENV)) return;
+    await fetch(`${config.telegramApiPrefix}${config.setSentryNotify}?app=${config.sentryAppName}`);
+  } catch (error) {
+    return { error };
+  }
+};
 
 export default null;

@@ -11,8 +11,8 @@ import {
   getTransactionDescription,
   selectCurrectFillOrderValue,
   validateGuestTransferTitle,
-} from './WalletHelper';
-import * as accountHistoryConstants from '../../common/constants/accountHistory';
+} from '../WalletHelper';
+import * as accountHistoryConstants from '../../../common/constants/accountHistory';
 
 import './WalletTable.less';
 

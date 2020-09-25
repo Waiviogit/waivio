@@ -108,7 +108,7 @@ class PostModal extends React.Component {
     const shareTextSocial = `"${encodeURIComponent(title)}" by @${author}`;
 
     const twitterShareURL = getTwitterShareURL(shareTextSocial, postURL);
-    const facebookShareURL = getFacebookShareURL(shareTextSocial, postURL);
+    const facebookShareURL = getFacebookShareURL(postURL);
     const signature = get(authorDetails, 'posting_json_metadata.profile.signature', null);
 
     return (

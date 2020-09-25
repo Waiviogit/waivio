@@ -8,8 +8,8 @@ import { matchRoutes, renderRoutes } from 'react-router-config';
 import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
-import routes from '../../common/routes';
 import renderSsrPage from '../renderers/ssrRenderer';
+import routes from '../../common/routes/routes';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);

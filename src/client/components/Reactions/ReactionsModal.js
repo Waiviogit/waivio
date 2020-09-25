@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { FormattedNumber } from 'react-intl';
 import { Tabs, Modal } from 'antd';
 import ReactionsList from './ReactionsList';
-import ApprovingCard from '../../object/ApprovingCard';
+import ApprovingCard from '../../object/AppendCard/ApprovingCard';
 
 class ReactionsModal extends React.Component {
   static propTypes = {
