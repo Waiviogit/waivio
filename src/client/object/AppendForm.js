@@ -1031,15 +1031,6 @@ export default class AppendForm extends Component {
     }
   };
 
-  handleSelectObjectTag = obj => {
-    if (obj && obj.id) {
-      this.props.form.setFieldsValue({
-        categoryItem: obj,
-      });
-      this.setState({ categoryItem: obj });
-    }
-  };
-
   handleSelectCategory = value => {
     const category = this.props.categories.find(item => item.body === value);
     if (!isEmpty(category.categoryItems)) {
@@ -1115,11 +1106,11 @@ export default class AppendForm extends Component {
                 <SearchObjectsAutocomplete
                   className="menu-item-search"
                   itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                  handleSelect={this.handleSelectObjectTag}
+                  handleSelect={this.handleSelectObject}
                   objectType={objectType}
                 />,
               )}
-              {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+              {selectedObject && <ObjectCardView wObject={selectedObject} />}
             </Form.Item>
             <CreateObject
               isSingleType
