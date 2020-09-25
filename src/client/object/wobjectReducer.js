@@ -7,13 +7,17 @@ import {
   UNFOLLOW_OBJECT,
   GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
+  SET_CATALOG_BREADCRUMBS,
+  SET_WOBJECT_FOR_BREADCRUMBS,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
+  wobjectBreadCrumbs: {},
   isFetching: false,
   isFailed: false,
+  breadcrumb: [],
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -267,6 +271,20 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
 
+    case SET_CATALOG_BREADCRUMBS: {
+      return {
+        ...state,
+        breadcrumb: action.payload,
+      };
+    }
+
+    case SET_WOBJECT_FOR_BREADCRUMBS: {
+      return {
+        ...state,
+        wobjectBreadCrumbs: action.payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -283,3 +301,5 @@ export const getRatingFields = state => state.wobject.rating || [];
 export const getObjectTagCategory = state => state.wobject.tagCategories;
 export const getWobjectIsFailed = state => state.wobject.isFailed;
 export const getWobjectIsFatching = state => state.wobject.isFetching;
+export const getBreadCrumbs = state => state.breadcrumb || [];
+export const getWobjectBreadCrumbs = state => state.wobjectBreadCrumbs;

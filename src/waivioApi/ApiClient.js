@@ -10,7 +10,7 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_RESERVED } from '../common/constants/rewards';
+import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
@@ -682,7 +682,7 @@ export const getPropositions = ({
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
@@ -710,6 +710,7 @@ export const getHistory = ({
   guideNames,
   campaignNames,
   locale = 'en-US',
+  reservationPermlink,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -731,6 +732,7 @@ export const getHistory = ({
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
+    if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -1507,5 +1509,14 @@ export const getTransferHistoryTableView = (
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const sendSentryNotification = async () => {
+  try {
+    if (!['staging', 'production'].includes(process.env.NODE_ENV)) return;
+    await fetch(`${config.telegramApiPrefix}${config.setSentryNotify}?app=${config.sentryAppName}`);
+  } catch (error) {
+    return { error };
+  }
+};
 
 export default null;

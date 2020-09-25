@@ -286,7 +286,7 @@ export default class Transfer extends React.Component {
 
         if (app) transferQuery.memo.app = app;
         if (values.memo) transferQuery.memo.message = values.memo;
-        if(transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
+        if (transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {

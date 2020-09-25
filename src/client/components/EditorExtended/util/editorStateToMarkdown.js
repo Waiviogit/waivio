@@ -186,7 +186,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       });
 
       // add the current character to the md string
-      newText += currentChar;
+      newText += currentChar !== '\n' ? currentChar : '';
 
       // check for entityRanges ending and add if existing
       const entitiesEndAtChar = block.entityRanges.filter(

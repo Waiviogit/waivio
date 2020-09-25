@@ -308,3 +308,16 @@ export const unfollowWobject = (permlink, name, type) => (
     },
   });
 };
+
+export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
+export const SET_WOBJECT_FOR_BREADCRUMBS = '@wobj/SET_WOBJECT_FOR_BREADCRUMBS';
+
+export const setCatalogBreadCrumbs = payload => ({
+  type: SET_CATALOG_BREADCRUMBS,
+  payload,
+});
+
+export const setWobjectForBreadCrumbs = payload => ({
+  type: SET_WOBJECT_FOR_BREADCRUMBS,
+  payload,
+});

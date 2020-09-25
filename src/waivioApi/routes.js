@@ -10,6 +10,7 @@ const routes = {
   objectsBotApiPrefix: baseUrl + config.objectsBotApiPrefix,
   campaignApiPrefix: baseUrl + config.campaignApiPrefix,
   currenciesApiPrefix: baseUrl + config.currenciesApiPrefix,
+  telegramApiPrefix: config.staging.protocol + config.staging.host + config.telegramApiPrefix,
 };
 
 export default routes;

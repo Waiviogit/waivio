@@ -1,0 +1,30 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.nightmode {
+  .CustomBreadCrumbs {
+    background: @grey-nero;
+    color: @white;
+    border: 1px solid @normal-grey;
+
+    &__link {
+      color: @white;
+
+      &:hover {
+        color: @orange-hot !important;
+      }
+    }
+
+    .ant-breadcrumb-separator {
+      color: @white;
+    }
+
+    .ant-breadcrumb {
+      & > span:last-child {
+        a.CustomBreadCrumbs__obj-page-link {
+          color: @white;
+        }
+      }
+    }
+  }
+}

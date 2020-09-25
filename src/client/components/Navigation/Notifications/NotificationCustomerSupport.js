@@ -7,38 +7,42 @@ import { epochToUTC } from '../../../helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationCustomerSupport = ({ notification, read, onClick }) => (
-  <Link
-    to={`/@${notification.author}/${notification.permlink}`}
-    onClick={onClick}
-    className={classNames('Notification', {
-      'Notification--unread': !read,
-    })}
-  >
-    <Avatar username={notification.author} size={40} />
-    <div className="Notification__text">
-      <div className="Notification__text__message">
-        <FormattedMessage
-          id="customer_support"
-          defaultMessage="{author} asked about {campaignName}"
-          values={{
-            author: <span className="username">{notification.author}</span>,
-            campaignName: (
-              <span>
-                {notification.campaignName || (
-                  <FormattedMessage id="notify_campaign" defaultMessage="campaign" />
-                )}
-              </span>
-            ),
-          }}
-        />
+const NotificationCustomerSupport = ({ notification, read, onClick }) => {
+  const currentRoute = notification.notSponsor ? 'history' : 'messages';
+  const url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
+  return (
+    <Link
+      to={url}
+      onClick={onClick}
+      className={classNames('Notification', {
+        'Notification--unread': !read,
+      })}
+    >
+      <Avatar username={notification.author} size={40} />
+      <div className="Notification__text">
+        <div className="Notification__text__message">
+          <FormattedMessage
+            id="customer_support"
+            defaultMessage="{author} asked about {campaignName}"
+            values={{
+              author: <span className="username">{notification.author}</span>,
+              campaignName: (
+                <span>
+                  {notification.campaignName || (
+                    <FormattedMessage id="notify_campaign" defaultMessage="campaign" />
+                  )}
+                </span>
+              ),
+            }}
+          />
+        </div>
+        <div className="Notification__text__date">
+          <FormattedRelative value={epochToUTC(notification.timestamp)} />
+        </div>
       </div>
-      <div className="Notification__text__date">
-        <FormattedRelative value={epochToUTC(notification.timestamp)} />
-      </div>
-    </div>
-  </Link>
-);
+    </Link>
+  );
+};
 
 NotificationCustomerSupport.propTypes = {
   read: PropTypes.bool,
@@ -46,6 +50,8 @@ NotificationCustomerSupport.propTypes = {
     author: PropTypes.string,
     campaignName: PropTypes.string,
     permlink: PropTypes.string,
+    parent_permlink: PropTypes.string,
+    notSponsor: PropTypes.bool,
     timestamp: PropTypes.number,
   }),
   onClick: PropTypes.func,
@@ -56,6 +62,7 @@ NotificationCustomerSupport.defaultProps = {
   notification: {},
   onClick: () => {},
   currentAuthUsername: '',
+  notSponsor: false,
 };
 
 export default NotificationCustomerSupport;

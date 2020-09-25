@@ -17,11 +17,11 @@ const rewardText = {
   messages: { id: 'messages', defaultMessage: 'Messages' },
 };
 
-const RewardBreadcrumb = ({ intl, filterKey, reqObject, location }) => {
+const RewardBreadcrumb = ({ intl, filterKey, reqObject, location, match }) => {
   const isCorrectFilter = !!rewardText[filterKey];
   const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
   const breadCrumbText = `${
-    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText) : ''
+    isCorrectFilter ? getBreadCrumbText(intl, location, filterKey, rewardText, match) : ''
   } ${
     filterKey !== 'history'
       ? intl.formatMessage({
@@ -52,12 +52,14 @@ RewardBreadcrumb.propTypes = {
   reqObject: PropTypes.shape(),
   filterKey: PropTypes.string,
   location: PropTypes.string,
+  match: PropTypes.shape(),
 };
 
 RewardBreadcrumb.defaultProps = {
   filterKey: '',
   reqObject: {},
   location: '',
+  match: {},
 };
 
 export default injectIntl(RewardBreadcrumb);
