@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce, round } from 'lodash';
+import { isEmpty, map, get, reduce, round, memoize } from 'lodash';
 import moment from 'moment';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import {
@@ -778,11 +778,8 @@ export const buttonsTitle = {
   },
 };
 
-export const getBreadCrumbText = (intl, location, filterKey, rewardText, match) => {
-  if (
-    location === PATH_NAME_MESSAGES ||
-    location === `${PATH_NAME_MESSAGES}/${match.params.campaignId}/${match.params.permlink}`
-  ) {
+export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
+  if (location === PATH_NAME_MESSAGES) {
     return intl.formatMessage({
       id: MESSAGES,
       defaultMessage: 'Messages',
@@ -845,3 +842,16 @@ export const getSortChanged = ({
       return '';
   }
 };
+
+export const getReviewRequirements = memoize(campaign => ({
+  postRequirements: {
+    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
+    secondaryObject: get(campaign, ['objects', '0', 'object'], {}),
+    requiredObject: get(campaign, ['required_object'], {}),
+  },
+  authorRequirements: {
+    minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key
+    minFollowers: get(campaign, ['userRequirements', 'minFollowers'], 0),
+    minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
+  },
+}));
