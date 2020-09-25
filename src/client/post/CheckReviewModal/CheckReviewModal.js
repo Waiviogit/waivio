@@ -27,7 +27,7 @@ const CheckReviewModal = ({
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
   const hasObject = object =>
     linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
-  console.log(reviewData);
+
   const modalBody =
     hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>

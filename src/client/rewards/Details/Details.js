@@ -21,7 +21,6 @@ const Details = ({
   isReviewDetails,
   requiredObjectName,
   isEligible,
-  setReviewProposition,
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
@@ -99,7 +98,6 @@ const Details = ({
             <Link
               // eslint-disable-next-line no-underscore-dangle
               to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
-              onClick={() => setReviewProposition(objectDetails)}
             >
               <Button type="primary">
                 {intl.formatMessage({
@@ -129,7 +127,6 @@ Details.propTypes = {
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
   isEligible: PropTypes.bool.isRequired,
-  setReviewProposition: PropTypes.func.isRequired,
 };
 
 Details.defaultProps = {

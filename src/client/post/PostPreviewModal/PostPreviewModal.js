@@ -50,6 +50,7 @@ class PostPreviewModal extends Component {
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
     titleValue: PropTypes.string,
+    campainId: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
@@ -60,6 +61,7 @@ class PostPreviewModal extends Component {
     isUpdating: false,
     isGuest: false,
     titleValue: '',
+    campainId: '',
   };
 
   constructor(props) {
@@ -159,6 +161,7 @@ class PostPreviewModal extends Component {
       topics,
       isGuest,
       titleValue,
+      campainId,
     } = this.props;
 
     return (
