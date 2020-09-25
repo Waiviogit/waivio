@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, keyBy, isEqual, isEmpty } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy } from 'lodash';
 import { Input, message } from 'antd';
 import {
-  Editor as MediumDraftEditor,
   createEditorState,
-  fromMarkdown,
+  Editor as MediumDraftEditor,
   Entity,
   findLinkEntities,
+  fromMarkdown,
 } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
@@ -110,23 +110,40 @@ class Editor extends React.Component {
     this.setState({ editorEnabled: true });
   };
 
+  getCurrentLinkPermlink = value => {
+    const data = get(value, 'data.url', '');
+    const currentSeparator = data.split('/');
+    return get(currentSeparator, '[4]', []);
+  };
+
+  // eslint-disable-next-line consistent-return
+  getCurrentLoadObjects = (response, value) => {
+    const loadObjects = keyBy(response.wobjects, 'author_permlink');
+    if (value.type === Entity.OBJECT) {
+      return loadObjects[get(value, 'data.object.id')];
+    } else if (value.type === Entity.LINK) {
+      return loadObjects[this.getCurrentLinkPermlink(value)];
+    }
+  };
+
   restoreObjects = async rawContent => {
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
       .filter(entity => {
         if (entity.type === Entity.OBJECT) {
-          return entity.type === Entity.OBJECT && has(entity, 'data.object.id');
+          return has(entity, 'data.object.id');
         } else if (entity.type === Entity.LINK) {
-          // for localhost:3000
-          const data = get(entity, 'data.url', '');
-          const a = data.split(':');
-          const b = get(a, '[2]', []);
-          const c = b.split('/');
-
-          return get(c, '[2]', '');
+          return has(entity, 'data.url');
         }
       })
-      .map(entity => get(entity, 'data.object.id', ''));
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map(entity => {
+        if (entity.type === Entity.OBJECT) {
+          return get(entity, 'data.object.id', '');
+        } else if (entity.type === Entity.LINK) {
+          return this.getCurrentLinkPermlink(entity);
+        }
+      });
 
     if (objectIds.length) {
       const response = await getObjectsByIds({
@@ -135,12 +152,10 @@ class Editor extends React.Component {
         requiredFields: ['rating'],
       });
 
-      console.log('response: ', response);
-      const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
       forEach(rawContent.entityMap, (value, key) => {
-        const loadedObject =
-          value.type === Entity.OBJECT && loadObjects[get(value, 'data.object.id')];
+        const loadedObject = this.getCurrentLoadObjects(response, value);
+
         entityMap[key] = {
           ...value,
           data: loadedObject
