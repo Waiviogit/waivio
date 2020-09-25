@@ -112,3 +112,10 @@ export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
     payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
   });
 };
+
+export const SET_REVIEW_PROPOSITION = '@rewards/SET_REVIEW_PROPOSITION';
+
+export const setReviewProposition = proposition => ({
+  type: SET_REVIEW_PROPOSITION,
+  proposition,
+});
