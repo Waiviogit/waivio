@@ -45,9 +45,9 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import { setReviewProposition } from '../../rewards/rewardsActions';
 
 import './EditPost.less';
-import { setReviewProposition } from '../../rewards/rewardsActions';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -159,18 +159,14 @@ class EditPost extends Component {
             user => user.name === userName && user.status === 'assigned',
           );
           const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
-          );
+            obj => obj.author_permlink === secondaryObjectReservation.object_permlink);
+
           setReviewPropositionInState({
             ...campaignData,
             objects: [{ object: secondaryObject }],
             required_object: campaignData.requiredObject,
           });
-        })
-        .then(() => {
-          setTimeout(() => this.getReviewTitle(), 400);
-        })
-        .catch(error => {
+        }).catch(error => {
           message.error(
             this.props.intl.formatMessage(
               {

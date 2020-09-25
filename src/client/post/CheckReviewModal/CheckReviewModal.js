@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, size } from 'lodash';
+import { size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
 import { photosInPostRegex } from '../../helpers/regexHelpers';
 import { getReviewRequirements } from '../../rewards/rewardsHelper';
 
 import './CheckReviewModal.less';
 
-const getIcon = isValidOption =>
-  isValidOption ? (
-    <Icon type="check-square" style={{ color: '#30b580' }} />
-  ) : (
-    <Icon type="close-square" style={{ color: '#d9534f' }} />
-  );
+const getIcon = isValidOption => (<Icon type="check-square" style={{ color: isValidOption ? '#30b580' : '#d9534f' }} />);
 
 const CheckReviewModal = ({
   intl,
@@ -28,10 +23,8 @@ const CheckReviewModal = ({
   const primaryObject = postRequirements.requiredObject;
   const secondaryObject = postRequirements.secondaryObject;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
-  const hasObject = object =>
-    linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
-  console.log(postRequirements);
-  console.log(reviewData);
+  const hasObject = object => linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
+
   const modalBody =
     hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>
