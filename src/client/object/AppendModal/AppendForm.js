@@ -19,8 +19,8 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Icon, Input, message, Rate, Select } from 'antd';
-import { fieldsRules } from './const/appendFormConstants';
-import apiConfig from '../../waivioApi/config.json';
+import { fieldsRules } from '../const/appendFormConstants';
+import apiConfig from '../../../waivioApi/config.json';
 import {
   addressFields,
   buttonFields,
@@ -34,8 +34,8 @@ import {
   statusFields,
   TYPES_OF_MENU_ITEM,
   websiteFields,
-} from '../../common/constants/listOfFields';
-import OBJECT_TYPE from '../object/const/objectTypes';
+} from '../../../common/constants/listOfFields';
+import OBJECT_TYPE from '../const/objectTypes';
 import {
   getFollowingObjectsList,
   getObject,
@@ -47,11 +47,11 @@ import {
   getVotingPower,
   getObjectTagCategory,
   getObjectAlbums,
-} from '../reducers';
-import LANGUAGES from '../translations/languages';
-import { PRIMARY_COLOR } from '../../common/constants/waivio';
-import { getLanguageText } from '../translations';
-import MapAppendObject from '../components/Maps/MapAppendObject';
+} from '../../reducers';
+import LANGUAGES from '../../translations/languages';
+import { PRIMARY_COLOR } from '../../../common/constants/waivio';
+import { getLanguageText } from '../../translations';
+import MapAppendObject from '../../components/Maps/MapAppendObject';
 import {
   generatePermlink,
   getField,
@@ -62,24 +62,24 @@ import {
   prepareAlbumData,
   prepareAlbumToStore,
   prepareImageToStore,
-} from '../helpers/wObjectHelper';
-import { appendObject } from './appendActions';
-import withEditor from '../components/Editor/withEditor';
-import { getVoteValue } from '../helpers/user';
-import { getExposedFieldsByObjType, getListItems } from './wObjectHelper';
-import { rateObject } from './wobjActions';
-import SortingList from '../components/DnDList/DnDList';
-import DnDListItem from '../components/DnDList/DnDListItem';
-import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
-import ObjectCardView from '../objectCard/ObjectCardView';
-import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
-import CreateObject from '../post/CreateObjectModal/CreateObject';
-import { baseUrl } from '../../waivioApi/routes';
+} from '../../helpers/wObjectHelper';
+import { appendObject } from '../appendActions';
+import withEditor from '../../components/Editor/withEditor';
+import { getVoteValue } from '../../helpers/user';
+import { getExposedFieldsByObjType, getListItems } from '../wObjectHelper';
+import { rateObject } from '../wobjActions';
+import SortingList from '../../components/DnDList/DnDList';
+import DnDListItem from '../../components/DnDList/DnDListItem';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getNewsFilterLayout } from '../NewsFilter/newsFilterHelper';
+import CreateObject from '../../post/CreateObjectModal/CreateObject';
+import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
-import ImageSetter from '../components/ImageSetter/ImageSetter';
-import { getObjectsByIds } from '../../waivioApi/ApiClient';
-import { objectNameValidationRegExp } from '../../common/constants/validation';
-import { addAlbumToStore, addImageToAlbumStore } from './ObjectGallery/galleryActions';
+import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { objectNameValidationRegExp } from '../../../common/constants/validation';
+import { addAlbumToStore, addImageToAlbumStore } from '../ObjectGallery/galleryActions';
 
 import './AppendForm.less';
 
@@ -252,7 +252,7 @@ export default class AppendForm extends Component {
                   },
                   {
                     field: form.getFieldValue('currentField'),
-                    wobject: wObject.name || wObject.default_name,
+                    wobject: getObjectName(wObject),
                   },
                 ),
               );
@@ -293,6 +293,7 @@ export default class AppendForm extends Component {
 
     switch (currentField) {
       case objectFields.name:
+      case objectFields.authority:
       case objectFields.title:
       case objectFields.description:
       case objectFields.avatar:
@@ -375,8 +376,8 @@ export default class AppendForm extends Component {
               rule.forEach(item => {
                 rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
               });
-              // eslint-disable-next-line no-plusplus
-              rulesCounter++;
+
+              rulesCounter += 1;
             }
           });
 
@@ -637,7 +638,7 @@ export default class AppendForm extends Component {
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
-    data.wobjectName = getField(wObject, objectFields.name);
+    data.wobjectName = getObjectName(wObject);
     data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
     return data;
@@ -828,7 +829,8 @@ export default class AppendForm extends Component {
   trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
 
   isDuplicate = (currentLocale, currentField) => {
-    const { form, wObject } = this.props;
+    const { form, wObject, user } = this.props;
+    const currentValue = form.getFieldValue(currentField);
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
     );
@@ -841,25 +843,19 @@ export default class AppendForm extends Component {
       currentField === objectFields.button ||
       currentField === objectFields.link
     ) {
-      return filtered.some(
-        f =>
-          isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)) &&
-          f.locale === currentLocale,
+      return filtered.some(f =>
+        isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)),
       );
     }
 
-    if (currentField === objectFields.phone) {
-      return filtered.some(
-        f =>
-          this.getCurrentObjectBody(currentField).number === f.number && f.locale === currentLocale,
-      );
+    if (currentField === objectFields.authority) {
+      return filtered.some(f => f.body === currentValue && f.creator === user.name);
     }
 
-    const currentValue = form.getFieldValue(currentField);
+    if (currentField === objectFields.phone)
+      return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
 
-    if (currentField === objectFields.name) {
-      return filtered.some(f => f.body === currentValue);
-    }
+    if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
 
     return filtered.some(f => f.body.toLowerCase() === currentValue.toLowerCase());
   };
@@ -877,8 +873,8 @@ export default class AppendForm extends Component {
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
     const formFields = form.getFieldsValue();
-    // eslint-disable-next-line
-    const isDuplicated = !!formFields[rule.field]
+
+    const isDuplicated = formFields[rule.field]
       ? this.isDuplicate(currentLocale, currentField)
       : false;
 
@@ -1015,11 +1011,10 @@ export default class AppendForm extends Component {
   handleSelectObject = (obj = {}) => {
     const { wObject, intl } = this.props;
     const currentField = this.props.form.getFieldValue('currentField');
-
     if (obj.author_permlink === wObject.author_permlink && currentField === 'parent') {
       message.error(
         intl.formatMessage({
-          id: 'dont_use_current_object_for_parent',
+          id: 'currentFielddont_use_current_object_for_parent',
           defaultMessage: 'You cannot use the current object as a parent',
         }),
       );
@@ -1028,15 +1023,6 @@ export default class AppendForm extends Component {
         [currentField]: obj.author_permlink,
       });
       this.setState({ selectedObject: obj });
-    }
-  };
-
-  handleSelectObjectTag = obj => {
-    if (obj && obj.id) {
-      this.props.form.setFieldsValue({
-        categoryItem: obj,
-      });
-      this.setState({ categoryItem: obj });
     }
   };
 
@@ -1079,7 +1065,6 @@ export default class AppendForm extends Component {
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
       : 'Choose an album';
-
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
         {intl.formatMessage({
@@ -1115,11 +1100,11 @@ export default class AppendForm extends Component {
                 <SearchObjectsAutocomplete
                   className="menu-item-search"
                   itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                  handleSelect={this.handleSelectObjectTag}
+                  handleSelect={this.handleSelectObject}
                   objectType={objectType}
                 />,
               )}
-              {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+              {selectedObject && <ObjectCardView wObject={selectedObject} />}
             </Form.Item>
             <CreateObject
               isSingleType
@@ -1542,6 +1527,38 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.authority: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(objectFields.authority, {
+                rules: this.getFieldRules(objectFields.authority),
+              })(
+                <Select
+                  placeholder={intl.formatMessage({
+                    id: 'claim_authority',
+                    defaultMessage: 'Claim authority',
+                  })}
+                  onChange={this.handleSelectChange}
+                >
+                  <Select.Option value="administrative">
+                    {intl.formatMessage({
+                      id: 'administrative',
+                      defaultMessage: 'Administrative',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="ownership">
+                    {intl.formatMessage({
+                      id: 'ownership',
+                      defaultMessage: 'Ownership',
+                    })}
+                  </Select.Option>
+                </Select>,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
       case objectFields.button: {
         return (
           <React.Fragment>
@@ -1909,7 +1926,6 @@ export default class AppendForm extends Component {
     const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
-
     const isCustomSortingList =
       hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;

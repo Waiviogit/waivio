@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { mountWithIntl } from 'enzyme-react-intl';
-import AppendForm from '../AppendForm';
+import AppendForm from '../AppendModal/AppendForm';
 import { initialState } from '../__mock__/mockData';
 import * as settReducer from '../../reducers';
 import * as appReduc from '../../app/appReducer';

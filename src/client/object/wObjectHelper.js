@@ -144,11 +144,6 @@ export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) =>
   return '';
 };
 
-export const getFieldsByName = (wObject, currentField) => {
-  if (!supportedObjectFields.includes(currentField) || !wObject) return [];
-  return filter(wObject.fields, ['name', currentField]);
-};
-
 export const getField = (wObject, currentField, fieldName) => {
   const wo = find(wObject.fields, ['name', currentField]);
 
@@ -439,7 +434,7 @@ export const getListSorting = wobj => {
 };
 
 export const getExposedFieldsByObjType = wobj => {
-  const exposedFields = get(wobj, 'exposedFields', []).filter(f => f !== objectFields.authority);
+  const exposedFields = get(wobj, 'exposedFields', []);
   const renderedFields = exposedFields.includes('listItem')
     ? [
         ...exposedFields.filter(f => f !== objectFields.listItem),

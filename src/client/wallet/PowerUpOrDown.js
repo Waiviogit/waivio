@@ -13,7 +13,7 @@ import {
   getTotalVestingFundSteem,
 } from '../reducers';
 import formatter from '../helpers/steemitFormatter';
-import './Transfer.less';
+import './Transfer/Transfer.less';
 
 @injectIntl
 @connect(

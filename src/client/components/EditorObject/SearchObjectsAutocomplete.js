@@ -148,6 +148,7 @@ class SearchObjectsAutocomplete extends Component {
             <AutoComplete.Option
               key={obj.author_permlink}
               label={obj.author_permlink}
+              value={obj.author_permlink}
               className="obj-search-option item"
             >
               {obj.parent.defaultShowLink !== location.pathname ? (

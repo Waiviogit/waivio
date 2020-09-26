@@ -1401,5 +1401,8 @@
   "mobnav_rewards-list": "Вознаграждения",
   "empty_page_content": "Страница еще не заполнена",
   "empty_follow_list": "Этот список пустой",
-  "toolbar_link": "Вставьте ссылку и нажмите Enter"
+  "toolbar_link": "Вставьте ссылку и нажмите Enter",
+  "administrative": "Администратор",
+  "ownership": "Владелец",
+  "claim_authority": "Заявить о полномочиях"
 }
