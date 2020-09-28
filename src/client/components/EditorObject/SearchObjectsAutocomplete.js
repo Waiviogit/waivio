@@ -151,11 +151,18 @@ class SearchObjectsAutocomplete extends Component {
               value={obj.author_permlink}
               className="obj-search-option item"
             >
-              <ObjectSearchCard
-                object={obj}
-                name={getObjectName(obj)}
-                type={obj.type || obj.object_type}
-              />
+              {obj.parent.defaultShowLink !== location.pathname ? (
+                <ObjectSearchCard
+                  object={obj}
+                  name={getObjectName(obj)}
+                  type={obj.type || obj.object_type}
+                />
+              ) : (
+                intl.formatMessage({
+                  id: 'object_listed',
+                  defaultMessage: 'This object is already listed',
+                })
+              )}
             </AutoComplete.Option>
           ))
       : [];
