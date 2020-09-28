@@ -207,6 +207,8 @@ const Proposition = ({
             match={match}
             getMessageHistory={getMessageHistory}
             blacklistUsers={blacklistUsers}
+            userFollowing={proposition.guide.youFollows}
+            objectFollowing={proposition.required_object.followsObject}
           />
         ) : (
           <React.Fragment>

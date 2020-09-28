@@ -44,8 +44,6 @@ import {
   assignProposition,
   declineProposition,
   getCoordinates,
-  getFollowing,
-  getFollowingObjects,
 } from '../user/userActions';
 import { getCryptoPriceHistory } from '../app/appActions';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
@@ -101,8 +99,6 @@ import { getZoom, getParsedMap } from '../components/Maps/mapHelper';
     getPropositionsForMap,
     getRewardsGeneralCounts,
     getCryptoPriceHistory,
-    getFollowing,
-    getFollowingObjects,
   },
 )
 class Rewards extends React.Component {
@@ -126,8 +122,6 @@ class Rewards extends React.Component {
     authenticated: PropTypes.bool,
     users: PropTypes.shape(),
     getCryptoPriceHistory: PropTypes.func.isRequired,
-    getFollowing: PropTypes.func.isRequired,
-    getFollowingObjects: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -199,8 +193,6 @@ class Rewards extends React.Component {
     if (username && !url) this.getPropositionsByStatus({ username, sort });
     if (!authenticated && match.params.filterKey === 'all')
       this.getPropositions({ username, match, activeFilters, area, sort });
-    this.props.getFollowing(username);
-    this.props.getFollowingObjects(username);
   }
 
   componentWillReceiveProps(nextProps) {
