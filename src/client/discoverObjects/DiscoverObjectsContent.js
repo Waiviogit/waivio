@@ -350,7 +350,7 @@ class DiscoverObjectsContent extends Component {
       hasMap,
       availableFilters,
       tagsFilters,
-      activeFilters: { map: mapFilters, ...chosenFilters },
+      activeFilters: { map: mapFilters },
       sort,
       filteredObjects,
       hasMoreObjects,
@@ -358,7 +358,6 @@ class DiscoverObjectsContent extends Component {
       match,
       activeTagsFilters,
     } = this.props;
-    const allActiveFilters = { ...chosenFilters, ...activeTagsFilters };
     const sortSelector = hasMap ? (
       <SortSelector sort={sort} onChange={this.handleChangeSorting}>
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
@@ -393,7 +392,7 @@ class DiscoverObjectsContent extends Component {
                   {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                 </span>
                 {this.getCommonFiltersLayout()}
-                {map(allActiveFilters, (filterValues, filterName) =>
+                {map(activeTagsFilters, (filterValues, filterName) =>
                   filterValues.map(filterValue => (
                     <Tag
                       className="ttc"
