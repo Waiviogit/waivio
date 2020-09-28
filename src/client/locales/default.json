@@ -1402,5 +1402,9 @@
   "toolbar_link": "Paste link and press Enter",
   "administrative": "Administrative",
   "ownership": "Ownership",
-  "claim_authority": "Claim authority"
+  "claim_authority": "Claim authority",
+  "referrals": "Referrals",
+  "referrals_details": "Details",
+  "referrals_instructions": "Instructions",
+  "referrals_status": "Status"
 }

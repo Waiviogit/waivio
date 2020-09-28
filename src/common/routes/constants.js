@@ -44,6 +44,9 @@ export default {
       'payables',
       'reports',
       'receivables',
+      'referral-details',
+      'referral-instructions',
+      'referral-status',
     ].join('|'),
   },
 };

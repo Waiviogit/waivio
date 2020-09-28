@@ -14,6 +14,9 @@ import {
   IS_ACTIVE,
   IS_ALL,
   IS_RESERVED,
+  PATH_NAME_REFERRAL_DETAILS,
+  PATH_NAME_REFERRAL_INSTRUCTIONS,
+  PATH_NAME_REFERRAL_STATUS,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
 
@@ -779,6 +782,7 @@ export const buttonsTitle = {
 };
 
 export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
+  console.log('location: ', location);
   if (location === PATH_NAME_MESSAGES) {
     return intl.formatMessage({
       id: MESSAGES,
@@ -793,6 +797,21 @@ export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
     return intl.formatMessage({
       id: 'history_of_reservations',
       defaultMessage: 'History of reservations',
+    });
+  } else if (location === PATH_NAME_REFERRAL_DETAILS) {
+    return intl.formatMessage({
+      id: 'referrals_details',
+      defaultMessage: 'Details',
+    });
+  } else if (location === PATH_NAME_REFERRAL_INSTRUCTIONS) {
+    return intl.formatMessage({
+      id: 'referrals_instructions',
+      defaultMessage: 'Instructions',
+    });
+  } else if (location === PATH_NAME_REFERRAL_STATUS) {
+    return intl.formatMessage({
+      id: 'referrals_status',
+      defaultMessage: 'Status',
     });
   }
   return intl.formatMessage(rewardText[filterKey]);

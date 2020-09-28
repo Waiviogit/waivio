@@ -1404,5 +1404,9 @@
   "toolbar_link": "Вставьте ссылку и нажмите Enter",
   "administrative": "Администратор",
   "ownership": "Владелец",
-  "claim_authority": "Заявить о полномочиях"
+  "claim_authority": "Заявить о полномочиях",
+  "referrals": "Рефералы",
+  "referrals_details": "Детали",
+  "referrals_instructions": "Инструкции",
+  "referrals_status": "Статус"
 }

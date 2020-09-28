@@ -70,6 +70,21 @@ const routes = {
           component: Views.CreateRewardForm,
         },
         {
+          path: '/referral-details',
+          exact: true,
+          component: Views.ReferralDetails,
+        },
+        {
+          path: '/referral-instructions',
+          exact: true,
+          component: Views.ReferralInstructions,
+        },
+        {
+          path: '/referral-status',
+          exact: true,
+          component: Views.ReferralStatus,
+        },
+        {
           path: '/:filterKey/:campaignParent?',
           exact: true,
           component: Views.RewardsComponent,

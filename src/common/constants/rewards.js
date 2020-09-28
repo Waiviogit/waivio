@@ -57,4 +57,8 @@ export const PATH_NAME_MANAGE = '/rewards/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 
+export const PATH_NAME_REFERRAL_DETAILS = '/rewards/referral/details';
+export const PATH_NAME_REFERRAL_INSTRUCTIONS = '/rewards/referral/instructions';
+export const PATH_NAME_REFERRAL_STATUS = '/rewards/referral/status';
+
 export default null;

@@ -69,4 +69,9 @@ export default {
     import('../../client/rewards/RewardsComponent/RewardsComponent'),
   ),
   HistoryCampaign: loableComponent(import('../../client/rewards/History/History')),
+  ReferralDetails: loableComponent(import('../../client/rewards/ReferralProgram/ReferralDetails')),
+  ReferralInstructions: loableComponent(
+    import('../../client/rewards/ReferralProgram/ReferralInstructions'),
+  ),
+  ReferralStatus: loableComponent(import('../../client/rewards/ReferralProgram/ReferralStatus')),
 };
