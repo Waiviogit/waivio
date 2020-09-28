@@ -7,7 +7,7 @@ import { epochToUTC } from '../../../helpers/formatter';
 import Avatar from '../../Avatar';
 import './Notification.less';
 
-const NotificationCustomerSupport = ({ notification, read, onClick }) => {
+const NotificationCampaignMessage = ({ notification, read, onClick }) => {
   const currentRoute = notification.notSponsor ? 'history' : 'messages';
   const url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
   return (
@@ -44,7 +44,7 @@ const NotificationCustomerSupport = ({ notification, read, onClick }) => {
   );
 };
 
-NotificationCustomerSupport.propTypes = {
+NotificationCampaignMessage.propTypes = {
   read: PropTypes.bool,
   notification: PropTypes.shape({
     author: PropTypes.string,
@@ -57,7 +57,7 @@ NotificationCustomerSupport.propTypes = {
   onClick: PropTypes.func,
 };
 
-NotificationCustomerSupport.defaultProps = {
+NotificationCampaignMessage.defaultProps = {
   read: false,
   notification: {},
   onClick: () => {},
@@ -65,4 +65,4 @@ NotificationCustomerSupport.defaultProps = {
   notSponsor: false,
 };
 
-export default NotificationCustomerSupport;
+export default NotificationCampaignMessage;
