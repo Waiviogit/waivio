@@ -135,7 +135,7 @@ class CreateImage extends React.Component {
               intl.formatMessage(
                 {
                   id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new image to album {album} <br />`,
+                  defaultMessage: `@{user} added a new image to album {album}`,
                 },
                 {
                   album,
