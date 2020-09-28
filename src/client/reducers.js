@@ -296,7 +296,6 @@ export const getSponsorsRewards = state => fromRewards.getSponsorsRewards(state.
 export const getHasMoreFollowingRewards = state =>
   fromRewards.getHasMoreFollowingRewards(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getReviewProposition = state => fromRewards.getReviewProposition(state.rewards);
 
 // common selectors
 
