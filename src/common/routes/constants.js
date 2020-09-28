@@ -41,9 +41,9 @@ export default {
       'history',
       'guideHistory',
       'messages',
-      'payables',
+      // 'payables',
       'reports',
-      'receivables',
+      // 'receivables',
     ].join('|'),
   },
 };

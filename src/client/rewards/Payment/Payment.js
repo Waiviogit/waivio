@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes } from 'lodash';
+import { isEmpty, includes, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -31,18 +31,19 @@ const Payment = ({
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
+  const tab = get(match, ['params', '0']);
 
   const getRequestParams = () => {
-    if (reservationPermlink || includes(match.path, 'payables')) {
+    if (reservationPermlink || tab === 'payables') {
       return {
-        sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-        user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
+        sponsor: tab === 'payables' ? match.params.userName : userName,
+        user: tab === 'payables' ? userName : match.params.userName,
       };
     }
 
     return {
-      sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
+      sponsor: tab === 'payables' ? userName : match.params.userName,
+      user: tab === 'payables' ? match.params.userName : userName,
     };
   };
 
@@ -68,7 +69,7 @@ const Payment = ({
 
   let titleName;
   let isPayables;
-  if (includes(match.path, 'payables')) {
+  if (get(match, ['params', '0']) === 'payables') {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',
       defaultMessage: 'Payables',
