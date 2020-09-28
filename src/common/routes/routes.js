@@ -132,6 +132,11 @@ const routes = {
       component: Views.NotificationSettings,
     },
     {
+      path: '/create',
+      exact: true,
+      component: Views.CreateWebsite,
+    },
+    {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
       component: Views.User,
       exact: true,
@@ -294,31 +299,6 @@ const routes = {
       path: '/edit',
       component: Views.BusyEditor,
       exact: true,
-    },
-    {
-      path: '/settings',
-      exact: true,
-      component: Views.Settings,
-    },
-    {
-      path: '/edit-profile',
-      exact: true,
-      component: Views.ProfileSettings,
-    },
-    {
-      path: '/invite',
-      exact: true,
-      component: Views.Invite,
-    },
-    {
-      path: '/guests-settings',
-      exact: true,
-      component: Views.GuestsSettings,
-    },
-    {
-      path: '/notification-settings',
-      exact: true,
-      component: Views.NotificationSettings,
     },
     {
       path: '/search',

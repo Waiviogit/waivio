@@ -19,6 +19,8 @@ import {
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
 } from '../../../../common/constants/rewards';
+import { pages } from './helpers';
+
 import './MobileNavigation.less';
 
 const MobileNavigation = ({ location, match }) => {
@@ -27,40 +29,6 @@ const MobileNavigation = ({ location, match }) => {
     setModalVisibility(false);
   }, [match]);
   const authenticated = useSelector(getIsAuthenticated);
-
-  const pages = {
-    hive: {
-      trending: 'trending',
-      regExp: /(^\/)(created|hot|trending)$/,
-      id: 'hive',
-    },
-    personal: {
-      myFeed: 'my_feed',
-      regExp: /(^\/)(notifications-list|updates|rewards-list)$/,
-      id: 'personal',
-    },
-    people: {
-      regExp: /(^\/blog)\/(@[\w\d.-]{3,})$/,
-      id: 'people',
-    },
-    objectsUpdates: {
-      regExp: /(^\/feed\/)([\w\d.-]{3,})/,
-    },
-    discoverObjects: {
-      all: 'all',
-      regExp: /(^\/discover-objects)\/?(.*)/,
-      id: 'objects',
-    },
-    rewards: {
-      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
-      id: 'rewards',
-    },
-    rewardsCampaigns: {
-      regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
-      id: CAMPAIGNS,
-    },
-  };
-
   let pageName = '';
   let filterName = 'Menu';
 
@@ -169,6 +137,10 @@ const MobileNavigation = ({ location, match }) => {
     case '/notification-settings':
       pageName = 'tools';
       filterName = 'notification_settings';
+      break;
+    case '/create':
+      pageName = 'website';
+      filterName = 'create';
       break;
     case '/':
       if (!authenticated) {

@@ -128,7 +128,7 @@ const SidenavUser = () => {
         <React.Fragment>
           <li>
             <NavLink
-              to="/create_mock"
+              to="/create"
               className="sidenav-discover-objects__item"
               activeClassName="Sidenav__item--active"
             >

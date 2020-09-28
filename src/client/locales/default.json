@@ -1402,5 +1402,6 @@
   "toolbar_link": "Paste link and press Enter",
   "administrative": "Administrative",
   "ownership": "Ownership",
-  "claim_authority": "Claim authority"
+  "claim_authority": "Claim authority",
+  "create_new_website": "Create new website"
 }
