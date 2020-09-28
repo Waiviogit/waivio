@@ -92,16 +92,17 @@ class CreateImage extends React.Component {
   };
 
   getWobjectBody = image => {
-    const { selectedAlbum, currentUsername, intl } = this.props;
+    const { currentUsername, intl } = this.props;
+    const album = this.getImageAlbum();
 
     return intl.formatMessage(
       {
         id: 'append_new_image',
-        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
+        defaultMessage: `@{user} added a new image to album {album}`,
       },
       {
         user: currentUsername,
-        album: get(selectedAlbum, 'body') || this.state.currentAlbum,
+        album,
         url: image.src,
       },
     );
@@ -134,7 +135,7 @@ class CreateImage extends React.Component {
               intl.formatMessage(
                 {
                   id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+                  defaultMessage: `@{user} added a new image to album {album}`,
                 },
                 {
                   album,

@@ -520,7 +520,7 @@
   "need_like": "You need to like these updates to take effect",
   "upload_photo_error": "You need to upload at least one image",
   "couldnt_upload_image": "Couldn't add the image to album.",
-  "append_new_image": "@{user} added a new image to album {album} <br /> {url}",
+  "append_new_image": "@{user} added a new image to album {album}",
   "added_image_to_album": "You successfully have added the image(s) to album {album}",
   "file_format_allowed": "You can only upload {formats} file formats!",
   "invalid_image_size": "Image must smaller than {size}MB!",
