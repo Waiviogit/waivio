@@ -269,6 +269,8 @@ export default class Transfer extends React.Component {
     const sponsor = user.name;
     const transactionId = uuidv4();
     const userName = to;
+    const overpaymentRefund = includes(memo, 'overpayment_refund');
+
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -285,6 +287,7 @@ export default class Transfer extends React.Component {
         }
 
         if (app) transferQuery.memo.app = app;
+        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (values.memo) transferQuery.memo.message = values.memo;
         if (transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
