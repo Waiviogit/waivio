@@ -22,6 +22,7 @@ import {
   objectFields,
   TYPES_OF_MENU_ITEM,
   linkFields,
+  objectTypes,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
@@ -303,36 +304,38 @@ class ObjectInfo extends React.Component {
 
       return (
         <React.Fragment>
-          {isEditMode && (
+          {isEditMode && wobject.object_type !== objectTypes.LIST && (
             <div className="object-sidebar__section-title">
               <FormattedMessage id="menu" defaultMessage="Menu" />
             </div>
           )}
-          <div className="object-sidebar__menu-items">
-            <React.Fragment>
-              {this.listItem(
-                TYPES_OF_MENU_ITEM.LIST,
-                !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
-              )}
-              {this.listItem(
-                TYPES_OF_MENU_ITEM.PAGE,
-                !isEmpty(menuPages) &&
-                  menuPages.map(page =>
-                    this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
-                  ),
-              )}
-              {this.listItem(
-                objectFields.button,
-                !isEmpty(button) &&
-                  button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
-              )}
-              {this.listItem(
-                objectFields.newsFilter,
-                newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
-              )}
-              {this.listItem(objectFields.sorting, null)}
-            </React.Fragment>
-          </div>
+          {wobject.object_type !== objectTypes.LIST && (
+            <div className="object-sidebar__menu-items">
+              <React.Fragment>
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.LIST,
+                  !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
+                )}
+                {this.listItem(
+                  TYPES_OF_MENU_ITEM.PAGE,
+                  !isEmpty(menuPages) &&
+                    menuPages.map(page =>
+                      this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
+                    ),
+                )}
+                {this.listItem(
+                  objectFields.button,
+                  !isEmpty(button) &&
+                    button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
+                )}
+                {this.listItem(
+                  objectFields.newsFilter,
+                  newsFilter && this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+                )}
+                {this.listItem(objectFields.sorting, null)}
+              </React.Fragment>
+            </div>
+          )}
         </React.Fragment>
       );
     };

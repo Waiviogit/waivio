@@ -121,4 +121,8 @@ export const objectImageFields = ['avatar', 'background'];
 
 export const statusNoVisibleItem = ['unavailable', 'relisted'];
 
+export const objectTypes = {
+  LIST: 'list',
+};
+
 export default null;
