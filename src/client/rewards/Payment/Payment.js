@@ -31,19 +31,19 @@ const Payment = ({
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
-  const tab = get(match, ['params', '0']);
+  const payables = get(match, ['params', '0']);
 
   const getRequestParams = () => {
-    if (reservationPermlink || tab === 'payables') {
+    if (reservationPermlink || payables) {
       return {
-        sponsor: tab === 'payables' ? match.params.userName : userName,
-        user: tab === 'payables' ? userName : match.params.userName,
+        sponsor: payables ? match.params.userName : userName,
+        user: payables ? userName : match.params.userName,
       };
     }
 
     return {
-      sponsor: tab === 'payables' ? userName : match.params.userName,
-      user: tab === 'payables' ? match.params.userName : userName,
+      sponsor: payables ? userName : match.params.userName,
+      user: payables ? match.params.userName : userName,
     };
   };
 

@@ -38,7 +38,6 @@ const ObjectCardView = ({
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const getUrl = useMemo(() => {
-    if (!wObject.avatar && !parent.avatar) return DEFAULTS.AVATAR;
     if ((!wObject.avatar || wObject.avatar === DEFAULTS.AVATAR) && parent.avatar)
       return parent.avatar;
 
