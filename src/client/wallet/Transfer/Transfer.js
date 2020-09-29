@@ -97,7 +97,6 @@ export default class Transfer extends React.Component {
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
-    history: PropTypes.shape().isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
   };
@@ -263,9 +262,10 @@ export default class Transfer extends React.Component {
       amount,
       to,
       user,
-      history,
+      match,
       getPayables,
     } = this.props;
+    const matchPath = get(match, ['params', '0']);
     const sponsor = user.name;
     const transactionId = uuidv4();
     const userName = to;
@@ -316,9 +316,9 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        if (includes(history.location.pathname, 'payables')) {
+        if (matchPath === 'payables' || matchPath === 'receivables') {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
-          setTimeout(() => getPayables(), 500);
+          setTimeout(() => getPayables(), 1000);
         }
         this.props.closeTransfer();
       }
