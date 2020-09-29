@@ -2,18 +2,9 @@
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { getBlacklist } from '../../rewardsActions';
 import { getAuthenticatedUserName } from '../../../reducers';
 
-// const handleUserBlackList = () => {
-//
-// }
-
-const ReferralInstructions = props => {
-  props.getBlacklist('vallon').then(res => console.log('log: ', res));
-  console.log('authUserName: ', props.authUserName);
-  return null;
-};
+const ReferralInstructions = () => null;
 
 ReferralInstructions.propTypes = {
   getBlacklist: PropTypes.func.isRequired,
@@ -25,8 +16,4 @@ const mapStateToProps = state => ({
   authUserName: getAuthenticatedUserName(state),
 });
 
-export default injectIntl(
-  connect(mapStateToProps, {
-    getBlacklist,
-  })(ReferralInstructions),
-);
+export default injectIntl(connect(mapStateToProps, null)(ReferralInstructions));
