@@ -25,7 +25,7 @@ import {
 import { toggleBookmark } from '../bookmarks/bookmarksActions';
 import { editPost } from '../post/Write/editorActions';
 import { reblog } from '../app/Reblog/reblogActions';
-import { followUser, unfollowUser } from '../user/userActions';
+import { unfollowUser, followUser } from '../user/usersActions';
 
 const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
