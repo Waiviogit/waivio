@@ -313,7 +313,7 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
-    setListItems(sortListItemsBy(listItems, sort, sortOrder));
+    setListItems(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
   return (
