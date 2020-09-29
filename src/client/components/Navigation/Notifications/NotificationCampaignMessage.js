@@ -8,7 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationCampaignMessage = ({ notification, read, onClick }) => {
-  const currentRoute = notification.notSponsor ? 'history' : 'messages';
+  const currentRoute = notification.notSponsor ? 'messages' : 'history';
   const url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
   return (
     <Link
