@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -37,15 +37,8 @@ const ObjectCardView = ({
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
-  const getUrl = useMemo(() => {
-    if ((!wObject.avatar || wObject.avatar === DEFAULTS.AVATAR) && parent.avatar)
-      return parent.avatar;
-
-    return wObject.avatar;
-  }, [wObject.avatar, parent.avatar, DEFAULTS.AVATAR]);
-
   const avatarLayout = () => {
-    let url = getUrl;
+    let url = wObject.avatar || parent.avatar;
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
