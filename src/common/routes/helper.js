@@ -1,8 +1,10 @@
+import { isString } from 'lodash';
+
 const createNestedRouts = ({ pathScope, ...route }, path = '') => {
   let routePath;
   const mappedRoute = { ...route };
 
-  if (pathScope && !route.path) mappedRoute.path = pathScope;
+  if (isString(pathScope) && !route.path) mappedRoute.path = pathScope;
   else if (Array.isArray(route.path)) {
     routePath = route.path.map(rPath => path + rPath);
   } else {
@@ -11,9 +13,10 @@ const createNestedRouts = ({ pathScope, ...route }, path = '') => {
 
   if (routePath) mappedRoute.path = routePath;
 
-  if (route.routes) {
-    mappedRoute.routes = route.routes.map(a => createNestedRouts(a, pathScope || mappedRoute.path));
-  }
+  const currentPath = isString(pathScope) ? pathScope : mappedRoute.path;
+
+  if (route.routes) mappedRoute.routes = route.routes.map(a => createNestedRouts(a, currentPath));
+
   return mappedRoute;
 };
 
