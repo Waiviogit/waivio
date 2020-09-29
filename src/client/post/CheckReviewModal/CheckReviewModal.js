@@ -188,7 +188,7 @@ CheckReviewModal.propTypes = {
 CheckReviewModal.defaultProps = {
   isCheckReviewModalOpen: false,
   isReviewValid: false,
-  reviewData: null,
+  reviewData: {},
   linkedObjects: [],
 };
 

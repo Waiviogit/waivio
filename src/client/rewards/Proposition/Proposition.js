@@ -40,7 +40,6 @@ const Proposition = ({
   blacklistUsers,
   users,
   wobjPrice,
-  setReviewProposition,
 }) => {
   const getEligibility = proposition =>
     Object.values(proposition.requirement_filters).every(item => item === true);
@@ -261,7 +260,6 @@ const Proposition = ({
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
         isEligible={isEligible}
-        setReviewProposition={setReviewProposition}
       />
     </div>
   );
@@ -302,6 +300,5 @@ export default connect(
   }),
   {
     getSingleComment,
-    setReviewProposition,
   },
 )(injectIntl(Proposition));

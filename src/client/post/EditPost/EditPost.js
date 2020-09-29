@@ -11,13 +11,13 @@ import {
   kebabCase,
   throttle,
   uniqBy,
-  isEmpty,
   includes,
   find,
   indexOf,
   uniqWith,
   concat,
   isEqual,
+  isEmpty,
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
@@ -31,7 +31,6 @@ import {
   getSuitableLanguage,
   isGuestUser,
   getBeneficiariesUsers,
-  getReviewProposition,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, getInitialState, getObjectUrl } from '../../helpers/postHelpers';
@@ -45,7 +44,6 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getObjectName } from '../../helpers/wObjectHelper';
-import { setReviewProposition } from '../../rewards/rewardsActions';
 
 import './EditPost.less';
 
@@ -72,17 +70,16 @@ const getLinkedObjects = contentStateRaw => {
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
+    campaignId: new URLSearchParams(props.location.search).get('campaign'),
     draftId: new URLSearchParams(props.location.search).get('draft'),
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
     isGuest: isGuestUser(state),
     beneficiaries: getBeneficiariesUsers(state),
-    campaign: getReviewProposition(state),
   }),
   {
     createPost,
     saveDraft,
-    setReviewPropositionInState: setReviewProposition,
   },
 )
 class EditPost extends Component {
@@ -92,6 +89,7 @@ class EditPost extends Component {
     userName: PropTypes.string.isRequired,
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    campaignId: PropTypes.string, // eslint-disable-line
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
     saving: PropTypes.bool,
@@ -101,11 +99,10 @@ class EditPost extends Component {
     isGuest: PropTypes.bool,
     beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
-    campaign: PropTypes.shape().isRequired,
-    setReviewPropositionInState: PropTypes.func.isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
+    campaignId: '',
     draftId: '',
     publishing: false,
     saving: false,
@@ -147,28 +144,37 @@ class EditPost extends Component {
   }
 
   componentDidMount() {
-    const { campaign, setReviewPropositionInState, userName } = this.props;
+    const { campaign } = this.state;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
-    const campaignId = get(currDraft, ['jsonMetadata', 'campaignId']);
-    const isReview = !isEmpty(campaignId) && isEmpty(campaign);
+    const campaignId =
+      campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
+    const isReview = !isEmpty(campaignId);
 
-    if (isReview) {
+    if (isReview)
       getCampaignById(campaignId)
         .then(campaignData => {
           const secondaryObjectReservation = campaignData.users.find(
-            user => user.name === userName && user.status === 'assigned',
+            user => user.name === this.props.userName && user.status === 'assigned',
           );
           const secondaryObject = campaignData.objects.find(
             obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
           );
-
-          setReviewPropositionInState({
-            ...campaignData,
-            objects: [{ object: secondaryObject }],
-            required_object: campaignData.requiredObject,
+          this.setState({
+            campaign: {
+              ...campaignData,
+              objects: [{ object: secondaryObject }],
+              required_object: campaignData.requiredObject,
+            },
           });
         })
-        .then(() => setTimeout(() => this.getReviewTitle(), 400))
+        .then(() => {
+          const delay = 350;
+          if (this.state.linkedObjects.length === 2) {
+            setTimeout(() => this.getReviewTitle(), delay);
+          } else {
+            setTimeout(() => this.getReviewTitle(), delay * 2);
+          }
+        })
         .catch(error => {
           message.error(
             this.props.intl.formatMessage(
@@ -180,9 +186,32 @@ class EditPost extends Component {
             ),
           );
         });
-    }
+  }
 
-    setTimeout(() => this.getReviewTitle(), 400);
+  componentDidUpdate(prevProps) {
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    if (
+      this.props.draftId !== prevProps.draftId &&
+      has(currDraft, ['jsonMetadata', 'campaignId'])
+    ) {
+      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
+        .then(campaignData => {
+          const secondaryObjectReservation = campaignData.users.find(
+            user => user.name === this.props.userName && user.status === 'assigned',
+          );
+          const secondaryObject = campaignData.objects.find(
+            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
+          );
+          this.setState({
+            campaign: {
+              ...campaignData,
+              objects: [{ object: secondaryObject }],
+              required_object: campaignData.requiredObject,
+            },
+          });
+        })
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
   }
 
   getReviewTitle = () => {
@@ -190,6 +219,7 @@ class EditPost extends Component {
     const requiredObj = get(linkedObjects, '[0]', '');
     const secondObj = get(linkedObjects, '[1]', '');
     const reviewTitle = `Review: ${getObjectName(requiredObj)}, ${getObjectName(secondObj)}`;
+
     const topics = [];
     if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
       topics.push(requiredObj.author_permlink || secondObj.author_permlink);
@@ -203,26 +233,8 @@ class EditPost extends Component {
     });
   };
 
-  setCurrentDraftContent = debounce((nextState, rawContent) => {
-    const prevValue = get(this.state.currentRawContent, 'entityMap', []);
-    const nextValue = get(rawContent, 'entityMap', []);
-
-    const prevEntityMap = Object.values(prevValue);
-    const nextEntityMap = Object.values(nextValue);
-
-    if (!isEqual(prevEntityMap, nextEntityMap)) {
-      this.setState({
-        draftContent: {
-          body: nextState.content,
-        },
-        currentRawContent: rawContent,
-      });
-    }
-  }, 500);
-
   handleChangeContent(rawContent, title) {
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
-
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
       '_id',
@@ -240,7 +252,6 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
-      this.setCurrentDraftContent(nextState, rawContent);
     }
   }
 
@@ -261,9 +272,11 @@ class EditPost extends Component {
   };
 
   handleSubmit() {
-    const { history, intl, campaign } = this.props;
+    const { history, intl } = this.props;
+    const { campaign } = this.state;
     const postData = this.buildPost();
-    const isReview = !isEmpty(campaign) || includes(get(history, ['location', 'search']), 'review');
+    const isReview =
+      !isEmpty(this.state.campaign) || includes(get(history, ['location', 'search']), 'review');
     this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
@@ -315,6 +328,7 @@ class EditPost extends Component {
   buildPost() {
     const {
       draftId,
+      campaign,
       parentPermlink,
       content,
       topics,
@@ -326,7 +340,6 @@ class EditPost extends Component {
       originalBody,
       titleValue,
     } = this.state;
-    const { campaign } = this.props;
     const currentObject = get(linkedObjects, '[0]', {});
     const objName = currentObject.author_permlink;
     if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
@@ -400,10 +413,10 @@ class EditPost extends Component {
       linkedObjects,
       objPercentage,
       settings,
+      campaign,
       isUpdating,
       titleValue,
     } = this.state;
-    const { campaign } = this.props;
     const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
     return (
       <div className="shifted">
