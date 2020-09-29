@@ -1408,7 +1408,18 @@
   "referrals_instructions": "Instructions",
   "referrals_status": "Status",
   "referrals_details_title": "Referral program details:",
-  "referrals_details_description": "Waivio offers 40% of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of 90 days from their initial visit.",
+  "referrals_details_description": "Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of 90 days from their initial visit.",
   "referrals_details_commissions_title": "Referral commissions:",
-  "referrals_details_commissions_descriptions": "When sponsors post attention bids on the Hive blockchain, in addition to user rewards, they allocate 5% or more as Processing Fees for all the parties involved in posting, indexing, and presenting bids to eligible users. Waivio Campaign server offers {firstPercent} of these commissions to Index Servers. And Waivio’s Index Server offers {secondPercent} of its commissions to Referral partners. These terms can be changed by Waivio from time to time."
+  "referrals_details_commissions_descriptions": "When sponsors post attention bids on the Hive blockchain, in addition to user rewards, they allocate 5% or more as Processing Fees for all the parties involved in posting, indexing, and presenting bids to eligible users. Waivio Campaign server offers {firstPercent} of these commissions to Index Servers. And Waivio’s Index Server offers {secondPercent} of its commissions to Referral partners. These terms can be changed by Waivio from time to time.",
+  "referrals_details_commissions_example": "Example:",
+  "referrals_details_commissions_sponsor": "Sponsor offers a reward of $5.00 to eligible users and agrees to pay 5% as processing fees.",
+  "referrals_details_commissions_processing": "Processing fees ($0.25) will be distributed in the following way:",
+  "referrals_details_commissions_waivio_campaigns": "Waivio.campaigns ({percent}): {sum}",
+  "referrals_details_commissions_waivio_index": "Waivio.index ({percent}): {sum}",
+  "referrals_details_commissions_referrals": "Referrals ({percent}): {sum}",
+  "referrals_details_commissions_payments": "All payments are processed directly by the sponsors and the status of all payments can be checked on the {receivablesPage} page in the Rewards section. Please note that Waivio is not involved in the processing of payments and we only handle information relating to payment obligations between the parties. To ensure that sponsors pay rewards and processing fees on time, Waivio stops processing sponsor campaigns if they are overdue by 30 days or more.",
+  "referrals_details_commissions_payments_receivables": "Receivables",
+  "referrals_details_referral_period": "Referral period:",
+  "referrals_details_referral_sessions": "Waivio is using web sessions to attribute new users to referral parties. When users log in on Waivio for the first time (using Hive credentials or as a guest), the referral party is recorded and saved for a period of 90 days. During this period, the referral party will be recorded on all the rewards reserved and received by the user.",
+  "referrals_details_referral_partners": "Referral partners can check the list of users currently attributed to them on the {statusPage} page."
 }

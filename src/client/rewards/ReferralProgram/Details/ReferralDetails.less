@@ -1,0 +1,78 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+
+.ReferralDetail {
+  padding: 0 15px;
+  color: @black;
+  width: auto;
+
+  @media @small {
+    width: 700px;
+  }
+
+  &__title {
+    padding-bottom: 10px;
+  }
+
+  &__offer-percent {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  &__description {
+    padding-bottom: 20px;
+  }
+
+  &__commissions-title {
+    padding: 20px 0 10px;
+    font-weight: 600;
+  }
+
+  &__commissions-example {
+    padding: 10px 0 10px;
+  }
+
+  &__commissions-sponsor {
+    padding-bottom: 10px;
+  }
+
+  &__commissions-processing {
+    padding-bottom: 10px;
+  }
+
+  &__commissions-distribution {
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+    line-height: 30px;
+    padding-bottom: 10px;
+  }
+
+  &__commissions-payments {
+    padding-bottom: 20px;
+  }
+
+  &__commissions-payments {
+    &__receivables {
+      .referrals-link-button();
+    }
+  }
+
+  &__referral-period {
+    padding: 20px 0 10px;
+    font-weight: 600;
+  }
+
+  &__referral-sessions {
+    padding-bottom: 10px;
+  }
+
+  &__referral-partners {
+    &_status {
+      .referrals-link-button();
+    }
+  }
+}
+
+@import 'ReferralDetails-nightmode';

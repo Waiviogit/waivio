@@ -782,7 +782,6 @@ export const buttonsTitle = {
 };
 
 export const getBreadCrumbText = (intl, location, filterKey, rewardText) => {
-  console.log('location: ', location);
   if (location === PATH_NAME_MESSAGES) {
     return intl.formatMessage({
       id: MESSAGES,
