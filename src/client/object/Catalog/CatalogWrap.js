@@ -41,6 +41,7 @@ const CatalogWrap = props => {
   const [sort, setSorting] = useState('recency');
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
+  const [currentWobject, setCurrentWobject] = useState({});
 
   const getPropositions = ({ username, match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
@@ -63,11 +64,13 @@ const CatalogWrap = props => {
       match,
       location: { hash },
     } = props;
-
+    console.log(wobject);
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
+          console.log(wObject);
+          setCurrentWobject(wObject);
           const requiredObject = wObject.author_permlink;
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
@@ -312,7 +315,7 @@ const CatalogWrap = props => {
     setSorting(sortType);
     setListItems(sortListItemsBy(listItems, sort, sortOrder));
   };
-
+  console.log(currentWobject);
   return (
     <div>
       {!hasType(wobject, OBJ_TYPE.PAGE) && (
@@ -320,7 +323,7 @@ const CatalogWrap = props => {
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
             <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
+              <AddItemModal wobject={currentWobject} onAddItem={handleAddItem} />
             </div>
           )}
           {loadingPropositions || isEmpty(wobject) ? (
