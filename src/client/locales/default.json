@@ -1406,5 +1406,9 @@
   "referrals": "Referrals",
   "referrals_details": "Details",
   "referrals_instructions": "Instructions",
-  "referrals_status": "Status"
+  "referrals_status": "Status",
+  "referrals_details_title": "Referral program details:",
+  "referrals_details_description": "Waivio offers 40% of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of 90 days from their initial visit.",
+  "referrals_details_commissions_title": "Referral commissions:",
+  "referrals_details_commissions_descriptions": "When sponsors post attention bids on the Hive blockchain, in addition to user rewards, they allocate 5% or more as Processing Fees for all the parties involved in posting, indexing, and presenting bids to eligible users. Waivio Campaign server offers {firstPercent} of these commissions to Index Servers. And Waivio’s Index Server offers {secondPercent} of its commissions to Referral partners. These terms can be changed by Waivio from time to time."
 }
