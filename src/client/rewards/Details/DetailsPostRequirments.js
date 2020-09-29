@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import getDetailsMessages from './detailsMessagesData';
+import { getObjectName } from '../../helpers/wObjectHelper';
 import './Details.less';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
-  const proposedWobjName = getFieldWithMaxWeight(proposedWobj, 'name');
+  const proposedWobjName = getObjectName(proposedWobj);
   let indexItem = 1;
   return (
     <React.Fragment>
