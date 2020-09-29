@@ -28,7 +28,7 @@ import NotificationClaimReward from './NotificationClaimReward';
 import NotificationPostBell from './NotificationPostBell';
 import NotificationReblogBell from './NotificationReblogBell';
 import NotificationFollowBell from './NotificationFollowBell';
-import NotificationCustomerSupport from './NotificationCustomerSupport';
+import NotificationCampaignMessage from './NotificationCampaignMessage';
 import NotificationLikes from './NotificationLikes';
 import NotificationMyLike from './NotificationMyLike';
 import NotificationMyComment from './NotificationMyComment';
@@ -370,9 +370,9 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
-              case notificationConstants.CUSTOMER_SUPPORT:
+              case notificationConstants.CAMPAIGN_MESSAGE:
                 return (
-                  <NotificationCustomerSupport
+                  <NotificationCampaignMessage
                     key={key}
                     notification={notification}
                     read={read}
