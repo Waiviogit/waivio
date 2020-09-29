@@ -61,6 +61,8 @@ import {
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
   IS_RESERVED,
+  IS_ALL,
+  IS_ACTIVE,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -912,6 +914,7 @@ class Rewards extends React.Component {
     const campaignsObjectsForMap =
       campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
+
     return (
       <div className="Rewards">
         <div className="shifted">
@@ -948,7 +951,7 @@ class Rewards extends React.Component {
               <MobileNavigation />
               {renderedRoutes}
             </div>
-            {(match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_RECEIVABLES) && (
+            {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
@@ -963,7 +966,7 @@ class Rewards extends React.Component {
                 </div>
               </Affix>
             )}
-            {match.path === '/rewards/:filterKey/:campaignParent?' && (
+            {(filterKey === IS_RESERVED || filterKey === IS_ALL || filterKey === IS_ACTIVE) && (
               <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   {!isEmpty(userLocation) && !isCreate && (
