@@ -31,21 +31,12 @@ const Payment = ({
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
-  const payables = get(match, ['params', '0']);
+  const payables = get(match, ['params', '0']) === 'payables';
 
-  const getRequestParams = () => {
-    if (reservationPermlink || payables) {
-      return {
-        sponsor: payables ? match.params.userName : userName,
-        user: payables ? userName : match.params.userName,
-      };
-    }
-
-    return {
-      sponsor: payables ? userName : match.params.userName,
-      user: payables ? match.params.userName : userName,
-    };
-  };
+  const getRequestParams = () => ({
+    sponsor: reservationPermlink || payables ? userName : match.params.userName,
+    user: reservationPermlink || payables ? match.params.userName : userName,
+  });
 
   const isReceiverGuest = guestUserRegex.test(match.params.userName);
   const pathRecivables = includes(match.path, 'receivables');

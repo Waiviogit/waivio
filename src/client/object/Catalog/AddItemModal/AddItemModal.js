@@ -89,7 +89,7 @@ class AddItemModal extends Component {
         const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.author_permlink}`;
         const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${getObjectName(
           selectedItem,
-        )} (type: ${selectedItem.object_type})](${objectUrl})`;
+        )} (type: ${selectedItem.object_type || selectedItem.type})](${objectUrl})`;
         const fieldContent = {
           name: 'listItem',
           body: selectedItem.author_permlink,
