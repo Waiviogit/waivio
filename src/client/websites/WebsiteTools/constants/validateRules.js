@@ -18,11 +18,13 @@ export default {
   politics: [
     {
       required: true,
-      message: 'Field is required',
+      message: 'Should accept agreement',
     },
+  ],
+  autocomplete: [
     {
-      validator: (_, value) =>
-        value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+      required: true,
+      message: 'Field is required',
     },
   ],
 };

@@ -100,5 +100,9 @@
   "getField": "/getField",
   "showMoreTags": "/showMoreTags",
   "setSentryNotify": "/sentry",
-  "sentryAppName": "waivio"
+  "sentryAppName": "waivio",
+  "sites": "/sites",
+  "getParents": "/getParents",
+  "create": "/create",
+  "checkAvailable": "/checkAvailable"
 }

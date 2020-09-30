@@ -24,6 +24,7 @@ import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
+import websiteReducer, * as fromWebsite from './websites/websiteReducer';
 
 export default history =>
   combineReducers({
@@ -50,6 +51,7 @@ export default history =>
     gallery: galleryReducer,
     map: mapReducer,
     rewards: rewardsReducer,
+    website: websiteReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -309,3 +311,6 @@ export const getSuitableLanguage = state => {
   const usedLocale = getUsedLocale(state);
   return usedLocale || 'en-US';
 };
+
+// website
+export const getParentDomain = state => fromWebsite.getParentDomain(state.website);

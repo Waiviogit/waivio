@@ -1518,4 +1518,27 @@ export const sendSentryNotification = async () => {
   }
 };
 
+//websites
+
+export const getDomainList = () => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.getParents}`, {
+    method: 'GET',
+  })
+    .then(r => r.json())
+    .catch(err => err);
+};
+
+export const createWebsite = () => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+  });
+};
+
+export const checkAvailable = (name, parent) => {
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+  );
+};
+
 export default null;
