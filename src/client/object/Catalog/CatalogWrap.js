@@ -12,7 +12,11 @@ import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
+import {
+  getSuitableLanguage,
+  getAuthenticatedUserName,
+  getWobjectBreadCrumbs,
+} from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
@@ -34,6 +38,7 @@ const CatalogWrap = props => {
 
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
+  const currentWobject = useSelector(getWobjectBreadCrumbs);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
@@ -41,7 +46,6 @@ const CatalogWrap = props => {
   const [sort, setSorting] = useState('recency');
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
-  const [currentWobject, setCurrentWobject] = useState({});
 
   const getPropositions = ({ username, match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
@@ -69,8 +73,6 @@ const CatalogWrap = props => {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          console.log(wObject);
-          setCurrentWobject(wObject);
           const requiredObject = wObject.author_permlink;
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
@@ -316,7 +318,7 @@ const CatalogWrap = props => {
     setListItems(sortListItemsBy(listItems, sort, sortOrder));
   };
 
-return (
+  return (
     <div>
       {!hasType(wobject, OBJ_TYPE.PAGE) && (
         <React.Fragment>
