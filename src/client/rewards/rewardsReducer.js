@@ -19,6 +19,12 @@ const initialState = {
   hasMoreFollowingRewards: false,
   loading: false,
   isStartLoadingReferralDetails: false,
+  campaignServerPercent: null,
+  indexAbsolutePercent: null,
+  indexServerPercent: null,
+  referralDuration: null,
+  referralServerPercent: null,
+  suspendedTimer: null,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -72,6 +78,12 @@ const rewardsReducer = (state = initialState, action) => {
     case GET_USER_REFERRAL_DETAILS.SUCCESS: {
       return {
         ...state,
+        campaignServerPercent: action.payload.campaignServerPercent,
+        indexAbsolutePercent: action.payload.indexAbsolutePercent,
+        indexServerPercent: action.payload.indexServerPercent,
+        referralDuration: action.payload.referralDuration,
+        referralServerPercent: action.payload.referralServerPercent,
+        suspendedTimer: action.payload.suspendedTimer,
         isStartLoadingReferralDetails: false,
       };
     }
@@ -93,3 +105,12 @@ export const getCommentsFromReserved = state => state.reservedComments;
 export const getSponsorsRewards = state => state.followingRewards;
 export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
 export const getIsLoading = state => state.loading;
+
+// Referrals
+export const getCampaignServerPercent = state => state.campaignServerPercent;
+export const getIndexAbsolutePercent = state => state.indexAbsolutePercent;
+export const getIndexServerPercent = state => state.indexServerPercent;
+export const getReferralDuration = state => state.referralDuration;
+export const getReferralServerPercent = state => state.referralServerPercent;
+export const getSuspendedTimer = state => state.suspendedTimer;
+export const getIsStartLoadingReferralDetails = state => state.isStartLoadingReferralDetails;

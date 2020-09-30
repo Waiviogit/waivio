@@ -297,6 +297,17 @@ export const getHasMoreFollowingRewards = state =>
   fromRewards.getHasMoreFollowingRewards(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
 
+export const getCampaignServerPercent = state =>
+  fromRewards.getCampaignServerPercent(state.rewards);
+export const getIndexAbsolutePercent = state => fromRewards.getIndexAbsolutePercent(state.rewards);
+export const getIndexServerPercent = state => fromRewards.getIndexServerPercent(state.rewards);
+export const getReferralDuration = state => fromRewards.getReferralDuration(state.rewards);
+export const getReferralServerPercent = state =>
+  fromRewards.getReferralServerPercent(state.rewards);
+export const getSuspendedTimer = state => fromRewards.getSuspendedTimer(state.rewards);
+export const getIsStartLoadingReferralDetails = state =>
+  fromRewards.getIsStartLoadingReferralDetails(state.rewards);
+
 // common selectors
 
 export const getCurrentLocation = state => state.router.location;

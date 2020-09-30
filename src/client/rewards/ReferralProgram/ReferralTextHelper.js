@@ -1,6 +1,12 @@
 import { FormattedMessage } from 'react-intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  handleFeesValue,
+  handleOffersPercent,
+  handleOffersReward,
+  handleProcessingFees,
+} from './ReferralHelper';
 
 // eslint-disable-next-line import/prefer-default-export
 export const referralDetailContent = data => {
@@ -8,13 +14,15 @@ export const referralDetailContent = data => {
     firstPercent,
     secondPercent,
     campaignPercent,
-    campaignSum,
     indexPercent,
-    indexSum,
     referralsPercent,
-    referralsSum,
-    referalDuration,
+    referralDuration,
+    waivioOffers,
+    additionData,
+    suspendedTimer,
   } = data;
+
+  const { offersReward, offersPercent, feesValue } = additionData;
   return {
     detailTitle: (
       <FormattedMessage id="referrals_details_title" defaultMessage="Referral program details:" />
@@ -22,10 +30,10 @@ export const referralDetailContent = data => {
     detailDescription: (
       <FormattedMessage
         id="referrals_details_description"
-        defaultMessage="Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of {referalDuration} days from their initial visit."
+        defaultMessage="Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of {referralDuration} days from their initial visit."
         values={{
-          countOffers: <span className="ReferralDetail__offer-percent">40%</span>,
-          referalDuration,
+          countOffers: <span className="ReferralDetail__offer-percent">{waivioOffers}%</span>,
+          referralDuration,
         }}
       />
     ),
@@ -51,13 +59,20 @@ export const referralDetailContent = data => {
     detailsCommissionsSponsor: (
       <FormattedMessage
         id="referrals_details_commissions_sponsor"
-        defaultMessage="Sponsor offers a reward of $5.00 to eligible users and agrees to pay 5% as processing fees."
+        defaultMessage="Sponsor offers a reward of {offersReward} to eligible users and agrees to pay {offersPercent} as processing fees."
+        values={{
+          offersReward: handleOffersReward(offersReward),
+          offersPercent: handleOffersPercent(offersPercent),
+        }}
       />
     ),
     detailsCommissionsProcessing: (
       <FormattedMessage
         id="referrals_details_commissions_processing"
-        defaultMessage="Processing fees ($0.25) will be distributed in the following way:"
+        defaultMessage="Processing fees ({feesValue}) will be distributed in the following way:"
+        values={{
+          feesValue: handleFeesValue(feesValue),
+        }}
       />
     ),
     detailsCommissionsWaivioCampaign: (
@@ -65,8 +80,8 @@ export const referralDetailContent = data => {
         id="referrals_details_commissions_waivio_campaigns"
         defaultMessage="Waivio.campaigns ({percent}): {sum}"
         values={{
-          percent: campaignPercent,
-          sum: campaignSum,
+          percent: handleOffersPercent(campaignPercent),
+          sum: handleProcessingFees(offersReward, campaignPercent),
         }}
       />
     ),
@@ -75,8 +90,8 @@ export const referralDetailContent = data => {
         id="referrals_details_commissions_waivio_index"
         defaultMessage="Waivio.index ({percent}): {sum}"
         values={{
-          percent: indexPercent,
-          sum: indexSum,
+          percent: handleOffersPercent(indexPercent),
+          sum: handleProcessingFees(offersReward, indexPercent),
         }}
       />
     ),
@@ -85,15 +100,15 @@ export const referralDetailContent = data => {
         id="referrals_details_commissions_referrals"
         defaultMessage="Referrals ({percent}): {sum}"
         values={{
-          percent: referralsPercent,
-          sum: referralsSum,
+          percent: handleOffersPercent(referralsPercent),
+          sum: handleProcessingFees(offersReward, referralsPercent),
         }}
       />
     ),
     detailsCommissionsPayments: (
       <FormattedMessage
         id="referrals_details_commissions_payments"
-        defaultMessage="All payments are processed directly by the sponsors and the status of all payments can be checked on the {receivablesPage} page in the Rewards section. Please note that Waivio is not involved in the processing of payments and we only handle information relating to payment obligations between the parties. To ensure that sponsors pay rewards and processing fees on time, Waivio stops processing sponsor campaigns if they are overdue by 30 days or more."
+        defaultMessage="All payments are processed directly by the sponsors and the status of all payments can be checked on the {receivablesPage} page in the Rewards section. Please note that Waivio is not involved in the processing of payments and we only handle information relating to payment obligations between the parties. To ensure that sponsors pay rewards and processing fees on time, Waivio stops processing sponsor campaigns if they are overdue by {suspendedTimer} days or more."
         values={{
           receivablesPage: (
             <Link to={`/rewards/receivables`}>
@@ -105,6 +120,7 @@ export const referralDetailContent = data => {
               </span>
             </Link>
           ),
+          suspendedTimer,
         }}
       />
     ),

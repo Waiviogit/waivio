@@ -3,25 +3,53 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { referralDetailContent } from '../ReferralTextHelper';
+import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
 
 import './ReferralDetails.less';
 import { getUserReferralDetails } from '../../rewardsActions';
+import {
+  getCampaignServerPercent,
+  getIndexAbsolutePercent,
+  getIndexServerPercent,
+  getIsStartLoadingReferralDetails,
+  getReferralDuration,
+  getReferralServerPercent,
+  getSuspendedTimer,
+} from '../../../reducers';
+
+const additionData = {
+  offersReward: 5,
+  offersPercent: 5,
+  feesValue: null,
+};
 
 const ReferralDetail = props => {
+  const {
+    campaignServerPercent,
+    indexAbsolutePercent,
+    indexServerPercent,
+    referralDuration,
+    referralServerPercent,
+    suspendedTimer,
+  } = props;
   useEffect(() => {
-    console.log('details: ', props);
+    props.getReferralDetails();
   }, []);
 
+  useEffect(() => {
+    additionData.feesValue = getCurrentFeesValue(additionData.offersReward);
+  }, [additionData.feesValue]);
+
   const data = {
-    firstPercent: '50%',
-    secondPercent: '80%',
-    campaignPercent: '0%',
-    campaignSum: '$0',
-    indexPercent: '0%',
-    indexSum: '$0',
-    referralsPercent: '0%',
-    referralsSum: '$0',
-    referalDuration: 90,
+    firstPercent: getCurrentOfferPercent(campaignServerPercent),
+    secondPercent: getCurrentOfferPercent(indexAbsolutePercent),
+    campaignPercent: campaignServerPercent,
+    indexPercent: indexServerPercent,
+    referralsPercent: referralServerPercent,
+    referralDuration,
+    waivioOffers: referralServerPercent,
+    additionData,
+    suspendedTimer,
   };
   const {
     detailTitle,
@@ -72,12 +100,37 @@ ReferralDetail.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  getReferralDetails: PropTypes.func.isRequired,
+  campaignServerPercent: PropTypes.number,
+  indexAbsolutePercent: PropTypes.number,
+  indexServerPercent: PropTypes.number,
+  referralDuration: PropTypes.number,
+  referralServerPercent: PropTypes.number,
+  suspendedTimer: PropTypes.number,
 };
 
-ReferralDetail.defaultProps = {};
+ReferralDetail.defaultProps = {
+  isStartLoadingReferralDetails: false,
+  campaignServerPercent: null,
+  indexAbsolutePercent: null,
+  indexServerPercent: null,
+  referralDuration: null,
+  referralServerPercent: null,
+  suspendedTimer: null,
+};
 
 const mapStateToProps = state => ({
-  getReferralDetails: getUserReferralDetails(state),
+  campaignServerPercent: getCampaignServerPercent(state),
+  indexAbsolutePercent: getIndexAbsolutePercent(state),
+  indexServerPercent: getIndexServerPercent(state),
+  referralDuration: getReferralDuration(state),
+  referralServerPercent: getReferralServerPercent(state),
+  suspendedTimer: getSuspendedTimer(state),
+  isStartLoadingReferralDetails: getIsStartLoadingReferralDetails(state),
 });
 
-export default injectIntl(connect(mapStateToProps, null)(ReferralDetail));
+export default injectIntl(
+  connect(mapStateToProps, {
+    getReferralDetails: getUserReferralDetails,
+  })(ReferralDetail),
+);
