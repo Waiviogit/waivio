@@ -26,14 +26,14 @@ const ObjectCardView = ({
   const address = parseAddress(wObject);
 
   useEffect(() => {
-    if (wObject.tagCategories && wObject.tagCategories.length) {
-      const currentTags = wObject.tagCategories
-        .map(category => category.categoryItems)
-        .filter(categoryItems => !!categoryItems.length)
-        .map(items => orderBy(items, ['weight', 'name'])[0].name);
+    if (wObject && wObject.tagCategory) {
+      const currentTags = wObject.tagCategory
+        .map(category => category.items)
+        .filter(items => !!items.length)
+        .map(items => orderBy(items, ['weight', 'tagCategory'])[0].tagCategory);
       setTags(currentTags);
     } else setTags([wObject.object_type]);
-  }, []);
+  }, [wObject, setTags]);
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
