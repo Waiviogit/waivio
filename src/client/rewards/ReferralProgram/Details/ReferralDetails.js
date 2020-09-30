@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { referralDetailContent } from '../ReferralTextHelper';
 
 import './ReferralDetails.less';
+import { getUserReferralDetails } from '../../rewardsActions';
 
-const ReferralDetail = () => {
+const ReferralDetail = props => {
+  useEffect(() => {
+    console.log('details: ', props);
+  }, []);
+
   const data = {
     firstPercent: '50%',
     secondPercent: '80%',
@@ -16,6 +21,7 @@ const ReferralDetail = () => {
     indexSum: '$0',
     referralsPercent: '0%',
     referralsSum: '$0',
+    referalDuration: 90,
   };
   const {
     detailTitle,
@@ -71,7 +77,7 @@ ReferralDetail.propTypes = {
 ReferralDetail.defaultProps = {};
 
 const mapStateToProps = state => ({
-  empty: `${state}`,
+  getReferralDetails: getUserReferralDetails(state),
 });
 
 export default injectIntl(connect(mapStateToProps, null)(ReferralDetail));

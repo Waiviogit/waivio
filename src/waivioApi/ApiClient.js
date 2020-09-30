@@ -1518,4 +1518,16 @@ export const sendSentryNotification = async () => {
   }
 };
 
+export const getReferralDetails = () =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.referrals}/details?appName=${config.appName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;

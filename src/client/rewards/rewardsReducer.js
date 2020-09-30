@@ -3,6 +3,7 @@ import {
   SET_DATA_FOR_SINGLE_REPORT,
   GET_REWARDS_GENERAL_COUNTS,
   GET_FOLLOWING_SPONSORS_REWARDS,
+  GET_USER_REFERRAL_DETAILS,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -17,6 +18,7 @@ const initialState = {
   followingRewards: [],
   hasMoreFollowingRewards: false,
   loading: false,
+  isStartLoadingReferralDetails: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -59,6 +61,18 @@ const rewardsReducer = (state = initialState, action) => {
         loading: false,
         followingRewards: state.followingRewards.concat(campaigns),
         hasMoreFollowingRewards: hasMore,
+      };
+    }
+    case GET_USER_REFERRAL_DETAILS.START: {
+      return {
+        ...state,
+        isStartLoadingReferralDetails: true,
+      };
+    }
+    case GET_USER_REFERRAL_DETAILS.SUCCESS: {
+      return {
+        ...state,
+        isStartLoadingReferralDetails: false,
       };
     }
     default:

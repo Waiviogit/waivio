@@ -100,5 +100,6 @@
   "getField": "/getField",
   "showMoreTags": "/showMoreTags",
   "setSentryNotify": "/sentry",
-  "sentryAppName": "waivio"
+  "sentryAppName": "waivio",
+  "referrals": "/referrals"
 }

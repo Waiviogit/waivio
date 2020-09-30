@@ -13,6 +13,7 @@ export const referralDetailContent = data => {
     indexSum,
     referralsPercent,
     referralsSum,
+    referalDuration,
   } = data;
   return {
     detailTitle: (
@@ -21,9 +22,10 @@ export const referralDetailContent = data => {
     detailDescription: (
       <FormattedMessage
         id="referrals_details_description"
-        defaultMessage="Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of 90 days from their initial visit."
+        defaultMessage="Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of {referalDuration} days from their initial visit."
         values={{
           countOffers: <span className="ReferralDetail__offer-percent">40%</span>,
+          referalDuration,
         }}
       />
     ),
