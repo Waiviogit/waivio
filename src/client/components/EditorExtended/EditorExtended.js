@@ -16,7 +16,6 @@ import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import { getClientWObj } from '../../adapters';
 import ObjectLink, { findObjEntities } from './components/entities/objectlink';
 import Link from './components/entities/link';
 
@@ -158,9 +157,7 @@ class Editor extends React.Component {
 
         entityMap[key] = {
           ...value,
-          data: loadedObject
-            ? { ...value.data, object: getClientWObj(loadedObject, this.props.locale) }
-            : { ...value.data },
+          data: loadedObject ? { ...value.data, object: loadedObject } : { ...value.data },
         };
       });
       const rawContentUpdated = {
