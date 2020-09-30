@@ -1198,13 +1198,20 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount, memo }) => {
+export const sendGuestTransfer = async ({ to, amount, memo, app }) => {
   const userData = await getValidTokenData();
+  const overpaymentRefund = includes(memo, 'overpayment_refund');
   const body = {
-    id: 'waivio_guest_transfer',
+    id: overpaymentRefund ? 'overpayment_refund' : 'waivio_guest_transfer',
     data: { to, amount: +amount.split(' ')[0] },
   };
-  if (memo) body.data.memo = memo;
+  if (app) body.app = app;
+  if (memo && !overpaymentRefund) {
+    body.data.memo = memo;
+  } else {
+    body.data.memo = '';
+  }
+
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },

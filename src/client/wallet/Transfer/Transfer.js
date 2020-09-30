@@ -97,7 +97,6 @@ export default class Transfer extends React.Component {
     openLinkHiveAccountModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
-    history: PropTypes.shape().isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
   };
@@ -263,12 +262,16 @@ export default class Transfer extends React.Component {
       amount,
       to,
       user,
-      history,
+      match,
       getPayables,
     } = this.props;
+    const matchPath = get(match, ['params', '0']);
+    const params = ['payables', 'receivables'];
     const sponsor = user.name;
     const transactionId = uuidv4();
     const userName = to;
+    const overpaymentRefund = includes(memo, 'overpayment_refund');
+
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -285,6 +288,7 @@ export default class Transfer extends React.Component {
         }
 
         if (app) transferQuery.memo.app = app;
+        if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (values.memo) transferQuery.memo.message = values.memo;
         if (transferQuery.memo) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
@@ -313,9 +317,9 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        if (includes(history.location.pathname, 'payables')) {
+        if (includes(params, matchPath)) {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
-          setTimeout(() => getPayables(), 500);
+          setTimeout(() => getPayables(), 1000);
         }
         this.props.closeTransfer();
       }
