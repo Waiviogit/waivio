@@ -266,6 +266,7 @@ export default class Transfer extends React.Component {
       getPayables,
     } = this.props;
     const matchPath = get(match, ['params', '0']);
+    const params = ['payables', 'receivables'];
     const sponsor = user.name;
     const transactionId = uuidv4();
     const userName = to;
@@ -316,7 +317,7 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        if (matchPath === 'payables' || matchPath === 'receivables') {
+        if (includes(matchPath, params)) {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
           setTimeout(() => getPayables(), 1000);
         }
