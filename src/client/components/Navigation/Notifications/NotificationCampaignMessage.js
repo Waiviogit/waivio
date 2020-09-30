@@ -8,6 +8,7 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationCampaignMessage = ({ notification, read, onClick }) => {
+  // Todo: проблема в guideName. Если !notification.notSponsor то гида не передавать
   const currentRoute = notification.notSponsor ? 'messages' : 'history';
   const url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
   return (
@@ -21,20 +22,30 @@ const NotificationCampaignMessage = ({ notification, read, onClick }) => {
       <Avatar username={notification.author} size={40} />
       <div className="Notification__text">
         <div className="Notification__text__message">
-          <FormattedMessage
-            id="customer_support"
-            defaultMessage="{author} asked about {campaignName}"
-            values={{
-              author: <span className="username">{notification.author}</span>,
-              campaignName: (
-                <span>
-                  {notification.campaignName || (
-                    <FormattedMessage id="notify_campaign" defaultMessage="campaign" />
-                  )}
-                </span>
-              ),
-            }}
-          />
+          {notification.notSponsor ? (
+            <FormattedMessage
+              id="customer_support"
+              defaultMessage="{author} asked about {campaignName}"
+              values={{
+                author: <span className="username">{notification.author}</span>,
+                campaignName: (
+                  <span>
+                    {notification.campaignName || (
+                      <FormattedMessage id="notify_campaign" defaultMessage="campaign" />
+                    )}
+                  </span>
+                ),
+              }}
+            />
+          ) : (
+            <FormattedMessage
+              id="campaign_message_reply"
+              defaultMessage="{author} replied on your comment"
+              values={{
+                author: <span className="username">{notification.author}</span>,
+              }}
+            />
+          )}
         </div>
         <div className="Notification__text__date">
           <FormattedRelative value={epochToUTC(notification.timestamp)} />

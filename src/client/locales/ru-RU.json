@@ -1404,5 +1404,6 @@
   "toolbar_link": "Вставьте ссылку и нажмите Enter",
   "administrative": "Администратор",
   "ownership": "Владелец",
-  "claim_authority": "Заявить о полномочиях"
+  "claim_authority": "Заявить о полномочиях",
+  "campaign_message_reply": "{author} ответил на ваш комментарий"
 }
