@@ -22,7 +22,6 @@ import {
   objectFields,
   TYPES_OF_MENU_ITEM,
   linkFields,
-  objectTypes,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
@@ -278,6 +277,7 @@ class ObjectInfo extends React.Component {
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
+    const isList = hasType(wobject, OBJECT_TYPE.LIST);
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort)) {
@@ -304,12 +304,12 @@ class ObjectInfo extends React.Component {
 
       return (
         <React.Fragment>
-          {isEditMode && wobject.object_type !== objectTypes.LIST && (
+          {isEditMode && !isList && (
             <div className="object-sidebar__section-title">
               <FormattedMessage id="menu" defaultMessage="Menu" />
             </div>
           )}
-          {wobject.object_type !== objectTypes.LIST && (
+          {!isList && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
                 {this.listItem(
