@@ -20,7 +20,7 @@ const CatalogBreadcrumb = props => {
   const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
 
   /**
-   * @param wObject : [{}]
+   * @param wObject : {}
    * Will be set breadcrumbs and write in localStorage
    */
   const handleChangeBreadCrumbs = wObject => {
@@ -31,7 +31,7 @@ const CatalogBreadcrumb = props => {
     const findWobj = crumb => crumb.id === wObject.author_permlink;
 
     if (hashStorage === props.location.hash && !isEmpty(breadcrumbStorage)) {
-      dispatch(setCatalogBreadCrumbs(breadcrumbStorage));
+      currentBreadCrumbs = breadcrumbStorage;
     } else {
       const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
       if (findBreadCrumbs) {
@@ -48,8 +48,8 @@ const CatalogBreadcrumb = props => {
           },
         ];
       }
-      dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
     }
+    dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
     store.set('breadcrumb', currentBreadCrumbs);
     store.set('hash', props.location.hash);
   };
