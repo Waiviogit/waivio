@@ -7,8 +7,8 @@ import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
 import DetailsPostRequirments from './DetailsPostRequirments';
-import './Details.less';
 import { getObjectName } from '../../helpers/wObjectHelper';
+import './Details.less';
 
 const Details = ({
   intl,
