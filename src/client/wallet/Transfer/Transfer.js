@@ -317,7 +317,7 @@ export default class Transfer extends React.Component {
           win.focus();
         }
 
-        if (includes(matchPath, params)) {
+        if (includes(params, matchPath)) {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
           setTimeout(() => getPayables(), 1000);
         }
