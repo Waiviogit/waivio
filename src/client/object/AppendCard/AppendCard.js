@@ -24,7 +24,6 @@ import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
 import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
-import { objectFields } from '../../../common/constants/listOfFields';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
@@ -105,16 +104,10 @@ const AppendCard = props => {
     props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
   }
 
-  const fieldName =
-    props.post.name === objectFields.listItem
-      ? {
-          id: `object_field_${props.post.name}_${props.post.type}`,
-          defaultMessage: `Menu item-${props.post.type}`,
-        }
-      : {
-          id: `object_field_${props.post.name}`,
-          defaultMessage: props.post.name,
-        };
+  const fieldName = {
+    id: `object_field_${props.post.name}`,
+    defaultMessage: props.post.name,
+  };
 
   return (
     <div className="Story">
