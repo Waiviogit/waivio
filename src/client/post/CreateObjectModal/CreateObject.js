@@ -140,7 +140,9 @@ class CreateObject extends React.Component {
                   '',
                   {
                     name: objectFields.parent,
-                    body: this.props.parentObject.author_permlink,
+                    body:
+                      this.props.parentObject.parent.author_permlink ||
+                      this.props.parentObject.author_permlink,
                     locale: values.locale,
                   },
                 ),
