@@ -38,7 +38,7 @@ const ObjectCardView = ({
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || parent.avatar;
+    let url = wObject.avatar || parent.avatar || parent.parent.avatar;
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
