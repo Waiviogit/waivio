@@ -1,0 +1,25 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
+
+.ReferralInstructions {
+  .referrals-main-styles();
+
+  &__title {
+    padding-bottom: 10px;
+  }
+
+  &__description {
+    padding-bottom: 10px;
+  }
+
+  &__is-blacklist {
+    color: @black;
+
+    &__referral-username {
+      .referrals-link-button();
+    }
+  }
+}
+
+@import 'ReferralsInstructions-nightmode';

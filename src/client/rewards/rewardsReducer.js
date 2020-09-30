@@ -4,6 +4,7 @@ import {
   GET_REWARDS_GENERAL_COUNTS,
   GET_FOLLOWING_SPONSORS_REWARDS,
   GET_USER_REFERRAL_DETAILS,
+  GET_IS_USER_IN_BLACKLIST,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -25,6 +26,7 @@ const initialState = {
   referralDuration: null,
   referralServerPercent: null,
   suspendedTimer: null,
+  isUserInWaivioBlackList: false,
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -87,6 +89,13 @@ const rewardsReducer = (state = initialState, action) => {
         isStartLoadingReferralDetails: false,
       };
     }
+    case GET_IS_USER_IN_BLACKLIST.SUCCESS: {
+      console.log('action.payload: ', action.payload);
+      return {
+        ...state,
+        isUserInWaivioBlackList: action.payload.isBlacklisted,
+      };
+    }
     default:
       return state;
   }
@@ -114,3 +123,4 @@ export const getReferralDuration = state => state.referralDuration;
 export const getReferralServerPercent = state => state.referralServerPercent;
 export const getSuspendedTimer = state => state.suspendedTimer;
 export const getIsStartLoadingReferralDetails = state => state.isStartLoadingReferralDetails;
+export const getIsUserInWaivioBlackList = state => state.isUserInWaivioBlackList;

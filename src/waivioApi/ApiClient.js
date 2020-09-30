@@ -1530,4 +1530,19 @@ export const getReferralDetails = () =>
       .catch(error => reject(error));
   });
 
+export const getUserIsBlackListed = username =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.referrals}/check-user-app-blacklist?userName=${username}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;

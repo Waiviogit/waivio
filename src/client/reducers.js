@@ -307,6 +307,8 @@ export const getReferralServerPercent = state =>
 export const getSuspendedTimer = state => fromRewards.getSuspendedTimer(state.rewards);
 export const getIsStartLoadingReferralDetails = state =>
   fromRewards.getIsStartLoadingReferralDetails(state.rewards);
+export const getIsUserInWaivioBlackList = state =>
+  fromRewards.getIsUserInWaivioBlackList(state.rewards);
 
 // common selectors
 

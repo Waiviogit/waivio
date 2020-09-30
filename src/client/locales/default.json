@@ -1405,7 +1405,6 @@
   "claim_authority": "Claim authority",
   "referrals": "Referrals",
   "referrals_details": "Details",
-  "referrals_instructions": "Instructions",
   "referrals_status": "Status",
   "referrals_details_title": "Referral program details:",
   "referrals_details_description": "Waivio offers {countOffers} of its combined processing fees to referral parties for brining new users to Waivio.com. These commissions will be paid on all the sponsored rewards for these users for a period of {referralDuration} days from their initial visit.",
@@ -1421,5 +1420,10 @@
   "referrals_details_commissions_payments_receivables": "Receivables",
   "referrals_details_referral_period": "Referral period:",
   "referrals_details_referral_sessions": "Waivio is using web sessions to attribute new users to referral parties. When users log in on Waivio for the first time (using Hive credentials or as a guest), the referral party is recorded and saved for a period of 90 days. During this period, the referral party will be recorded on all the rewards reserved and received by the user.",
-  "referrals_details_referral_partners": "Referral partners can check the list of users currently attributed to them on the {statusPage} page."
+  "referrals_details_referral_partners": "Referral partners can check the list of users currently attributed to them on the {statusPage} page.",
+  "referrals_instructions": "Instructions",
+  "referrals_instructions_title": "Referral instructions:",
+  "referrals_instructions_is_blacklist": "Your account {username} is listed in the Waivio’s blacklist or in other blacklists trusted by Waivio and you are not eligible to participate in the Referral program.",
+  "referrals_instructions_description": "To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service.",
+  "referrals_instructions_conditions": "I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
 }

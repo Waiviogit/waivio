@@ -73,7 +73,7 @@ export default {
     import('../../client/rewards/ReferralProgram/Details/ReferralDetails'),
   ),
   ReferralInstructions: loableComponent(
-    import('../../client/rewards/ReferralProgram/Instructions/ReferralInstructions'),
+    import('../../client/rewards/ReferralProgram/Instructions/ReferralsInstructions'),
   ),
   ReferralStatus: loableComponent(
     import('../../client/rewards/ReferralProgram/Status/ReferralStatus'),

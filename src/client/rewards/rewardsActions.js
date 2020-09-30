@@ -122,3 +122,11 @@ export const getUserReferralDetails = () => dispatch =>
     type: GET_USER_REFERRAL_DETAILS.ACTION,
     payload: ApiClient.getReferralDetails(),
   });
+
+export const GET_IS_USER_IN_BLACKLIST = createAsyncActionType('@rewards/GET_IS_USER_IN_BLACKLIST');
+
+export const getIsUserInBlackList = username => dispatch =>
+  dispatch({
+    type: GET_IS_USER_IN_BLACKLIST.ACTION,
+    payload: ApiClient.getUserIsBlackListed(username),
+  });

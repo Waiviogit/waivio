@@ -25,6 +25,7 @@ const additionData = {
 
 const ReferralDetail = props => {
   const {
+    getReferralDetails,
     campaignServerPercent,
     indexAbsolutePercent,
     indexServerPercent,
@@ -33,7 +34,7 @@ const ReferralDetail = props => {
     suspendedTimer,
   } = props;
   useEffect(() => {
-    props.getReferralDetails();
+    getReferralDetails();
   }, []);
 
   useEffect(() => {

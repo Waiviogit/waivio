@@ -150,3 +150,50 @@ export const referralDetailContent = data => {
     ),
   };
 };
+
+export const referralInstructionsContent = data => {
+  const { username } = data;
+
+  return {
+    instructionsTitle: (
+      <FormattedMessage id="referrals_instructions_title" defaultMessage="Referral instructions:" />
+    ),
+    instructionsBlackListContent: (
+      <FormattedMessage
+        id="referrals_instructions_is_blacklist"
+        defaultMessage="Your account {username} is listed in the Waivio’s blacklist or in other blacklists trusted by Waivio and you are not eligible to participate in the Referral program."
+        values={{
+          username: (
+            <Link to={`/@${username}`}>
+              <span className="is-blacklist__referral-username">{username}</span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+    instructionsDescription: (
+      <FormattedMessage
+        id="referrals_instructions_description"
+        defaultMessage="To reveal the instructions and to participate in the Referral program you must agree to the terms on conditions of the service."
+      />
+    ),
+    instructionsConditions: (
+      <FormattedMessage
+        id="referrals_instructions_conditions"
+        defaultMessage="I have read and agree to the terms and conditions of the {ReferralAgreement} and the {ServiceAgreement}. I also acknowledge that I am not operating any online or offline services in violation of laws of the British Columbia, Canada."
+        values={{
+          ReferralAgreement: (
+            <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
+              <span className="is-blacklist__referral-username">Referral Agreement</span>
+            </Link>
+          ),
+          ServiceAgreement: (
+            <Link to={`/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions`}>
+              <span className="is-blacklist__referral-username">Service Agreement</span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+  };
+};
