@@ -267,7 +267,6 @@ export const getDetailsBody = ({
   proposedWobjName,
   proposedAuthorPermlink,
   primaryObjectName,
-  secondaryObjectName,
   rate,
   recentClaims,
   rewardBalance,
@@ -293,10 +292,10 @@ export const getDetailsBody = ({
   const frequencyAssign = getFrequencyAssign(proposition);
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
-  const linkToFollowingObjects = secondaryObjectName
+  const linkToFollowingObjects = proposedWobjName
     ? `<li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>`
     : `<li>Link to one of the following objects: ${links}</li>`;
-  const proposedWobj = secondaryObjectName
+  const proposedWobj = proposedWobjName
     ? `of <a href="/object/${proposedAuthorPermlink}">${proposedWobjName}</a>`
     : '';
   const postRequirements = `<p><b>Post requirements:</b></p>

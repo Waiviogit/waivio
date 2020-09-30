@@ -149,6 +149,8 @@ class EditPost extends Component {
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ isReview });
 
     if (isReview)
       getCampaignById(campaignId)
@@ -251,6 +253,7 @@ class EditPost extends Component {
   }, 500);
 
   handleChangeContent(rawContent, title) {
+    const { isReview } = this.state;
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -269,7 +272,9 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
-      this.setCurrentDraftContent(nextState, rawContent);
+      if (!isReview) {
+        this.setCurrentDraftContent(nextState, rawContent);
+      }
     }
   }
 
