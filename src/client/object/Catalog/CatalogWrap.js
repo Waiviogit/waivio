@@ -64,7 +64,7 @@ const CatalogWrap = props => {
       match,
       location: { hash },
     } = props;
-    console.log(wobject);
+
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getPermLink(hash);
@@ -315,8 +315,8 @@ const CatalogWrap = props => {
     setSorting(sortType);
     setListItems(sortListItemsBy(listItems, sort, sortOrder));
   };
-  console.log(currentWobject);
-  return (
+
+return (
     <div>
       {!hasType(wobject, OBJ_TYPE.PAGE) && (
         <React.Fragment>
