@@ -18,7 +18,7 @@ import {
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject } from './wobjectsActions';
-import { getAlbums, resetGallery } from './ObjectGallery/galleryActions';
+import { getAlbums, resetGallery, addAlbumToStore } from './ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
@@ -28,9 +28,10 @@ import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 import NotFound from '../statics/NotFound';
-import { getObjectName } from '../helpers/wObjectHelper';
+import { getObjectName, prepareAlbumData, prepareAlbumToStore } from '../helpers/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
 import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from './wobjActions';
+import { appendObject } from './appendActions';
 
 @withRouter
 @connect(
@@ -52,6 +53,8 @@ import { setCatalogBreadCrumbs, setWobjectForBreadCrumbs } from './wobjActions';
     getObject,
     resetGallery,
     getAlbums,
+    appendObject,
+    addAlbumToStore,
   },
 )
 export default class Wobj extends React.Component {
@@ -71,6 +74,8 @@ export default class Wobj extends React.Component {
     setCatalogBreadCrumbs: PropTypes.func,
     locale: PropTypes.string,
     getAlbums: PropTypes.func,
+    appendObject: PropTypes.func,
+    addAlbumToStore: PropTypes.func,
   };
 
   static defaultProps = {
@@ -84,6 +89,8 @@ export default class Wobj extends React.Component {
     clearObjectFromStore: () => {},
     setCatalogBreadCrumbs: () => {},
     setWobjectForBreadCrumbs: () => {},
+    appendObject: () => {},
+    addAlbumToStore: () => {},
   };
 
   static fetchData({ store, match }) {
@@ -108,6 +115,9 @@ export default class Wobj extends React.Component {
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
+    }
+    if (wobject.albums_count === 0) {
+      this.appendAlbum();
     }
   }
 
@@ -135,6 +145,20 @@ export default class Wobj extends React.Component {
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+
+  appendAlbum = async () => {
+    const formData = {
+      galleryAlbum: 'Photos',
+    };
+
+    const { authenticatedUserName, wobject } = this.props;
+    const data = prepareAlbumData(formData, authenticatedUserName, wobject);
+    const album = prepareAlbumToStore(data);
+
+    const { author } = await this.props.appendObject(data);
+    await this.props.addAlbumToStore({ ...album, author });
+    this.setState(() => ({ currentAlbum: album }));
+  };
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
