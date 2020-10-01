@@ -244,6 +244,7 @@ class AddItemModal extends Component {
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
+          parentObject={wobject}
         />
         <CreateObject onCreateObject={this.handleCreateObject} parentObject={wobject || {}} />{' '}
       </React.Fragment>
