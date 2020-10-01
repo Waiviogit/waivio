@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -37,7 +37,7 @@ const ObjectCardView = ({
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || parent.avatar;
+    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
