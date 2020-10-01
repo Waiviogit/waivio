@@ -10,11 +10,12 @@ import { getValidTokenData } from '../client/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../client/helpers/localStorageHelpers';
-import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
+import { IS_RESERVED } from '../common/constants/rewards';
 
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
+  'Sec-Fetch-Site': 'cross-site',
 };
 
 export function handleErrors(response) {
