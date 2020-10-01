@@ -8,7 +8,6 @@ import Avatar from '../../Avatar';
 import './Notification.less';
 
 const NotificationCampaignMessage = ({ notification, read, onClick }) => {
-  // Todo: проблема в guideName. Если !notification.notSponsor то гида не передавать
   const currentRoute = notification.notSponsor ? 'messages' : 'history';
   const url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
   return (
