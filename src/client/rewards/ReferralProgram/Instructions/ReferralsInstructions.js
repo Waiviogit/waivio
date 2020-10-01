@@ -12,30 +12,28 @@ import './ReferralsInstructions.less';
 
 const ReferralsInstructions = props => {
   const { authUserName, getUserInBlackList, isBlackListUser } = props;
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [a, setA] = useState(false);
+  const [isAcceptedTerms, setIsAcceptedTerms] = useState(false);
+  const [isModal, setIsModal] = useState(false);
 
   useEffect(() => {
     getUserInBlackList(authUserName);
   }, []);
 
   const handleAgreeRulesCheckbox = () => {
-    console.log('handleAgreeRulesCheckbox');
-    setAcceptedTerms(prevState => {
+    setIsAcceptedTerms(prevState => {
       if (prevState !== false) {
-        setA(!a);
+        setIsModal(!isModal);
       }
-      return !acceptedTerms;
+      return !isAcceptedTerms;
     });
   };
 
   const handleOkButton = () => {
-    console.log('handleAgreeRulesCheckbox');
-    setA(prevState => {
+    setIsModal(prevState => {
       if (prevState !== true) {
-        setAcceptedTerms(!acceptedTerms);
+        setIsAcceptedTerms(!isAcceptedTerms);
       }
-      return !a;
+      return !isModal;
     });
   };
 
@@ -71,9 +69,9 @@ const ReferralsInstructions = props => {
       <div>
         <Modal
           title="Basic Modal"
-          visible={a}
+          visible={isModal}
           onOk={() => handleOkButton()}
-          onCancel={() => setA(!a)}
+          onCancel={() => setIsModal(!isModal)}
         >
           <p>Some contents...</p>
           <p>Some contents...</p>
@@ -91,7 +89,7 @@ const ReferralsInstructions = props => {
         </div>
       </div>
 
-      {acceptedTerms && (
+      {isAcceptedTerms && (
         <div className="ReferralInstructions__accepted-conditions">
           <div className="ReferralInstructions__accepted-conditions__text-wrap">
             <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
