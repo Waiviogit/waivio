@@ -245,6 +245,7 @@ class AddItemModal extends Component {
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
           parentObject={wobject}
+          addItem
         />
         <CreateObject onCreateObject={this.handleCreateObject} parentObject={wobject || {}} />{' '}
       </React.Fragment>
