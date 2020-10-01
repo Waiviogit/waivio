@@ -14,17 +14,22 @@ const ReferralsInstructions = props => {
   const { authUserName, getUserInBlackList, isBlackListUser } = props;
   const [isAcceptedTerms, setIsAcceptedTerms] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     getUserInBlackList(authUserName);
   }, []);
 
   const handleAgreeRulesCheckbox = () => {
+    // eslint-disable-next-line consistent-return
     setIsAcceptedTerms(prevState => {
       if (prevState !== false) {
         setIsModal(!isModal);
+        setIsChecked(true);
+      } else {
+        setIsChecked(false);
+        return !isAcceptedTerms;
       }
-      return !isAcceptedTerms;
     });
   };
 
@@ -80,16 +85,23 @@ const ReferralsInstructions = props => {
       </div>
 
       <div className="ReferralInstructions__wrap-conditions">
-        <Checkbox onChange={() => handleAgreeRulesCheckbox()} />
-        <div className="ReferralInstructions__wrap-conditions__condition-content">
+        <Checkbox
+          checked={isChecked}
+          id="agreeButton"
+          onChange={() => handleAgreeRulesCheckbox()}
+        />
+        <label
+          htmlFor="agreeButton"
+          className="ReferralInstructions__wrap-conditions__condition-content"
+        >
           <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
             *
           </div>
           {instructionsConditions}
-        </div>
+        </label>
       </div>
 
-      {isAcceptedTerms && (
+      {isChecked && (
         <div className="ReferralInstructions__accepted-conditions">
           <div className="ReferralInstructions__accepted-conditions__text-wrap">
             <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
