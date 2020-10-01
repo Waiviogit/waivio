@@ -20,6 +20,57 @@
       .referrals-link-button();
     }
   }
+
+  &__wrap-conditions {
+    display: flex;
+    padding: 20px 0 20px;
+
+    &__condition-content {
+      display: flex;
+      align-items: baseline;
+      padding-left: 5px;
+
+      &__star-flag {
+        color: @red-danger;
+        font-size: 25px;
+        line-height: 5px;
+      }
+    }
+  }
+
+  &__accepted-conditions {
+    &__text-wrap {
+      line-height: 35px;
+      padding-bottom: 40px;
+
+      &__title {
+        font-weight: 600;
+      }
+
+      &__links {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    &__widget-title {
+      font-weight: 600;
+    }
+
+    &__widget {
+      padding-bottom: 10px;
+    }
+
+    &__an-example {
+      &__text-link {
+        .referrals-link-button();
+      }
+    }
+
+    &__alert {
+      padding-top: 40px;
+    }
+  }
 }
 
 @import 'ReferralsInstructions-nightmode';

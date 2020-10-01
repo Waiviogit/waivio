@@ -195,5 +195,63 @@ export const referralInstructionsContent = data => {
         }}
       />
     ),
+    acceptedConditionsTitleDirect: (
+      <FormattedMessage
+        id="referrals_instructions_accepted_title_links"
+        defaultMessage="Direct links:"
+      />
+    ),
+    acceptedConditionsExamplesLinks: (
+      <FormattedMessage
+        id="referrals_instructions_accepted_title_example_links"
+        defaultMessage="Simply add {link} to any Waivio page URL"
+        values={{
+          link: <span style={{ fontWeight: 600 }}>?ref=[username]</span>,
+        }}
+      />
+    ),
+    acceptedConditionsForExample: (
+      <FormattedMessage
+        id="referrals_instructions_accepted_for_example"
+        defaultMessage="For example:"
+      />
+    ),
+    acceptedConditionsFirstExampleLink: <span>http://www.waivio.com?ref=[username]</span>,
+    acceptedConditionsSecondExampleLink: (
+      <span>https://www.waivio.com/rewards/all?ref=[username]</span>
+    ),
+    acceptedConditionsTitleWidget: (
+      <FormattedMessage
+        id="referrals_instructions_accepted_title_widget"
+        defaultMessage="Waivio widget:"
+      />
+    ),
+    acceptedConditionsWidgetInfo: (
+      <FormattedMessage
+        id="referrals_instructions_accepted__widget_info"
+        defaultMessage="This page-size widget is designed to show relevant active rewards. Paste the following code into your webpage:"
+      />
+    ),
+    acceptedConditionsWidgetExample: (
+      <FormattedMessage
+        id="referrals_instructions_accepted__widget_example"
+        defaultMessage="See {text}"
+        values={{
+          text: (
+            <Link to={`/rewards/all`}>
+              <span className="an-example__text-link">
+                <FormattedMessage id="widget_addition_text" defaultMessage="an example." />
+              </span>
+            </Link>
+          ),
+        }}
+      />
+    ),
+    acceptedConditionsAlert: (
+      <FormattedMessage
+        id="referrals_instructions_accepted__alert"
+        defaultMessage="Please note that any misleading promotions are not allowed in accordance with the Referral agreement. Waivio reserves the right to terminate the referral program at any time for any reason."
+      />
+    ),
   };
 };

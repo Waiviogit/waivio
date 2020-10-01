@@ -90,7 +90,6 @@ const rewardsReducer = (state = initialState, action) => {
       };
     }
     case GET_IS_USER_IN_BLACKLIST.SUCCESS: {
-      console.log('action.payload: ', action.payload);
       return {
         ...state,
         isUserInWaivioBlackList: action.payload.isBlacklisted,
