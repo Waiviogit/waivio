@@ -156,7 +156,9 @@ class EditPost extends Component {
       getCampaignById(campaignId)
         .then(campaignData => {
           const secondaryObjectReservation = campaignData.users.find(
-            user => user.name === this.props.userName && user.status === 'assigned',
+            user =>
+              user.name === this.props.userName &&
+              (user.status === 'assigned' || user.status === 'completed'),
           );
           const secondaryObject = campaignData.objects.find(
             obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
@@ -440,7 +442,16 @@ class EditPost extends Component {
       isUpdating,
       titleValue,
     } = this.state;
-    const { saving, publishing, imageLoading, intl, locale, draftPosts, isGuest } = this.props;
+    const {
+      saving,
+      publishing,
+      imageLoading,
+      intl,
+      locale,
+      draftPosts,
+      isGuest,
+      draftId,
+    } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -453,6 +464,7 @@ class EditPost extends Component {
               intl={intl}
               handleHashtag={this.handleHashtag}
               displayTitle
+              draftId={draftId}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
