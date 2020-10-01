@@ -143,8 +143,8 @@ class SearchObjectsAutocomplete extends Component {
       isSearchObject,
       parentObject,
     } = this.props;
-    const searchObjectListed = searchResult =>
-      parentObject.listItems.some(item => item.author_permlink === searchResult);
+    const searchObjectListed = searchObjectPermlink =>
+      parentObject.listItems.some(item => item.author_permlink === searchObjectPermlink);
 
     const searchObjectsOptions = searchString
       ? searchObjectsResults
