@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
+import { includes, orderBy, truncate, get, isEmpty, filter, map } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -26,11 +26,16 @@ const ObjectCardView = ({
   const address = parseAddress(wObject);
 
   useEffect(() => {
-    if (wObject && wObject.tagCategory) {
-      const currentTags = wObject.tagCategory
-        .map(category => category.items)
-        .filter(items => !!items.length)
-        .map(items => orderBy(items, ['weight', 'tagCategory'])[0].tagCategory);
+    const tagCategory = get(wObject, 'tagCategory');
+    if (tagCategory) {
+      const currentTagsFiltered = filter(tagCategory, item =>
+        item.items ? !!item.items.length : null,
+      );
+      const currentTags = map(currentTagsFiltered, item =>
+        item.items[0].tagCategory
+          ? orderBy(item.items, ['weight', 'tagCategory'])[0].tagCategory
+          : '',
+      );
       setTags(currentTags);
     } else setTags([wObject.object_type]);
   }, [wObject, setTags]);
