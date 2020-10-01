@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get, isEmpty } from 'lodash';
+import { includes, truncate, get, isEmpty, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
-import { getObjectName, parseAddress } from '../helpers/wObjectHelper';
+import { getObjectName, parseAddress, getObjectAvatar } from '../helpers/wObjectHelper';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectCardView.less';
@@ -26,19 +26,18 @@ const ObjectCardView = ({
   const address = parseAddress(wObject);
 
   useEffect(() => {
-    if (wObject.tagCategories && wObject.tagCategories.length) {
-      const currentTags = wObject.tagCategories
-        .map(category => category.categoryItems)
-        .filter(categoryItems => !!categoryItems.length)
-        .map(items => orderBy(items, ['weight', 'name'])[0].name);
+    const tagCategory = get(wObject, 'tagCategory');
+    if (tagCategory) {
+      const currentTagsFiltered = filter(tagCategory, item => size(item.items));
+      const currentTags = map(currentTagsFiltered, item => item.body);
       setTags(currentTags);
     } else setTags([wObject.object_type]);
-  }, []);
+  }, [wObject, setTags]);
 
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = wObject.avatar || parent.avatar;
+    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
