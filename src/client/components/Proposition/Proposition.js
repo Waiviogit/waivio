@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import cn from 'classnames';
-import AppendModal from '../../object/AppendModal';
+import AppendModal from '../../object/AppendModal/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import CreateTag from '../../object/TagCategory/CreateTag';

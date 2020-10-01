@@ -3,7 +3,6 @@ import {
   SET_DATA_FOR_SINGLE_REPORT,
   GET_REWARDS_GENERAL_COUNTS,
   GET_FOLLOWING_SPONSORS_REWARDS,
-  SET_REVIEW_PROPOSITION,
 } from './rewardsActions';
 import { GET_RESERVED_COMMENTS_SUCCESS } from '../comments/commentsActions';
 
@@ -18,7 +17,6 @@ const initialState = {
   followingRewards: [],
   hasMoreFollowingRewards: false,
   loading: false,
-  reviewProposition: {},
 };
 
 const rewardsReducer = (state = initialState, action) => {
@@ -59,15 +57,8 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        followingRewards: state.followingRewards.concat(campaigns),
+        followingRewards: hasMore ? state.followingRewards.concat(campaigns) : campaigns,
         hasMoreFollowingRewards: hasMore,
-      };
-    }
-
-    case SET_REVIEW_PROPOSITION: {
-      return {
-        ...state,
-        reviewProposition: action.proposition,
       };
     }
     default:
@@ -88,4 +79,3 @@ export const getCommentsFromReserved = state => state.reservedComments;
 export const getSponsorsRewards = state => state.followingRewards;
 export const getHasMoreFollowingRewards = state => state.hasMoreFollowingRewards;
 export const getIsLoading = state => state.loading;
-export const getReviewProposition = state => state.reviewProposition;

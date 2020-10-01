@@ -24,7 +24,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { fieldsRules } from '../const/appendFormConstants';
 import { getClientWObj } from '../../adapters';
-import AppendFormFooter from '../AppendFormFooter';
+import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
 

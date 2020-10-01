@@ -10,6 +10,7 @@ import { rewardPostContainerData, getDetailsBody } from '../rewards/rewardsHelpe
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getLocale } from '../reducers';
 import { createCommentPermlink } from '../vendor/steemitHelpers';
+import { getObjectName } from '../helpers/wObjectHelper';
 
 require('isomorphic-fetch');
 
@@ -219,7 +220,6 @@ export const assignProposition = ({
   objPermlink,
   appName,
   primaryObjectName,
-  secondaryObjectName,
   amount,
   proposition,
   proposedWobj,
@@ -227,7 +227,7 @@ export const assignProposition = ({
   currencyId,
 }) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
-  const proposedWobjName = proposedWobj.name;
+  const proposedWobjName = getObjectName(proposedWobj);
   const proposedWobjAuthorPermlink = proposedWobj.author_permlink;
   const primaryObjectPermlink = get(proposition, ['required_object', 'author_permlink']);
   const detailsBody = getDetailsBody({
@@ -235,7 +235,6 @@ export const assignProposition = ({
     proposedWobjName,
     proposedWobjAuthorPermlink,
     primaryObjectName,
-    secondaryObjectName,
   });
   const commentOp = [
     'comment',
@@ -245,7 +244,7 @@ export const assignProposition = ({
       author: username,
       permlink: resPermlink,
       title: 'Rewards reservations',
-      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.id}">${secondaryObjectName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
+      body: `<p>User ${userName} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${proposition.count_reservation_days} days to write a review of <a href="/object/${proposedWobj.author_permlink}">${proposedWobjName}</a>, <a href="/object/${primaryObjectPermlink}">${primaryObjectName}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: appName,
         waivioRewards: {

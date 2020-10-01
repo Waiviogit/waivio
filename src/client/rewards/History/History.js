@@ -37,7 +37,6 @@ const History = ({
   const dispatch = useDispatch();
   const isHistory = location.pathname === PATH_NAME_HISTORY;
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
-
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +52,8 @@ const History = ({
     }
     return sortMessages;
   }, [isHistory, isGuideHistory, sortHistory, sortGuideHistory, sortMessages]);
+
+  const reservationPermlink = match.params.campaignId;
 
   const getHistory = useCallback(
     async (username, sortChanged, activeFilters, withLoader, loadMore = false) => {
@@ -79,6 +80,7 @@ const History = ({
         if (!isHistory) {
           requestData.caseStatus = caseStatus;
           requestData.guideName = username;
+          requestData.reservationPermlink = reservationPermlink;
         }
         if (isGuideHistory) {
           requestData.guideName = username;
@@ -109,6 +111,7 @@ const History = ({
       messagesSponsors,
       hasMore,
       messagesSponsors,
+      reservationPermlink,
     ],
   );
 

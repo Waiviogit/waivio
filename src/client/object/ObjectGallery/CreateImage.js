@@ -18,7 +18,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
-import AppendFormFooter from '../AppendFormFooter';
+import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
 import { getVoteValue } from '../../helpers/user';
@@ -92,16 +92,17 @@ class CreateImage extends React.Component {
   };
 
   getWobjectBody = image => {
-    const { selectedAlbum, currentUsername, intl } = this.props;
+    const { currentUsername, intl } = this.props;
+    const album = this.getImageAlbum();
 
     return intl.formatMessage(
       {
         id: 'append_new_image',
-        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
+        defaultMessage: `@{user} added a new image to album {album}`,
       },
       {
         user: currentUsername,
-        album: get(selectedAlbum, 'body') || this.state.currentAlbum,
+        album,
         url: image.src,
       },
     );
@@ -134,7 +135,7 @@ class CreateImage extends React.Component {
               intl.formatMessage(
                 {
                   id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+                  defaultMessage: `@{user} added a new image to album {album}`,
                 },
                 {
                   album,

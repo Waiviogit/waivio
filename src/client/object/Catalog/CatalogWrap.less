@@ -2,41 +2,6 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .CatalogWrap {
-  &__breadcrumb {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    background: @white;
-    border: @base-border;
-    border-radius: @border-radius-base;
-    min-height: 58px;
-    padding: 12px;
-    margin-bottom: 10px;
-    word-break: break-word;
-
-    &__link:hover {
-      color: @orange-hot !important;
-    }
-
-    span {
-      cursor: default;
-    }
-
-    .ant-breadcrumb {
-      & > span:last-child {
-        .ant-breadcrumb-link {
-          display: inline-flex;
-          align-items: center;
-        }
-        a.CatalogWrap__breadcrumb__obj-page-link {
-          color: @primary-color;
-        }
-        font-weight: 500;
-      }
-    }
-  }
-
   &__add-item {
     display: flex;
     flex-direction: column;

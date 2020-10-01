@@ -50,6 +50,7 @@ class SearchObjectsAutocomplete extends Component {
     parentPermlink: '',
     autoFocus: true,
     isSearchObject: false,
+    addItem: false,
   };
 
   static propTypes = {
@@ -72,6 +73,8 @@ class SearchObjectsAutocomplete extends Component {
     style: PropTypes.shape({}),
     isSearchObject: PropTypes.bool,
     resetIsClearSearchFlag: PropTypes.func,
+    parentObject: PropTypes.shape().isRequired,
+    addItem: PropTypes.bool,
   };
 
   constructor(props) {
@@ -140,7 +143,12 @@ class SearchObjectsAutocomplete extends Component {
       disabled,
       autoFocus,
       isSearchObject,
+      parentObject,
+      addItem,
     } = this.props;
+    const searchObjectListed = searchObjectPermlink =>
+      parentObject.listItems.some(item => item.author_permlink === searchObjectPermlink);
+
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
@@ -148,13 +156,21 @@ class SearchObjectsAutocomplete extends Component {
             <AutoComplete.Option
               key={obj.author_permlink}
               label={obj.author_permlink}
+              value={obj.author_permlink}
               className="obj-search-option item"
             >
-              <ObjectSearchCard
-                object={obj}
-                name={getObjectName(obj)}
-                type={obj.type || obj.object_type}
-              />
+              {!addItem || (addItem && !searchObjectListed(obj.author_permlink)) ? (
+                <ObjectSearchCard
+                  object={obj}
+                  name={getObjectName(obj)}
+                  type={obj.type || obj.object_type}
+                />
+              ) : (
+                intl.formatMessage({
+                  id: 'object_listed',
+                  defaultMessage: 'This object is already listed',
+                })
+              )}
             </AutoComplete.Option>
           ))
       : [];

@@ -15,6 +15,7 @@ import { IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
+  'Sec-Fetch-Site': 'cross-site',
 };
 
 export function handleErrors(response) {
@@ -170,7 +171,7 @@ export const getUserProfileBlog = (
   userName,
   follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
-  locale,
+  locale = 'en-US',
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -682,7 +683,7 @@ export const getPropositions = ({
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-
+    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
@@ -710,6 +711,7 @@ export const getHistory = ({
   guideNames,
   campaignNames,
   locale = 'en-US',
+  reservationPermlink,
 }) =>
   new Promise((resolve, reject) => {
     const reqData = {
@@ -731,6 +733,7 @@ export const getHistory = ({
     if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
     if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
+    if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -1197,13 +1200,20 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount, memo }) => {
+export const sendGuestTransfer = async ({ to, amount, memo, app }) => {
   const userData = await getValidTokenData();
+  const overpaymentRefund = includes(memo, 'overpayment_refund');
   const body = {
-    id: 'waivio_guest_transfer',
+    id: overpaymentRefund ? 'overpayment_refund' : 'waivio_guest_transfer',
     data: { to, amount: +amount.split(' ')[0] },
   };
-  if (memo) body.data.memo = memo;
+  if (app) body.app = app;
+  if (memo && !overpaymentRefund) {
+    body.data.memo = memo;
+  } else {
+    body.data.memo = '';
+  }
+
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
@@ -1507,5 +1517,14 @@ export const getTransferHistoryTableView = (
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const sendSentryNotification = async () => {
+  try {
+    if (!['staging', 'production'].includes(process.env.NODE_ENV)) return;
+    await fetch(`${config.telegramApiPrefix}${config.setSentryNotify}?app=${config.sentryAppName}`);
+  } catch (error) {
+    return { error };
+  }
+};
 
 export default null;

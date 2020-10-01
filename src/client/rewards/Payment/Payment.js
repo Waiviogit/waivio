@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { isEmpty, includes } from 'lodash';
+import { isEmpty, includes, get } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -31,20 +31,12 @@ const Payment = ({
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
   const { reservationPermlink } = match.params;
+  const payables = get(match, ['params', '0']) === 'payables';
 
-  const getRequestParams = () => {
-    if (reservationPermlink || includes(match.path, 'payables')) {
-      return {
-        sponsor: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-        user: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      };
-    }
-
-    return {
-      sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
-      user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
-    };
-  };
+  const getRequestParams = () => ({
+    sponsor: reservationPermlink || payables ? userName : match.params.userName,
+    user: reservationPermlink || payables ? match.params.userName : userName,
+  });
 
   const isReceiverGuest = guestUserRegex.test(match.params.userName);
   const pathRecivables = includes(match.path, 'receivables');
@@ -68,7 +60,7 @@ const Payment = ({
 
   let titleName;
   let isPayables;
-  if (includes(match.path, 'payables')) {
+  if (get(match, ['params', '0']) === 'payables') {
     titleName = intl.formatMessage({
       id: 'payment_page_payables',
       defaultMessage: 'Payables',

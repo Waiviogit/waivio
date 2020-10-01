@@ -248,6 +248,9 @@ export const getObjectTagCategory = state => fromObject.getObjectTagCategory(sta
 export const getWobjectIsFailed = state => fromObject.getWobjectIsFailed(state.object);
 export const getWobjectIsFatching = state => fromObject.getWobjectIsFatching(state.object);
 
+export const getBreadCrumbs = state => fromObject.getBreadCrumbs(state.object);
+export const getWobjectBreadCrumbs = state => fromObject.getWobjectBreadCrumbs(state.object);
+
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
   fromObjectTypes.getObjectTypesLoading(state.objectTypes);
@@ -293,7 +296,6 @@ export const getSponsorsRewards = state => fromRewards.getSponsorsRewards(state.
 export const getHasMoreFollowingRewards = state =>
   fromRewards.getHasMoreFollowingRewards(state.rewards);
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
-export const getReviewProposition = state => fromRewards.getReviewProposition(state.rewards);
 
 // common selectors
 
