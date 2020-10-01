@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, orderBy, truncate, get, isEmpty, filter, map } from 'lodash';
+import { includes, orderBy, truncate, get, isEmpty, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -28,9 +28,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
     if (tagCategory) {
-      const currentTagsFiltered = filter(tagCategory, item =>
-        item.items ? !!item.items.length : null,
-      );
+      const currentTagsFiltered = filter(tagCategory, item => size(item.items));
       const currentTags = map(currentTagsFiltered, item =>
         item.items[0].tagCategory
           ? orderBy(item.items, ['weight', 'tagCategory'])[0].tagCategory
