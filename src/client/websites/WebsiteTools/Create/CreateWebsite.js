@@ -26,14 +26,12 @@ const CreateWebsite = ({
   loading,
 }) => {
   const { getFieldDecorator, getFieldValue } = form;
-
-  useEffect(() => {
-    getDomainList();
-  }, []);
-
   const template = getFieldValue('parent');
+  const subDomain = getFieldValue('domain');
   const domainNamesList = Object.keys(parentDomain);
   const available = get(availableStatus, 'status');
+  const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
+
   const domainStatus = useCallback(
     debounce(
       () => checkStatusAvailableDomain(getFieldValue('domain'), parentDomain[template]),
@@ -41,6 +39,14 @@ const CreateWebsite = ({
     ),
     [template],
   );
+
+  useEffect(() => {
+    getDomainList();
+  }, []);
+
+  useEffect(() => {
+    if (subDomain) checkStatusAvailableDomain(getFieldValue('domain'), parentDomain[template]);
+  }, [template]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -51,8 +57,6 @@ const CreateWebsite = ({
           .catch(error => message.error(error));
     });
   };
-
-  const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
 
   return (
     <div className="shifted">
