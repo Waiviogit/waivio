@@ -155,10 +155,10 @@ class EditPost extends Component {
     if (isReview)
       getCampaignById(campaignId)
         .then(campaignData => {
-          const secondaryObjectReservation = campaignData.users.find(
-            user =>
-              user.name === this.props.userName &&
-              (user.status === 'assigned' || user.status === 'completed'),
+          const secondaryObjectReservation = campaignData.users.find(user =>
+            user.name === this.props.userName && currDraft
+              ? user.status === 'assigned'
+              : user.status === 'completed',
           );
           const secondaryObject = campaignData.objects.find(
             obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
