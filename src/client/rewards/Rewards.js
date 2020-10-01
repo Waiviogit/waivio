@@ -441,9 +441,9 @@ class Rewards extends React.Component {
         this.setState({
           propositionsReserved: data.campaigns,
           loadingCampaigns: false,
+          sponsors: data.sponsors,
         });
       } else {
-        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
@@ -451,7 +451,7 @@ class Rewards extends React.Component {
           area,
           radius,
           hasMore: data.hasMore,
-          sponsors,
+          sponsors: data.sponsors,
         });
       }
       if (isMap && firstMapLoad) {
