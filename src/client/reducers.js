@@ -314,3 +314,6 @@ export const getSuitableLanguage = state => {
 
 // website
 export const getParentDomain = state => fromWebsite.getParentDomain(state.website);
+export const getDomainAvailableStatus = state =>
+  fromWebsite.getDomainAvailableStatus(state.website);
+export const getWebsiteLoading = state => fromWebsite.getWebsiteLoading(state.website);

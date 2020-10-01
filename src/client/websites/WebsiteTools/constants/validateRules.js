@@ -5,7 +5,7 @@ export default {
       message: 'Field is required',
     },
     {
-      pattern: /[a-z,0-9]+$\b/,
+      pattern: /[a-z,0-9]+$/,
       // message:
     },
     {

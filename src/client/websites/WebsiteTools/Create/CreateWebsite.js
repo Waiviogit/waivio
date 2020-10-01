@@ -1,39 +1,58 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Input, AutoComplete, Checkbox, Form, Button } from 'antd';
+import { Input, AutoComplete, Checkbox, Form, Button, message } from 'antd';
 import { connect } from 'react-redux';
-import { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 
 import Affix from '../../../components/Utils/Affix';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 import validateRules from '../constants/validateRules';
-import { checkAvailableDomain, getParentDomainList } from '../../websiteActions';
-import { getParentDomain } from '../../../reducers';
+import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
+import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '../../../reducers';
 
 import './CreateWebsite.less';
 
-const CreateWebsite = ({ intl, form, getDomainList, parentDomain, checkStatusAvailableDomain }) => {
-  const [template, setTemplate] = useState('');
-  const [availableDomain, setAvailableDomainStatus] = useState('');
-  const domainNamesList = Object.keys(parentDomain);
-  const setDomainStatus = () =>
-    checkStatusAvailableDomain(form.getFieldValue('domain'), parentDomain[template])
-      .then(() => setAvailableDomainStatus('Available'))
-      .catch(e => console.log(e));
+const CreateWebsite = ({
+  intl,
+  form,
+  getDomainList,
+  parentDomain,
+  checkStatusAvailableDomain,
+  availableStatus,
+  createWebsite,
+  loading,
+}) => {
+  const { getFieldDecorator, getFieldValue } = form;
 
-  const domainStatus = useCallback(debounce(setDomainStatus, 300), []);
   useEffect(() => {
     getDomainList();
   }, []);
 
-  const { getFieldDecorator } = form;
+  const template = getFieldValue('parent');
+  const domainNamesList = Object.keys(parentDomain);
+  const available = get(availableStatus, 'status');
+  const domainStatus = useCallback(
+    debounce(
+      () => checkStatusAvailableDomain(getFieldValue('domain'), parentDomain[template]),
+      300,
+    ),
+    [template],
+  );
+
   const handleSubmit = e => {
     e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => console.log(values));
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err && available)
+        createWebsite(values)
+          .then(() => form.resetFields())
+          .catch(error => message.error(error));
+    });
   };
+
+  const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
 
   return (
     <div className="shifted">
@@ -67,10 +86,10 @@ const CreateWebsite = ({ intl, form, getDomainList, parentDomain, checkStatusAva
                   })}
                 </span>
               </h3>
-              {getFieldDecorator('autocomplete', {
+              {getFieldDecorator('parent', {
                 rules: validateRules.autocomplete,
               })(
-                <AutoComplete onSelect={setTemplate}>
+                <AutoComplete>
                   {domainNamesList.map(domain => (
                     <AutoComplete.Option key={domain} value={domain}>
                       {domain}
@@ -91,10 +110,14 @@ const CreateWebsite = ({ intl, form, getDomainList, parentDomain, checkStatusAva
               <div className="CreateWebsite__domain-wrap">
                 {getFieldDecorator('domain', {
                   rules: validateRules.domain,
-                })(<Input onInput={domainStatus} />)}
-                <span className="CreateWebsite__domain-name">.{template}</span>
+                })(<Input disabled={!template} onInput={domainStatus} />)}
+                {template && <span className="CreateWebsite__domain-name">.{template}</span>}
               </div>
-              <span>{availableDomain}</span>
+              {availableStatus && (
+                <span className={statusMessageClassList}>
+                  {intl.formatMessage(availableStatus.intl)}
+                </span>
+              )}
             </Form.Item>
             <p>It will be used as a second level domain name.</p>
             <Form.Item>
@@ -113,7 +136,7 @@ const CreateWebsite = ({ intl, form, getDomainList, parentDomain, checkStatusAva
               )}
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" loading={loading}>
                 Create website
               </Button>
             </Form.Item>
@@ -128,16 +151,26 @@ CreateWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   getDomainList: PropTypes.func.isRequired,
+  createWebsite: PropTypes.func.isRequired,
   parentDomain: PropTypes.arrayOf(PropTypes.string).isRequired,
   checkStatusAvailableDomain: PropTypes.func.isRequired,
+  availableStatus: PropTypes.string,
+  loading: PropTypes.bool.isRequired,
+};
+
+CreateWebsite.defaultProps = {
+  availableStatus: '',
 };
 
 export default connect(
   state => ({
     parentDomain: getParentDomain(state),
+    availableStatus: getDomainAvailableStatus(state),
+    loading: getWebsiteLoading(state),
   }),
   {
     getDomainList: getParentDomainList,
     checkStatusAvailableDomain: checkAvailableDomain,
+    createWebsite: createNewWebsite,
   },
 )(Form.create()(injectIntl(CreateWebsite)));

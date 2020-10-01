@@ -1,3 +1,5 @@
+@import (reference) '../../../styles/custom.less';
+
 .CreateWebsite {
   &__domain-wrap {
     display: flex;
@@ -6,6 +8,14 @@
       width: 50%;
       margin-right: 5px;
     }
+  }
+
+  &__available {
+    color: @green;
+  }
+
+  &__error {
+    color: @red;
   }
 
   &__domain-name {
@@ -18,6 +28,6 @@
   }
 
   .ant-select-auto-complete.ant-select {
-    background: white;
+    background: @white;
   }
 }

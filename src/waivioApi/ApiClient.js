@@ -15,6 +15,8 @@ import { IS_ACTIVE, IS_RESERVED } from '../common/constants/rewards';
 let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Site': 'cross-site',
 };
 
 export function handleErrors(response) {
@@ -1523,21 +1525,32 @@ export const sendSentryNotification = async () => {
 export const getDomainList = () => {
   return fetch(`${config.apiPrefix}${config.sites}${config.getParents}`, {
     method: 'GET',
+    headers,
   })
     .then(r => r.json())
     .catch(err => err);
 };
 
-export const createWebsite = () => {
+export const createWebsite = body => {
   return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify(body),
     method: 'PUT',
   });
 };
 
 export const checkAvailable = (name, parent) => {
-  return fetch(
-    `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+  return (
+    fetch(
+      `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res)
+      // .then(result => result)
+      .catch(e => console.log(e))
   );
 };
 
