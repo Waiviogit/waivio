@@ -248,7 +248,7 @@ export const parseAddress = wobject => {
 
 export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
-export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar']);
+export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
 
 export const getPermLink = hashUrl =>
   hashUrl
