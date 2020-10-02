@@ -1,4 +1,4 @@
-import { isEmpty, map, includes } from 'lodash';
+import { isEmpty, map, includes, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -92,20 +92,24 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
-
       const isExpired = campaign.status === 'expired';
-
       const expiredAt = isExpired
         ? moment(new Date().toISOString())
         : moment(new Date(campaign.expired_at));
 
-      const isDuplicate = this.props.match.path.includes('createDuplicate');
+      // const isDuplicate = this.props.match.path.includes('createDuplicate');
+      const isDuplicate = includes(get(this.props.match, ['params', '0']), 'createDuplicate');
+      console.log('isDuplicate', isDuplicate);
+      console.log('this.props.match', this.props.match);
 
       const isPending = campaign.status === 'pending';
-
+      const isOnHold = campaign.status === 'onHold';
+      const isActive = campaign.status === 'active';
+      const isDisabled = !isPending && isOnHold;
       let combinedObjects;
       let sponsors;
-      const secondaryObjectsPermlinks = campaign.objects
+
+      const secondaryObjectsPermlinks = !isEmpty(campaign.objects)
         ? map(campaign.objects, obj => obj.author_permlink)
         : [];
       if (!isEmpty(campaign.match_bots)) {
@@ -150,11 +154,7 @@ class CreateRewardForm extends React.Component {
         this.setState({
           iAgree: true,
           loading: false,
-          campaignName: `${
-            this.props.match.path.includes('createDuplicate')
-              ? `Copy ${campaign.name}`
-              : campaign.name
-          }`,
+          campaignName: `${isDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
           budget: campaign.budget.toString(),
           reward: campaign.reward.toString(),
@@ -179,7 +179,8 @@ class CreateRewardForm extends React.Component {
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isDuplicate,
-          isPending,
+          isDisabled,
+          isActive,
         });
         if (campaign.match_bots.length) {
           this.setState({
@@ -428,8 +429,9 @@ class CreateRewardForm extends React.Component {
       campaignId,
       iAgree,
       eligibleDays,
-      isPending,
+      isDisabled,
       isDuplicate,
+      isActive,
     } = this.state;
     return (
       <CreateFormRenderer
@@ -465,8 +467,9 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
-        isPending={isPending}
+        isDisabled={isDisabled}
         isDuplicate={isDuplicate}
+        isActive={isActive}
       />
     );
   }
