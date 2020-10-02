@@ -49,6 +49,7 @@ const CreateFormRenderer = props => {
     campaignId,
     isDisabled,
     intl,
+    handleCreateDuplicate,
   } = props;
 
   const currentItemId = get(match, ['params', 'campaignId']);
@@ -163,7 +164,11 @@ const CreateFormRenderer = props => {
       >
         <Form.Item>
           {!isEmpty(match.params) ? (
-            <div className="CreateReward__createDuplicate">
+            <div
+              role="presentation"
+              className="CreateReward__createDuplicate"
+              onClick={handleCreateDuplicate}
+            >
               <div className="CreateReward__first">*</div>
               <div className="CreateReward__second">
                 {fields.campaignName.label}{' '}
@@ -512,6 +517,7 @@ CreateFormRenderer.defaultProps = {
   campaignId: null,
   iAgree: false,
   isDisabled: false,
+  handleCreateDuplicate: () => {},
 };
 
 CreateFormRenderer.propTypes = {
@@ -564,6 +570,7 @@ CreateFormRenderer.propTypes = {
   isDisabled: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  handleCreateDuplicate: PropTypes.func,
 };
 
 export default injectIntl(CreateFormRenderer);

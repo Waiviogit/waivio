@@ -24,6 +24,8 @@ import './CreateReward.less';
   state => ({
     rate: getRate(state),
     rewardFund: getRewardFund(state),
+    createDuplicate: false,
+    campaign: {},
   }),
   {},
 )
@@ -86,7 +88,7 @@ class CreateRewardForm extends React.Component {
   };
 
   componentDidMount = async () => {
-    const { rate, rewardFund, history } = this.props;
+    const { rate, rewardFund } = this.props;
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -152,13 +154,10 @@ class CreateRewardForm extends React.Component {
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
+          campaign,
           iAgree: true,
           loading: false,
-          campaignName: `${
-            includes(get(history, ['location', 'pathname']), 'createDuplicate')
-              ? `Copy ${campaign.name}`
-              : campaign.name
-          }`,
+          campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
           budget: campaign.budget.toString(),
           reward: campaign.reward.toString(),
@@ -195,6 +194,13 @@ class CreateRewardForm extends React.Component {
       });
     }
   };
+
+  componentDidUpdate() {
+    const { campaign } = this.state;
+    if (this.state.createDuplicate && !includes(this.state.campaignName, 'Copy'))
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
+  }
 
   checkOptionFields = () => {
     const { setFieldsValue, getFieldValue } = this.props.form;
@@ -403,6 +409,10 @@ class CreateRewardForm extends React.Component {
     handleSelectChange: () => {},
   };
 
+  handleCreateDuplicate = () => {
+    this.setState({ createDuplicate: true });
+  };
+
   render() {
     const { user, currentSteemDollarPrice, form, match } = this.props;
     const {
@@ -471,6 +481,7 @@ class CreateRewardForm extends React.Component {
         eligibleDays={eligibleDays}
         isDisabled={isDisabled}
         isDuplicate={isDuplicate}
+        handleCreateDuplicate={this.handleCreateDuplicate}
       />
     );
   }
