@@ -145,7 +145,7 @@ const ImageSetter = ({
   };
 
   useEffect(() => {
-    handleOnUploadImageByLink(defaultImage).then(r => r);
+    handleOnUploadImageByLink(defaultImage);
   }, []);
 
   const handleChangeImage = async e => {
