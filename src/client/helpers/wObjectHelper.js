@@ -4,6 +4,7 @@ import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
+export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 

@@ -12,7 +12,11 @@ import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage, getAuthenticatedUserName } from '../../reducers';
+import {
+  getSuitableLanguage,
+  getAuthenticatedUserName,
+  getWobjectBreadCrumbs,
+} from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { getPermLink, hasType, parseWobjectField } from '../../helpers/wObjectHelper';
@@ -34,6 +38,7 @@ const CatalogWrap = props => {
 
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
+  const currentWobject = useSelector(getWobjectBreadCrumbs);
 
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
   const [loadingPropositions, setLoadingPropositions] = useState(true);
@@ -310,8 +315,10 @@ const CatalogWrap = props => {
   const handleSortChange = sortType => {
     const sortOrder = wobject && wobject[objectFields.sorting];
     setSorting(sortType);
-    setListItems(sortListItemsBy(listItems, sort, sortOrder));
+    setListItems(sortListItemsBy(listItems, sortType, sortOrder));
   };
+
+  const obj = isEmpty(currentWobject) ? wobject : currentWobject;
 
   return (
     <div>
@@ -320,7 +327,7 @@ const CatalogWrap = props => {
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
             <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={wobject} onAddItem={handleAddItem} />
+              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
             </div>
           )}
           {loadingPropositions || isEmpty(wobject) ? (

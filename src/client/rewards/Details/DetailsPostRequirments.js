@@ -4,7 +4,6 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import getDetailsMessages from './detailsMessagesData';
 import { getObjectName } from '../../helpers/wObjectHelper';
-
 import './Details.less';
 
 const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObjectName }) => {

@@ -19,8 +19,6 @@ import {
 import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
-import { setReviewProposition } from '../rewardsActions';
-
 import './Proposition.less';
 
 const Proposition = ({
@@ -268,7 +266,6 @@ Proposition.propTypes = {
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
-  setReviewProposition: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,

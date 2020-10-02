@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
 
 import LANGUAGES from '../../translations/languages';
@@ -121,6 +121,9 @@ class CreateObject extends React.Component {
           parentAuthor: selectedType.author,
           parentPermlink: selectedType.permlink,
         };
+        const parentObject =
+          get(this.props.parentObject, 'parent.author_permlink') ||
+          get(this.props.parentObject, 'author_permlink');
 
         this.props
           .createWaivioObject(objData)
@@ -140,7 +143,7 @@ class CreateObject extends React.Component {
                   '',
                   {
                     name: objectFields.parent,
-                    body: this.props.parentObject.author_permlink,
+                    body: parentObject,
                     locale: values.locale,
                   },
                 ),

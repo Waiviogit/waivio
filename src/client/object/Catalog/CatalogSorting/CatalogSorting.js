@@ -7,7 +7,7 @@ import CatalogBreadcrumb from '../CatalogBreadcrumb/CatalogBreadcrumb';
 
 const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
   currWobject && currWobject[objectFields.sorting] && currWobject[objectFields.sorting].length ? (
-    <SortSelector sort={sort} onChange={() => handleSortChange}>
+    <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
       </SortSelector.Item>
