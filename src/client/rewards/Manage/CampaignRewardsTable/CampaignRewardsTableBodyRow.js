@@ -29,7 +29,8 @@ const CampaignRewardsTableRow = ({
   const isInactive =
     currentItem.status === 'inactive' ||
     currentItem.status === 'expired' ||
-    currentItem.status === 'deleted';
+    currentItem.status === 'deleted' ||
+    currentItem.status === 'onHold';
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
