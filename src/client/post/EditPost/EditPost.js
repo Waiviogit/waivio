@@ -303,7 +303,7 @@ class EditPost extends Component {
     this.props.createPost(postData, this.props.beneficiaries, isReview, campaign, intl);
   }
 
-  handleToggleLinkedObject(isLinked, uniqId) {
+  handleToggleLinkedObject(objId, isLinked, uniqId) {
     const { linkedObjects, objPercentage, topics } = this.state;
     const currentObj = find(linkedObjects, { _id: uniqId });
     const switchableObj = indexOf(linkedObjects, currentObj);
@@ -315,7 +315,7 @@ class EditPost extends Component {
     }
     const updPercentage = {
       ...objPercentage,
-      [uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
