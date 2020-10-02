@@ -78,7 +78,7 @@ const ImageSetter = ({
   }, [isOkayBtn, isModal]);
 
   // For image pasted for link
-  const checkIsImage = (isValidLink, image) => {
+  const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
     if (isSameLink) {
       message.error(
@@ -90,9 +90,7 @@ const ImageSetter = ({
       return;
     }
 
-    const urlValidation = image.src.match(objectURLValidationRegExp);
-
-    if (isValidLink && urlValidation) {
+    if (isValidLink) {
       if (!isMultiple) {
         setCurrentImages([image]);
       } else {
@@ -122,44 +120,27 @@ const ImageSetter = ({
     }
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
       const url = image || imageLinkInput.current.value;
+      const urlValidation = url.match(objectURLValidationRegExp);
 
-      // const urlValidation = url.match(objectURLValidationRegExp);
-
-      // if (urlValidation) {
-      //
-      // }
-
-      const onErrorLoadImage = () => {
-        onLoadingImage(false);
-      };
-
-      checkIsImage(true, url);
-
-      const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
-        const newImage = {
-          src: currentLinkSrc,
-          name: currentLinkName,
-          id: uuidv4(),
+      if (urlValidation) {
+        const onErrorLoadImage = () => {
+          onLoadingImage(false);
+        };
+        let newImage = {};
+        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+          newImage = {
+            src: currentLinkSrc,
+            name: currentLinkName,
+            id: uuidv4(),
+          };
         };
 
-        console.log('newImage: ', newImage);
-      };
-
-      await onImageUpload(url, insertImage, onErrorLoadImage, linkMethod);
-
-      // console.log('url: ', url)
-      // const newImage = {
-      //   src: url,
-      //   name: filename,
-      //   id: uuidv4(),
-      // };
-      // const img = new Image();
-      // img.src = newImage.src;
-      // img.onload = () => {
-      //   imageLinkInput.current.value = '';
-      //   return checkIsImage(true, newImage);
-      // };
-      // img.onerror = () => checkIsImage(false, newImage);
+        await onImageUpload(url, insertImage, onErrorLoadImage, linkMethod);
+        imageLinkInput.current.value = '';
+        checkImage(true, newImage);
+      } else {
+        checkImage(false);
+      }
     }
   };
 
