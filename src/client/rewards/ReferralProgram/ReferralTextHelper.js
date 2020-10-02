@@ -253,5 +253,17 @@ export const referralInstructionsContent = data => {
         defaultMessage="Please note that any misleading promotions are not allowed in accordance with the Referral agreement. Waivio reserves the right to terminate the referral program at any time for any reason."
       />
     ),
+    terminateReferralTitle: (
+      <FormattedMessage
+        id="referrals_instructions_terminate_referral_title"
+        defaultMessage="Terminate the Referral program"
+      />
+    ),
+    terminateReferralInfo: (
+      <FormattedMessage
+        id="referrals_instructions_terminate_referral_info"
+        defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
+      />
+    ),
   };
 };

@@ -11,6 +11,7 @@ import {
   getCampaignServerPercent,
   getIndexAbsolutePercent,
   getIndexServerPercent,
+  getIsAuthenticated,
   getIsStartLoadingReferralDetails,
   getReferralDuration,
   getReferralServerPercent,
@@ -25,6 +26,7 @@ const additionData = {
 
 const ReferralDetail = props => {
   const {
+    isAuthenticated,
     getReferralDetails,
     campaignServerPercent,
     indexAbsolutePercent,
@@ -70,37 +72,43 @@ const ReferralDetail = props => {
   } = referralDetailContent(data);
 
   return (
-    <div className="ReferralDetail">
-      <h2 className="ReferralDetail__title">{detailTitle}</h2>
-      <div className="ReferralDetail__description">{detailDescription}</div>
-      <div className="ReferralDetail__commissions-title">{detailsCommissionsTitle}</div>
-      <div className="ReferralDetail__commissions-description">{detailsCommissionsDescription}</div>
-      <div className="ReferralDetail__commissions-example">{detailsCommissionsExample}</div>
-      <div className="ReferralDetail__commissions-sponsor">{detailsCommissionsSponsor}</div>
-      <div className="ReferralDetail__commissions-processing">{detailsCommissionsProcessing}</div>
-      <div className="ReferralDetail__commissions-distribution">
-        <div className="commissions-distribution__waivio-campaigns">
-          {detailsCommissionsWaivioCampaign}
+    <React.Fragment>
+      {isAuthenticated && (
+        <div className="ReferralDetail">
+          <h2 className="ReferralDetail__title">{detailTitle}</h2>
+          <div className="ReferralDetail__description">{detailDescription}</div>
+          <div className="ReferralDetail__commissions-title">{detailsCommissionsTitle}</div>
+          <div className="ReferralDetail__commissions-description">
+            {detailsCommissionsDescription}
+          </div>
+          <div className="ReferralDetail__commissions-example">{detailsCommissionsExample}</div>
+          <div className="ReferralDetail__commissions-sponsor">{detailsCommissionsSponsor}</div>
+          <div className="ReferralDetail__commissions-processing">
+            {detailsCommissionsProcessing}
+          </div>
+          <div className="ReferralDetail__commissions-distribution">
+            <div className="commissions-distribution__waivio-campaigns">
+              {detailsCommissionsWaivioCampaign}
+            </div>
+            <div className="commissions-distribution__waivio-index">
+              {detailsCommissionsWaivioIndex}
+            </div>
+            <div className="commissions-distribution__waivio-referrals">
+              {detailsCommissionsReferrals}
+            </div>
+          </div>
+          <div className="ReferralDetail__commissions-payments">{detailsCommissionsPayments}</div>
+          <div className="ReferralDetail__referral-period">{detailsReferralPeriod}</div>
+          <div className="ReferralDetail__referral-sessions">{detailsReferralSessions}</div>
+          <div className="ReferralDetail__referral-partners">{detailsReferralPartners}</div>
         </div>
-        <div className="commissions-distribution__waivio-index">
-          {detailsCommissionsWaivioIndex}
-        </div>
-        <div className="commissions-distribution__waivio-referrals">
-          {detailsCommissionsReferrals}
-        </div>
-      </div>
-      <div className="ReferralDetail__commissions-payments">{detailsCommissionsPayments}</div>
-      <div className="ReferralDetail__referral-period">{detailsReferralPeriod}</div>
-      <div className="ReferralDetail__referral-sessions">{detailsReferralSessions}</div>
-      <div className="ReferralDetail__referral-partners">{detailsReferralPartners}</div>
-    </div>
+      )}
+    </React.Fragment>
   );
 };
 
 ReferralDetail.propTypes = {
-  intl: PropTypes.shape({
-    formatMessage: PropTypes.func,
-  }).isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
   getReferralDetails: PropTypes.func.isRequired,
   campaignServerPercent: PropTypes.number,
   indexAbsolutePercent: PropTypes.number,
@@ -121,6 +129,7 @@ ReferralDetail.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+  isAuthenticated: getIsAuthenticated(state),
   campaignServerPercent: getCampaignServerPercent(state),
   indexAbsolutePercent: getIndexAbsolutePercent(state),
   indexServerPercent: getIndexServerPercent(state),

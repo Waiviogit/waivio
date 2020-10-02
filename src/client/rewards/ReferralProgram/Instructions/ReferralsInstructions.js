@@ -4,42 +4,50 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Checkbox, Modal } from 'antd';
 
-import { getAuthenticatedUserName, getIsUserInWaivioBlackList } from '../../../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsUserInWaivioBlackList,
+} from '../../../reducers';
 import { getIsUserInBlackList } from '../../rewardsActions';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 
 import './ReferralsInstructions.less';
 
+const widget = () =>
+  `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
+
 const ReferralsInstructions = props => {
-  const { authUserName, getUserInBlackList, isBlackListUser } = props;
-  const [isAcceptedTerms, setIsAcceptedTerms] = useState(false);
+  const { authUserName, getUserInBlackList, isBlackListUser, isAuthenticated } = props;
   const [isModal, setIsModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
 
   useEffect(() => {
+    console.log(isConfirmModal);
     getUserInBlackList(authUserName);
   }, []);
 
   const handleAgreeRulesCheckbox = () => {
-    // eslint-disable-next-line consistent-return
-    setIsAcceptedTerms(prevState => {
-      if (prevState !== false) {
-        setIsModal(!isModal);
-        setIsChecked(true);
-      } else {
-        setIsChecked(false);
-        return !isAcceptedTerms;
-      }
-    });
+    if (isChecked === true && isModal === false) {
+      setIsModal(true);
+    }
   };
 
   const handleOkButton = () => {
-    setIsModal(prevState => {
-      if (prevState !== true) {
-        setIsAcceptedTerms(!isAcceptedTerms);
-      }
-      return !isModal;
-    });
+    if (isModal === true) {
+      setIsModal(false);
+      setIsChecked(false);
+      setIsConfirmModal(true);
+    }
+  };
+
+  const handleCancelButton = () => {
+    if (isModal === true) {
+      setIsModal(false);
+      setIsChecked(true);
+      setIsConfirmModal(false);
+    }
   };
 
   const data = {
@@ -60,82 +68,93 @@ const ReferralsInstructions = props => {
     acceptedConditionsWidgetInfo,
     acceptedConditionsWidgetExample,
     acceptedConditionsAlert,
+    terminateReferralTitle,
+    terminateReferralInfo,
   } = referralInstructionsContent(data);
 
   return (
-    <div className="ReferralInstructions">
-      <h2 className="ReferralInstructions__title">{instructionsTitle}</h2>
-      {isBlackListUser ? (
-        <div className="ReferralInstructions__is-blacklist">{instructionsBlackListContent}</div>
-      ) : (
-        <div className="ReferralInstructions__description">{instructionsDescription}</div>
-      )}
+    <React.Fragment>
+      {isAuthenticated && (
+        <div className="ReferralInstructions">
+          <h2 className="ReferralInstructions__title">{instructionsTitle}</h2>
+          {isBlackListUser ? (
+            <div className="ReferralInstructions__is-blacklist">{instructionsBlackListContent}</div>
+          ) : (
+            <div className="ReferralInstructions__description">{instructionsDescription}</div>
+          )}
 
-      <div>
-        <Modal
-          title="Basic Modal"
-          visible={isModal}
-          onOk={() => handleOkButton()}
-          onCancel={() => setIsModal(!isModal)}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal>
-      </div>
-
-      <div className="ReferralInstructions__wrap-conditions">
-        <Checkbox
-          checked={isChecked}
-          id="agreeButton"
-          onChange={() => handleAgreeRulesCheckbox()}
-        />
-        <label
-          htmlFor="agreeButton"
-          className="ReferralInstructions__wrap-conditions__condition-content"
-        >
-          <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
-            *
+          <div>
+            <Modal
+              title={terminateReferralTitle}
+              visible={isModal}
+              onOk={() => handleOkButton()}
+              onCancel={() => handleCancelButton()}
+            >
+              <p>{terminateReferralInfo}</p>
+            </Modal>
           </div>
-          {instructionsConditions}
-        </label>
-      </div>
 
-      {isChecked && (
-        <div className="ReferralInstructions__accepted-conditions">
-          <div className="ReferralInstructions__accepted-conditions__text-wrap">
-            <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
-              {acceptedConditionsTitleDirect}
+          <div className="ReferralInstructions__wrap-conditions">
+            <Checkbox
+              checked={isChecked}
+              id="agreeButton"
+              onChange={() => {
+                setIsChecked(prevState => {
+                  if (prevState === false) {
+                    return true;
+                  }
+                  return handleAgreeRulesCheckbox();
+                });
+              }}
+            />
+            <label
+              htmlFor="agreeButton"
+              className="ReferralInstructions__wrap-conditions__condition-content"
+            >
+              <div className="ReferralInstructions__wrap-conditions__condition-content__star-flag">
+                *
+              </div>
+              {instructionsConditions}
+            </label>
+          </div>
+
+          {isChecked && (
+            <div className="ReferralInstructions__accepted-conditions">
+              <div className="ReferralInstructions__accepted-conditions__text-wrap">
+                <div className="ReferralInstructions__accepted-conditions__text-wrap__title">
+                  {acceptedConditionsTitleDirect}
+                </div>
+
+                <div className="ReferralInstructions__accepted-conditions__text-wrap__links">
+                  {acceptedConditionsExamplesLinks}
+                  {acceptedConditionsForExample}
+                  {acceptedConditionsFirstExampleLink}
+                  {acceptedConditionsSecondExampleLink}
+                </div>
+              </div>
+
+              <div className="ReferralInstructions__accepted-conditions__widget-title">
+                {acceptedConditionsTitleWidget}
+              </div>
+
+              <div className="ReferralInstructions__accepted-conditions__widget-info">
+                {acceptedConditionsWidgetInfo}
+              </div>
+
+              <div className="ReferralInstructions__accepted-conditions__widget">{widget()}</div>
+
+              <div className="ReferralInstructions__accepted-conditions__an-example">
+                {acceptedConditionsWidgetExample}
+              </div>
+
+              <div className="ReferralInstructions__accepted-conditions__alert">
+                {acceptedConditionsAlert}
+              </div>
             </div>
-
-            <div className="ReferralInstructions__accepted-conditions__text-wrap__links">
-              {acceptedConditionsExamplesLinks}
-              {acceptedConditionsForExample}
-              {acceptedConditionsFirstExampleLink}
-              {acceptedConditionsSecondExampleLink}
-            </div>
-          </div>
-
-          <div className="ReferralInstructions__accepted-conditions__widget-title">
-            {acceptedConditionsTitleWidget}
-          </div>
-
-          <div className="ReferralInstructions__accepted-conditions__widget-info">
-            {acceptedConditionsWidgetInfo}
-          </div>
-
-          {/* <div className="ReferralInstructions__accepted-conditions__widget"></div> */}
-
-          <div className="ReferralInstructions__accepted-conditions__an-example">
-            {acceptedConditionsWidgetExample}
-          </div>
-
-          <div className="ReferralInstructions__accepted-conditions__alert">
-            {acceptedConditionsAlert}
-          </div>
+          )}
         </div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -143,6 +162,7 @@ ReferralsInstructions.propTypes = {
   authUserName: PropTypes.string,
   isBlackListUser: PropTypes.bool,
   getUserInBlackList: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
 ReferralsInstructions.defaultProps = {
@@ -152,6 +172,7 @@ ReferralsInstructions.defaultProps = {
 
 const mapStateToProps = state => ({
   authUserName: getAuthenticatedUserName(state),
+  isAuthenticated: getIsAuthenticated(state),
   isBlackListUser: getIsUserInWaivioBlackList(state),
 });
 
