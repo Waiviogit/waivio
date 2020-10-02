@@ -772,12 +772,12 @@ class Rewards extends React.Component {
       !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
         ? get(newPropositions, ['0', 'required_object'])
         : {};
-
     const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
-      const objMap = getParsedMap(object.parent);
+      const parent = object.parent;
+      const objMap = getParsedMap(object || parent);
       const primaryObjectMap = getParsedMap(primaryObjectForMap);
 
-      return object.parent && !isEqual(objMap, primaryObjectMap);
+      return !isEqual(objMap, primaryObjectMap) ? object : '';
     });
 
     return match.params.filterKey === 'reserved'
