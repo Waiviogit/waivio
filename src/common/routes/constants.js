@@ -76,6 +76,7 @@ export default {
       'guests-settings',
       'notification-settings',
       'create',
+      'manage',
     ].join('|'),
   },
 };

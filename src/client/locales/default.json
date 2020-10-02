@@ -1403,5 +1403,11 @@
   "administrative": "Administrative",
   "ownership": "Ownership",
   "claim_authority": "Claim authority",
-  "create_new_website": "Create new website"
+  "create_new_website": "Create new website",
+  "select_website_template": "Select website template:",
+  "name_website": "Specify name for your website:",
+  "info_level_domain_name": "It will be used as a second level domain name.",
+  "available": "Available",
+  "subdomain_already_exists": "Subdomain already exists",
+  "create_website": "Create website"
 }

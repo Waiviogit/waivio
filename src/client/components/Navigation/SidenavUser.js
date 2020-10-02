@@ -137,7 +137,7 @@ const SidenavUser = () => {
           </li>
           <li>
             <NavLink
-              to="/manage_mock"
+              to="/manage"
               className="sidenav-discover-objects__item"
               activeClassName="Sidenav__item--active"
             >

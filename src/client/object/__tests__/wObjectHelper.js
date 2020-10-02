@@ -81,6 +81,7 @@ describe('getFieldWithMaxWeight', () => {
           weight: 793,
           name: 'name',
           body: 'CrazyPssina',
+          active_votes: [{ percent: '100' }, { percent: '-100' }],
         },
         result,
       ],

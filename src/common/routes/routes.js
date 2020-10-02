@@ -137,6 +137,11 @@ const routes = {
       component: Views.CreateWebsite,
     },
     {
+      path: '/manage',
+      exact: true,
+      component: Views.ManageWebsite,
+    },
+    {
       path: `/@:name/(${URL.USER.tabs})?/(table)?`,
       component: Views.User,
       exact: true,

@@ -13,9 +13,9 @@ import validateRules from '../constants/validateRules';
 import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
 import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '../../../reducers';
 
-import './CreateWebsite.less';
+import './ManageWebsite.less';
 
-const CreateWebsite = ({
+const ManageWebsite = ({
   intl,
   form,
   getDomainList,
@@ -62,7 +62,7 @@ const CreateWebsite = ({
       <Helmet>
         <title>
           {intl.formatMessage({
-            id: 'create_new_website',
+            id: 'manage_website',
             defaultMessage: 'Create new website',
           })}{' '}
           - Waivio
@@ -145,10 +145,7 @@ const CreateWebsite = ({
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={loading}>
-                {intl.formatMessage({
-                  id: 'create_website',
-                  defaultMessage: 'Create website',
-                })}
+                Create website
               </Button>
             </Form.Item>
           </Form>
@@ -158,7 +155,7 @@ const CreateWebsite = ({
   );
 };
 
-CreateWebsite.propTypes = {
+ManageWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   getDomainList: PropTypes.func.isRequired,
@@ -169,7 +166,7 @@ CreateWebsite.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-CreateWebsite.defaultProps = {
+ManageWebsite.defaultProps = {
   availableStatus: '',
 };
 
@@ -184,4 +181,4 @@ export default connect(
     checkStatusAvailableDomain: checkAvailableDomain,
     createWebsite: createNewWebsite,
   },
-)(Form.create()(injectIntl(CreateWebsite)));
+)(Form.create()(injectIntl(ManageWebsite)));

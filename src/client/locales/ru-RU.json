@@ -1405,5 +1405,12 @@
   "administrative": "Администратор",
   "ownership": "Владелец",
   "claim_authority": "Заявить о полномочиях",
-  "create_new_website": "Создайте новый вебсайт"
+  "create_new_website": "Создайте новый вебсайт",
+  "website_create_alerts_info": "Я прочитал и согласен с условиями Соглашения о предоставлении услуг веб-хостинга.",
+  "select_website_template": "Выберите шаблон сайта:",
+  "name_website": "Укажите название для вашего сайта:",
+  "info_level_domain_name": "Он будет использоваться как доменное имя второго уровня.",
+  "available": "Доступный",
+  "subdomain_already_exists": "Субдомен уже существует",
+  "create_website": "Создать сайт"
 }
