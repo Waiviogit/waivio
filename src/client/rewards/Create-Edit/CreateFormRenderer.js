@@ -48,7 +48,6 @@ const CreateFormRenderer = props => {
     commissionAgreement,
     campaignId,
     isDisabled,
-    isActive,
     intl,
   } = props;
 
@@ -65,7 +64,7 @@ const CreateFormRenderer = props => {
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
-  const disabled = (!isDuplicate && isDisabled && !isEmpty(campaignId)) || isActive || loading;
+  const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
 
   const notEnoughMoneyWarn =
     parseFloat(user.balance) <= 0 ? (
@@ -513,7 +512,6 @@ CreateFormRenderer.defaultProps = {
   campaignId: null,
   iAgree: false,
   isDisabled: false,
-  isActive: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -564,7 +562,6 @@ CreateFormRenderer.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
   isDisabled: PropTypes.bool,
-  isActive: PropTypes.bool,
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };
