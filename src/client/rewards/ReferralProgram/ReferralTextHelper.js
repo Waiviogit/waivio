@@ -265,5 +265,7 @@ export const referralInstructionsContent = data => {
         defaultMessage="If you no longer accept the terms and conditions of the Waivio service agreement, you can no longer participate in the referral program. All future referrals will be suspended."
       />
     ),
+    copyButtonText: <FormattedMessage id="copy_button" defaultMessage="Copy" />,
+    copyButtonCopiedText: <FormattedMessage id="copy_button_copied" defaultMessage="Copied" />,
   };
 };

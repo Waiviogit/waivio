@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Checkbox, Modal } from 'antd';
+import { Checkbox, Modal, Icon, Tooltip } from 'antd';
 
 import {
   getAuthenticatedUserName,
@@ -17,11 +17,24 @@ import './ReferralsInstructions.less';
 const widget = () =>
   `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
 
+const handleCopyTextButton = setIsCopyButton => {
+  const widgetText = widget();
+  const reservoir = document.createElement('textarea');
+  reservoir.value = widgetText;
+  document.body.appendChild(reservoir);
+  reservoir.select();
+  document.execCommand('copy');
+  document.body.removeChild(reservoir);
+
+  return setIsCopyButton(true);
+};
+
 const ReferralsInstructions = props => {
   const { authUserName, getUserInBlackList, isBlackListUser, isAuthenticated } = props;
   const [isModal, setIsModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [isCopyButton, setIsCopyButton] = useState(false);
 
   useEffect(() => {
     console.log(isConfirmModal);
@@ -70,7 +83,12 @@ const ReferralsInstructions = props => {
     acceptedConditionsAlert,
     terminateReferralTitle,
     terminateReferralInfo,
+    copyButtonText,
+    copyButtonCopiedText,
   } = referralInstructionsContent(data);
+
+  const currentCopyText = isCopyButton ? copyButtonCopiedText : copyButtonText;
+  setTimeout(() => setIsCopyButton(false), 3000);
 
   return (
     <React.Fragment>
@@ -141,7 +159,16 @@ const ReferralsInstructions = props => {
                 {acceptedConditionsWidgetInfo}
               </div>
 
-              <div className="ReferralInstructions__accepted-conditions__widget">{widget()}</div>
+              <div className="ReferralInstructions__accepted-conditions__widget">
+                {widget()}
+                <div className="ReferralInstructions__accepted-conditions__widget__copy-icon">
+                  <Tooltip title={currentCopyText}>
+                    <span>
+                      <Icon onClick={() => handleCopyTextButton(setIsCopyButton)} type="copy" />
+                    </span>
+                  </Tooltip>
+                </div>
+              </div>
 
               <div className="ReferralInstructions__accepted-conditions__an-example">
                 {acceptedConditionsWidgetExample}
