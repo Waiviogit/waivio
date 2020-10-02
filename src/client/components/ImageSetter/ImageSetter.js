@@ -109,7 +109,8 @@ const ImageSetter = ({
   };
 
   // For image pasted for link
-  const handleOnUploadImageByLink = image => {
+  const handleOnUploadImageByLink = async image => {
+    const linkMethod = true;
     if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
@@ -121,27 +122,53 @@ const ImageSetter = ({
     }
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
       const url = image || imageLinkInput.current.value;
-      const filename = url.substring(url.lastIndexOf('/') + 1);
-      const newImage = {
-        src: url,
-        name: filename,
-        id: uuidv4(),
+
+      // const urlValidation = url.match(objectURLValidationRegExp);
+
+      // if (urlValidation) {
+      //
+      // }
+
+      const onErrorLoadImage = () => {
+        onLoadingImage(false);
       };
-      const img = new Image();
-      img.src = newImage.src;
-      img.onload = () => {
-        imageLinkInput.current.value = '';
-        return checkIsImage(true, newImage);
+
+      checkIsImage(true, url);
+
+      const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+        const newImage = {
+          src: currentLinkSrc,
+          name: currentLinkName,
+          id: uuidv4(),
+        };
+
+        console.log('newImage: ', newImage);
       };
-      img.onerror = () => checkIsImage(false, newImage);
+
+      await onImageUpload(url, insertImage, onErrorLoadImage, linkMethod);
+
+      // console.log('url: ', url)
+      // const newImage = {
+      //   src: url,
+      //   name: filename,
+      //   id: uuidv4(),
+      // };
+      // const img = new Image();
+      // img.src = newImage.src;
+      // img.onload = () => {
+      //   imageLinkInput.current.value = '';
+      //   return checkIsImage(true, newImage);
+      // };
+      // img.onerror = () => checkIsImage(false, newImage);
     }
   };
 
   useEffect(() => {
-    handleOnUploadImageByLink(defaultImage);
+    handleOnUploadImageByLink(defaultImage).then(r => r);
   }, []);
 
   const handleChangeImage = async e => {
+    const linkMethod = false;
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
       const images = Object.values(e.target.files);
@@ -179,7 +206,7 @@ const ImageSetter = ({
           );
         } else {
           /* eslint-disable no-await-in-loop */
-          await onImageUpload(image, disableAndInsertImage, onErrorLoadImage);
+          await onImageUpload(image, disableAndInsertImage, onErrorLoadImage, linkMethod);
         }
       }
       setCurrentImages([...currentImages, ...uploadedImages]);
@@ -311,9 +338,7 @@ const ImageSetter = ({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
               })}
-              onInput={() => {
-                handleOnUploadImageByLink();
-              }}
+              onInput={() => handleOnUploadImageByLink()}
             />
             <Icon type="upload" className="input-upload__btn" />
           </div>
