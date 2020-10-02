@@ -10,7 +10,11 @@ describe('(Component) TransferTransaction', () => {
         to: 'hellosteem',
         memo: 'Test Transfer Transaction',
         amount: <span>{'0 HIVE'}</span>,
-        timestamp: '0',
+        timestamp: 0,
+        isGuestPage: false,
+        withdraw: '',
+        getDetails: () => {},
+        transactionType: '',
       };
       const wrapper = shallow(
         <Router>

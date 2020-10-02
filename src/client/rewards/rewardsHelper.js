@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { isEmpty, map, get, reduce, round, memoize } from 'lodash';
 import moment from 'moment';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import {
   REWARD,
   MESSAGES,
@@ -16,6 +15,8 @@ import {
   IS_RESERVED,
 } from '../../common/constants/rewards';
 import config from '../../waivioApi/routes';
+import { getObjectName } from '../helpers/wObjectHelper';
+import { getCryptosPriceHistory } from '../reducers';
 
 export const displayLimit = 10;
 
@@ -166,16 +167,11 @@ export const convertDigits = (number, isHive) =>
   parseFloat(Math.round(number * 1000) / 1000).toFixed(isHive ? 3 : 2);
 
 export const getCurrentUSDPrice = () => {
-  const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
+  const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
 
   if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
-  const currentUSDPrice =
-    cryptosPriceHistory &&
-    cryptosPriceHistory.hive &&
-    cryptosPriceHistory.hive.usdPriceHistory &&
-    cryptosPriceHistory.hive.usdPriceHistory.usd;
 
-  return currentUSDPrice;
+  return get(cryptosPriceHistory, ['hive', 'usdPriceHistory', 'usd']);
 };
 
 export const getDaysLeft = (reserveDate, daysCount) => {
@@ -185,7 +181,7 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getFieldWithMaxWeight(objectDetails.requiredObject, 'name');
+  const requiredObjectName = getObjectName(objectDetails.requiredObject);
   return objectDetails.frequency_assign
     ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
@@ -223,7 +219,7 @@ export const getDescription = objectDetails =>
 const getFollowingObjects = objectDetails =>
   !isEmpty(objectDetails.objects)
     ? map(objectDetails.objects, obj => ({
-        name: getFieldWithMaxWeight(obj.object || obj, 'name'),
+        name: getObjectName(obj.object || obj),
         permlink: obj.author_permlink || obj.object.author_permlink,
       }))
     : '';

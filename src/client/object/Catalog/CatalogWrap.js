@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
@@ -344,7 +344,7 @@ const CatalogWrap = props => {
           )}
         </React.Fragment>
       )}
-      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)} />
+      <BodyContainer full body={wobject.pageContent} />
     </div>
   );
 };

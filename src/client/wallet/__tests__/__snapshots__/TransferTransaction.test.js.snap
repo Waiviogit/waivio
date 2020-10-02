@@ -10,10 +10,13 @@ ShallowWrapper {
           0 HIVE
         </span>
       }
+      getDetails={[Function]}
       isGuestPage={false}
       memo="Test Transfer Transaction"
-      timestamp="0"
+      timestamp={0}
       to="hellosteem"
+      transactionType=""
+      withdraw=""
     />
   </MemoryRouter>,
   Symbol(enzyme.__renderer__): Object {
@@ -36,10 +39,13 @@ ShallowWrapper {
             0 HIVE
           </span>
         }
+        getDetails={[Function]}
         isGuestPage={false}
         memo="Test Transfer Transaction"
-        timestamp="0"
+        timestamp={0}
         to="hellosteem"
+        transactionType=""
+        withdraw=""
       />,
       "history": Object {
         "action": "POP",
@@ -49,7 +55,7 @@ ShallowWrapper {
         "entries": Array [
           Object {
             "hash": "",
-            "key": "g4exj3",
+            "key": "tr5qbi",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -63,7 +69,7 @@ ShallowWrapper {
         "listen": [Function],
         "location": Object {
           "hash": "",
-          "key": "g4exj3",
+          "key": "tr5qbi",
           "pathname": "/",
           "search": "",
           "state": undefined,
@@ -81,10 +87,13 @@ ShallowWrapper {
         "amount": <span>
           0 HIVE
         </span>,
+        "getDetails": [Function],
         "isGuestPage": false,
         "memo": "Test Transfer Transaction",
-        "timestamp": "0",
+        "timestamp": 0,
         "to": "hellosteem",
+        "transactionType": "",
+        "withdraw": "",
       },
       "ref": null,
       "rendered": null,
@@ -104,10 +113,13 @@ ShallowWrapper {
               0 HIVE
             </span>
           }
+          getDetails={[Function]}
           isGuestPage={false}
           memo="Test Transfer Transaction"
-          timestamp="0"
+          timestamp={0}
           to="hellosteem"
+          transactionType=""
+          withdraw=""
         />,
         "history": Object {
           "action": "POP",
@@ -117,7 +129,7 @@ ShallowWrapper {
           "entries": Array [
             Object {
               "hash": "",
-              "key": "g4exj3",
+              "key": "tr5qbi",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -131,7 +143,7 @@ ShallowWrapper {
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "g4exj3",
+            "key": "tr5qbi",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -149,10 +161,13 @@ ShallowWrapper {
           "amount": <span>
             0 HIVE
           </span>,
+          "getDetails": [Function],
           "isGuestPage": false,
           "memo": "Test Transfer Transaction",
-          "timestamp": "0",
+          "timestamp": 0,
           "to": "hellosteem",
+          "transactionType": "",
+          "withdraw": "",
         },
         "ref": null,
         "rendered": null,

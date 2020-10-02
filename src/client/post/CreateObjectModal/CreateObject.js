@@ -18,7 +18,7 @@ import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getAppendData } from '../../helpers/wObjectHelper';
-import { getServerWObj } from '../../adapters';
+
 import './CreateObject.less';
 
 @injectIntl
@@ -130,13 +130,13 @@ class CreateObject extends React.Component {
               this.props.appendObject(
                 getAppendData(
                   this.props.username,
-                  getServerWObj({
+                  {
                     id: parentPermlink,
                     author: parentAuthor,
                     creator: this.props.username,
                     name: values.name,
                     locale: values.locale,
-                  }),
+                  },
                   '',
                   {
                     name: objectFields.parent,
