@@ -111,19 +111,23 @@ export default class Wobj extends React.Component {
 
   componentDidMount() {
     const { match, wobject, authenticatedUserName } = this.props;
-
+    console.log(wobject);
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
     }
-    if (wobject.albums_count === 0) {
-      this.appendAlbum();
-    }
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(this.props.wobject);
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
       this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
+    }
+    if (!isEmpty(this.props.wobject)) {
+      if (this.props.wobject.albums_count === 0) {
+        console.log('kklk');
+        this.appendAlbum();
+      }
     }
   }
 
@@ -157,7 +161,6 @@ export default class Wobj extends React.Component {
 
     const { author } = await this.props.appendObject(data);
     await this.props.addAlbumToStore({ ...album, author });
-    this.setState(() => ({ currentAlbum: album }));
   };
 
   render() {
