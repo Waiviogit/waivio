@@ -245,6 +245,7 @@ class EditPost extends Component {
     if (!isEqual(prevEntityMap, nextEntityMap)) {
       this.setState({
         draftContent: {
+          title: nextState.titleValue,
           body: nextState.content,
         },
         currentRawContent: rawContent,
