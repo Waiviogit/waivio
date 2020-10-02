@@ -35,7 +35,10 @@ const History = ({
 }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const isHistory = location.pathname === PATH_NAME_HISTORY;
+  const isHistory =
+    location.pathname === PATH_NAME_HISTORY ||
+    location.pathname ===
+      `${PATH_NAME_HISTORY}/${match.params.campaignId}/${match.params.permlink}`;
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -73,6 +76,9 @@ const History = ({
           locale: usedLocale,
         };
         requestData.skip = loadMore ? messages.length : 0;
+        if (reservationPermlink) {
+          requestData.reservationPermlink = reservationPermlink;
+        }
         if (isHistory) {
           requestData.guideNames = activeFilters.messagesSponsors;
           requestData.userName = username;
@@ -80,7 +86,6 @@ const History = ({
         if (!isHistory) {
           requestData.caseStatus = caseStatus;
           requestData.guideName = username;
-          requestData.reservationPermlink = reservationPermlink;
         }
         if (isGuideHistory) {
           requestData.guideName = username;
