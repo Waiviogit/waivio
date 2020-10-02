@@ -44,6 +44,8 @@ export const IS_RESERVED = 'reserved';
 export const IS_ALL = 'all';
 export const IS_ACTIVE = 'active';
 export const CAMPAIGNS = 'campaigns';
+export const PAYABLES = 'payables';
+export const RECEIVABLES = 'receivables';
 
 export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
 export const PATH_NAME_MESSAGES = '/rewards/messages';
