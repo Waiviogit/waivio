@@ -14,7 +14,7 @@ import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config';
 import { getRate, getRewardFund } from '../../reducers';
 import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
-import { PATH_NAME_MANAGE } from '../../../common/constants/rewards';
+import { PATH_NAME_MANAGE, CAMPAIGN_STATUS } from '../../../common/constants/rewards';
 import './CreateReward.less';
 
 @withRouter
@@ -101,12 +101,12 @@ class CreateRewardForm extends React.Component {
       const matchPath = get(this.props.match, ['path', 'params', '0']);
       const isDuplicate = includes(matchPath, 'createDuplicate');
       const isDisabled =
-        campaign.status === 'inactive' ||
-        campaign.status === 'expired' ||
-        campaign.status === 'deleted' ||
-        campaign.status === 'onHold' ||
-        campaign.status === 'active' ||
-        campaign.status !== 'pending';
+        campaign.status === CAMPAIGN_STATUS.inactive ||
+        campaign.status === CAMPAIGN_STATUS.expired ||
+        campaign.status === CAMPAIGN_STATUS.deleted ||
+        campaign.status === CAMPAIGN_STATUS.onHold ||
+        campaign.status === CAMPAIGN_STATUS.active ||
+        campaign.status !== CAMPAIGN_STATUS.pending;
 
       let combinedObjects;
       let sponsors;

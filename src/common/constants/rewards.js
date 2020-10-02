@@ -59,4 +59,15 @@ export const PATH_NAME_MANAGE = '/rewards/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 
+export const CAMPAIGN_STATUS = {
+  inactive: 'inactive',
+  expired: 'expired',
+  deleted: 'deleted',
+  onHold: 'onHold',
+  active: 'active',
+  pending: 'pending',
+  payed: 'payed',
+  reachedLimit: 'reachedLimit',
+};
+
 export default null;

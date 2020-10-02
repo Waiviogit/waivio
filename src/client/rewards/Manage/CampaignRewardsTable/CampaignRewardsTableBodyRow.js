@@ -9,6 +9,7 @@ import {
   validateActivationCampaign,
   validateInactivationCampaign,
 } from '../../../../waivioApi/ApiClient';
+import { CAMPAIGN_STATUS } from '../../../../common/constants/rewards';
 import './CampaignRewardsTable.less';
 
 const CampaignRewardsTableRow = ({
@@ -23,14 +24,14 @@ const CampaignRewardsTableRow = ({
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
   const isChecked =
-    currentItem.status === 'active' ||
-    currentItem.status === 'payed' ||
-    currentItem.status === 'reachedLimit';
+    currentItem.status === CAMPAIGN_STATUS.active ||
+    currentItem.status === CAMPAIGN_STATUS.payed ||
+    currentItem.status === CAMPAIGN_STATUS.reachedLimit;
   const isInactive =
-    currentItem.status === 'inactive' ||
-    currentItem.status === 'expired' ||
-    currentItem.status === 'deleted' ||
-    currentItem.status === 'onHold';
+    currentItem.status === CAMPAIGN_STATUS.inactive ||
+    currentItem.status === CAMPAIGN_STATUS.expired ||
+    currentItem.status === CAMPAIGN_STATUS.deleted ||
+    currentItem.status === CAMPAIGN_STATUS.onHold;
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
