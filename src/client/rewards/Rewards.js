@@ -429,11 +429,13 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors);
       this.setState({
         area,
         radius,
         loading: false,
         fetched: false,
+        sponsors,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -443,7 +445,6 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
-        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
@@ -451,7 +452,6 @@ class Rewards extends React.Component {
           area,
           radius,
           hasMore: data.hasMore,
-          sponsors,
         });
       }
       if (isMap && firstMapLoad) {
