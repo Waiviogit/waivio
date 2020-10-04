@@ -56,7 +56,7 @@ const ObjectCardView = ({
     );
   };
   const objName = getObjectName(wObject);
-  const parentName = getObjectName(parent);
+  const parentName = getObjectName(parent.parent) || getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
