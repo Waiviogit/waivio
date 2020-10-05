@@ -1,4 +1,8 @@
-import { GET_USER_REFERRAL_DETAILS, GET_IS_USER_IN_BLACKLIST } from './ReferralActions';
+import {
+  GET_USER_REFERRAL_DETAILS,
+  GET_IS_USER_IN_BLACKLIST,
+  GET_USER_REFERRAL_INFO,
+} from './ReferralActions';
 
 const initialState = {
   isStartLoadingReferralDetails: false,
@@ -9,10 +13,33 @@ const initialState = {
   referralServerPercent: null,
   suspendedTimer: null,
   isUserInWaivioBlackList: false,
+  isStartGetReferralInfo: false,
+  referralStatus: '',
+  referral: [],
 };
 
 const ReferralReducer = (state = initialState, action) => {
   switch (action.type) {
+    case GET_USER_REFERRAL_INFO.START: {
+      return {
+        ...state,
+        isStartGetReferralInfo: true,
+      };
+    }
+    case GET_USER_REFERRAL_INFO.SUCCESS: {
+      return {
+        ...state,
+        isStartGetReferralInfo: false,
+        referralStatus: action.payload.referralStatus,
+        referral: action.payload.referral,
+      };
+    }
+    case GET_USER_REFERRAL_INFO.ERROR: {
+      return {
+        ...state,
+        isStartGetReferralInfo: false,
+      };
+    }
     case GET_USER_REFERRAL_DETAILS.START: {
       return {
         ...state,
@@ -52,3 +79,5 @@ export const getReferralServerPercent = state => state.referralServerPercent;
 export const getSuspendedTimer = state => state.suspendedTimer;
 export const getIsStartLoadingReferralDetails = state => state.isStartLoadingReferralDetails;
 export const getIsUserInWaivioBlackList = state => state.isUserInWaivioBlackList;
+export const getReferralStatus = state => state.referralStatus;
+export const getReferralList = state => state.referral;

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Checkbox, Modal, Icon, Tooltip } from 'antd';
 import {
   getIsUserInBlackList,
+  getUserReferralInfo,
   referralConfirmRules,
   referralRejectRules,
 } from '../ReferralActions';
@@ -18,7 +19,6 @@ import {
 import { referralInstructionsContent } from '../ReferralTextHelper';
 
 import './ReferralsInstructions.less';
-import { getUserAccount } from '../../../user/usersActions';
 
 const widget = () =>
   `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
@@ -44,7 +44,7 @@ const ReferralsInstructions = props => {
     isGuest,
     confirmRules,
     rejectRules,
-    getUserData,
+    userReferralInfo,
     referralStatus,
   } = props;
   const [isModal, setIsModal] = useState(false);
@@ -55,7 +55,7 @@ const ReferralsInstructions = props => {
   useEffect(() => {
     console.log(isConfirmModal);
     getUserInBlackList(authUserName);
-    getUserData(authUserName);
+    userReferralInfo(authUserName);
   }, []);
 
   useEffect(() => {
@@ -221,7 +221,7 @@ ReferralsInstructions.propTypes = {
   isGuest: PropTypes.bool.isRequired,
   confirmRules: PropTypes.func,
   rejectRules: PropTypes.func,
-  getUserData: PropTypes.func,
+  userReferralInfo: PropTypes.func,
   referralStatus: PropTypes.string.isRequired,
 };
 
@@ -231,7 +231,7 @@ ReferralsInstructions.defaultProps = {
   isGuest: false,
   confirmRules: () => {},
   rejectRules: () => {},
-  getUserData: () => {},
+  userReferralInfo: () => {},
 };
 
 const mapStateToProps = state => ({
@@ -247,6 +247,6 @@ export default injectIntl(
     getUserInBlackList: getIsUserInBlackList,
     confirmRules: referralConfirmRules,
     rejectRules: referralRejectRules,
-    getUserData: getUserAccount,
+    userReferralInfo: getUserReferralInfo,
   })(ReferralsInstructions),
 );

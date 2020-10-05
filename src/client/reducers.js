@@ -156,7 +156,6 @@ export const getRandomExperts = state => fromUsers.getRandomExperts(state.users)
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
 export const getAllUsers = state => fromUsers.getAllUsers(state.users);
-export const getReferralStatus = state => fromUsers.getReferralStatus(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
@@ -313,6 +312,8 @@ export const getIsStartLoadingReferralDetails = state =>
   fromReferral.getIsStartLoadingReferralDetails(state.referral);
 export const getIsUserInWaivioBlackList = state =>
   fromReferral.getIsUserInWaivioBlackList(state.referral);
+export const getReferralStatus = state => fromReferral.getReferralStatus(state.referral);
+export const getReferralList = state => fromReferral.getReferralList(state.referral);
 
 // common selectors
 

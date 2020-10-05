@@ -1,6 +1,16 @@
+import { get } from 'lodash';
 import { message } from 'antd';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
+import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
+
+export const GET_USER_REFERRAL_INFO = createAsyncActionType('@referral/GET_USER_REFERRAL_INFO');
+export const getUserReferralInfo = username => dispatch => {
+  dispatch({
+    type: GET_USER_REFERRAL_INFO.ACTION,
+    payload: ApiClient.getUserAccount(username),
+  });
+};
 
 export const GET_USER_REFERRAL_DETAILS = createAsyncActionType(
   '@referral/GET_USER_REFERRAL_DETAILS',
@@ -19,38 +29,61 @@ export const getIsUserInBlackList = username => dispatch =>
   });
 
 export const REFERRAL_CONFIRM_RULES = createAsyncActionType('@referral/REFERRAL_CONFIRM_RULES');
+export const REFERRAL_GET_ADDITION_FIELDS = createAsyncActionType(
+  '@referral/REFERRAL_GET_ADDITION_FIELDS',
+);
+
+export const getChangedReferralFields = (username, isGuestName, blockNum) => (
+  dispatch,
+  getState,
+  { busyAPI },
+) => {
+  busyAPI.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.subscribe((response, mess) => {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+      dispatch({
+        type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
+        payload: {
+          promise: ApiClient.getUserAccount(username)
+            .then(res => {
+              dispatch({
+                type: REFERRAL_CONFIRM_RULES.SUCCESS,
+              });
+              return {
+                referralStatus: res.referralStatus,
+                referralList: res.referral,
+              };
+            })
+            .catch(error => error),
+        },
+      });
+    }
+  });
+};
+
 export const referralConfirmRules = (username, isGuest) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
-  const data = {
-    username,
-    isGuest,
-  };
   dispatch({
     type: REFERRAL_CONFIRM_RULES.START,
-    payload: data,
   });
   steemConnectAPI
     .referralConfirmRules(username, isGuest)
-    .then(res => {
+    .then(async res => {
       if (!res.message) {
-        return dispatch({
-          type: REFERRAL_CONFIRM_RULES.SUCCESS,
-          payload: data,
-        });
+        const data = await res;
+        return dispatch(getChangedReferralFields(username, isGuest, get(data, 'result.block_num')));
       }
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
-        payload: data,
       });
     })
     .catch(err => {
       message.error(err.message);
       return dispatch({
         type: REFERRAL_CONFIRM_RULES.ERROR,
-        payload: data,
       });
     });
 };
