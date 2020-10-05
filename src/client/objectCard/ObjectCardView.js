@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, isEmpty, filter, map, size } from 'lodash';
+import { includes, truncate, get, filter, map, size } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -17,12 +17,10 @@ const ObjectCardView = ({
   intl,
   wObject,
   options: { mobileView = 'compact', ownRatesOnly = false },
-  passedParent,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const address = parseAddress(wObject);
 
   useEffect(() => {
@@ -37,7 +35,7 @@ const ObjectCardView = ({
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
+    let url = getObjectAvatar(wObject) || getObjectAvatar(wObject.parent);
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
@@ -56,7 +54,7 @@ const ObjectCardView = ({
     );
   };
   const objName = getObjectName(wObject);
-  const parentName = getObjectName(parent.parent) || getObjectName(parent);
+  const parentName = getObjectName(wObject.parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -72,7 +70,8 @@ const ObjectCardView = ({
     })} ${wobjName}`;
 
   const parentLink =
-    get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink', '')}`;
+    get(wObject.parent, 'defaultShowLink') ||
+    `/object/${get(wObject.parent, 'author_permlink', '')}`;
 
   return (
     <div key={wObject.author_permlink}>
@@ -153,7 +152,6 @@ const ObjectCardView = ({
 ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   wObject: PropTypes.shape(),
-  passedParent: PropTypes.shape(),
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -163,7 +161,6 @@ ObjectCardView.propTypes = {
 
 ObjectCardView.defaultProps = {
   options: {},
-  passedParent: {},
   wObject: {},
 };
 export default injectIntl(ObjectCardView);
