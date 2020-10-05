@@ -6,23 +6,10 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <ObjectAvatar
     item={
       Object {
-        "fields": Array [
-          Object {
-            "body": "first url",
-            "name": "avatar",
-            "weight": 20,
-          },
-          Object {
-            "body": "waivio.second url",
-            "name": "avatar",
-            "weight": 40,
-          },
-          Object {
-            "body": "third url",
-            "name": "not-avatar",
-            "weight": 20,
-          },
-        ],
+        "avatar": "avatar",
+        "parent": Object {
+          "avatar": "parent_avatar",
+        },
       }
     }
     size={42}
@@ -43,7 +30,7 @@ ShallowWrapper {
     "props": Object {
       "className": "ObjectAvatar",
       "style": Object {
-        "backgroundImage": "url(waivio.second url_medium)",
+        "backgroundImage": "url(https://images.hive.blog/800x600/https://images.hive.blog/p/qXwViYfK)",
         "height": "42px",
         "minWidth": "42px",
         "width": "42px",
@@ -61,7 +48,7 @@ ShallowWrapper {
       "props": Object {
         "className": "ObjectAvatar",
         "style": Object {
-          "backgroundImage": "url(waivio.second url_medium)",
+          "backgroundImage": "url(https://images.hive.blog/800x600/https://images.hive.blog/p/qXwViYfK)",
           "height": "42px",
           "minWidth": "42px",
           "width": "42px",

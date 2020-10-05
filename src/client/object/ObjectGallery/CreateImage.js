@@ -17,7 +17,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
+import { generatePermlink, prepareImageToStore, getObjectName } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
@@ -62,7 +62,7 @@ class CreateImage extends React.Component {
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
-    data.wobjectName = getField(wObject, objectFields.name);
+    data.wobjectName = getObjectName(wObject);
     data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
     return data;

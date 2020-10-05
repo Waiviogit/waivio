@@ -18,6 +18,21 @@ const reducerInitialState = {
   accountHistoryFilter: [],
   currentDisplayedActions: [],
   currentFilteredActions: [],
+  hasMore: false,
+  hasMoreGuestActions: false,
+  hasMoreTable: false,
+  isErrorLoading: false,
+  isErrorLoadingTableTransactions: false,
+  isOpenWalletTable: false,
+  loadingMoreTableTransactions: false,
+  loadingMoreTransactions: false,
+  operationNum: -1,
+  operationNumTable: -1,
+  tableTransactionsHistory: {},
+  tableTransactionsHistoryLoading: false,
+  transactionsHistory: {},
+  transactionsHistoryLoading: false,
+  withdrawOpen: false,
 };
 
 describe('walletReducer', () => {
@@ -81,6 +96,7 @@ describe('walletReducer', () => {
       }),
     ).toEqual({
       ...reducerInitialState,
+      amount: null,
       transferVisible: false,
       transferTo: '',
     });
@@ -90,6 +106,7 @@ describe('walletReducer', () => {
         {
           transferVisible: true,
           transferTo: 'fabien',
+          amount: null,
         },
         {
           type: actions.CLOSE_TRANSFER,
@@ -98,6 +115,7 @@ describe('walletReducer', () => {
     ).toEqual({
       transferVisible: false,
       transferTo: 'fabien',
+      amount: null,
     });
   });
 
