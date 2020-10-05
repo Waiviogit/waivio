@@ -170,7 +170,7 @@ export const getUserProfileBlog = (
   userName,
   follower,
   { startAuthor = '', startPermlink = '', limit = 10, skip },
-  locale,
+  locale = 'en-US',
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {

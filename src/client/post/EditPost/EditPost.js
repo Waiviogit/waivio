@@ -315,7 +315,7 @@ class EditPost extends Component {
     }
     const updPercentage = {
       ...objPercentage,
-      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
@@ -389,8 +389,8 @@ class EditPost extends Component {
       wobjects: linkedObjects
         .filter(obj => objPercentage[obj.id].percent > 0)
         .map(obj => ({
-          objectName: obj.name,
-          author_permlink: obj.id,
+          objectName: getObjectName(obj),
+          author_permlink: obj.author_permlink,
           percent: objPercentage[obj.id].percent,
         })),
     };

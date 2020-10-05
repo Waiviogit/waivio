@@ -318,6 +318,8 @@ const CatalogWrap = props => {
     setListItems(sortListItemsBy(listItems, sortType, sortOrder));
   };
 
+  const obj = isEmpty(currentWobject) ? wobject : currentWobject;
+
   return (
     <div>
       {!hasType(wobject, OBJ_TYPE.PAGE) && (
@@ -325,7 +327,7 @@ const CatalogWrap = props => {
           {!isEmpty(propositions) && renderCampaign(propositions)}
           {isEditMode && (
             <div className="CatalogWrap__add-item">
-              <AddItemModal wobject={currentWobject} onAddItem={handleAddItem} />
+              <AddItemModal wobject={obj} onAddItem={handleAddItem} />
             </div>
           )}
           {loadingPropositions || isEmpty(wobject) ? (
