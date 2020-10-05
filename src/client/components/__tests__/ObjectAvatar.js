@@ -1,47 +1,8 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
-import ObjectAvatar, { getObjectUrl, defaultUrl } from '../ObjectAvatar';
-
-describe('getObjectUrl', () => {
-  let item;
-  it('should return body of field with max weight', () => {
-    item = {
-      fields: [
-        {
-          name: 'avatar',
-          weight: 20,
-          body: 'first url',
-        },
-        {
-          name: 'avatar',
-          weight: 40,
-          body: 'second url',
-        },
-        {
-          name: 'not-avatar',
-          weight: 20,
-          body: 'third url',
-        },
-      ],
-    };
-    expect(getObjectUrl(item)).toBe('second url');
-  });
-
-  it('should return null', () => {
-    item = {
-      fields: [
-        {
-          name: 'not-avatar',
-          weight: 20,
-          body: 'url',
-        },
-      ],
-    };
-    expect(getObjectUrl(item)).toBe(null);
-    expect(getObjectUrl(item)).toBeNull();
-  });
-});
+import DEFAULTS from '../../object/const/defaultValues';
+import ObjectAvatar from '../ObjectAvatar';
+import { getProxyImageURL } from '../../helpers/image';
 
 describe('<ObjectAvatar />', () => {
   let props;
@@ -50,92 +11,63 @@ describe('<ObjectAvatar />', () => {
   beforeEach(() => {
     props = {
       item: {
-        fields: [
-          {
-            name: 'avatar',
-            weight: 20,
-            body: 'first url',
-          },
-          {
-            name: 'avatar',
-            weight: 40,
-            body: 'waivio.second url',
-          },
-          {
-            name: 'not-avatar',
-            weight: 20,
-            body: 'third url',
-          },
-        ],
+        parent: { avatar: 'parent_avatar' },
+        avatar: 'avatar',
       },
       size: 42,
     };
+
+    wrapper = shallow(<ObjectAvatar {...props} />);
   });
 
   afterEach(() => jest.clearAllMocks());
 
   it('renders without exploding', () => {
-    wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('should have url with _medium suffix', () => {
-    wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
-    expect(wrapper.props().style.backgroundImage).toBe(`url(waivio.second url_medium)`);
+  it('should be item avatar', () => {
+    expect(wrapper.props().style.backgroundImage).toBe(
+      `url(${getProxyImageURL(props.item.avatar, 'preview')})`,
+    );
+    expect(wrapper.props().style.width).toBe(`${props.size}px`);
+    expect(wrapper.props().style.height).toBe(`${props.size}px`);
   });
 
-  it('should have url with _small suffix', () => {
-    props.size = 40;
-    wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
-    expect(wrapper.props().style.backgroundImage).toBe(`url(waivio.second url_small)`);
-  });
-
-  it('should have url without suffix', () => {
-    props = {
+  it('have to get parent avatar, if don`t have item avatar', () => {
+    const currProps = {
+      avatar: '',
       item: {
-        fields: [
-          {
-            name: 'avatar',
-            weight: 20,
-            body: 'first url',
-          },
-          {
-            name: 'avatar',
-            weight: 40,
-            body: 'second url',
-          },
-          {
-            name: 'not-avatar',
-            weight: 20,
-            body: 'third url',
-          },
-        ],
+        parent: {
+          avatar: 'parentAvatar',
+        },
       },
+    };
+    wrapper = shallow(<ObjectAvatar {...currProps} />);
+
+    expect(wrapper.props().style.backgroundImage).toBe(
+      `url(${getProxyImageURL(currProps.item.parent.avatar, 'preview')})`,
+    );
+  });
+
+  it('should have default url with prefix _medium', () => {
+    const currProps = {
+      item: {},
       size: 42,
     };
-    wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
-    expect(wrapper.props().style.backgroundImage).toBe(`url(second url)`);
+    wrapper = shallow(<ObjectAvatar {...currProps} />);
+
+    expect(wrapper.props().style.backgroundImage).toBe(`url(${DEFAULTS.AVATAR}_medium)`);
   });
 
-  it('should have default url', () => {
-    props.item = {};
-    wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
-    expect(wrapper.props().style.backgroundImage).toBe(`url(${defaultUrl})`);
+  it('should have default url with prefix _small', () => {
+    const currProps = {
+      item: {},
+      size: 39,
+    };
+    wrapper = shallow(<ObjectAvatar {...currProps} />);
+
+    expect(wrapper.props().style.backgroundImage).toBe(`url(${DEFAULTS.AVATAR}_small)`);
   });
 
   it('should have style rules as prop size', () => {
@@ -144,12 +76,10 @@ describe('<ObjectAvatar />', () => {
       minWidth: `${props.size}px`,
       width: `${props.size}px`,
       height: `${props.size}px`,
-      backgroundImage: `url(${defaultUrl})`,
+      backgroundImage: `url(${DEFAULTS.AVATAR}_medium)`,
     };
     wrapper = shallow(<ObjectAvatar {...props} />);
-    act(() => {
-      wrapper.update();
-    });
+
     expect(wrapper.props().style).toEqual(style);
   });
 });

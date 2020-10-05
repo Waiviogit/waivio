@@ -8,7 +8,6 @@ import {
   getFollowingUsersUpdatesMore,
 } from '../../../user/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
-import { getClientWObj } from '../../../adapters';
 import Loading from '../../Icon/Loading';
 
 const itemsCount = 5;
@@ -44,7 +43,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         isCollapsed: !(objects[0] && objects[0].last_posts_count),
         hasMore,
         items: objects.map(followingObject => {
-          const clientObj = getClientWObj(followingObject);
+          const clientObj = followingObject;
           return {
             name: clientObj.name || clientObj.id,
             intlId: clientObj.name || clientObj.id,

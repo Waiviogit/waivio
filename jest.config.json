@@ -3,5 +3,13 @@
     "\\.((s)css|less)$": "identity-obj-proxy"
   },
   "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js",
-  "testURL": "http://localhost/"
+  "testURL": "http://localhost/",
+  "coverageThreshold": {
+    "global": {
+      "branches": 9,
+      "functions": 20,
+      "lines": 34,
+      "statements": 34
+    }
+  }
 }
