@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { debounce, get } from 'lodash';
 import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -91,7 +91,7 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: value.toLowerCase() });
   }
 
-  debouncedSearch = _.debounce(
+  debouncedSearch = debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
     300,
   );
@@ -147,7 +147,10 @@ class SearchObjectsAutocomplete extends Component {
       addItem,
     } = this.props;
     const searchObjectListed = searchObjectPermlink =>
-      parentObject.listItems.some(item => item.author_permlink === searchObjectPermlink);
+      parentObject.listItems &&
+      get(parentObject, 'listItems', []).some(
+        item => get(item, 'author_permlink') === searchObjectPermlink,
+      );
 
     const searchObjectsOptions = searchString
       ? searchObjectsResults
