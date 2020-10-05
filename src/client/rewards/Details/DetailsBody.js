@@ -15,11 +15,21 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
-  const requirementFilters = get(objectDetails, ['requirement_filters'], {});
+  const requirementFilters = get(objectDetails, ['0', 'requirement_filters'], {});
   const frequency =
     requirementFilters.frequency &&
     (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
+  const minFollowers = get(objectDetails, ['0', 'userRequirements', 'minFollowers']);
+  const objectDetailsMinExpertise = get(objectDetails, ['0', 'userRequirements', 'minExpertise']);
+  const minPosts = get(objectDetails, ['0', 'userRequirements', 'minPosts']);
+  const notBlacklisted = get(objectDetails, ['0', 'requirement_filters', 'not_blacklisted']);
+  const guideName = get(objectDetails, ['0', 'guide', 'name']);
+  const frequencyAssign = get(objectDetails, ['0', 'frequency_assign']);
+  const requiredObject = get(objectDetails, ['0', 'requiredObject']);
+  const matchBots = get(objectDetails, ['0', 'match_bots']);
+  const agreementObjects = get(objectDetails, ['0', 'agreementObjects']);
+  const usersLegalNotice = get(objectDetails, ['0', 'usersLegalNotice']);
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -27,24 +37,26 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       <div className="Details__criteria-wrap">
         <div className="Details__criteria-row">
           <Checkbox checked={getChecked(requirementFilters.expertise)} disabled />
-          <div>{`${messageData.minimumWaivioExpertise}: ${minExpertise.toFixed(2)}`}</div>
+          <div>{`${messageData.minimumWaivioExpertise}: ${(
+            minExpertise || objectDetailsMinExpertise
+          ).toFixed(2)}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={getChecked(requirementFilters.followers)} disabled />
-          <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
+          <div>{`${messageData.minimumNumberFollowers}: ${minFollowers}`}</div>
         </div>
         <div className="Details__criteria-row">
           <Checkbox checked={getChecked(requirementFilters.posts)} disabled />
-          <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
+          <div>{`${messageData.minimumNumberPosts}: ${minPosts}`}</div>
         </div>
-        {!!objectDetails.frequency_assign && (
+        {!!frequencyAssign && (
           <div className="Details__criteria-row">
             <Checkbox checked={getChecked(frequency)} disabled />
             <div>
               {messageData.receivedRewardFrom}
-              <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
+              <Link to={`/@${guideName}`}>{` @${guideName} `}</Link>
               {messageData.forReviewing}
-              <Link className="nowrap" to={`/object/${objectDetails.requiredObject}`}>
+              <Link className="nowrap" to={`/object/${requiredObject}`}>
                 {` ${requiredObjectName} `}
               </Link>
               {messageData.inTheLast}
@@ -52,13 +64,10 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
           </div>
         )}
         <div className="Details__criteria-row">
-          <Checkbox
-            checked={getChecked(objectDetails.requirement_filters.not_blacklisted)}
-            disabled
-          />
+          <Checkbox checked={getChecked(notBlacklisted)} disabled />
           <div>
             {messageData.accountNotBlacklisted}
-            <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
+            <Link to={`/@${guideName}`}>{` @${guideName} `}</Link>
             {messageData.referencedAccounts}
           </div>
         </div>
@@ -71,10 +80,9 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
       />
       <div className="Details__text fw6 mv3">{messageData.reward}:</div>
       <span>
-        {messageData.amountRewardDetermined}(
-        <Link to={`/@${objectDetails.guide.name}`}>{`@${objectDetails.guide.name}`}</Link>
-        {!isEmpty(objectDetails.match_bots) &&
-          objectDetails.match_bots.map(bot => (
+        {messageData.amountRewardDetermined}(<Link to={`/@${guideName}`}>{`@${guideName}`}</Link>
+        {!isEmpty(matchBots) &&
+          matchBots.map(bot => (
             <React.Fragment key={bot}>
               ,
               <Link className="ml1" to={`/@${bot}`}>
@@ -90,18 +98,18 @@ const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, mi
         <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
           {messageData.legalTermsAndConditions}
         </Link>
-        {!isEmpty(objectDetails.agreementObjects) && ` ${messageData.includingTheFollowing}`}
-        {!isEmpty(objectDetails.agreementObjects) &&
-          objectDetails.agreementObjects.map(obj => (
+        {!isEmpty(agreementObjects) && ` ${messageData.includingTheFollowing}`}
+        {!isEmpty(agreementObjects) &&
+          agreementObjects.map(obj => (
             <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
               {obj}
             </Link>
           ))}
       </span>
-      {objectDetails.usersLegalNotice && (
+      {usersLegalNotice && (
         <div>
           <div className="Details__text fw6 mv3">{messageData.usersLegalNotice}:</div>
-          <span>{objectDetails.usersLegalNotice}</span>
+          <span>{usersLegalNotice}</span>
         </div>
       )}
     </div>

@@ -47,10 +47,10 @@ const CatalogWrap = props => {
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ username, match, requiredObject, sorting }) => {
+  const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      username,
+      userName,
       match,
       requiredObject,
       sort: 'reward',
@@ -75,17 +75,17 @@ const CatalogWrap = props => {
         getObject(pathUrl, userName, locale).then(wObject => {
           const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
-            getPropositions({ userName, match, requiredObject, sort });
+            getPropositions({ match, requiredObject, sort });
           }
           setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
         setListItems(wobject.listItems);
-        getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
+        getPropositions({ match, requiredObject: wobject.author_permlink, sort });
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject, userName]);
 
   const handleAddItem = listItem => {
     const { wobject } = props;

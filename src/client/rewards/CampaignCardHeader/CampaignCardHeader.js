@@ -10,21 +10,28 @@ import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPrice }) => {
   const currentUSDPrice = getCurrentUSDPrice();
-  const price = get(campaignData, ['objects', '0', 'reward']) || wobjPrice;
-  const isAssigned = get(campaignData, ['objects', '0', ASSIGNED]) || isWobjAssigned;
+  const price = get(campaignData, ['0', 'objects', '0', 'reward']) || wobjPrice;
+  const isAssigned = get(campaignData, ['0', 'objects', '0', ASSIGNED]) || isWobjAssigned;
   const isMessages =
     match &&
     (includes(match.url, HISTORY) ||
       includes(match.url, GUIDE_HISTORY) ||
       includes(match.url, MESSAGES));
+  const campaignDataReward = get(campaignData, ['reward']) || get(campaignData, ['0', 'reward']);
   const rewardPriceHive = `${
-    price ? price.toFixed(3) : (campaignData.reward / currentUSDPrice).toFixed(3)
+    price ? price.toFixed(3) : (campaignDataReward / currentUSDPrice).toFixed(3)
   } HIVE`;
-  const rewardPriceUsd = `${campaignData.reward} USD`;
+  const rewardPriceUsd = `${campaignDataReward} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
-  const guideAlias = get(campaignData, ['guide', 'alias']);
-  const totalPayed = get(campaignData, ['guide', 'totalPayed']);
-  const liquidHivePercent = get(campaignData, ['guide', 'liquidHivePercent']);
+  const guideAlias =
+    get(campaignData, ['guide', 'alias']) || get(campaignData, ['0', 'guide', 'alias']);
+  const guideName =
+    get(campaignData, ['guide', 'name']) || get(campaignData, ['0', 'guide', 'name']);
+  const totalPayed =
+    get(campaignData, ['guide', 'totalPayed']) || get(campaignData, ['0', 'guide', 'totalPayed']);
+  const liquidHivePercent =
+    get(campaignData, ['guide', 'liquidHivePercent']) ||
+    get(campaignData, ['0', 'guide', 'liquidHivePercent']);
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -49,15 +56,15 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
         </div>
       </div>
       <div className="user-info">
-        <Link to={`/@${campaignData.guideName}`}>
-          <Avatar username={campaignData.guideName} size={44} />
+        <Link to={`/@${guideName}`}>
+          <Avatar username={guideName} size={44} />
         </Link>
         <div className="user-info__content">
-          <Link to={`/@${campaignData.guideName}`} title={campaignData.guideName}>
+          <Link to={`/@${guideName}`} title={guideName}>
             <div className="username">
               {guideAlias} ({intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
             </div>
-            <div className="username">{`@${campaignData.guideName}`}</div>
+            <div className="username">{`@${guideName}`}</div>
           </Link>
           <div className="total-paid">
             <div className="total-paid__liquid">

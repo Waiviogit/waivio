@@ -39,12 +39,14 @@ const Proposition = ({
   users,
   wobjPrice,
 }) => {
+  const requirementFilters =
+    get(proposition, ['requirement_filters']) || get(proposition, ['0', 'requirement_filters']);
   const getEligibility = proposition =>
-    proposition.requirement_filters
-      ? Object.values(proposition.requirement_filters).every(item => item === true)
-      : null;
+    requirementFilters ? Object.values(requirementFilters).every(item => item === true) : null;
   const isEligible = getEligibility(proposition);
   const proposedWobj = wobj;
+  const requiredObject =
+    get(proposition, ['required_object']) || get(proposition, ['0', 'required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};

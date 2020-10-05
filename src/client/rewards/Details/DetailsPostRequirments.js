@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import getDetailsMessages from './detailsMessagesData';
 import { getObjectName } from '../../helpers/wObjectHelper';
@@ -11,6 +12,9 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const proposedWobjName = getObjectName(proposedWobj);
+  const receiptPhoto = get(objectDetails, ['0', 'requirements', 'receiptPhoto']);
+  const requiredObject = get(objectDetails, ['0', 'requiredObject']);
+  const description = get(objectDetails, ['0', 'description']);
   let indexItem = 1;
   return (
     <React.Fragment>
@@ -25,7 +29,7 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
           </Link>
           ;
         </div>
-        {objectDetails.requirements.receiptPhoto && (
+        {receiptPhoto && (
           /* eslint-disable-next-line no-plusplus */
           <div className="Details__criteria-row">{`${indexItem++}. ${
             messageData.photoReceipt
@@ -42,15 +46,15 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
         <div className="Details__criteria-row nowrap">
           {/* eslint-disable-next-line no-plusplus */}
           {`${indexItem++}. ${messageData.linkTo}`}
-          <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
+          <Link className="ml1" to={`/object/${requiredObject}`}>
             {requiredObjectName}
           </Link>
           ;
         </div>
         <div className="Details__criteria-row">
-          {objectDetails.description &&
+          {description &&
             /* eslint-disable-next-line no-plusplus */
-            `${indexItem++}. ${messageData.additionalRequirements}: ${objectDetails.description}`}
+            `${indexItem++}. ${messageData.additionalRequirements}: ${description}`}
         </div>
       </div>
       <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
