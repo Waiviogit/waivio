@@ -19,6 +19,7 @@ const initialState = {
     isFetching: false,
     fetched: false,
   },
+  referralStatus: null,
 };
 
 export default function usersReducer(state = initialState, action) {
@@ -36,7 +37,8 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
-    case actions.GET_ACCOUNT.SUCCESS:
+    case actions.GET_ACCOUNT.SUCCESS: {
+      console.log('res: ', action.payload);
       return {
         ...state,
         users: {
@@ -49,7 +51,9 @@ export default function usersReducer(state = initialState, action) {
             failed: false,
           },
         },
+        referralStatus: action.payload.referralStatus,
       };
+    }
     case actions.GET_ACCOUNT.ERROR:
       return {
         ...state,
@@ -392,3 +396,4 @@ export const getTopExpertsHasMore = state => state.topExperts.hasMore;
 export const getRandomExperts = state => state.randomExperts.list;
 export const getRandomExpertsLoaded = state => state.randomExperts.fetched;
 export const getRandomExpertsLoading = state => state.randomExperts.isFetching;
+export const getReferralStatus = state => state.referralStatus;

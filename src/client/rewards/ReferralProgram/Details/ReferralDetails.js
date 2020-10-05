@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { referralDetailContent } from '../ReferralTextHelper';
 import { getCurrentFeesValue, getCurrentOfferPercent } from '../ReferralHelper';
-
-import './ReferralDetails.less';
-import { getUserReferralDetails } from '../../rewardsActions';
 import {
   getCampaignServerPercent,
   getIndexAbsolutePercent,
@@ -17,6 +14,9 @@ import {
   getReferralServerPercent,
   getSuspendedTimer,
 } from '../../../reducers';
+import { getUserReferralDetails } from '../ReferralActions';
+
+import './ReferralDetails.less';
 
 const additionData = {
   offersReward: 5,

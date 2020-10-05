@@ -3,16 +3,22 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Checkbox, Modal, Icon, Tooltip } from 'antd';
-
+import {
+  getIsUserInBlackList,
+  referralConfirmRules,
+  referralRejectRules,
+} from '../ReferralActions';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsUserInWaivioBlackList,
+  getReferralStatus,
+  isGuestUser,
 } from '../../../reducers';
-import { getIsUserInBlackList } from '../../rewardsActions';
 import { referralInstructionsContent } from '../ReferralTextHelper';
 
 import './ReferralsInstructions.less';
+import { getUserAccount } from '../../../user/usersActions';
 
 const widget = () =>
   `<iframe class="waivio" src="https://waivio.com?ref=[username]" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
@@ -30,7 +36,17 @@ const handleCopyTextButton = setIsCopyButton => {
 };
 
 const ReferralsInstructions = props => {
-  const { authUserName, getUserInBlackList, isBlackListUser, isAuthenticated } = props;
+  const {
+    authUserName,
+    getUserInBlackList,
+    isBlackListUser,
+    isAuthenticated,
+    isGuest,
+    confirmRules,
+    rejectRules,
+    getUserData,
+    referralStatus,
+  } = props;
   const [isModal, setIsModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isConfirmModal, setIsConfirmModal] = useState(false);
@@ -39,7 +55,16 @@ const ReferralsInstructions = props => {
   useEffect(() => {
     console.log(isConfirmModal);
     getUserInBlackList(authUserName);
+    getUserData(authUserName);
   }, []);
+
+  useEffect(() => {
+    if (isChecked === true) {
+      confirmRules(authUserName, isGuest);
+    }
+  }, [isChecked]);
+
+  console.log('referralStatus: ', referralStatus);
 
   const handleAgreeRulesCheckbox = () => {
     if (isChecked === true && isModal === false) {
@@ -105,7 +130,10 @@ const ReferralsInstructions = props => {
             <Modal
               title={terminateReferralTitle}
               visible={isModal}
-              onOk={() => handleOkButton()}
+              onOk={() => {
+                rejectRules(authUserName, isGuest);
+                return handleOkButton();
+              }}
               onCancel={() => handleCancelButton()}
             >
               <p>{terminateReferralInfo}</p>
@@ -190,21 +218,35 @@ ReferralsInstructions.propTypes = {
   isBlackListUser: PropTypes.bool,
   getUserInBlackList: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  confirmRules: PropTypes.func,
+  rejectRules: PropTypes.func,
+  getUserData: PropTypes.func,
+  referralStatus: PropTypes.string.isRequired,
 };
 
 ReferralsInstructions.defaultProps = {
   authUserName: '',
   isBlackListUser: false,
+  isGuest: false,
+  confirmRules: () => {},
+  rejectRules: () => {},
+  getUserData: () => {},
 };
 
 const mapStateToProps = state => ({
   authUserName: getAuthenticatedUserName(state),
   isAuthenticated: getIsAuthenticated(state),
   isBlackListUser: getIsUserInWaivioBlackList(state),
+  isGuest: isGuestUser(state),
+  referralStatus: getReferralStatus(state),
 });
 
 export default injectIntl(
   connect(mapStateToProps, {
     getUserInBlackList: getIsUserInBlackList,
+    confirmRules: referralConfirmRules,
+    rejectRules: referralRejectRules,
+    getUserData: getUserAccount,
   })(ReferralsInstructions),
 );

@@ -127,6 +127,34 @@ function sc2Extended() {
       },
     },
     {
+      referralConfirmRules(username, isGuestUser, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'confirm_referral_license',
+          json: JSON.stringify({
+            agent: username,
+            isGuest: isGuestUser,
+          }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      referralRejectRules(username, isGuestUser, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'reject_referral_license',
+          json: JSON.stringify({
+            agent: username,
+            isGuest: isGuestUser,
+          }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       rankingObject(username, author, permlink, authorPermlink, rate, cb) {
         const params = {
           required_auths: [],

@@ -24,6 +24,7 @@ import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import rewardsReducer, * as fromRewards from '../client/rewards/rewardsReducer';
+import referralReducer, * as fromReferral from '../client/rewards/ReferralProgram/ReferralReducer';
 
 export default history =>
   combineReducers({
@@ -50,6 +51,7 @@ export default history =>
     gallery: galleryReducer,
     map: mapReducer,
     rewards: rewardsReducer,
+    referral: referralReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -154,6 +156,7 @@ export const getRandomExperts = state => fromUsers.getRandomExperts(state.users)
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
 export const getAllUsers = state => fromUsers.getAllUsers(state.users);
+export const getReferralStatus = state => fromUsers.getReferralStatus(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 
@@ -298,17 +301,18 @@ export const getHasMoreFollowingRewards = state =>
 export const getIsLoading = state => fromRewards.getIsLoading(state.rewards);
 
 export const getCampaignServerPercent = state =>
-  fromRewards.getCampaignServerPercent(state.rewards);
-export const getIndexAbsolutePercent = state => fromRewards.getIndexAbsolutePercent(state.rewards);
-export const getIndexServerPercent = state => fromRewards.getIndexServerPercent(state.rewards);
-export const getReferralDuration = state => fromRewards.getReferralDuration(state.rewards);
+  fromReferral.getCampaignServerPercent(state.referral);
+export const getIndexAbsolutePercent = state =>
+  fromReferral.getIndexAbsolutePercent(state.referral);
+export const getIndexServerPercent = state => fromReferral.getIndexServerPercent(state.referral);
+export const getReferralDuration = state => fromReferral.getReferralDuration(state.referral);
 export const getReferralServerPercent = state =>
-  fromRewards.getReferralServerPercent(state.rewards);
-export const getSuspendedTimer = state => fromRewards.getSuspendedTimer(state.rewards);
+  fromReferral.getReferralServerPercent(state.referral);
+export const getSuspendedTimer = state => fromReferral.getSuspendedTimer(state.referral);
 export const getIsStartLoadingReferralDetails = state =>
-  fromRewards.getIsStartLoadingReferralDetails(state.rewards);
+  fromReferral.getIsStartLoadingReferralDetails(state.referral);
 export const getIsUserInWaivioBlackList = state =>
-  fromRewards.getIsUserInWaivioBlackList(state.rewards);
+  fromReferral.getIsUserInWaivioBlackList(state.referral);
 
 // common selectors
 

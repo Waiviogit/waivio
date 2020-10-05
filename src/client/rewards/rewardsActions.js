@@ -112,21 +112,3 @@ export const getFollowingSponsorsRewards = skip => (dispatch, getState) => {
     payload: ApiClient.getFollowingSponsorsRewards({ userName, skip }),
   });
 };
-
-export const GET_USER_REFERRAL_DETAILS = createAsyncActionType(
-  '@rewards/GET_USER_REFERRAL_DETAILS',
-);
-
-export const getUserReferralDetails = () => dispatch =>
-  dispatch({
-    type: GET_USER_REFERRAL_DETAILS.ACTION,
-    payload: ApiClient.getReferralDetails(),
-  });
-
-export const GET_IS_USER_IN_BLACKLIST = createAsyncActionType('@rewards/GET_IS_USER_IN_BLACKLIST');
-
-export const getIsUserInBlackList = username => dispatch =>
-  dispatch({
-    type: GET_IS_USER_IN_BLACKLIST.ACTION,
-    payload: ApiClient.getUserIsBlackListed(username),
-  });
