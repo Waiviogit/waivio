@@ -1,5 +1,3 @@
-import { hasActionType, hasField } from '../object/wObjectHelper';
-
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
@@ -90,33 +88,6 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     default:
       return false;
   }
-};
-
-export const getFilteredContent = (
-  content,
-  actionTypes = ['createObject', 'appendObject'],
-  fieldName = null,
-  locale = null,
-  sortBy = 'recency',
-) => {
-  let comparator;
-  let filteredContent = content.filter(post => hasActionType(post, actionTypes));
-  if (fieldName || locale) {
-    filteredContent = filteredContent.filter(post => hasField(post, fieldName, locale));
-  }
-  switch (sortBy) {
-    case 'rank':
-      comparator = (a, b) => {
-        const diff = b.append_field_weight - a.append_field_weight;
-        return diff === 0 ? new Date(b.created) - new Date(a.created) : diff;
-      };
-      break;
-    case 'recency':
-    default:
-      comparator = (a, b) => new Date(b.created) - new Date(a.created);
-      break;
-  }
-  return filteredContent.sort(comparator).map(item => item.id);
 };
 
 // returning the same function but different naming helps to understand the code's flow better

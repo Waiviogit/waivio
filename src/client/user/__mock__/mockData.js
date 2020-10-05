@@ -1,6 +1,10 @@
 export const stateOnGetAccountStart = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {
-    'user-asd09': {
+    asd09: {
       failed: false,
       fetching: true,
       loaded: false,
@@ -20,12 +24,16 @@ export const stateOnGetAccountStart = {
 
 export const stateOnGetAccountSuccess = {
   users: {
-    'user-asd09': {
+    asd09: {
       failed: false,
       fetching: false,
       loaded: true,
     },
   },
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   topExperts: {
     list: [],
     isFetching: false,
@@ -39,8 +47,12 @@ export const stateOnGetAccountSuccess = {
 };
 
 export const stateOnGetAccountError = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {
-    'user-asd09': {
+    asd09: {
       failed: true,
       fetching: false,
       loaded: false,
@@ -59,6 +71,10 @@ export const stateOnGetAccountError = {
 };
 
 export const stateOnGetRandomStart = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [],
@@ -73,6 +89,10 @@ export const stateOnGetRandomStart = {
 };
 
 export const stateOnGetRandomSuccess = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [],
@@ -104,6 +124,10 @@ export const stateOnGetRandomSuccess = {
 };
 
 export const stateOnGetRandomError = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [],
@@ -118,6 +142,10 @@ export const stateOnGetRandomError = {
 };
 
 export const stateOnGetTopStart = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [],
@@ -132,6 +160,10 @@ export const stateOnGetTopStart = {
 };
 
 export const stateOnGetTopSuccess = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [
@@ -163,6 +195,10 @@ export const stateOnGetTopSuccess = {
 };
 
 export const stateOnGetTopError = {
+  countTookPartCampaigns: 0,
+  createdCampaignsCount: 0,
+  hasReceivables: '',
+  tabType: '',
   users: {},
   topExperts: {
     list: [],

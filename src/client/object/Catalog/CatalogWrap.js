@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import { get, isEmpty, map, filter, max, min, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import { sortListItemsBy } from '../wObjectHelper';
 import { objectFields, statusNoVisibleItem } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
@@ -77,11 +77,15 @@ const CatalogWrap = props => {
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
           }
-          setListItems(wObject.listItems);
+          if (isEmpty(listItems)) {
+            setListItems(wObject.listItems);
+          }
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
-        setListItems(wobject.listItems);
+        if (isEmpty(listItems)) {
+          setListItems(wobject.listItems);
+        }
         getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
       }
     }
@@ -89,7 +93,9 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const { wobject } = props;
-    setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
+    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    setListItems(sortListItemsBy(currentList, 'recency'));
+
     if (wobject.object_type === OBJ_TYPE.LIST) {
       dispatch(wobjectActions.addListItem(listItem));
     }
@@ -351,7 +357,7 @@ const CatalogWrap = props => {
           )}
         </React.Fragment>
       )}
-      <BodyContainer full body={getFieldWithMaxWeight(wobject, objectFields.pageContent)} />
+      <BodyContainer full body={wobject.pageContent} />
     </div>
   );
 };

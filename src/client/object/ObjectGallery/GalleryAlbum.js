@@ -3,14 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
 import './GalleryAlbum.less';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
-const GalleryAlbum = ({ album, wobjMainers }) => {
-  const filterItems =
-    album.items &&
-    album.items.filter(
-      item => calculateApprovePercent(item.active_votes, item.weight, wobjMainers) >= 70,
-    );
+const GalleryAlbum = ({ album }) => {
+  const filterItems = album.items;
   const albumItem = max(filterItems, item => item.weight) || {
     body: '/images/icons/no-image.png',
   };
@@ -29,7 +24,6 @@ const GalleryAlbum = ({ album, wobjMainers }) => {
 
 GalleryAlbum.propTypes = {
   album: PropTypes.shape().isRequired,
-  wobjMainers: PropTypes.shape().isRequired,
 };
 
 export default GalleryAlbum;

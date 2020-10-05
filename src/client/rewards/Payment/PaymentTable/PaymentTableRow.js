@@ -8,9 +8,10 @@ import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
 import { getReport } from '../../../../waivioApi/ApiClient';
-import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { setDataForSingleReport } from '../../rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
+import { getObjectName } from '../../../helpers/wObjectHelper';
+
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink }) => {
@@ -42,8 +43,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, isHive, reservationPermlink
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getFieldWithMaxWeight(get(sponsor, 'details.main_object', {}), 'name');
-  const reviewObjectName = getFieldWithMaxWeight(get(sponsor, 'details.review_object', {}), 'name');
+  const prymaryObjectName = getObjectName(get(sponsor, 'details.main_object', {}));
+  const reviewObjectName = getObjectName(get(sponsor, 'details.review_object', {}));
   const beneficiaries = get(sponsor, ['details', 'beneficiaries']);
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
