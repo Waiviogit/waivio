@@ -22,6 +22,9 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
   } HIVE`;
   const rewardPriceUsd = `${campaignData.reward} USD`;
   const rewardPrice = isAssigned || isMessages ? rewardPriceHive : rewardPriceUsd;
+  const guideAlias = get(campaignData, ['guide', 'alias']);
+  const totalPayed = get(campaignData, ['guide', 'totalPayed']);
+  const liquidHivePercent = get(campaignData, ['guide', 'liquidHivePercent']);
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -46,16 +49,15 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
         </div>
       </div>
       <div className="user-info">
-        <Link to={`/@${campaignData.guide.name}`}>
-          <Avatar username={campaignData.guide.name} size={44} />
+        <Link to={`/@${campaignData.guideName}`}>
+          <Avatar username={campaignData.guideName} size={44} />
         </Link>
         <div className="user-info__content">
-          <Link to={`/@${campaignData.guide.name}`} title={campaignData.guide.name}>
+          <Link to={`/@${campaignData.guideName}`} title={campaignData.guideName}>
             <div className="username">
-              {campaignData.guide.alias} (
-              {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
+              {guideAlias} ({intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
             </div>
-            <div className="username">{`@${campaignData.guide.name}`}</div>
+            <div className="username">{`@${campaignData.guideName}`}</div>
           </Link>
           <div className="total-paid">
             <div className="total-paid__liquid">
@@ -66,12 +68,8 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
               :
             </div>
             <div className="total-paid__currency">
-              {`${
-                campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
-              } HIVE`}{' '}
-              {`(${
-                campaignData.guide.liquidHivePercent ? campaignData.guide.liquidHivePercent : 'n/a'
-              }%)`}
+              {`${totalPayed ? totalPayed.toFixed(3) : 0} HIVE`}{' '}
+              {`(${liquidHivePercent || 'n/a'}%)`}
             </div>
           </div>
         </div>
@@ -82,7 +80,7 @@ const CampaignCardHeader = ({ intl, campaignData, match, isWobjAssigned, wobjPri
 
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
-  campaignData: PropTypes.shape().isRequired,
+  campaignData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   match: PropTypes.shape(),
   isWobjAssigned: PropTypes.bool,
   wobjPrice: PropTypes.number,

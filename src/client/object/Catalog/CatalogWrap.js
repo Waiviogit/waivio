@@ -73,7 +73,7 @@ const CatalogWrap = props => {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          const requiredObject = wObject.author_permlink;
+          const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
           }

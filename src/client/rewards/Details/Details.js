@@ -118,7 +118,7 @@ const Details = ({
 
 Details.propTypes = {
   intl: PropTypes.shape().isRequired,
-  objectDetails: PropTypes.shape().isRequired,
+  objectDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
@@ -127,11 +127,12 @@ Details.propTypes = {
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
-  isEligible: PropTypes.bool.isRequired,
+  isEligible: PropTypes.bool,
 };
 
 Details.defaultProps = {
   loading: false,
   assigned: false,
+  isEligible: false,
 };
 export default injectIntl(Details);

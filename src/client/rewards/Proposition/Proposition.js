@@ -40,15 +40,15 @@ const Proposition = ({
   wobjPrice,
 }) => {
   const getEligibility = proposition =>
-    Object.values(proposition.requirement_filters).every(item => item === true);
+    proposition.requirement_filters
+      ? Object.values(proposition.requirement_filters).every(item => item === true)
+      : null;
   const isEligible = getEligibility(proposition);
   const proposedWobj = wobj;
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
-  const parentObject = isEmpty(proposedWobj.parent)
-    ? get(proposition, ['required_object'], {})
-    : {};
-  const requiredObjectName = getObjectName(proposition.required_object);
+  const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
+  const requiredObjectName = requiredObject ? getObjectName(requiredObject) : null;
   const isMessages = !isEmpty(match)
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
     : '';
@@ -57,7 +57,7 @@ const Proposition = ({
   const userName = isMessages ? propositionUserName : authorizedUserName;
   const parenAuthor = isMessages
     ? get(proposition, ['users', '0', 'rootName'])
-    : proposition.guide.name;
+    : proposition.guideName;
   const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
@@ -262,7 +262,7 @@ const Proposition = ({
 };
 
 Proposition.propTypes = {
-  proposition: PropTypes.shape().isRequired,
+  proposition: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   wobj: PropTypes.shape().isRequired,
   assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
