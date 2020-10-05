@@ -149,6 +149,8 @@ class EditPost extends Component {
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
     const isReview = !isEmpty(campaignId);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ isReview });
 
     if (isReview)
       getCampaignById(campaignId)
@@ -233,7 +235,25 @@ class EditPost extends Component {
     });
   };
 
+  setCurrentDraftContent = debounce((nextState, rawContent) => {
+    const prevValue = get(this.state.currentRawContent, 'entityMap', []);
+    const nextValue = get(rawContent, 'entityMap', []);
+
+    const prevEntityMap = Object.values(prevValue);
+    const nextEntityMap = Object.values(nextValue);
+
+    if (!isEqual(prevEntityMap, nextEntityMap)) {
+      this.setState({
+        draftContent: {
+          body: nextState.content,
+        },
+        currentRawContent: rawContent,
+      });
+    }
+  }, 500);
+
   handleChangeContent(rawContent, title) {
+    const { isReview } = this.state;
     const nextState = { content: toMarkdown(rawContent), titleValue: title };
     const linkedObjects = uniqBy(
       concat(this.state.linkedObjects, getLinkedObjects(rawContent)),
@@ -252,6 +272,9 @@ class EditPost extends Component {
       this.state.titleValue !== nextState.titleValue
     ) {
       this.setState(nextState, this.handleUpdateState);
+      if (!isReview) {
+        this.setCurrentDraftContent(nextState, rawContent);
+      }
     }
   }
 
@@ -292,7 +315,7 @@ class EditPost extends Component {
     }
     const updPercentage = {
       ...objPercentage,
-      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),
@@ -366,8 +389,8 @@ class EditPost extends Component {
       wobjects: linkedObjects
         .filter(obj => objPercentage[obj.id].percent > 0)
         .map(obj => ({
-          objectName: obj.name,
-          author_permlink: obj.id,
+          objectName: getObjectName(obj),
+          author_permlink: obj.author_permlink,
           percent: objPercentage[obj.id].percent,
         })),
     };

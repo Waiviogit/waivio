@@ -5,6 +5,7 @@ import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { isEmpty, map, size, get } from 'lodash';
+import store from 'store';
 import { getObjectName, getObjectTitle } from '../../../helpers/wObjectHelper';
 import { setCatalogBreadCrumbs } from '../../wobjActions';
 import { getBreadCrumbs, getWobjectBreadCrumbs } from '../../../reducers';
@@ -18,26 +19,39 @@ const CatalogBreadcrumb = props => {
   const BreadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[BreadCrumbSize - 1], 'title', '');
 
+  /**
+   * @param wObject : {}
+   * Will be set breadcrumbs and write in localStorage
+   */
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
     let currentBreadCrumbs = [...breadcrumb];
+    const hashStorage = store.get('hash');
+    const breadcrumbStorage = store.get('breadcrumb');
     const findWobj = crumb => crumb.id === wObject.author_permlink;
-    const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
-    if (findBreadCrumbs) {
-      const findIndex = currentBreadCrumbs.findIndex(findWobj);
-      currentBreadCrumbs.splice(findIndex + 1);
+
+    if (hashStorage === props.location.hash && !isEmpty(breadcrumbStorage)) {
+      currentBreadCrumbs = breadcrumbStorage;
     } else {
-      currentBreadCrumbs = [
-        ...currentBreadCrumbs,
-        {
-          id: wObject.author_permlink,
-          name: getObjectName(wObject),
-          title: getObjectTitle(wObject),
-          path: wObject.author_permlink,
-        },
-      ];
+      const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
+      if (findBreadCrumbs) {
+        const findIndex = currentBreadCrumbs.findIndex(findWobj);
+        currentBreadCrumbs.splice(findIndex + 1);
+      } else {
+        currentBreadCrumbs = [
+          ...currentBreadCrumbs,
+          {
+            id: wObject.author_permlink,
+            name: getObjectName(wObject),
+            title: getObjectTitle(wObject),
+            path: wObject.author_permlink,
+          },
+        ];
+      }
     }
     dispatch(setCatalogBreadCrumbs(currentBreadCrumbs));
+    store.set('breadcrumb', currentBreadCrumbs);
+    store.set('hash', props.location.hash);
   };
 
   useEffect(() => {
@@ -45,6 +59,7 @@ const CatalogBreadcrumb = props => {
       wobject,
       location: { hash },
     } = props;
+
     const usedObj = hash ? wobjectBreadCrumbs : wobject;
     handleChangeBreadCrumbs(usedObj);
   }, []);

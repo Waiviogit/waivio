@@ -29,19 +29,4 @@ describe('<PopoverContainer />', () => {
     });
     expect(wrapper).toMatchSnapshot();
   });
-
-  test('Should call onClick', () => {
-    wrapper.find('.Popover__overlay').simulate('click');
-    expect(onClick).toBeCalled();
-  });
-
-  test('Should call "onVisibleChange" on click action', () => {
-    wrapper.find('.Popover__overlay').simulate('click');
-    expect(wrapper.props().onVisibleChange).toBeCalled();
-  });
-
-  test('Should have custom content with the same text as content prop', () => {
-    const content = wrapper.find('.Popover__overlay');
-    expect(content.text()).toBe('some text');
-  });
 });

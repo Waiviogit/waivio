@@ -317,6 +317,7 @@ const routes = {
       path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
       component: Page,
       exact: true,
+      pathScope: '',
       routes: [
         {
           path: '/confirmation',

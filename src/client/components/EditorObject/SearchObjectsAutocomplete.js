@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { debounce, get } from 'lodash';
 import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -50,6 +50,7 @@ class SearchObjectsAutocomplete extends Component {
     parentPermlink: '',
     autoFocus: true,
     isSearchObject: false,
+    addItem: false,
   };
 
   static propTypes = {
@@ -72,6 +73,8 @@ class SearchObjectsAutocomplete extends Component {
     style: PropTypes.shape({}),
     isSearchObject: PropTypes.bool,
     resetIsClearSearchFlag: PropTypes.func,
+    parentObject: PropTypes.shape().isRequired,
+    addItem: PropTypes.bool,
   };
 
   constructor(props) {
@@ -88,7 +91,7 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: value.toLowerCase() });
   }
 
-  debouncedSearch = _.debounce(
+  debouncedSearch = debounce(
     (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
     300,
   );
@@ -140,7 +143,15 @@ class SearchObjectsAutocomplete extends Component {
       disabled,
       autoFocus,
       isSearchObject,
+      parentObject,
+      addItem,
     } = this.props;
+    const searchObjectListed = searchObjectPermlink =>
+      parentObject.listItems &&
+      get(parentObject, 'listItems', []).some(
+        item => get(item, 'author_permlink') === searchObjectPermlink,
+      );
+
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
@@ -151,7 +162,7 @@ class SearchObjectsAutocomplete extends Component {
               value={obj.author_permlink}
               className="obj-search-option item"
             >
-              {obj.parent.defaultShowLink !== location.pathname ? (
+              {!addItem || (addItem && !searchObjectListed(obj.author_permlink)) ? (
                 <ObjectSearchCard
                   object={obj}
                   name={getObjectName(obj)}
