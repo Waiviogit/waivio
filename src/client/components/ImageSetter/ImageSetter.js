@@ -108,7 +108,6 @@ const ImageSetter = ({
 
   // For image pasted for link
   const handleOnUploadImageByLink = async image => {
-    const linkMethod = true;
     if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
@@ -135,7 +134,7 @@ const ImageSetter = ({
           };
         };
 
-        await onImageUpload(url, insertImage, onErrorLoadImage, linkMethod);
+        await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
         checkImage(true, newImage);
       } else {
@@ -149,7 +148,6 @@ const ImageSetter = ({
   }, []);
 
   const handleChangeImage = async e => {
-    const linkMethod = false;
     if (e.target.files && e.target.files[0]) {
       const uploadedImages = [];
       const images = Object.values(e.target.files);
@@ -187,7 +185,7 @@ const ImageSetter = ({
           );
         } else {
           /* eslint-disable no-await-in-loop */
-          await onImageUpload(image, disableAndInsertImage, onErrorLoadImage, linkMethod);
+          await onImageUpload(image, disableAndInsertImage, onErrorLoadImage);
         }
       }
       setCurrentImages([...currentImages, ...uploadedImages]);

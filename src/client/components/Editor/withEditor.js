@@ -53,20 +53,17 @@ export default function withEditor(WrappedComponent) {
         .then(res => res.map(obj => getClientWObj(obj, locale)));
     };
 
-    handleImageUpload = (blob, callback, errorCallback, linkMethod) => {
+    handleImageUpload = (blob, callback, errorCallback, linkMethod = false) => {
       const {
         intl: { formatMessage },
       } = this.props;
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
-      const formData = new FormData();
 
-      if (linkMethod) {
-        formData.append('imageUrl', blob);
-      } else {
-        formData.append('file', blob);
-      }
+      const formData = new FormData();
+      const currentMethod = linkMethod ? 'imageUrl' : 'file';
+      formData.append(currentMethod, blob);
 
       return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
