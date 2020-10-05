@@ -70,4 +70,25 @@ export const CAMPAIGN_STATUS = {
   reachedLimit: 'reachedLimit',
 };
 
+export const isDisabledStatus = [
+  CAMPAIGN_STATUS.inactive,
+  CAMPAIGN_STATUS.expired,
+  CAMPAIGN_STATUS.deleted,
+  CAMPAIGN_STATUS.onHold,
+  CAMPAIGN_STATUS.active,
+];
+
+export const isCheckedStatus = [
+  CAMPAIGN_STATUS.active,
+  CAMPAIGN_STATUS.payed,
+  CAMPAIGN_STATUS.reachedLimit,
+];
+
+export const isInactiveStatus = [
+  CAMPAIGN_STATUS.inactive,
+  CAMPAIGN_STATUS.expired,
+  CAMPAIGN_STATUS.deleted,
+  CAMPAIGN_STATUS.onHold,
+];
+
 export default null;

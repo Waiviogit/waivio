@@ -10,7 +10,7 @@ import {
   validateActivationCampaign,
   validateInactivationCampaign,
 } from '../../../../waivioApi/ApiClient';
-import { CAMPAIGN_STATUS } from '../../../../common/constants/rewards';
+import { isCheckedStatus, isInactiveStatus } from '../../../../common/constants/rewards';
 import './CampaignRewardsTable.less';
 
 const CampaignRewardsTableRow = ({
@@ -24,18 +24,7 @@ const CampaignRewardsTableRow = ({
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
-  const isCheckedStatus = [
-    CAMPAIGN_STATUS.active,
-    CAMPAIGN_STATUS.payed,
-    CAMPAIGN_STATUS.reachedLimit,
-  ];
   const isChecked = includes(isCheckedStatus, currentItem.status);
-  const isInactiveStatus = [
-    CAMPAIGN_STATUS.inactive,
-    CAMPAIGN_STATUS.expired,
-    CAMPAIGN_STATUS.deleted,
-    CAMPAIGN_STATUS.onHold,
-  ];
   const isInactive = includes(isInactiveStatus, currentItem.status);
 
   const activateCamp = () => {
