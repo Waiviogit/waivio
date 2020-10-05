@@ -26,9 +26,17 @@
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
     "heroku-postbuild": "npm run build"
   },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "functions": 20
+      }
+    }
+  },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check"
+      "pre-commit": "npm run linc && npm run prettier-check",
+      "pre-push": "npm run test -- --coverage"
     }
   },
   "keywords": [

@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { MemoryRouter as Router } from 'react-router-dom';
 import TransferTransaction from '../TransferTransaction';
 
 describe('(Component) TransferTransaction', () => {
@@ -14,13 +13,9 @@ describe('(Component) TransferTransaction', () => {
         isGuestPage: false,
         withdraw: '',
         getDetails: () => {},
-        transactionType: '',
+        transactionType: 'transfer',
       };
-      const wrapper = shallow(
-        <Router>
-          <TransferTransaction {...props} />
-        </Router>,
-      );
+      const wrapper = shallow(<TransferTransaction {...props} />);
       expect(wrapper).toMatchSnapshot();
     });
   });

@@ -29,7 +29,7 @@ ShallowWrapper {
         />
       </div>,
       "className": "ShareButton",
-      "href": "https://twitter.com/intent/tweet/?text=text&url=url",
+      "href": "https://twitter.com/intent/tweet?text=text&url=url",
       "rel": "noopener noreferrer",
       "target": "_blank",
     },
@@ -74,7 +74,7 @@ ShallowWrapper {
           />
         </div>,
         "className": "ShareButton",
-        "href": "https://twitter.com/intent/tweet/?text=text&url=url",
+        "href": "https://twitter.com/intent/tweet?text=text&url=url",
         "rel": "noopener noreferrer",
         "target": "_blank",
       },
