@@ -11,11 +11,5 @@
       "lines": 34,
       "statements": 34
     }
-  },
-  "coverageReporters": [
-    "json",
-    "lcovonly",
-    "text",
-    "clover"
-  ]
+  }
 }

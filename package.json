@@ -28,8 +28,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check",
-      "pre-push": "cross-env CI=true npm run test -- --coverage"
+      "pre-commit": "npm run linc && npm run prettier-check"
     }
   },
   "keywords": [
