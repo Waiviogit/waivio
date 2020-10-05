@@ -19,11 +19,10 @@ import {
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
-import { getField, generatePermlink } from '../../helpers/wObjectHelper';
+import { generatePermlink, getObjectName } from '../../helpers/wObjectHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { fieldsRules } from '../const/appendFormConstants';
-import { getClientWObj } from '../../adapters';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../translations';
 import { getVoteValue } from '../../helpers/user';
@@ -69,7 +68,7 @@ class CreateTag extends React.Component {
       let currentTags = await getObjectsByIds({
         authorPermlinks: this.props.categories[0].categoryItems.map(tag => tag.name),
       });
-      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      currentTags = currentTags.wobjects.map(tag => tag);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentTags });
     }
@@ -192,7 +191,7 @@ class CreateTag extends React.Component {
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
-    data.wobjectName = getField(wObject, objectFields.name);
+    data.wobjectName = getObjectName(wObject);
     data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
     return data;
@@ -235,7 +234,7 @@ class CreateTag extends React.Component {
       let currentTags = await getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
-      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      currentTags = currentTags.wobjects.map(tag => tag);
       this.setState({ selectedCategory: category, currentTags });
     } else {
       this.setState({ selectedCategory: category, currentTags: [] });
