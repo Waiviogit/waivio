@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { includes } from 'lodash';
 import { rewardPostContainerData } from '../../../rewards/rewardsHelper';
 import { generatePermlink } from '../../../helpers/wObjectHelper';
 import {
@@ -23,15 +24,19 @@ const CampaignRewardsTableRow = ({
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
-  const isChecked =
-    currentItem.status === CAMPAIGN_STATUS.active ||
-    currentItem.status === CAMPAIGN_STATUS.payed ||
-    currentItem.status === CAMPAIGN_STATUS.reachedLimit;
-  const isInactive =
-    currentItem.status === CAMPAIGN_STATUS.inactive ||
-    currentItem.status === CAMPAIGN_STATUS.expired ||
-    currentItem.status === CAMPAIGN_STATUS.deleted ||
-    currentItem.status === CAMPAIGN_STATUS.onHold;
+  const isCheckedStatus = [
+    CAMPAIGN_STATUS.active,
+    CAMPAIGN_STATUS.payed,
+    CAMPAIGN_STATUS.reachedLimit,
+  ];
+  const isChecked = includes(isCheckedStatus, currentItem.status);
+  const isInactiveStatus = [
+    CAMPAIGN_STATUS.inactive,
+    CAMPAIGN_STATUS.expired,
+    CAMPAIGN_STATUS.deleted,
+    CAMPAIGN_STATUS.onHold,
+  ];
+  const isInactive = includes(isInactiveStatus, currentItem.status);
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;

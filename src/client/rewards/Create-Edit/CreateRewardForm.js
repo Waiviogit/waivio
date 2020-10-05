@@ -100,13 +100,15 @@ class CreateRewardForm extends React.Component {
         : moment(new Date(campaign.expired_at));
       const matchPath = get(this.props.match, ['path', 'params', '0']);
       const isDuplicate = includes(matchPath, 'createDuplicate');
+      const isDisabledStatus = [
+        CAMPAIGN_STATUS.inactive,
+        CAMPAIGN_STATUS.expired,
+        CAMPAIGN_STATUS.deleted,
+        CAMPAIGN_STATUS.onHold,
+        CAMPAIGN_STATUS.active,
+      ];
       const isDisabled =
-        campaign.status === CAMPAIGN_STATUS.inactive ||
-        campaign.status === CAMPAIGN_STATUS.expired ||
-        campaign.status === CAMPAIGN_STATUS.deleted ||
-        campaign.status === CAMPAIGN_STATUS.onHold ||
-        campaign.status === CAMPAIGN_STATUS.active ||
-        campaign.status !== CAMPAIGN_STATUS.pending;
+        includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
 
       let combinedObjects;
       let sponsors;
@@ -196,8 +198,8 @@ class CreateRewardForm extends React.Component {
   };
 
   componentDidUpdate() {
-    const { campaign } = this.state;
-    if (this.state.createDuplicate && !includes(this.state.campaignName, 'Copy'))
+    const { campaign, createDuplicate } = this.state;
+    if (createDuplicate)
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
   }
