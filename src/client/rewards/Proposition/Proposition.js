@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
-import { getCommentContent } from '../../reducers';
+import { getAuthenticatedUser, getCommentContent } from '../../reducers';
 import { ASSIGNED, GUIDE_HISTORY, HISTORY, MESSAGES } from '../../../common/constants/rewards';
 import { connect } from 'react-redux';
 import {
@@ -55,12 +55,16 @@ const Proposition = ({
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
     : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
-  const permlink = get(proposition, ['users', '0', 'permlink']);
+  const permlink =
+    get(proposition, ['users', '0', 'permlink']) ||
+    get(proposition, ['0', 'users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const parenAuthor = isMessages
-    ? get(proposition, ['users', '0', 'rootName'])
-    : proposition.guideName;
-  const parentPermlink = isMessages ? permlink : proposition.activation_permlink;
+  const propositionUsers = get(proposition, ['users']) || get(proposition, ['0', 'users']);
+  const guideName = get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
+  const parenAuthor = isMessages ? propositionUsers : guideName;
+  const propositionActivationPermlink =
+    get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
+  const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
 
@@ -70,19 +74,20 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const permlinks = filter(proposition.objects, object => object.permlink);
+    const objects = get(proposition, ['objects']) || get(proposition, ['0', 'objects']);
+    const users = get(proposition, ['users']) || get(proposition, ['0', 'users']);
+    const permlinks = filter(objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
     const currentUser =
-      isMessages || match.params[0] === HISTORY
-        ? proposition.users
-        : filter(
-            proposition.users,
-            usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED,
-          );
+      (isMessages || match.params[0] === HISTORY) && !isEmpty(user)
+        ? users
+        : filter(users, usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED);
+    const activationPermlink =
+      get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
 
     const rejectData = {
-      campaign_permlink: proposition.activation_permlink,
+      campaign_permlink: activationPermlink,
       user_name: userName,
       reservation_permlink: reservationPermlink || get(currentUser, ['0', 'permlink'], ''),
       unreservation_permlink: unreservationPermlink,
@@ -102,6 +107,11 @@ const Proposition = ({
 
   const [isReserved, setReservation] = useState(false);
   const userData = get(users, ['user', 'name', 'alias'], '');
+  const activationPermlink =
+    get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
+  const requiredObjectAuthorPermlink =
+    get(proposition, ['required_object', 'author_permlink']) ||
+    get(proposition, ['0', 'required_object', 'author_permlink']);
 
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
@@ -121,8 +131,8 @@ const Proposition = ({
     const userName =
       userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
     const reserveData = {
-      campaign_permlink: proposition.activation_permlink,
-      approved_object: wobj.author_permlink,
+      campaign_permlink: activationPermlink,
+      approved_object: get(wobj, 'author_permlink'),
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
     };
@@ -130,14 +140,20 @@ const Proposition = ({
       const currencyId = res.id;
       const currentHivePrice = res.hiveCurrency;
       const amount = (proposition.reward / currentHivePrice).toFixed(3);
+      const guideName =
+        get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
+      const activationPermlink =
+        get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
+
+      const propositionId = get(proposition, ['_id']) || get(proposition, ['0', '_id']);
       reserveActivatedCampaign(reserveData)
         .then(() =>
           assignProposition({
-            companyAuthor: proposition.guide.name,
-            companyPermlink: proposition.activation_permlink,
+            companyAuthor: guideName,
+            companyPermlink: activationPermlink,
             resPermlink: reserveData.reservation_permlink,
             objPermlink: wobj.author_permlink,
-            companyId: proposition._id,
+            companyId: propositionId,
             primaryObjectName: requiredObjectName,
             secondaryObjectName: proposedWobj.name,
             amount,
@@ -197,7 +213,7 @@ const Proposition = ({
             post={post}
             loading={loading}
             proposedWobj={proposedWobj}
-            requiredObjectPermlink={proposition.required_object.author_permlink}
+            requiredObjectPermlink={requiredObjectAuthorPermlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
             proposition={proposition}
@@ -258,6 +274,7 @@ const Proposition = ({
         requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
         isEligible={isEligible}
+        match={match}
       />
     </div>
   );
@@ -288,6 +305,7 @@ Proposition.defaultProps = {
 
 export default connect(
   (state, ownProps) => ({
+    user: getAuthenticatedUser(state),
     post:
       ownProps.authorizedUserName &&
       ownProps.assignCommentPermlink &&

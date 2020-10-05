@@ -181,40 +181,53 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getFrequencyAssign = objectDetails => {
-  const requiredObjectName = getObjectName(objectDetails.requiredObject);
+  const requiredObject =
+    get(objectDetails, ['requiredObject']) || get(objectDetails, ['0', 'requiredObject']);
+  const requiredObjectName = getObjectName(requiredObject);
   return objectDetails.frequency_assign
     ? `<ul><li>User did not receive a reward from <a href="/@${objectDetails.guide.name}">${objectDetails.guide.name}</a> for reviewing <a href="/object/${objectDetails.requiredObject.author_permlink}">${requiredObjectName}</a> in the last ${objectDetails.frequency_assign} days and does not have an active reservation for such a reward at the moment.</li></ul>`
     : '';
 };
 
-export const getAgreementObjects = objectDetails =>
-  !isEmpty(objectDetails.agreementObjects)
+export const getAgreementObjects = objectDetails => {
+  const agreementObjects =
+    get(objectDetails, ['agreementObjects']) || get(objectDetails, ['0', 'agreementObjects']);
+  return !isEmpty(agreementObjects)
     ? `including the following: Legal highlights: ${reduce(
         objectDetails.agreementObjects,
         (acc, obj) => ` ${acc} <a href='/object/${obj}/page'>${obj}</a> `,
         '',
       )}`
     : '';
+};
 
-export const getMatchBots = objectDetails =>
-  !isEmpty(objectDetails.match_bots)
+export const getMatchBots = objectDetails => {
+  const matchBots = get(objectDetails, ['match_bots']) || get(objectDetails, ['0', 'match_bots']);
+  return !isEmpty(matchBots)
     ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, '')
     : '';
+};
 
-export const getUsersLegalNotice = objectDetails =>
-  objectDetails.usersLegalNotice
+export const getUsersLegalNotice = objectDetails => {
+  const usersLegalNotice =
+    get(objectDetails, ['usersLegalNotice']) || get(objectDetails, ['0', 'usersLegalNotice']);
+  return usersLegalNotice
     ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}</p>`
     : '';
+};
 
-export const getReceiptPhoto = objectDetails =>
-  objectDetails.requirements.receiptPhoto
-    ? `<p>Photo of the receipt (without personal details);</p>`
-    : '';
+export const getReceiptPhoto = objectDetails => {
+  const receiptPhoto =
+    get(objectDetails, ['requirements', 'receiptPhoto']) ||
+    get(objectDetails, ['0', 'requirements', 'receiptPhoto']);
+  return receiptPhoto ? `<p>Photo of the receipt (without personal details);</p>` : '';
+};
 
-export const getDescription = objectDetails =>
-  objectDetails.description
-    ? `<p>Additional requirements/notes: ${objectDetails.description}</p>`
-    : '';
+export const getDescription = objectDetails => {
+  const description =
+    get(objectDetails, ['description']) || get(objectDetails, ['0', 'description']);
+  return description ? `<p>Additional requirements/notes: ${objectDetails.description}</p>` : '';
+};
 
 const getFollowingObjects = objectDetails =>
   !isEmpty(objectDetails.objects)
@@ -269,7 +282,21 @@ export const getDetailsBody = ({
 }) => {
   const followingObjects = getFollowingObjects(proposition);
   const links = getLinksToAllFollowingObjects(followingObjects);
-  const propositionMinExpertise = proposition.userRequirements.minExpertise;
+  const propositionMinExpertise =
+    get(proposition, ['userRequirements', 'minExpertise']) ||
+    get(proposition, ['0', 'userRequirements', 'minExpertise']);
+  const propositionMinFollowers =
+    get(proposition, ['userRequirements', 'minFollowers']) ||
+    get(proposition, ['0', 'userRequirements', 'minFollowers']);
+  const propositionMinPosts =
+    get(proposition, ['userRequirements', 'minPosts']) ||
+    get(proposition, ['0', 'userRequirements', 'minPosts']);
+  const propositionMinPhotos =
+    get(proposition, ['requirements', 'minPhotos']) ||
+    get(proposition, ['0', 'requirements', 'minPhotos']);
+  const guideName = get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
+  const requiredObject =
+    get(proposition, ['requiredObject']) || get(proposition, ['0', 'requiredObject']);
   const minExpertise = getMinExpertise({
     campaignMinExpertise: propositionMinExpertise,
     rewardFundRecentClaims: recentClaims,
@@ -282,11 +309,11 @@ export const getDetailsBody = ({
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
 <ul>
     <li>Minimum Waivio expertise: ${minExpertise}</li>
-    <li>Minimum number of followers: ${proposition.userRequirements.minFollowers}</li>
-    <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
+    <li>Minimum number of followers: ${propositionMinFollowers}</li>
+    <li>Minimum number of posts: ${propositionMinPosts}</li>
 </ul>`;
   const frequencyAssign = getFrequencyAssign(proposition);
-  const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
+  const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${guideName}'>${guideName}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
   const linkToFollowingObjects = proposedWobjName
     ? `<li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>`
@@ -296,17 +323,15 @@ export const getDetailsBody = ({
     : '';
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
-<ul><li>Minimum ${
-    proposition.requirements.minPhotos
-  } original photos ${proposedWobj}</li> ${receiptPhoto} ${linkToFollowingObjects}
-<li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
-    proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
+<ul><li>Minimum ${propositionMinPhotos} original photos ${proposedWobj}</li> ${receiptPhoto} ${linkToFollowingObjects}
+<li>Link to <a href="/object/${requiredObject.author_permlink ||
+    requiredObject}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
-<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
+<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
 <p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);

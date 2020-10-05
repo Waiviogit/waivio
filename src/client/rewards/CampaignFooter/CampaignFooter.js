@@ -164,9 +164,12 @@ class CampaignFooter extends React.Component {
     }
     const reservationsTime =
       get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
+    const countReservationDays =
+      get(proposition, ['count_reservation_days']) ||
+      get(proposition, ['0', 'count_reservation_days']);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
+      daysLeft: getDaysLeft(reservationsTime, countReservationDays),
     });
   }
 
@@ -457,7 +460,7 @@ class CampaignFooter extends React.Component {
         includes(match.path, 'object')
       : '';
     const propositionStatus = isRewards
-      ? get(proposition, ['status'])
+      ? get(proposition, ['status']) || get(proposition, ['0', 'status'])
       : get(proposition, ['users', '0', 'status']);
     const hasComments = !isEmpty(proposition.conversation) || !isEmpty(reservedComments);
     const postCurrent = proposition.conversation;
@@ -471,6 +474,8 @@ class CampaignFooter extends React.Component {
       ? size(commentsAll) - 1
       : size(currentPostReserved.content) - 1;
     const isNotifyComment = Boolean(this.props.match.params.campaignId);
+    const guideName =
+      get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -494,7 +499,7 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.handleCommentClick}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               requiredObjectName={requiredObjectName}
-              propositionGuideName={proposition.guide.name}
+              propositionGuideName={guideName}
               propositionStatus={propositionStatus}
               proposition={proposition}
               match={match}

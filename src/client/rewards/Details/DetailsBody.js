@@ -3,33 +3,55 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, includes } from 'lodash';
 import { Checkbox } from 'antd';
 import getDetailsMessages from './detailsMessagesData';
 import DetailsPostRequirments from './DetailsPostRequirments';
 import { getWeightValue, getIsAuthenticated } from '../../reducers';
 import './Details.less';
 
-const DetailsBody = ({ objectDetails, intl, proposedWobj, requiredObjectName, minExpertise }) => {
+const DetailsBody = ({
+  objectDetails,
+  intl,
+  proposedWobj,
+  requiredObjectName,
+  minExpertise,
+  match,
+}) => {
   const isAuthenticated = useSelector(getIsAuthenticated);
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
-  const requirementFilters = get(objectDetails, ['0', 'requirement_filters'], {});
+  const requirementFilters = includes(match.path, 'rewards')
+    ? get(objectDetails, ['requirement_filters'], {})
+    : get(objectDetails, ['0', 'requirement_filters'], {});
   const frequency =
     requirementFilters.frequency &&
     (requirementFilters.not_same_assigns || requirementFilters.freeReservation);
   const getChecked = useCallback(param => (isAuthenticated ? param : null), []);
-  const minFollowers = get(objectDetails, ['0', 'userRequirements', 'minFollowers']);
-  const objectDetailsMinExpertise = get(objectDetails, ['0', 'userRequirements', 'minExpertise']);
-  const minPosts = get(objectDetails, ['0', 'userRequirements', 'minPosts']);
-  const notBlacklisted = get(objectDetails, ['0', 'requirement_filters', 'not_blacklisted']);
-  const guideName = get(objectDetails, ['0', 'guide', 'name']);
-  const frequencyAssign = get(objectDetails, ['0', 'frequency_assign']);
-  const requiredObject = get(objectDetails, ['0', 'requiredObject']);
-  const matchBots = get(objectDetails, ['0', 'match_bots']);
-  const agreementObjects = get(objectDetails, ['0', 'agreementObjects']);
-  const usersLegalNotice = get(objectDetails, ['0', 'usersLegalNotice']);
+  const minFollowers = includes(match.path, 'rewards')
+    ? get(objectDetails, ['userRequirements', 'minFollowers'])
+    : get(objectDetails, ['0', 'userRequirements', 'minFollowers']);
+  const objectDetailsMinExpertise = includes(match.path, 'rewards')
+    ? get(objectDetails, ['userRequirements', 'minExpertise'])
+    : minExpertise || get(objectDetails, ['0', 'userRequirements', 'minExpertise']);
+  const minPosts = includes(match.path, 'rewards')
+    ? get(objectDetails, ['userRequirements', 'minPosts'])
+    : get(objectDetails, ['0', 'userRequirements', 'minPosts']);
+  const notBlacklisted =
+    get(objectDetails, ['requirement_filters', 'not_blacklisted']) ||
+    get(objectDetails, ['0', 'requirement_filters', 'not_blacklisted']);
+  const guideName =
+    get(objectDetails, ['guide', 'name']) || get(objectDetails, ['0', 'guide', 'name']);
+  const frequencyAssign =
+    get(objectDetails, ['frequency_assign']) || get(objectDetails, ['0', 'frequency_assign']);
+  const requiredObject =
+    get(objectDetails, ['requiredObject']) || get(objectDetails, ['0', 'requiredObject']);
+  const matchBots = get(objectDetails, ['match_bots']) || get(objectDetails, ['0', 'match_bots']);
+  const agreementObjects =
+    get(objectDetails, ['agreementObjects']) || get(objectDetails, ['0', 'agreementObjects']);
+  const usersLegalNotice =
+    get(objectDetails, ['usersLegalNotice']) || get(objectDetails, ['0', 'usersLegalNotice']);
   return (
     <div className="Details__text-wrap">
       <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
@@ -122,10 +144,12 @@ DetailsBody.propTypes = {
   proposedWobj: PropTypes.shape().isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   minExpertise: PropTypes.number,
+  match: PropTypes.shape(),
 };
 
 DetailsBody.defaultProps = {
   minExpertise: 0,
+  match: {},
 };
 
 export default connect((state, ownProp) => ({
