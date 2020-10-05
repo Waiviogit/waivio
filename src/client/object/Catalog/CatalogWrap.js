@@ -77,11 +77,15 @@ const CatalogWrap = props => {
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
           }
-          setListItems(wObject.listItems);
+          if (isEmpty(listItems)) {
+            setListItems(wObject.listItems);
+          }
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
-        setListItems(wobject.listItems);
+        if (isEmpty(listItems)) {
+          setListItems(wobject.listItems);
+        }
         getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
       }
     }
@@ -91,7 +95,7 @@ const CatalogWrap = props => {
     const { wobject } = props;
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
     setListItems(sortListItemsBy(currentList, 'recency'));
-    console.log(listItems);
+
     if (wobject.object_type === OBJ_TYPE.LIST) {
       dispatch(wobjectActions.addListItem(listItem));
     }
