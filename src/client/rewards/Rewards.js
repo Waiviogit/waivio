@@ -63,6 +63,8 @@ import {
   IS_RESERVED,
   IS_ALL,
   IS_ACTIVE,
+  PAYABLES,
+  RECEIVABLES,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -385,7 +387,14 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+      const filterKey = match.params.filterKey;
+      if (
+        !pendingUpdate &&
+        filterKey &&
+        filterKey !== PAYABLES &&
+        filterKey !== RECEIVABLES &&
+        !match.params.campaignParent
+      ) {
         if (match.params.filterKey !== rewardsTab[tabType]) {
           this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
         }
