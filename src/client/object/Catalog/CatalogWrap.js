@@ -77,19 +77,26 @@ const CatalogWrap = props => {
           if (requiredObject) {
             getPropositions({ match, requiredObject, sort });
           }
-          setListItems(wObject.listItems);
+          if (isEmpty(listItems)) {
+            setListItems(wObject.listItems);
+          }
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
-        setListItems(wobject.listItems);
+        if (isEmpty(listItems)) {
+          setListItems(wobject.listItems);
+        }
         getPropositions({ match, requiredObject: wobject.author_permlink, sort });
+        setListItems(wobject.listItems);
       }
     }
   }, [props.location.hash, props.wobject, userName]);
 
   const handleAddItem = listItem => {
     const { wobject } = props;
-    setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
+    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    setListItems(sortListItemsBy(currentList, 'recency'));
+
     if (wobject.object_type === OBJ_TYPE.LIST) {
       dispatch(wobjectActions.addListItem(listItem));
     }
