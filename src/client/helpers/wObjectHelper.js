@@ -2,7 +2,7 @@ import { get, some, filter, isEmpty, compact } from 'lodash';
 import { addressFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
-export const getObjectName = (wobj = {}) => wobj.name || wobj.default_name;
+export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name');
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 export const getObjectAvatar = (wobj = {}) => wobj.avatar || get(wobj, ['parent', 'avatar'], '');
 
