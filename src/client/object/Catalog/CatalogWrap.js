@@ -89,11 +89,9 @@ const CatalogWrap = props => {
 
   const handleAddItem = listItem => {
     const { wobject } = props;
-    if (isEmpty(listItems)) {
-      setListItems(sortListItemsBy([listItem], 'recency'));
-    } else {
-      setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
-    }
+    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    setListItems(sortListItemsBy(currentList, 'recency'));
+    console.log(listItems);
     if (wobject.object_type === OBJ_TYPE.LIST) {
       dispatch(wobjectActions.addListItem(listItem));
     }

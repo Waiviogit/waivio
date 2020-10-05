@@ -63,6 +63,8 @@ import {
   IS_RESERVED,
   IS_ALL,
   IS_ACTIVE,
+  PAYABLES,
+  RECEIVABLES,
 } from '../../common/constants/rewards';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
@@ -385,7 +387,14 @@ class Rewards extends React.Component {
         campaignsTypes: campaigns_types,
         loadingCampaigns: false,
       });
-      if (!pendingUpdate && match.params.filterKey && !match.params.campaignParent) {
+      const filterKey = match.params.filterKey;
+      if (
+        !pendingUpdate &&
+        filterKey &&
+        filterKey !== PAYABLES &&
+        filterKey !== RECEIVABLES &&
+        !match.params.campaignParent
+      ) {
         if (match.params.filterKey !== rewardsTab[tabType]) {
           this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
         }
@@ -429,11 +438,13 @@ class Rewards extends React.Component {
       }),
     ).then(data => {
       this.props.setUpdatedFlag();
+      const sponsors = sortBy(data.sponsors);
       this.setState({
         area,
         radius,
         loading: false,
         fetched: false,
+        sponsors,
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
@@ -443,7 +454,6 @@ class Rewards extends React.Component {
           loadingCampaigns: false,
         });
       } else {
-        const sponsors = sortBy(data.sponsors);
         this.setState({
           propositions: data.campaigns,
           loadingCampaigns: false,
@@ -451,7 +461,6 @@ class Rewards extends React.Component {
           area,
           radius,
           hasMore: data.hasMore,
-          sponsors,
         });
       }
       if (isMap && firstMapLoad) {
@@ -772,12 +781,12 @@ class Rewards extends React.Component {
       !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
         ? get(newPropositions, ['0', 'required_object'])
         : {};
-
     const secondaryObjectsWithUniqueCoordinates = filter(secondaryObjectsForMap, object => {
-      const objMap = getParsedMap(object.parent);
+      const parent = object.parent;
+      const objMap = getParsedMap(object || parent);
       const primaryObjectMap = getParsedMap(primaryObjectForMap);
 
-      return object.parent && !isEqual(objMap, primaryObjectMap);
+      return !isEqual(objMap, primaryObjectMap) ? object : '';
     });
 
     return match.params.filterKey === 'reserved'
