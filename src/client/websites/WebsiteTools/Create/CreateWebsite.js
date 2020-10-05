@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Input, AutoComplete, Checkbox, Form, Button, message } from 'antd';
 import { connect } from 'react-redux';
-import { debounce, get } from 'lodash';
+import { debounce, get, isEmpty } from 'lodash';
 
 import Affix from '../../../components/Utils/Affix';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
@@ -56,7 +56,8 @@ const CreateWebsite = ({
           .catch(error => message.error(error));
     });
   };
-
+  console.log(availableStatus);
+  console.log(loading);
   return (
     <div className="shifted">
       <Helmet>
@@ -79,7 +80,7 @@ const CreateWebsite = ({
           <h1>
             <FormattedMessage id="create_new_website" defaultMessage="Create new website" />
           </h1>
-          <Form className="CreateWebsite" onSubmit={handleSubmit}>
+          <Form className="CreateWebsite" id="CreateWebsite" onSubmit={handleSubmit}>
             <Form.Item>
               <h3>
                 <span className="ant-form-item-required">
@@ -117,7 +118,7 @@ const CreateWebsite = ({
                 {template && <span className="CreateWebsite__domain-name">.{template}</span>}
               </div>
             </Form.Item>
-            {availableStatus && (
+            {!isEmpty(availableStatus) && (
               <span className={statusMessageClassList}>
                 {intl.formatMessage(availableStatus.intl)}
               </span>
