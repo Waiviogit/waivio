@@ -54,7 +54,6 @@ import { getLanguageText } from '../../translations';
 import MapAppendObject from '../../components/Maps/MapAppendObject';
 import {
   generatePermlink,
-  getField,
   getMenuItems,
   getObjectName,
   hasType,
@@ -448,7 +447,7 @@ export default class AppendForm extends Component {
         .substring(2)}`;
       data.lastUpdated = Date.now();
 
-      data.wobjectName = getField(wObject, 'name');
+      data.wobjectName = getObjectName(wObject);
 
       data.votePower = this.state.votePercent !== null ? this.state.votePercent * 100 : null;
 
