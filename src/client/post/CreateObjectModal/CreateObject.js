@@ -139,6 +139,7 @@ class CreateObject extends React.Component {
                     creator: this.props.username,
                     name: values.name,
                     locale: values.locale,
+                    author_permlink: parentPermlink,
                   },
                   '',
                   {
