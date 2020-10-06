@@ -20,7 +20,7 @@ import {
   isEmpty,
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
-import { getCampaignById } from '../../../waivioApi/ApiClient';
+import { getCampaignById, getReviewCheckInfo } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
   getDraftPosts,
@@ -145,6 +145,7 @@ class EditPost extends Component {
 
   componentDidMount() {
     const { campaign } = this.state;
+    const { locale, userName } = this.props;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const campaignId =
       campaign && campaign.id ? campaign.id : get(currDraft, ['jsonMetadata', 'campaignId']);
@@ -153,16 +154,9 @@ class EditPost extends Component {
     this.setState({ isReview });
 
     if (isReview)
-      getCampaignById(campaignId)
+      getReviewCheckInfo({ campaignId, locale, userName })
         .then(campaignData => {
-          const secondaryObjectReservation = campaignData.users.find(
-            user =>
-              user.name === this.props.userName &&
-              (user.status === 'assigned' || user.status === 'completed'),
-          );
-          const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
-          );
+          const secondaryObject = campaignData.secondaryObject;
           this.setState({
             campaign: {
               ...campaignData,
