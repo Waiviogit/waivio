@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Input, AutoComplete, Checkbox, Form, Button, message } from 'antd';
+import { AutoComplete, Button, Checkbox, Input, Form, message } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get, isEmpty } from 'lodash';
 
@@ -15,7 +15,7 @@ import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '..
 
 import './CreateWebsite.less';
 
-const CreateWebsite = ({
+export const CreateWebsite = ({
   intl,
   form,
   getDomainList,
@@ -56,8 +56,7 @@ const CreateWebsite = ({
           .catch(error => message.error(error));
     });
   };
-  console.log(availableStatus);
-  console.log(loading);
+
   return (
     <div className="shifted">
       <Helmet>
@@ -114,7 +113,7 @@ const CreateWebsite = ({
               <div className="CreateWebsite__domain-wrap">
                 {getFieldDecorator('domain', {
                   rules: validateRules.domain,
-                })(<Input disabled={!template} onInput={domainStatus} />)}
+                })(<Input disabled={!template} id="domain" onInput={domainStatus} />)}
                 {template && <span className="CreateWebsite__domain-name">.{template}</span>}
               </div>
             </Form.Item>

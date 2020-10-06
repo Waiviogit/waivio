@@ -5,6 +5,7 @@ import { getAvailableStatus } from './helper';
 const initialState = {
   parentDomain: [],
   domainAvailableStatus: '',
+  manage: {},
   loading: false,
 };
 
@@ -45,6 +46,12 @@ export default function websiteReducer(state = initialState, action) {
         loading: false,
       };
     }
+    case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
+      return {
+        ...state,
+        manage: action.payload,
+      };
+    }
     default: {
       return state;
     }
@@ -54,3 +61,4 @@ export default function websiteReducer(state = initialState, action) {
 export const getParentDomain = state => get(state, 'parentDomain', []);
 export const getDomainAvailableStatus = state => get(state, 'domainAvailableStatus', []);
 export const getWebsiteLoading = state => get(state, 'loading');
+export const getManage = state => get(state, 'manage');

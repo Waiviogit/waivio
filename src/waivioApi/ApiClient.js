@@ -1547,18 +1547,24 @@ export const createWebsite = body => {
 };
 
 export const checkAvailable = (name, parent) => {
-  return (
-    fetch(
-      `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
-      .then(res => res)
-      // .then(result => result)
-      .catch(e => console.log(e))
-  );
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getInfoForManagePage = name => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res)
+    .catch(e => e);
 };
 
 export default null;

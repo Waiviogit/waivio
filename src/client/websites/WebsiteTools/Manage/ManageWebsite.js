@@ -1,67 +1,29 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Input, AutoComplete, Checkbox, Form, Button, message } from 'antd';
 import { connect } from 'react-redux';
-import { debounce, get } from 'lodash';
+import { get } from 'lodash';
 
 import Affix from '../../../components/Utils/Affix';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
-import validateRules from '../constants/validateRules';
-import { checkAvailableDomain, createNewWebsite, getParentDomainList } from '../../websiteActions';
-import { getDomainAvailableStatus, getParentDomain, getWebsiteLoading } from '../../../reducers';
+import { getAuthenticatedUserName, getManage, getWebsiteLoading } from '../../../reducers';
+import { getManageInfo } from '../../websiteActions';
 
 import './ManageWebsite.less';
 
-const ManageWebsite = ({
-  intl,
-  form,
-  getDomainList,
-  parentDomain,
-  checkStatusAvailableDomain,
-  availableStatus,
-  createWebsite,
-  loading,
-}) => {
-  const { getFieldDecorator, getFieldValue } = form;
-  const template = getFieldValue('parent');
-  const subDomain = getFieldValue('domain');
-  const domainNamesList = Object.keys(parentDomain);
-  const available = get(availableStatus, 'status');
-  const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
-  const domainStatus = useCallback(
-    debounce(
-      () => checkStatusAvailableDomain(getFieldValue('domain'), parentDomain[template]),
-      300,
-    ),
-    [template],
-  );
-
+const ManageWebsite = props => {
   useEffect(() => {
-    getDomainList();
+    props.getManageInfo(props.userName);
   }, []);
-
-  useEffect(() => {
-    if (subDomain) domainStatus();
-  }, [template]);
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err && available)
-        createWebsite(values)
-          .then(() => form.resetFields())
-          .catch(error => message.error(error));
-    });
-  };
+  const { prices } = props.manageInfo;
 
   return (
     <div className="shifted">
       <Helmet>
         <title>
-          {intl.formatMessage({
+          {props.intl.formatMessage({
             id: 'manage_website',
             defaultMessage: 'Create new website',
           })}{' '}
@@ -74,81 +36,68 @@ const ManageWebsite = ({
             <LeftSidebar />
           </div>
         </Affix>
-        <div className="center">
+        <div className="center ManageWebsites">
           <MobileNavigation />
           <h1>
-            <FormattedMessage id="create_new_website" defaultMessage="Create new website" />
+            <FormattedMessage id="website_management" defaultMessage="Websites management" />
           </h1>
-          <Form className="CreateWebsite" onSubmit={handleSubmit}>
-            <Form.Item>
-              <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'select_website_template',
-                    defaultMessage: 'Select website template:',
-                  })}
-                </span>
-              </h3>
-              {getFieldDecorator('parent', {
-                rules: validateRules.autocomplete,
-              })(
-                <AutoComplete>
-                  {domainNamesList.map(domain => (
-                    <AutoComplete.Option key={domain} value={domain}>
-                      {domain}
-                    </AutoComplete.Option>
-                  ))}
-                </AutoComplete>,
-              )}
-            </Form.Item>
-            <Form.Item>
-              <h3>
-                <span className="ant-form-item-required">
-                  {intl.formatMessage({
-                    id: 'name_website',
-                    defaultMessage: 'Specify name for your website:',
-                  })}
-                </span>
-              </h3>
-              <div className="CreateWebsite__domain-wrap">
-                {getFieldDecorator('domain', {
-                  rules: validateRules.domain,
-                })(<Input disabled={!template} onInput={domainStatus} />)}
-                {template && <span className="CreateWebsite__domain-name">.{template}</span>}
-              </div>
-            </Form.Item>
-            {availableStatus && (
-              <span className={statusMessageClassList}>
-                {intl.formatMessage(availableStatus.intl)}
-              </span>
-            )}
-            <p>
-              {intl.formatMessage({
-                id: 'info_level_domain_name',
-                defaultMessage: 'It will be used as a second level domain name.',
+          <div>
+            <h3>
+              {props.intl.formatMessage({
+                id: 'prices',
+                defaultMessage: 'Prices',
               })}
+            </h3>
+              <div>&bull;
+                {props.intl.formatMessage({
+                  id: 'prices_per_active_user',
+                  defaultMessage: '{price} HBD per day per active user;'
+                  },
+                  {price: get(prices, 'perUser', 0)}
+                )}
+              </div>
+              <div>&bull;
+                {props.intl.formatMessage({
+                  id: 'prices_min_value',
+                  defaultMessage: 'Minimum {price} HBD per day.'},
+                  {
+                    price: get(prices, 'minimumValue', 0)
+                  }
+                )}
+              </div>
+            <p>
+              Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.
             </p>
-            <Form.Item>
-              {getFieldDecorator('politics', {
-                rules: validateRules.politics,
-              })(
-                <Checkbox>
-                  <span className="ant-form-item-required">
-                    {intl.formatMessage({
-                      id: 'website_create_alerts_info',
-                      defaultMessage:
-                        'I have read and agree to the terms and conditions of the Web Hosting Service Agreement',
-                    })}
-                  </span>
-                </Checkbox>,
-              )}
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Create website
-              </Button>
-            </Form.Item>
-          </Form>
+          </div>
+          <div>
+            <h3>
+              {props.intl.formatMessage({
+                id: 'manage_account_balance',
+                defaultMessage: 'Account balance (HBD)',
+              })}
+            </h3>
+              <div>&bull;
+                {props.intl.formatMessage({
+                  id: 'prices_per_active_user',
+                  defaultMessage: '{price} HBD per day per active user;'
+                  },
+                  {price: get(prices, 'perUser', 0)}
+                )}
+              </div>
+              <div>&bull;
+                {props.intl.formatMessage({
+                  id: 'prices_min_value',
+                  defaultMessage: 'Minimum {price} HBD per day.'},
+                  {
+                    price: get(prices, 'minimumValue', 0)
+                  }
+                )}
+              </div>
+            <p>
+              Daily active users are averaged over the last 7 days.
+              ** If the account balance becomes negative, all websites will be suspended. The user is responsible for ensuring that the account balance remains positive. The estimate of the Days remaining is based on the current website usage and is subject to change.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -157,28 +106,28 @@ const ManageWebsite = ({
 
 ManageWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
-  form: PropTypes.shape().isRequired,
-  getDomainList: PropTypes.func.isRequired,
-  createWebsite: PropTypes.func.isRequired,
-  parentDomain: PropTypes.arrayOf(PropTypes.string).isRequired,
-  checkStatusAvailableDomain: PropTypes.func.isRequired,
-  availableStatus: PropTypes.string,
   loading: PropTypes.bool.isRequired,
+  getManageInfo: PropTypes.func.isRequired,
+  userName: PropTypes.string.isRequired,
+  manageInfo: PropTypes.shape({
+    prices: PropTypes.shape({
+      perUser: PropTypes.number,
+      minimumValue: PropTypes.number,
+    })
+  }).isRequired,
 };
 
 ManageWebsite.defaultProps = {
-  availableStatus: '',
+  manageInfo: {},
 };
 
 export default connect(
   state => ({
-    parentDomain: getParentDomain(state),
-    availableStatus: getDomainAvailableStatus(state),
     loading: getWebsiteLoading(state),
+    userName: getAuthenticatedUserName(state),
+    manageInfo: getManage(state),
   }),
   {
-    getDomainList: getParentDomainList,
-    checkStatusAvailableDomain: checkAvailableDomain,
-    createWebsite: createNewWebsite,
+    getManageInfo,
   },
-)(Form.create()(injectIntl(ManageWebsite)));
+)(injectIntl(ManageWebsite));

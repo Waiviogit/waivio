@@ -104,5 +104,6 @@
   "sites": "/sites",
   "getParents": "/getParents",
   "create": "/create",
-  "checkAvailable": "/checkAvailable"
+  "checkAvailable": "/checkAvailable",
+  "managePage": "/managePage"
 }

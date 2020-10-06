@@ -1,52 +1,37 @@
 import React from 'react';
-import {mount} from 'enzyme';
-import {Provider} from 'react-redux';
-import configureStore from 'redux-mock-store';
-import {IntlProvider} from "react-intl";
-import {BrowserRouter as Router} from 'react-router-dom';
+import { shallow } from 'enzyme';
 
-import CreateWebsite from "../CreateWebsite";
+import { CreateWebsite } from '../CreateWebsite';
 
 describe('<CreateWebsite />', () => {
-  const mockStore = configureStore();
   const props = {
+    intl: { formatMessage: jest.fn() },
     form: {
       validateFieldsAndScroll: jest.fn(),
       getFieldValue: jest.fn(),
       getFieldDecorator: jest.fn(() => c => c),
     },
-    getDomainList: () => {
-    },
+    getDomainList: () => {},
     parentDomain: [],
-    checkStatusAvailableDomain: () => {
-    },
-    availableStatus: '',
-    createWebsite: () => {
-    },
+    checkStatusAvailableDomain: jest.fn(),
+    availableStatus: { intl: { defaultMessage: 'Available', id: 'available' }, status: 200 },
+    createWebsite: jest.fn(),
     loading: false,
   };
 
-  const wrapper = mount(
-    <Provider store={mockStore()}>
-      <Router>
-        <IntlProvider locale="en">
-          <CreateWebsite {...props} />
-        </IntlProvider>
-      </Router>
-    </Provider>
-  );
+  const wrapper = shallow(<CreateWebsite {...props} />);
 
   it('renders without exploding', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('getDomainList should called when component did mount', () => {
-    expect(props.getDomainList).toHaveBeenCalled();
-  })
-
   it('form submit', () => {
-
-    wrapper.find('#CreateWebsite').simulate('submit');
-    expect(props.createWebsite).toHaveBeenCalled();
+    wrapper.find('#CreateWebsite').simulate('submit', { preventDefault: jest.fn() });
+    expect(props.form.validateFieldsAndScroll).toHaveBeenCalled();
   });
-})
+
+  it('handle change domain name', () => {
+    wrapper.find('#domain').simulate('change', { preventDefault: jest.fn() });
+    expect(props.checkStatusAvailableDomain).toHaveBeenCalled();
+  });
+});
