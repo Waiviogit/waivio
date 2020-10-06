@@ -5,7 +5,6 @@ import { followObject, voteAppends } from './wobjActions';
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
 export const appendObject = (postData, { follow, isLike = true } = {}) => dispatch => {
-  console.log(postData);
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
