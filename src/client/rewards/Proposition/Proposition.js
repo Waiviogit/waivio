@@ -40,14 +40,13 @@ const Proposition = ({
   wobjPrice,
 }) => {
   const requirementFilters = get(proposition, ['requirement_filters'], {});
-  const getEligibility = () => Object.values(requirementFilters).every(item => item === true);
-  const isEligible = getEligibility(proposition);
+  const isEligible = Object.values(requirementFilters).every(item => item === true);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
-  const requiredObjectName = requiredObject ? getObjectName(requiredObject) : null;
+  const requiredObjectName = getObjectName(requiredObject);
   const isMessages = !isEmpty(match)
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
     : '';
