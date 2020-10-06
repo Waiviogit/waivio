@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 export default (localizer, objectData) => ({
   seekHonestReviews: localizer('rewards_details_seek_honest_reviews', 'We seek honest reviews'),
   rewardReviews: localizer('rewards_details_reward_for_reviews', 'Reward for reviews'),
@@ -47,7 +49,7 @@ export default (localizer, objectData) => ({
     'rewards_details_minimum_original_photos',
     'Minimum {minPhotos} original photos of',
     {
-      minPhotos: objectData.requirements.minPhotos,
+      minPhotos: get(objectData, ['requirements', 'minPhotos']),
     },
   ),
   photoReceipt: localizer(
