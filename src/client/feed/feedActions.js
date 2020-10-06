@@ -56,14 +56,12 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: ApiClient.getFeedContent(sortBy, {
+    payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
       tag: category,
       skip: 0,
       limit,
       user_languages,
-      locale,
-      follower,
     }),
     meta: {
       sortBy,

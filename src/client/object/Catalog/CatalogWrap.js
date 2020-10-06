@@ -11,7 +11,6 @@ import { objectFields, statusNoVisibleItem } from '../../../common/constants/lis
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjectsActions';
 import {
   getSuitableLanguage,
   getAuthenticatedUserName,
@@ -47,10 +46,10 @@ const CatalogWrap = props => {
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ username, match, requiredObject, sorting }) => {
+  const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      username,
+      userName,
       match,
       requiredObject,
       sort: 'reward',
@@ -73,9 +72,9 @@ const CatalogWrap = props => {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          const requiredObject = wObject.author_permlink;
+          const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
-            getPropositions({ userName, match, requiredObject, sort });
+            getPropositions({ match, requiredObject, sort });
           }
           setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));
@@ -85,14 +84,11 @@ const CatalogWrap = props => {
         getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject, userName]);
 
   const handleAddItem = listItem => {
-    const { wobject } = props;
-    setListItems(sortListItemsBy([...listItems, listItem], 'recency'));
-    if (wobject.object_type === OBJ_TYPE.LIST) {
-      dispatch(wobjectActions.addListItem(listItem));
-    }
+    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    setListItems(sortListItemsBy(currentList, 'recency'));
   };
 
   const updateProposition = (propsId, isassign, objPermlink, companyAuthor) => {
@@ -230,7 +226,7 @@ const CatalogWrap = props => {
           wobj.object &&
           wobj.object.author_permlink && (
             <Proposition
-              proposition={propositionsObject}
+              proposition={propositionsObject[0]}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
@@ -283,7 +279,7 @@ const CatalogWrap = props => {
     } else if (objects.length && isMatchedPermlinks) {
       item = renderProposition(propositions, listItem);
     } else {
-      item = <ObjectCardView wObject={listItem} passedParent={props.wobject} />;
+      item = <ObjectCardView wObject={listItem} />;
     }
     return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
