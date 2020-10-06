@@ -22,6 +22,7 @@ const ObjectCardView = ({
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject);
+  const parent = get(wObject, 'parent', {});
 
   useEffect(() => {
     const tagCategory = get(wObject, 'tagCategory');
@@ -35,7 +36,7 @@ const ObjectCardView = ({
   const pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   const avatarLayout = () => {
-    let url = getObjectAvatar(wObject) || getObjectAvatar(wObject.parent);
+    let url = getObjectAvatar(wObject) || getObjectAvatar(parent);
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
@@ -54,7 +55,7 @@ const ObjectCardView = ({
     );
   };
   const objName = getObjectName(wObject);
-  const parentName = getObjectName(wObject.parent);
+  const parentName = getObjectName(parent);
   const description = wObject.description && (
     <div className="ObjectCardView__title" title={wObject.description}>
       {truncate(wObject.description, {
@@ -69,9 +70,7 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
-  const parentLink =
-    get(wObject.parent, 'defaultShowLink') ||
-    `/object/${get(wObject.parent, 'author_permlink', '')}`;
+  const parentLink = get(parent, 'defaultShowLink');
 
   return (
     <div key={wObject.author_permlink}>
