@@ -39,9 +39,8 @@ const Proposition = ({
   users,
   wobjPrice,
 }) => {
-  const requirementFilters = get(proposition, ['requirement_filters']);
-  const getEligibility = proposition =>
-    requirementFilters ? Object.values(requirementFilters).every(item => item === true) : null;
+  const requirementFilters = get(proposition, ['requirement_filters'], {});
+  const getEligibility = () => Object.values(requirementFilters).every(item => item === true);
   const isEligible = getEligibility(proposition);
   const proposedWobj = wobj;
   const requiredObject = get(proposition, ['required_object']);
@@ -69,7 +68,7 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    const objects = get(proposition, ['objects']) || get(proposition, ['0', 'objects']);
+    const objects = get(proposition, ['objects']);
     const users = get(proposition, ['users']);
     const permlinks = filter(objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
