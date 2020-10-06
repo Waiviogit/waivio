@@ -13,6 +13,7 @@ import { getDaysLeft } from '../rewardsHelper';
 import {
   getRate,
   getAppUrl,
+  getLocale,
   isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
@@ -33,6 +34,8 @@ import './CampaignFooter.less';
     reservedComments: getCommentsFromReserved(state),
     userName: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    locale: getLocale(state),
+    follower: getAuthenticatedUserName(state),
   }),
   {
     getReservedComments,
@@ -78,6 +81,8 @@ class CampaignFooter extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     sendCommentMessages: PropTypes.func,
+    locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
@@ -106,6 +111,8 @@ class CampaignFooter extends React.Component {
     isGuest: false,
     sendCommentMessages: () => {},
     proposition: {},
+    locale: 'en-US',
+    follower: '',
   };
 
   constructor(props) {
@@ -136,7 +143,7 @@ class CampaignFooter extends React.Component {
   }
 
   componentWillMount() {
-    const { user, post, defaultVotePercent, proposition } = this.props;
+    const { user, post, defaultVotePercent, proposition, locale, follower } = this.props;
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
@@ -160,7 +167,9 @@ class CampaignFooter extends React.Component {
     this.getReservedComments();
 
     if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+      getContent(author, permlink, locale, follower).then(res =>
+        this.setState({ currentPost: res }),
+      );
     }
     const reservationsTime =
       get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
