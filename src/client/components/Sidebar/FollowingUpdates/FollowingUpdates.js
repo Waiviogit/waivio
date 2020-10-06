@@ -15,7 +15,6 @@ const usersSection = 'People';
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
-
   if (usersUpdates.users && usersUpdates.users.length) {
     config[usersSection] = {
       name: usersSection,
@@ -44,13 +43,12 @@ function buildFollowingUpdatesMenuConfig(updates) {
         hasMore,
         items: objects.map(followingObject => {
           const clientObj = followingObject;
+          console.log(followingObject);
           return {
-            name: clientObj.name || clientObj.id,
-            intlId: clientObj.name || clientObj.id,
+            name: clientObj.fields[0].body,
+            intlId: clientObj.author_permlink || clientObj.id,
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/feed/${clientObj.id}?category=${
-              clientObj.object_type
-            }&name=${clientObj.name || clientObj.id}`,
+            linkTo: `/feed/${clientObj.author_permlink}?category=${clientObj.object_type}&name=${clientObj.fields[0].body}`,
             isUntranslatable: true,
           };
         }),
