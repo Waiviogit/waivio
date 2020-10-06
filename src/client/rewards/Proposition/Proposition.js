@@ -39,14 +39,12 @@ const Proposition = ({
   users,
   wobjPrice,
 }) => {
-  const requirementFilters =
-    get(proposition, ['requirement_filters']) || get(proposition, ['0', 'requirement_filters']);
+  const requirementFilters = get(proposition, ['requirement_filters']);
   const getEligibility = proposition =>
     requirementFilters ? Object.values(requirementFilters).every(item => item === true) : null;
   const isEligible = getEligibility(proposition);
   const proposedWobj = wobj;
-  const requiredObject =
-    get(proposition, ['required_object']) || get(proposition, ['0', 'required_object']);
+  const requiredObject = get(proposition, ['required_object']);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
   const parentObject = isEmpty(proposedWobj.parent) ? requiredObject : {};
@@ -55,15 +53,12 @@ const Proposition = ({
     ? match.params[0] === MESSAGES || match.params[0] === GUIDE_HISTORY
     : '';
   const propositionUserName = get(proposition, ['users', '0', 'name']);
-  const permlink =
-    get(proposition, ['users', '0', 'permlink']) ||
-    get(proposition, ['0', 'users', '0', 'permlink']);
+  const permlink = get(proposition, ['users', '0', 'permlink']);
   const userName = isMessages ? propositionUserName : authorizedUserName;
-  const propositionUsers = get(proposition, ['users']) || get(proposition, ['0', 'users']);
-  const guideName = get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
+  const propositionUsers = get(proposition, ['users']);
+  const guideName = get(proposition, ['guide', 'name']);
   const parenAuthor = isMessages ? propositionUsers : guideName;
-  const propositionActivationPermlink =
-    get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
+  const propositionActivationPermlink = get(proposition, ['activation_permlink']);
   const parentPermlink = isMessages ? permlink : propositionActivationPermlink;
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
   const type = isMessages ? 'reject_reservation_by_guide' : 'waivio_reject_object_campaign';
@@ -75,16 +70,15 @@ const Proposition = ({
 
   const discardPr = obj => {
     const objects = get(proposition, ['objects']) || get(proposition, ['0', 'objects']);
-    const users = get(proposition, ['users']) || get(proposition, ['0', 'users']);
+    const users = get(proposition, ['users']);
     const permlinks = filter(objects, object => object.permlink);
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
     const currentUser =
-      (isMessages || match.params[0] === HISTORY) && !isEmpty(user)
+      isMessages || match.params[0] === HISTORY
         ? users
         : filter(users, usersItem => usersItem.name === user.name && usersItem.status === ASSIGNED);
-    const activationPermlink =
-      get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
+    const activationPermlink = get(proposition, ['activation_permlink']);
 
     const rejectData = {
       campaign_permlink: activationPermlink,
@@ -107,12 +101,6 @@ const Proposition = ({
 
   const [isReserved, setReservation] = useState(false);
   const userData = get(users, ['user', 'name', 'alias'], '');
-  const activationPermlink =
-    get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
-  const requiredObjectAuthorPermlink =
-    get(proposition, ['required_object', 'author_permlink']) ||
-    get(proposition, ['0', 'required_object', 'author_permlink']);
-
   const reserveOnClickHandler = () => {
     const getJsonData = () => {
       if (!isEmpty(user)) {
@@ -131,7 +119,7 @@ const Proposition = ({
     const userName =
       userData || get(getJsonData(), ['profile', 'name'], '') || get(user, ['name'], '');
     const reserveData = {
-      campaign_permlink: activationPermlink,
+      campaign_permlink: proposition.activation_permlink,
       approved_object: get(wobj, 'author_permlink'),
       user_name: authorizedUserName,
       reservation_permlink: `reserve-${generatePermlink()}`,
@@ -140,20 +128,15 @@ const Proposition = ({
       const currencyId = res.id;
       const currentHivePrice = res.hiveCurrency;
       const amount = (proposition.reward / currentHivePrice).toFixed(3);
-      const guideName =
-        get(proposition, ['guide', 'name']) || get(proposition, ['0', 'guide', 'name']);
-      const activationPermlink =
-        get(proposition, ['activation_permlink']) || get(proposition, ['0', 'activation_permlink']);
-
-      const propositionId = get(proposition, ['_id']) || get(proposition, ['0', '_id']);
+      const guideName = get(proposition, ['guide', 'name']);
       reserveActivatedCampaign(reserveData)
         .then(() =>
           assignProposition({
             companyAuthor: guideName,
-            companyPermlink: activationPermlink,
+            companyPermlink: proposition.activation_permlink,
             resPermlink: reserveData.reservation_permlink,
             objPermlink: wobj.author_permlink,
-            companyId: propositionId,
+            companyId: proposition._id,
             primaryObjectName: requiredObjectName,
             secondaryObjectName: proposedWobj.name,
             amount,
@@ -184,6 +167,8 @@ const Proposition = ({
         });
     });
   };
+  const requiredObjectAuthorPermlink = get(proposition, ['required_object', 'author_permlink']);
+
   return (
     <div className="Proposition">
       <div className="Proposition__header">

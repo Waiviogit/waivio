@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
 import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import DetailsBody from './DetailsBody';
@@ -23,7 +22,6 @@ const Details = ({
   isReviewDetails,
   requiredObjectName,
   isEligible,
-  match,
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
@@ -34,10 +32,7 @@ const Details = ({
   const isExpired = objectDetails.status === 'expired';
   const isInActive = objectDetails.status === 'inactive';
   const proposedWobjName = getObjectName(proposedWobj);
-  const requiredObjectAuthorPermlink =
-    get(objectDetails, ['required_object', 'author_permlink']) ||
-    get(objectDetails, ['0', 'required_object', 'author_permlink']);
-  const objectDetailsId = get(objectDetails, ['_id']) || get(objectDetails, ['0', '_id']);
+
   const getRequiredObjectName = () => {
     let result;
     if (requiredObjectName.includes('&')) {
@@ -79,7 +74,6 @@ const Details = ({
           intl={intl}
           proposedWobj={proposedWobj}
           requiredObjectName={requiredObjectName}
-          match={match}
         />
       ) : (
         <DetailsPostRequirments
@@ -104,7 +98,7 @@ const Details = ({
           ) : (
             <Link
               // eslint-disable-next-line no-underscore-dangle
-              to={`/editor?object=[${objName}](${requiredObjectAuthorPermlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetailsId}`}
+              to={`/editor?object=[${objName}](${objectDetails.required_object.author_permlink})&object=[${proposedWobjNewName}](${proposedWobj.author_permlink})&campaign=${objectDetails._id}`}
             >
               <Button type="primary">
                 {intl.formatMessage({
@@ -124,7 +118,7 @@ const Details = ({
 
 Details.propTypes = {
   intl: PropTypes.shape().isRequired,
-  objectDetails: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  objectDetails: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
@@ -133,14 +127,11 @@ Details.propTypes = {
   isReviewDetails: PropTypes.bool.isRequired,
   requiredObjectName: PropTypes.string.isRequired,
   proposedWobj: PropTypes.shape().isRequired,
-  isEligible: PropTypes.bool,
-  match: PropTypes.shape(),
+  isEligible: PropTypes.bool.isRequired,
 };
 
 Details.defaultProps = {
   loading: false,
   assigned: false,
-  isEligible: false,
-  match: {},
 };
 export default injectIntl(Details);

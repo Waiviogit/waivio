@@ -12,9 +12,9 @@ const DetailsPostRequirments = ({ objectDetails, intl, proposedWobj, requiredObj
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
   const proposedWobjName = getObjectName(proposedWobj);
-  const receiptPhoto = get(objectDetails, ['0', 'requirements', 'receiptPhoto']);
-  const requiredObject = get(objectDetails, ['0', 'requiredObject']);
-  const description = get(objectDetails, ['0', 'description']);
+  const receiptPhoto = get(objectDetails, ['requirements', 'receiptPhoto']);
+  const requiredObject = get(objectDetails, ['requiredObject']);
+  const description = get(objectDetails, ['description']);
   let indexItem = 1;
   return (
     <React.Fragment>

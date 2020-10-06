@@ -237,7 +237,7 @@ const CatalogWrap = props => {
           wobj.object &&
           wobj.object.author_permlink && (
             <Proposition
-              proposition={propositionsObject}
+              proposition={propositionsObject[0]}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
