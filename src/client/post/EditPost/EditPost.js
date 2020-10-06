@@ -152,9 +152,10 @@ class EditPost extends Component {
     const isReview = !isEmpty(campaignId);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ isReview });
+    const postPermlink = get(currDraft, 'permlink');
 
     if (isReview)
-      getReviewCheckInfo({ campaignId, locale, userName })
+      getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
           const secondaryObject = campaignData.secondaryObject;
           this.setState({
@@ -187,21 +188,17 @@ class EditPost extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { locale, userName } = this.props;
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const postPermlink = get(currDraft, 'permlink');
+    const campaignId = get(currDraft, ['jsonMetadata', 'campaignId']);
     if (
       this.props.draftId !== prevProps.draftId &&
       has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
-      getCampaignById(get(currDraft, ['jsonMetadata', 'campaignId']))
+      getCampaignById({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
-          const secondaryObjectReservation = campaignData.users.find(user =>
-            user.name === this.props.userName && currDraft
-              ? user.status === 'assigned'
-              : user.status === 'completed',
-          );
-          const secondaryObject = campaignData.objects.find(
-            obj => obj.author_permlink === secondaryObjectReservation.object_permlink,
-          );
+          const secondaryObject = campaignData.secondaryObject;
           this.setState({
             campaign: {
               ...campaignData,
