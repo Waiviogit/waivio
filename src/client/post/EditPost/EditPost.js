@@ -313,7 +313,7 @@ class EditPost extends Component {
     }
     const updPercentage = {
       ...objPercentage,
-      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({
       objPercentage: setObjPercents(linkedObjects, updPercentage),

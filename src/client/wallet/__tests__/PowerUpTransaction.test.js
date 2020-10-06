@@ -10,6 +10,7 @@ describe('(Component) PowerUpTransactionFrom', () => {
         amount: <span>{'0 HIVE'}</span>,
         to: 'hellosteem',
         from: 'hellosteem',
+        transactionType: 'transfer_to_vesting',
       };
       const wrapper = shallow(<PowerUpTransactionFrom {...props} />);
       expect(wrapper).toMatchSnapshot();

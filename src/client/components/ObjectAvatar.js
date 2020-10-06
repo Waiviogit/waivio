@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { filter, maxBy, includes, get } from 'lodash';
+import { includes, get } from 'lodash';
 
 import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../helpers/image';
 
 import './ObjectAvatar.less';
-
-export const getObjectUrl = item => {
-  const avatarFields = filter(item.fields, o => o.name === 'avatar');
-  const avatarField = maxBy(avatarFields, 'weight');
-  return avatarField ? avatarField.body : null;
-};
 
 const ObjectAvatar = ({ item, size }) => {
   let style = {

@@ -7,7 +7,11 @@ ShallowWrapper {
     locale="en"
   >
     <UserCardView
-      user=""
+      user={
+        Object {
+          "name": "testUser",
+        }
+      }
     />
   </IntlProvider>,
   Symbol(enzyme.__renderer__): Object {
@@ -24,7 +28,9 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "function",
     "props": Object {
-      "user": "",
+      "user": Object {
+        "name": "testUser",
+      },
     },
     "ref": null,
     "rendered": null,
@@ -36,7 +42,9 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
-        "user": "",
+        "user": Object {
+          "name": "testUser",
+        },
       },
       "ref": null,
       "rendered": null,
