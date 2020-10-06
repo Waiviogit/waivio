@@ -11,7 +11,6 @@ import { objectFields, statusNoVisibleItem } from '../../../common/constants/lis
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getObject } from '../../../waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjectsActions';
 import {
   getSuitableLanguage,
   getAuthenticatedUserName,
@@ -77,28 +76,19 @@ const CatalogWrap = props => {
           if (requiredObject) {
             getPropositions({ userName, match, requiredObject, sort });
           }
-          if (isEmpty(listItems)) {
-            setListItems(wObject.listItems);
-          }
+          setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));
         });
       } else {
-        if (isEmpty(listItems)) {
-          setListItems(wobject.listItems);
-        }
+        setListItems(wobject.listItems);
         getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
       }
     }
   }, [props.location.hash, props.wobject]);
 
   const handleAddItem = listItem => {
-    const { wobject } = props;
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
     setListItems(sortListItemsBy(currentList, 'recency'));
-
-    if (wobject.object_type === OBJ_TYPE.LIST) {
-      dispatch(wobjectActions.addListItem(listItem));
-    }
   };
 
   const updateProposition = (propsId, isassign, objPermlink, companyAuthor) => {
