@@ -841,8 +841,8 @@ export const getSortChanged = ({
 export const getReviewRequirements = memoize(campaign => ({
   postRequirements: {
     minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
-    secondaryObject: get(campaign, ['objects', '0', 'object'], {}),
-    requiredObject: get(campaign, 'required_object', {}),
+    secondaryObject: get(campaign, ['secondaryObject'], {}),
+    requiredObject: get(campaign, ['requiredObject'], {}),
   },
   authorRequirements: {
     minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key

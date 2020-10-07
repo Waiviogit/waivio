@@ -20,7 +20,7 @@ import {
   isEmpty,
 } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
-import { getCampaignById, getReviewCheckInfo } from '../../../waivioApi/ApiClient';
+import { getReviewCheckInfo } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
   getDraftPosts,
@@ -157,13 +157,8 @@ class EditPost extends Component {
     if (isReview)
       getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
-          const secondaryObject = campaignData.secondaryObject;
           this.setState({
-            campaign: {
-              ...campaignData,
-              objects: [{ object: secondaryObject }],
-              required_object: campaignData.requiredObject,
-            },
+            campaign: campaignData,
           });
         })
         .then(() => {
@@ -196,15 +191,10 @@ class EditPost extends Component {
       this.props.draftId !== prevProps.draftId &&
       has(currDraft, ['jsonMetadata', 'campaignId'])
     ) {
-      getCampaignById({ campaignId, locale, userName, postPermlink })
+      getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
         .then(campaignData => {
-          const secondaryObject = campaignData.secondaryObject;
           this.setState({
-            campaign: {
-              ...campaignData,
-              objects: [{ object: secondaryObject }],
-              required_object: campaignData.requiredObject,
-            },
+            campaign: campaignData,
           });
         })
         .catch(error => console.log('Failed to get campaign data:', error));
