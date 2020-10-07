@@ -13,6 +13,7 @@ import { getDaysLeft } from '../rewardsHelper';
 import {
   getRate,
   getAppUrl,
+  getLocale,
   isGuestUser,
   getCommentsFromReserved,
   getAuthenticatedUserName,
@@ -33,6 +34,8 @@ import './CampaignFooter.less';
     reservedComments: getCommentsFromReserved(state),
     userName: getAuthenticatedUserName(state),
     isGuest: isGuestUser(state),
+    locale: getLocale(state),
+    follower: getAuthenticatedUserName(state),
   }),
   {
     getReservedComments,
@@ -78,6 +81,8 @@ class CampaignFooter extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     sendCommentMessages: PropTypes.func,
+    locale: PropTypes.string,
+    follower: PropTypes.string,
   };
 
   static defaultProps = {
@@ -106,6 +111,8 @@ class CampaignFooter extends React.Component {
     isGuest: false,
     sendCommentMessages: () => {},
     proposition: {},
+    locale: 'en-US',
+    follower: '',
   };
 
   constructor(props) {
@@ -135,39 +142,44 @@ class CampaignFooter extends React.Component {
       : '';
   }
 
-  componentWillMount() {
-    const { user, post, defaultVotePercent, proposition } = this.props;
-    if (user) {
+  componentDidUpdate(prevProps) {
+    const { user, post, defaultVotePercent, proposition, locale, follower } = this.props;
+    if (prevProps.user !== user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
       if (userVote.percent && userVote.percent > 0) {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({
           sliderValue: userVote.percent / 100,
         });
       } else {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({
           sliderValue: defaultVotePercent / 100,
         });
       }
     }
-    const currentUser = this.getCurrentUser();
-    const author = this.isReserved
-      ? get(currentUser, ['0', 'name'])
-      : get(proposition, ['users', '0', 'name']);
-    const permlink = this.isReserved
-      ? get(currentUser, ['0', 'permlink'])
-      : get(proposition, ['users', '0', 'permlink']);
-    this.getReservedComments();
-
-    if (!isEmpty(author) && !isEmpty(permlink)) {
-      getContent(author, permlink).then(res => this.setState({ currentPost: res }));
+    if (prevProps.proposition !== proposition) {
+      const currentUser = this.getCurrentUser();
+      const author = this.isReserved
+        ? get(currentUser, ['0', 'name'])
+        : get(proposition, ['users', '0', 'name']);
+      const permlink = this.isReserved
+        ? get(currentUser, ['0', 'permlink'])
+        : get(proposition, ['users', '0', 'permlink']);
+      this.getReservedComments();
+      if (!isEmpty(author) && !isEmpty(permlink)) {
+        getContent(author, permlink, locale, follower).then(res =>
+          this.setState({ currentPost: res }),
+        );
+      }
+      const reservationsTime =
+        get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
+      });
     }
-    const reservationsTime =
-      get(currentUser, ['0', 'createdAt']) || get(currentUser, ['createdAt']);
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      daysLeft: getDaysLeft(reservationsTime, proposition.count_reservation_days),
-    });
   }
 
   getCurrentUser = () => {
