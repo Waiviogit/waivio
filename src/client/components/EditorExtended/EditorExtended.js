@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
-import { forEach, get, has, isEmpty, isEqual, keyBy } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, keyBy, includes } from 'lodash';
 import { Input, message } from 'antd';
 import {
   createEditorState,
@@ -62,12 +62,14 @@ class Editor extends React.Component {
     intl: PropTypes.shape(),
     handleHashtag: PropTypes.func,
     displayTitle: PropTypes.bool,
+    draftId: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
     onChange: () => {},
     handleHashtag: () => {},
     displayTitle: true,
+    draftId: '',
   };
 
   static MAX_LENGTH = 255;
@@ -126,12 +128,15 @@ class Editor extends React.Component {
   };
 
   restoreObjects = async rawContent => {
+    const { draftId } = this.props;
+    const isReview = includes(draftId, 'review');
     const objectIds = Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
       .filter(entity => {
         if (entity.type === Entity.OBJECT) {
           return has(entity, 'data.object.id');
-        } else if (entity.type === Entity.LINK) {
+        }
+        if (!isReview && entity.type === Entity.LINK) {
           return has(entity, 'data.url');
         }
       })
@@ -139,7 +144,8 @@ class Editor extends React.Component {
       .map(entity => {
         if (entity.type === Entity.OBJECT) {
           return get(entity, 'data.object.id', '');
-        } else if (entity.type === Entity.LINK) {
+        }
+        if (!isReview && entity.type === Entity.LINK) {
           return this.getCurrentLinkPermlink(entity);
         }
       });
