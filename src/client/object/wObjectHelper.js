@@ -97,7 +97,7 @@ export const getWobjectsWithMaxWeight = wobjects =>
   );
 
 export const getWobjectsForMap = objects => {
-  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.map));
+  const wobjectsWithMap = filter(objects, wobj => !isEmpty(wobj.parent.map));
   const wobjectWithPropositions = filter(
     wobjectsWithMap,
     wobject => wobject.campaigns || wobject.propositions,
