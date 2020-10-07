@@ -639,6 +639,28 @@ export const getCampaignById = campaignId =>
       .catch(error => reject(error));
   });
 
+export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, postPermlink }) => {
+  const queryString = `${
+    postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
+  }`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.campaign}${config.reviewCheck}/${campaignId}${queryString}`,
+      {
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+};
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
