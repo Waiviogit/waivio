@@ -1,8 +1,9 @@
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { message } from 'antd';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../../common/constants/blockTypes';
+import { getUserAccount } from '../../../waivioApi/ApiClient';
 
 export const GET_USER_REFERRAL_INFO = createAsyncActionType('@referral/GET_USER_REFERRAL_INFO');
 export const GET_USER_REFERRAL_DETAILS = createAsyncActionType(
@@ -14,8 +15,9 @@ export const REFERRAL_GET_ADDITION_FIELDS = createAsyncActionType(
   '@referral/REFERRAL_GET_ADDITION_FIELDS',
 );
 export const REFERRAL_REJECT_RULES = createAsyncActionType('@referral/REFERRAL_REJECT_RULES');
+export const HANDLE_REF_AUTH_USER = createAsyncActionType('@referral/HANDLE_REF_AUTH_USER');
 
-export const getUserReferralInfo = username => dispatch => {
+export const getUserReferralInfo = username => dispatch =>
   dispatch({
     type: GET_USER_REFERRAL_INFO.ACTION,
     payload: ApiClient.getUserAccount(username).then(res => ({
@@ -23,7 +25,6 @@ export const getUserReferralInfo = username => dispatch => {
       referralList: res.referral,
     })),
   });
-};
 
 export const getUserReferralDetails = () => dispatch =>
   dispatch({
@@ -150,3 +151,21 @@ export const referralRejectRules = (username, isGuest) => (
       });
     });
 };
+
+export const handleRefAuthUser = (username, refUser) => (dispatch, getState, { steemConnectAPI }) =>
+  getUserAccount(username)
+    .then(res => {
+      if (isEmpty(res.referral)) {
+        dispatch({
+          type: HANDLE_REF_AUTH_USER.ACTION,
+          payload: {
+            promise: steemConnectAPI
+              .addReferralAgent(username, refUser)
+              .then(result => result)
+              .catch(error => error),
+          },
+        });
+      }
+    })
+    .then(() => sessionStorage.removeItem('refUser'))
+    .catch(error => error);

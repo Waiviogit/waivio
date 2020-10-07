@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const getCurrentOfferPercent = value => `${100 - value}%`;
 export const handleOffersReward = value => `$${value.toFixed(2)}`;
 export const handleOffersPercent = value => `${value}%`;
