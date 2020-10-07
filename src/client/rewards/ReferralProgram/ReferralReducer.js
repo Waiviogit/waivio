@@ -2,6 +2,7 @@ import {
   GET_USER_REFERRAL_DETAILS,
   GET_IS_USER_IN_BLACKLIST,
   GET_USER_REFERRAL_INFO,
+  REFERRAL_GET_ADDITION_FIELDS,
 } from './ReferralActions';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   isStartGetReferralInfo: false,
   referralStatus: '',
   referral: [],
+  isChangedRuleSelection: false,
 };
 
 const ReferralReducer = (state = initialState, action) => {
@@ -64,6 +66,18 @@ const ReferralReducer = (state = initialState, action) => {
         isUserInWaivioBlackList: action.payload.isBlacklisted,
       };
     }
+    case REFERRAL_GET_ADDITION_FIELDS.START: {
+      return {
+        ...state,
+        isChangedRuleSelection: true,
+      };
+    }
+    case REFERRAL_GET_ADDITION_FIELDS.SUCCESS: {
+      return {
+        ...state,
+        isChangedRuleSelection: false,
+      };
+    }
     default:
       return state;
   }
@@ -81,3 +95,4 @@ export const getIsStartLoadingReferralDetails = state => state.isStartLoadingRef
 export const getIsUserInWaivioBlackList = state => state.isUserInWaivioBlackList;
 export const getReferralStatus = state => state.referralStatus;
 export const getReferralList = state => state.referral;
+export const getIsChangedRuleSelection = state => state.isChangedRuleSelection;

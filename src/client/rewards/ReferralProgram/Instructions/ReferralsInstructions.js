@@ -12,6 +12,7 @@ import {
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
+  getIsChangedRuleSelection,
   getIsUserInWaivioBlackList,
   getReferralStatus,
   isGuestUser,
@@ -223,6 +224,7 @@ ReferralsInstructions.propTypes = {
   rejectRules: PropTypes.func,
   userReferralInfo: PropTypes.func,
   referralStatus: PropTypes.string.isRequired,
+  // isChangedRuleSelection: PropTypes.bool,
 };
 
 ReferralsInstructions.defaultProps = {
@@ -232,6 +234,7 @@ ReferralsInstructions.defaultProps = {
   confirmRules: () => {},
   rejectRules: () => {},
   userReferralInfo: () => {},
+  isChangedRuleSelection: false,
 };
 
 const mapStateToProps = state => ({
@@ -240,6 +243,7 @@ const mapStateToProps = state => ({
   isBlackListUser: getIsUserInWaivioBlackList(state),
   isGuest: isGuestUser(state),
   referralStatus: getReferralStatus(state),
+  isChangedRuleSelection: getIsChangedRuleSelection(state),
 });
 
 export default injectIntl(

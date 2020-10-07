@@ -314,6 +314,8 @@ export const getIsUserInWaivioBlackList = state =>
   fromReferral.getIsUserInWaivioBlackList(state.referral);
 export const getReferralStatus = state => fromReferral.getReferralStatus(state.referral);
 export const getReferralList = state => fromReferral.getReferralList(state.referral);
+export const getIsChangedRuleSelection = state =>
+  fromReferral.getIsChangedRuleSelection(state.referral);
 
 // common selectors
 
