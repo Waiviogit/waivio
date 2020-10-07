@@ -57,7 +57,7 @@ const rewardsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        followingRewards: hasMore ? state.followingRewards.concat(campaigns) : campaigns,
+        followingRewards: state.followingRewards.concat(campaigns),
         hasMoreFollowingRewards: hasMore,
       };
     }

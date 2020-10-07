@@ -384,12 +384,16 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
       .catch(error => reject(error));
   });
 
-export const getFollowingUpdates = (userName, count = 5) =>
+export const getFollowingUpdates = (locale, userName, count = 5) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
       {
-        headers,
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
         method: 'GET',
       },
     )
@@ -635,6 +639,28 @@ export const getCampaignById = campaignId =>
       .then(response => resolve(response.campaign))
       .catch(error => reject(error));
   });
+
+export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, postPermlink }) => {
+  const queryString = `${
+    postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
+  }`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.campaign}${config.reviewCheck}/${campaignId}${queryString}`,
+      {
+        headers: {
+          ...headers,
+          app: config.appName,
+          locale,
+        },
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+};
 
 export const getPropositions = ({
   limit = 30,
@@ -1265,8 +1291,8 @@ export const getPostCommentsFromApi = ({ category, author, permlink, locale }) =
         ...headers,
         app: config.appName,
         locale,
-      }
-    }
+      },
+    },
   )
     .then(res => res.json())
     .then(data => data)
