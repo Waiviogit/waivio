@@ -70,7 +70,7 @@ const ObjectCardView = ({
       defaultMessage: 'Go to',
     })} ${wobjName}`;
 
-  const parentLink = get(parent, 'defaultShowLink') || `/object/${get(parent, 'author_permlink')}`;
+  const parentLink = get(parent, 'defaultShowLink');
 
   return (
     <div key={wObject.author_permlink}>
