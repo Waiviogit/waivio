@@ -46,10 +46,10 @@ const CatalogWrap = props => {
   const [isAssign, setIsAssign] = useState(false);
   const [listItems, setListItems] = useState([]);
 
-  const getPropositions = ({ username, match, requiredObject, sorting }) => {
+  const getPropositions = ({ match, requiredObject, sorting }) => {
     setLoadingPropositions(true);
     ApiClient.getPropositions({
-      username,
+      userName,
       match,
       requiredObject,
       sort: 'reward',
@@ -72,9 +72,9 @@ const CatalogWrap = props => {
       if (hash) {
         const pathUrl = getPermLink(hash);
         getObject(pathUrl, userName, locale).then(wObject => {
-          const requiredObject = wObject.author_permlink;
+          const requiredObject = get(wObject, ['parent', 'author_permlink']);
           if (requiredObject) {
-            getPropositions({ userName, match, requiredObject, sort });
+            getPropositions({ match, requiredObject, sort });
           }
           setListItems(wObject.listItems);
           dispatch(setWobjectForBreadCrumbs(wObject));
@@ -84,7 +84,7 @@ const CatalogWrap = props => {
         getPropositions({ userName, match, requiredObject: wobject.author_permlink, sort });
       }
     }
-  }, [props.location.hash, props.wobject]);
+  }, [props.location.hash, props.wobject, userName]);
 
   const handleAddItem = listItem => {
     const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
@@ -226,7 +226,7 @@ const CatalogWrap = props => {
           wobj.object &&
           wobj.object.author_permlink && (
             <Proposition
-              proposition={propositionsObject}
+              proposition={propositionsObject[0]}
               wobj={wobj.object}
               wobjPrice={wobj.reward}
               assignCommentPermlink={wobj.permlink}
