@@ -18,6 +18,7 @@ class PostRecommendation extends Component {
     match: PropTypes.shape().isRequired,
     isAuthFetching: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
+    follower: PropTypes.string.isRequired,
   };
   constructor(props) {
     super(props);
@@ -56,7 +57,7 @@ class PostRecommendation extends Component {
   }
 
   getPostsByAuthor = author => {
-    getUserProfileBlog(author, { limit: 4 }, this.props.locale)
+    getUserProfileBlog(author, this.props.follower, { limit: 4 }, this.props.locale)
       .then(result => {
         const recommendedPosts = result || [];
         this.setState({
